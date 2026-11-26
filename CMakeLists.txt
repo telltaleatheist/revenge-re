@@ -753,7 +753,7 @@ if(CHR_BUILD_SDL)
         # The runtime and the host call each other, and this test calls only
         # the host. GNU ld reads each static library once, in order, so it is
         # told to read the pair again until nothing is missing.
-        if(CMAKE_C_LINK_GROUP_USING_RESCAN_SUPPORTED)
+        if(CMAKE_LINK_GROUP_USING_RESCAN_SUPPORTED OR CMAKE_C_LINK_GROUP_USING_RESCAN_SUPPORTED)
             target_link_libraries(test_sdl_renderer_fallback PRIVATE
                 "$<LINK_GROUP:RESCAN,chr_original_runtime,chr_sdl_backend>")
         else()
