@@ -56,9 +56,12 @@ def linear(place):
     return (int(segment, 16) - 0x0800) * 16 + int(offset, 16)
 
 
-def read_map(path=MAP):
-    """(entries by name, overlap pairs, problems). An entry is the line's words."""
+def read_map(path=MAP, noted=None):
+    """(entries by name, overlap pairs, problems). An entry is the line's words.
+
+    noted, filled in when given, maps an overlap pair to its note."""
     entries, overlaps, problems = {}, set(), []
+    noted = {} if noted is None else noted
     with open(path, encoding="utf-8") as f:
         for number, line in enumerate(f, 1):
             words = line.split()
@@ -68,6 +71,8 @@ def read_map(path=MAP):
             kind = words[0]
             if kind == "overlap" and len(words) >= 3:
                 overlaps.add(frozenset(words[1:3]))
+                if len(words) > 3:
+                    noted[frozenset(words[1:3])] = " ".join(words[3:])
                 continue
             if kind == "place" and len(words) == 5 and re.fullmatch(r"[0-9A-F]{4}:[0-9A-F]{4}", words[2]) \
                     and re.fullmatch(r"[0-9A-F]+", words[3]) \

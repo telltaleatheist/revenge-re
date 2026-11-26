@@ -3,9 +3,11 @@
 
     tools/map/check_dump.py --exe BUILD/Revenge [--game GAME_DIR]
 
-For each line of dump_checks.txt, runs the script with REVENGE_MAP_DUMP_DIR
-set and compares the bytes the map's objects hold at those places at that
-snap with the image's (README.md). GAME_DIR defaults to the REVENGE_GAME
+Runs each script dump_checks.txt names with REVENGE_MAP_DUMP_DIR set. A
+check line compares the bytes the map's objects hold at a place at a snap
+with the image's; an agree line has every pair of objects the map lays over
+one another, but for the noted ones, hold equal bytes where they meet at
+every snap of the script, as the original's one byte would (README.md). GAME_DIR defaults to the REVENGE_GAME
 variable; without one, exit 77 (ctest's skip).
 """
 import argparse
@@ -39,13 +41,37 @@ def image_data(game):
 
 
 def read_checks():
-    checks = []
+    checks, agrees = [], []
     with open(CHECKS, encoding="utf-8") as f:
         for line in f:
             words = line.split()
-            if words and not words[0].startswith("#"):
+            if not words or words[0].startswith("#"):
+                continue
+            if words[0] == "agree":
+                agrees.append(words[1])
+            else:
                 checks.append((words[0], words[1], int(words[2], 16), int(words[3], 16), int(words[4], 16)))
-    return checks
+    return checks, agrees
+
+
+def disagreements(folder, script):
+    """The overlaps without a note whose objects differ where they meet."""
+    noted = {}
+    entries, overlaps, _ = map_objects.read_map(noted=noted)
+    placed = {name: (map_objects.linear(words[2]) - DATA_SEGMENT, int(words[3], 16))
+              for name, words in entries.items() if words[0] == "place"}
+    found = []
+    for snap in sorted(n[:-8] for n in os.listdir(folder) if n.endswith(".objects")):
+        objects = dumped(os.path.join(folder, snap + ".objects"))
+        for pair in sorted(overlaps - set(noted), key=sorted):
+            first, second = sorted(pair)
+            (first_start, first_size), (second_start, second_size) = placed[first], placed[second]
+            low = max(first_start, second_start)
+            high = min(first_start + first_size, second_start + second_size)
+            if objects[first][low - first_start:high - first_start] \
+                    != objects[second][low - second_start:high - second_start]:
+                found.append(f"{script} {snap}: {first} and {second} differ at DS:{low:04X}-{high - 1:04X}")
+    return found
 
 
 def holders():
@@ -81,10 +107,11 @@ def main():
     image = image_data(args.game)
     held = holders()
     problems = []
-    checks = read_checks()
+    checks, agrees = read_checks()
     with tempfile.TemporaryDirectory(prefix="revenge-dump-") as work:
         runs = {}
-        for script, snap, offset, size, image_offset in checks:
+
+        def run(script):
             if script not in runs:
                 folder = os.path.join(work, script + "-objects")
                 os.makedirs(folder)
@@ -93,7 +120,10 @@ def main():
                               os.path.join(work, script))
                 del os.environ["REVENGE_MAP_DUMP_DIR"]
                 runs[script] = folder
-            objects = dumped(os.path.join(runs[script], snap + ".objects"))
+            return runs[script]
+
+        for script, snap, offset, size, image_offset in checks:
+            objects = dumped(os.path.join(run(script), snap + ".objects"))
             run_bytes = bytearray()
             for at in range(offset, offset + size):
                 if at not in held:
@@ -106,9 +136,13 @@ def main():
                 if bytes(run_bytes) != expected:
                     problems.append(f"{script} {snap}: DS:{offset:04X} holds {run_bytes.hex()},"
                                     f" the image's DS:{image_offset:04X} {expected.hex()}")
+        failed_checks = len(problems)
+        for script in agrees:
+            problems += disagreements(run(script), script)
     for problem in problems:
         print(f"check_dump: {problem}")
-    print(f"check_dump: {len(checks) - len(problems)} of {len(checks)} checks hold")
+    print(f"check_dump: {len(checks) - failed_checks} of {len(checks)} checks hold;"
+          f" {len(problems) - failed_checks} disagreements in {len(agrees)} scripts")
     return 1 if problems else 0
 
 

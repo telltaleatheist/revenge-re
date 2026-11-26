@@ -54,8 +54,6 @@ place TacticalUpdateDelayReloadTicks 3A6A:17DA 2 table
 place TacticalGameSpeedIndex 3A6A:17DC 2 table
 place SaveDirectory 3A6A:18CE 88 table
 place SaveCampaignSnapshot 3A6A:1956 221 table
-place SavedScenarioUnitMapX 3A6A:197B 18 run
-place SavedScenarioUnitMapY 3A6A:1993 18 run
 place InitialCampaignState 3A6A:1B77 7 table
 place ForwardCampaignState 3A6A:1B7E 7 table
 place ReplayCampaignState 3A6A:1B85 7 table
@@ -780,35 +778,37 @@ unplaced WeaponDefinitions 159 its bytes match nowhere (pointers or values diffe
 
 # Places two objects share, each to be looked at (tools/map/README.md):
 #
-#   overlap NAME NAME
-overlap UiRegionTable DialogFramingEnabled
-overlap CachedFileDescriptors UnitTemplatePathOffset
-overlap CachedFileDescriptors UnitTemplatePathSegment
-overlap CachedFileDescriptors ScenarioResourcePathPointer
-overlap CachedFileDescriptors TacticalResourcePathOffset
-overlap CachedFileDescriptors TacticalResourcePathSegment
-overlap CachedFileDescriptors ScreenPaletteResourceByScreen
-overlap HeatDissipationBySinkCountQ8_8 NeighborMapOffsetTable
-overlap HeatDissipationBySinkCountQ8_8 TacticalUpdateDelayReloadTicks
-overlap HeatDissipationBySinkCountQ8_8 TacticalGameSpeedIndex
-overlap HeatDissipationBySinkCountQ8_8 SaveDirectory
-overlap HeatDissipationBySinkCountQ8_8 SaveCampaignSnapshot
-overlap SaveCampaignSnapshot SavedScenarioUnitMapX
-overlap SaveCampaignSnapshot SavedScenarioUnitMapY
-overlap MissionDateAdvanceMonths MouseCursorBackingSourceTileX
-overlap MissionDateAdvanceMonths MouseCursorBackingSourcePixelY
-overlap MissionDateAdvanceMonths MouseCursorBackingWidthTiles
-overlap MissionDateAdvanceMonths MouseCursorBackingHeightPixels
-overlap CampaignMessageTable CampaignMessageTextTable
-overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable
-overlap ScenarioLanceAllegianceTable DigitalSoundData
-overlap AdLibActivateRegisterList AdLibNineVoiceResetList
-overlap LoadedSceneFile WeaponCombatRatingByType
-overlap LinePrimaryYStep LinePrimaryXStep
-overlap LineSecondaryYStep LineSecondaryXStep
-overlap UnitWithdrawalState CampaignUnitThirteenAvailabilityFlag
-overlap UnitWithdrawalState CampaignUnitFifteenOverrideFlag
-overlap UnitWithdrawalState CampaignUnitFourteenAvailabilityFlag
-overlap TacticalStatusRowInvalidation ScenarioFileSuffix
-overlap TacticalStatusRowInvalidation NarrationEmphasis
-overlap TacticalStatusRowInvalidation UnitConsecutiveAttackTicks
+#   overlap NAME NAME [NOTE]
+#
+# Where there is no note, the two are one byte in the original and the run
+# must keep them equal (check_dump.py's agree lines); a note says why they
+# can differ for now.
+overlap UiRegionTable DialogFramingEnabled size to settle: the original's region table ends before it, or holds it
+overlap CachedFileDescriptors UnitTemplatePathOffset host pointer: the descriptor holds the port's own pointer
+overlap CachedFileDescriptors UnitTemplatePathSegment host pointer: the descriptor holds the port's own pointer
+overlap CachedFileDescriptors ScenarioResourcePathPointer host pointer: the descriptor holds the port's own pointer
+overlap CachedFileDescriptors TacticalResourcePathOffset host pointer: the descriptor holds the port's own pointer
+overlap CachedFileDescriptors TacticalResourcePathSegment host pointer: the descriptor holds the port's own pointer
+overlap CachedFileDescriptors ScreenPaletteResourceByScreen to look at: the table's first byte is the last descriptor's last
+overlap HeatDissipationBySinkCountQ8_8 NeighborMapOffsetTable size to settle: the original's table is 60h bytes
+overlap HeatDissipationBySinkCountQ8_8 TacticalUpdateDelayReloadTicks size to settle: the original's table is 60h bytes
+overlap HeatDissipationBySinkCountQ8_8 TacticalGameSpeedIndex size to settle: the original's table is 60h bytes
+overlap HeatDissipationBySinkCountQ8_8 SaveDirectory size to settle: the original's table is 60h bytes
+overlap HeatDissipationBySinkCountQ8_8 SaveCampaignSnapshot size to settle: the original's table is 60h bytes
+overlap MissionDateAdvanceMonths MouseCursorBackingSourceTileX size to settle: the original's table is 18h bytes
+overlap MissionDateAdvanceMonths MouseCursorBackingSourcePixelY size to settle: the original's table is 18h bytes
+overlap MissionDateAdvanceMonths MouseCursorBackingWidthTiles size to settle: the original's table is 18h bytes
+overlap MissionDateAdvanceMonths MouseCursorBackingHeightPixels size to settle: the original's table is 18h bytes
+overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
+overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable size to settle: the original's table is 0Fh bytes
+overlap ScenarioLanceAllegianceTable DigitalSoundData size to settle: the original's table is 16h bytes
+overlap AdLibActivateRegisterList AdLibNineVoiceResetList the original's second constant list is the first one's tail
+overlap LoadedSceneFile WeaponCombatRatingByType to look at: the ratings are the scene buffer's last 17h bytes
+overlap LinePrimaryYStep LinePrimaryXStep the original lays the two constant tables 4 bytes apart
+overlap LineSecondaryYStep LineSecondaryXStep the original lays the two constant tables 4 bytes apart
+overlap UnitWithdrawalState CampaignUnitThirteenAvailabilityFlag to merge: the flags are entries of the withdrawal states
+overlap UnitWithdrawalState CampaignUnitFifteenOverrideFlag to merge: the flags are entries of the withdrawal states
+overlap UnitWithdrawalState CampaignUnitFourteenAvailabilityFlag to merge: the flags are entries of the withdrawal states
+overlap TacticalStatusRowInvalidation ScenarioFileSuffix size to settle: the original's table is 0Dh bytes
+overlap TacticalStatusRowInvalidation NarrationEmphasis size to settle: the original's table is 0Dh bytes
+overlap TacticalStatusRowInvalidation UnitConsecutiveAttackTicks size to settle: the original's table is 0Dh bytes

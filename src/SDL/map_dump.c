@@ -372,8 +372,6 @@ static const MapDumpObject objects[] =
 	{ "PersistentUnitRoster", &PersistentUnitRoster, sizeof(PersistentUnitRoster) },
 	{ "LiveScenarioUnits", &LiveScenarioUnits, sizeof(LiveScenarioUnits) },
 	{ "BlankUnitRecord", &BlankUnitRecord, sizeof(BlankUnitRecord) },
-	{ "SavedScenarioUnitMapX", &SavedScenarioUnitMapX, sizeof(SavedScenarioUnitMapX) },
-	{ "SavedScenarioUnitMapY", &SavedScenarioUnitMapY, sizeof(SavedScenarioUnitMapY) },
 	{ "ScenarioUnitMapX", &ScenarioUnitMapX, sizeof(ScenarioUnitMapX) },
 	{ "ScenarioUnitMapY", &ScenarioUnitMapY, sizeof(ScenarioUnitMapY) },
 	{ "ScenarioUnitFacing", &ScenarioUnitFacing, sizeof(ScenarioUnitFacing) },

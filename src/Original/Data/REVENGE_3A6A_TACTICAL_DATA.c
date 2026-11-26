@@ -172,8 +172,6 @@ const char *CombatRatingDescriptionTable[0x07] =
 RevengeUnitRecord PersistentUnitRoster[0x18];
 RevengeUnitRecord LiveScenarioUnits[0x18];
 RevengeUnitRecord BlankUnitRecord;
-byte SavedScenarioUnitMapX[0x18];
-byte SavedScenarioUnitMapY[0x18];
 byte ScenarioUnitMapX[0x18];
 byte ScenarioUnitMapY[0x18];
 byte ScenarioUnitFacing[0x18];

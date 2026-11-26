@@ -11,7 +11,7 @@ one), and the typed state will build on it.
     place NAME SEG:OFF SIZE KIND    NAME is at SEG:OFF, SIZE bytes (hex)
     host NAME SIZE REASON           the port's own: no place of its own in the original
     unplaced NAME SIZE REASON       not placed yet, and why
-    overlap NAME NAME               two placed objects share bytes
+    overlap NAME NAME [NOTE]        two placed objects share bytes
 
 SIZE is the original's size: a host pointer counts as the far pointer it
 stands for (4 bytes), and an import piece has the piece's size.
@@ -70,3 +70,6 @@ The reasons, and what places them:
 Each `overlap` line is a place the port has two objects where the original has
 one, or an object larger than the original's. Each is looked at in turn: an
 alias to merge, a size to correct, or a table the original lays over another.
+A line without a note is one byte in the original, and `check_dump.py`'s
+`agree` lines hold the two objects to the same bytes at every snap. A note
+says why they may differ for now (a host pointer, a size still to settle).

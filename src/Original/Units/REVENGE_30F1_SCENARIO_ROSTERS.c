@@ -4,6 +4,7 @@
 
 #include "REVENGE.h"
 #include "revenge/original_data.h"
+#include "revenge/original/campaign_data.h"
 
 void AdvanceCampaignClock(byte hours, byte minutes);
 void ResetLiveUnitState(uint16 unitIndex);

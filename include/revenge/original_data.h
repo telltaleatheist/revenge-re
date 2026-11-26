@@ -279,8 +279,6 @@ extern const char *CombatRatingDescriptionTable[0x07];
 extern RevengeUnitRecord PersistentUnitRoster[0x18];
 extern RevengeUnitRecord LiveScenarioUnits[0x18];
 extern RevengeUnitRecord BlankUnitRecord;
-extern byte SavedScenarioUnitMapX[0x18];
-extern byte SavedScenarioUnitMapY[0x18];
 extern byte ScenarioUnitMapX[0x18];
 extern byte ScenarioUnitMapY[0x18];
 extern byte ScenarioUnitFacing[0x18];

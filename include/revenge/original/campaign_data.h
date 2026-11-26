@@ -57,6 +57,10 @@ extern byte TrainingScenarioCompletionFlags[0x06];
 extern int8 ScreenPaletteResourceByScreen[CAMPAIGN_SCREEN_PALETTE_COUNT];
 extern CampaignSaveDirectory SaveDirectory;
 extern RevengeCampaignSnapshot SaveCampaignSnapshot;
+/* DS:197B and DS:1993: the units' map positions a battle starts from are the
+ * snapshot's (offsets 25h and 3Dh), the ones a save writes and a load reads. */
+#define SavedScenarioUnitMapX (SaveCampaignSnapshot.scenarioUnitMapX)
+#define SavedScenarioUnitMapY (SaveCampaignSnapshot.scenarioUnitMapY)
 
 extern byte InitialCampaignState[CAMPAIGN_PRIMARY_STATE_COUNT];
 extern byte ForwardCampaignState[CAMPAIGN_PRIMARY_STATE_COUNT];
