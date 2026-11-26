@@ -359,9 +359,6 @@ place UnitEnemyContactEstablished 3A6A:87ED 18 run
 place UnitEnemyEngagementActive 3A6A:8806 18 run
 place ImpassableTerrainTypeMinimum 3A6A:8821 2 run
 place UnitWithdrawalState 3A6A:883F 18 run
-place CampaignUnitThirteenAvailabilityFlag 3A6A:884B 1 annotation
-place CampaignUnitFifteenOverrideFlag 3A6A:884E 1 annotation
-place CampaignUnitFourteenAvailabilityFlag 3A6A:8853 1 annotation
 place DestructibleTerrainTypeBase 3A6A:8859 1 run
 place UnitDestructionMarkers 3A6A:885B 48 run
 place ReplayScenarioRequested 3A6A:88A3 1 annotation
@@ -806,9 +803,6 @@ overlap AdLibActivateRegisterList AdLibNineVoiceResetList the original's second 
 overlap LoadedSceneFile WeaponCombatRatingByType to look at: the ratings are the scene buffer's last 17h bytes
 overlap LinePrimaryYStep LinePrimaryXStep the original lays the two constant tables 4 bytes apart
 overlap LineSecondaryYStep LineSecondaryXStep the original lays the two constant tables 4 bytes apart
-overlap UnitWithdrawalState CampaignUnitThirteenAvailabilityFlag to merge: the flags are entries of the withdrawal states
-overlap UnitWithdrawalState CampaignUnitFifteenOverrideFlag to merge: the flags are entries of the withdrawal states
-overlap UnitWithdrawalState CampaignUnitFourteenAvailabilityFlag to merge: the flags are entries of the withdrawal states
 overlap TacticalStatusRowInvalidation ScenarioFileSuffix size to settle: the original's table is 0Dh bytes
 overlap TacticalStatusRowInvalidation NarrationEmphasis size to settle: the original's table is 0Dh bytes
 overlap TacticalStatusRowInvalidation UnitConsecutiveAttackTicks size to settle: the original's table is 0Dh bytes

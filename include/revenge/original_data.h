@@ -299,9 +299,6 @@ extern int16 ScenarioUnitFifteenState;
 extern word16 ScenarioUnitFourteenEnabled;
 extern word16 EjectedPilotRosterState;
 extern word16 ScenarioUnitThirteenEnabled;
-extern byte CampaignUnitThirteenAvailabilityFlag;
-extern byte CampaignUnitFifteenOverrideFlag;
-extern byte CampaignUnitFourteenAvailabilityFlag;
 extern byte StoryUnitDeployedFlag;
 extern byte SelectedSaveSlotIndex;
 extern byte SaveLoadMenuDefaultSelection;
@@ -434,6 +431,11 @@ extern RevengeUnitSlot UnitTacticalTarget[0x19];
 extern word16 EnemyCycleUnitIndex;
 extern byte UnitEnemyContactEstablished[0x18];
 extern byte UnitWithdrawalState[0x18];
+/* DS:884B, DS:884E and DS:8853: the withdrawal states of the roster's units
+ * 0Ch, 0Fh and 14h, which a later scenario's rosters test for withdrawal. */
+#define CampaignUnitThirteenAvailabilityFlag (UnitWithdrawalState[0x0C])
+#define CampaignUnitFifteenOverrideFlag (UnitWithdrawalState[0x0F])
+#define CampaignUnitFourteenAvailabilityFlag (UnitWithdrawalState[0x14])
 extern RevengeUnitSlot UnitLastNarratedTarget[0x18];
 extern byte UnitPreferredEngagementMode[0x18];
 extern byte UnitTerrainType[0x18];
