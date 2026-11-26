@@ -807,6 +807,17 @@ if(CHR_BUILD_SDL)
         chr_strict(test_sdl_game_paths)
         add_test(NAME platform.sdl_game_paths COMMAND test_sdl_game_paths)
 
+        # The objects the source places in the data segment, as the program
+        # starts them, against the player's copy's load image.
+        add_executable(test_initial_data_image tests/test_initial_data_image.c)
+        target_include_directories(test_initial_data_image PRIVATE src/Original tests)
+        target_link_libraries(test_initial_data_image PRIVATE
+            chr_original_runtime
+            chr_sdl_backend)
+        chr_strict(test_initial_data_image)
+        add_test(NAME import.original_initial_data_image COMMAND test_initial_data_image)
+        set_tests_properties(import.original_initial_data_image PROPERTIES SKIP_RETURN_CODE 77)
+
         add_executable(test_sdl_renderer_fallback tests/test_sdl_renderer_fallback.c)
         # The runtime and the host call each other, and this test calls only
         # the host. GNU ld reads each static library once, in order, so it is
