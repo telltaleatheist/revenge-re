@@ -23,7 +23,7 @@ enum
 #define DICTIONARY_FIRST_OFFSET 0x05AAu
 #define DICTIONARY_SECOND_OFFSET 0x05BAu
 
-char OriginalImage[ORIGINAL_IMAGE_CAPACITY];
+char OriginalImage[ORIGINAL_IMAGE_CAPACITY] = { 0 };   /* defined here, not a common block */
 static size_t originalImageBytes;
 static int originalImportLoaded;
 static char emptyText[1];

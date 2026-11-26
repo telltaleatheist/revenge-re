@@ -79,8 +79,8 @@ static void InitializeSmokeInput(void)
     if (smokeInputEventCount != 0x00)
         smokeInputDueTime = SDL_GetTicks() +
             smokeInputEvents[0x00].delayMilliseconds;
-	RevengeTrace("input: smoke events=%u first-due=%llu\n",
-		smokeInputEventCount, (unsigned long long) smokeInputDueTime);
+    RevengeTrace("input: smoke events=%u first-due=%llu\n",
+        smokeInputEventCount, (unsigned long long) smokeInputDueTime);
 }
 
 static word16 SmokeInputPending(void)
