@@ -105,7 +105,7 @@ place MissionBlinkRectY 3A6A:272A E table
 place MissionBlinkRectExtent 3A6A:2738 7 table
 place MissionDateMonthIndex 3A6A:273F C table
 place MissionDateYear 3A6A:274B 18 table
-place MissionDateAdvanceMonths 3A6A:2763 20 table
+place MissionDateAdvanceMonths 3A6A:2763 18 table
 place MouseCursorBackingSourceTileX 3A6A:277B 2 annotation
 place MouseCursorBackingSourcePixelY 3A6A:277D 2 annotation
 place MouseCursorBackingWidthTiles 3A6A:277F 2 annotation
@@ -785,10 +785,6 @@ overlap CachedFileDescriptors ScenarioResourcePathPointer host pointer: the desc
 overlap CachedFileDescriptors TacticalResourcePathOffset host pointer: the descriptor holds the port's own pointer
 overlap CachedFileDescriptors TacticalResourcePathSegment host pointer: the descriptor holds the port's own pointer
 overlap CachedFileDescriptors ScreenPaletteResourceByScreen to look at: the table's first byte is the last descriptor's last
-overlap MissionDateAdvanceMonths MouseCursorBackingSourceTileX size to settle: the original's table is 18h bytes
-overlap MissionDateAdvanceMonths MouseCursorBackingSourcePixelY size to settle: the original's table is 18h bytes
-overlap MissionDateAdvanceMonths MouseCursorBackingWidthTiles size to settle: the original's table is 18h bytes
-overlap MissionDateAdvanceMonths MouseCursorBackingHeightPixels size to settle: the original's table is 18h bytes
 overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
 overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable size to settle: the original's table is 0Fh bytes
 overlap ScenarioLanceAllegianceTable DigitalSoundData size to settle: the original's table is 16h bytes

@@ -88,7 +88,8 @@ extern word16 MissionBlinkRectY[CAMPAIGN_BLINK_RECT_COUNT];
 extern byte MissionBlinkRectExtent[CAMPAIGN_BLINK_RECT_COUNT];
 extern byte MissionDateMonthIndex[CAMPAIGN_MISSION_DATE_COUNT];
 extern word16 MissionDateYear[CAMPAIGN_MISSION_DATE_COUNT];
-extern word16 MissionDateAdvanceMonths[0x10];
+/* DS:2763: one word for each mission date, as the date tables beside it. */
+extern word16 MissionDateAdvanceMonths[CAMPAIGN_MISSION_DATE_COUNT];
 extern word16 MissionSpriteSourceTileX[CAMPAIGN_SPRITE_LAYOUT_COUNT];
 extern word16 MissionSpriteSourcePixelY[CAMPAIGN_SPRITE_LAYOUT_COUNT];
 extern word16 MissionSpriteWidthTiles[CAMPAIGN_SPRITE_LAYOUT_COUNT];

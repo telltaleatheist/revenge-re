@@ -486,7 +486,8 @@ void DisplayMissionDate(
 			0x00, 0x00, 0x10, 0x0140, 0x0F, 0x0D);
 		currentMonth = MissionDateMonthIndex[dateEntryIndex];
 		currentYear = MissionDateYear[dateEntryIndex];
-		monthsRemaining = MissionDateAdvanceMonths[dateEntryIndex];
+		monthsRemaining = MissionDateAdvanceMonths[REVENGE_INDEX(
+			MissionDateAdvanceMonths, dateEntryIndex)];
 		FarStringCopy(dateText, MonthNameTextTable[(word16)currentMonth]);
 		FarStringConcat(dateText, DateCommaSpaceText);
 		IntegerToString(currentYear, yearText, 0x0A);

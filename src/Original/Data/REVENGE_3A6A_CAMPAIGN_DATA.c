@@ -53,7 +53,7 @@ word16 MissionBlinkRectY[CAMPAIGN_BLINK_RECT_COUNT];
 byte MissionBlinkRectExtent[CAMPAIGN_BLINK_RECT_COUNT];
 byte MissionDateMonthIndex[CAMPAIGN_MISSION_DATE_COUNT];
 word16 MissionDateYear[CAMPAIGN_MISSION_DATE_COUNT];
-word16 MissionDateAdvanceMonths[0x10];
+word16 MissionDateAdvanceMonths[CAMPAIGN_MISSION_DATE_COUNT];
 word16 MissionSpriteSourceTileX[CAMPAIGN_SPRITE_LAYOUT_COUNT];
 word16 MissionSpriteSourcePixelY[CAMPAIGN_SPRITE_LAYOUT_COUNT];
 word16 MissionSpriteWidthTiles[CAMPAIGN_SPRITE_LAYOUT_COUNT];
