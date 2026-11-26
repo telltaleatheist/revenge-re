@@ -11,7 +11,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces_dos100[0x188] =
+const OriginalPiece OriginalPieces_dos100[0x189] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, (void *) TitleTextTable, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, (void *) MonthNameTextTable, "2de063a6fef0f14a" },
@@ -60,6 +60,7 @@ const OriginalPiece OriginalPieces_dos100[0x188] =
 	{ "SoundConfigurationRecords", ORIGINAL_PIECE_BYTES, 0x3B87, 0x7E, 4, 126, &SoundConfigurationRecords, "b24d4746a766ad03" },
 	{ "PilotRoster", ORIGINAL_PIECE_BYTES, 0x1D4C, 0xEC, 4, 236, &PilotRoster, "3b6a8afa53abb786" },
 	{ "CampaignState1B8E", ORIGINAL_PIECE_BYTES, 0x1B8E, 0x1, 4, 1, &CampaignState1B8E, "7a10f98c6ae41bb1" },
+	{ "PresentationDismissTimeout", ORIGINAL_PIECE_BYTES, 0x240F, 0x2, 4, 2, &PresentationDismissTimeout, "c02198fcd61de6b3" },
 	{ "text", ORIGINAL_PIECE_TEXT, 0x232B, 0, 0, 19, NULL, "21c3e217021da4b4" },
 	{ "text", ORIGINAL_PIECE_TEXT, 0x233F, 0, 0, 9, NULL, "a833217c628541a3" },
 	{ "text", ORIGINAL_PIECE_TEXT, 0x2349, 0, 0, 5, NULL, "4163f3dbaeeedbde" },
@@ -453,3 +454,4 @@ _Static_assert(sizeof(InputConfigurationRecords) == 0x1A, "InputConfigurationRec
 _Static_assert(sizeof(SoundConfigurationRecords) == 0x7E, "SoundConfigurationRecords is the piece's size");
 _Static_assert(sizeof(PilotRoster) == 0xEC, "PilotRoster is the piece's size");
 _Static_assert(sizeof(CampaignState1B8E) == 0x1, "CampaignState1B8E is the piece's size");
+_Static_assert(sizeof(PresentationDismissTimeout) == 0x2, "PresentationDismissTimeout is the piece's size");

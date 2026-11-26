@@ -427,6 +427,7 @@ byte *MusicStagingBuffer;
 word16 PlanarBackingBufferExtentLow;
 word16 PlanarBackingBufferExtentHigh;
 byte SceneTransitionAbortFlag;
+/* DS:240F: from the player's copy (original_import_pieces.txt). */
 word16 PresentationDismissTimeout;
 word16 PresentationCallbackOffset;
 word16 PresentationCallbackSegment;
