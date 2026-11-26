@@ -29,7 +29,7 @@ static void Check(int condition, const char *message)
 
 int16 CRT_OpenFile(
 	const char *filePath,
-	word16 openFlags,
+	unsigned int openFlags,
 	...)
 {
 	(void) filePath;

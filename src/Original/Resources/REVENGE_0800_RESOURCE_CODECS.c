@@ -39,7 +39,7 @@ void DOS_TerminateProcess(word16 exitCode)
 // 0800:0172: void InstallExceptionHandlers()
 // Called from:
 //      TerminateProcess
-void InstallExceptionHandlers()
+void InstallExceptionHandlers(void)
 {
 	// ANNOTATION: DOS INT 21h/AH=25h installs startup exception handlers:
 	// 00h divide, 04h overflow, 05h bounds/Print Screen, 06h invalid opcode.

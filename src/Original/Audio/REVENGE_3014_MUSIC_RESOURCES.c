@@ -122,6 +122,7 @@ void StartLoadedMusicTrack(void)
 		startResult,
 		MusicStagingBuffer[0x00], MusicStagingBuffer[0x01],
 		MusicStagingBuffer[0x02], MusicStagingBuffer[0x03]);
+	(void) startResult;                 /* read only by the trace */
 	if (RequestedMusicEnabled != 0x00)
 		EnableMusicPlayback();
 	else

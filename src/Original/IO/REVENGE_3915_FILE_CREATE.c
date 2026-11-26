@@ -44,15 +44,18 @@ void SetFileEndAtCurrentPosition(int16 fileHandle)
 //      LoadFontResource
 int16 CRT_OpenFile(
 	const char *filePath,
-	uint16 openFlags,
+	unsigned int openFlagsArgument,
 	...)
 {
+	/* The flags arrive promoted: va_start needs the parameter's own
+	 * promoted type. */
+	uint16 openFlags = (uint16) openFlagsArgument;
 	uint16 creationMode = 0x0000;
 	va_list arguments;
 
 	if ((openFlags & CRT_OPEN_CREATE) != 0x0000)
 	{
-		va_start(arguments, openFlags);
+		va_start(arguments, openFlagsArgument);
 		creationMode = (uint16)va_arg(arguments, int);
 		va_end(arguments);
 	}

@@ -522,7 +522,7 @@ int16 ReadFileWithTextTranslation(
 int16 WriteFileWithTextTranslation(
 	int16 fileHandle, const byte *buffer, word16 byteCount);
 int32 GetFileLength(word16 fileHandle);
-int16 CRT_OpenFile(const char *filePath, uint16 openFlags, ...);
+int16 CRT_OpenFile(const char *filePath, unsigned int openFlags, ...);
 int16 CRT_CloseFile(int16 fileHandle);
 char *UppercaseStringInPlace(char *text);
 char *FormatLongInteger(

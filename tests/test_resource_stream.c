@@ -43,7 +43,7 @@ void SelectResourceDrive(int16 resourceDriveIndex)
 	(void)resourceDriveIndex;
 }
 
-int16 CRT_OpenFile(const char *filePath, uint16 openFlags, ...)
+int16 CRT_OpenFile(const char *filePath, unsigned int openFlags, ...)
 {
 	(void)filePath;
 	(void)openFlags;

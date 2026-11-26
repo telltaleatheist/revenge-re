@@ -317,7 +317,7 @@ void LoadScenarioDigitalSoundBank(int8 scenarioCode)
 			FarStringCopy(soundCodes, DigitalSoundString(0x5E14));
 		else if (scenarioCode == 0x41)
 			FarStringCopy(soundCodes, DigitalSoundString(0x5E1D));
-		else if (scenarioCode >= 0x42 && scenarioCode <= 0x45 || scenarioCode == 0x54)
+		else if ((scenarioCode >= 0x42 && scenarioCode <= 0x45) || scenarioCode == 0x54)
 			FarStringCopy(soundCodes, DigitalSoundString(0x5E26));
 		else if (scenarioCode >= 0x46 && scenarioCode <= 0x4E)
 			FarStringCopy(soundCodes, DigitalSoundString(0x5E32));
@@ -420,7 +420,7 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 					{
 						if (scenarioCode != 0x41)
 						{
-							if (scenarioCode >= 0x42 && scenarioCode <= 0x45 || scenarioCode == 0x54)
+							if ((scenarioCode >= 0x42 && scenarioCode <= 0x45) || scenarioCode == 0x54)
 							{
 								if (narrationMode == 0x02)
 									FarStringCopy(soundCodes, DigitalSoundString(0x5ED5));
