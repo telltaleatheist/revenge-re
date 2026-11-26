@@ -1,4 +1,5 @@
 #include "revenge/dos.h"
+#include "revenge/original/io_data.h"
 
 #include <assert.h>
 #include <string.h>
@@ -14,6 +15,10 @@ int main(void)
 
     fileHandle = DOS_CreateFile(0x0000, path);
     assert(fileHandle >= 0x0000);
+    /* The raw create leaves the handle's runtime state as it was, unused
+     * (FFFFh, which includes append); CRT_OpenFile (3915:0037) sets it after
+     * a create, as here. */
+    FileRuntime.handleState[fileHandle] = CRT_FILE_STATE_BINARY | CRT_FILE_STATE_WRITE_OCCURRED;
     assert(DOS_WriteFile(
         (uint16)fileHandle,
         source,

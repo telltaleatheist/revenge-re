@@ -60,6 +60,19 @@ int main(void)
 	static const byte outputText[] = { 'A', 0x0A, 'B' };
 	byte buffer[0x10];
 	uint32 bufferAddress;
+	word16 handle;
+
+	/* The runtime's handle states as the original starts them (DS:712A):
+	 * the five DOS opens for a program, the rest unused. */
+	assert(FileRuntime.handleState[0x00] == (CRT_FILE_STATE_DEVICE | CRT_FILE_STATE_READ));
+	assert(FileRuntime.handleState[0x01] == (CRT_FILE_STATE_DEVICE | CRT_FILE_STATE_WRITE));
+	assert(FileRuntime.handleState[0x02] == (CRT_FILE_STATE_DEVICE | CRT_FILE_STATE_WRITE));
+	assert(FileRuntime.handleState[0x03] ==
+		(CRT_FILE_STATE_BINARY | CRT_FILE_STATE_DEVICE | CRT_FILE_STATE_READ_WRITE));
+	assert(FileRuntime.handleState[0x04] ==
+		(CRT_FILE_STATE_BINARY | CRT_FILE_STATE_DEVICE | CRT_FILE_STATE_WRITE));
+	for (handle = 0x05; handle < ORIGINAL_FILE_HANDLE_COUNT; ++handle)
+		assert(FileRuntime.handleState[handle] == CRT_FILE_STATE_UNUSED);
 
 	bufferAddress = HostFarPointer_RegisterAt(
 		buffer, sizeof(buffer), MAKE_DWORD(0x5100, 0x0004));
