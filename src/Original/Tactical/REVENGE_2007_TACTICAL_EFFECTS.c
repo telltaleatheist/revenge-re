@@ -833,7 +833,8 @@ void DrawActiveTextWindowBorder(word16 color)
 /* 2007:1CBD is reconstructed in Tactical/REVENGE_2007_DISPLAY.c. */
 
 // 2007:14DF: update the outline around one primary unit-status row only when
-// its row or blink color changed.
+// its row or blink color changed. A row change marks the previous row for
+// redraw with one byte (2007:152D-1531: mov byte ptr [bx+0B574h],0FFh).
 void UpdatePrimaryUnitStatusRowHighlight(word16 rowIndex)
 {
 	word16 previousRow = PrimaryStatusRow;
@@ -850,13 +851,13 @@ void UpdatePrimaryUnitStatusRowHighlight(word16 rowIndex)
 		topY += 0x08;
 	DrawTacticalCellOutline(0x00, topY, color);
 	if (previousRow != rowIndex)
-		TacticalStatusRowInvalidation[previousRow * 0x02] = 0xFF;
-		TacticalStatusRowInvalidation[previousRow * 0x02 + 0x01] = 0xFF;
+		TacticalStatusRowInvalidation[previousRow] = 0xFF;
 	PrimaryStatusRow = rowIndex;
 	CachedPrimaryStatusHighlightColor = color;
 }
 
-// 2007:1544: equivalent cached outline update for the secondary command row.
+// 2007:1544: equivalent cached outline update for the secondary command row;
+// the previous row is marked the same way (2007:1588-1590).
 void UpdateSecondaryUnitStatusRowHighlight(word16 rowIndex)
 {
 	word16 previousRow = SecondaryStatusRow;
@@ -872,8 +873,7 @@ void UpdateSecondaryUnitStatusRowHighlight(word16 rowIndex)
 		return;
 	DrawTacticalCellOutline(0x00, topY, color);
 	if (previousRow != rowIndex)
-		TacticalStatusRowInvalidation[previousRow * 0x02] = 0xFF;
-		TacticalStatusRowInvalidation[previousRow * 0x02 + 0x01] = 0xFF;
+		TacticalStatusRowInvalidation[previousRow] = 0xFF;
 	SecondaryStatusRow = rowIndex;
 	CachedSecondaryStatusHighlightColor = color;
 }

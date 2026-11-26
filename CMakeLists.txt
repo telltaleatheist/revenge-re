@@ -596,6 +596,15 @@ if(BUILD_TESTING)
         COMMAND test_weapon_effects)
     set_tests_properties(audio.original_weapon_effect_dispatch PROPERTIES SKIP_RETURN_CODE 77)
 
+    add_executable(test_status_row_highlight
+        tests/test_status_row_highlight.c
+        tests/fake_backend.c)
+    target_include_directories(test_status_row_highlight PRIVATE src/SDL tests)
+    target_link_libraries(test_status_row_highlight PRIVATE chr_original_runtime)
+    chr_strict(test_status_row_highlight)
+    add_test(NAME tactical.original_status_row_highlight
+        COMMAND test_status_row_highlight)
+
     add_executable(test_scenario_sound
         tests/test_scenario_sound.c
         tests/audio_preservation_shims.c
