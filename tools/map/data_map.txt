@@ -288,6 +288,7 @@ place FileRuntime 3A6A:712A 2C table
 place MonthLengthTable 3A6A:7156 C run
 place TimezoneOffsetLowWord 3A6A:7190 2 run
 place TimezoneOffsetHighWord 3A6A:7192 2 procedure
+place DaylightSavingEnabled 3A6A:7194 2 procedure
 place TimezoneEnvironmentName 3A6A:7196 3 run
 place DefaultStandardTimezoneName 3A6A:7199 4 run
 place DefaultDaylightTimezoneName 3A6A:719D 4 run
@@ -329,6 +330,7 @@ place CampaignClockState 3A6A:8337 3 table
 place TacticalBattleResult 3A6A:833C 2 table
 place UnitRouteTargetMapX 3A6A:8340 19 run
 place UnitTargetMapX 3A6A:8359 19 run
+place SoundDriverNumericParameter 3A6A:8372 2 procedure
 place UnitRouteTargetMapY 3A6A:838E 19 run
 place UnitTargetMapY 3A6A:83A7 19 run
 place TacticalViewportMapY 3A6A:83DA 2 run
@@ -347,7 +349,7 @@ place ScenarioUnitMapX 3A6A:8562 18 table
 place ScenarioUnitMapY 3A6A:857B 18 table
 place CampaignScenarioState 3A6A:8594 2 table
 place UnitBelowHalfDurability 3A6A:8596 19 procedure
-place DigitalPlaybackRateHz 3A6A:8664 2 procedure
+place SelectedUnitEquipmentLocation 3A6A:8663 2 run
 place ActiveFontGlyphAdvanceX 3A6A:8666 1 run
 place UnitEnemyVisible 3A6A:8667 18 run
 place UnitEnemyInProximityRange 3A6A:8680 18 run
@@ -496,11 +498,11 @@ unplaced CurrentUnitDurabilityTotal 2 its bytes match nowhere (pointers or value
 unplaced DamagedTerrainSpriteLookup 4 host pointer
 unplaced DateCommaSpaceText 4 host pointer
 unplaced DateSpaceText 4 host pointer
-unplaced DaylightSavingEnabled 2 conflict: pairing gives 7194, where the run bytes differ
 unplaced DeadText 5 zero at every snap
 unplaced DeferredStage16Story 2 zero at every snap
 unplaced DetectedByText 4 host pointer
 unplaced DigitalDriverHardwareOffset 2 zero at every snap
+unplaced DigitalPlaybackRateHz 2 zero at every snap
 unplaced DigitalPlaybackRuntime 11A its bytes match nowhere (pointers or values differ)
 unplaced DigitalSoundBuffer 4 host pointer
 unplaced DigitalSoundBusy 2 zero at every snap
@@ -672,13 +674,11 @@ unplaced SelectBarrageEndPrompt 4 host pointer
 unplaced SelectBarrageStartPrompt 4 host pointer
 unplaced SelectFireTargetPrompt 4 host pointer
 unplaced SelectStrafingAreaPrompt 4 host pointer
-unplaced SelectedUnitEquipmentLocation 2 conflict: pairing and the run bytes disagree (8662 against 8663)
 unplaced SharedCompressionDictionaryByteCount 2 zero at every snap
 unplaced SharedCompressionDictionarySegment 2 zero at every snap
 unplaced SharedGraphicsBackingBuffers 80 host pointer
 unplaced SoundConfigTokenDelimiters 4 zero at every snap
 unplaced SoundDriverIndex 1 zero at every snap
-unplaced SoundDriverNumericParameter 2 conflict: pairing gives 8372, where the run bytes differ
 unplaced SoundEffectsEnabled 2 several places match
 unplaced SoundParameterTokenDelimiters 4 zero at every snap
 unplaced SpeakerMIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
