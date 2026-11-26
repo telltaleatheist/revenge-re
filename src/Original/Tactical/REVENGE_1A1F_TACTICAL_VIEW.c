@@ -393,11 +393,12 @@ void AdvanceTacticalCursorCell(void)
 // 1A1F:14E1: move the 19x12 tactical cursor one cell backward, wrapping rows.
 void RetreatTacticalCursorCell(void)
 {
-	if (--TacticalCursorViewportX < 0x00)
+	/* dec, then cmp 0 and jge: a signed compare. */
+	if ((int16) --TacticalCursorViewportX < 0x00)
 	{
 		TacticalCursorViewportX =
 			TACTICAL_VIEWPORT_WIDTH_CELLS - 0x01;
-		if (--TacticalCursorViewportY < 0x00)
+		if ((int16) --TacticalCursorViewportY < 0x00)
 		{
 			TacticalCursorViewportY =
 				TACTICAL_VIEWPORT_HEIGHT_CELLS - 0x01;
