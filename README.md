@@ -106,6 +106,10 @@ SDL's per-user preferences folder for "Crescent Hawks Revenge", or
 there the first time and the copy is used from then on. The game's file
 names are found whatever their case on disk.
 
+The screen is drawn with SDL's default renderer for the platform. When it
+can't start, the game falls back to SDL's software renderer, which needs no
+graphics driver; `SDL_RENDER_DRIVER=software` chooses it from the start.
+
 ## Preservation model
 
 This tree carries none of the original game's text, art or data: the program

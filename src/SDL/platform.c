@@ -306,6 +306,42 @@ static byte TranslateScanCode(byte scanCode)
     return scanCodeTranslation[scanCode];
 }
 
+/* Makes the renderer and the screen texture with the named SDL driver (NULL
+ * for SDL's choice, which SDL_RENDER_DRIVER can set). Leaves neither behind
+ * when any step fails. */
+static int CreateScreenRenderer(const char *driver)
+{
+    renderer = SDL_CreateRenderer(window, driver);
+    if (renderer != 0
+        && SDL_SetRenderLogicalPresentation(
+            renderer,
+            VIDEO_SCREEN_WIDTH,
+            VIDEO_SCREEN_HEIGHT,
+            SDL_LOGICAL_PRESENTATION_LETTERBOX))
+    {
+        texture = SDL_CreateTexture(
+            renderer,
+            SDL_PIXELFORMAT_RGBA32,
+            SDL_TEXTUREACCESS_STREAMING,
+            VIDEO_SCREEN_WIDTH,
+            VIDEO_SCREEN_HEIGHT);
+        if (texture != 0 && SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST))
+            return TRUE;
+    }
+    RevengeTrace("video: renderer %s failed: %s\n",
+        driver != 0 ? driver : "(default)", SDL_GetError());
+    SDL_DestroyTexture(texture);
+    texture = 0;
+    SDL_DestroyRenderer(renderer);
+    renderer = 0;
+    return FALSE;
+}
+
+const char *SDLBackend_RendererName(void)
+{
+    return renderer != 0 ? SDL_GetRendererName(renderer) : 0;
+}
+
 int SDLBackend_Open(void)
 {
     if (window != 0)
@@ -319,30 +355,20 @@ int SDLBackend_Open(void)
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO))
         return FALSE;
 
-    if (!SDL_CreateWindowAndRenderer(
+    window = SDL_CreateWindow(
         "BattleTech: The Crescent Hawks' Revenge",
         VIDEO_SCREEN_WIDTH * WindowScale,
         VIDEO_SCREEN_HEIGHT * WindowScale,
-        SDL_WINDOW_RESIZABLE,
-        &window,
-        &renderer))
+        SDL_WINDOW_RESIZABLE);
+    if (window == 0)
         goto failed;
 
-    if (!SDL_SetRenderLogicalPresentation(
-        renderer,
-        VIDEO_SCREEN_WIDTH,
-        VIDEO_SCREEN_HEIGHT,
-        SDL_LOGICAL_PRESENTATION_LETTERBOX))
+    /* Without a working GPU driver the game still runs: SDL's software
+     * renderer draws the 320x200 screen on the CPU. */
+    if (!CreateScreenRenderer(0)
+        && !CreateScreenRenderer(SDL_SOFTWARE_RENDERER))
         goto failed;
-
-    texture = SDL_CreateTexture(
-        renderer,
-        SDL_PIXELFORMAT_RGBA32,
-        SDL_TEXTUREACCESS_STREAMING,
-        VIDEO_SCREEN_WIDTH,
-        VIDEO_SCREEN_HEIGHT);
-    if (texture == 0 || !SDL_SetTextureScaleMode(texture, SDL_SCALEMODE_NEAREST))
-        goto failed;
+    RevengeTrace("video: renderer %s\n", SDLBackend_RendererName());
 
     ResetEgaPalette();
     memset(indexedFramebuffer, 0, sizeof(indexedFramebuffer));

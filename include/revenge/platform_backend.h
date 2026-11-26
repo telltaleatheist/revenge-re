@@ -60,6 +60,8 @@ _Noreturn void SDLBackend_TerminateProcess(byte exitCode);
 
 int SDLBackend_Open(void);
 void SDLBackend_Close(void);
+/* The SDL renderer drawing the screen, NULL before SDLBackend_Open. */
+const char *SDLBackend_RendererName(void);
 int SDLBackend_PollQuit(void);
 uint64_t SDLBackend_Milliseconds(void);
 void SDLBackend_Delay(uint32_t milliseconds);

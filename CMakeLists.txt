@@ -730,5 +730,12 @@ if(CHR_BUILD_SDL)
             chr_sdl_backend)
         chr_strict(test_sdl_game_paths)
         add_test(NAME platform.sdl_game_paths COMMAND test_sdl_game_paths)
+
+        add_executable(test_sdl_renderer_fallback tests/test_sdl_renderer_fallback.c)
+        target_link_libraries(test_sdl_renderer_fallback PRIVATE
+            chr_original_runtime
+            chr_sdl_backend)
+        chr_strict(test_sdl_renderer_fallback)
+        add_test(NAME platform.sdl_renderer_fallback COMMAND test_sdl_renderer_fallback)
     endif()
 endif()
