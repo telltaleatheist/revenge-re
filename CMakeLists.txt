@@ -722,8 +722,13 @@ if(CHR_BUILD_SDL)
         src/SDL/game_paths.c
         src/SDL/harness.c
         src/SDL/platform.c
-        src/SDL/system.c)
+        src/SDL/system.c
+        src/SDL/map_dump.c)
     target_include_directories(chr_sdl_backend PUBLIC src/SDL include)
+    # The object dump names the game's data, some of it declared beside the
+    # preserved source.
+    set_source_files_properties(src/SDL/map_dump.c PROPERTIES
+        INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/Original")
     target_link_libraries(chr_sdl_backend PUBLIC ${CHR_SDL_TARGET})
     chr_strict(chr_sdl_backend)
 

@@ -5,6 +5,7 @@
 #endif
 
 #include "harness.h"
+#include "map_dump.h"
 
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
@@ -459,6 +460,7 @@ static void Snap(const char *name)
 	SaveBlock(save);
 	WriteFile(name, ".save", save, sizeof(save));
 	WriteState(name);
+	MapDump_Write(name);
 	OutPath(path, "snaps", ".txt");
 	list = fopen(path, "ab");
 	if (list == NULL || fprintf(list, "%s\n", name) < 0 || fclose(list) != 0)
