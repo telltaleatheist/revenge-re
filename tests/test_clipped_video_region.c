@@ -40,8 +40,8 @@ void CopyVideoRegion(
 
 int main(void)
 {
-	byte sourceBuffer[0x01];
-	byte destinationBuffer[0x01];
+	byte sourceBuffer[0x01] = { 0x00 };
+	byte destinationBuffer[0x01] = { 0x00 };
 	byte *primaryScreenBuffer;
 	byte *egaShadowBuffer;
 

@@ -285,12 +285,12 @@ void DrawTrainingScenarioSelectionScreen(void)
 	DrawClippedAxisAlignedLine(
 		(int16) LanceEditorLayout.TrainingDeploymentFrameLeft[0x00],
 		(int16) (gridTopY + halfLineOffset),
-		(int16) (LanceEditorLayout.TrainingDeploymentFrameBottom + 0x01),
+		(int16) (LanceEditorLayout.TrainingDeploymentFrameLeft[0x02] + 0x01),
 		(int16) (gridTopY + halfLineOffset), 0x0D);
 	DrawClippedAxisAlignedLine(
 		(int16) LanceEditorLayout.TrainingDeploymentFrameLeft[0x00],
 		(int16) (gridTopY + halfLineOffset + 0x01),
-		(int16) (LanceEditorLayout.TrainingDeploymentFrameBottom + 0x01),
+		(int16) (LanceEditorLayout.TrainingDeploymentFrameLeft[0x02] + 0x01),
 		(int16) (gridTopY + halfLineOffset + 0x01), 0x0D);
 	for (groupIndex = 0x00; groupIndex < 0x03; ++groupIndex)
 	{
@@ -379,7 +379,9 @@ void DrawTrainingDeploymentSlot(
 	{
 		leftX = ActiveTextWindowLeftTile << 0x03;
 		width = ActiveTextWindowWidthTiles << 0x03;
-		label = UnitRosterColumnLabelTextTable[groupIndex];
+		/* Entry 03h of the table at DS:3380 is the dword after it,
+		 * DS:338C: FriendlyEnemySuffixText's pointer. */
+		label = FriendlyEnemySuffixText;
 	}
 	else
 	{
@@ -559,12 +561,12 @@ void DrawTrainingDeploymentScreen(void)
 	DrawClippedAxisAlignedLine(
 		(int16) LanceEditorLayout.TrainingUnitGroupLeft[0x00],
 		(int16) (gridTopY + halfLineOffset),
-		(int16) (LanceEditorLayout.TrainingUnitGroupBottom + 0x01),
+		(int16) (LanceEditorLayout.TrainingUnitGroupLeft[0x02] + 0x01),
 		(int16) (gridTopY + halfLineOffset), 0x0D);
 	DrawClippedAxisAlignedLine(
 		(int16) LanceEditorLayout.TrainingUnitGroupLeft[0x00],
 		(int16) (gridTopY + halfLineOffset + 0x01),
-		(int16) (LanceEditorLayout.TrainingUnitGroupBottom + 0x01),
+		(int16) (LanceEditorLayout.TrainingUnitGroupLeft[0x02] + 0x01),
 		(int16) (gridTopY + halfLineOffset + 0x01), 0x0D);
 	for (groupIndex = 0x00; groupIndex < 0x03; ++groupIndex)
 	{

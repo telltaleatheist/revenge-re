@@ -639,8 +639,8 @@ word16 RunGameOptionsMenu(word16 embeddedMode)
 	// V: The menu cannot safely reconfigure sound while a digitized effect is
 	// active. The original busy-waits here before constructing the window.
 	do
-		;
-	while (DigitalSoundBusy != 0x00);
+	{
+	} while (DigitalSoundBusy != 0x00);
 
 	menuEntryCount = (int16) (embeddedMode + 0x06);
 	menuHeightTiles = (int16) (word16)

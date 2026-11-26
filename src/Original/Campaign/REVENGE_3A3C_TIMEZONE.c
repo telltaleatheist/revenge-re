@@ -114,7 +114,7 @@ word16 IsDaylightSavingTime(
 		transitionDay = CalendarBoundaryTable[resolvedMonth] + 0x07;
 	else
 		transitionDay = CalendarBoundaryTable[resolvedMonth + 0x01];
-	if (((byte)yearsSince1970 + 0xB2 & 0x03) != 0x00)
+	if ((((byte)yearsSince1970 + 0xB2) & 0x03) != 0x00)
 		--transitionDay;
 	transitionDay -= (uint16)((uint32)(yearsSince1970 * 0x016D
 		+ transitionDay + ((yearsSince1970 + 0x01) >> 0x02) + 0x04) % 0x07);

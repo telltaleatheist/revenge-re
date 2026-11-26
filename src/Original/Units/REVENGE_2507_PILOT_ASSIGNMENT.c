@@ -517,7 +517,7 @@ void RunPilotAssignmentGrid(word16 lanceGroupIndex)
 		assignment->style |= 0x02;
 		DrawLanceAssignmentSlot(selectedAssignmentIndex, TRUE, FALSE);
 		pilotCard->state = 0x00;
-		DrawPilotSelectionSlot(selectedPilotRecord, TRUE, 0xFFFF);
+		DrawPilotSelectionSlot(selectedPilotRecord, TRUE, -0x0001);
 		pilotCard->selectionId = REVENGE_PILOT_ID_NONE;
 		pilotCard->alternateId = REVENGE_PILOT_ID_NONE;
 		++UnitEditorLanceSlotCount[lanceGroupIndex];
@@ -550,7 +550,7 @@ void RunPilotAssignmentGrid(word16 lanceGroupIndex)
 					destinationPilotRecord, TRUE, 0x0001);
 				sourcePilotCard->state = 0x00;
 				DrawPilotSelectionSlot(
-					sourcePilotRecord, TRUE, 0xFFFF);
+					sourcePilotRecord, TRUE, -0x0001);
 				sourcePilotCard->selectionId = REVENGE_PILOT_ID_NONE;
 				sourcePilotCard->alternateId = REVENGE_PILOT_ID_NONE;
 			}

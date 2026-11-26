@@ -15,7 +15,9 @@ uint32 GameAnimationTicks;
 int8 TacticalSlotSpriteState[0x18];
 byte UnitTypeResourceCode[0x07];
 byte UnitTacticalOrderMode[0x18];
-int8 UnitAttackTarget[0x18];
+/* DS:88F3. 2208:060D and 0857 also index entry 18h, the map-cell selection's,
+ * which is the free byte DS:890B before the next variable. */
+int8 UnitAttackTarget[0x19];
 word16 UnitSpriteBaseId[0x18];
 word16 UnitSpriteId[0x18];
 word16 TacticalSpriteAnimationPhase;
@@ -306,7 +308,9 @@ byte CampaignUpgradeAwards[0x04];
 byte UnitEnemyInProximityRange[0x18];
 byte UnitShutdownState[0x18];
 byte UnitEnemyVisible[0x18];
-RevengeUnitSlot UnitTacticalTarget[0x18];
+/* DS:88A4. Entry 18h is the map-cell selection's (2208:0857), the free byte
+ * DS:88BC. */
+RevengeUnitSlot UnitTacticalTarget[0x19];
 word16 EnemyCycleUnitIndex;
 byte UnitEnemyContactEstablished[0x18];
 byte UnitWithdrawalState[0x18];
@@ -375,9 +379,11 @@ const int16 TacticalCursorSearchOffsetX[0x09] =
 	{ 0x00, 0x00, 0x01, 0x00, -0x01, -0x01, 0x01, 0x01, -0x01 };
 const int16 TacticalCursorSearchOffsetY[0x09] =
 	{ 0x00, -0x01, 0x00, 0x01, 0x00, -0x01, -0x01, 0x01, 0x01 };
+/* 1A1F:58A0 sign-extends these (cbw), so the extended key codes B0h-B9h
+ * arrive negative. */
 const int8 TacticalMouseEdgeInputByMask[0x10] =
-	{ 0x00, 0xB5, 0xB0, 0xB1, 0xB3, 0x00, 0xAF, 0x00,
-	  0xB8, 0xB9, 0x00, 0x00, 0xB7, 0x00, 0x00, 0x00 };
+	{ 0x00, -0x4B, -0x50, -0x4F, -0x4D, 0x00, -0x51, 0x00,
+	  -0x48, -0x47, 0x00, 0x00, -0x49, 0x00, 0x00, 0x00 };
 byte SceneNarrationEventFlags[0x06];
 word16 HeatDissipationBySinkCountQ8_8[0x100];
 word16 TerrainDamageQueueWordCount;

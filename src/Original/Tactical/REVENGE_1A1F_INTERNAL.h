@@ -185,8 +185,16 @@ void CreateRandomAreaImpact(
 RevengeUnitRecord *GetPersistentUnitRecord(word16 unitIndex);
 #define GetUnitRouteRecord(unitIndex) (&SceneUnitRoutes[(unitIndex)])
 #define ReadSceneByte() NEXT_SCENE_BYTE()
-#define ReadSceneWord() \
-	((word16)(NEXT_SCENE_BYTE() | ((word16)NEXT_SCENE_BYTE() << 0x08)))
+/* Low byte first, as the original reads them. Two increments of the cursor
+ * in one expression would leave their order to the compiler. */
+static inline word16 ReadSceneWordLowFirst(void)
+{
+	word16 low = NEXT_SCENE_BYTE();
+	word16 high = NEXT_SCENE_BYTE();
+
+	return (word16)(low | (word16)(high << 0x08));
+}
+#define ReadSceneWord() ReadSceneWordLowFirst()
 #define JumpToSceneOffset(sceneOffset) \
 	do \
 	{ \

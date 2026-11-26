@@ -82,8 +82,8 @@ typedef struct LanceEditorLayoutData
 	word16 TrainingUnitChoiceTop[0x0C];
 	word16 TrainingControlChoiceLeft[0x04];
 	word16 TrainingControlChoiceTop[0x04];
-	word16 TrainingUnitGroupLeft[0x02];
-	word16 TrainingUnitGroupBottom;
+	/* Three group columns; 2507 also draws the frame's lines to [0x02] + 1. */
+	word16 TrainingUnitGroupLeft[0x03];
 	word16 TrainingUnitGroupLabelLeft[0x03];
 	word16 TrainingUnitGroupLabelWidth[0x03];
 	byte AllegianceHeaderColor[0x02];
@@ -97,8 +97,8 @@ typedef struct LanceEditorLayoutData
 	word16 TrainingScenarioRegionTop[0x06];
 	word16 TrainingScenarioRegionWidth[0x06];
 	word16 TrainingScenarioRegionHeight[0x06];
-	word16 TrainingDeploymentFrameLeft[0x02];
-	word16 TrainingDeploymentFrameBottom;
+	/* Three deployment columns; [0x02] + 1 also ends the frame's lines. */
+	word16 TrainingDeploymentFrameLeft[0x03];
 	word16 TrainingDeploymentTextColor[0x02];
 	word16 TrainingDeploymentBackgroundColor[0x02];
 	word16 TrainingRosterLabelLeft[0x03];

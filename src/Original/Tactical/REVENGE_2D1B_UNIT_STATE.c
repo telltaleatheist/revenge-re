@@ -162,14 +162,16 @@ void CalculateUnitDurabilityTotals(RevengeUnitRecord *unitRecord)
 	}
 	else
 	{
+		/* 2D1B:03CA and 03D8 read 0Bh bytes from +04h and +17h: the eight
+		 * internal bytes and the first three armor bytes after them. */
 		for (locationIndex = 0x0000; locationIndex < 0x000B; ++locationIndex)
 		{
 			CurrentUnitDurabilityTotal = (word16)(
 				CurrentUnitDurabilityTotal
-				+ unitRecord->currentInternal[locationIndex]);
+				+ unitRecord->currentDurability[locationIndex]);
 			MaximumUnitDurabilityTotal = (word16)(
 				MaximumUnitDurabilityTotal
-				+ unitRecord->maximumInternal[locationIndex]);
+				+ unitRecord->maximumDurability[locationIndex]);
 		}
 	}
 }

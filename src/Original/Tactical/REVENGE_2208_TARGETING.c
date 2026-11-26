@@ -1057,10 +1057,10 @@ void HighlightLanceFollowers(word16 leaderUnitIndex)
 			TacticalCursorViewportY =
 				(int16) ((word16) ScenarioUnitMapY[unitIndex] -
 					TacticalViewportMapY);
-			if (TacticalCursorViewportX >= 0x00 &&
-				TacticalCursorViewportX < 0x13 &&
-				TacticalCursorViewportY >= 0x00 &&
-				TacticalCursorViewportY < 0x0C)
+			if ((int16) TacticalCursorViewportX >= 0x00 &&
+				(int16) TacticalCursorViewportX < 0x13 &&
+				(int16) TacticalCursorViewportY >= 0x00 &&
+				(int16) TacticalCursorViewportY < 0x0C)
 			{
 				DrawTacticalCursorOutline(0x05);
 			}

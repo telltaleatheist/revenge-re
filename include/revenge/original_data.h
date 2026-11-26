@@ -166,7 +166,7 @@ extern const char PercentCloseText[];
 extern int8 TacticalSlotSpriteState[0x18];
 extern byte UnitTypeResourceCode[0x07];
 extern byte UnitTacticalOrderMode[0x18];
-extern int8 UnitAttackTarget[0x18];
+extern int8 UnitAttackTarget[0x19];
 extern word16 UnitSpriteBaseId[0x18];
 extern word16 UnitSpriteId[0x18];
 extern word16 TacticalSpriteAnimationPhase;
@@ -428,7 +428,7 @@ extern const char *FriendlyEquipmentDescriptionTable[0x02];
 extern const char *EnemyAssessmentTextTable[0x12];
 #define NarrationMessageData (LoadedSceneFile.raw)
 extern byte UnitEnemyVisible[0x18];
-extern RevengeUnitSlot UnitTacticalTarget[0x18];
+extern RevengeUnitSlot UnitTacticalTarget[0x19];
 extern word16 EnemyCycleUnitIndex;
 extern byte UnitEnemyContactEstablished[0x18];
 extern byte UnitWithdrawalState[0x18];

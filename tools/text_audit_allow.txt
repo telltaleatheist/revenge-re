@@ -4,12 +4,11 @@
 src/Original/Data/REVENGE_3A6A_GRAPHICS_DATA.c bytes REVENGE.EXE 3274C VGA DAC palette values and EGA register defaults
 src/Original/Data/REVENGE_3A6A_GRAPHICS_DATA.c bytes REVENGE.EXE 32A4C EGA palette register mapping
 src/Original/Data/REVENGE_3A6A_RUNTIME_DATA.c bytes REVENGE.EXE 39701 the C runtime's character class table
-src/Original/Data/REVENGE_3A6A_TACTICAL_DATA.c bytes REVENGE.EXE 3559E mouse edge input codes by edge mask
 src/Original/Data/REVENGE_3A6A_TACTICAL_TABLES.c bytes REVENGE.EXE 32F66 engagement mode by comparison mask (rule table)
 src/Original/Data/REVENGE_3A6A_TACTICAL_TABLES.c bytes REVENGE.EXE 33066 weapon priority weights (rule table)
 src/Original/Data/REVENGE_3A6A_TACTICAL_TABLES.c bytes REVENGE.EXE 33646 weapon priority profile by range and heat (rule table)
 src/Original/Data/REVENGE_3A6A_TACTICAL_TABLES.c bytes REVENGE.EXE 3639D missile damage bonus by weapon type (rule table)
-src/Original/Data/REVENGE_3A6A_TACTICAL_TABLES.c bytes REVENGE.EXE 33E7E formation map offsets (rule table)
+src/Original/Data/REVENGE_3A6A_TACTICAL_TABLES.c bytes REVENGE.EXE 33F0A formation map offsets (rule table)
 src/Original/Data/REVENGE_4184_TACTICAL_GRAPHICS_DATA.c bytes REVENGE.EXE 3A0FC combat rating by weapon type (rule table)
 src/Original/Data/REVENGE_4184_TACTICAL_GRAPHICS_DATA.c bytes REVENGE.EXE 3A117 relative attack direction by mask (rule table)
 src/Original/Graphics/REVENGE_0800_TACTICAL_RASTER.c bytes REVENGE.EXE 00AE7 CGA dither colour pairs

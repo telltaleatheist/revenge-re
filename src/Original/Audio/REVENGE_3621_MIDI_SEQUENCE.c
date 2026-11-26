@@ -339,9 +339,10 @@ void ServiceMIDISequenceTick(void)
 			switch (status)
 			{
 			case 0xF0:
+				// F0h dispatches its status before processing the same
+				// VLQ-length payload form used by F7h continuation events.
 				DispatchMIDIByte(status);
-				// Fall through: F0h dispatches its status before processing the
-				// same VLQ-length payload form used by F7h continuation events.
+				/* fall through */
 			case 0xF7:
 			{
 				uint16 payloadLength = ReadMIDIVariableLengthQuantity(&cursor);
