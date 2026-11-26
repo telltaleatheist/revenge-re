@@ -290,7 +290,8 @@ extern byte SavedCampaignClockState[0x03];
 extern RevengePilotRosterRecord PilotRoster[REVENGE_PILOT_ROSTER_COUNT];
 extern RevengeUnitLanceAssignment
 	LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];
-extern const byte ScenarioLanceAllegianceTable[0x08][0x03];
+/* DS:5928: seven rows; the scenarios use rows 0-4 and 6. */
+extern const byte ScenarioLanceAllegianceTable[0x07][0x03];
 extern const word16 AmmoCapacityMultiplierTable[0x0E];
 extern word16 CampaignFlags;
 extern word16 CampaignStageIndex;

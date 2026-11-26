@@ -200,7 +200,7 @@ place PCSpeakerEffectStreamPointerTable 3A6A:58DB 40 table
 place GameTimerTicks 3A6A:591B 4 table
 place GameAnimationTicks 3A6A:591F 4 table
 place TacticalUpdateDelayTicks 3A6A:5923 2 table
-place ScenarioLanceAllegianceTable 3A6A:5928 18 table
+place ScenarioLanceAllegianceTable 3A6A:5928 15 table
 place DigitalSoundData 3A6A:593E 62D import
 place VideoPixelAlignmentMasks 3A6A:5F6C 10 run
 place PackedPixelShiftCounts 3A6A:5F7C 6 run
@@ -787,7 +787,6 @@ overlap CachedFileDescriptors TacticalResourcePathSegment host pointer: the desc
 overlap CachedFileDescriptors ScreenPaletteResourceByScreen to look at: the table's first byte is the last descriptor's last
 overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
 overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable size to settle: the original's table is 0Fh bytes
-overlap ScenarioLanceAllegianceTable DigitalSoundData size to settle: the original's table is 16h bytes
 overlap AdLibActivateRegisterList AdLibNineVoiceResetList the original's second constant list is the first one's tail
 overlap LoadedSceneFile WeaponCombatRatingByType to look at: the ratings are the scene buffer's last 17h bytes
 overlap LinePrimaryYStep LinePrimaryXStep the original lays the two constant tables 4 bytes apart

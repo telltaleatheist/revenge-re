@@ -5,6 +5,7 @@
 #include "REVENGE.h"
 #include "revenge/original_data.h"
 #include "revenge/original/campaign_data.h"
+#include "revenge/debug.h"
 
 void AdvanceCampaignClock(byte hours, byte minutes);
 void ResetLiveUnitState(uint16 unitIndex);
@@ -509,7 +510,8 @@ byte AssignScenarioLanceAllegiances(word16 scenarioAllegianceIndex)
 	// V: DS:5928 is a table of three allegiance bytes per scenario entry. Each
 	// byte is copied to one four-unit group among the first twelve persistent
 	// unit records. AX happens to retain the final assigned value on return.
-	const byte *scenarioAllegiances = &ScenarioLanceAllegianceTable[0x00][0x00];
+	const byte *scenarioAllegiances = ScenarioLanceAllegianceTable[REVENGE_INDEX(
+		ScenarioLanceAllegianceTable, scenarioAllegianceIndex)];
 	byte assignedAllegiance = 0x00;
 	word16 unitIndex;
 
@@ -517,8 +519,7 @@ byte AssignScenarioLanceAllegiances(word16 scenarioAllegianceIndex)
 		unitIndex < ACTIVE_CAMPAIGN_UNIT_COUNT;
 		++unitIndex)
 	{
-		assignedAllegiance = scenarioAllegiances[
-			scenarioAllegianceIndex * 0x03 + unitIndex / 0x04];
+		assignedAllegiance = scenarioAllegiances[unitIndex / 0x04];
 		PersistentUnitRoster[unitIndex].allegiance =
 			assignedAllegiance;
 	}
