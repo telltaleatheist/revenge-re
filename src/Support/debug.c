@@ -42,6 +42,16 @@ void RevengeTrace(const char *format, ...)
 	fflush(stderr);
 }
 
+size_t RevengeCheckIndex(const char *object, size_t index, size_t count)
+{
+	if (index < count)
+		return index;
+	fprintf(stderr, "fault: %s[%llu] is past its %llu entries\n", object,
+		(unsigned long long) index, (unsigned long long) count);
+	fflush(stderr);
+	exit(70);
+}
+
 void RevengeInstallCrashDiagnostics(void)
 {
 #ifdef _WIN32

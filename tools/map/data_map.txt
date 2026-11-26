@@ -47,7 +47,7 @@ place WeaponTraceMinorStepX 3A6A:173A 8 run
 place WeaponTraceMinorStepY 3A6A:1742 8 run
 place DirectionDeltaXTable 3A6A:174A 10 run
 place DirectionDeltaYTable 3A6A:175A 10 run
-place HeatDissipationBySinkCountQ8_8 3A6A:176A 200 table
+place HeatDissipationBySinkCountQ8_8 3A6A:176A 60 table
 place NeighborMapOffsetTable 3A6A:17CA 10 run
 place TacticalUpdateDelayReloadTicks 3A6A:17DA 2 table
 place TacticalGameSpeedIndex 3A6A:17DC 2 table
@@ -785,11 +785,6 @@ overlap CachedFileDescriptors ScenarioResourcePathPointer host pointer: the desc
 overlap CachedFileDescriptors TacticalResourcePathOffset host pointer: the descriptor holds the port's own pointer
 overlap CachedFileDescriptors TacticalResourcePathSegment host pointer: the descriptor holds the port's own pointer
 overlap CachedFileDescriptors ScreenPaletteResourceByScreen to look at: the table's first byte is the last descriptor's last
-overlap HeatDissipationBySinkCountQ8_8 NeighborMapOffsetTable size to settle: the original's table is 60h bytes
-overlap HeatDissipationBySinkCountQ8_8 TacticalUpdateDelayReloadTicks size to settle: the original's table is 60h bytes
-overlap HeatDissipationBySinkCountQ8_8 TacticalGameSpeedIndex size to settle: the original's table is 60h bytes
-overlap HeatDissipationBySinkCountQ8_8 SaveDirectory size to settle: the original's table is 60h bytes
-overlap HeatDissipationBySinkCountQ8_8 SaveCampaignSnapshot size to settle: the original's table is 60h bytes
 overlap MissionDateAdvanceMonths MouseCursorBackingSourceTileX size to settle: the original's table is 18h bytes
 overlap MissionDateAdvanceMonths MouseCursorBackingSourcePixelY size to settle: the original's table is 18h bytes
 overlap MissionDateAdvanceMonths MouseCursorBackingWidthTiles size to settle: the original's table is 18h bytes

@@ -2,6 +2,7 @@
 // Procedures preserved from REVENGE_1A1F_SCENARIO.c.
 
 #include "REVENGE_1A1F_INTERNAL.h"
+#include "revenge/debug.h"
 
 // 1A1F:5755: translate pending mouse input into a tactical input code.
 // Verified against 1A1F:5755-5961.
@@ -500,7 +501,8 @@ void UpdateUnitHeatAccumulators(void)
 
 		int16 heatAccumulator = (int16)unitRecord->heatAccumulatorQ8_8;
 		heatAccumulator -= (int16)
-			HeatDissipationBySinkCountQ8_8[effectiveHeatSinkCount];
+			HeatDissipationBySinkCountQ8_8[REVENGE_INDEX(
+				HeatDissipationBySinkCountQ8_8, effectiveHeatSinkCount)];
 		if (heatAccumulator < 0x00)
 			heatAccumulator = 0x00;
 		unitRecord->heatAccumulatorQ8_8 = (word16)heatAccumulator;

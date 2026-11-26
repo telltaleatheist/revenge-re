@@ -356,7 +356,7 @@ const int8 TacticalMouseEdgeInputByMask[0x10] =
 	{ 0x00, -0x4B, -0x50, -0x4F, -0x4D, 0x00, -0x51, 0x00,
 	  -0x48, -0x47, 0x00, 0x00, -0x49, 0x00, 0x00, 0x00 };
 byte SceneNarrationEventFlags[0x06];
-word16 HeatDissipationBySinkCountQ8_8[0x100];
+word16 HeatDissipationBySinkCountQ8_8[0x30];
 word16 TerrainDamageQueueWordCount;
 word16 TacticalProjectileCount;
 RevengeTacticalProjectileRecord

@@ -535,7 +535,9 @@ extern const int16 TacticalCursorSearchOffsetX[0x09];
 extern const int16 TacticalCursorSearchOffsetY[0x09];
 extern const int8 TacticalMouseEdgeInputByMask[0x10];
 extern byte SceneNarrationEventFlags[0x06];
-extern word16 HeatDissipationBySinkCountQ8_8[0x100];
+/* DS:176A: 30h words, one for each heat-sink count a unit's 2Fh equipment
+ * slots allow. */
+extern word16 HeatDissipationBySinkCountQ8_8[0x30];
 extern word16 TerrainDamageQueueWordCount;
 extern word16 TacticalProjectileCount;
 extern RevengeTacticalProjectileRecord

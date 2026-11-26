@@ -655,6 +655,19 @@ if(BUILD_TESTING)
         COMMAND test_initial_data_values)
     set_tests_properties(import.original_initial_data_values PROPERTIES SKIP_RETURN_CODE 77)
 
+    add_executable(test_index_guard
+        tests/test_index_guard.c
+        src/Support/debug.c)
+    target_include_directories(test_index_guard PRIVATE include)
+    chr_strict(test_index_guard)
+    add_test(NAME support.index_guard COMMAND test_index_guard)
+    add_test(NAME support.index_guard_past COMMAND test_index_guard past)
+    add_test(NAME support.index_guard_negative COMMAND test_index_guard negative)
+    set_tests_properties(support.index_guard_past PROPERTIES
+        PASS_REGULAR_EXPRESSION "fault: GuardedTable\\[5\\] is past its 5 entries")
+    set_tests_properties(support.index_guard_negative PROPERTIES
+        PASS_REGULAR_EXPRESSION "fault: GuardedTable\\[[0-9]+\\] is past its 5 entries")
+
     add_executable(test_random_pilot_pool
         tests/test_random_pilot_pool.c
         tests/fake_backend.c)
