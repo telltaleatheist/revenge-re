@@ -660,6 +660,11 @@ if(CHR_BUILD_SDL)
             URL https://github.com/libsdl-org/SDL/releases/download/release-3.4.16/SDL3-3.4.16.tar.gz
             URL_HASH SHA256=7322236cd12090c3eb40b9728be4d49c76f66ad17d04369584d4ecad5cf77c68)
         set(SDL_TEST_LIBRARY OFF CACHE BOOL "" FORCE)
+        # XTest is only for synthetic input, and many Linux systems lack its
+        # headers. A value given on the command line wins.
+        if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+            set(SDL_X11_XTEST OFF CACHE BOOL "Build SDL's X11 XTest support")
+        endif()
         set(SDL_TESTS OFF CACHE BOOL "" FORCE)
         FetchContent_MakeAvailable(SDL3)
     else()

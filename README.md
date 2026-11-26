@@ -51,6 +51,22 @@ Run the asset-independent build and tests:
 ./Build.ps1 -Headless -Configuration Release
 ```
 
+On macOS (12 or later; the build is universal) and Linux, with CMake, Ninja
+and a C17 compiler:
+
+```sh
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+ctest --test-dir build
+```
+
+SDL3 is fetched at the pinned release. On Linux it is built without XTest
+(`SDL_X11_XTEST=OFF`, only synthetic input uses it), since many systems lack
+its headers; `-DSDL_X11_XTEST=ON` turns it back on. SDL's X11, Wayland and
+audio back ends need their usual development headers (the SDL wiki's
+README-linux lists them). Set `REVENGE_GAME` to a copy of the game for the
+tests that check its text and data; without one they are skipped.
+
 For local play, put the original game files in `assets/original-game` and run:
 
 ```powershell
@@ -101,7 +117,7 @@ environments.
 
 The original installation is only read, so it may be on a read-only disk.
 Whatever the game writes, its saves included, goes to a folder of our own:
-SDL's per-user preferences folder for "Crescent Hawks Revenge", or
+SDL's per-user preferences folder, `BattleTech/Revenge Rebuild`, or
 `REVENGE_SAVE_DIRECTORY` when it is set. A file the game changes is copied
 there the first time and the copy is used from then on. The game's file
 names are found whatever their case on disk.
