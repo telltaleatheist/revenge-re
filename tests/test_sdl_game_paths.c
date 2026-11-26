@@ -71,7 +71,7 @@ int main(void)
 	assert(SDL_CreateDirectory(install));
 	assert(SDL_CreateDirectory(saves));
 	Path(path, sizeof(path), install, "Mixed.Dat");
-	WriteFile(path, "install");
+	WriteFile(path, "first");
 	Path(path, sizeof(path), install, "Other.dat");
 	WriteFile(path, "keep");
 	assert(SDL_setenv_unsafe("REVENGE_SAVE_DIRECTORY", saves, 1) == 0);
@@ -81,8 +81,8 @@ int main(void)
 	handle = DOS_OpenFile("MIXED.DAT", 0x8000);
 	assert(handle >= 0x0000);
 	memset(buffer, 0, sizeof(buffer));
-	assert(DOS_ReadFile((uint16) handle, buffer, 0x0007) == 0x0007);
-	assert(strcmp(buffer, "install") == 0);
+	assert(DOS_ReadFile((uint16) handle, buffer, 0x0005) == 0x0005);
+	assert(strcmp(buffer, "first") == 0);
 	assert(DOS_CloseFile(handle) == 0x0000);
 	assert(DOS_OpenFile("ABSENT.DAT", 0x8000) < 0x0000);
 
@@ -92,16 +92,16 @@ int main(void)
 	assert(DOS_WriteFile((uint16) handle, "X", 0x0001) == 0x0001);
 	assert(DOS_CloseFile(handle) == 0x0000);
 	Path(path, sizeof(path), install, "Mixed.Dat");
-	assert(FileHolds(path, "install"));
+	assert(FileHolds(path, "first"));
 	Path(path, sizeof(path), saves, "Mixed.Dat");
-	assert(FileHolds(path, "Xnstall"));
+	assert(FileHolds(path, "Xirst"));
 
 	/* Reads now see the save folder's copy. */
 	handle = DOS_OpenFile("Mixed.dat", 0x8000);
 	assert(handle >= 0x0000);
 	memset(buffer, 0, sizeof(buffer));
-	assert(DOS_ReadFile((uint16) handle, buffer, 0x0007) == 0x0007);
-	assert(strcmp(buffer, "Xnstall") == 0);
+	assert(DOS_ReadFile((uint16) handle, buffer, 0x0005) == 0x0005);
+	assert(strcmp(buffer, "Xirst") == 0);
 	assert(DOS_CloseFile(handle) == 0x0000);
 
 	/* A new file is made in the save folder only. */
