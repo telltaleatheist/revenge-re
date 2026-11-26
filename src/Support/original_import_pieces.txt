@@ -1,0 +1,70 @@
+# The pieces of the player's REVENGE.EXE the game takes at start, besides the
+# strings named in place by ORIGINAL_TEXT(offset) (every use in src and include
+# is a row of its own). tools/import/make_import_table.py reads this list, the
+# sources and the player's copy, and writes src/Support/original_import_table.c:
+# offsets, counts, lengths and keyed hashes, never the bytes.
+#
+#   header PATH                  included by the generated table
+#   KIND NAME DS-OFFSET [COUNT [STRIDE]]
+#
+# Kinds (include/revenge/original_import.h): text_table, expanded_text_table,
+# mutable_text_table, pointed_text, mutable_pointed_text, byte_lists, bytes.
+# Offsets and counts are hex. A table's COUNT is its array's; STRIDE is 4
+# unless given. A bytes piece's COUNT is its length, which must be the size of
+# the object it fills. A mutable pointed text fills its whole char array.
+
+header revenge/original_data.h
+header revenge/original/audio_data.h
+header revenge/original/campaign_data.h
+header revenge/original/lance_editor_data.h
+header revenge/original/scene_data.h
+header REVENGE.h
+
+# Text tables (REVENGE_TEXT_TABLES.c)
+text_table           TitleTextTable                          2411 12
+text_table           MonthNameTextTable                      2459 0C
+text_table           MissionDateLabelTextTable               24A1 0C
+text_table           CampaignPathMenuTextTable               25CD 02
+text_table           ScenarioVariantMenuTextTable            25D5 02
+text_table           AlternateScenarioMenuTextTable          25DD 02
+text_table           MainMenuTextTable                       25E5 03
+expanded_text_table  CampaignMessageTextTable                2B54 B2 5
+mutable_pointed_text ScenarioResourcePathText                1554
+text_table           GameOptionLabelTextTable                46AE 07
+text_table           GameOptionToggleTextTable               46CA 02
+text_table           NarrationModeLabelTextTable             46D2 03
+text_table           InputDeviceLabelTextTable               46DE 02
+mutable_text_table   DisabledUnitNarrationTextTable          46FD 03
+mutable_text_table   DestroyedUnitNarrationTextTable         4709 03
+mutable_text_table   ScenarioEventNarrationTextTable         4715 1E
+text_table           UnitAllegianceLabelTextTable            30CB 02
+text_table           UnitStatHeaderTextTable                 30F2 06
+byte_lists           UnitClassTypeLists                      32DC 07
+text_table           UnitClassLabelTextTable                 32F8 07
+text_table           TrainingDeploymentLabelTextTable        3314 04
+text_table           TrainingControlLabelTextTable           3324 04
+text_table           ScenarioVariantDescriptionTextTable     3334 04
+text_table           UnitEditorSectionLabelTextTable         3344 04
+text_table           ScenarioRouteLabelTextTable             3358 04
+text_table           UnitEditorSectionButtonLabelTextTable   3368 04
+text_table           TrainingDeploymentRosterLabelTextTable  3378 02
+text_table           UnitRosterColumnLabelTextTable          3380 03
+pointed_text         FriendlyEnemySuffixText                 338C
+text_table           TrainingCategoryLabelTextTable          3397 02
+mutable_text_table   TrainingScenarioLabelTextTable          33B8 06
+text_table           PilotSurnameTextTable                   3E92 3B
+text_table           PilotGivenNameTextTable                 3F7E 3B
+text_table           PilotExperienceLabelTextTable           40B3 04
+text_table           PilotGunneryLabelTextTable              40C3 04
+text_table           UnitMovementClassLabelTextTable         412D 05
+text_table           UnitArmorConditionLabelTextTable        4141 06
+
+# Data the game's text and sound read in place
+bytes                CompressedTextFirstByteTable            05AA 10
+bytes                CompressedTextSecondByteTable           05BA 80
+bytes                PCSpeakerEffectStreamData               5642 299
+bytes                DigitalSoundData                        593E 62D
+bytes                VideoConfigurationRecords               3AD1 41
+bytes                MusicConfigurationRecords               3B12 5B
+bytes                InputConfigurationRecords               3B6D 1A
+bytes                SoundConfigurationRecords               3B87 7E

@@ -1,0 +1,77 @@
+#ifndef REVENGE_ORIGINAL_IMPORT_H
+#define REVENGE_ORIGINAL_IMPORT_H
+
+/*
+ * The game's own text and data come from the player's REVENGE.EXE, never from
+ * this source tree. OriginalImport_Load reads its load image once at start and
+ * checks every piece the game takes from it against the import table
+ * (src/Support/original_import_table.c, written by
+ * tools/import/make_import_table.py): an offset, a length and a keyed hash for
+ * each, never the bytes.
+ */
+
+#include <stddef.h>
+#include <stdint.h>
+
+enum
+{
+	ORIGINAL_IMAGE_CAPACITY = 0x40000
+};
+
+/* 3A6A:0000 (the data segment) in the load image, which DOS loads at 0800h. */
+#define ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET 0x326A0UL
+
+extern char OriginalImage[ORIGINAL_IMAGE_CAPACITY];
+
+/*
+ * A NUL-terminated string of the original's data segment, by its DS offset.
+ * It is an address constant, so it may initialise a table; until the import
+ * has run it is an empty string. Typed as a C string literal is (char *), so
+ * callers see the same types as before. Each offset used is a row of the
+ * import table.
+ */
+#define ORIGINAL_TEXT(offset) \
+	(&OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + (offset)])
+
+/* 1 when every piece matched and was put in place; otherwise 0, after naming on
+ * stderr the file or each piece that didn't match. */
+int OriginalImport_Load(const char *executablePath);
+int OriginalImport_IsLoaded(void);
+
+/* The import table, for the loader and the tests. */
+typedef enum OriginalPieceKind
+{
+	ORIGINAL_PIECE_TEXT,                  /* a string at a DS offset */
+	ORIGINAL_PIECE_TEXT_TABLE,            /* far pointers at a DS offset to strings: const char *[] */
+	ORIGINAL_PIECE_EXPANDED_TEXT_TABLE,   /* the same, with the game's digram compression expanded */
+	ORIGINAL_PIECE_MUTABLE_TEXT_TABLE,    /* the same as a text table, each string a writable copy: char *[] */
+	ORIGINAL_PIECE_POINTED_TEXT,          /* the first far pointer of a table, as one const char * */
+	ORIGINAL_PIECE_MUTABLE_POINTED_TEXT,  /* the same, copied into a char array of `length` bytes */
+	ORIGINAL_PIECE_BYTE_LISTS,            /* far pointers at a DS offset to FFh-terminated lists: const byte *[];
+	                                         a null pointer stays NULL */
+	ORIGINAL_PIECE_BYTES                  /* `length` bytes at a DS offset, copied into an object of that size */
+} OriginalPieceKind;
+
+typedef struct OriginalPiece
+{
+	const char *name;
+	OriginalPieceKind kind;
+	uint16_t dataOffset;
+	uint16_t count;         /* entries of a table; 0 otherwise */
+	uint8_t stride;         /* bytes between a table's far pointers */
+	uint16_t length;        /* a text's length without its NUL; a byte piece's or array's size */
+	void *target;           /* NULL for ORIGINAL_PIECE_TEXT, which is read in place */
+	const char *keyedHash;  /* the first 16 hex digits of the keyed HMAC-SHA-256 of the piece */
+} OriginalPiece;
+
+extern const OriginalPiece OriginalPieces[];
+extern const size_t OriginalPieceCount;
+extern const char OriginalImportKey[];
+
+/* The bytes a piece is hashed over: each string (expanded where the kind says)
+ * or list in order, each string followed by its NUL. Returns the byte count,
+ * or (size_t) -1 when the piece doesn't fit the image. Writes at most
+ * `capacity` bytes. */
+size_t OriginalImport_PieceBytes(const OriginalPiece *piece, uint8_t *out, size_t capacity);
+
+#endif
