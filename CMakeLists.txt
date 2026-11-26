@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.24)
 
+# On a Mac the program is one universal binary for macOS 12 and later. Both
+# must be set before project(); a command-line value wins.
+if(CMAKE_HOST_APPLE AND NOT CMAKE_TOOLCHAIN_FILE)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0" CACHE STRING "Oldest macOS the program runs on")
+    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "Architectures of the macOS build")
+endif()
+
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" CHR_RELEASE_VERSION)
 string(STRIP "${CHR_RELEASE_VERSION}" CHR_RELEASE_VERSION)
 project(CrescentHawksRevenge VERSION ${CHR_RELEASE_VERSION} LANGUAGES C)
