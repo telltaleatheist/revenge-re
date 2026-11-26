@@ -12,7 +12,10 @@ enum
 	GAME_PATH_CAPACITY = 1024
 };
 
-static const char ApplicationName[] = "Crescent Hawks Revenge";
+/* Every game of the suite keeps its folder under BattleTech. The product's
+ * name is settled before packaging; this is the one place it is spelled. */
+static const char SuiteFolderName[] = "BattleTech";
+static const char ApplicationName[] = "Revenge Rebuild";
 static char writeDirectory[GAME_PATH_CAPACITY];
 static int writeDirectoryState;     /* 0 not yet, 1 ready, -1 unavailable */
 
@@ -25,7 +28,7 @@ const char *GamePaths_WriteDirectory(void)
 		size_t length;
 
 		if (chosen == NULL || chosen[0] == '\0')
-			chosen = preferences = SDL_GetPrefPath("", ApplicationName);
+			chosen = preferences = SDL_GetPrefPath(SuiteFolderName, ApplicationName);
 		writeDirectoryState = -1;
 		length = chosen != NULL ? strlen(chosen) : 0;
 		if (length > 0 && length + 2 < sizeof(writeDirectory))

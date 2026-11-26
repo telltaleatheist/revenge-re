@@ -7,7 +7,7 @@
  * Where the game's files are. The player's install (the current directory,
  * once SDLHost_ConfigureAssetDirectory has run) is only read; everything the
  * game writes goes to our own folder: REVENGE_SAVE_DIRECTORY when it is set,
- * otherwise SDL's per-user preferences folder. Names are DOS names (8.3,
+ * otherwise SDL's per-user preferences folder, BattleTech/Revenge Rebuild. Names are DOS names (8.3,
  * any case, '\' or '/', an optional drive letter) and are found in either
  * place whatever their case on disk.
  */
