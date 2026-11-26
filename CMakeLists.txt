@@ -636,6 +636,15 @@ if(BUILD_TESTING)
     add_test(NAME tactical.original_line_of_sight_map_width
         COMMAND test_line_of_sight_map_width)
 
+    add_executable(test_scenario_clock_subtick
+        tests/test_scenario_clock_subtick.c
+        tests/fake_backend.c)
+    target_include_directories(test_scenario_clock_subtick PRIVATE src/SDL tests)
+    target_link_libraries(test_scenario_clock_subtick PRIVATE chr_original_runtime)
+    chr_strict(test_scenario_clock_subtick)
+    add_test(NAME tactical.original_scenario_clock_subtick
+        COMMAND test_scenario_clock_subtick)
+
     add_executable(test_unit_durability_totals
         tests/test_unit_durability_totals.c
         tests/fake_backend.c)

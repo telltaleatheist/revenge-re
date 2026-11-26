@@ -344,7 +344,6 @@ word16 TacticalUpdateDelayTicks;
 word16 TacticalKeyRepeatDelayTicks;
 word16 TacticalUpdateDelayReloadTicks;
 word16 TacticalGameSpeedIndex;
-byte TacticalClockSubtick;
 word16 TacticalBattleResult;
 word16 TacticalClockDivider;
 word16 TacticalImpactQueueCount;

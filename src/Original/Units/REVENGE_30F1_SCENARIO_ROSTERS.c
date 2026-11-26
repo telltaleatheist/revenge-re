@@ -49,8 +49,9 @@ void PrepareScenarioUnitRosters(void)
 		SavedScenarioUnitMapY[unitIndex] = ScenarioUnitMapY[unitIndex];
 		++unitIndex;
 	}
-	// Preserve the current three-byte campaign clock/state tuple before the
-	// scenario-specific changes below. DS:8337 is hours and DS:8338 is minutes.
+	// Preserve the current three-byte campaign clock before the
+	// scenario-specific changes below: DS:8337 the hour, DS:8338 the minute,
+	// DS:8339 the battle's subtick.
 	CopyFarMemory(0x03, CampaignClockState, SavedCampaignClockState);
 	uint16 sceneSuffix = ScenarioFileSuffix;
 	uint16 rosterIndex36;

@@ -284,7 +284,10 @@ extern byte SavedScenarioUnitMapY[0x18];
 extern byte ScenarioUnitMapX[0x18];
 extern byte ScenarioUnitMapY[0x18];
 extern byte ScenarioUnitFacing[0x18];
+/* DS:8337-8339: the hour, the minute and the battle's subtick, the byte the
+ * battle loop steps; the scenario's saved clock (DS:855F) is the same three. */
 extern byte CampaignClockState[0x03];
+#define TacticalClockSubtick (CampaignClockState[0x02])
 extern byte SavedCampaignClockState[0x03];
 extern RevengePilotRosterRecord PilotRoster[REVENGE_PILOT_ROSTER_COUNT];
 extern RevengeUnitLanceAssignment
@@ -514,7 +517,6 @@ extern word16 TacticalUpdateDelayTicks;
 extern word16 TacticalKeyRepeatDelayTicks;
 extern word16 TacticalUpdateDelayReloadTicks;
 extern word16 TacticalGameSpeedIndex;
-extern byte TacticalClockSubtick;
 extern word16 TacticalBattleResult;
 extern word16 TacticalClockDivider;
 extern word16 TacticalImpactQueueCount;
