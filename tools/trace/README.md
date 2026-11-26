@@ -57,6 +57,10 @@ counts one step. `steps:N` lands the next item at the first poll after the Nth
 step, the same point of the battle on any machine. `still:N` waits until N
 polls have gone by without a step: a message or menu is up and the battle is
 stopped, which is how a script answers a message without knowing its step.
+So while a battle runs, a key waits by `steps:` alone: an `idle:` there lands
+it after as many steps as the machine fits in those polls. `idle:` is for the
+waits while a menu, a message or a unit's commands are up and the battle is
+stopped. (Every item also waits 4 polls, well inside one step.)
 
 | Script | Covers |
 |---|---|
@@ -68,6 +72,9 @@ stopped, which is how a script answers a message without knowing its step.
 | `quit_scenario` | the first battle quit from its options menu, the in-game menu, the battle replayed |
 | `options` | the main menu's game options: the menu, an item toggled, back |
 | `load_empty` | Load Game with no game saved: the slots, the empty slot's notice, back |
+| `first_win` | the first battle won: the leader moved across the enemy's road, the menu after the stage |
+| `second_battle` | on to the second battle: the options menu, a move order, steps 8 and 16, its messages to the end |
+| `save_load` | after the first stage, Save & Continue to slot 1; out of the second battle and Load Game, slot 1 |
 
 ## Trace records (`traces/*.jsonl`)
 
@@ -206,9 +213,11 @@ which is why scripts wait with `idle:` generously.
 
 Recorded with every script on 2026-11-26 (DOSBox-X 2024.03.01, the 1.00 DOS
 image; `diff.py` with `--frames`). The state lines and the save blocks match
-at every snap of all eight scripts, through the first battle to its end
-(`tactical`), but for the cards' pointers below. What differs, none of it the
-port's:
+at every snap of all eleven scripts, but for the cards' pointers below: the
+first battle lost (`tactical`) and won (`first_win`), the second battle with
+an order (`second_battle`), and a save and its load (`save_load`), where the
+two SAVEGAME.DAT files differ only in those pointers too. What differs, none
+of it the port's:
 
 - `title` @intro, the first poll: the original is still in DOS's text mode,
   the port's screen is blank.
@@ -217,6 +226,10 @@ port's:
 - The selection cards' sprite pointers (save block 006C, bytes D-E of each
   15-byte card): the segment of a buffer the game allocates, which depends on
   where DOS loads it.
+
+Not covered yet: the overview map (F10) opens only in a scenario whose data
+enables it, and neither of the first two does; the training battle comes with
+a later stage of the campaign.
 
 What the comparison found in the port, and how each was fixed:
 

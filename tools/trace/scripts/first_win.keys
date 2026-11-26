@@ -1,0 +1,18 @@
+# The first battle won: as tactical.keys to its first message, then the
+# lance leader moved across the enemy's road at (28,49), where it engages and
+# the enemy withdraws; each later message answered with its first choice
+# (still:2000), to the menu after the stage.
+idle:1000 Return idle:50 Return idle:6000 Return idle:6000
+Return idle:300 Right Return idle:300 Right Return idle:300 Right Return idle:300
+Return idle:9000 Return idle:6000                   # leave the editor; the story
+Return idle:6000 Return idle:6000 Return idle:6000  # its screens, one key each
+Return idle:6000 Return idle:6000 Return            # the battle begins
+still:2000 @snap:battle                             # its first message up
+Return steps:1 Return idle:300 Return idle:300      # on: the leader's commands, Move
+PageUp idle:30 PageUp idle:30 PageUp idle:30 PageUp idle:30 PageUp idle:30
+PageUp idle:30 PageUp idle:30 Right idle:30 idle:100 # the cursor to (28,49)
+Return idle:300 @snap:route Return idle:300 Return idle:300  # the route; accepted; Done
+still:2000 @snap:contact Return                     # each message's first choice
+still:2000 @snap:won Return
+still:2000 @snap:story Return
+still:2000 @snap:menu                               # the menu after a won stage

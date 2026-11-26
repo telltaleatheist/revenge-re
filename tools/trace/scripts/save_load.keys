@@ -1,0 +1,28 @@
+# A save and its load: as first_win.keys to the menu after the first stage,
+# Save & Continue into slot 1 (its name as given, confirmed), the story to
+# the second battle, its commands closed, then out of it by the options menu's
+# Quit Scenario and back through the in-game menu's Load Game, slot 1: the
+# save block after the load is the one at the save.
+# While the battle runs, a key waits by steps only: polls are the machine's.
+idle:1000 Return idle:50 Return idle:6000 Return idle:6000
+Return idle:300 Right Return idle:300 Right Return idle:300 Right Return idle:300
+Return idle:9000 Return idle:6000                   # leave the editor; the story
+Return idle:6000 Return idle:6000 Return idle:6000  # its screens, one key each
+Return idle:6000 Return idle:6000 Return            # the battle begins
+still:2000 @snap:battle                             # its first message up
+Return steps:1 Return idle:300 Return idle:300      # on: the leader's commands, Move
+PageUp idle:30 PageUp idle:30 PageUp idle:30 PageUp idle:30 PageUp idle:30
+PageUp idle:30 PageUp idle:30 Right idle:30 idle:100 # the cursor to (28,49)
+Return idle:300 @snap:route Return idle:300 Return idle:300  # the route; accepted; Done
+still:2000 @snap:contact Return                     # each message's first choice
+still:2000 @snap:won Return
+still:2000 @snap:story Return
+still:2000 @snap:menu                               # the menu after a won stage
+Down idle:50 Down idle:50 Return idle:300 @snap:slots  # Save & Continue
+Return idle:300 Return idle:300 Return idle:600 @snap:saved  # slot 1, named, yes
+Return idle:6000 Return steps:2 Return still:2000 @snap:second  # the battle; its commands
+Up idle:50 Return steps:2                           # Done
+Escape idle:300 Down idle:50 Down idle:50 Down idle:50 Down idle:50
+Return idle:300 @snap:in_game                       # Quit Scenario
+Up idle:50 Up idle:50 Return idle:300 @snap:load    # Load Game
+Return idle:600 @snap:loaded                        # slot 1
