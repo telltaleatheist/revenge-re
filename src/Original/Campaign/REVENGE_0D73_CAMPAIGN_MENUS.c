@@ -10,7 +10,8 @@
 //      RunTitleAndMainMenu
 word16 ConfirmExitToDos(void)
 {
-	DialogFramingEnabled = 0x01;
+	/* DS:0822: the confirmation's region (7) starts on its second row. */
+	UiRegionTable[0x07].selectedRow = 0x0001;
 	return ShowConfirmationDialog(ExitToDosPrompt) == 0x00;
 }
 

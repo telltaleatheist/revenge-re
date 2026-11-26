@@ -15,7 +15,9 @@
 restart restarted 1B8C 3 1B8C
 restart restarted 1BAD F 1B8F
 
-# Objects the port keeps twice: the saved map positions in the battles
-# (second_battle), the units' withdrawal states in the first one (first_win).
+# Objects the port kept twice: the saved map positions in the battles
+# (second_battle), the units' withdrawal states in the first one (first_win),
+# the confirmation's first row (restart).
 agree second_battle
 agree first_win
+agree restart

@@ -1,5 +1,6 @@
 # A restart from the in-game menu: as save_load.keys to the in-game menu
-# after Quit Scenario in the second battle, then Restart, confirmed. The
+# after Quit Scenario in the second battle, then Restart, confirmed (its
+# confirmation starts on the second row, DS:0822). The
 # campaign starts over with its pool of random pilots and the pool's count
 # as they first were (DS:1B8C and DS:1B8F, the initial copies).
 # While the battle runs, a key waits by steps only: polls are the machine's.
@@ -25,4 +26,4 @@ Escape idle:300 Down idle:50 Down idle:50 Down idle:50 Down idle:50
 Return idle:300 @snap:in_game                       # Quit Scenario
 Down idle:50                                        # from Replay Story to Restart
 Return idle:300 @snap:confirm                       # Restart; its confirmation up
-Return idle:600 @snap:restarted                     # yes
+Up idle:50 Return idle:600 @snap:restarted          # it starts on its second row; the first

@@ -75,7 +75,6 @@ extern word16 MapHeight;
 extern word16 MinimumProgramBreakOffset;
 extern word16 MinimumProgramBreakSegment;
 extern byte VideoPathUnavailable;
-extern word16 DialogFramingEnabled;
 extern word16 CurrentProgramBreakOffset;
 extern word16 CurrentProgramBreakSegment;
 extern word16 MaximumProgramBreakOffset;

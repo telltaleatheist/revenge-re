@@ -25,7 +25,6 @@ place CompressedTextFirstByteTable 3A6A:05AA 10 import
 place CompressedTextSecondByteTable 3A6A:05BA 80 import
 place TextWindowContexts 3A6A:063A 170 table
 place UiRegionTable 3A6A:07AA 100 table
-place DialogFramingEnabled 3A6A:0822 2 annotation
 place TextWindowFrameDefinition 3A6A:08AA 18 run
 place EngagementModeByComparisonMask 3A6A:08C6 100 run
 place WeaponPriorityData 3A6A:09C6 580 table
@@ -780,7 +779,6 @@ unplaced WeaponDefinitions 159 its bytes match nowhere (pointers or values diffe
 # Where there is no note, the two are one byte in the original and the run
 # must keep them equal (check_dump.py's agree lines); a note says why they
 # can differ for now.
-overlap UiRegionTable DialogFramingEnabled size to settle: the original's region table ends before it, or holds it
 overlap CachedFileDescriptors UnitTemplatePathOffset host pointer: the descriptor holds the port's own pointer
 overlap CachedFileDescriptors UnitTemplatePathSegment host pointer: the descriptor holds the port's own pointer
 overlap CachedFileDescriptors ScenarioResourcePathPointer host pointer: the descriptor holds the port's own pointer

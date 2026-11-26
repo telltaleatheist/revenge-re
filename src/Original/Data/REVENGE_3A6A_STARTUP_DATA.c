@@ -10,7 +10,6 @@
 
 word16 MemoryBlockSegment;
 byte VideoPathUnavailable;
-word16 DialogFramingEnabled;
 word16 MinimumProgramBreakOffset;
 word16 MinimumProgramBreakSegment;
 word16 CurrentProgramBreakOffset;

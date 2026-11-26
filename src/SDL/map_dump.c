@@ -184,7 +184,6 @@ static const MapDumpObject objects[] =
 	{ "MinimumProgramBreakOffset", &MinimumProgramBreakOffset, sizeof(MinimumProgramBreakOffset) },
 	{ "MinimumProgramBreakSegment", &MinimumProgramBreakSegment, sizeof(MinimumProgramBreakSegment) },
 	{ "VideoPathUnavailable", &VideoPathUnavailable, sizeof(VideoPathUnavailable) },
-	{ "DialogFramingEnabled", &DialogFramingEnabled, sizeof(DialogFramingEnabled) },
 	{ "CurrentProgramBreakOffset", &CurrentProgramBreakOffset, sizeof(CurrentProgramBreakOffset) },
 	{ "CurrentProgramBreakSegment", &CurrentProgramBreakSegment, sizeof(CurrentProgramBreakSegment) },
 	{ "MaximumProgramBreakOffset", &MaximumProgramBreakOffset, sizeof(MaximumProgramBreakOffset) },

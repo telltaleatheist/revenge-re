@@ -7,6 +7,7 @@
 /* 0D73:242E-2447 */
 word16 ConfirmRestartGame(void)
 {
-	DialogFramingEnabled = TRUE;
+	/* DS:0822: the confirmation's region (7) starts on its second row. */
+	UiRegionTable[0x07].selectedRow = 0x0001;
 	return ShowConfirmationDialog(RestartConfirmationText) == 0x0000;
 }
