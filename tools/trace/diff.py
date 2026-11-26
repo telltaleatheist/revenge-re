@@ -6,8 +6,9 @@ snap: the port's against the original's (tools/capture, state.py), or any two.
         [--all] NAME ...
 
 DIR holds NAME.jsonl. For each snap it prints the state lines that differ,
-both sides; lines that measure time (the input line's clock, the timers, the
-battle's update delay) are marked "timing" and left out unless --all. With
+both sides; lines that measure time (the input line's polls and clock, the
+timers, the battle's update delay) are marked "timing" and left out unless
+--all. With
 --frames (folders holding NAME/SNAP.indices, .palette and .save, as
 record.py --frames and state.py --frames write them) it also counts the
 differing pixels and names the differing save-block fields by the address
@@ -33,7 +34,7 @@ def timing_only(port, original):
     def strip(line):
         words = line.split()
         if line.startswith("state input"):
-            return " ".join(words[:6])          # polls and keys taken, not the clock
+            return " ".join(words[4:6])         # the keys taken, not the polls or the clock
         if line.startswith("state timer"):
             return "state timer"
         if line.startswith("state battle"):

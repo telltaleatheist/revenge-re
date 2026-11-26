@@ -195,48 +195,45 @@ tools/trace/state.py --script tools/trace/scripts/NAME.keys --run DIR/run-NAME -
 tools/trace/diff.py --port PORT_TRACES --original ORIGINAL_TRACES NAME
 ```
 
-What differs by nature, and `diff.py` marks as timing: the clock in the input
-line, the timers, the battle's update delay. The poll counts are the same on
-both sides; the number of polls a screen takes to settle is not, which is why
-scripts wait with `idle:` generously and pace battles by steps.
+What differs by nature, and `diff.py` marks as timing: the polls and the
+clock in the input line, the timers, the battle's update delay. Outside
+battles the poll counts are the same on both sides; in a battle the number of
+passes, and so of polls, a step takes is the machine's, which is why battles
+are paced by steps. The number of polls a screen takes to settle differs too,
+which is why scripts wait with `idle:` generously.
 
 ### What the comparison found
 
 Recorded with every script on 2026-11-26 (DOSBox-X 2024.03.01, the 1.00 DOS
-image; `diff.py` with `--frames`). The state lines and the frames match at
-every snap outside battles, and in the first battle every unit, the random
-state and the clock match step by step through step 20. What else differs:
-
-Not the port's:
+image; `diff.py` with `--frames`). The state lines and the save blocks match
+at every snap of all eight scripts, through the first battle to its end
+(`tactical`), but for the cards' pointers below. What differs, none of it the
+port's:
 
 - `title` @intro, the first poll: the original is still in DOS's text mode,
   the port's screen is blank.
-- Battle frames, 8 to 100 pixels before contact: the status line and the
-  clock's colon blink by passes.
+- Battle frames, 8 to 180 pixels: the status line and the clock's colon blink
+  by passes.
 - The selection cards' sprite pointers (save block 006C, bytes D-E of each
   15-byte card): the segment of a buffer the game allocates, which depends on
   where DOS loads it.
 
-The port's, listed here until they are fixed:
+What the comparison found in the port, and how each was fixed:
 
-1. **Line of sight walks the wrong cells.** The tracer's row steps
-   (4184:08FB-092E) are the same memory as the eight words the map loader
-   writes the map width into (3A6A:7A9B-7ACB, 1A1F:058F-05AC). The port keeps
-   the tracer's tables constant at the image's 96 and writes the width to
-   eight variables nothing reads; no map is 96 wide. In the first battle an
-   enemy makes contact at step 22 in the port and not until later in the
-   original, so `tactical` differs from its first message on (the subtick,
-   the enemy's position, then everything).
-2. **The clock's third byte is the subtick.** CampaignClockState[2] and
-   TacticalClockSubtick are one byte in the original (DS:8339); the 3-byte
-   copies into and out of the saved clock (1A1F:0233, 30F1) carry the subtick
-   there and a byte nothing reads in the port. It shows in the state's clock
-   line at every battle snap; the saved clock itself matches in these
-   scripts, where it is saved while the subtick is 0.
-3. **Initial values the image has and the port doesn't.**
-   TacticalSelectedUnitIndex (DS:03DC) is FFFFh in the image, 0 in the port
-   until a battle sets it; DS:1B8E is 0Fh in the image, 0 in the port (save
-   block 005C); the pilot roster (DS:1D4C, 37 records of 4 bytes) holds each
-   pilot's experience and gunnery in the image and zeros in the port, so the
-   lance editor gives a 'Mech's live record (+8Ah, +93h) gunnery 0 and
-   experience 0 where the original gives the pilot's.
+1. **Line of sight walked the wrong cells.** The tracer's row steps
+   (4184:08FB-092E) are the memory the map loader writes the map's width
+   into (3A6A:7A9B-7ACB, 1A1F:058F-05AC); the port kept them at the image's
+   96 and wrote the width to eight variables nothing read, so in the first
+   battle an enemy made contact at step 22, not 43. The loader now writes the
+   tables (tactical.original_line_of_sight_map_width).
+2. **The clock's third byte is the subtick** (DS:8339): the port kept a
+   separate byte, so the clock saved on leaving a scenario (30F1:0006) and
+   restored at a battle's start (1A1F:0233) didn't carry it. It is one byte
+   now (tactical.original_scenario_clock_subtick).
+3. **Initial values the image has.** The pilot roster (DS:1D4C, 59 records:
+   each pilot's experience and gunnery, which the lance editor copies into the
+   'Mechs' live records) and DS:1B8E started at zero in the port, the
+   selected unit (DS:03DC) at 0 where the image has FFFFh, no unit. The first
+   two come from the player's copy now, the third is FFFFh
+   (import.original_initial_data_values). Without the pilots' gunnery the
+   first battle parted from its second message on.
