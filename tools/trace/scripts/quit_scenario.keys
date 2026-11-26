@@ -1,0 +1,12 @@
+# The first battle quit from its options menu, then replayed from the
+# in-game menu: the options menu, the in-game menu after Quit Scenario, and
+# the replayed battle by steps.
+idle:1000 Return idle:50 Return idle:6000 Return idle:6000
+Return idle:300 Right Return idle:300 Right Return idle:300 Right Return idle:300
+Return idle:9000 Return idle:6000                   # leave the editor; the story
+Return idle:6000 Return idle:6000 Return idle:6000  # its screens, one key each
+Return idle:6000 Return idle:6000 Return            # the battle begins
+steps:5 Escape idle:200 @snap:options                # the battle's options menu
+Down Down Down Down Return idle:300 @snap:in_game    # Quit Scenario: the in-game menu
+Down Return steps:5 @snap:replay05                   # Replay Scenario
+steps:5 @snap:replay10

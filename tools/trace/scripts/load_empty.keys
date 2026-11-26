@@ -1,0 +1,5 @@
+# Load Game from the main menu with no game saved: the slot list, the first
+# slot's notice, and back to the list.
+idle:1000 Return idle:50 Right idle:50 Return idle:300 @snap:slots
+Return idle:300 @snap:empty
+Return idle:300 @snap:back

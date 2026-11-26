@@ -8,8 +8,8 @@ one JSON line per @snap.
 The port runs with no window and no sound, reading the game from GAME_DIR (it
 never writes there) and writing its saves and snaps to WORK (emptied
 first; a temporary folder, deleted afterwards, unless given).
---frames copies each snap's frame (the game's art) to DIR, outside the repo,
-for tools/trace/frames.py. Exits 0 when the script ran to its end.
+--frames copies each snap's frame and save block (the game's art and data) to
+DIR, outside the repo, for tools/trace/frames.py and diff.py. Exits 0 when the script ran to its end.
 """
 import argparse
 import hashlib
@@ -128,7 +128,7 @@ def main():
         if args.frames:
             os.makedirs(args.frames, exist_ok=True)
             for record_ in records:
-                for suffix in (".indices", ".palette"):
+                for suffix in (".indices", ".palette", ".save"):
                     shutil.copyfile(os.path.join(work, record_["snap"] + suffix),
                                     os.path.join(args.frames, record_["snap"] + suffix))
     print(f"record: {len(records)} snaps to {args.out}")

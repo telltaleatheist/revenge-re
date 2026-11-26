@@ -1,0 +1,12 @@
+# The first battle step by step, as tactical.keys reaches it: a snap after
+# battle steps 1, 2, 4, 8, 12, 16 and 20, each at the first poll after its
+# step, so both sides snap at the same point of the battle however long
+# their passes take. Step 20 is before the first enemy contact.
+idle:1000 Return idle:50 Return idle:6000 Return idle:6000
+Return idle:300 Right Return idle:300 Right Return idle:300 Right Return idle:300
+Return idle:9000 Return idle:6000                   # leave the editor; the story
+Return idle:6000 Return idle:6000 Return idle:6000  # its screens, one key each
+Return idle:6000 Return idle:6000 Return            # the battle begins
+steps:1 @snap:step01 steps:1 @snap:step02 steps:2 @snap:step04
+steps:4 @snap:step08 steps:4 @snap:step12 steps:4 @snap:step16
+steps:4 @snap:step20
