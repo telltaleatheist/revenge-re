@@ -89,7 +89,6 @@ static const ImageRow rows[] =
 	DS(SceneInstructionBaseOffset, 0xA862),
 	DS(SceneInstructionCursor, 0xA9D9),
 	DS(ScenarioResourcePathPointer, 0x1554),
-	DS(RandomSelectionPoolCount, 0x1B8E),
 	DS(UnitSelectionCards, 0x1BBC),
 	DS(LanceAssignments, 0x1CCA),
 	DS(TacticalUpdateDelayReloadTicks, 0x17DA),

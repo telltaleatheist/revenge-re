@@ -655,6 +655,16 @@ if(BUILD_TESTING)
         COMMAND test_initial_data_values)
     set_tests_properties(import.original_initial_data_values PROPERTIES SKIP_RETURN_CODE 77)
 
+    add_executable(test_random_pilot_pool
+        tests/test_random_pilot_pool.c
+        tests/fake_backend.c)
+    target_include_directories(test_random_pilot_pool PRIVATE src/SDL src/Original tests)
+    target_link_libraries(test_random_pilot_pool PRIVATE chr_original_runtime)
+    chr_strict(test_random_pilot_pool)
+    add_test(NAME import.random_pilot_pool
+        COMMAND test_random_pilot_pool)
+    set_tests_properties(import.random_pilot_pool PROPERTIES SKIP_RETURN_CODE 77)
+
     add_executable(test_unit_durability_totals
         tests/test_unit_durability_totals.c
         tests/fake_backend.c)

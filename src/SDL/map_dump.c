@@ -108,7 +108,6 @@ static const MapDumpObject objects[] =
 	{ "ResourceDriveSelectionDisabled", &ResourceDriveSelectionDisabled, sizeof(ResourceDriveSelectionDisabled) },
 	{ "CriticalErrorCallback", &CriticalErrorCallback, sizeof(CriticalErrorCallback) },
 	{ "SharedGraphicsBackingBuffers", &SharedGraphicsBackingBuffers, sizeof(SharedGraphicsBackingBuffers) },
-	{ "RandomSelectionPoolCount", &RandomSelectionPoolCount, sizeof(RandomSelectionPoolCount) },
 	{ "UnitSelectionCards", &UnitSelectionCards, sizeof(UnitSelectionCards) },
 	{ "LanceEditorFirstBriefingPending", &LanceEditorFirstBriefingPending, sizeof(LanceEditorFirstBriefingPending) },
 	{ "LanceEditorBriefingPresented", &LanceEditorBriefingPresented, sizeof(LanceEditorBriefingPresented) },

@@ -59,7 +59,6 @@ place SavedScenarioUnitMapY 3A6A:1993 18 run
 place InitialCampaignState 3A6A:1B77 7 table
 place ForwardCampaignState 3A6A:1B7E 7 table
 place ReplayCampaignState 3A6A:1B85 7 table
-place RandomSelectionPoolCount 3A6A:1B8E 1 table
 place CampaignState1B8E 3A6A:1B8E 1 table
 place InitialExtendedCampaignState 3A6A:1B8F F table
 place ForwardExtendedCampaignState 3A6A:1B9E F table
@@ -798,7 +797,6 @@ overlap HeatDissipationBySinkCountQ8_8 SaveDirectory
 overlap HeatDissipationBySinkCountQ8_8 SaveCampaignSnapshot
 overlap SaveCampaignSnapshot SavedScenarioUnitMapX
 overlap SaveCampaignSnapshot SavedScenarioUnitMapY
-overlap CampaignState1B8E RandomSelectionPoolCount
 overlap MissionDateAdvanceMonths MouseCursorBackingSourceTileX
 overlap MissionDateAdvanceMonths MouseCursorBackingSourcePixelY
 overlap MissionDateAdvanceMonths MouseCursorBackingWidthTiles

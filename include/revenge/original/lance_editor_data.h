@@ -3,6 +3,7 @@
 
 #include "revenge/far_memory.h"
 #include "revenge/original/campaign_data.h"
+#include "revenge/original_data.h"
 #include "revenge/roster.h"
 #include "revenge/types.h"
 
@@ -28,8 +29,9 @@ enum
 #define TrainingScenarioAvailability TrainingScenarioCompletionFlags
 #define RandomUnitTypePool ReplayCampaignState
 #define RandomPilotPool ReplayExtendedCampaignState
+/* DS:1B8E: the pool's count is the replay copy of its count. */
+#define RandomSelectionPoolCount CampaignState1B8E
 
-extern byte RandomSelectionPoolCount;
 extern UnitSelectionCard UnitSelectionCards[UNIT_SELECTION_CARD_COUNT];
 extern word16 LanceEditorFirstBriefingPending;
 extern word16 LanceEditorBriefingPresented;

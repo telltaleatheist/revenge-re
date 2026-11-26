@@ -3,7 +3,6 @@
 
 #include "revenge/original/lance_editor_data.h"
 
-byte RandomSelectionPoolCount;
 UnitSelectionCard UnitSelectionCards[UNIT_SELECTION_CARD_COUNT];
 word16 LanceEditorFirstBriefingPending;
 word16 LanceEditorBriefingPresented;
