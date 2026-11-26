@@ -3,10 +3,10 @@
 #endif
 
 #include "revenge/platform_backend.h"
-#include "game_paths.h"
 #include "revenge/interrupts.h"
 #include "revenge/far_memory.h"
 #include "revenge/original_data.h"
+#include "revenge/original_import.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
 #include "revenge/audio.h"
@@ -43,59 +43,24 @@ static byte *ResolveOriginalDataPointer(word16 dataOffset)
 	return HostFarPointer_Resolve(encodedAddress);
 }
 
+/* The program the import accepted (revenge/original_import.h), loaded as DOS
+ * loaded it: the load image at segment 0800h after the 100h-byte PSP, each
+ * relocated segment word moved by the load segment. These are the bytes the
+ * import checked, whole, not the file again. */
 static void LoadOriginalModuleImage(byte *programBlock, uint32 blockBytes)
 {
-	FILE *executable;
-	byte mzHeader[0x1C];
-	word16 headerParagraphs;
-	word16 relocationCount;
-	word16 relocationTableOffset;
-	long fileSize;
-	long moduleSize;
-	word16 relocationIndex;
+	size_t moduleSize = OriginalImport_ImageBytes();
+	size_t relocationCount = OriginalImport_RelocationCount();
+	size_t relocationIndex;
 
-	executable = fopen(GamePaths_Executable(), "rb");
-	if (executable == NULL)
-		return;
-	if (fread(mzHeader, sizeof(mzHeader), 0x01, executable) != 0x01 ||
-		mzHeader[0x00] != 'M' || mzHeader[0x01] != 'Z')
-	{
-		fclose(executable);
-		return;
-	}
-
-	headerParagraphs = ReadLittleEndianWord(&mzHeader[0x08]);
-	relocationCount = ReadLittleEndianWord(&mzHeader[0x06]);
-	relocationTableOffset = ReadLittleEndianWord(&mzHeader[0x18]);
-	fseek(executable, 0x00L, SEEK_END);
-	fileSize = ftell(executable);
-	moduleSize = fileSize - (long) headerParagraphs * 0x10L;
-	/* The DOS PSP occupies the first 100h bytes of the memory block and the
-	 * executable module begins at load segment 0800h. */
 	if (moduleSize > 0x00 && (uint32) moduleSize + 0x0100UL <= blockBytes)
-	{
-		fseek(executable, (long) headerParagraphs * 0x10L, SEEK_SET);
-		if (fread(programBlock + 0x0100, 0x01, (size_t) moduleSize,
-				executable) != (size_t) moduleSize)
-		{
-			fclose(executable);
-			return;
-		}
-	}
-
-	fseek(executable, relocationTableOffset, SEEK_SET);
+		memcpy(programBlock + 0x0100, OriginalImage, moduleSize);
 	for (relocationIndex = 0x0000; relocationIndex < relocationCount;
 		++relocationIndex)
 	{
-		byte relocation[0x04];
-		uint32 targetOffset;
+		uint32 targetOffset = 0x0100UL + OriginalImport_Relocation(relocationIndex);
 		word16 relocatedSegment;
 
-		if (fread(relocation, sizeof(relocation), 0x01, executable) != 0x01)
-			break;
-		targetOffset = 0x0100UL +
-			(uint32) ReadLittleEndianWord(&relocation[0x02]) * 0x10UL +
-			ReadLittleEndianWord(&relocation[0x00]);
 		if (targetOffset + 0x01 >= blockBytes)
 			continue;
 		relocatedSegment = (word16) (
@@ -103,73 +68,42 @@ static void LoadOriginalModuleImage(byte *programBlock, uint32 blockBytes)
 		programBlock[targetOffset] = (byte) relocatedSegment;
 		programBlock[targetOffset + 0x01] = (byte) (relocatedSegment >> 0x08);
 	}
-	fclose(executable);
 }
 
+/* The initialised part of segment 3A6A from the same image, the rest zero, its
+ * relocated segment words moved by the load segment. */
 static void LoadOriginalDataSegment(void)
 {
-	FILE *executable;
-	byte mzHeader[0x1C];
-	word16 headerParagraphs;
-	word16 relocationCount;
-	word16 relocationTableOffset;
-	long moduleSize;
-	long dataFileOffset;
-	word16 relocationIndex;
+	size_t moduleSize = OriginalImport_ImageBytes();
+	size_t relocationCount = OriginalImport_RelocationCount();
+	size_t relocationIndex;
 
 	memset(originalDataSegment, 0x00, sizeof(originalDataSegment));
-	executable = fopen(GamePaths_Executable(), "rb");
-	if (executable == NULL)
-		return;
-	if (fread(mzHeader, sizeof(mzHeader), 0x01, executable) != 0x01 ||
-		mzHeader[0x00] != 'M' || mzHeader[0x01] != 'Z')
+	if (moduleSize > ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET)
 	{
-		fclose(executable);
-		return;
-	}
-
-	headerParagraphs = ReadLittleEndianWord(&mzHeader[0x08]);
-	relocationCount = ReadLittleEndianWord(&mzHeader[0x06]);
-	relocationTableOffset = ReadLittleEndianWord(&mzHeader[0x18]);
-	dataFileOffset = (long)headerParagraphs * 0x10L + 0x326A0L;
-	fseek(executable, 0x00L, SEEK_END);
-	moduleSize = ftell(executable) - (long)headerParagraphs * 0x10L;
-	if (moduleSize > 0x326A0L)
-	{
-		size_t initializedByteCount = (size_t)(moduleSize - 0x326A0L);
+		size_t initializedByteCount = moduleSize - ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET;
 		if (initializedByteCount > sizeof(originalDataSegment))
 			initializedByteCount = sizeof(originalDataSegment);
-		fseek(executable, dataFileOffset, SEEK_SET);
-		if (fread(originalDataSegment, 0x01, initializedByteCount,
-				executable) != initializedByteCount)
-		{
-			fclose(executable);
-			return;
-		}
+		memcpy(originalDataSegment, &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET],
+			initializedByteCount);
 	}
 
-	fseek(executable, relocationTableOffset, SEEK_SET);
 	for (relocationIndex = 0x0000; relocationIndex < relocationCount;
 		++relocationIndex)
 	{
-		byte relocation[0x04];
-		uint32 targetLinear;
+		uint32 targetLinear = OriginalImport_Relocation(relocationIndex);
 		word16 dataOffset;
 		word16 relocatedSegment;
 
-		if (fread(relocation, sizeof(relocation), 0x01, executable) != 0x01)
-			break;
-		targetLinear = (uint32)ReadLittleEndianWord(&relocation[0x02]) *
-			0x10UL + ReadLittleEndianWord(&relocation[0x00]);
-		if (targetLinear < 0x326A0UL || targetLinear >= 0x4269FUL)
+		if (targetLinear < ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET ||
+			targetLinear >= ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + 0xFFFFUL)
 			continue;
-		dataOffset = (word16)(targetLinear - 0x326A0UL);
+		dataOffset = (word16)(targetLinear - ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET);
 		relocatedSegment = (word16)(
 			ReadLittleEndianWord(&originalDataSegment[dataOffset]) + 0x0800);
 		originalDataSegment[dataOffset] = (byte)relocatedSegment;
 		originalDataSegment[dataOffset + 0x01] = (byte)(relocatedSegment >> 0x08);
 	}
-	fclose(executable);
 }
 
 void SDLBackend_InitializeDOSMemoryArena(void)
