@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS   /* original_import_for_tests.h uses fopen */
 #include "fake_backend.h"
 #include "revenge/original_data.h"
 #include "revenge/original/lance_editor_data.h"

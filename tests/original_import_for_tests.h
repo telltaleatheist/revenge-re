@@ -4,6 +4,8 @@
 /* For tests that check the game's own text or data: they import it from the
  * copy REVENGE_GAME names, and skip (77) when none is given. */
 
+/* A test including this defines _CRT_SECURE_NO_WARNINGS first, for MSVC,
+ * which otherwise rejects fopen under /W4 /WX. */
 #include "revenge/original_import.h"
 
 #include <stdio.h>

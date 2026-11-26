@@ -74,63 +74,46 @@ const char *const SelectBarrageStartPrompt =
 	ORIGINAL_TEXT(0x465C);
 const char *const SelectBarrageEndPrompt = ORIGINAL_TEXT(0x467B);
 const char *const SelectFireTargetPrompt = ORIGINAL_TEXT(0x46A5);
-static const char *const TacticalCommandsText = ORIGINAL_TEXT(0x4EDF);
-static const char *const TacticalLanceCommandsText = ORIGINAL_TEXT(0x4EE8);
-static const char *const TacticalTargetText = ORIGINAL_TEXT(0x4EF7);
-static const char *const TacticalCeaseFireAtText = ORIGINAL_TEXT(0x4F00);
-static const char *const TacticalStopText = ORIGINAL_TEXT(0x4F0E);
-static const char *const TacticalWalkingSpeedText = ORIGINAL_TEXT(0x4F13);
-static const char *const TacticalRunningSpeedText = ORIGINAL_TEXT(0x4F21);
-static const char *const TacticalMoveText = ORIGINAL_TEXT(0x4F2F);
-static const char *const TacticalStoppedText = ORIGINAL_TEXT(0x4F35);
-static const char *const TacticalCruisingSpeedText = ORIGINAL_TEXT(0x4F3A);
-static const char *const TacticalFlankSpeedText = ORIGINAL_TEXT(0x4F49);
-static const char *const TacticalFireAtNoOneText = ORIGINAL_TEXT(0x4F55);
-static const char *const TacticalFireDefensivelyText = ORIGINAL_TEXT(0x4F64);
-static const char *const TacticalFireAtWillText = ORIGINAL_TEXT(0x4F75);
 const char *TacticalUnitCommandTextTable[0x0E] =
 {
-	TacticalCommandsText, TacticalLanceCommandsText,
-	TacticalTargetText, TacticalCeaseFireAtText,
-	TacticalStopText, TacticalWalkingSpeedText,
-	TacticalRunningSpeedText, TacticalMoveText,
-	TacticalStoppedText, TacticalCruisingSpeedText,
-	TacticalFlankSpeedText, TacticalFireAtNoOneText,
-	TacticalFireDefensivelyText, TacticalFireAtWillText
+	ORIGINAL_TEXT(0x4EDF), /* TacticalCommandsText */
+	ORIGINAL_TEXT(0x4EE8), /* TacticalLanceCommandsText */
+	ORIGINAL_TEXT(0x4EF7), /* TacticalTargetText */
+	ORIGINAL_TEXT(0x4F00), /* TacticalCeaseFireAtText */
+	ORIGINAL_TEXT(0x4F0E), /* TacticalStopText */
+	ORIGINAL_TEXT(0x4F13), /* TacticalWalkingSpeedText */
+	ORIGINAL_TEXT(0x4F21), /* TacticalRunningSpeedText */
+	ORIGINAL_TEXT(0x4F2F), /* TacticalMoveText */
+	ORIGINAL_TEXT(0x4F35), /* TacticalStoppedText */
+	ORIGINAL_TEXT(0x4F3A), /* TacticalCruisingSpeedText */
+	ORIGINAL_TEXT(0x4F49), /* TacticalFlankSpeedText */
+	ORIGINAL_TEXT(0x4F55), /* TacticalFireAtNoOneText */
+	ORIGINAL_TEXT(0x4F64), /* TacticalFireDefensivelyText */
+	ORIGINAL_TEXT(0x4F75) /* TacticalFireAtWillText */
 };
-static const char *const ShellCoordinateText = ORIGINAL_TEXT(0x4F82);
-static const char *const CallOffShellingText = ORIGINAL_TEXT(0x4F93);
-static const char *const RollingBarrageText = ORIGINAL_TEXT(0x4FA5);
-static const char *const CallOffBarrageText = ORIGINAL_TEXT(0x4FB5);
-static const char *const CallStrafingText = ORIGINAL_TEXT(0x4FC6);
-static const char *const CallOffStrafingText = ORIGINAL_TEXT(0x4FD4);
-static const char *const CloseAssaultText = ORIGINAL_TEXT(0x4FE6);
-static const char *const CeaseAssaultText = ORIGINAL_TEXT(0x4FF4);
 const char *TacticalSupportCommandTextTable[0x08] =
 {
-	ShellCoordinateText, CallOffShellingText,
-	RollingBarrageText, CallOffBarrageText,
-	CallStrafingText, CallOffStrafingText,
-	CloseAssaultText, CeaseAssaultText
+	ORIGINAL_TEXT(0x4F82), /* ShellCoordinateText */
+	ORIGINAL_TEXT(0x4F93), /* CallOffShellingText */
+	ORIGINAL_TEXT(0x4FA5), /* RollingBarrageText */
+	ORIGINAL_TEXT(0x4FB5), /* CallOffBarrageText */
+	ORIGINAL_TEXT(0x4FC6), /* CallStrafingText */
+	ORIGINAL_TEXT(0x4FD4), /* CallOffStrafingText */
+	ORIGINAL_TEXT(0x4FE6), /* CloseAssaultText */
+	ORIGINAL_TEXT(0x4FF4) /* CeaseAssaultText */
 };
-static const char *const OverburnOffText = ORIGINAL_TEXT(0x5002);
-static const char *const OverburnOnText = ORIGINAL_TEXT(0x5010);
 const char *TacticalOverburnTextTable[0x02] =
-	{ OverburnOffText, OverburnOnText };
-static const char *const LanceCommandText = ORIGINAL_TEXT(0x5033);
-static const char *const LanceFireText = ORIGINAL_TEXT(0x503B);
-static const char *const LanceAssaultText = ORIGINAL_TEXT(0x5040);
-static const char *const LanceReconText = ORIGINAL_TEXT(0x5048);
-static const char *const LanceLightText = ORIGINAL_TEXT(0x504E);
-static const char *const LanceMediumText = ORIGINAL_TEXT(0x5054);
-static const char *const LanceHeavyText = ORIGINAL_TEXT(0x505B);
-static const char *const LanceAssaultWeightText = ORIGINAL_TEXT(0x5061);
+	{ ORIGINAL_TEXT(0x5002) /* OverburnOffText */, ORIGINAL_TEXT(0x5010) /* OverburnOnText */ };
 const char *LanceStatusTextTable[0x08] =
 {
-	LanceCommandText, LanceFireText,
-	LanceAssaultText, LanceReconText,
-	LanceLightText, LanceMediumText,
-	LanceHeavyText, LanceAssaultWeightText
+	ORIGINAL_TEXT(0x5033), /* LanceCommandText */
+	ORIGINAL_TEXT(0x503B), /* LanceFireText */
+	ORIGINAL_TEXT(0x5040), /* LanceAssaultText */
+	ORIGINAL_TEXT(0x5048), /* LanceReconText */
+	ORIGINAL_TEXT(0x504E), /* LanceLightText */
+	ORIGINAL_TEXT(0x5054), /* LanceMediumText */
+	ORIGINAL_TEXT(0x505B), /* LanceHeavyText */
+	ORIGINAL_TEXT(0x5061) /* LanceAssaultWeightText */
 };
 const char DeadText[] = "Dead";
 RevengeMapEdgeEffectRecord MapEdgeEffectQueue[MAP_EDGE_EFFECT_RECORD_COUNT];
@@ -177,13 +160,13 @@ const char *const CombatRatingIncredibleText = ORIGINAL_TEXT(0x4E2B);
 const char *const CombatRatingNoneText = ORIGINAL_TEXT(0x4E36);
 const char *CombatRatingDescriptionTable[0x07] =
 {
-	CombatRatingLightText,
-	CombatRatingModerateText,
-	CombatRatingHeavyText,
-	CombatRatingBrutalText,
-	CombatRatingDevastatingText,
-	CombatRatingIncredibleText,
-	CombatRatingNoneText
+	ORIGINAL_TEXT(0x366D), /* CombatRatingLightText */
+	ORIGINAL_TEXT(0x4E09), /* CombatRatingModerateText */
+	ORIGINAL_TEXT(0x4E12), /* CombatRatingHeavyText */
+	ORIGINAL_TEXT(0x4E18), /* CombatRatingBrutalText */
+	ORIGINAL_TEXT(0x4E1F), /* CombatRatingDevastatingText */
+	ORIGINAL_TEXT(0x4E2B), /* CombatRatingIncredibleText */
+	ORIGINAL_TEXT(0x4E36) /* CombatRatingNoneText */
 };
 RevengeUnitRecord PersistentUnitRoster[0x18];
 RevengeUnitRecord LiveScenarioUnits[0x18];
