@@ -317,10 +317,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HYDRATE_DATA_OBJECT(FixedUnitTypeIds, 0x3356);
 	HYDRATE_DATA_OBJECT(LanceEditorLayout, 0x3470);
 #undef HYDRATE_DATA_OBJECT
-
-	/* REVENGE.EXE stores the active driver's 16-bit near offset at DS:62B8. */
-	MIDIParser.ActiveDriverOffset =
-		ReadLittleEndianWord(&originalDataSegment[0x62B8]);
 }
 
 _Noreturn void SDLBackend_TerminateProcess(byte exitCode)

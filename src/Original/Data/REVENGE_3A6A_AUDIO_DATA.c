@@ -21,10 +21,8 @@ MIDISequenceState MIDISequence =
 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
 	0x00, 0x00
 };
-MIDIParserState MIDIParser =
-{
-	0x0000, 0x0000, 0x0000, 0x0000, 0x6766
-};
+/* DS:62B0-62B9, filled from the player's copy at start (original_import_pieces.txt). */
+MIDIParserState MIDIParser;
 byte MIDIChannelMap[0x10];
 MIDISystemExclusiveState MIDISystemExclusive;
 SpeakerMIDIRuntimeState SpeakerMIDIRuntime;
