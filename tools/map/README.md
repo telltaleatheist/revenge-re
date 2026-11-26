@@ -37,7 +37,8 @@ objects share a byte with no overlap line naming the pair, or when
   operands of each procedure, less those of objects already placed, bound
   where it can start. The object must not overlap placed objects and must
   match the image's bytes if it starts with any. It is placed only when one
-  start is left, and only if the run bytes don't contradict it.
+  start is left, an instruction reaches that first byte, and the run bytes
+  don't contradict it.
 
 The run kind can be repeated: with `REVENGE_MAP_DUMP_DIR` set to a folder, the
 harness writes `SNAP.objects` there at each snap, with every object's name,
