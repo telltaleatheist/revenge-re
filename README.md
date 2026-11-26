@@ -131,7 +131,7 @@ original-bug and SDL-boundary rules. Release changes are in
 
 ## Verification and diagnostics
 
-`tools/Test-PreservationLedgers.ps1` checks paths, address/name uniqueness,
+`tools/check_ledgers.py` (ctest `preservation.ledger_integrity`) checks paths, address/name uniqueness,
 aliases, final verification states, addressless helpers and direct SDL access
 from `src/Original`. Passing tests are regression evidence; the assembly and
 observed original behavior remain authoritative.

@@ -90,18 +90,16 @@ endif()
 chr_strict(chr_original_audio)
 
 if(BUILD_TESTING)
-	find_program(CHR_POWERSHELL NAMES pwsh powershell)
-	if(CHR_POWERSHELL)
-		add_test(NAME preservation.ledger_integrity
-			COMMAND ${CHR_POWERSHELL} -NoProfile -File
-				${CMAKE_CURRENT_SOURCE_DIR}/tools/Test-PreservationLedgers.ps1)
-	endif()
-
-	# The game's text stays out of the tree, and the import table matches the
-	# sources and the player's copy. Both need a copy of the game named by
-	# REVENGE_GAME and skip without one.
 	find_package(Python3 COMPONENTS Interpreter)
 	if(Python3_Interpreter_FOUND)
+		add_test(NAME preservation.ledger_integrity
+			COMMAND ${Python3_EXECUTABLE} -I
+				${CMAKE_CURRENT_SOURCE_DIR}/tools/check_ledgers.py
+				--root ${CMAKE_CURRENT_SOURCE_DIR})
+
+		# The game's text stays out of the tree, and the import table matches
+		# the sources and the player's copy. Both need a copy of the game named
+		# by REVENGE_GAME and skip without one.
 		add_test(NAME source.text_audit
 			COMMAND ${Python3_EXECUTABLE} -I
 				${CMAKE_CURRENT_SOURCE_DIR}/tools/text_audit.py

@@ -40,10 +40,10 @@ where they aid comparison.
 
 Run before opening a pull request:
 
-```powershell
+```sh
 python3 tools/text_audit.py
 python3 tools/import/make_import_table.py --check
-./tools/Test-PreservationLedgers.ps1
+python3 tools/check_ledgers.py
 ./Build.ps1 -Headless -Configuration Release
 ./Build.ps1 -Configuration Release -Package
 ```

@@ -52,8 +52,9 @@ docs/
 typed reconstructed C. A file move or readability change does not alter ASM
 verification status.
 
-Run `tools/Update-MethodTable.ps1` to refresh mechanical inventory fields and
-`tools/Test-PreservationLedgers.ps1` to validate both ledgers. Manually audited
+`tools/Update-MethodTable.ps1` refreshed the mechanical inventory fields from
+the evidence, which is kept outside this tree. Run `tools/check_ledgers.py` to
+validate both ledgers. Manually audited
 evidence and status fields must not be replaced by generated guesses.
 
 ## Other directories

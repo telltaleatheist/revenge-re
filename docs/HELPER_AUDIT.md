@@ -179,7 +179,7 @@ in `src/Support/video_bridge.c` as `Video_ResolveIndexedRenderTarget` and
 `Video_DrawIndexedPixelToActiveTarget`; no new Original procedure boundary is
 claimed for either adapter.
 
-`tools/Test-PreservationLedgers.ps1` now prevents recurrence by checking all
+`tools/check_ledgers.py` (first written as `Test-PreservationLedgers.ps1`) now prevents recurrence by checking all
 787 evidence rows and 785 executable procedure rows for missing paths,
 duplicate addresses, unexplained duplicate C names, non-final verification
 statuses, addressless static functions, and direct SDL use in `src/Original`.
