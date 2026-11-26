@@ -682,10 +682,7 @@ if(CHR_BUILD_SDL)
         src/SDL/platform.c
         src/SDL/system.c)
     target_include_directories(chr_sdl_backend PUBLIC src/SDL include)
-    # The host reads the runtime's data and calls its trace, so a target that
-    # links only the host still gets the runtime after it (GNU ld reads each
-    # static library once, in order).
-    target_link_libraries(chr_sdl_backend PUBLIC ${CHR_SDL_TARGET} chr_original_runtime)
+    target_link_libraries(chr_sdl_backend PUBLIC ${CHR_SDL_TARGET})
     chr_strict(chr_sdl_backend)
 
     # The diagnostic still consumes the retired host-side CPS adapter.
@@ -753,9 +750,17 @@ if(CHR_BUILD_SDL)
         add_test(NAME platform.sdl_game_paths COMMAND test_sdl_game_paths)
 
         add_executable(test_sdl_renderer_fallback tests/test_sdl_renderer_fallback.c)
-        target_link_libraries(test_sdl_renderer_fallback PRIVATE
-            chr_original_runtime
-            chr_sdl_backend)
+        # The runtime and the host call each other, and this test calls only
+        # the host. GNU ld reads each static library once, in order, so it is
+        # told to read the pair again until nothing is missing.
+        if(CMAKE_C_LINK_GROUP_USING_RESCAN_SUPPORTED)
+            target_link_libraries(test_sdl_renderer_fallback PRIVATE
+                "$<LINK_GROUP:RESCAN,chr_original_runtime,chr_sdl_backend>")
+        else()
+            target_link_libraries(test_sdl_renderer_fallback PRIVATE
+                chr_original_runtime
+                chr_sdl_backend)
+        endif()
         chr_strict(test_sdl_renderer_fallback)
         add_test(NAME platform.sdl_renderer_fallback COMMAND test_sdl_renderer_fallback)
     endif()
