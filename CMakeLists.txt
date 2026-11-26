@@ -682,7 +682,10 @@ if(CHR_BUILD_SDL)
         src/SDL/platform.c
         src/SDL/system.c)
     target_include_directories(chr_sdl_backend PUBLIC src/SDL include)
-    target_link_libraries(chr_sdl_backend PUBLIC ${CHR_SDL_TARGET})
+    # The host reads the runtime's data and calls its trace, so a target that
+    # links only the host still gets the runtime after it (GNU ld reads each
+    # static library once, in order).
+    target_link_libraries(chr_sdl_backend PUBLIC ${CHR_SDL_TARGET} chr_original_runtime)
     chr_strict(chr_sdl_backend)
 
     # The diagnostic still consumes the retired host-side CPS adapter.
