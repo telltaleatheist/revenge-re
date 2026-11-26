@@ -17,7 +17,7 @@ What is searched for, from the player's copy:
 Four kinds of hit, each named by the file and line in the tree, the game
 file and the offset of the match, and its length. Never the text.
 - wording: a line of the game's with at least MIN_WORDS words, or two words
-  and PHRASE_LENGTH characters, anywhere in a tracked file, case folded and
+  and PHRASE_LENGTH characters, anywhere in a tracked or new (not ignored) file, case folded and
   as whole words;
 - piece: a string literal in C source, or a quoted string in its comments,
   of at least PIECE_MIN characters, three of them letters, that occurs
@@ -194,7 +194,7 @@ def locate(marks, position):
 
 
 def tracked(root):
-    run = subprocess.run(["git", "-C", root, "ls-files", "-z"], capture_output=True)
+    run = subprocess.run(["git", "-C", root, "ls-files", "-z", "--cached", "--others", "--exclude-standard"], capture_output=True)
     if run.returncode == 0 and os.path.isdir(os.path.join(root, ".git")):
         return [f.decode() for f in run.stdout.split(b"\0") if f]
     out = []
