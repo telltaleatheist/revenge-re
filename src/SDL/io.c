@@ -1,3 +1,8 @@
+/* ftruncate and off_t are POSIX, which glibc hides under -std=c17 unless
+ * asked for. */
+#if !defined(_WIN32) && !defined(_POSIX_C_SOURCE)
+#define _POSIX_C_SOURCE 200809L
+#endif
 #include "revenge/platform_backend.h"
 #include "game_paths.h"
 
