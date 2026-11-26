@@ -4,6 +4,7 @@
 
 #include "host_config.h"
 #include "revenge/original_import.h"
+#include "game_paths.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -36,7 +37,7 @@ int main(int argc, char **argv)
 	if (!SDLHost_ConfigureAssetDirectory())
 		return 0x01;
 	/* The game's own text and data come from the player's copy. */
-	if (!OriginalImport_Load("REVENGE.EXE"))
+	if (!OriginalImport_Load(GamePaths_Executable()))
 		return 0x01;
 	RevengeInstallCrashDiagnostics();
 	RevengeTrace("entry: initialize\n");

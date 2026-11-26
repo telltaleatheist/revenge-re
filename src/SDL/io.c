@@ -1,4 +1,5 @@
 #include "revenge/platform_backend.h"
+#include "game_paths.h"
 
 #include <SDL3/SDL.h>
 #include <errno.h>
@@ -17,6 +18,7 @@
 enum
 {
     FileHandleCapacity = 0x40,
+    HostPathCapacity = 1024,
     FirstGameFileHandle = 0x05,
     DosAttributeReadOnly = 0x01,
     DosAccessReadOnly = 0x00,
@@ -122,10 +124,16 @@ void SDLBackend_SelectDefaultDrive(byte zeroBasedDrive)
 
 int16 SDLBackend_CreateFile(uint16 attributes, const char *filePath)
 {
+    char hostPath[HostPathCapacity];
+    int result;
+
     (void)attributes;
     if (filePath == 0)
         return -EINVAL;
-    return StoreFile(SDL_IOFromFile(filePath, "w+b"), DosAccessReadWrite);
+    result = GamePaths_Resolve(filePath, GAME_PATH_CREATE, hostPath, sizeof(hostPath));
+    if (result != 0)
+        return (int16)result;
+    return StoreFile(SDL_IOFromFile(hostPath, "w+b"), DosAccessReadWrite);
 }
 
 int16 SDLBackend_OpenFile(const char *filePath, uint16 openFlags)
@@ -146,7 +154,16 @@ int16 SDLBackend_OpenFile(const char *filePath, uint16 openFlags)
         access = DosAccessReadOnly;
     mode = access == DosAccessReadOnly ? "rb" : "r+b";
 
-    return StoreFile(SDL_IOFromFile(filePath, mode), access);
+    {
+        char hostPath[HostPathCapacity];
+        int result = GamePaths_Resolve(filePath,
+            access == DosAccessReadOnly ? GAME_PATH_READ : GAME_PATH_WRITE,
+            hostPath, sizeof(hostPath));
+
+        if (result != 0)
+            return (int16)result;
+        return StoreFile(SDL_IOFromFile(hostPath, mode), access);
+    }
 }
 
 int16 SDLBackend_CloseFile(int16 fileHandle)
@@ -239,7 +256,7 @@ int16 SDLBackend_DeleteFile(const char *filePath)
 {
     if (filePath == 0)
         return -EINVAL;
-    return SDL_RemovePath(filePath) ? 0x0000 : HostFileError();
+    return (int16)GamePaths_Delete(filePath);
 }
 
 int16 SDLBackend_GetSetFileAttributes(
@@ -248,14 +265,26 @@ int16 SDLBackend_GetSetFileAttributes(
     uint16 attributes)
 {
     struct stat status;
+    char hostPath[HostPathCapacity];
+    int result;
 
     if (filePath == 0)
         return -EINVAL;
-    if (stat(filePath, &status) != 0)
+    result = GamePaths_Resolve(filePath,
+        operation == DOS_FILE_ATTRIBUTES_SET ? GAME_PATH_WRITE : GAME_PATH_READ,
+        hostPath, sizeof(hostPath));
+    if (result != 0)
+        return (int16)result;
+    if (stat(hostPath, &status) != 0)
         return HostFileError();
 
     if (operation == DOS_FILE_ATTRIBUTES_GET)
     {
+        /* The install's files may be read-only on disk; to the game they
+         * are as writable as on its own floppy, since its writes go to the
+         * save folder's copy. */
+        if (GamePaths_IsInstallFile(filePath))
+            return 0x0000;
 #if defined(_WIN32)
         return (status.st_mode & _S_IWRITE) == 0 ? DosAttributeReadOnly : 0x0000;
 #else
@@ -267,7 +296,7 @@ int16 SDLBackend_GetSetFileAttributes(
         return -EINVAL;
 
 #if defined(_WIN32)
-    if (_chmod(filePath,
+    if (_chmod(hostPath,
         (attributes & DosAttributeReadOnly) != 0
             ? _S_IREAD
             : _S_IREAD | _S_IWRITE) != 0)
@@ -277,7 +306,7 @@ int16 SDLBackend_GetSetFileAttributes(
         status.st_mode &= ~(S_IWUSR | S_IWGRP | S_IWOTH);
     else
         status.st_mode |= S_IWUSR;
-    if (chmod(filePath, status.st_mode) != 0)
+    if (chmod(hostPath, status.st_mode) != 0)
         return HostFileError();
 #endif
     /* INT 21h/AH=43h returns through the wrapper's CX->AX exchange. */

@@ -99,6 +99,13 @@ A relative or absolute path may instead keep program and data separate.
 `REVENGE_ASSET_DIRECTORY` overrides the configuration for launchers and test
 environments.
 
+The original installation is only read, so it may be on a read-only disk.
+Whatever the game writes, its saves included, goes to a folder of our own:
+SDL's per-user preferences folder for "Crescent Hawks Revenge", or
+`REVENGE_SAVE_DIRECTORY` when it is set. A file the game changes is copied
+there the first time and the copy is used from then on. The game's file
+names are found whatever their case on disk.
+
 ## Preservation model
 
 This tree carries none of the original game's text, art or data: the program

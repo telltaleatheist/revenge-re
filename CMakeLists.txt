@@ -660,6 +660,7 @@ if(CHR_BUILD_SDL)
         src/SDL/audio.c
         src/SDL/host_config.c
         src/SDL/io.c
+        src/SDL/game_paths.c
         src/SDL/platform.c
         src/SDL/system.c)
     target_include_directories(chr_sdl_backend PUBLIC src/SDL include)
@@ -718,5 +719,16 @@ if(CHR_BUILD_SDL)
             chr_sdl_backend)
         chr_strict(test_sdl_dos_io)
         add_test(NAME platform.sdl_dos_file_semantics COMMAND test_sdl_dos_io)
+        # Tests that write files keep them in the build folder, never in the
+        # player's own save folder.
+        set_tests_properties(platform.sdl_dos_file_semantics PROPERTIES
+            ENVIRONMENT "REVENGE_SAVE_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}/test-saves/")
+
+        add_executable(test_sdl_game_paths tests/test_sdl_game_paths.c)
+        target_link_libraries(test_sdl_game_paths PRIVATE
+            chr_original_runtime
+            chr_sdl_backend)
+        chr_strict(test_sdl_game_paths)
+        add_test(NAME platform.sdl_game_paths COMMAND test_sdl_game_paths)
     endif()
 endif()

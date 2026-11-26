@@ -3,6 +3,7 @@
 #endif
 
 #include "revenge/platform_backend.h"
+#include "game_paths.h"
 #include "revenge/interrupts.h"
 #include "revenge/far_memory.h"
 #include "revenge/original_data.h"
@@ -53,7 +54,7 @@ static void LoadOriginalModuleImage(byte *programBlock, uint32 blockBytes)
 	long moduleSize;
 	word16 relocationIndex;
 
-	executable = fopen("REVENGE.EXE", "rb");
+	executable = fopen(GamePaths_Executable(), "rb");
 	if (executable == NULL)
 		return;
 	if (fread(mzHeader, sizeof(mzHeader), 0x01, executable) != 0x01 ||
@@ -113,7 +114,7 @@ static void LoadOriginalDataSegment(void)
 	word16 relocationIndex;
 
 	memset(originalDataSegment, 0x00, sizeof(originalDataSegment));
-	executable = fopen("REVENGE.EXE", "rb");
+	executable = fopen(GamePaths_Executable(), "rb");
 	if (executable == NULL)
 		return;
 	if (fread(mzHeader, sizeof(mzHeader), 0x01, executable) != 0x01 ||
