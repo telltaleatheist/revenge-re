@@ -779,13 +779,13 @@ unplaced WeaponDefinitions 159 its bytes match nowhere (pointers or values diffe
 # Where there is no note, the two are one byte in the original and the run
 # must keep them equal (check_dump.py's agree lines); a note says why they
 # can differ for now.
-overlap CachedFileDescriptors UnitTemplatePathOffset host pointer: the descriptor holds the port's own pointer
-overlap CachedFileDescriptors UnitTemplatePathSegment host pointer: the descriptor holds the port's own pointer
-overlap CachedFileDescriptors ScenarioResourcePathPointer host pointer: the descriptor holds the port's own pointer
-overlap CachedFileDescriptors TacticalResourcePathOffset host pointer: the descriptor holds the port's own pointer
-overlap CachedFileDescriptors TacticalResourcePathSegment host pointer: the descriptor holds the port's own pointer
+overlap CachedFileDescriptors UnitTemplatePathOffset host pointer: the descriptor's name pointer, set once at start; both are only read after
+overlap CachedFileDescriptors UnitTemplatePathSegment host pointer: the descriptor's name pointer, set once at start; both are only read after
+overlap CachedFileDescriptors ScenarioResourcePathPointer host pointer: the descriptor's name pointer, set once at start; both are only read after
+overlap CachedFileDescriptors TacticalResourcePathOffset host pointer: the descriptor's name pointer, set once at start; both are only read after
+overlap CachedFileDescriptors TacticalResourcePathSegment host pointer: the descriptor's name pointer, set once at start; both are only read after
 overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
-overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable size to settle: the original's table is 0Fh bytes
+overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable the original reads the constant missile bonus from DS:3D0D by weapon, over the selector's last 11h bytes
 overlap AdLibActivateRegisterList AdLibNineVoiceResetList the original's second constant list is the first one's tail
 overlap LinePrimaryYStep LinePrimaryXStep the original lays the two constant tables 4 bytes apart
 overlap LineSecondaryYStep LineSecondaryXStep the original lays the two constant tables 4 bytes apart
