@@ -35,6 +35,8 @@ typedef struct HarnessItem
 {
 	int kind;
 	unsigned idle;              /* extra polls before it */
+	unsigned steps;             /* battle steps before it, since the last key or snap */
+	unsigned still;             /* polls without a step before it (a message or menu up) */
 	uint16 key;                 /* ITEM_KEY */
 	uint16 x, y;                /* ITEM_MOUSE */
 	byte buttons;
@@ -51,6 +53,9 @@ static uint64_t stepNS = UINT64_C(1000000);
 static uint64_t polls;
 static uint64_t reads;
 static uint64_t pollsSinceItem;
+static unsigned stepsSinceItem; /* battle steps seen since the last key or snap */
+static byte lastSubtick;        /* TacticalClockSubtick at the previous poll */
+static uint64_t pollsStill;     /* polls since the last step, key or snap */
 static uint16 mouseX, mouseY;
 static byte mouseButtons;
 
@@ -127,6 +132,22 @@ static int ValidName(const char *name)
 }
 
 /* Tokens are separated by spaces, commas or new lines; '#' starts a comment. */
+/* A wait, NAME:N, adds N to *total; returns whether the token was one. */
+static int ReadWait(const char *token, const char *name, unsigned *total)
+{
+	size_t length = strlen(name);
+	char *end;
+	unsigned long count;
+
+	if (strncmp(token, name, length) != 0 || token[length] != ':')
+		return 0;
+	count = strtoul(token + length + 1, &end, 10);
+	if (end == token + length + 1 || *end != '\0' || count > 1000000UL)
+		Stop("a bad wait count (idle:N, steps:N or still:N, N up to 1000000)", token);
+	*total += (unsigned) count;
+	return 1;
+}
+
 static void ReadScript(const char *path)
 {
 	size_t length = 0;
@@ -134,6 +155,8 @@ static void ReadScript(const char *path)
 	char *cursor;
 	size_t capacity = 0;
 	unsigned idle = 0;
+	unsigned steps = 0;
+	unsigned still = 0;
 
 	if (text == NULL)
 		Stop("can't read the script", path);
@@ -165,16 +188,8 @@ static void ReadScript(const char *path)
 		token[tokenLength] = '\0';
 		cursor += tokenLength;
 		memset(&item, 0, sizeof(item));
-		if (strncmp(token, "idle:", 5) == 0)
-		{
-			char *end;
-			unsigned long count = strtoul(token + 5, &end, 10);
-
-			if (end == token + 5 || *end != '\0' || count > 1000000UL)
-				Stop("a bad idle count", token);
-			idle += (unsigned) count;
+		if (ReadWait(token, "idle", &idle) || ReadWait(token, "steps", &steps) || ReadWait(token, "still", &still))
 			continue;
-		}
 		if (strncmp(token, "@snap:", 6) == 0)
 		{
 			if (!ValidName(token + 6))
@@ -201,7 +216,11 @@ static void ReadScript(const char *path)
 				Stop("not a key the game reads", token);
 		}
 		item.idle = idle;
+		item.steps = steps;
+		item.still = still;
 		idle = 0;
+		steps = 0;
+		still = 0;
 		if (itemCount == capacity)
 		{
 			HarnessItem *grown;
@@ -436,8 +455,7 @@ static void Snap(const char *name)
 	FILE *list;
 
 	WriteFile(name, ".indices", SDLBackend_GetIndexedFramebuffer(), VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT);
-	Platform_PaletteRgb(palette);
-	WriteFile(name, ".palette", palette, sizeof(palette));
+	WriteFile(name, ".palette", palette, (size_t) Platform_PaletteRgb(palette) * 0x03);
 	SaveBlock(save);
 	WriteFile(name, ".save", save, sizeof(save));
 	WriteState(name);
@@ -457,15 +475,39 @@ static void Finish(void)
 	exit(0);
 }
 
+/* The 4th poll since the last key or snap, plus the item's idle:N; its
+ * steps:N battle steps since then; its still:N polls without a step. */
+static int ItemDue(const HarnessItem *item)
+{
+	return pollsSinceItem >= POLLS_PER_WAIT + (uint64_t) item->idle && stepsSinceItem >= item->steps
+		&& pollsStill >= item->still;
+}
+
+static void ItemTaken(void)
+{
+	pollsSinceItem = 0;
+	stepsSinceItem = 0;
+	pollsStill = 0;
+}
+
 int Harness_KeyPending(void)
 {
 	++polls;
 	++pollsSinceItem;
+	++pollsStill;
+	/* A battle step moves the subtick, and the battle loop polls at least
+	 * once a pass, so a poll that sees it changed counts one step. */
+	if (TacticalClockSubtick != lastSubtick)
+	{
+		lastSubtick = TacticalClockSubtick;
+		++stepsSinceItem;
+		pollsStill = 0;
+	}
 	while (itemIndex < itemCount)
 	{
 		const HarnessItem *item = &items[itemIndex];
 
-		if (pollsSinceItem < POLLS_PER_WAIT + (uint64_t) item->idle)
+		if (!ItemDue(item))
 		{
 			if (pollsSinceItem > STALL_POLLS)
 				Stop("the script stopped advancing", item->kind == ITEM_SNAP ? item->name : NULL);
@@ -477,7 +519,7 @@ int Harness_KeyPending(void)
 		{
 			Snap(item->name);
 			++itemIndex;
-			pollsSinceItem = 0;
+			ItemTaken();
 			return 0;
 		}
 		mouseX = item->x;
@@ -494,8 +536,7 @@ uint16 Harness_ReadKey(void)
 {
 	uint16 key;
 
-	while (itemIndex >= itemCount || items[itemIndex].kind != ITEM_KEY ||
-		pollsSinceItem < POLLS_PER_WAIT + (uint64_t) items[itemIndex].idle)
+	while (itemIndex >= itemCount || items[itemIndex].kind != ITEM_KEY || !ItemDue(&items[itemIndex]))
 	{
 		HostClock_Step();
 		(void) Harness_KeyPending();
@@ -503,8 +544,14 @@ uint16 Harness_ReadKey(void)
 	key = items[itemIndex].key;
 	++itemIndex;
 	++reads;
-	pollsSinceItem = 0;
+	ItemTaken();
 	return key;
+}
+
+void Harness_PlaceMouse(int16 x, int16 y)
+{
+	mouseX = (uint16) (x < 0 ? 0 : x >= VIDEO_SCREEN_WIDTH ? VIDEO_SCREEN_WIDTH - 1 : x);
+	mouseY = (uint16) (y < 0 ? 0 : y >= VIDEO_SCREEN_HEIGHT ? VIDEO_SCREEN_HEIGHT - 1 : y);
 }
 
 void Harness_Mouse(uint16 *x, uint16 *y, byte *buttons)

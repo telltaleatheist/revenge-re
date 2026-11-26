@@ -19,11 +19,16 @@
  *   clock.
  * - keys come from the script, each fed at the game's own keyboard polls: a
  *   key is pending on the 4th poll since the last item was taken (more after
- *   idle:N), so the run depends on what the game does, never on the host's
- *   speed. The mouse is where the script last put it (0,0 and no buttons at
- *   first). No SDL event reaches the game.
+ *   idle:N, not before steps:N battle steps since then, and not before
+ *   still:N polls without a step), so the run depends on what the game does,
+ *   never on the host's speed. A battle step is one move of the battle's
+ *   clock subtick: steps:N lands a key at the same point of a battle on any
+ *   machine, as polls don't, and still:N waits for the battle to stop for a
+ *   message or menu. The mouse is where the script or the game last put it (0,0
+ *   and no buttons at first). No SDL event reaches the game.
  * - @snap:NAME writes, at the next wait, NAME.indices (the 320x200 indexed
- *   frame), NAME.palette (its 256 RGB colours), NAME.save (the block a save
+ *   frame), NAME.palette (the RGB colours it can show: 16 in the 16-colour
+ *   mode, else 256), NAME.save (the block a save
  *   would write now) and NAME.state (the named state, one fact a line) to the
  *   output folder, and appends NAME to snaps.txt there.
  * - when the script is done, the next wait writes done.txt and ends the run.
@@ -49,9 +54,14 @@ int Harness_KeyPending(void);
  * due. */
 uint16 Harness_ReadKey(void);
 void Harness_Mouse(uint16 *x, uint16 *y, byte *buttons);
+/* The game placing the mouse (int 33h AX=4): it stays there until the script
+ * or the game moves it, as a mouse nobody touches does. */
+void Harness_PlaceMouse(int16 x, int16 y);
 
 /* From the platform layer (platform.c), for the harness. */
 uint16 Platform_RawKeypressForScancode(int scancode, byte modifierFlags);
-void Platform_PaletteRgb(byte out[0x300]);
+/* The colours the screen can show (16 in the 16-colour mode, else 256) as RGB
+ * into out; returns how many. */
+uint16 Platform_PaletteRgb(byte out[0x300]);
 
 #endif

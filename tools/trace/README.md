@@ -24,8 +24,9 @@ folder; `record.py` sets both. When it is on:
   seconds. The date is 1991-01-01 12:00:00 plus the clock.
 - **Keys are fed at the game's own keyboard polls**, never by the host's speed:
   a key is pending on the 4th poll after the previous item, or that many more
-  after `idle:N`. No SDL event reaches the game; the mouse stays where the
-  script puts it.
+  after `idle:N`, and, in a battle, once `steps:N` or `still:N` is met (below).
+  No SDL event reaches the game; the mouse stays where the
+  script or the game last put it, as a mouse nobody touches does.
 - **Nothing is shown**: frames are kept in memory, not presented.
 
 Running the same script twice gives byte-identical snaps (`repeat.py`).
@@ -38,6 +39,8 @@ Tokens, separated by spaces, commas or new lines; `#` starts a comment.
 |---|---|
 | `Return`, `Right`, `A`, `F1`, … | a key, by its SDL name; `Shift+`, `Ctrl+`, `Alt+` prefixes |
 | `idle:N` | N more polls before the next item |
+| `steps:N` | the next item waits for N battle steps since the previous key or snap |
+| `still:N` | the next item waits for N polls in a row without a battle step |
 | `mouse:X/Y[/B]` | moves the mouse to X,Y (320×200) with buttons B |
 | `@snap:NAME` | takes a snap at the next wait; names are unique in a script |
 
@@ -45,12 +48,22 @@ The game polls the keyboard on every pass while a screen animates, so a few
 polls after a key the screen is often still the old one; `idle:` lets it
 settle before the next key or snap.
 
+A battle can't be paced by polls: it moves one step (its units, weapons and
+scene) on each pass of its loop whose update countdown has run out, and how
+many passes a game tick holds depends on the machine. A **battle step** is one
+move of the battle clock's subtick (DS:8339); the battle loop polls at least
+once a pass and steps at most once, so a poll that sees the subtick changed
+counts one step. `steps:N` lands the next item at the first poll after the Nth
+step, the same point of the battle on any machine. `still:N` waits until N
+polls have gone by without a step: a message or menu is up and the battle is
+stopped, which is how a script answers a message without knowing its step.
+
 | Script | Covers |
 |---|---|
 | `title` | the start, the title, the main menu |
 | `new_campaign` | a new campaign to the first screen that waits for a key |
 | `lance_editor` | the lance editor: a 'Mech to each of four pilots, then out |
-| `tactical` | through the story to the first battle and to its end |
+| `tactical` | through the story to the first battle and to its end, each message answered when it is up |
 
 ## Trace records (`traces/*.jsonl`)
 
@@ -60,7 +73,8 @@ One JSON object a line, one line a snap:
 {"snap": NAME, "keys": [the tokens since the previous snap],
  "state": ["state …", …],
  "frame": {"indices": SHA-256/128 of the 320×200 indexed frame,
-           "palette": SHA-256/128 of its 256 RGB colours},
+           "palette": SHA-256/128 of the RGB colours it can show:
+                      16 in the 16-colour mode, else 256},
  "save": SHA-256/128 of the 0x1031-byte save block}
 ```
 
@@ -123,3 +137,12 @@ scenes queue (2007:1AE3), which roll for each live effect on every pass of the
 battle loop. On a machine where passes per tick vary, those draws interleave
 differently with the dice. No scene in these scripts queues one; a script
 that reaches one should be recorded at more than one step.
+
+Two more things in a battle follow passes, not steps: the narration prompt's
+countdown (PendingNarrationDelay, counted down by each redraw of the status
+panel, so a message a lance other than the first reports stays readable for a
+number of passes) and the blinking of the status line and the clock's colon.
+Neither changes a state line in these scripts; the blinking changes battle
+frames, which is why a battle's frames differ from the original's while its
+state doesn't.
+

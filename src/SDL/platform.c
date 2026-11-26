@@ -555,12 +555,16 @@ uint16 Platform_RawKeypressForScancode(int scancode, byte modifierFlags)
     return ((uint16)modifierFlags << 0x08) | TranslateScanCode(scanCode);
 }
 
-void Platform_PaletteRgb(byte out[0x300])
+uint16 Platform_PaletteRgb(byte out[0x300])
 {
+    uint16 count;
     uint16 color;
 
-    for (color = 0x0000; color < VGA_DAC_ENTRY_COUNT; ++color)
+    /* In the 16-colour mode only the first 16 can be on the screen. */
+    count = currentVideoMode == 0x0D ? EGA_LOGICAL_PALETTE_ENTRY_COUNT : VGA_DAC_ENTRY_COUNT;
+    for (color = 0x0000; color < count; ++color)
         memcpy(&out[color * 0x03], &logicalPalette[color], 0x03);
+    return count;
 }
 
 byte *SDLBackend_GetIndexedFramebuffer(void)
@@ -777,7 +781,12 @@ void SDLBackend_SetMousePosition(int16 logicalX, int16 logicalY)
     float windowX;
     float windowY;
 
-    if (window == NULL || Harness_Active())
+    if (Harness_Active())
+    {
+        Harness_PlaceMouse(logicalX, logicalY);
+        return;
+    }
+    if (window == NULL)
         return;
     windowX = (float)logicalX;
     windowY = (float)logicalY;
