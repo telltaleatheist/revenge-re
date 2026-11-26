@@ -244,7 +244,8 @@ extern word16 PrimaryStatusHighlightColor;
 extern word16 CachedPrimaryStatusHighlightColor;
 extern word16 SecondaryStatusHighlightColor;
 extern word16 CachedSecondaryStatusHighlightColor;
-extern byte TacticalStatusRowInvalidation[0x18];
+/* DS:B574: 0Dh bytes; the status slots the code and the scenes use are 0-8. */
+extern byte TacticalStatusRowInvalidation[0x0D];
 extern byte TacticalOverviewMarkerX[0x18];
 extern word16 TacticalOverviewViewportX;
 extern byte TacticalOverviewMarkerY[0x18];

@@ -409,7 +409,7 @@ place UnitCachedWeaponCounts 3A6A:B04F 23F run
 place TerrainDamageQueue 3A6A:B28E 64 run
 place ActiveNarrationSubject 3A6A:B2F2 2 annotation
 place TacticalImpactQueue 3A6A:B2F4 280 table
-place TacticalStatusRowInvalidation 3A6A:B574 18 table
+place TacticalStatusRowInvalidation 3A6A:B574 D table
 place ScenarioFileSuffix 3A6A:B581 2 annotation
 place NarrationEmphasis 3A6A:B585 2 annotation
 place UnitConsecutiveAttackTicks 3A6A:B587 30 run
@@ -792,6 +792,3 @@ overlap AdLibActivateRegisterList AdLibNineVoiceResetList the original's second 
 overlap LoadedSceneFile WeaponCombatRatingByType to look at: the ratings are the scene buffer's last 17h bytes
 overlap LinePrimaryYStep LinePrimaryXStep the original lays the two constant tables 4 bytes apart
 overlap LineSecondaryYStep LineSecondaryXStep the original lays the two constant tables 4 bytes apart
-overlap TacticalStatusRowInvalidation ScenarioFileSuffix size to settle: the original's table is 0Dh bytes
-overlap TacticalStatusRowInvalidation NarrationEmphasis size to settle: the original's table is 0Dh bytes
-overlap TacticalStatusRowInvalidation UnitConsecutiveAttackTicks size to settle: the original's table is 0Dh bytes

@@ -126,7 +126,7 @@ word16 PrimaryStatusHighlightColor;
 word16 CachedPrimaryStatusHighlightColor;
 word16 SecondaryStatusHighlightColor;
 word16 CachedSecondaryStatusHighlightColor;
-byte TacticalStatusRowInvalidation[0x18];
+byte TacticalStatusRowInvalidation[0x0D];
 byte TacticalOverviewMarkerX[0x18];
 word16 TacticalOverviewViewportX;
 byte TacticalOverviewMarkerY[0x18];

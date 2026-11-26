@@ -90,7 +90,8 @@ void ExecuteSceneInstructions(void)
 			word16 slotIndex = ReadSceneByte();
 			UnitTypeResourceCode[slotIndex] = ReadSceneByte();
 			TacticalSlotSpriteState[slotIndex] = 0x00;
-			TacticalStatusRowInvalidation[slotIndex] = 0xFF;
+			TacticalStatusRowInvalidation[REVENGE_INDEX(
+				TacticalStatusRowInvalidation, slotIndex)] = 0xFF;
 			break;
 		}
 

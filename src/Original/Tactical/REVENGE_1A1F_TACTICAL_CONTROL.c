@@ -366,7 +366,8 @@ void PrepareUnitTypeResources(word16 unitIndex)
 	if (resourceCode != 0xFF)
 		UnitTypeResourceCode[resourceSlot] = resourceCode;
 	TacticalSlotSpriteState[resourceSlot] = 0x00;
-	TacticalStatusRowInvalidation[resourceSlot] = 0xFF;
+	TacticalStatusRowInvalidation[REVENGE_INDEX(
+		TacticalStatusRowInvalidation, resourceSlot)] = 0xFF;
 }
 
 // 1A1F:0C50: word16 AdvanceTerrainDamageState(
