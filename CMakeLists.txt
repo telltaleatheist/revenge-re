@@ -779,6 +779,12 @@ if(CHR_BUILD_SDL)
                 --exe $<TARGET_FILE:Revenge>
                 --script ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/scripts/tactical.keys)
         set_tests_properties(trace.goldens trace.repeat PROPERTIES SKIP_RETURN_CODE 77)
+        # Bytes a run must hold, by the map's places, against the image.
+        add_test(NAME map.dump_checks
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/map/check_dump.py
+                --exe $<TARGET_FILE:Revenge>)
+        set_tests_properties(map.dump_checks PROPERTIES SKIP_RETURN_CODE 77)
         # Every data object has a line in the map of the original's memory.
         add_test(NAME map.data_map
             COMMAND ${Python3_EXECUTABLE} -I

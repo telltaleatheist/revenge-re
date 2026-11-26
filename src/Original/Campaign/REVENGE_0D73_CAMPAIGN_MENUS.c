@@ -321,7 +321,7 @@ int16 RunInGameMenu(int16 firstMenuOption)
 			ReplayCampaignState[index] =
 				InitialCampaignState[index];
 		}
-		CampaignState1B8E = CampaignState1B8C;
+		RandomPilotPoolCounts.replay = RandomPilotPoolCounts.initial;
 		for (index = 0x0000; index < 0x000F; ++index)
 		{
 			ReplayExtendedCampaignState[index] =

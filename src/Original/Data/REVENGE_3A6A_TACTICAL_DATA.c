@@ -227,10 +227,8 @@ word16 ModalBackingHeight;
 byte ActivePilotListWindowHeight;
 byte CommanderListWindowHeight;
 byte FallenPilotListWindowHeight;
-byte CampaignState1B8C;
-byte CampaignState1B8D;
-/* DS:1B8E: from the player's copy (original_import_pieces.txt). */
-byte CampaignState1B8E;
+/* DS:1B8C-1B8E: from the player's copy (original_import_pieces.txt). */
+RandomPilotPoolCountCopies RandomPilotPoolCounts;
 word16 SaveTransferState;
 word16 SavedSaveTransferState;
 word16 CampaignScenarioState;

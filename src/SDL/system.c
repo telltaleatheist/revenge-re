@@ -194,7 +194,7 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	REGISTER_DATA_OBJECT(SceneInstructionBaseOffset, 0xA862);
 	REGISTER_DATA_OBJECT(SceneInstructionCursor, 0xA9D9);
 	REGISTER_DATA_OBJECT(ScenarioResourcePathPointer, 0x1554);
-	REGISTER_DATA_OBJECT(CampaignState1B8E, 0x1B8E);
+	REGISTER_DATA_OBJECT(RandomPilotPoolCounts, 0x1B8C);
 	REGISTER_DATA_OBJECT(UnitSelectionCards, 0x1BBC);
 	REGISTER_DATA_OBJECT(LanceAssignments, 0x1CCA);
 	REGISTER_DATA_OBJECT(TacticalUpdateDelayReloadTicks, 0x17DA);

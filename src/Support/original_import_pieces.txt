@@ -72,6 +72,6 @@ bytes                SoundConfigurationRecords               3B87 7E
 
 # State the game starts with
 bytes                PilotRoster                             1D4C EC
-bytes                CampaignState1B8E                       1B8E 1
+bytes                RandomPilotPoolCounts                   1B8C 3
 bytes                PresentationDismissTimeout              240F 2
 bytes                MIDIParser                              62B0 0A

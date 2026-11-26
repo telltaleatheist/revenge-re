@@ -59,7 +59,7 @@ const OriginalPiece OriginalPieces_dos100[0x18A] =
 	{ "InputConfigurationRecords", ORIGINAL_PIECE_BYTES, 0x3B6D, 0x1A, 4, 26, &InputConfigurationRecords, "9f15663163ffce23" },
 	{ "SoundConfigurationRecords", ORIGINAL_PIECE_BYTES, 0x3B87, 0x7E, 4, 126, &SoundConfigurationRecords, "b24d4746a766ad03" },
 	{ "PilotRoster", ORIGINAL_PIECE_BYTES, 0x1D4C, 0xEC, 4, 236, &PilotRoster, "3b6a8afa53abb786" },
-	{ "CampaignState1B8E", ORIGINAL_PIECE_BYTES, 0x1B8E, 0x1, 4, 1, &CampaignState1B8E, "7a10f98c6ae41bb1" },
+	{ "RandomPilotPoolCounts", ORIGINAL_PIECE_BYTES, 0x1B8C, 0x3, 4, 3, &RandomPilotPoolCounts, "9aa5762952aa130c" },
 	{ "PresentationDismissTimeout", ORIGINAL_PIECE_BYTES, 0x240F, 0x2, 4, 2, &PresentationDismissTimeout, "c02198fcd61de6b3" },
 	{ "MIDIParser", ORIGINAL_PIECE_BYTES, 0x62B0, 0xA, 4, 10, &MIDIParser, "609f8b66779f2c2b" },
 	{ "text", ORIGINAL_PIECE_TEXT, 0x232B, 0, 0, 19, NULL, "21c3e217021da4b4" },
@@ -454,6 +454,6 @@ _Static_assert(sizeof(MusicConfigurationRecords) == 0x5B, "MusicConfigurationRec
 _Static_assert(sizeof(InputConfigurationRecords) == 0x1A, "InputConfigurationRecords is the piece's size");
 _Static_assert(sizeof(SoundConfigurationRecords) == 0x7E, "SoundConfigurationRecords is the piece's size");
 _Static_assert(sizeof(PilotRoster) == 0xEC, "PilotRoster is the piece's size");
-_Static_assert(sizeof(CampaignState1B8E) == 0x1, "CampaignState1B8E is the piece's size");
+_Static_assert(sizeof(RandomPilotPoolCounts) == 0x3, "RandomPilotPoolCounts is the piece's size");
 _Static_assert(sizeof(PresentationDismissTimeout) == 0x2, "PresentationDismissTimeout is the piece's size");
 _Static_assert(sizeof(MIDIParser) == 0xA, "MIDIParser is the piece's size");

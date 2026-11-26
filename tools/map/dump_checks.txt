@@ -1,0 +1,13 @@
+# Bytes of the original's data segment a run must hold at a snap, checked by
+# check_dump.py against the same bytes of the image. Each line:
+#
+#   SCRIPT SNAP DS:OFF SIZE IMAGE-OFF
+#
+# At SCRIPT's SNAP, the SIZE bytes from DS:OFF (read from the objects that
+# data_map.txt places there) equal the image's SIZE bytes from DS:IMAGE-OFF.
+
+# A restart starts the campaign over from the initial copies: the pilot
+# pool's count (initial, forward and replay copies, 1B8C-1B8E) as the image
+# holds them, and the pool (the replay copy, 1BAD) as its initial copy (1B8F).
+restart restarted 1B8C 3 1B8C
+restart restarted 1BAD F 1B8F

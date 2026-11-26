@@ -73,7 +73,7 @@ word16 SaveGame(void)
 				sizeof(snapshot->state1B85),
 				ReplayCampaignState,
 				snapshot->state1B85);
-			snapshot->state1B8E = CampaignState1B8E;
+			snapshot->state1B8E = RandomPilotPoolCounts.replay;
 			CopyFarMemory(
 				sizeof(snapshot->state1BAD),
 				ReplayExtendedCampaignState,
@@ -256,7 +256,7 @@ word16 LoadGame(void)
 					ReplayCampaignState[stateIndex] = stateValue;
 					ForwardCampaignState[stateIndex] = stateValue;
 				}
-				CampaignState1B8E = snapshot->state1B8E;
+				RandomPilotPoolCounts.replay = snapshot->state1B8E;
 				for (stateIndex = 0x0000;
 					stateIndex < sizeof(snapshot->state1BAD);
 					++stateIndex)

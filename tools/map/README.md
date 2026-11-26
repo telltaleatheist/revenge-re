@@ -45,6 +45,12 @@ harness writes `SNAP.objects` there at each snap, with every object's name,
 size and bytes (`src/SDL/map_dump.c`, written by `make_map_dump.py` from the
 headers). Unset, it does nothing.
 
+`check_dump.py` (ctest `map.dump_checks`) uses the dump the other way: each
+line of `dump_checks.txt` names a script, a snap and a span of the data
+segment, and the run must hold there what the image holds at a given place.
+It reads the span from the objects the map places on it, so a check stays
+the same when the port's objects are merged or renamed.
+
 ## Not placed yet
 
 The reasons, and what places them:

@@ -327,9 +327,19 @@ extern word16 ModalBackingHeight;
 extern byte ActivePilotListWindowHeight;
 extern byte CommanderListWindowHeight;
 extern byte FallenPilotListWindowHeight;
-extern byte CampaignState1B8C;
-extern byte CampaignState1B8D;
-extern byte CampaignState1B8E;
+/* DS:1B8C-1B8E: the random pilot pool's count, in the campaign's three
+ * copies of its state, as the pool has them (InitialExtendedCampaignState,
+ * ForwardExtendedCampaignState and ReplayExtendedCampaignState). The
+ * replay copy is the live count. */
+typedef struct RandomPilotPoolCountCopies
+{
+	byte initial; /* DS:1B8C */
+	byte forward; /* DS:1B8D */
+	byte replay; /* DS:1B8E */
+} RandomPilotPoolCountCopies;
+_Static_assert(sizeof(RandomPilotPoolCountCopies) == 0x03,
+	"DS:1B8C-1B8E holds the three copies of the count.");
+extern RandomPilotPoolCountCopies RandomPilotPoolCounts;
 extern word16 SaveTransferState;
 extern word16 SavedSaveTransferState;
 extern word16 CampaignScenarioState;

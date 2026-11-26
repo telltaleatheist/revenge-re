@@ -59,7 +59,7 @@ place SavedScenarioUnitMapY 3A6A:1993 18 run
 place InitialCampaignState 3A6A:1B77 7 table
 place ForwardCampaignState 3A6A:1B7E 7 table
 place ReplayCampaignState 3A6A:1B85 7 table
-place CampaignState1B8E 3A6A:1B8E 1 table
+place RandomPilotPoolCounts 3A6A:1B8C 3 table
 place InitialExtendedCampaignState 3A6A:1B8F F table
 place ForwardExtendedCampaignState 3A6A:1B9E F table
 place ReplayExtendedCampaignState 3A6A:1BAD F table
@@ -471,8 +471,6 @@ unplaced CachedPrimaryStatusHighlightColor 2 its bytes match nowhere (pointers o
 unplaced CachedSecondaryStatusHighlightColor 2 its bytes match nowhere (pointers or values differ)
 unplaced CalendarBoundaryTable 1C its bytes match nowhere (pointers or values differ)
 unplaced CampaignClockSeparatorText 2 zero at every snap
-unplaced CampaignState1B8C 1 zero at every snap
-unplaced CampaignState1B8D 1 its bytes match nowhere (pointers or values differ)
 unplaced CampaignUpgradeAwards 4 zero at every snap
 unplaced CampaignUpgradeMarkerX 4 zero at every snap
 unplaced CampaignUpgradeMarkerY 4 zero at every snap

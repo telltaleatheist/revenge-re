@@ -131,7 +131,7 @@ static const ImageRow rows[] =
 	DS(SavedCampaignClockState, 0x855F),
 	DS(ScenarioUnitMapX, 0x8562),
 	DS(ScenarioUnitMapY, 0x857B),
-	DS(CampaignState1B8E, 0x1B8E),
+	DS(RandomPilotPoolCounts, 0x1B8C),
 	DS(PilotRoster, 0x1D4C),
 
 	/* The trace's state lines (tools/trace/state.py). */

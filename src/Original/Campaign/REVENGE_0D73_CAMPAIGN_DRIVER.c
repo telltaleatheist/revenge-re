@@ -94,7 +94,7 @@ void RunCampaignLoop(void)
 				ForwardCampaignState[stateIndex] =
 					ReplayCampaignState[stateIndex];
 			}
-			CampaignState1B8D = CampaignState1B8E;
+			RandomPilotPoolCounts.forward = RandomPilotPoolCounts.replay;
 			for (stateIndex = 0x0000; stateIndex < 0x000F; ++stateIndex)
 			{
 				ForwardExtendedCampaignState[stateIndex] =
@@ -113,7 +113,7 @@ void RunCampaignLoop(void)
 				ReplayCampaignState[stateIndex] =
 					ForwardCampaignState[stateIndex];
 			}
-			CampaignState1B8E = CampaignState1B8D;
+			RandomPilotPoolCounts.replay = RandomPilotPoolCounts.forward;
 			for (stateIndex = 0x0000; stateIndex < 0x000F; ++stateIndex)
 			{
 				ReplayExtendedCampaignState[stateIndex] =
