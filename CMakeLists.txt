@@ -692,6 +692,7 @@ if(CHR_BUILD_SDL)
         src/SDL/host_config.c
         src/SDL/io.c
         src/SDL/game_paths.c
+        src/SDL/harness.c
         src/SDL/platform.c
         src/SDL/system.c)
     target_include_directories(chr_sdl_backend PUBLIC src/SDL include)
@@ -720,6 +721,22 @@ if(CHR_BUILD_SDL)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/config/REVENGE.CFG
             $<TARGET_FILE_DIR:Revenge>/REVENGE.CFG)
+
+    # The golden traces (tools/trace/README.md): every script against its
+    # golden, and the battle's script twice, byte for byte. Both run the game
+    # REVENGE_GAME names, headless, and skip without one.
+    if(BUILD_TESTING AND Python3_Interpreter_FOUND)
+        add_test(NAME trace.goldens
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/check.py
+                --exe $<TARGET_FILE:Revenge>)
+        add_test(NAME trace.repeat
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/repeat.py
+                --exe $<TARGET_FILE:Revenge>
+                --script ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/scripts/tactical.keys)
+        set_tests_properties(trace.goldens trace.repeat PROPERTIES SKIP_RETURN_CODE 77)
+    endif()
 
     add_custom_target(revenge-package
         DEPENDS Revenge

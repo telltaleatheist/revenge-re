@@ -1,0 +1,5 @@
+# From the start to the main menu. The game polls the keyboard on every
+# pass while it animates, so idle:N lets a screen settle before a snap.
+@snap:intro                 # the first poll, before anything is drawn
+idle:1000 @snap:title       # the title screen, its credits rolling
+Return idle:20 @snap:menu   # the main menu along the bottom

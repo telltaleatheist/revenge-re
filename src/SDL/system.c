@@ -7,6 +7,7 @@
 #include "revenge/far_memory.h"
 #include "revenge/original_data.h"
 #include "revenge/original_import.h"
+#include "harness.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
 #include "revenge/audio.h"
@@ -339,30 +340,6 @@ void RevengeHost_DisableInterruptDelivery(void)
     /* See RevengeHost_EnableInterruptDelivery. */
 }
 
-static int ReadLocalTimeValue(time_t currentTime, struct tm *localTime)
-{
-#if !defined(_WIN32)
-    struct tm *result;
-#endif
-
-#if defined(_WIN32)
-    if (localtime_s(localTime, &currentTime) != 0)
-        return 0;
-#else
-    result = localtime(&currentTime);
-    if (result == 0)
-        return 0;
-
-    *localTime = *result;
-#endif
-    return 1;
-}
-
-static int ReadLocalTime(struct tm *localTime)
-{
-    return ReadLocalTimeValue(time(0), localTime);
-}
-
 word16 SDLBackend_ResizeMemoryBlock(
     word16 memorySegment,
     word16 paragraphCount)
@@ -421,7 +398,7 @@ void SDLBackend_GetSystemDate(DOS_Date *date)
 {
     struct tm localTime;
 
-    if (date == 0 || !ReadLocalTime(&localTime))
+    if (date == 0 || !HostClock_CalendarTime(&localTime, 0))
         return;
 
     date->year = (uint16)(localTime.tm_year + 0x076C);
@@ -431,18 +408,16 @@ void SDLBackend_GetSystemDate(DOS_Date *date)
 
 void SDLBackend_GetSystemTime(DOS_Time *timeValue)
 {
-    struct timespec currentTime;
     struct tm localTime;
+    uint32_t hundredths;
 
-    if (timeValue == 0 ||
-        timespec_get(&currentTime, TIME_UTC) != TIME_UTC ||
-        !ReadLocalTimeValue(currentTime.tv_sec, &localTime))
+    if (timeValue == 0 || !HostClock_CalendarTime(&localTime, &hundredths))
         return;
 
     timeValue->hour = (byte)localTime.tm_hour;
     timeValue->minute = (byte)localTime.tm_min;
     timeValue->second = (byte)localTime.tm_sec;
-    timeValue->hundredth = (byte)(currentTime.tv_nsec / 10000000L);
+    timeValue->hundredth = (byte)hundredths;
 }
 
 const char *SDLBackend_GetEnvironmentVariable(const char *name)
@@ -575,7 +550,9 @@ void SDLBackend_AcknowledgeInterrupt(byte interruptNumber)
 
 uint32 SDLBackend_GetBIOSTickCount(void)
 {
-    /* DOS advances 0000:046C about 18.2 times per second. */
+    /* DOS advances 0000:046C about 18.2 times per second. The game reads
+     * it in spin loops (34B8:000A), so a read is a pass that waits on time. */
+    HostClock_Step();
     return (uint32)((SDLBackend_Milliseconds() * UINT64_C(0x00B6)) /
         UINT64_C(0x2710));
 }

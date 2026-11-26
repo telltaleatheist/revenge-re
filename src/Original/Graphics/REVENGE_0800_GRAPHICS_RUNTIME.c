@@ -7,6 +7,7 @@
 #include "revenge/interrupts.h"
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
+#include "revenge/random.h"
 #include "revenge/video.h"
 
 #include <string.h>
@@ -551,10 +552,14 @@ void InstallDamagedTerrainSpriteLookup(void)
 	DamagedTerrainSpriteLookup = TerrainDamageCapabilityTable;
 }
 
+/* 4184:0E48 -- the generator's three-byte shift-register state, which
+ * nothing seeds: every run draws the same sequence. */
+byte PseudoRandomState[0x03] = { 0x34, 0x12, 0x76 };
+
 word16 GeneratePseudoRandomByte(void)
 {
 	/* 0800:4D46 -- three-byte Borland-era shift-register state. */
-	static byte state[0x03] = { 0x34, 0x12, 0x76 };
+	byte *state = PseudoRandomState;
 	byte accumulator;
 	byte carry;
 	byte nextCarry;

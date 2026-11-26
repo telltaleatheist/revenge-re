@@ -1,0 +1,8 @@
+# A new campaign through the lance editor: a 'Mech for each of four pilots,
+# then leaving it for the story.
+idle:1000 Return idle:50 Return idle:6000   # main menu, new campaign, star map
+Return idle:6000 @snap:editor               # past the briefing: the lance editor
+Return idle:300 @snap:first_pilot           # the lit 'Mech to the first pilot
+Right Return idle:300 @snap:second_pilot    # the next 'Mech to the second
+Right Return idle:300 Right Return idle:300 @snap:lance   # the third and fourth
+Return idle:9000 @snap:story                # leave the editor: the story goes on

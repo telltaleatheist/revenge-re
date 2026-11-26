@@ -1,0 +1,13 @@
+# A new campaign to its first battle and through it: the lance editor as in
+# lance_editor.keys, the story's screens, then the battle's messages answered
+# with their first choice while the battle runs between them.
+idle:1000 Return idle:50 Return idle:6000 Return idle:6000
+Return idle:300 Right Return idle:300 Right Return idle:300 Right Return idle:300
+Return idle:9000 Return idle:6000                   # leave the editor; the story
+Return idle:6000 Return idle:6000 Return idle:6000  # its screens, one key each
+Return idle:6000 Return idle:6000 Return idle:6000 @snap:battle  # the battle, a message up
+Return idle:30000 @snap:message1                    # each message's first choice,
+Return idle:30000 @snap:message2                    # then the battle runs on
+Return idle:30000 @snap:message3
+Return idle:30000 @snap:message4
+Return idle:30000 @snap:after                       # the battle over: the story

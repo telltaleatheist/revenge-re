@@ -22,3 +22,4 @@ Thumbs.db
 /assets/original-game/*
 !/assets/original-game/.gitignore
 !/assets/original-game/README.md
+__pycache__/

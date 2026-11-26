@@ -1,0 +1,4 @@
+# A new campaign, to the first screen that waits for the player.
+idle:1000 Return idle:50 @snap:menu   # the main menu, its first item lit
+Return idle:50 @snap:map              # the first item: the star map
+idle:6000 @snap:first_input           # the opening briefing, waiting for a key

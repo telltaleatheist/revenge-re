@@ -4,6 +4,7 @@
 #include "revenge/input.h"
 #include "revenge/original_data.h"
 #include "revenge/video.h"
+#include "harness.h"
 
 #include <SDL3/SDL.h>
 #include <stdlib.h>
@@ -77,7 +78,7 @@ static void InitializeSmokeInput(void)
         cursor = *end == ',' ? end + 0x01 : end;
     }
     if (smokeInputEventCount != 0x00)
-        smokeInputDueTime = SDL_GetTicks() +
+        smokeInputDueTime = HostClock_NowMS() +
             smokeInputEvents[0x00].delayMilliseconds;
     RevengeTrace("input: smoke events=%u first-due=%llu\n",
         smokeInputEventCount, (unsigned long long) smokeInputDueTime);
@@ -87,7 +88,7 @@ static word16 SmokeInputPending(void)
 {
     InitializeSmokeInput();
     return smokeInputEventIndex < smokeInputEventCount &&
-        SDL_GetTicks() >= smokeInputDueTime;
+        HostClock_NowMS() >= smokeInputDueTime;
 }
 
 static uint16 ReadSmokeInput(void)
@@ -97,7 +98,7 @@ static uint16 ReadSmokeInput(void)
 		smokeInputEventIndex + 0x01, smokeInputEventCount, result);
     ++smokeInputEventIndex;
     if (smokeInputEventIndex < smokeInputEventCount)
-        smokeInputDueTime = SDL_GetTicks() +
+        smokeInputDueTime = HostClock_NowMS() +
             smokeInputEvents[smokeInputEventIndex].delayMilliseconds;
     return result;
 }
@@ -112,7 +113,8 @@ void SDLBackend_ServiceTimers(void)
         UINT64_C(1000000000) * 0x10000 / 0x1234DE;
     uint64_t now;
 
-    now = SDL_GetTicksNS();
+    HostClock_Step();
+    now = HostClock_NowNS();
     if (DigitalSoundBusy != FALSE &&
         DigitalPlaybackRateHz != 0x0000)
     {
@@ -372,7 +374,7 @@ int SDLBackend_Open(void)
 
     ResetEgaPalette();
     memset(indexedFramebuffer, 0, sizeof(indexedFramebuffer));
-    nextSpeakerEffectTick = SDL_GetTicksNS();
+    nextSpeakerEffectTick = HostClock_NowNS();
     nextMIDIServiceTick = nextSpeakerEffectTick;
     nextGameClockTick = nextSpeakerEffectTick;
     nextDigitalPlaybackTick = 0x0000000000000000ULL;
@@ -405,6 +407,8 @@ int SDLBackend_PollQuit(void)
 {
     SDL_Event event;
 
+    if (Harness_Active())
+        return FALSE;
     SDL_PumpEvents();
     return SDL_PeepEvents(
         &event,
@@ -416,12 +420,12 @@ int SDLBackend_PollQuit(void)
 
 uint64_t SDLBackend_Milliseconds(void)
 {
-    return SDL_GetTicks();
+    return HostClock_NowMS();
 }
 
 void SDLBackend_Delay(uint32_t milliseconds)
 {
-    SDL_Delay(milliseconds);
+    HostClock_DelayNS((uint64_t)milliseconds * UINT64_C(1000000));
 }
 
 byte SDLBackend_GetVideoMode(void)
@@ -504,8 +508,9 @@ uint16 SDLBackend_IsVerticalRetraceActive(void)
     uint64_t period;
     uint64_t phase;
 
+    HostClock_Step();
     period = UINT64_C(1000000000) / RetracesPerSecond;
-    phase = SDL_GetTicksNS() % period;
+    phase = HostClock_NowNS() % period;
     return phase >= period - period / 0x0A ? RetraceStatusBit : 0x0000;
 }
 
@@ -519,7 +524,7 @@ void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart)
 
     SDLBackend_ServiceTimers();
     period = UINT64_C(1000000000) / RetracesPerSecond;
-    now = SDL_GetTicksNS();
+    now = HostClock_NowNS();
     phase = now % period;
     retraceStart = period - period / 0x0A;
 
@@ -537,8 +542,25 @@ void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart)
         delay = period - phase;
     }
 
-    SDL_DelayNS(delay);
+    HostClock_DelayNS(delay);
     (void)SDLBackend_PresentIndexedFramebuffer();
+}
+
+uint16 Platform_RawKeypressForScancode(int scancode, byte modifierFlags)
+{
+    byte scanCode = GetSet1ScanCode((SDL_Scancode)scancode);
+
+    if (scanCode == 0x00)
+        return 0x0000;
+    return ((uint16)modifierFlags << 0x08) | TranslateScanCode(scanCode);
+}
+
+void Platform_PaletteRgb(byte out[0x300])
+{
+    uint16 color;
+
+    for (color = 0x0000; color < VGA_DAC_ENTRY_COUNT; ++color)
+        memcpy(&out[color * 0x03], &logicalPalette[color], 0x03);
 }
 
 byte *SDLBackend_GetIndexedFramebuffer(void)
@@ -561,7 +583,9 @@ int SDLBackend_PresentIndexedFramebuffer(void)
 {
     uint32_t pixelIndex;
 
-    if (texture == 0 || renderer == 0)
+    /* Under the harness the indexed frame is what is captured; nothing is
+     * shown. */
+    if (texture == 0 || renderer == 0 || Harness_Active())
         return FALSE;
 
     for (pixelIndex = 0x00000000;
@@ -590,7 +614,7 @@ void Video_PresentTransientFrame(void)
      * also prevents the much faster host loop from consuming every animation
      * frame between two visible refreshes. */
     (void)SDLBackend_PresentIndexedFramebuffer();
-    SDL_DelayNS(UINT64_C(1000000000) / RetracesPerSecond);
+    HostClock_DelayNS(UINT64_C(1000000000) / RetracesPerSecond);
 }
 
 static void PresentPendingVideoFrame(void)
@@ -598,7 +622,7 @@ static void PresentPendingVideoFrame(void)
     const uint64_t videoPresentPeriod = UINT64_C(1000000000) / 0x3C;
     uint64_t now;
 
-    now = SDL_GetTicksNS();
+    now = HostClock_NowNS();
     if (now < nextVideoPresentTick)
         return;
 
@@ -615,6 +639,8 @@ word16 SDLBackend_InputPending(void)
        held key has generated repeat make codes. */
     SDLBackend_ServiceTimers();
     PresentPendingVideoFrame();
+    if (Harness_Active())
+        return Harness_KeyPending() ? 0x00FF : 0x0000;
     if (SmokeInputPending() != FALSE)
         return 0x00FF;
     SDL_PumpEvents();
@@ -642,6 +668,8 @@ uint16 SDLBackend_ReadRawKeypress(void)
     byte keyId;
     byte modifierFlags;
 
+    if (Harness_Active())
+        return Harness_ReadKey();
     for (;;)
     {
         SDLBackend_ServiceTimers();
@@ -698,6 +726,15 @@ void ReadMouseInputState(MouseInputState *state)
 
     if (state == NULL)
         return;
+    if (Harness_Active())
+    {
+        Harness_Mouse(&state->x, &state->y, &buttons);
+        state->buttonState = buttons;
+        state->buttonEvent = (byte)((buttons & (byte)~previousMouseButtons)
+            != 0x00);
+        previousMouseButtons = buttons;
+        return;
+    }
     SDL_PumpEvents();
     hostButtons = SDL_GetMouseState(&windowX, &windowY);
     logicalX = windowX;
@@ -740,7 +777,7 @@ void SDLBackend_SetMousePosition(int16 logicalX, int16 logicalY)
     float windowX;
     float windowY;
 
-    if (window == NULL)
+    if (window == NULL || Harness_Active())
         return;
     windowX = (float)logicalX;
     windowY = (float)logicalY;
