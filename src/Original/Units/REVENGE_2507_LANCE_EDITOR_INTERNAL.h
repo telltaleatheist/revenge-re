@@ -39,6 +39,7 @@ int16 PopRandomUnitType(void);
 int16 PopRandomPilotId(void);
 int16 SelectUnitClass(void);
 int16 SelectUnitTypeFromList(const byte *unitTypeIdList);
+bool IsOmniUnitTypeList(const byte *unitTypeIdList);
 word16 ServiceMusicAndCheckKeyboardInput(void);
 word16 RunGameOptionsMenu(word16 embeddedMode);
 void DrawUnitAllegianceHeader(word16 headerColorIndex);

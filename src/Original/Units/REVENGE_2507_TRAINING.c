@@ -881,6 +881,15 @@ int16 SelectUnitClass(void)
 	return -0x01;
 }
 
+// 2507:0647-065E: the list is the Omni one when its far address is DS:32D7.
+// The lists are the player's copy's (UnitClassTypeLists), so DS:32D7 is that
+// place in the imported image; a host pointer has no 3A6A segment to compare.
+bool IsOmniUnitTypeList(const byte *unitTypeIdList)
+{
+	return unitTypeIdList ==
+		(const byte *) ORIGINAL_TEXT(OMNI_UNIT_TYPE_LIST_OFFSET);
+}
+
 // 2507:0625: int16 SelectUnitTypeFromList(const byte far *unitTypeIdList)
 // Called from:
 //      SelectUnitClass
@@ -894,9 +903,7 @@ int16 SelectUnitTypeFromList(const byte *unitTypeIdList)
 	while (unitTypeIdList[unitTypeCount] != 0xFF)
 		++unitTypeCount;
 
-	bool isOmniUnitTypeList =
-		FAR_SEGMENT(unitTypeIdList) == 0x3A6A &&
-		FAR_OFFSET(unitTypeIdList) == OMNI_UNIT_TYPE_LIST_OFFSET;
+	bool isOmniUnitTypeList = IsOmniUnitTypeList(unitTypeIdList);
 	word16 selectableUnitTypeCount = unitTypeCount;
 	if (isOmniUnitTypeList &&
 		UnitEditorAllegiance != UNIT_ALLEGIANCE_ENEMY)
