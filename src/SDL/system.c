@@ -75,8 +75,12 @@ static void LoadOriginalModuleImage(byte *programBlock, uint32 blockBytes)
 	if (moduleSize > 0x00 && (uint32) moduleSize + 0x0100UL <= blockBytes)
 	{
 		fseek(executable, (long) headerParagraphs * 0x10L, SEEK_SET);
-		(void) fread(programBlock + 0x0100, 0x01, (size_t) moduleSize,
-			executable);
+		if (fread(programBlock + 0x0100, 0x01, (size_t) moduleSize,
+				executable) != (size_t) moduleSize)
+		{
+			fclose(executable);
+			return;
+		}
 	}
 
 	fseek(executable, relocationTableOffset, SEEK_SET);
@@ -136,8 +140,12 @@ static void LoadOriginalDataSegment(void)
 		if (initializedByteCount > sizeof(originalDataSegment))
 			initializedByteCount = sizeof(originalDataSegment);
 		fseek(executable, dataFileOffset, SEEK_SET);
-		(void)fread(originalDataSegment, 0x01, initializedByteCount,
-			executable);
+		if (fread(originalDataSegment, 0x01, initializedByteCount,
+				executable) != initializedByteCount)
+		{
+			fclose(executable);
+			return;
+		}
 	}
 
 	fseek(executable, relocationTableOffset, SEEK_SET);
