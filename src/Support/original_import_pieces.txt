@@ -69,3 +69,7 @@ bytes                VideoConfigurationRecords               3AD1 41
 bytes                MusicConfigurationRecords               3B12 5B
 bytes                InputConfigurationRecords               3B6D 1A
 bytes                SoundConfigurationRecords               3B87 7E
+
+# Campaign data the game starts with
+bytes                PilotRoster                             1D4C EC
+bytes                CampaignState1B8E                       1B8E 1

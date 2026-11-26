@@ -645,6 +645,16 @@ if(BUILD_TESTING)
     add_test(NAME tactical.original_scenario_clock_subtick
         COMMAND test_scenario_clock_subtick)
 
+    add_executable(test_initial_data_values
+        tests/test_initial_data_values.c
+        tests/fake_backend.c)
+    target_include_directories(test_initial_data_values PRIVATE src/SDL tests)
+    target_link_libraries(test_initial_data_values PRIVATE chr_original_runtime)
+    chr_strict(test_initial_data_values)
+    add_test(NAME import.original_initial_data_values
+        COMMAND test_initial_data_values)
+    set_tests_properties(import.original_initial_data_values PROPERTIES SKIP_RETURN_CODE 77)
+
     add_executable(test_unit_durability_totals
         tests/test_unit_durability_totals.c
         tests/fake_backend.c)

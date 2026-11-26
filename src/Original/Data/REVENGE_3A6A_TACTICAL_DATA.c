@@ -21,7 +21,8 @@ int8 UnitAttackTarget[0x19];
 word16 UnitSpriteBaseId[0x18];
 word16 UnitSpriteId[0x18];
 word16 TacticalSpriteAnimationPhase;
-word16 TacticalSelectedUnitIndex;
+/* DS:03DC starts at FFFFh: no unit selected. */
+word16 TacticalSelectedUnitIndex = 0xFFFF;
 word16 TacticalViewportMapX;
 word16 TacticalViewportMapY;
 word16 TacticalCursorViewportX;
@@ -178,6 +179,8 @@ byte ScenarioUnitMapY[0x18];
 byte ScenarioUnitFacing[0x18];
 byte CampaignClockState[0x03];
 byte SavedCampaignClockState[0x03];
+/* DS:1D4C, the pilots as the game starts them: from the player's copy
+ * (src/Support/original_import_pieces.txt). */
 RevengePilotRosterRecord PilotRoster[REVENGE_PILOT_ROSTER_COUNT];
 RevengeUnitLanceAssignment
 	LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];
@@ -226,6 +229,7 @@ byte CommanderListWindowHeight;
 byte FallenPilotListWindowHeight;
 byte CampaignState1B8C;
 byte CampaignState1B8D;
+/* DS:1B8E: from the player's copy (original_import_pieces.txt). */
 byte CampaignState1B8E;
 word16 SaveTransferState;
 word16 SavedSaveTransferState;
