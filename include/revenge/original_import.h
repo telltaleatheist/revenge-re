@@ -3,11 +3,21 @@
 
 /*
  * The game's own text and data come from the player's REVENGE.EXE, never from
- * this source tree. OriginalImport_Load reads its load image once at start and
- * checks every piece the game takes from it against the import table
- * (src/Support/original_import_table.c, written by
- * tools/import/make_import_table.py): an offset, a length and a keyed hash for
- * each, never the bytes.
+ * this source tree. OriginalImport_Load reads it once at start and accepts it
+ * only as an edition the rebuild knows (src/Support/original_editions.txt):
+ * first by its layout (the file's size and its MZ header with the relocation
+ * table), then by its whole load image, one of the edition's known variants.
+ * The whole image is checked, not just the pieces, because the host loads all
+ * of it as DOS did. Then every piece the game takes is checked against the
+ * edition's import table (src/Support/original_import_table_<edition>.c,
+ * written by tools/import/make_import_table.py): an offset, a length and a
+ * keyed hash for each, never the bytes. A copy that isn't accepted is named
+ * with what differs: no edition's layout, or the pieces that don't match.
+ *
+ * The working form is DOS 1.00's: the pieces' offsets, ORIGINAL_TEXT's and the
+ * data segment's place in the image are its own. It is the only edition so
+ * far; one laid out otherwise needs its pieces mapped to these offsets, which
+ * the table and the loader gain with it.
  */
 
 #include <stddef.h>
@@ -33,8 +43,8 @@ extern char OriginalImage[ORIGINAL_IMAGE_CAPACITY];
 #define ORIGINAL_TEXT(offset) \
 	(&OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + (offset)])
 
-/* 1 when every piece matched and was put in place; otherwise 0, after naming on
- * stderr the file or each piece that didn't match. */
+/* 1 when the copy is a known edition and variant, every piece matched and was
+ * put in place; otherwise 0, after naming on stderr what didn't match. */
 int OriginalImport_Load(const char *executablePath);
 int OriginalImport_IsLoaded(void);
 
@@ -64,9 +74,51 @@ typedef struct OriginalPiece
 	const char *keyedHash;  /* the first 16 hex digits of the keyed HMAC-SHA-256 of the piece */
 } OriginalPiece;
 
-extern const OriginalPiece OriginalPieces[];
-extern const size_t OriginalPieceCount;
+/* One known copy of an edition, by the keyed hash of its whole load image. */
+typedef struct OriginalVariant
+{
+	const char *label;            /* "" for the plain copy, else a mark of its own */
+	const char *imageKeyedHash;
+} OriginalVariant;
+
+/* An edition: how its program is laid out, its pieces and its known variants
+ * (src/Support/original_import_editions.c, from original_editions.txt). */
+typedef struct OriginalEdition
+{
+	const char *name;             /* as messages name it: "DOS 1.00" */
+	uint32_t fileBytes;
+	uint16_t headerParagraphs;
+	const char *headerKeyedHash;  /* the MZ header with its relocation table */
+	const OriginalPiece *pieces;
+	size_t pieceCount;
+	const OriginalVariant *variants;
+	size_t variantCount;
+} OriginalEdition;
+
+extern const OriginalEdition OriginalEditions[];
+extern const size_t OriginalEditionCount;
 extern const char OriginalImportKey[];
+
+/* Reads executablePath into OriginalImage and finds it among editions: the
+ * edition whose layout and one of whose variants it matches, with every piece
+ * matching too. Otherwise NULL, after naming on stderr what differs. Places
+ * nothing; OriginalImport_Load does, for the editions above. Reading replaces
+ * the image, so the tests that call it don't load as well. */
+const OriginalEdition *OriginalImport_Identify(const char *executablePath, const OriginalEdition *editions,
+	size_t editionCount);
+
+/* After OriginalImport_Load: the edition and variant accepted (NULL before).
+ * After it or an OriginalImport_Identify that accepted the copy: the load
+ * image's size and its relocations, each the image offset of a segment word
+ * DOS adds the load segment to (0 and none otherwise). */
+const OriginalEdition *OriginalImport_Edition(void);
+const OriginalVariant *OriginalImport_Variant(void);
+size_t OriginalImport_ImageBytes(void);
+size_t OriginalImport_RelocationCount(void);
+uint32_t OriginalImport_Relocation(size_t index);
+
+/* The first 16 hex digits of the keyed HMAC-SHA-256 the tables hold. */
+void OriginalImport_KeyedHash(const uint8_t *bytes, size_t length, char hex[17]);
 
 /* The bytes a piece is hashed over: each string (expanded where the kind says)
  * or list in order, each string followed by its NUL. Returns the byte count,

@@ -104,9 +104,10 @@ if(BUILD_TESTING)
 				${CMAKE_CURRENT_SOURCE_DIR}/tools/check_ledgers.py
 				--root ${CMAKE_CURRENT_SOURCE_DIR})
 
-		# The game's text stays out of the tree, and the import table matches
+		# The game's text stays out of the tree, and the import tables match
 		# the sources and the player's copy. Both need a copy of the game named
-		# by REVENGE_GAME and skip without one.
+		# by REVENGE_GAME and skip without one; the second checks the editions
+		# list first, which needs none.
 		add_test(NAME source.text_audit
 			COMMAND ${Python3_EXECUTABLE} -I
 				${CMAKE_CURRENT_SOURCE_DIR}/tools/text_audit.py
@@ -508,6 +509,13 @@ if(BUILD_TESTING)
     chr_strict(test_formatted_text)
     add_test(NAME output.original_formatted_text COMMAND test_formatted_text)
     set_tests_properties(output.original_formatted_text PROPERTIES SKIP_RETURN_CODE 77)
+
+    add_executable(test_original_editions
+        tests/test_original_editions.c
+        ${CHR_3A6A_DATA_SOURCES})
+    target_include_directories(test_original_editions PRIVATE include src/Original)
+    chr_strict(test_original_editions)
+    add_test(NAME import.original_editions COMMAND test_original_editions)
 
     add_executable(test_file_translation
         tests/test_file_translation.c

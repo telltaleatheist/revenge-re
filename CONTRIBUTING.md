@@ -21,7 +21,9 @@ silently replacing its behavior.
    `REVENGE.EXE` at start (`src/Support/original_import.c`): name a string with
    `ORIGINAL_TEXT(offset)` or a table in `src/Support/original_import_pieces.txt`,
    then run `tools/import/make_import_table.py`. `tools/text_audit.py` must
-   find nothing.
+   find nothing. The copy is accepted only as an edition and variant
+   `src/Support/original_editions.txt` lists; for a copy it doesn't, the tool
+   prints the line to add.
 6. Cite the procedure's segment:offset and update `docs/METHOD_TABLE.csv` and
    `docs/SOURCE_CONVERSION_TABLE.csv` when verification or source ownership
    changes.

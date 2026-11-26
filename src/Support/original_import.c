@@ -25,7 +25,13 @@ enum
 
 char OriginalImage[ORIGINAL_IMAGE_CAPACITY] = { 0 };   /* defined here, not a common block */
 static size_t originalImageBytes;
+static uint8_t *originalHeader;     /* the MZ header with its relocation table */
+static size_t originalHeaderBytes;
+static size_t originalFileBytes;
+static int originalImageAccepted;  /* by the last OriginalImport_Identify */
 static int originalImportLoaded;
+static const OriginalEdition *loadedEdition;
+static const OriginalVariant *loadedVariant;
 static char emptyText[1];
 
 static uint16_t ImageWord(size_t offset)
@@ -165,7 +171,7 @@ size_t OriginalImport_PieceBytes(const OriginalPiece *piece, uint8_t *out, size_
 	return (size_t) -1;
 }
 
-static void KeyedHash(const uint8_t *bytes, size_t length, char hex[KEYED_HASH_DIGITS + 1])
+void OriginalImport_KeyedHash(const uint8_t *bytes, size_t length, char hex[KEYED_HASH_DIGITS + 1])
 {
 	static const char digits[] = "0123456789abcdef";
 	uint8_t digest[SHA256_DIGEST_BYTES];
@@ -183,44 +189,71 @@ static void KeyedHash(const uint8_t *bytes, size_t length, char hex[KEYED_HASH_D
 	hex[KEYED_HASH_DIGITS] = '\0';
 }
 
+static uint16_t HeaderWord(size_t offset)
+{
+	return (uint16_t) (originalHeader[offset] | originalHeader[offset + 1] << 8);
+}
+
+/* Reads the file: its header into originalHeader, its load image into
+ * OriginalImage. */
 static int ReadImage(const char *executablePath)
 {
 	FILE *file = fopen(executablePath, "rb");
-	uint8_t header[MZ_HEADER_BYTES];
+	uint8_t start[MZ_HEADER_BYTES];
 	long fileBytes;
-	long headerBytes;
+	size_t headerBytes;
 	size_t imageBytes;
+	size_t relocationCount;
+	size_t relocationTable;
 
+	free(originalHeader);
+	originalHeader = NULL;
+	originalHeaderBytes = originalFileBytes = originalImageBytes = 0;
+	memset(OriginalImage, 0, sizeof(OriginalImage));
 	if (file == NULL)
 	{
 		fprintf(stderr, "%s: can't be opened\n", executablePath);
 		return 0;
 	}
-	if (fread(header, sizeof(header), 1, file) != 1 || header[0] != 'M' || header[1] != 'Z' ||
+	if (fread(start, sizeof(start), 1, file) != 1 || start[0] != 'M' || start[1] != 'Z' ||
 		fseek(file, 0, SEEK_END) != 0 || (fileBytes = ftell(file)) < 0)
 	{
 		fprintf(stderr, "%s: not an MZ program\n", executablePath);
 		fclose(file);
 		return 0;
 	}
-	headerBytes = (long) (header[8] | header[9] << 8) * 16;
-	if (fileBytes <= headerBytes || (size_t) (fileBytes - headerBytes) > sizeof(OriginalImage))
+	headerBytes = (size_t) (start[8] | start[9] << 8) * 16;
+	relocationCount = (size_t) (start[6] | start[7] << 8);
+	relocationTable = (size_t) (start[0x18] | start[0x19] << 8);
+	if (headerBytes < sizeof(start) || relocationTable + relocationCount * 4 > headerBytes)
 	{
-		fprintf(stderr, "%s: its load image is %ld bytes, outside the supported size\n", executablePath,
-			fileBytes - headerBytes);
+		fprintf(stderr, "%s: its relocation table is outside its header\n", executablePath);
 		fclose(file);
 		return 0;
 	}
-	imageBytes = (size_t) (fileBytes - headerBytes);
-	memset(OriginalImage, 0, sizeof(OriginalImage));
-	if (fseek(file, headerBytes, SEEK_SET) != 0 || fread(OriginalImage, 1, imageBytes, file) != imageBytes)
+	if ((size_t) fileBytes <= headerBytes || (size_t) fileBytes - headerBytes > sizeof(OriginalImage))
+	{
+		fprintf(stderr, "%s: its load image is %ld bytes, outside the supported size\n", executablePath,
+			fileBytes - (long) headerBytes);
+		fclose(file);
+		return 0;
+	}
+	imageBytes = (size_t) fileBytes - headerBytes;
+	originalHeader = (uint8_t *) malloc(headerBytes);
+	if (originalHeader == NULL || fseek(file, 0, SEEK_SET) != 0 ||
+		fread(originalHeader, 1, headerBytes, file) != headerBytes ||
+		fread(OriginalImage, 1, imageBytes, file) != imageBytes)
 	{
 		fprintf(stderr, "%s: can't be read\n", executablePath);
 		fclose(file);
+		free(originalHeader);
+		originalHeader = NULL;
 		memset(OriginalImage, 0, sizeof(OriginalImage));
 		return 0;
 	}
 	fclose(file);
+	originalFileBytes = (size_t) fileBytes;
+	originalHeaderBytes = headerBytes;
 	originalImageBytes = imageBytes;
 	return 1;
 }
@@ -312,25 +345,16 @@ static int PlacePiece(const OriginalPiece *piece, uint8_t *scratch)
 	return 0;
 }
 
-int OriginalImport_Load(const char *executablePath)
+/* Names on one line each of the edition's pieces that doesn't match the
+ * image. Returns how many. */
+static size_t ReportPieceMismatches(const char *executablePath, const OriginalEdition *edition, uint8_t *scratch)
 {
-	uint8_t *scratch;
 	size_t index;
 	size_t mismatches = 0;
 
-	if (originalImportLoaded)
-		return 1;
-	if (!ReadImage(executablePath))
-		return 0;
-	scratch = (uint8_t *) malloc(PIECE_SCRATCH_BYTES);
-	if (scratch == NULL)
+	for (index = 0; index < edition->pieceCount; ++index)
 	{
-		fprintf(stderr, "%s: no memory to check its pieces\n", executablePath);
-		return 0;
-	}
-	for (index = 0; index < OriginalPieceCount; ++index)
-	{
-		const OriginalPiece *piece = &OriginalPieces[index];
+		const OriginalPiece *piece = &edition->pieces[index];
 		size_t length = OriginalImport_PieceBytes(piece, scratch, PIECE_SCRATCH_BYTES);
 		char hash[KEYED_HASH_DIGITS + 1];
 		int matches = length != (size_t) -1 && length <= PIECE_SCRATCH_BYTES;
@@ -339,13 +363,13 @@ int OriginalImport_Load(const char *executablePath)
 			matches = length == (size_t) piece->length + 1;
 		if (matches)
 		{
-			KeyedHash(scratch, length, hash);
+			OriginalImport_KeyedHash(scratch, length, hash);
 			matches = strcmp(hash, piece->keyedHash) == 0;
 		}
 		if (!matches)
 		{
 			if (mismatches == 0)
-				fprintf(stderr, "%s: pieces that don't match the supported copy:", executablePath);
+				fprintf(stderr, "%s: pieces that don't match %s:", executablePath, edition->name);
 			if (piece->kind == ORIGINAL_PIECE_TEXT)
 				fprintf(stderr, " text DS:%04X", piece->dataOffset);
 			else
@@ -354,21 +378,97 @@ int OriginalImport_Load(const char *executablePath)
 		}
 	}
 	if (mismatches != 0)
+		fprintf(stderr, " (%zu of %zu)\n", mismatches, edition->pieceCount);
+	return mismatches;
+}
+
+static const OriginalVariant *identifiedVariant;
+
+const OriginalEdition *OriginalImport_Identify(const char *executablePath, const OriginalEdition *editions,
+	size_t editionCount)
+{
+	const OriginalEdition *edition = NULL;
+	char hash[KEYED_HASH_DIGITS + 1];
+	uint8_t *scratch;
+	size_t index;
+	size_t mismatches;
+
+	identifiedVariant = NULL;
+	originalImageAccepted = 0;
+	if (!ReadImage(executablePath))
+		return NULL;
+	OriginalImport_KeyedHash(originalHeader, originalHeaderBytes, hash);
+	for (index = 0; index < editionCount && edition == NULL; ++index)
 	{
-		fprintf(stderr, " (%zu of %zu)\n", mismatches, OriginalPieceCount);
-		free(scratch);
+		if (editions[index].fileBytes == originalFileBytes &&
+			(size_t) editions[index].headerParagraphs * 16 == originalHeaderBytes &&
+			strcmp(editions[index].headerKeyedHash, hash) == 0)
+			edition = &editions[index];
+	}
+	if (edition == NULL)
+	{
+		fprintf(stderr, "%s: not an edition the rebuild knows (it knows", executablePath);
+		for (index = 0; index < editionCount; ++index)
+			fprintf(stderr, "%s %s", index == 0 ? "" : ",", editions[index].name);
+		fprintf(stderr, ")\n");
+		return NULL;
+	}
+	OriginalImport_KeyedHash((const uint8_t *) OriginalImage, originalImageBytes, hash);
+	for (index = 0; index < edition->variantCount && identifiedVariant == NULL; ++index)
+	{
+		if (strcmp(edition->variants[index].imageKeyedHash, hash) == 0)
+			identifiedVariant = &edition->variants[index];
+	}
+	scratch = (uint8_t *) malloc(PIECE_SCRATCH_BYTES);
+	if (scratch == NULL)
+	{
+		fprintf(stderr, "%s: no memory to check its pieces\n", executablePath);
+		identifiedVariant = NULL;
+		return NULL;
+	}
+	mismatches = ReportPieceMismatches(executablePath, edition, scratch);
+	free(scratch);
+	if (identifiedVariant == NULL && mismatches == 0)
+		fprintf(stderr, "%s: its program differs from %s's outside the pieces, and the whole program is loaded\n",
+			executablePath, edition->name);
+	if (identifiedVariant == NULL || mismatches != 0)
+	{
+		identifiedVariant = NULL;
+		return NULL;
+	}
+	originalImageAccepted = 1;
+	return edition;
+}
+
+int OriginalImport_Load(const char *executablePath)
+{
+	const OriginalEdition *edition;
+	uint8_t *scratch;
+	size_t index;
+
+	if (originalImportLoaded)
+		return 1;
+	edition = OriginalImport_Identify(executablePath, OriginalEditions, OriginalEditionCount);
+	if (edition == NULL)
+		return 0;
+	scratch = (uint8_t *) malloc(PIECE_SCRATCH_BYTES);
+	if (scratch == NULL)
+	{
+		fprintf(stderr, "%s: no memory to place its pieces\n", executablePath);
 		return 0;
 	}
-	for (index = 0; index < OriginalPieceCount; ++index)
+	for (index = 0; index < edition->pieceCount; ++index)
 	{
-		if (!PlacePiece(&OriginalPieces[index], scratch))
+		if (!PlacePiece(&edition->pieces[index], scratch))
 		{
-			fprintf(stderr, "%s: no memory for %s\n", executablePath, OriginalPieces[index].name);
+			fprintf(stderr, "%s: no memory for %s\n", executablePath, edition->pieces[index].name);
 			free(scratch);
 			return 0;
 		}
 	}
 	free(scratch);
+	loadedEdition = edition;
+	loadedVariant = identifiedVariant;
 	originalImportLoaded = 1;
 	return 1;
 }
@@ -376,4 +476,31 @@ int OriginalImport_Load(const char *executablePath)
 int OriginalImport_IsLoaded(void)
 {
 	return originalImportLoaded;
+}
+
+const OriginalEdition *OriginalImport_Edition(void)
+{
+	return loadedEdition;
+}
+
+const OriginalVariant *OriginalImport_Variant(void)
+{
+	return loadedVariant;
+}
+
+size_t OriginalImport_ImageBytes(void)
+{
+	return originalImageAccepted ? originalImageBytes : 0;
+}
+
+size_t OriginalImport_RelocationCount(void)
+{
+	return originalImageAccepted ? (size_t) HeaderWord(6) : 0;
+}
+
+uint32_t OriginalImport_Relocation(size_t index)
+{
+	size_t at = (size_t) HeaderWord(0x18) + index * 4;
+
+	return (uint32_t) HeaderWord(at + 2) * 16 + HeaderWord(at);
 }

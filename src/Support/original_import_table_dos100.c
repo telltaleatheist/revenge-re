@@ -1,5 +1,5 @@
 /* Written by tools/import/make_import_table.py from original_import_pieces.txt,
- * the ORIGINAL_TEXT uses in src and include, and the player's REVENGE.EXE.
+ * the ORIGINAL_TEXT uses in src and include, and a copy of DOS 1.00.
  * Offsets, counts, lengths and keyed hashes only. Don't edit by hand. */
 #include "revenge/original_import.h"
 #include "revenge/original_data.h"
@@ -11,7 +11,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces[] =
+const OriginalPiece OriginalPieces_dos100[0x186] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, (void *) TitleTextTable, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, (void *) MonthNameTextTable, "2de063a6fef0f14a" },
@@ -404,8 +404,6 @@ const OriginalPiece OriginalPieces[] =
 	{ "text", ORIGINAL_PIECE_TEXT, 0x616B, 0, 0, 51, NULL, "cf4ccff228d737a6" },
 	{ "text", ORIGINAL_PIECE_TEXT, 0x619F, 0, 0, 34, NULL, "8fef925ad36b9b3e" },
 };
-
-const size_t OriginalPieceCount = sizeof(OriginalPieces) / sizeof(OriginalPieces[0]);
 
 _Static_assert(sizeof(TitleTextTable) / sizeof(TitleTextTable[0]) == 0x12, "TitleTextTable has the piece's entries");
 _Static_assert(sizeof(MonthNameTextTable) / sizeof(MonthNameTextTable[0]) == 0xC, "MonthNameTextTable has the piece's entries");

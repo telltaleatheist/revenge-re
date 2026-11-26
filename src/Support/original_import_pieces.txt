@@ -1,8 +1,9 @@
 # The pieces of the player's REVENGE.EXE the game takes at start, besides the
 # strings named in place by ORIGINAL_TEXT(offset) (every use in src and include
 # is a row of its own). tools/import/make_import_table.py reads this list, the
-# sources and the player's copy, and writes src/Support/original_import_table.c:
-# offsets, counts, lengths and keyed hashes, never the bytes.
+# sources and a copy of an edition (original_editions.txt), and writes that
+# edition's src/Support/original_import_table_<ID>.c: offsets, counts, lengths
+# and keyed hashes, never the bytes. The offsets are DOS 1.00's.
 #
 #   header PATH                  included by the generated table
 #   KIND NAME DS-OFFSET [COUNT [STRIDE]]

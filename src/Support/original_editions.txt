@@ -1,0 +1,20 @@
+# The editions of REVENGE.EXE the rebuild knows, after which the loader
+# (src/Support/original_import.c) accepts a copy. tools/import/make_import_table.py
+# writes src/Support/original_import_editions.c from this list, and each
+# edition's table, src/Support/original_import_table_<ID>.c, from a copy of it.
+#
+#   edition ID FILE-BYTES HEADER-PARAGRAPHS HEADER-HASH NAME
+#   variant ID LABEL|- IMAGE-HASH
+#
+# An edition is told by its layout: the file's size in bytes (decimal), its MZ
+# header's size in paragraphs (hex) and the keyed hash of that header with its
+# relocation table. A variant is one known copy of it, told by the keyed hash of
+# its whole load image; "-" is the plain copy's label. Hashes are the first 16
+# hex digits of the import table's keyed HMAC-SHA-256. The tool prints the line
+# to add for a copy it doesn't know.
+#
+# Every edition so far has DOS 1.00's layout, the working form the pieces'
+# offsets are in.
+
+edition dos100  256411  420  dce27be0dd72d8d1  DOS 1.00
+variant dos100  -  29a96f24f3a0ca3d
