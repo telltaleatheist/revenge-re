@@ -4,7 +4,8 @@
 picture: a hawk's head with a sword behind it, inside a crescent, on a riveted
 steel patch with gold and bronze inlays. It is this project's own art and
 contains nothing from the game, whose DOS release had no icon. It was made the
-same way as Inception Rebuild's icon, whose sequel this is.
+same way as the icon of Inception Rebuild (this game is
+Inception's sequel).
 
 - Made 2026-11-26 with Qwen-Image 2.1 (`qwen-image-2.1`), 768x768, 40 steps,
   seed 72.
