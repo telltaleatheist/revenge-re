@@ -40,7 +40,7 @@ place UnitTemplatePathSegment 3A6A:1532 2 table
 place ScenarioResourcePathPointer 3A6A:1554 4 table
 place TacticalResourcePathOffset 3A6A:1566 2 table
 place TacticalResourcePathSegment 3A6A:1568 2 table
-place MediaConfigurationFileName 3A6A:158A A annotation
+place MediaConfigurationFileName 3A6A:21F4 A table
 place ScreenPaletteResourceByScreen 3A6A:1703 26 table
 place WeaponTraceMajorStepX 3A6A:172A 8 run
 place WeaponTraceMajorStepY 3A6A:1732 8 run
@@ -224,7 +224,7 @@ place ResourceOpenFilesAtExitErrorText 3A6A:5FB2 4 annotation
 place ResourceRetryCount 3A6A:5FC6 2 annotation
 place ReservedConventionalMemoryKB 3A6A:5FC8 2 annotation
 place InvalidSaveDialogBacking 3A6A:5FCA 4 annotation
-place StartupResourceState 3A6A:5FCE 2 annotation
+place StartupResourceState 3A6A:5FCE 2 table
 place UiSelectionResetFlagA 3A6A:6228 2 annotation
 place UiSelectionResetFlagB 3A6A:622A 2 annotation
 place ActiveTextWindowIndex 3A6A:622E 2 run
@@ -790,7 +790,6 @@ overlap CachedFileDescriptors UnitTemplatePathSegment
 overlap CachedFileDescriptors ScenarioResourcePathPointer
 overlap CachedFileDescriptors TacticalResourcePathOffset
 overlap CachedFileDescriptors TacticalResourcePathSegment
-overlap CachedFileDescriptors MediaConfigurationFileName
 overlap CachedFileDescriptors ScreenPaletteResourceByScreen
 overlap HeatDissipationBySinkCountQ8_8 NeighborMapOffsetTable
 overlap HeatDissipationBySinkCountQ8_8 TacticalUpdateDelayReloadTicks

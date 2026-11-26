@@ -215,6 +215,11 @@ static const ImageRow rows[] =
 	DS(CMSPlayback, 0x6F28),
 	DS(InnovationPlayback, 0x6F34),
 	DS(CovoxPlayback, 0x6F40),
+
+	/* Places the data map's checks settled (tools/map/data_map.txt). */
+	DS(StartupResourceState, 0x5FCE),
+	/* Where cached-file descriptor 45h's name points (DS:158A). */
+	{ "MediaConfigurationFileName", MediaConfigurationFileName, 0x0A, 0x3A6A, 0x21F4, 0, 0, 0 },
 };
 
 static byte image[ORIGINAL_IMAGE_CAPACITY];

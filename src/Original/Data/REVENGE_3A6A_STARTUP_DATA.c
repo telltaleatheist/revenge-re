@@ -21,7 +21,7 @@ word16 MaximumProgramBreakOffset;
 word16 MaximumProgramBreakSegment;
 word16 SavedBIOSVideoMode;
 word16 GameInitialized;
-word16 StartupResourceState = 0x0001;
+word16 StartupResourceState; /* DS:5FCE: 0 in the image; startup sets it */
 byte *InvalidSaveDialogBacking;
 
 const word16 BIOSVideoModeByAdapter[0x07] =
