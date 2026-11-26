@@ -1,0 +1,819 @@
+# The port's data objects in the original's memory (DOS 1.00, the image at
+# 0800h, the data segment 3A6A). One line per object the port's headers
+# declare (tools/map/README.md):
+#
+#   place NAME SEG:OFF SIZE KIND    the object is at SEG:OFF, SIZE bytes
+#   host NAME SIZE REASON           the port's own, with no place in the original
+#   unplaced NAME SIZE REASON       not placed yet
+#
+# KIND says how the place was found: table, import, annotation, run, procedure.
+# SIZE is the original's bytes (for an import piece, the piece's own size).
+place MinimumProgramBreakOffset 3A6A:0087 2 annotation
+place CurrentProgramBreakOffset 3A6A:008B 2 annotation
+place MaximumProgramBreakOffset 3A6A:008F 2 annotation
+place SaveTransferState 3A6A:0094 2 annotation
+place VideoPathUnavailable 3A6A:0096 1 annotation
+place MovementRatingByWalkMP 3A6A:0097 9 run
+place TrainingScenarioCompletionFlags 3A6A:00A0 6 table
+place VideoPaletteData 3A6A:00AC 310 run
+place TacticalSelectedUnitIndex 3A6A:03DC 2 table
+place WeaponAIHeatLimitByExperience 3A6A:03E0 5 run
+place SensorDamageProximityRangeTable 3A6A:03E7 3 run
+place SpriteFacingByDirection 3A6A:042D 8 run
+place AmmoCapacityMultiplierTable 3A6A:058E 1C run
+place CompressedTextFirstByteTable 3A6A:05AA 10 import
+place CompressedTextSecondByteTable 3A6A:05BA 80 import
+place TextWindowContexts 3A6A:063A 170 table
+place UiRegionTable 3A6A:07AA 100 table
+place DialogFramingEnabled 3A6A:0822 2 annotation
+place TextWindowFrameDefinition 3A6A:08AA 18 run
+place EngagementModeByComparisonMask 3A6A:08C6 100 run
+place WeaponPriorityData 3A6A:09C6 580 table
+place WeaponPriorityCountTable 3A6A:0F46 20 run
+place WeaponPriorityListPointers 3A6A:0F66 40 procedure
+place WeaponPriorityProfileByRangeHeat 3A6A:0FA6 80 run
+place MovementTimingMaskTable 3A6A:1026 12 run
+place HitLocationTable 3A6A:1038 78 table
+place CachedFileDescriptors 3A6A:10B0 654 table
+place UnitTemplatePathOffset 3A6A:1530 2 table
+place UnitTemplatePathSegment 3A6A:1532 2 table
+place ScenarioResourcePathPointer 3A6A:1554 4 table
+place TacticalResourcePathOffset 3A6A:1566 2 table
+place TacticalResourcePathSegment 3A6A:1568 2 table
+place MediaConfigurationFileName 3A6A:158A A annotation
+place ScreenPaletteResourceByScreen 3A6A:1703 26 table
+place WeaponTraceMajorStepX 3A6A:172A 8 run
+place WeaponTraceMajorStepY 3A6A:1732 8 run
+place WeaponTraceMinorStepX 3A6A:173A 8 run
+place WeaponTraceMinorStepY 3A6A:1742 8 run
+place DirectionDeltaXTable 3A6A:174A 10 run
+place DirectionDeltaYTable 3A6A:175A 10 run
+place HeatDissipationBySinkCountQ8_8 3A6A:176A 200 table
+place NeighborMapOffsetTable 3A6A:17CA 10 run
+place TacticalUpdateDelayReloadTicks 3A6A:17DA 2 table
+place TacticalGameSpeedIndex 3A6A:17DC 2 table
+place SaveDirectory 3A6A:18CE 88 table
+place SaveCampaignSnapshot 3A6A:1956 221 table
+place SavedScenarioUnitMapX 3A6A:197B 18 run
+place SavedScenarioUnitMapY 3A6A:1993 18 run
+place InitialCampaignState 3A6A:1B77 7 table
+place ForwardCampaignState 3A6A:1B7E 7 table
+place ReplayCampaignState 3A6A:1B85 7 table
+place RandomSelectionPoolCount 3A6A:1B8E 1 table
+place CampaignState1B8E 3A6A:1B8E 1 table
+place InitialExtendedCampaignState 3A6A:1B8F F table
+place ForwardExtendedCampaignState 3A6A:1B9E F table
+place ReplayExtendedCampaignState 3A6A:1BAD F table
+place UnitSelectionCards 3A6A:1BBC 10E table
+place LanceAssignments 3A6A:1CCA 82 table
+place PilotRoster 3A6A:1D4C EC table
+place TacticalMapFileName 3A6A:2188 9 run
+place TacticalIconSetFileName 3A6A:2191 D run
+place TacticalDestroyIconFileName 3A6A:219E D run
+place TacticalIconListFileName 3A6A:21AB D run
+place TacticalMechSetFileName 3A6A:21C5 D run
+place ScenarioResourcePathText 3A6A:21D2 B import
+place TextEntryBuffer 3A6A:23F9 16 run
+place PresentationDismissTimeout 3A6A:240F 2 table
+place TitleTextTable 3A6A:2411 48 import
+place MonthNameTextTable 3A6A:2459 30 import
+place MissionDateLabelTextTable 3A6A:24A1 30 import
+place SelectedSaveSlotIndex 3A6A:24D1 1 procedure
+place PendingCampaignStageDelta 3A6A:24D4 1 run
+place PendingCampaignPhaseDelta 3A6A:24D5 1 run
+place CampaignStageIndex 3A6A:24D6 2 table
+place ScenarioVariantIndex 3A6A:24D8 2 table
+place CampaignPhase 3A6A:24DA 1 table
+place ReplayCampaignStateRequested 3A6A:24DB 1 annotation
+place TrainingSequenceFlag 3A6A:24DC 1 table
+place CampaignFlags 3A6A:24DF 2 table
+place SavedCampaignFlags 3A6A:24E1 2 table
+place AlternateLanceSelection 3A6A:24E3 1 annotation
+place SuppressPostStageMenu 3A6A:24E4 1 annotation
+place CampaignRestartState 3A6A:24E5 1 annotation
+place PresentationCallbackOffset 3A6A:24E6 2 annotation
+place PresentationCallbackSegment 3A6A:24E8 2 annotation
+place ModalSavedTextWindow 3A6A:24EA 2 annotation
+place ModalBackingX 3A6A:24EC 2 annotation
+place ModalBackingY 3A6A:24EE 2 annotation
+place ModalBackingWidth 3A6A:24F0 2 annotation
+place ModalBackingHeight 3A6A:24F2 2 annotation
+place ScenarioOrdinalBaseByCampaignStage 3A6A:254C 16 table
+place CampaignPathMenuTextTable 3A6A:25CD 8 import
+place ScenarioVariantMenuTextTable 3A6A:25D5 8 import
+place AlternateScenarioMenuTextTable 3A6A:25DD 8 import
+place MainMenuTextTable 3A6A:25E5 C import
+place MissionFadeColorTable 3A6A:2718 4 table
+place MissionBlinkRectX 3A6A:271C E table
+place MissionBlinkRectY 3A6A:272A E table
+place MissionBlinkRectExtent 3A6A:2738 7 table
+place MissionDateMonthIndex 3A6A:273F C table
+place MissionDateYear 3A6A:274B 18 table
+place MissionDateAdvanceMonths 3A6A:2763 20 table
+place MouseCursorBackingSourceTileX 3A6A:277B 2 annotation
+place MouseCursorBackingSourcePixelY 3A6A:277D 2 annotation
+place MouseCursorBackingWidthTiles 3A6A:277F 2 annotation
+place MouseCursorBackingHeightPixels 3A6A:2781 2 annotation
+place MissionSpriteSourceTileX 3A6A:2783 18 table
+place MissionSpriteSourcePixelY 3A6A:279B 18 table
+place MissionSpriteWidthTiles 3A6A:27B3 18 table
+place MissionSpriteHeightPixels 3A6A:27CB 18 table
+place CampaignMessageTable 3A6A:2B54 37A table
+place CampaignMessageTextTable 3A6A:2B54 37A import
+place TacticalCursorSearchOffsetX 3A6A:2EDA 12 run
+place TacticalCursorSearchOffsetY 3A6A:2EEC 12 run
+place TacticalMouseEdgeInputByMask 3A6A:2EFE 10 run
+place TerrainDamageCellOccupiedMask 3A6A:2F2E 4 run
+place TerrainDamageStageIncrement 3A6A:2F32 4 run
+place TacticalStatusBlinkCountdown 3A6A:2F36 2 table
+place DisplayedTacticalStatusRow 3A6A:2F38 2 table
+place FormationSelectionAggressive 3A6A:2F72 C run
+place FormationSelectionDefensive 3A6A:2F7E C run
+place FormationSelectionBalanced 3A6A:2F8A C run
+place FormationMarkerOriginX 3A6A:2F96 14 run
+place FormationMarkerOriginY 3A6A:2FAA 14 run
+place FacingVectorStartX 3A6A:2FBE 20 run
+place FacingVectorStartY 3A6A:2FDE 20 run
+place FacingVectorEndX 3A6A:2FFE 20 run
+place FacingVectorEndY 3A6A:301E 20 run
+place MovementVectorX 3A6A:303E 40 run
+place MovementVectorY 3A6A:307E 40 run
+place TacticalStatusPadding 3A6A:30C2 2 table
+place LanceEditorFirstBriefingPending 3A6A:30C4 2 table
+place LanceEditorBriefingPresented 3A6A:30C6 2 table
+place LanceEditorReloadGraphics 3A6A:30C8 2 table
+place UnitEditorAllegiance 3A6A:30CA 1 procedure
+place UnitAllegianceLabelTextTable 3A6A:30CB 8 import
+place UnitStatHeaderTextTable 3A6A:30F2 18 import
+place UnitEditorLanceSlotCount 3A6A:3112 6 table
+place RandomUnitTypeCount 3A6A:3118 1 table
+place UnitEditorUnitSpriteIndex 3A6A:3119 59 table
+place UnitMovementClassByType 3A6A:3172 59 table
+place PredefinedUnitTypeTable 3A6A:31CB 1E table
+place UnitEditorSectionEnabled 3A6A:31E9 1D table
+place UnitEditorScenarioCardCountByFamily 3A6A:3206 7 table
+place RandomUnitTypeCountByFamily 3A6A:320D A table
+place RandomUnitTypePoolByFamily 3A6A:3217 31 table
+place PilotPortraitIndexById 3A6A:3248 21 table
+place DefaultPilotIdsByScenario 3A6A:3269 28 table
+place UnitEditorPilotCardCountByFamily 3A6A:3291 7 table
+place UnitClassTypeLists 3A6A:32DC 1C import
+place UnitClassLabelTextTable 3A6A:32F8 1C import
+place TrainingDeploymentLabelTextTable 3A6A:3314 10 import
+place TrainingControlLabelTextTable 3A6A:3324 10 import
+place ScenarioVariantDescriptionTextTable 3A6A:3334 10 import
+place UnitEditorSectionLabelTextTable 3A6A:3344 10 import
+place FixedPilotIds 3A6A:3354 2 table
+place FixedUnitTypeIds 3A6A:3356 2 table
+place ScenarioRouteLabelTextTable 3A6A:3358 10 import
+place UnitEditorSectionButtonLabelTextTable 3A6A:3368 10 import
+place TrainingDeploymentRosterLabelTextTable 3A6A:3378 8 import
+place UnitRosterColumnLabelTextTable 3A6A:3380 C import
+place TrainingCategoryLabelTextTable 3A6A:3397 8 import
+place TrainingScenarioLabelTextTable 3A6A:33B8 18 import
+place LanceEditorLayout 3A6A:3470 1D4 table
+place FriendlyEnemySuffixText 3A6A:3854 8 import
+place VideoConfigurationRecords 3A6A:3AD1 41 table
+place MusicConfigurationRecords 3A6A:3B12 5B import
+place InputConfigurationRecords 3A6A:3B6D 1A import
+place SoundConfigurationRecords 3A6A:3B87 7E import
+place BIOSVideoModeByAdapter 3A6A:3CAA E run
+place DirectionSearchMirror 3A6A:3CD2 2 run
+place DirectionSearchCountdown 3A6A:3CD4 2 run
+place DirectionSearchDeltaTable 3A6A:3CD6 20 run
+place UnitActionMaskByExperience 3A6A:3CF6 8 run
+place HitLocationDirectionSelectorTable 3A6A:3CFE 20 table
+place ImprovedMissileDamageBonusTable 3A6A:3D0D 17 run
+place TerrainDamageQueueOccupiedMask 3A6A:3D25 4 run
+place TerrainDamageQueueIncrementMask 3A6A:3D29 4 run
+place PilotSurnameTextTable 3A6A:3E92 EC import
+place PilotGivenNameTextTable 3A6A:3F7E EC import
+place PilotExperienceLabelTextTable 3A6A:40B3 10 import
+place PilotGunneryLabelTextTable 3A6A:40C3 10 import
+place UnitMovementClassLabelTextTable 3A6A:412D 14 import
+place UnitArmorConditionLabelTextTable 3A6A:4141 18 import
+place GameOptionLabelTextTable 3A6A:46AE 1C import
+place GameOptionToggleTextTable 3A6A:46CA 8 import
+place NarrationModeLabelTextTable 3A6A:46D2 C import
+place InputDeviceLabelTextTable 3A6A:46DE 8 import
+place DisabledUnitNarrationTextTable 3A6A:46FD C import
+place DestroyedUnitNarrationTextTable 3A6A:4709 C import
+place ScenarioEventNarrationTextTable 3A6A:4715 78 import
+place PCSpeakerEffectStreamData 3A6A:5642 299 import
+place PCSpeakerEffectStreamPointerTable 3A6A:58DB 40 table
+place GameTimerTicks 3A6A:591B 4 table
+place GameAnimationTicks 3A6A:591F 4 table
+place TacticalUpdateDelayTicks 3A6A:5923 2 table
+place ScenarioLanceAllegianceTable 3A6A:5928 18 table
+place DigitalSoundData 3A6A:593E 62D import
+place VideoPixelAlignmentMasks 3A6A:5F6C 10 run
+place PackedPixelShiftCounts 3A6A:5F7C 6 run
+place ResourceCreateFileErrorText 3A6A:5F82 4 annotation
+place ResourceIllegalOpenModeErrorText 3A6A:5F86 4 annotation
+place ResourceInsertDiskErrorText 3A6A:5F8A 4 annotation
+place ResourceTooManyOpenFilesErrorText 3A6A:5F8E 4 annotation
+place ResourceCloseUnopenedErrorText 3A6A:5F92 4 annotation
+place ResourceReadUnopenedErrorText 3A6A:5F96 4 annotation
+place ResourceWriteUnopenedErrorText 3A6A:5F9A 4 annotation
+place ResourceSeekUnopenedErrorText 3A6A:5F9E 4 annotation
+place ResourceIllegalSeekOriginErrorText 3A6A:5FA2 4 annotation
+place ResourceWriteCachedErrorText 3A6A:5FA6 4 annotation
+place ResourceUnknownDriveErrorText 3A6A:5FAA 4 annotation
+place ResourceUnknownCacheIndexErrorText 3A6A:5FAE 4 annotation
+place ResourceOpenFilesAtExitErrorText 3A6A:5FB2 4 annotation
+place ResourceRetryCount 3A6A:5FC6 2 annotation
+place ReservedConventionalMemoryKB 3A6A:5FC8 2 annotation
+place InvalidSaveDialogBacking 3A6A:5FCA 4 annotation
+place StartupResourceState 3A6A:5FCE 2 annotation
+place UiSelectionResetFlagA 3A6A:6228 2 annotation
+place UiSelectionResetFlagB 3A6A:622A 2 annotation
+place ActiveTextWindowIndex 3A6A:622E 2 run
+place ActiveTextWindowLeftTile 3A6A:6230 2 run
+place ActiveTextWindowTopTile 3A6A:6232 2 run
+place ActiveTextBackgroundColor 3A6A:623A 2 run
+place ActiveTextCursorColumn 3A6A:623C 2 run
+place ActiveTextCursorRow 3A6A:623E 2 run
+place UiNavigationUpKey 3A6A:6242 2 annotation
+place UiNavigationDownKey 3A6A:6244 2 annotation
+place UiPreviousRegionKey 3A6A:6246 2 annotation
+place UiNextRegionKey 3A6A:6248 2 annotation
+place MIDISequence 3A6A:624A 1C table
+place MinimumProgramBreakSegment 3A6A:6295 2 run
+place MIDIParser 3A6A:62B0 A table
+place MIDIChannelMap 3A6A:6728 10 table
+place MIDISystemExclusive 3A6A:6738 28 table
+place SpeakerMIDIRuntime 3A6A:67BC 6 table
+place SpeakerMIDIFrequencyDivisors 3A6A:67C2 E4 run
+place TandyMIDIFrequencyWords 3A6A:68DC 98 run
+place IBMPS1MIDIFrequencyWords 3A6A:69A8 94 run
+place AdLibMIDIRuntime 3A6A:6A6E 6 table
+place AdLibMIDIFrequencyWords 3A6A:6A74 E6 run
+place AdLibElevenVoiceLayout 3A6A:6B5A 21 run
+place AdLibNineVoiceLayout 3A6A:6B7B 1B run
+place AdLibActivateRegisterList 3A6A:6B96 8 run
+place AdLibNineVoiceResetList 3A6A:6B9A 4 run
+place AdLibElevenVoiceResetList 3A6A:6B9E 14 run
+place AdLibDeactivateRegisterList 3A6A:6BB2 26 run
+place RolandMPU401 3A6A:6C0E 10A table
+place PCSpeakerErrorDiffusionCoefficients 3A6A:6D18 E run
+place NullDigitalHardware 3A6A:6D28 10 table
+place Tandy3VoiceHardware 3A6A:6D40 10 table
+place TandyDACHardware 3A6A:6D6A 10 table
+place IBMPS1AudioHardware 3A6A:6DA2 10 table
+place SoundBlasterHardware 3A6A:6DC2 10 table
+place SoundBlasterProbePorts 3A6A:6DD2 C table
+place AdLibSoundHardware 3A6A:6DEC 10 table
+place CMSSoundHardware 3A6A:6E12 10 table
+place CMSProbePorts 3A6A:6E22 C table
+place InnovationSoundHardware 3A6A:6E52 10 table
+place InnovationProbePorts 3A6A:6E62 8 table
+place CovoxSoundHardware 3A6A:6E84 10 table
+place CovoxProbePorts 3A6A:6E94 8 table
+place NullDigitalPlayback 3A6A:6EB2 C table
+place Tandy3VoicePlayback 3A6A:6EBE C table
+place TandyDACPlayback 3A6A:6ECA C table
+place IBMPS1Playback 3A6A:6ED6 C table
+place SoundBlasterPlayback 3A6A:6EE2 C table
+place AdLibPlayback 3A6A:6EEE C table
+place CMSPlayback 3A6A:6F28 C table
+place InnovationPlayback 3A6A:6F34 C table
+place CovoxPlayback 3A6A:6F40 C table
+place DigitalPlaybackBuffers 3A6A:6F4C 58 table
+place PITCalibration 3A6A:6FA4 A table
+place DOSErrorToErrnoTable 3A6A:6FB0 59 run
+place ExitHandlerCount 3A6A:7018 2 annotation
+place ProgramBreakKilobytes 3A6A:7026 2 annotation
+place CharacterClassTable 3A6A:7029 100 run
+place FileRuntime 3A6A:712A 2C table
+place MonthLengthTable 3A6A:7156 C run
+place TimezoneOffsetLowWord 3A6A:7190 2 run
+place TimezoneOffsetHighWord 3A6A:7192 2 procedure
+place TimezoneEnvironmentName 3A6A:7196 3 run
+place DefaultStandardTimezoneName 3A6A:7199 4 run
+place DefaultDaylightTimezoneName 3A6A:719D 4 run
+place LoadedSceneFile 3A6A:71A8 8CB table
+place WeaponCombatRatingByType 4184:08BC 17 run
+place RelativeAttackDirectionByMask 4184:08D7 10 run
+place LinePrimaryYStep 4184:08E7 10 run
+place LinePrimaryXStep 4184:08EB 10 run
+place LinePrimaryRowOffset 4184:08FB 10 table
+place LineSecondaryYStep 4184:090B 10 run
+place LineSecondaryXStep 4184:090F 10 run
+place LineSecondaryRowOffset 4184:091F 10 table
+place MouseButtonState 3A6A:7FA0 2 annotation
+place MouseCursorRequestedX 3A6A:7FA8 2 run
+place MouseY 3A6A:7FAA 2 annotation
+place MouseDriverInstalled 3A6A:7FB0 2 annotation
+place MouseInputDisabled 3A6A:7FB2 2 annotation
+place MouseCursorMaxX 3A6A:7FB6 2 run
+place MouseCursorMaxY 3A6A:7FBA 2 run
+place PseudoRandomState 4184:0E48 3 table
+place ActiveVideoAdapterType 4184:0E4C 2 run
+place SpriteClipRightTileMirror 3A6A:8007 2 run
+place RequestedMusicEnabled 3A6A:800C 2 table
+place NarrationMode 3A6A:800E 2 annotation
+place StartupInputMode 3A6A:8010 2 annotation
+place TacticalImpactQueueCount 3A6A:80FC 2 run
+place TacticalUiSuppressed 3A6A:80FE 2 procedure
+place PrimaryStatusHighlightColor 3A6A:8100 2 run
+place TacticalOverviewDisplayMode 3A6A:8102 2 procedure
+place TacticalOverviewActive 3A6A:8104 2 table
+place TerrainDamageQueueWordCount 3A6A:8106 2 run
+place LrmShipmentLoaded 3A6A:8108 2 table
+place SrmShipmentLoaded 3A6A:810A 2 table
+place UnitTypeResourceCode 3A6A:8328 7 run
+place TacticalCursorViewportX 3A6A:8331 2 table
+place TacticalCursorViewportY 3A6A:8333 2 table
+place TacticalOverviewViewportDirty 3A6A:8335 2 procedure
+place CampaignClockState 3A6A:8337 3 table
+place TacticalBattleResult 3A6A:833C 2 table
+place UnitRouteTargetMapX 3A6A:8340 19 run
+place UnitTargetMapX 3A6A:8359 19 run
+place UnitRouteTargetMapY 3A6A:838E 19 run
+place UnitTargetMapY 3A6A:83A7 19 run
+place TacticalViewportMapY 3A6A:83DA 2 run
+place SecondaryScreenBuffer 3A6A:83DE 4 annotation
+place PlanarScreenBuffer 3A6A:83E2 4 annotation
+place TerrainTypeMap 3A6A:83EA 4 procedure
+place ScenarioUnitNeedsUpdate 3A6A:8486 18 run
+place TacticalViewportMapX 3A6A:84A0 2 run
+place TacticalTerrainEffectMode 3A6A:84A2 1 procedure
+place TacticalSpriteAnimationPhase 3A6A:84A3 2 procedure
+place TacticalInteractionLocked 3A6A:84BE 1 run
+place ActiveFontResource 3A6A:84BF 4 procedure
+place EstimatedUnitRecord 3A6A:84C7 96 run
+place SavedCampaignClockState 3A6A:855F 3 table
+place ScenarioUnitMapX 3A6A:8562 18 table
+place ScenarioUnitMapY 3A6A:857B 18 table
+place CampaignScenarioState 3A6A:8594 2 table
+place UnitBelowHalfDurability 3A6A:8596 19 procedure
+place DigitalPlaybackRateHz 3A6A:8664 2 procedure
+place ActiveFontGlyphAdvanceX 3A6A:8666 1 run
+place UnitEnemyVisible 3A6A:8667 18 run
+place UnitEnemyInProximityRange 3A6A:8680 18 run
+place ScenarioUnitFacing 3A6A:869A 18 run
+place TacticalStatusBlinkVisible 3A6A:86BD 1 table
+place TerrainLineOfSightBlockingThreshold 3A6A:86BE 2 run
+place SceneUnitRoutes 3A6A:86C1 113 table
+place UnitWasAttackedThisTick 3A6A:87D4 18 run
+place UnitEnemyContactEstablished 3A6A:87ED 18 run
+place UnitEnemyEngagementActive 3A6A:8806 18 run
+place ImpassableTerrainTypeMinimum 3A6A:8821 2 run
+place UnitWithdrawalState 3A6A:883F 18 run
+place CampaignUnitThirteenAvailabilityFlag 3A6A:884B 1 annotation
+place CampaignUnitFifteenOverrideFlag 3A6A:884E 1 annotation
+place CampaignUnitFourteenAvailabilityFlag 3A6A:8853 1 annotation
+place DestructibleTerrainTypeBase 3A6A:8859 1 run
+place UnitDestructionMarkers 3A6A:885B 48 run
+place ReplayScenarioRequested 3A6A:88A3 1 annotation
+place UnitTacticalTarget 3A6A:88A4 19 table
+place InputDeviceType 3A6A:88BD 2 table
+place WeaponCountScratch 3A6A:88BF 2E run
+place ScenarioUnitFifteenState 3A6A:88F1 2 table
+place UnitAttackTarget 3A6A:88F3 19 table
+place UnitOverburnOrCloseAssaultEnabled 3A6A:890C 18 procedure
+place ScenarioUnitFourteenEnabled 3A6A:8925 2 table
+place NarrationMessageCategory 3A6A:8927 2 run
+place UnitWeaponRecoveryCounters 3A6A:8929 23F run
+place UnitTacticalOrderMode 3A6A:8B68 18 run
+place PersistentUnitRoster 3A6A:8B81 E10 table
+place EjectedPilotRosterState 3A6A:9991 2 table
+place UnitTerrainType 3A6A:9993 18 run
+place ScenarioDestructionCompletionMarker 3A6A:99B1 1 procedure
+place TacticalTileStrip 3A6A:99B5 4 annotation
+place TacticalCursorOutlineEnabled 3A6A:99C0 2 run
+place DamagedWeaponRangeFlags 3A6A:99C2 3 procedure
+place ScenarioUnitThirteenEnabled 3A6A:99C5 2 table
+place UnitMovementHeatExponent 3A6A:99C7 18 run
+place LiveScenarioUnits 3A6A:99E0 E10 table
+place UnitLastNarratedTarget 3A6A:A7F3 18 run
+place UnitSpriteBaseId 3A6A:A818 30 run
+place UnitShutdownState 3A6A:A84A 18 run
+place SceneInstructionBaseOffset 3A6A:A862 2 table
+place SceneTransitionAbortFlag 3A6A:A864 1 table
+place TerrainToHitModifier 3A6A:A865 100 run
+place LastAttackingUnitIndex 3A6A:A965 2 table
+place ScenarioUnitZeroAvailable 3A6A:A967 2 table
+place TacticalCursorMapX 3A6A:A96D 2 table
+place TacticalCursorMapY 3A6A:A96F 2 table
+place UnitWeaponAvailabilityMask 3A6A:A971 64 run
+place ProtectUnitZero 3A6A:A9D7 2 annotation
+place SceneInstructionCursor 3A6A:A9D9 4 table
+place UnitJumpMovementRemaining 3A6A:AE3D 18 run
+place SceneNarrationEventFlags 3A6A:AE63 6 table
+place UnitFormationMode 3A6A:AE9D 18 run
+place CampaignMenuRequested 3A6A:AEB8 1 annotation
+place UnitPreferredEngagementMode 3A6A:AED6 18 run
+place UnitCombatRatings 3A6A:AEF1 138 table
+place StoryUnitDeployedFlag 3A6A:B029 1 annotation
+place TacticalClockDivider 3A6A:B02A 2 run
+place UnitHeatSinkCount 3A6A:B02C 19 run
+place NarrationSourceUnit 3A6A:B045 2 annotation
+place ActiveTerrainDamageByte 3A6A:B047 4 procedure
+place UnitCachedWeaponCounts 3A6A:B04F 23F run
+place TerrainDamageQueue 3A6A:B28E 64 run
+place ActiveNarrationSubject 3A6A:B2F2 2 annotation
+place TacticalImpactQueue 3A6A:B2F4 280 table
+place TacticalStatusRowInvalidation 3A6A:B574 18 table
+place ScenarioFileSuffix 3A6A:B581 2 annotation
+place NarrationEmphasis 3A6A:B585 2 annotation
+place UnitConsecutiveAttackTicks 3A6A:B587 30 run
+place UnitLanceFormationState 3A6A:B5B9 18 run
+place FriendlyUnitDestroyed 3A6A:B5D2 2 annotation
+place PlanarBackingBufferExtentLow 3A6A:B604 2 run
+place ResourceFiles 3A6A:B632 1E table
+place ActiveUiHighlightXorColor 3A6A:B652 2 run
+place ActiveUiHighlightHeight 3A6A:B654 2 run
+place ActiveUiHighlightWidth 3A6A:B656 2 run
+place ActiveUiHighlightLeft 3A6A:B658 2 run
+place ActiveUiHighlightTop 3A6A:B65A 2 run
+place ResourceRuntimeInitialized 3A6A:B65C 2 annotation
+place PrimaryScreenBuffer 3A6A:B65E 4 annotation
+place SecondaryResourceDriveEnabled 3A6A:B662 2 table
+place ResourceDriveSelectionDisabled 3A6A:B668 2 table
+place SavedUiRegionSelectionRows 3A6A:B66A 10 run
+place SharedNumericTextBuffer 3A6A:B67E 20 run
+place VideoAdapterType 3A6A:B6CE 2 run
+place ActiveUiRegionIndex 3A6A:B6D0 2 run
+place ExpandFirstUiRowHighlight 3A6A:B6D2 2 annotation
+place PCSpeakerSampleConversion 3A6A:B6D4 134 table
+place RuntimeExitHook1 3A6A:B808 8 procedure
+place CriticalErrorCallback 3A6A:B888 4 table
+place StandardTimezoneName 3A6A:B892 4 run
+place DaylightTimezoneName 3A6A:B896 4 run
+host OriginalEditionCount 0 the import's own state
+host OriginalEditions 0 the import's own state
+host OriginalImage 0 the import's own state
+host OriginalImportKey 0 the import's own state
+host ResourceFileLengths 168 representation: the image holds the lengths in the cached-file descriptors (DS:10B4, 12h apart); the port keeps them apart and copies them in when the cache starts
+unplaced AccuracyEquipmentText 4 host pointer
+unplaced ActiveDigitalDriverQueue 12 zero at every snap
+unplaced ActiveDigitalSampleDescriptor 4 host pointer
+unplaced ActiveFontLineHeight 1 several places match
+unplaced ActivePilotListWindowHeight 1 zero at every snap
+unplaced ActiveRenderTarget 4 host pointer
+unplaced ActiveTextForegroundColor 2 several places match
+unplaced ActiveTextWindowHeightTiles 2 its bytes match nowhere (pointers or values differ)
+unplaced ActiveTextWindowWidthTiles 2 its bytes match nowhere (pointers or values differ)
+unplaced AdLibMIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
+unplaced AppliedMusicEnabled 2 several places match
+unplaced ArrowTagEquipmentText 4 host pointer
+unplaced ArtilleryShellingActive 1 zero at every snap
+unplaced ArtillerySupportAvailable 1 zero at every snap
+unplaced ArtilleryTargetMapX 1 zero at every snap
+unplaced ArtilleryTargetMapY 1 zero at every snap
+unplaced BapEquipmentText 5 zero at every snap
+unplaced BlankUnitRecord 96 zero at every snap
+unplaced BusyWaitLoopCalibration 2 zero at every snap
+unplaced CachedMusicResourceIndex 2 its bytes match nowhere (pointers or values differ)
+unplaced CachedPrimaryStatusHighlightColor 2 its bytes match nowhere (pointers or values differ)
+unplaced CachedSecondaryStatusHighlightColor 2 its bytes match nowhere (pointers or values differ)
+unplaced CalendarBoundaryTable 1C its bytes match nowhere (pointers or values differ)
+unplaced CampaignClockSeparatorText 2 zero at every snap
+unplaced CampaignState1B8C 1 zero at every snap
+unplaced CampaignState1B8D 1 its bytes match nowhere (pointers or values differ)
+unplaced CampaignUpgradeAwards 4 zero at every snap
+unplaced CampaignUpgradeMarkerX 4 zero at every snap
+unplaced CampaignUpgradeMarkerY 4 zero at every snap
+unplaced CaseEquipmentText 4 host pointer
+unplaced CgaEvenPixelPhaseLookup 100 zero at every snap
+unplaced CgaNarrowStrideMode 2 zero at every snap
+unplaced CgaOddPixelPhaseLookup 100 zero at every snap
+unplaced CgaPackedPixelSeedTable 20 zero at every snap
+unplaced CombatRatingBrutalText 4 host pointer
+unplaced CombatRatingDescriptionTable 1C host pointer
+unplaced CombatRatingDevastatingText 4 host pointer
+unplaced CombatRatingHeavyText 4 host pointer
+unplaced CombatRatingIncredibleText 4 host pointer
+unplaced CombatRatingLightText 4 host pointer
+unplaced CombatRatingModerateText 4 host pointer
+unplaced CombatRatingNoneText 4 host pointer
+unplaced CommanderListWindowHeight 1 zero at every snap
+unplaced ConditionDescriptionTable 14 host pointer
+unplaced ContinueText 4 host pointer
+unplaced CurrentProgramBreakSegment 2 its bytes match nowhere (pointers or values differ)
+unplaced CurrentUnitDurabilityTotal 2 its bytes match nowhere (pointers or values differ)
+unplaced DamagedTerrainSpriteLookup 4 host pointer
+unplaced DateCommaSpaceText 4 host pointer
+unplaced DateSpaceText 4 host pointer
+unplaced DaylightSavingEnabled 2 conflict: pairing gives 7194, where the run bytes differ
+unplaced DeadText 5 zero at every snap
+unplaced DeferredStage16Story 2 zero at every snap
+unplaced DetectedByText 4 host pointer
+unplaced DigitalDriverHardwareOffset 2 zero at every snap
+unplaced DigitalPlaybackRuntime 11A its bytes match nowhere (pointers or values differ)
+unplaced DigitalSoundBuffer 4 host pointer
+unplaced DigitalSoundBusy 2 zero at every snap
+unplaced DigitalSoundDriverMutationGuard 1 zero at every snap
+unplaced DigitalWeaponEffectRepeatCount 1 zero at every snap
+unplaced DigitalWeaponSampleBuffer 4 host pointer
+unplaced DoneText 4 host pointer
+unplaced DoubleHeatSinkEquipmentText 4 host pointer
+unplaced DropShipMapX 1 zero at every snap
+unplaced DropShipMapY 1 zero at every snap
+unplaced DurabilityDescriptionTable 10 host pointer
+unplaced EjectedPilotMapX 1 zero at every snap
+unplaced EjectedPilotMapY 1 zero at every snap
+unplaced EjectedPilotState 1 zero at every snap
+unplaced EncodedSpriteClipBottomPixel 2 several places match
+unplaced EncodedSpriteClipLeftTile 2 several places match
+unplaced EncodedSpriteClipWidthTiles 2 zero at every snap
+unplaced EncodedSpriteHorizontalPhase 1 zero at every snap
+unplaced EncodedSpriteSourceWidth 2 zero at every snap
+unplaced EncodedSpriteVisibleWidth 2 zero at every snap
+unplaced EnemyAndFriendlyLancesText 4 host pointer
+unplaced EnemyAssessmentTextTable 48 host pointer
+unplaced EnemyCycleUnitIndex 2 several places match
+unplaced EnemyUnitStatusHeading 4 zero at every snap
+unplaced ExitHandlerTable 100 zero at every snap
+unplaced ExitToDosPrompt 4 host pointer
+unplaced FailedAllocationSizeHigh 2 zero at every snap
+unplaced FailedAllocationSizeLow 2 zero at every snap
+unplaced FallenPilotListWindowHeight 1 zero at every snap
+unplaced FarHeapArenaBaseOffset 2 zero at every snap
+unplaced FarHeapArenaBaseSegment 2 its bytes match nowhere (pointers or values differ)
+unplaced FarHeapFreeListHeadOffset 2 zero at every snap
+unplaced FarHeapFreeListHeadSegment 2 its bytes match nowhere (pointers or values differ)
+unplaced FarHeapTailBlockOffset 2 zero at every snap
+unplaced FarHeapTailBlockSegment 2 its bytes match nowhere (pointers or values differ)
+unplaced FarStrtokCursor 4 host pointer
+unplaced FirstLanceOrdersEnabled 2 several places match
+unplaced FocusLanceText 4 host pointer
+unplaced FocusUnitText 4 host pointer
+unplaced Font6Resource 4 host pointer
+unplaced Font8Resource 4 host pointer
+unplaced FormationHeading 4 host pointer
+unplaced FormationOffsetTable F6 its bytes match nowhere (pointers or values differ)
+unplaced FormattedLineBreak 2 zero at every snap
+unplaced FriendlyEquipmentDescriptionTable 8 host pointer
+unplaced FriendlyUnitStatusHeading 4 zero at every snap
+unplaced GameInitialized 2 several places match
+unplaced GroundTargetWasAttacked 1 several places match
+unplaced HeatScaleDescriptionTable 1C host pointer
+unplaced IBMPS1MIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
+unplaced IBMPS1MIDIRuntime 4 zero at every snap
+unplaced InGameMenuTextTable 2C host pointer
+unplaced InputConfigTokenDelimiters 4 zero at every snap
+unplaced IntelligenceHeading 4 host pointer
+unplaced InvalidSaveVersionText 4 host pointer
+unplaced JumpEquipmentSuffix 3 zero at every snap
+unplaced LanceFormationProfile 6 several places match
+unplaced LanceStatusTextTable 20 host pointer
+unplaced LastOverviewNoticeHour 2 zero at every snap
+unplaced MIDIDriverDescriptorIdentities 18 host pointer
+unplaced MIDIDriverHostDispatches 18 host pointer
+unplaced MIDIInstrumentPatches 180 zero at every snap
+unplaced MapEdgeEffectCount 2 zero at every snap
+unplaced MapEdgeEffectQueue 18 zero at every snap
+unplaced MapHeight 2 its bytes match nowhere (pointers or values differ)
+unplaced MapWidth 2 its bytes match nowhere (pointers or values differ)
+unplaced MaximumProgramBreakSegment 2 several places match
+unplaced MaximumUnitDurabilityTotal 2 its bytes match nowhere (pointers or values differ)
+unplaced MediaConfigAssignmentDelimiter 2 zero at every snap
+unplaced MemoryBlockSegment 2 several places match
+unplaced MissionMapHeaderText 4 host pointer
+unplaced MouseCursorBackground 4 host pointer
+unplaced MouseCursorBitmap 4 host pointer
+unplaced MouseCursorCaptureTileBottom 2 zero at every snap
+unplaced MouseCursorCaptureTileLeft 2 zero at every snap
+unplaced MouseCursorCaptureTileRight 2 zero at every snap
+unplaced MouseCursorCaptureTileTop 2 zero at every snap
+unplaced MouseCursorDisplayedX 2 zero at every snap
+unplaced MouseCursorDisplayedY 2 zero at every snap
+unplaced MouseCursorDrawLeft 2 zero at every snap
+unplaced MouseCursorDrawTop 2 zero at every snap
+unplaced MouseCursorDrawnX 2 zero at every snap
+unplaced MouseCursorDrawnY 2 zero at every snap
+unplaced MouseCursorErasedX 2 zero at every snap
+unplaced MouseCursorErasedY 2 zero at every snap
+unplaced MouseCursorHideDepth 2 several places match
+unplaced MouseCursorHotspotX 2 zero at every snap
+unplaced MouseCursorHotspotY 2 zero at every snap
+unplaced MouseCursorMinX 2 zero at every snap
+unplaced MouseCursorMinY 2 zero at every snap
+unplaced MouseCursorRestoreTileBottom 2 zero at every snap
+unplaced MouseCursorRestoreTileLeft 2 zero at every snap
+unplaced MouseCursorRestoreTileRight 2 zero at every snap
+unplaced MouseCursorRestoreTileTop 2 zero at every snap
+unplaced MouseCursorTestX 2 zero at every snap
+unplaced MouseCursorTestY 2 zero at every snap
+unplaced MouseCursorUpdateLock 2 zero at every snap
+unplaced MouseDriverDoubleX 2 zero at every snap
+unplaced MoveDestinationPromptSuffix 4 host pointer
+unplaced MovementDescriptionTable 14 host pointer
+unplaced MusicConfigTokenDelimiters 4 zero at every snap
+unplaced MusicDriverIndex 1 zero at every snap
+unplaced MusicDriverPlaybackMode 1 several places match
+unplaced MusicStagingBuffer 4 host pointer
+unplaced NarrationFocusRegion 2 its bytes match nowhere (pointers or values differ)
+unplaced NoSatelliteUplinkText 4 host pointer
+unplaced NoSelectionOptionsText 4 host pointer
+unplaced NoTacticalTargetText 2 zero at every snap
+unplaced NullMIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
+unplaced NumericKeypadNavigationEnabled 2 zero at every snap
+unplaced OutOfScanningText 4 host pointer
+unplaced PackedTerrainDamageMap 4 host pointer
+unplaced PackedTerrainDamageRowBytes 2 its bytes match nowhere (pointers or values differ)
+unplaced PathSeparatorText 2 zero at every snap
+unplaced PendingMouseButtonEvent 2 zero at every snap
+unplaced PendingNarrationDelay 2 its bytes match nowhere (pointers or values differ)
+unplaced PercentCloseText 3 zero at every snap
+unplaced PercentageSuffixText 2 zero at every snap
+unplaced PilotExperienceNameTable 10 host pointer
+unplaced PilotIdentityPrefixText 4 host pointer
+unplaced PilotNamePrefixText 4 host pointer
+unplaced PilotRosterHeadingText 4 host pointer
+unplaced PilotSurnameTable EC host pointer
+unplaced PlanarBackingBufferExtentHigh 2 zero at every snap
+unplaced PreviousMouseCellX 2 zero at every snap
+unplaced PreviousMouseCellY 2 zero at every snap
+unplaced PrimaryLanceResourceCode 1 zero at every snap
+unplaced PrimaryStatusRow 2 its bytes match nowhere (pointers or values differ)
+unplaced RadarSensorText 4 host pointer
+unplaced RangeText 4 host pointer
+unplaced ResourceErrorDismissCallback 8 zero at every snap
+unplaced ResourceErrorDisplayCallback 8 zero at every snap
+unplaced ResourceFileNames 5A0 its bytes match nowhere (pointers or values differ)
+unplaced RestartConfirmationText 4 host pointer
+unplaced RolandMIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
+unplaced RollingBarrageActive 1 zero at every snap
+unplaced RollingBarrageEndMapX 1 zero at every snap
+unplaced RollingBarrageEndMapY 1 zero at every snap
+unplaced RollingBarrageStartMapX 1 zero at every snap
+unplaced RollingBarrageStartMapY 1 zero at every snap
+unplaced RuntimeDOSError 2 zero at every snap
+unplaced RuntimeErrno 2 zero at every snap
+unplaced RuntimeExitHook2 8 zero at every snap
+unplaced RuntimeExitHook3 8 zero at every snap
+unplaced RuntimeTerminationHook 8 zero at every snap
+unplaced SatelliteZoomText 4 host pointer
+unplaced SaveGameSeparatorText 4 host pointer
+unplaced SaveLoadMenuDefaultSelection 1 zero at every snap
+unplaced SavedBIOSVideoMode 2 several places match
+unplaced SavedBoundsHandler 8 zero at every snap
+unplaced SavedDivideErrorHandler 8 zero at every snap
+unplaced SavedGameClockVector 4 zero at every snap
+unplaced SavedInvalidOpcodeHandler 8 zero at every snap
+unplaced SavedOverflowHandler 8 zero at every snap
+unplaced SavedSaveTransferState 2 zero at every snap
+unplaced SavedTacticalRoute B zero at every snap
+unplaced ScannedByActiveProbeText 4 host pointer
+unplaced ScenarioCompleteHeadingText 4 host pointer
+unplaced ScenarioDestructionCompletionState 1 zero at every snap
+unplaced ScenarioFailedHeadingText 4 host pointer
+unplaced ScenarioRosterPrepared 1 zero at every snap
+unplaced SceneFileTooLargeText 4 host pointer
+unplaced SceneNarrationSeparatorText 4 host pointer
+unplaced SecondaryStatusHighlightColor 2 its bytes match nowhere (pointers or values differ)
+unplaced SecondaryStatusRow 2 several places match
+unplaced Seg426B EA its bytes match nowhere (pointers or values differ)
+unplaced SelectArtilleryTargetPrompt 4 host pointer
+unplaced SelectBarrageEndPrompt 4 host pointer
+unplaced SelectBarrageStartPrompt 4 host pointer
+unplaced SelectFireTargetPrompt 4 host pointer
+unplaced SelectStrafingAreaPrompt 4 host pointer
+unplaced SelectedUnitEquipmentLocation 2 conflict: pairing and the run bytes disagree (8662 against 8663)
+unplaced SharedCompressionDictionaryByteCount 2 zero at every snap
+unplaced SharedCompressionDictionarySegment 2 zero at every snap
+unplaced SharedGraphicsBackingBuffers 80 host pointer
+unplaced SoundConfigTokenDelimiters 4 zero at every snap
+unplaced SoundDriverIndex 1 zero at every snap
+unplaced SoundDriverNumericParameter 2 conflict: pairing gives 8372, where the run bytes differ
+unplaced SoundEffectsEnabled 2 several places match
+unplaced SoundParameterTokenDelimiters 4 zero at every snap
+unplaced SpeakerMIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
+unplaced SpriteClipBottomPixelMirror 2 its bytes match nowhere (pointers or values differ)
+unplaced SpriteClipLeftTileMirror 2 several places match
+unplaced SpriteClipRightTile 2 several places match
+unplaced SpriteClipTopPixel 2 zero at every snap
+unplaced SpriteClipTopPixelMirror 2 zero at every snap
+unplaced SpriteDrawBusy 2 zero at every snap
+unplaced SpritePreserveMode 2 zero at every snap
+unplaced StrafingRunActive 1 zero at every snap
+unplaced StrafingSupportAvailable 1 zero at every snap
+unplaced SuppressCampaignClock 2 zero at every snap
+unplaced TacticalCellSpriteMap 4 host pointer
+unplaced TacticalCellTerrainMap 4 host pointer
+unplaced TacticalClockBlankText 4 zero at every snap
+unplaced TacticalCursorOutlineState 2 its bytes match nowhere (pointers or values differ)
+unplaced TacticalCursorRuntimeState 2 zero at every snap
+unplaced TacticalEffectOverlayMap E4 zero at every snap
+unplaced TacticalKeyRepeatDelayTicks 2 its bytes match nowhere (pointers or values differ)
+unplaced TacticalMenuInputState 2 zero at every snap
+unplaced TacticalNarrationBlankText 4 zero at every snap
+unplaced TacticalNarrationLabel 4 zero at every snap
+unplaced TacticalNoUnitStatusText 1C zero at every snap
+unplaced TacticalOverburnTextTable 8 host pointer
+unplaced TacticalOverviewClockNoticeActive 2 zero at every snap
+unplaced TacticalOverviewMapBuffer 4 host pointer
+unplaced TacticalOverviewMapMode 2 zero at every snap
+unplaced TacticalOverviewMarkerX 18 zero at every snap
+unplaced TacticalOverviewMarkerY 18 zero at every snap
+unplaced TacticalOverviewNoticeChance 1 zero at every snap
+unplaced TacticalOverviewRuntimeState 2 zero at every snap
+unplaced TacticalOverviewScreenOriginX 2 zero at every snap
+unplaced TacticalOverviewViewportX 2 zero at every snap
+unplaced TacticalOverviewViewportY 2 zero at every snap
+unplaced TacticalPaddingSpace 2 zero at every snap
+unplaced TacticalProjectileCount 2 zero at every snap
+unplaced TacticalProjectileRecords 460 zero at every snap
+unplaced TacticalRuntimeState 2 zero at every snap
+unplaced TacticalScenarioLanceEnabled 3 zero at every snap
+unplaced TacticalSlotSpriteState 18 its bytes match nowhere (pointers or values differ)
+unplaced TacticalSpriteClipBottomPixel 2 its bytes match nowhere (pointers or values differ)
+unplaced TacticalSpriteClipLeftTile 2 its bytes match nowhere (pointers or values differ)
+unplaced TacticalSpriteClipRightTile 2 its bytes match nowhere (pointers or values differ)
+unplaced TacticalSpriteClipTopPixel 2 zero at every snap
+unplaced TacticalStateInitialized 1 several places match
+unplaced TacticalStatusSeparator 2 zero at every snap
+unplaced TacticalSupportCommandTextTable 20 host pointer
+unplaced TacticalUnitCommandTextTable 38 host pointer
+unplaced TandyMIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
+unplaced TandyMIDIRuntime 4 zero at every snap
+unplaced TerrainDamageCapabilityTable 4 host pointer
+unplaced TerrainDamageCellIncrementMask 4 its bytes match nowhere (pointers or values differ)
+unplaced TerrainDamageExtractMask 4 its bytes match nowhere (pointers or values differ)
+unplaced TerrainDamageShift 4 its bytes match nowhere (pointers or values differ)
+unplaced TerrainImpactAnimationRecords 21C its bytes match nowhere (pointers or values differ)
+unplaced TerrainImpactAnimationTypeMaximum 1 several places match
+unplaced TerrainImpactAnimationTypeMinimum 1 several places match
+unplaced TerrainLineOfSightMaximumSteps 1 zero at every snap
+unplaced TextCursorBlinkGlyph 2 zero at every snap
+unplaced TextEntryActive 1 zero at every snap
+unplaced TextEntryCursorIndex 2 zero at every snap
+unplaced TextEntryPunctuation D zero at every snap
+unplaced TextOutputMode 2 zero at every snap
+unplaced TextWindowFrameDefinitionTable 4 host pointer
+unplaced TextWindowStateInitialized 2 several places match
+unplaced TrainingCategoryHeadingText 4 host pointer
+unplaced TrainingScenarioHeadingText 4 host pointer
+unplaced TrainingUnitSelectionPrompt 4 host pointer
+unplaced UnitAffiliationNameTable 10 host pointer
+unplaced UnitEditorLanceGroupCount 2 its bytes match nowhere (pointers or values differ)
+unplaced UnitEditorPilotCardCount 2 zero at every snap
+unplaced UnitEditorScenarioCardCount 2 its bytes match nowhere (pointers or values differ)
+unplaced UnitEditorScenarioGroupCount 2 its bytes match nowhere (pointers or values differ)
+unplaced UnitHeatStatusPrefix 2 zero at every snap
+unplaced UnitJumpingState 18 zero at every snap
+unplaced UnitNameTable 164 host pointer
+unplaced UnitRosterSeparator 4 host pointer
+unplaced UnitSpriteId 30 its bytes match nowhere (pointers or values differ)
+unplaced UnitStatusArmorLabel 4 host pointer
+unplaced UnitStatusDamageLabel 4 host pointer
+unplaced UnitStatusEquipmentSeparator 4 host pointer
+unplaced UnitStatusExitLabel 4 host pointer
+unplaced UnitStatusHeatDetailLabel 4 host pointer
+unplaced UnitStatusHeatLabel 4 host pointer
+unplaced UnitStatusRatingLabels 4 host pointer
+unplaced UnitStatusSeparator 4 host pointer
+unplaced UnitStatusSeparatorText 2 zero at every snap
+unplaced UnitStatusSpace 4 host pointer
+unplaced UnknownUnitLabel 4 host pointer
+unplaced UnknownUnitText 4 host pointer
+unplaced UplinkJammedText 4 host pointer
+unplaced UseEgaTacticalFallback 2 several places match
+unplaced VersionDecimalSeparator 2 zero at every snap
+unplaced VersionTranslationReplacement 2 zero at every snap
+unplaced VersionTranslationSource 2 zero at every snap
+unplaced VerticalRetraceEdgeMode 2 zero at every snap
+unplaced VideoConfigTokenDelimiters 4 zero at every snap
+unplaced VideoFramebuffer 4 host pointer
+unplaced ViewSatelliteMapText 4 host pointer
+unplaced WeaponDefinitions 159 its bytes match nowhere (pointers or values differ)
+
+# Places two objects share, each to be looked at (tools/map/README.md):
+#
+#   overlap NAME NAME
+overlap UiRegionTable DialogFramingEnabled
+overlap CachedFileDescriptors UnitTemplatePathOffset
+overlap CachedFileDescriptors UnitTemplatePathSegment
+overlap CachedFileDescriptors ScenarioResourcePathPointer
+overlap CachedFileDescriptors TacticalResourcePathOffset
+overlap CachedFileDescriptors TacticalResourcePathSegment
+overlap CachedFileDescriptors MediaConfigurationFileName
+overlap CachedFileDescriptors ScreenPaletteResourceByScreen
+overlap HeatDissipationBySinkCountQ8_8 NeighborMapOffsetTable
+overlap HeatDissipationBySinkCountQ8_8 TacticalUpdateDelayReloadTicks
+overlap HeatDissipationBySinkCountQ8_8 TacticalGameSpeedIndex
+overlap HeatDissipationBySinkCountQ8_8 SaveDirectory
+overlap HeatDissipationBySinkCountQ8_8 SaveCampaignSnapshot
+overlap SaveCampaignSnapshot SavedScenarioUnitMapX
+overlap SaveCampaignSnapshot SavedScenarioUnitMapY
+overlap CampaignState1B8E RandomSelectionPoolCount
+overlap MissionDateAdvanceMonths MouseCursorBackingSourceTileX
+overlap MissionDateAdvanceMonths MouseCursorBackingSourcePixelY
+overlap MissionDateAdvanceMonths MouseCursorBackingWidthTiles
+overlap MissionDateAdvanceMonths MouseCursorBackingHeightPixels
+overlap CampaignMessageTable CampaignMessageTextTable
+overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable
+overlap ScenarioLanceAllegianceTable DigitalSoundData
+overlap AdLibActivateRegisterList AdLibNineVoiceResetList
+overlap LoadedSceneFile WeaponCombatRatingByType
+overlap LinePrimaryYStep LinePrimaryXStep
+overlap LineSecondaryYStep LineSecondaryXStep
+overlap UnitWithdrawalState CampaignUnitThirteenAvailabilityFlag
+overlap UnitWithdrawalState CampaignUnitFifteenOverrideFlag
+overlap UnitWithdrawalState CampaignUnitFourteenAvailabilityFlag
+overlap TacticalStatusRowInvalidation ScenarioFileSuffix
+overlap TacticalStatusRowInvalidation NarrationEmphasis
+overlap TacticalStatusRowInvalidation UnitConsecutiveAttackTicks

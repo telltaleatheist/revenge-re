@@ -769,6 +769,10 @@ if(CHR_BUILD_SDL)
                 --exe $<TARGET_FILE:Revenge>
                 --script ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/scripts/tactical.keys)
         set_tests_properties(trace.goldens trace.repeat PROPERTIES SKIP_RETURN_CODE 77)
+        # Every data object has a line in the map of the original's memory.
+        add_test(NAME map.data_map
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/map/check_map.py)
     endif()
 
     add_custom_target(revenge-package
