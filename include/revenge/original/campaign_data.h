@@ -47,13 +47,16 @@ enum
 	CAMPAIGN_TITLE_TEXT_COUNT = 0x12,
 	CAMPAIGN_MONTH_COUNT = 0x0C,
 	CAMPAIGN_MISSION_DATE_COUNT = 0x0C,
-	CAMPAIGN_SCREEN_PALETTE_COUNT = 0x26,
+	CAMPAIGN_SCREEN_PALETTE_COUNT = 0x25,
 	CAMPAIGN_BLINK_RECT_COUNT = 0x07,
 	CAMPAIGN_SPRITE_LAYOUT_COUNT = 0x0C,
 	CAMPAIGN_MESSAGE_COUNT = 0xB2
 };
 
 extern byte TrainingScenarioCompletionFlags[0x06];
+/* DS:1704: the palette of screens 1-25h, the first entry screen 1's. The
+ * original indexes it from DS:1703, the last cached-file descriptor's last
+ * byte, with screens that start at 1. */
 extern int8 ScreenPaletteResourceByScreen[CAMPAIGN_SCREEN_PALETTE_COUNT];
 extern CampaignSaveDirectory SaveDirectory;
 extern RevengeCampaignSnapshot SaveCampaignSnapshot;

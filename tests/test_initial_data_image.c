@@ -62,7 +62,7 @@ static const ImageRow rows[] =
 	DS(TacticalStatusBlinkVisible, 0x86BD),
 	DS(SceneNarrationEventFlags, 0xAE63),
 	DS(TrainingScenarioCompletionFlags, 0x00A0),
-	DS(ScreenPaletteResourceByScreen, 0x1703),
+	DS(ScreenPaletteResourceByScreen, 0x1704),
 	DS(SaveDirectory, 0x18CE),
 	DS(SaveCampaignSnapshot, 0x1956),
 	DS(InitialCampaignState, 0x1B77),

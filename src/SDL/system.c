@@ -167,7 +167,7 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HostFarPointer_RegisterAt(&(object), sizeof(object), \
 		0x3A6A0000UL + (offset))
 	REGISTER_DATA_OBJECT(TrainingScenarioCompletionFlags, 0x00A0);
-	REGISTER_DATA_OBJECT(ScreenPaletteResourceByScreen, 0x1703);
+	REGISTER_DATA_OBJECT(ScreenPaletteResourceByScreen, 0x1704);
 	REGISTER_DATA_OBJECT(SaveDirectory, 0x18CE);
 	REGISTER_DATA_OBJECT(SaveCampaignSnapshot, 0x1956);
 	REGISTER_DATA_OBJECT(InitialCampaignState, 0x1B77);
@@ -266,7 +266,7 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 #define HYDRATE_DATA_OBJECT(object, offset) \
 	memcpy(&(object), &originalDataSegment[(offset)], sizeof(object))
 	HYDRATE_DATA_OBJECT(TrainingScenarioCompletionFlags, 0x00A0);
-	HYDRATE_DATA_OBJECT(ScreenPaletteResourceByScreen, 0x1703);
+	HYDRATE_DATA_OBJECT(ScreenPaletteResourceByScreen, 0x1704);
 	HYDRATE_DATA_OBJECT(SaveDirectory, 0x18CE);
 	HYDRATE_DATA_OBJECT(SaveCampaignSnapshot, 0x1956);
 	HYDRATE_DATA_OBJECT(InitialCampaignState, 0x1B77);

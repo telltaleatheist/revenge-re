@@ -275,7 +275,9 @@ void LoadScreenPalette(word16 screenResourceIndex)
 	if (VideoAdapterType == VIDEO_ADAPTER_VGA)
 	{
 		int16 paletteResourceIndex =
-			ScreenPaletteResourceByScreen[screenResourceIndex];
+			ScreenPaletteResourceByScreen[REVENGE_INDEX(
+				ScreenPaletteResourceByScreen,
+				(word16) (screenResourceIndex - 0x0001))];
 		ReadWholeResourceFile(
 			CACHED_FILE_NAME(paletteResourceIndex),
 			VideoPaletteData, VGA_DAC_PALETTE_BYTE_COUNT);

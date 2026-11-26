@@ -40,7 +40,7 @@ place ScenarioResourcePathPointer 3A6A:1554 4 table
 place TacticalResourcePathOffset 3A6A:1566 2 table
 place TacticalResourcePathSegment 3A6A:1568 2 table
 place MediaConfigurationFileName 3A6A:21F4 A table
-place ScreenPaletteResourceByScreen 3A6A:1703 26 table
+place ScreenPaletteResourceByScreen 3A6A:1704 25 table
 place WeaponTraceMajorStepX 3A6A:172A 8 run
 place WeaponTraceMajorStepY 3A6A:1732 8 run
 place WeaponTraceMinorStepX 3A6A:173A 8 run
@@ -784,7 +784,6 @@ overlap CachedFileDescriptors UnitTemplatePathSegment host pointer: the descript
 overlap CachedFileDescriptors ScenarioResourcePathPointer host pointer: the descriptor holds the port's own pointer
 overlap CachedFileDescriptors TacticalResourcePathOffset host pointer: the descriptor holds the port's own pointer
 overlap CachedFileDescriptors TacticalResourcePathSegment host pointer: the descriptor holds the port's own pointer
-overlap CachedFileDescriptors ScreenPaletteResourceByScreen to look at: the table's first byte is the last descriptor's last
 overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
 overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable size to settle: the original's table is 0Fh bytes
 overlap AdLibActivateRegisterList AdLibNineVoiceResetList the original's second constant list is the first one's tail
