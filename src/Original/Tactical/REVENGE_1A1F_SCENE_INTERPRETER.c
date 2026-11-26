@@ -880,8 +880,8 @@ void RenderPendingNarration(void)
 			+ NarrationMessageCategory);
 		messageOffset = LoadedSceneFile.header
 			.narrationMessageOffsets[sceneMessageTableIndex];
-		message = (char *) MAKE_FAR_POINTER(
-			SCENE_DATA_SEGMENT, 0x71A8 + messageOffset);
+		message = (char *) MAKE_FAR_POINTER(SCENE_DATA_SEGMENT,
+			0x71A8 + REVENGE_INDEX(LoadedSceneFile.raw, messageOffset));
 		if (adjustedMessageCategory != FALSE)
 		{
 			NarrationMessageCategory =
@@ -1042,7 +1042,7 @@ word16 HasNarrationMessage(
 		speakerBank * 0x0B + messageCategory];
 	char *message = (char *)MAKE_FAR_POINTER(
 		SCENE_DATA_SEGMENT,
-		0x71A8 + messageOffset);
+		0x71A8 + REVENGE_INDEX(LoadedSceneFile.raw, messageOffset));
 	return (byte)message[0x00];
 }
 

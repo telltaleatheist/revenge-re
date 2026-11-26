@@ -9,6 +9,7 @@
 #include "revenge/input.h"
 #include "revenge/original/scene_data.h"
 #include "revenge/original_data.h"
+#include "revenge/debug.h"
 #include "revenge/video.h"
 
 
@@ -178,10 +179,20 @@ void CreateRandomAreaImpact(
 
 #define PERSISTENT_UNIT_RECORD(unitIndex) \
 	(&PersistentUnitRoster[(unitIndex)])
-#define NEXT_SCENE_BYTE() \
-	(*(byte *)MAKE_FAR_POINTER( \
-		SceneInstructionCursor.segment, \
-		SceneInstructionCursor.offset++))
+/* The next byte of the loaded scene's instructions. The cursor stays inside
+ * the scene buffer (DS:71A8, SCENE_FILE_BUFFER_SIZE bytes; its segment and
+ * offset may be any pair naming those bytes); past it is a fault. */
+static inline byte NextSceneByte(void)
+{
+	word16 segment = SceneInstructionCursor.segment;
+	word16 offset = SceneInstructionCursor.offset++;
+	uint32 linear = ((uint32) segment << 0x04) + offset;
+
+	(void) REVENGE_INDEX(LoadedSceneFile.raw,
+		linear - (((uint32) SCENE_DATA_SEGMENT << 0x04) + 0x71A8));
+	return *(byte *)MAKE_FAR_POINTER(segment, offset);
+}
+#define NEXT_SCENE_BYTE() NextSceneByte()
 RevengeUnitRecord *GetPersistentUnitRecord(word16 unitIndex);
 #define GetUnitRouteRecord(unitIndex) (&SceneUnitRoutes[(unitIndex)])
 #define ReadSceneByte() NEXT_SCENE_BYTE()

@@ -288,7 +288,7 @@ place DaylightSavingEnabled 3A6A:7194 2 procedure
 place TimezoneEnvironmentName 3A6A:7196 3 run
 place DefaultStandardTimezoneName 3A6A:7199 4 run
 place DefaultDaylightTimezoneName 3A6A:719D 4 run
-place LoadedSceneFile 3A6A:71A8 8CB table
+place LoadedSceneFile 3A6A:71A8 800 table
 place WeaponCombatRatingByType 4184:08BC 17 run
 place RelativeAttackDirectionByMask 4184:08D7 10 run
 place LinePrimaryYStep 4184:08E7 10 run
@@ -788,6 +788,5 @@ overlap CachedFileDescriptors ScreenPaletteResourceByScreen to look at: the tabl
 overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
 overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable size to settle: the original's table is 0Fh bytes
 overlap AdLibActivateRegisterList AdLibNineVoiceResetList the original's second constant list is the first one's tail
-overlap LoadedSceneFile WeaponCombatRatingByType to look at: the ratings are the scene buffer's last 17h bytes
 overlap LinePrimaryYStep LinePrimaryXStep the original lays the two constant tables 4 bytes apart
 overlap LineSecondaryYStep LineSecondaryXStep the original lays the two constant tables 4 bytes apart
