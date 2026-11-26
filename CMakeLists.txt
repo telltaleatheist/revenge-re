@@ -627,6 +627,15 @@ if(BUILD_TESTING)
     add_test(NAME tactical.original_cursor_retreat
         COMMAND test_tactical_cursor_retreat)
 
+    add_executable(test_line_of_sight_map_width
+        tests/test_line_of_sight_map_width.c
+        tests/fake_backend.c)
+    target_include_directories(test_line_of_sight_map_width PRIVATE src/SDL tests)
+    target_link_libraries(test_line_of_sight_map_width PRIVATE chr_original_runtime)
+    chr_strict(test_line_of_sight_map_width)
+    add_test(NAME tactical.original_line_of_sight_map_width
+        COMMAND test_line_of_sight_map_width)
+
     add_executable(test_unit_durability_totals
         tests/test_unit_durability_totals.c
         tests/fake_backend.c)

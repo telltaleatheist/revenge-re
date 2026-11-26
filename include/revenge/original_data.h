@@ -155,7 +155,6 @@ extern const int8_t DOSErrorToErrnoTable[0x59];
 extern PITCalibrationState PITCalibration;
 extern word16 VerticalRetraceEdgeMode;
 extern byte *DamagedTerrainSpriteLookup;
-extern byte TacticalMapRowWidth;
 extern byte TacticalEffectOverlayMap[0x00E4];
 extern uint32 GameTimerTicks;
 extern uint32 GameAnimationTicks;
@@ -368,14 +367,6 @@ extern byte PrimaryLanceResourceCode;
 #define SceneInstructionBase SceneInstructionBaseOffset
 #define SceneInstructionCursorOffset (SceneInstructionCursor.offset)
 #define SceneInstructionCursorSegment (SceneInstructionCursor.segment)
-extern word16 TacticalMapNegativeStridePrimary;
-extern word16 TacticalMapPositiveStridePrimary;
-extern word16 TacticalMapPositiveStrideSecondary;
-extern word16 TacticalMapNegativeStrideSecondary;
-extern word16 TacticalMapNegativeStrideTertiary;
-extern word16 TacticalMapPositiveStrideTertiary;
-extern word16 TacticalMapPositiveStrideQuaternary;
-extern word16 TacticalMapNegativeStrideQuaternary;
 extern byte UnitEditorAllegiance;
 extern word16 UnitEditorScenarioGroupCount;
 extern word16 UnitEditorScenarioCardCount;
@@ -713,10 +704,10 @@ extern const byte WeaponCombatRatingByType[0x17];
 extern const byte RelativeAttackDirectionByMask[0x10];
 extern const int16 LinePrimaryYStep[0x08];
 extern const int16 LinePrimaryXStep[0x08];
-extern const int16 LinePrimaryRowOffset[0x08];
+extern int16 LinePrimaryRowOffset[0x08];
 extern const int16 LineSecondaryYStep[0x08];
 extern const int16 LineSecondaryXStep[0x08];
-extern const int16 LineSecondaryRowOffset[0x08];
+extern int16 LineSecondaryRowOffset[0x08];
 extern word16 EncodedSpriteVisibleWidth;
 extern word16 EncodedSpriteSourceWidth;
 extern byte EncodedSpriteHorizontalPhase;

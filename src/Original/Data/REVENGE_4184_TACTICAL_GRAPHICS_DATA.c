@@ -29,7 +29,12 @@ const int16 LinePrimaryXStep[0x08] =
 	0x00, 0x01, 0x01, 0x00, 0x00, -0x01, -0x01, 0x00
 };
 
-const int16 LinePrimaryRowOffset[0x08] =
+/* The row steps (4184:08FB and 4184:091F) start as the image has them, 96
+ * wide; LoadTacticalMap writes the map's width into the eight non-zero
+ * entries (3A6A:7A9B-7ACB is this memory), so line of sight walks rows of the
+ * loaded map. Entry 3 of the primary table (4184:0901) is the width the trace
+ * and the terrain builder read. */
+int16 LinePrimaryRowOffset[0x08] =
 {
 	-0x60, 0x00, 0x00, 0x60, 0x60, 0x00, 0x00, -0x60
 };
@@ -44,12 +49,10 @@ const int16 LineSecondaryXStep[0x08] =
 	0x01, 0x00, 0x00, 0x01, -0x01, 0x00, 0x00, -0x01
 };
 
-const int16 LineSecondaryRowOffset[0x08] =
+int16 LineSecondaryRowOffset[0x08] =
 {
 	0x00, -0x60, 0x60, 0x00, 0x00, 0x60, -0x60, 0x00
 };
-
-byte TacticalMapRowWidth;
 
 word16 EncodedSpriteClipLeftTile = 0x0000;
 word16 SpriteClipRightTile = 0x0028;

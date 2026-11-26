@@ -113,7 +113,7 @@ word16 TraceMapLineOfSight(
 	terrainOffset = (word16) (FAR_OFFSET(terrainTypeMap) +
 		(word16) sourceX +
 		(word16) ((byte) sourceY *
-			(byte) TacticalMapRowWidth));
+			(byte) LinePrimaryRowOffset[0x03]));
 	verticalDelta = (int16) ((word16) sourceY - (word16) targetY);
 	horizontalDelta = (int16) ((word16) targetX - (word16) sourceX);
 	absoluteVerticalDelta = verticalDelta;
@@ -407,7 +407,7 @@ void BuildTacticalTerrainCellMaps(
 
 	// Verified against 0800:05D3-06D0. The original byte MUL operations
 	// deliberately use only the low bytes of viewportY and the row strides.
-	mapWidth = TacticalMapRowWidth;
+	mapWidth = (word16) LinePrimaryRowOffset[0x03];
 	packedRowStride = (word16) (((mapWidth + 0x03) & 0x01FC) >> 0x02);
 	terrainRowOffset = (word16) (FAR_OFFSET(terrainTypeMap) + viewportX
 		+ (byte) viewportY * (byte) mapWidth);

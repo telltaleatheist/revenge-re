@@ -277,20 +277,18 @@ void LoadTacticalMap(word16 mapNumber)
 	mapHeight = mapBuffer[0x02];
 	MapWidth = mapWidth;
 	MapHeight = mapHeight;
-	/* 4184:0901 is the row-stride byte consumed by the graphics-overlay
-	 * terrain builder.  The DOS overlay patches this writable data for the
-	 * active compact MAP payload; keep the reconstructed object synchronized. */
-	TacticalMapRowWidth = (byte)mapWidth;
-
+	/* 1A1F:058F-05AC: DS:7A9B-7ACB are the line tracer's row steps
+	 * (4184:08FB-092B); entry 3 of the primary table (4184:0901) is also the
+	 * row width the trace and the terrain builder read. */
 	negativeMapWidth = (word16) (0x00 - mapWidth);
-	TacticalMapNegativeStrideQuaternary = negativeMapWidth;
-	TacticalMapNegativeStrideTertiary = negativeMapWidth;
-	TacticalMapNegativeStrideSecondary = negativeMapWidth;
-	TacticalMapNegativeStridePrimary = negativeMapWidth;
-	TacticalMapPositiveStrideQuaternary = mapWidth;
-	TacticalMapPositiveStrideTertiary = mapWidth;
-	TacticalMapPositiveStrideSecondary = mapWidth;
-	TacticalMapPositiveStridePrimary = mapWidth;
+	LineSecondaryRowOffset[0x06] = (int16) negativeMapWidth;  /* DS:7ACB */
+	LineSecondaryRowOffset[0x01] = (int16) negativeMapWidth;  /* DS:7AC1 */
+	LinePrimaryRowOffset[0x07] = (int16) negativeMapWidth;    /* DS:7AA9 */
+	LinePrimaryRowOffset[0x00] = (int16) negativeMapWidth;    /* DS:7A9B */
+	LineSecondaryRowOffset[0x05] = (int16) mapWidth;          /* DS:7AC9 */
+	LineSecondaryRowOffset[0x02] = (int16) mapWidth;          /* DS:7AC3 */
+	LinePrimaryRowOffset[0x04] = (int16) mapWidth;            /* DS:7AA3 */
+	LinePrimaryRowOffset[0x03] = (int16) mapWidth;            /* DS:7AA1 */
 
 	// Eight signed linear neighbor deltas. The static +/-1 entries at indices
 	// two and six are not rewritten by this procedure.
