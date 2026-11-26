@@ -53,8 +53,16 @@ static void LoadOriginalModuleImage(byte *programBlock, uint32 blockBytes)
 	size_t relocationCount = OriginalImport_RelocationCount();
 	size_t relocationIndex;
 
-	if (moduleSize > 0x00 && (uint32) moduleSize + 0x0100UL <= blockBytes)
-		memcpy(programBlock + 0x0100, OriginalImage, moduleSize);
+	if ((uint32) moduleSize + 0x0100UL > blockBytes)
+	{
+		/* DOS would refuse to load a program larger than the block, and
+		 * nothing the game does next works without it. */
+		fprintf(stderr, "REVENGE.EXE: its load image (%lu bytes) doesn't fit the "
+			"conventional-memory block (%lu bytes)\n", (unsigned long) moduleSize,
+			(unsigned long) (blockBytes - 0x0100UL));
+		exit(1);
+	}
+	memcpy(programBlock + 0x0100, OriginalImage, moduleSize);
 	for (relocationIndex = 0x0000; relocationIndex < relocationCount;
 		++relocationIndex)
 	{
