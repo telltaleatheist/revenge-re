@@ -619,6 +619,15 @@ if(BUILD_TESTING)
     add_test(NAME tactical.original_cursor_retreat
         COMMAND test_tactical_cursor_retreat)
 
+    add_executable(test_unit_durability_totals
+        tests/test_unit_durability_totals.c
+        tests/fake_backend.c)
+    target_include_directories(test_unit_durability_totals PRIVATE src/SDL tests)
+    target_link_libraries(test_unit_durability_totals PRIVATE chr_original_runtime)
+    chr_strict(test_unit_durability_totals)
+    add_test(NAME units.original_durability_totals
+        COMMAND test_unit_durability_totals)
+
     add_executable(test_omni_unit_list
         tests/test_omni_unit_list.c
         tests/fake_backend.c)

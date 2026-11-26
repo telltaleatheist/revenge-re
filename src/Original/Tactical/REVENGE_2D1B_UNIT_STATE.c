@@ -138,7 +138,8 @@ void RecalculateUnitCombatRatings(
 // Called from:
 //      DrawUnitStatusScreen
 //      RecalculateUnitCombatRatings
-// Verified against 2D1B:0379-03E9, including CBW sign extension.
+// Verified against 2D1B:0379-03E9. Each byte is sign-extended (cbw) before
+// it is added.
 void CalculateUnitDurabilityTotals(RevengeUnitRecord *unitRecord)
 {
 	word16 locationIndex;
@@ -154,10 +155,10 @@ void CalculateUnitDurabilityTotals(RevengeUnitRecord *unitRecord)
 		{
 			CurrentUnitDurabilityTotal = (word16)(
 				CurrentUnitDurabilityTotal
-				+ unitRecord->currentArmor[locationIndex]);
+				+ (int8) unitRecord->currentArmor[locationIndex]);
 			MaximumUnitDurabilityTotal = (word16)(
 				MaximumUnitDurabilityTotal
-				+ unitRecord->maximumArmor[locationIndex]);
+				+ (int8) unitRecord->maximumArmor[locationIndex]);
 		}
 	}
 	else
@@ -168,10 +169,10 @@ void CalculateUnitDurabilityTotals(RevengeUnitRecord *unitRecord)
 		{
 			CurrentUnitDurabilityTotal = (word16)(
 				CurrentUnitDurabilityTotal
-				+ unitRecord->currentDurability[locationIndex]);
+				+ (int8) unitRecord->currentDurability[locationIndex]);
 			MaximumUnitDurabilityTotal = (word16)(
 				MaximumUnitDurabilityTotal
-				+ unitRecord->maximumDurability[locationIndex]);
+				+ (int8) unitRecord->maximumDurability[locationIndex]);
 		}
 	}
 }
