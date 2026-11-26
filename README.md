@@ -1,39 +1,43 @@
-<h1 align="center">BattleTech: The Crescent Hawks' Revenge</h1>
+# Revenge Rebuild
 
-<p align="center"><em>A readable C17 reconstruction of the 1990 DOS game.</em></p>
+**revenge-re** rebuilds BattleTech: The Crescent Hawks' Revenge (1990, the DOS
+game by Westwood Associates, published by Infocom) for today's Windows, macOS
+and Linux. It is built on
+**[Elthial's Crescent Hawks' Revenge SDL port](https://github.com/Elthial/Crescent-Hawks-Revenge-sdl-port)**,
+a readable C reconstruction of the original program, whose research and code it
+continues. It is a fan project: unofficial, free, and not affiliated with or
+endorsed by any holder of rights in the game.
 
-This repository is a C17 reconstruction of the 1990 DOS game. Its purpose is
-preservation: express the executable's procedures, data flow, control flow and
-game rules as readable C while retaining a direct route back to the assembly.
+**You need your own copy of the game.** None of the game's files, text, art or
+sound are in this repository. The program reads what it needs from your DOS
+copy when it starts, and never changes it. Only the US DOS release 1.00 is known
+so far ([supported versions](docs/SUPPORTED_VERSIONS.md)).
 
-This repository starts at the consolidated v1.0 preservation snapshot. The
-monorepo's development commit history is intentionally not imported.
+## Status
 
-This is not a redesign or the architecture for a future port. DOS, BIOS and
-hardware operations are redirected at the lowest practical boundary to SDL3
-and portable host services; game logic remains in the reconstructed procedure
-chain.
+In development. There is no release yet and nothing packaged: it is built and
+run from source (below).
 
-## Current status
+- Builds on Windows (MSVC), macOS 12 or later (one universal build for Intel
+  and Apple silicon) and Linux (GCC).
+- The game's text and data come from the player's copy: each piece is checked
+  against offsets, lengths and keyed hashes before play
+  (`src/Support/original_import*.c`, `tools/import`), and
+  `tools/text_audit.py` checks that the tree holds none of it.
+- Runs can be recorded and replayed exactly, and compared with the original
+  running under DOSBox-X ([tools/trace](tools/trace/README.md)). Eleven scripts
+  so far, from the title through the first two battles and a save and its load,
+  match the original's state at every snapshot.
+- Those comparisons, and building with more compilers, found bugs in the
+  reconstruction, among them line of sight on every map. They are fixed here
+  and reported upstream
+  ([issue #1](https://github.com/Elthial/Crescent-Hawks-Revenge-sdl-port/issues/1)).
+- Not yet: the rest of the campaign compared, music through a soundfont, the
+  setup screens and packages, and the BattleTech launcher.
 
-Version 1.0 is supported and tested only on 64-bit Windows. The code is intended
-to remain portable, but other host platforms are not release-qualified.
-
-- All 785 known executable procedures are present in `src/Original`.
-- 588 procedures are `Verified` against assembly.
-- 197 procedures are `Verified [SDL]` at a documented platform boundary.
-- Two ledger rows are retained as non-procedure evidence.
-- No procedure remains `Unchecked` or partially verified.
-- All 785 procedures are validated in the readable reconstructed-C model.
-- The SDL Release suite contains 59 tests; the asset-independent headless suite
-  contains 57.
-- Manual acceptance testing has completed the first six campaign missions.
-
-This establishes a functional preservation build, not proof that every
-campaign path or hardware nuance has been exercised. See
-[`docs/CAMPAIGN_SMOKE_TEST.md`](docs/CAMPAIGN_SMOKE_TEST.md) for the acceptance
-record and current limits.
-
+The tree started from Elthial's v1.0 (d75ee14). His evidence tree
+(disassembly and annotations) and documentation images are not carried here;
+his repository has them.
 
 ## Quick start
 
