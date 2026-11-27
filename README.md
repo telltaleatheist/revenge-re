@@ -40,9 +40,10 @@ run from source (below).
   sanitizer, found bugs in the reconstruction, among them line of sight on
   every map. They are fixed here and reported upstream
   ([issue #1](https://github.com/Elthial/Crescent-Hawks-Revenge-sdl-port/issues/1)).
-- Not yet: the rest of the campaign compared, the old hardware layers replaced
-  (graphics, input and timing), the setup screens and packages, and the
-  BattleTech launcher.
+- The setup and the packages for the BattleTech launcher are built
+  ([packages](#packages-and-the-setup)); none is released yet.
+- Not yet: the rest of the campaign compared, and the old hardware layers
+  replaced (graphics, input and timing).
 
 The tree started from Elthial's v1.0 (d75ee14). His evidence tree
 (disassembly and annotations) and documentation images are not carried here;
@@ -106,36 +107,34 @@ multiple instances and supplies the asset location without copying the game.
 Use `-NoBuild` to run an existing executable and `-Trace` for host-boundary
 diagnostics.
 
-## Minimal runtime package
+## Packages and the setup
 
-Create a distributable runtime shell with:
+`tools/build_package.py` builds the packages the BattleTech launcher installs:
+`CHR-Rebuild-<tag>-win64.zip` (and an installer, `-Setup.exe`),
+`CHR-Rebuild-<tag>-mac.dmg` (universal, macOS 12 or later) and
+`CHR-Rebuild-<tag>-x86_64.AppImage`, released as `chr-vX.Y.Z` with one
+`SHA256SUMS` over them. Each holds the program, `chr`, our `data/` and the
+notices, and none of the game; its smoke test starts the packaged program,
+headless, and checks the setup and a first run.
+[docs/RELEASING.md](docs/RELEASING.md) has the recipe.
 
-```powershell
-./Build.ps1 -Configuration Release -Package
-```
+A package's first start without a game opens the setup (re-setup-kit's): the
+player picks their copy (its `REVENGE.EXE`, any file in its folder, or the
+archive it came in), which is copied into their own folder and played from
+there. `chr --status` and `chr --setup` answer the launcher (the kit's
+contract, game id `chr`); `chr --help` lists the start options.
 
-`build-release/package` contains exactly:
-
-```text
-Revenge.exe
-REVENGE.CFG
-```
-
-The package deliberately contains no copyrighted game data.
-`build-release/Revenge-1.0.0-SHA256SUMS.txt` records the SHA-256 of both package
-files and is intentionally kept beside the package directory. `REVENGE.CFG`
-locates the user's original installation:
+A build tree runs from the game folder `REVENGE.CFG` beside the program
+names:
 
 ```ini
 asset_directory=.
 ```
 
-The default permits the two files to be copied into an original installation.
-SDL3 is statically linked into `Revenge.exe`, fixing each release to the SDL
-version with which it was built and avoiding a separate runtime DLL.
-A relative or absolute path may instead keep program and data separate.
-`REVENGE_ASSET_DIRECTORY` overrides the configuration for launchers and test
-environments.
+A relative or absolute path may name a copy elsewhere, and
+`REVENGE_ASSET_DIRECTORY` overrides it for launchers and test environments.
+SDL3 is linked into the program, fixing each release to the SDL version it
+was built with.
 
 The original installation is only read, so it may be on a read-only disk.
 Whatever the game writes, its saves included, goes to a folder of our own:
