@@ -13,9 +13,9 @@
  */
 typedef enum GamePathUse
 {
-	GAME_PATH_READ,     /* the save folder's copy, else the install's */
-	GAME_PATH_WRITE,    /* the save folder's copy, made from the install's first */
-	GAME_PATH_CREATE    /* always in the save folder */
+    GAME_PATH_READ,     /* the save folder's copy, else the install's */
+    GAME_PATH_WRITE,    /* the save folder's copy, made from the install's first */
+    GAME_PATH_CREATE    /* always in the save folder */
 } GamePathUse;
 
 /* Puts the host path for dosPath in out. Returns 0, or a negative errno:

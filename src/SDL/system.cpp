@@ -17,8 +17,8 @@
 
 REVENGE_NORETURN void SDLBackend_TerminateProcess(byte exitCode)
 {
-	SDLBackend_Close();
-	exit((int) exitCode);
+    SDLBackend_Close();
+    exit((int) exitCode);
 }
 
 void SDLBackend_GetSystemDate(DOS_Date *date)
@@ -28,9 +28,9 @@ void SDLBackend_GetSystemDate(DOS_Date *date)
     if (date == 0 || !HostClock_CalendarTime(&localTime, 0))
         return;
 
-    date->year = (uint16)(localTime.tm_year + 0x076C);
-    date->month = (byte)(localTime.tm_mon + 0x01);
-    date->day = (byte)localTime.tm_mday;
+    date->year = (uint16) (localTime.tm_year + 0x076C);
+    date->month = (byte) (localTime.tm_mon + 0x01);
+    date->day = (byte) localTime.tm_mday;
 }
 
 void SDLBackend_GetSystemTime(DOS_Time *timeValue)
@@ -41,14 +41,13 @@ void SDLBackend_GetSystemTime(DOS_Time *timeValue)
     if (timeValue == 0 || !HostClock_CalendarTime(&localTime, &hundredths))
         return;
 
-    timeValue->hour = (byte)localTime.tm_hour;
-    timeValue->minute = (byte)localTime.tm_min;
-    timeValue->second = (byte)localTime.tm_sec;
-    timeValue->hundredth = (byte)hundredths;
+    timeValue->hour = (byte) localTime.tm_hour;
+    timeValue->minute = (byte) localTime.tm_min;
+    timeValue->second = (byte) localTime.tm_sec;
+    timeValue->hundredth = (byte) hundredths;
 }
 
 const char *SDLBackend_GetEnvironmentVariable(const char *name)
 {
-	return getenv(name);
+    return getenv(name);
 }
-

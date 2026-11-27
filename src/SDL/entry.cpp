@@ -28,7 +28,7 @@ void RunExitHandlersAndTerminate(uint16 exitCode);
 /* The audio log's times: the game's clock, in nanoseconds. */
 static uint64_t AudioLogClock(void)
 {
-	return HostClock_NowMS() * UINT64_C(1000000);
+    return HostClock_NowMS() * UINT64_C(1000000);
 }
 
 /*
@@ -39,53 +39,53 @@ static uint64_t AudioLogClock(void)
  */
 int main(int argc, char **argv)
 {
-	int setupExit;
+    int setupExit;
 
-	if (argc == 0x02 && strcmp(argv[0x01], "--version") == 0x00)
-	{
-		printf("Revenge %s\n", CHR_VERSION);
-		return 0x00;
-	}
-	/* The launcher's asks, its start options and the game folder this start
+    if (argc == 0x02 && strcmp(argv[0x01], "--version") == 0x00)
+    {
+        printf("Revenge %s\n", CHR_VERSION);
+        return 0x00;
+    }
+    /* The launcher's asks, its start options and the game folder this start
 	 * plays from (setup_host.h). */
-	setupExit = SetupHost_Start(argc, argv);
-	if (setupExit >= 0x00)
-		return setupExit;
-	if (!SDLHost_ConfigureAssetDirectory())
-		return 0x01;
-	/* The game's own text and data: the story file in our write folder,
+    setupExit = SetupHost_Start(argc, argv);
+    if (setupExit >= 0x00)
+        return setupExit;
+    if (!SDLHost_ConfigureAssetDirectory())
+        return 0x01;
+    /* The game's own text and data: the story file in our write folder,
 	 * taken from the player's copy the first time (or when it is outdated).
 	 * Without a write folder, from the copy each time. */
-	if (GamePaths_WriteDirectory() == NULL &&
-		!OriginalImport_Load(GamePaths_Executable()))
-		return 0x01;
-	if (!StoryHost_Prepare(GamePaths_Executable(), GamePaths_WriteDirectory()))
-		return 0x01;
-	/* Nothing reads the copy from here on. */
-	OriginalImport_Release();
-	/* The rules, ours, from the data folder beside the program. */
-	Rules_Load(GamePaths_DataDirectory());
-	RevengeInstallCrashDiagnostics();
-	/* What the game asks to be heard, for tools/trace/audio. */
-	AudioLog_Open(SDL_getenv("REVENGE_AUDIO_LOG"), AudioLogClock);
-	RevengeTrace("entry: initialize\n");
-	/* The player's settings stand for MEDIA.CFG from here on. */
-	if (!HostSettings_Prepare())
-		return 0x01;
-	ResourceFiles.preloadFiles = FALSE;
-	StartupResourceState = 0x01;
-	NumericKeypadNavigationEnabled = FALSE;
-	InitializeGame();
-	RevengeTrace("entry: initialized=%u\n", GameInitialized);
-	if (GameInitialized != FALSE)
-	{
-		RunCampaignLoop();
-	}
-	RevengeTrace("entry: campaign returned; shutdown\n");
-	ShutdownGame();
-	RevengeTrace("entry: shutdown complete\n");
-	/* main's 0, to the C library's exit as its start-up passes it
+    if (GamePaths_WriteDirectory() == NULL &&
+        !OriginalImport_Load(GamePaths_Executable()))
+        return 0x01;
+    if (!StoryHost_Prepare(GamePaths_Executable(), GamePaths_WriteDirectory()))
+        return 0x01;
+    /* Nothing reads the copy from here on. */
+    OriginalImport_Release();
+    /* The rules, ours, from the data folder beside the program. */
+    Rules_Load(GamePaths_DataDirectory());
+    RevengeInstallCrashDiagnostics();
+    /* What the game asks to be heard, for tools/trace/audio. */
+    AudioLog_Open(SDL_getenv("REVENGE_AUDIO_LOG"), AudioLogClock);
+    RevengeTrace("entry: initialize\n");
+    /* The player's settings stand for MEDIA.CFG from here on. */
+    if (!HostSettings_Prepare())
+        return 0x01;
+    ResourceFiles.preloadFiles = FALSE;
+    StartupResourceState = 0x01;
+    NumericKeypadNavigationEnabled = FALSE;
+    InitializeGame();
+    RevengeTrace("entry: initialized=%u\n", GameInitialized);
+    if (GameInitialized != FALSE)
+    {
+        RunCampaignLoop();
+    }
+    RevengeTrace("entry: campaign returned; shutdown\n");
+    ShutdownGame();
+    RevengeTrace("entry: shutdown complete\n");
+    /* main's 0, to the C library's exit as its start-up passes it
 	 * (0800:0102-0108): the exit handlers and hooks, then the host's end. */
-	RunExitHandlersAndTerminate(0x00);
-	return 0x00;
+    RunExitHandlersAndTerminate(0x00);
+    return 0x00;
 }

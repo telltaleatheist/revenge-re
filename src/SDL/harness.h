@@ -79,9 +79,9 @@ void Platform_RequestHarnessQuit(void);
  * FailIfAsked). */
 enum
 {
-	HARNESS_FAIL_NONE,
-	HARNESS_FAIL_ALLOCATION,
-	HARNESS_FAIL_ABORT
+    HARNESS_FAIL_NONE,
+    HARNESS_FAIL_ALLOCATION,
+    HARNESS_FAIL_ABORT
 };
 void Platform_RequestHarnessFailure(int failure);
 /* The set-1 scan code the keyboard gives SDL's scancode, without E0h (as

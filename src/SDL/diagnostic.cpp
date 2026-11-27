@@ -19,7 +19,7 @@ static void DrawDiagnosticPattern(void)
             SDLBackend_DrawIndexedPixel(
                 x,
                 y,
-                (byte)((x / 0x0014 + y / 0x0019) & 0x0F));
+                (byte) ((x / 0x0014 + y / 0x0019) & 0x0F));
         }
     }
 }
@@ -38,23 +38,23 @@ static byte *ReadWholeFile(const char *path, size_t *byteCount)
 #endif
     if (file == NULL)
         return NULL;
-    (void)fseek(file, 0x00, SEEK_END);
+    (void) fseek(file, 0x00, SEEK_END);
     length = ftell(file);
-    (void)fseek(file, 0x00, SEEK_SET);
+    (void) fseek(file, 0x00, SEEK_SET);
     if (length <= 0x00)
     {
-        (void)fclose(file);
+        (void) fclose(file);
         return NULL;
     }
-    data = (byte *)malloc((size_t)length);
-    if (data == NULL || fread(data, 0x01, (size_t)length, file) != (size_t)length)
+    data = (byte *) malloc((size_t) length);
+    if (data == NULL || fread(data, 0x01, (size_t) length, file) != (size_t) length)
     {
         free(data);
-        (void)fclose(file);
+        (void) fclose(file);
         return NULL;
     }
-    (void)fclose(file);
-    *byteCount = (size_t)length;
+    (void) fclose(file);
+    *byteCount = (size_t) length;
     return data;
 }
 
@@ -68,7 +68,7 @@ static int DrawCpsFile(const char *path)
     fileData = ReadWholeFile(path, &fileByteCount);
     if (fileData == NULL)
         return FALSE;
-    image = (RevengeScreenImage *)malloc(sizeof(*image));
+    image = (RevengeScreenImage *) malloc(sizeof(*image));
     if (image == NULL)
     {
         free(fileData);
@@ -118,7 +118,7 @@ int main(int argumentCount, char **arguments)
             return 0x02;
         }
         if (strcmp(arguments[argument], "--frames") == 0)
-            frameCount = (uint16)strtoul(arguments[argument + 0x01], 0, 0x0A);
+            frameCount = (uint16) strtoul(arguments[argument + 0x01], 0, 0x0A);
         else if (strcmp(arguments[argument], "--cps") == 0)
             cpsPath = arguments[argument + 0x01];
         else if (strcmp(arguments[argument], "--palette") == 0)
