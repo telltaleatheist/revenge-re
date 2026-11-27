@@ -16,6 +16,7 @@ header revenge/combat_data.h
 header revenge/original_data.h
 header revenge/original/lance_editor_data.h
 header revenge/original/campaign_data.h
+header revenge/original/audio_data.h
 
 # weapons.json
 weapons.definitions                     WeaponDefinitions                3A6A:0435 159
@@ -128,3 +129,6 @@ game_start.displayed_tactical_status_row DisplayedTacticalStatusRow         3A6A
 
 # data/start/save_directory.json
 save_directory.directory                SaveDirectory                       3A6A:18CE 88
+
+# data/sound/speaker.json
+sound.speaker_note_divisors             Seg426B.MusicFrequencyDivisorTable  426B:0020 C0

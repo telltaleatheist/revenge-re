@@ -148,9 +148,10 @@ they were taken from, with each file's length and SHA-256), and read from
 there; they are taken again when that folder is missing or from an older
 version. That import is the only time the program reads the copy: play reads
 the story folder and the game's other files, and asking for any `.EXE` stops
-it with a fault. The rules, the screens' layout and a new campaign's starting
-state are the program's own numbers, the original's to begin with:
-`data/rules`, `data/ui` and `data/start`, read at start (`src/Rules/Rules.h`
+it with a fault. The rules, the screens' layout, a new campaign's starting
+state and the speaker's notes are the program's own numbers, the original's
+to begin with: `data/rules`, `data/ui`, `data/start` and `data/sound`, read
+at start (`src/Rules/Rules.h`
 has the files' shapes), and checked by the tests against
 the original's bytes by keyed hash, never holding them. The
 title artwork and screenshots of the upstream port (`docs/images`, which

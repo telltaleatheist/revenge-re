@@ -51,7 +51,7 @@ set(CHR_STORY_SOURCES
 	src/Import/Story.cpp
 	src/Import/StoryHost.cpp)
 # The rules, layout and starting state (revenge/rules.h): our numbers, read
-# from data/rules, data/ui and data/start at start.
+# from data/rules, data/ui, data/start and data/sound at start.
 set(CHR_RULES_SOURCES
 	src/Rules/rule_table.c
 	src/Rules/Rules.cpp
@@ -702,7 +702,7 @@ if(BUILD_TESTING)
     add_test(NAME tactical.original_scenario_clock_subtick
         COMMAND test_scenario_clock_subtick)
 
-    # The rules: data/rules, ui and start rebuild the original's tables (rebuild), the
+    # The rules: data/rules, ui, start and sound rebuild the original's tables (rebuild), the
     # player's copy holds them (exe), and a wrong file is a fault naming it.
     add_executable(test_rules tests/test_rules.cpp tests/fake_backend.c)
     target_include_directories(test_rules PRIVATE src/SDL tests)

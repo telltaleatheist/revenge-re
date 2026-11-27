@@ -974,6 +974,14 @@ void read_game_start(const Json& root, Tables& tables) {
     file.done();
 }
 
+// data/sound/speaker.json: the speaker's notes, the timer divisor of each of
+// the 96 notes an effect stream names (0 is a rest).
+void read_speaker(const Json& root, Tables& tables) {
+    Fields file(root, "speaker.json:");
+    tables["sound.speaker_note_divisors"] = numbers(file.take("note_divisors"), file.at("note_divisors"), 0x60, 0xFFFF, 2);
+    file.done();
+}
+
 // Bytes two tables share in the original's memory must agree.
 void check_shared(const Tables& tables) {
     // The first missile weapon's bonus is the high byte of the last direction
@@ -1020,6 +1028,7 @@ void load(const std::filesystem::path& data_dir) {
     read_lance_editor_start(read_file(start / "lance_editor.json", "lance_editor.json (start)"), tables);
     read_game_start(read_file(start / "game.json", "game.json"), tables);
     read_save_directory(read_file(start / "save_directory.json", "save_directory.json"), tables);
+    read_speaker(read_file(data_dir / "sound" / "speaker.json", "speaker.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {

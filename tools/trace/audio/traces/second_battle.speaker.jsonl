@@ -1,7 +1,7 @@
-{"digest": "ce5fb6450401964e", "kinds": {"midi --": 3, "midi 80": 1742, "midi 90": 1754, "midi B0": 71, "midi C0": 60, "midi E0": 29, "midi F7": 3, "midi reset": 4, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 160, "tone": 168, "tone-effect": 6}, "lines": 4005, "snap": "battle"}
+{"digest": "21ad347fa1286555", "kinds": {"midi --": 3, "midi 80": 1742, "midi 90": 1754, "midi B0": 71, "midi C0": 60, "midi E0": 29, "midi F7": 3, "midi reset": 4, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 160, "tone": 251, "tone-effect": 6}, "lines": 4088, "snap": "battle"}
 {"digest": "f6823aa1fc0e2e4f", "kinds": {"snap": 1}, "lines": 1, "snap": "route"}
-{"digest": "7c29011bd694ddd2", "kinds": {"snap": 1, "tone-effect": 6}, "lines": 7, "snap": "contact"}
-{"digest": "259d2d11f2ae72d8", "kinds": {"snap": 1, "tone-effect": 9}, "lines": 10, "snap": "won"}
+{"digest": "1461befe81a1eccd", "kinds": {"snap": 1, "tone": 141, "tone-effect": 6}, "lines": 148, "snap": "contact"}
+{"digest": "bf3b1694200ca26e", "kinds": {"snap": 1, "tone": 207, "tone-effect": 9}, "lines": 217, "snap": "won"}
 {"digest": "68b5eea6a50a407d", "kinds": {"midi --": 2, "midi 80": 67, "midi 90": 73, "midi B0": 7, "midi C0": 15, "midi E0": 11, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 53, "tone": 22}, "lines": 253, "snap": "story"}
 {"digest": "7615c7e044410563", "kinds": {"midi 80": 34, "midi 90": 31, "midi C0": 2, "snap": 1, "tone": 9}, "lines": 77, "snap": "menu"}
 {"digest": "547fea94faabed19", "kinds": {"midi --": 1, "midi 80": 118, "midi 90": 121, "midi B0": 39, "midi C0": 9, "midi E0": 8, "midi F7": 1, "midi reset": 1, "pcm done": 4, "pcm speech": 4, "snap": 1, "sysex": 52, "tone": 23}, "lines": 382, "snap": "start"}
@@ -10,6 +10,6 @@
 {"digest": "fa95ac9b6361e3ab", "kinds": {"snap": 1}, "lines": 1, "snap": "ordered"}
 {"digest": "acdbb0f8779e06ab", "kinds": {"snap": 1}, "lines": 1, "snap": "step08"}
 {"digest": "35fad02f3612a896", "kinds": {"snap": 1}, "lines": 1, "snap": "step16"}
-{"digest": "93ca8dceda8216bf", "kinds": {"snap": 1, "tone": 32, "tone-effect": 29}, "lines": 62, "snap": "end1"}
-{"digest": "769698d92ebc9182", "kinds": {"snap": 1, "tone-effect": 2}, "lines": 3, "snap": "end2"}
+{"digest": "d9373d1bb056d28d", "kinds": {"snap": 1, "tone": 718, "tone-effect": 29}, "lines": 748, "snap": "end1"}
+{"digest": "7179d8a2beef95df", "kinds": {"snap": 1, "tone": 82, "tone-effect": 2}, "lines": 85, "snap": "end2"}
 {"digest": "be9feb573f4771fc", "kinds": {"snap": 1}, "lines": 1, "snap": "end3"}

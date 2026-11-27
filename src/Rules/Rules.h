@@ -1,6 +1,6 @@
 // The rules (include/revenge/rules.h): numbers we own, the original's to
-// begin with, read from <data dir>/rules/*.json, <data dir>/ui/*.json and
-// <data dir>/start/*.json at start into the tables the game reads. Never the
+// begin with, read from <data dir>/rules/*.json, <data dir>/ui/*.json,
+// <data dir>/start/*.json and <data dir>/sound/*.json at start into the tables the game reads. Never the
 // game's text: a rule that names a text uses its story id, and a name in a
 // file is the name the code gives the thing.
 //
@@ -182,6 +182,11 @@
 //     "slots"  6 {"occupied" (0 or 1), "name" (up to 20 printable ASCII
 //         characters)}: the slots the save and load menus list, named 1 to
 //         6 until a save file names them
+//
+//   sound/speaker.json:
+//     "note_divisors"  96 words, the timer divisor that sounds each note an
+//         effect stream for the speaker names (note 1 is D0, 95 is C8); 0
+//         is a rest
 //
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
