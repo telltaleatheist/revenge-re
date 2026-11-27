@@ -2,7 +2,6 @@
 // MIDIDrivers.cpp
 // The music drivers the sequencer dispatches to: null, speaker and Roland.
 
-#include "REVENGE.h"
 #include "revenge/audio.h"
 #include "revenge/audio_log.h"
 #include "revenge/host_dispatch.h"

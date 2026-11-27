@@ -2,7 +2,6 @@
 // MIDISequence.cpp
 // Standard MIDI sequence parser and selectable music-driver dispatch layer.
 
-#include "REVENGE.h"
 #include "revenge/audio.h"
 #include "revenge/audio_log.h"
 #include "revenge/debug.h"
@@ -16,7 +15,6 @@
         (driverDescriptor), MIDIDriverDescriptorIdentities, \
         MIDIDriverHostDispatches, MIDI_DRIVER_HOST_COUNT - 0x01, \
         MIDIDriverHostDispatches[MIDI_DRIVER_HOST_COUNT - 0x01]))
-
 
 /*
  * DS:62B8 stores a 16-bit near pointer to a driver descriptor. Native C

@@ -2,7 +2,7 @@
 #ifndef REVENGE_AUDIO_MIDI_INTERNAL_H
 #define REVENGE_AUDIO_MIDI_INTERNAL_H
 
-#include "REVENGE.h"
+#include "revenge/types.h"
 
 typedef struct MIDIDriverHostDispatch
 {

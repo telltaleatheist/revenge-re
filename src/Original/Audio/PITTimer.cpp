@@ -3,8 +3,8 @@
 // The original's playback-rate calibration here (38AE:005C-0109) is gone with
 // the digital calibration that used it (375F:05D6): Replaced in the ledgers.
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Audio/Audio.h"
+#include "Data/TextIOData.h"
 
 // 38AE:0010, the IRQ0 vector exchange under CLI, is Replaced: there is no
 // vector table. Its callers (375F:063B, 375F:06A9) start and stop the game

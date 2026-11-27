@@ -7,10 +7,13 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE.h"
+#include "Audio/Audio.h"
+#include "Data/AudioData.h"
+#include "Data/StartupData.h"
+#include "Resources/Resources.h"
+#include "revenge/heap.h"
 #include "revenge/audio_log.h"
 #include "revenge/debug.h"
-#include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
 
 #include <string.h>

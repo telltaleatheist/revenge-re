@@ -1,7 +1,8 @@
 // 375F: digital playback
 /* DigitalPlayback.cpp -- digital sample queues, timer service and software mixer. */
 
-#include "REVENGE.h"
+#include "Audio/Audio.h"
+#include "Utility/Utility.h"
 #include "revenge/digital_bridge.h"
 #include "revenge/platform_backend.h"
 
@@ -493,7 +494,6 @@ uint32_t RebuildDigitalMixLookup(int16_t mixScale)
         outputSample);
     return MAKE_DWORD(LOW_WORD(accumulator), axResult);
 }
-
 
 /* 375F:0A1D, the IRQ0 handler InstallDigitalPlaybackTimer installed, is
  * Replaced: it acknowledged the PIC, ran ServiceDigitalAudioTick, and chained

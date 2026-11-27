@@ -2,7 +2,7 @@
 // PCSpeakerTimer.cpp
 // Shared music timer and PC-speaker effect driver reconstructed from REVENGE.EXE.
 
-#include "REVENGE.h"
+#include "Audio/Audio.h"
 #include "revenge/audio.h"
 #include "revenge/audio_log.h"
 #include "revenge/platform_backend.h"

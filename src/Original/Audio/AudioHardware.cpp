@@ -1,7 +1,7 @@
 // 375F: audio hardware
 /* AudioHardware.cpp -- the sampled-sound output the mixer writes to. */
 
-#include "REVENGE.h"
+#include "Audio/Audio.h"
 #include "revenge/digital_bridge.h"
 #include "revenge/platform_backend.h"
 
