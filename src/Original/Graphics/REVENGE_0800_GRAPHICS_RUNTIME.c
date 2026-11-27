@@ -384,37 +384,6 @@ uint32 NormalizeFarPointer(word16 offset, word16 segment)
 		(offset & 0x000F);
 }
 
-void *AddSignedOffsetToFarPointer(const void *pointer, int32_t displacement)
-{
-	uint32 linearAddress = DOSMemory_Linear(pointer) + displacement;
-	uint32 normalized = ((linearAddress >> 0x04) << 0x10) |
-		(linearAddress & 0x0F);
-	return DOSMemory_Pointer(normalized);
-}
-
-int16 CompareNormalizedFarPointers(const void *left, const void *right)
-{
-	uint32 leftLinear = DOSMemory_Linear(left);
-	uint32 rightLinear = DOSMemory_Linear(right);
-
-	if (leftLinear < rightLinear)
-		return -0x01;
-	if (leftLinear > rightLinear)
-		return 0x01;
-	return 0x00;
-}
-
-int32_t CalculateFarPointerByteDistance(
-	word16 endOffset,
-	word16 startSegment,
-	word16 endSegment,
-	word16 startOffset)
-{
-	int32_t endLinear = ((uint32) endSegment << 0x04) + endOffset;
-	int32_t startLinear = ((uint32) startSegment << 0x04) + startOffset;
-	return endLinear - startLinear;
-}
-
 void CopyFarBytes32(
 	const void *source,
 	void *destination,
@@ -532,7 +501,7 @@ void InitializeMouseSupport(void)
 	 * one pixel a unit (the doubling test at 372A-373F), hidden by the
 	 * reset; the handler's installation (AX=0Ch, 375B-3767) routes SDL's
 	 * mouse events to MouseEventCallback (0800:3772). */
-	MouseCursorBackground = AllocateFarMemory(0x0240);
+	MouseCursorBackground = Heap_Allocate(0x0240, "0800:36C0");
 	if (MouseCursorBackground == NULL)
 	{
 		MouseDriverInstalled = FALSE;

@@ -32,7 +32,7 @@ void ShowInvalidSaveVersionDialog(void)
 			LOW_WORD(backingSize),
 			VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05,
 			HIGH_WORD(backingSize));
-		backingBuffer = AllocateParagraphAlignedMemory(backingSize);
+		backingBuffer = Heap_Allocate(backingSize, "0D73:466E");
 		InvalidSaveDialogBacking = backingBuffer;
 		allocatedHere = TRUE;
 	}
@@ -84,7 +84,7 @@ void ShowInvalidSaveVersionDialog(void)
 
 	if (allocatedHere != FALSE)
 	{
-		FreeParagraphAlignedMemory(backingBuffer);
+		Heap_Free(backingBuffer);
 		InvalidSaveDialogBacking = NULL;
 	}
 	if (dismissKey == KEY_ESCAPE)

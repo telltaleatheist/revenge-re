@@ -134,7 +134,6 @@ int main(int argc, char **argv)
 	word16 length;
 
 	RequireOriginalImport();
-	SDLBackend_InitializeDOSMemoryArena();
 	Folders(mode);
 
 	if (strcmp(mode, "first") == 0)

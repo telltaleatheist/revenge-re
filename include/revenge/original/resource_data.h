@@ -29,8 +29,6 @@ typedef struct CachedFileDescriptor
 {
 	char *fileName; /* +00h */
 	uint32 fileLength; /* +04h */
-	/* The heap's payload, whose far pointer's offset is
-	 * FAR_HEAP_PAYLOAD_OFFSET (ReadCachedResource). */
 	byte *cachedData; /* +08h */
 	word16 resourceDriveMask; /* +0Ch */
 	uint32 currentPosition; /* +0Eh */

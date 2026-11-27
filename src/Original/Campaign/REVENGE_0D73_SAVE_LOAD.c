@@ -671,7 +671,5 @@ void UnitSelectionCard_Store(RevengeSavedSelectionCard *saved,
 	saved->assignmentSlot = card->assignmentSlot;
 	saved->selectionId = card->selectionId;
 	saved->alternateId = card->alternateId;
-	saved->spriteBuffer = card->spriteBuffer != NULL
-		? DosAddress_FromValue(DOSMemory_FarAddress(card->spriteBuffer))
-		: card->loadedSpriteBuffer;
+	saved->spriteBuffer = card->loadedSpriteBuffer;
 }

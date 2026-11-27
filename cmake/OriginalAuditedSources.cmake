@@ -29,7 +29,6 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Graphics/REVENGE_0800_ENCODED_SPRITES.c
     src/Original/Graphics/REVENGE_0800_TACTICAL_RASTER.c
 	${CHR_3A6A_DATA_SOURCES}
-    src/Original/Runtime/REVENGE_0D56_FAR_MEMORY.c
     src/Original/Resources/REVENGE_21E7_PACKED_RESOURCES.c
 	src/Original/Graphics/REVENGE_2B2D_PALETTE.c
 	src/Original/Tactical/REVENGE_2D1B_UNIT_STATE.c
@@ -93,9 +92,6 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Audio/REVENGE_3621_MIDI_SEQUENCE.c
 	src/Original/Audio/REVENGE_3621_MIDI_DRIVERS.c
     src/Original/IO/REVENGE_38C3_DOS_ERROR.c
-    src/Original/Runtime/REVENGE_38CD_FAR_HEAP_UNLINK.c
-    src/Original/Runtime/REVENGE_38FE_PROGRAM_BREAK.c
-    src/Original/IO/REVENGE_3913_DOS_MEMORY.c
     src/Original/IO/REVENGE_3915_FILE_CREATE.c
     src/Original/IO/REVENGE_392F_FILE_OPEN.c
     src/Original/IO/REVENGE_3934_DEVICE_IO.c
@@ -109,8 +105,6 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Utility/REVENGE_3968_INTEGER_FORMAT.c
     src/Original/IO/REVENGE_3978_FILE_DELETE.c
     src/Original/IO/REVENGE_3989_FILE_ATTRIBUTES.c
-    src/Original/Utility/REVENGE_398B_HEAP_SIZE.c
-    src/Original/Runtime/REVENGE_398D_FAR_HEAP.c
     src/Original/IO/REVENGE_39C0_FILE_LENGTH.c
 	src/Original/Utility/REVENGE_39C4_DECIMAL_PARSE.c
 	src/Original/Campaign/REVENGE_39CC_CLOCK_SNAPSHOT.c

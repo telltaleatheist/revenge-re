@@ -3,7 +3,6 @@
 #endif
 
 #include "revenge/platform_backend.h"
-#include "revenge/dos_memory.h"
 #include "revenge/original_data.h"
 #include "revenge/original_import.h"
 #include "harness.h"
@@ -16,84 +15,10 @@
 #include <string.h>
 #include <time.h>
 
-static byte *dosMemoryBlock;
-static uint32 dosMemoryBlockBytes;
-static uint32 dosMemoryBlockCapacity;
-static word16 dosMemoryBlockSegment;
-
-void SDLBackend_InitializeDOSMemoryArena(void)
-{
-	/* Borland establishes these CRT break values before calling main. The host
-	 * entry shim supplies the equivalent conventional-memory arena so the
-	 * preserved sbrk/far-heap procedures can remain unchanged. */
-	/* REVENGE.EXE loads at 0800h with its PSP at 07F0h.  The 3A7Ah-paragraph
-	 * load image plus the MZ header's 038Ah minimum allocation reaches 4604h,
-	 * which is where Borland establishes the first legal program break. */
-	MemoryBlockSegment = 0x07F0;
-	MinimumProgramBreakSegment = 0x4604;
-	MinimumProgramBreakOffset = 0x0000;
-	CurrentProgramBreakSegment = 0x4604;
-	CurrentProgramBreakOffset = 0x0000;
-	MaximumProgramBreakSegment = 0xA000;
-	MaximumProgramBreakOffset = 0x0000;
-	ProgramBreakKilobytes = 0x0000;
-}
-
 _Noreturn void SDLBackend_TerminateProcess(byte exitCode)
 {
 	SDLBackend_Close();
 	exit((int) exitCode);
-}
-
-word16 SDLBackend_ResizeMemoryBlock(
-    word16 memorySegment,
-    word16 paragraphCount)
-{
-	uint32 requestedBytes = (uint32) paragraphCount << 0x04;
-	uint32 maximumBytes;
-
-	if (requestedBytes == 0x00000000UL)
-	{
-		if (dosMemoryBlock != NULL)
-		{
-			DOSMemory_SetBlock(NULL, 0x00000000UL, 0x0000);
-			free(dosMemoryBlock);
-		}
-		dosMemoryBlock = NULL;
-		dosMemoryBlockBytes = 0x00000000UL;
-		dosMemoryBlockCapacity = 0x00000000UL;
-		dosMemoryBlockSegment = 0x0000;
-		return 0xFFFF;
-	}
-
-	/* DOS AH=4Ah changes the size of an existing conventional-memory block;
-	 * its segment and all pointers into it remain stable.  Reserve the complete
-	 * segment-to-A000 arena once, then change only the logical byte count. */
-	maximumBytes = memorySegment < 0xA000
-		? (uint32) (0xA000 - memorySegment) << 0x04
-		: 0x00000000UL;
-	if (dosMemoryBlock == NULL)
-	{
-		dosMemoryBlock = (byte *) calloc(0x01, maximumBytes);
-		if (dosMemoryBlock == NULL)
-			return (word16) (maximumBytes >> 0x04);
-		dosMemoryBlockCapacity = maximumBytes;
-		dosMemoryBlockSegment = memorySegment;
-		DOSMemory_SetBlock(dosMemoryBlock, dosMemoryBlockCapacity,
-			dosMemoryBlockSegment);
-	}
-	if (memorySegment != dosMemoryBlockSegment ||
-		requestedBytes > dosMemoryBlockCapacity)
-		return (word16) (dosMemoryBlockCapacity >> 0x04);
-	dosMemoryBlockBytes = requestedBytes;
-	return 0xFFFF;
-}
-
-const byte *SDLBackend_DOSMemoryBlock(uint32 *capacity, word16 *segment)
-{
-	*capacity = dosMemoryBlockCapacity;
-	*segment = dosMemoryBlockSegment;
-	return dosMemoryBlock;
 }
 
 word16 SDLBackend_GetLargestFreeConventionalMemoryParagraphs(

@@ -38,7 +38,7 @@ void ShowResourceErrorMessage(void)
 			LOW_WORD(backingSize),
 			VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05,
 			HIGH_WORD(backingSize));
-		InvalidSaveDialogBacking = AllocateFarHeapBytes(backingSize);
+		InvalidSaveDialogBacking = Heap_Allocate(backingSize, "3390:077F");
 		allocatedHere = TRUE;
 	}
 	backingBuffer = InvalidSaveDialogBacking;
@@ -86,7 +86,7 @@ void ShowResourceErrorMessage(void)
 
 	if (allocatedHere != FALSE)
 	{
-		FreeFarHeapAllocation(InvalidSaveDialogBacking);
+		Heap_Free(InvalidSaveDialogBacking);
 		InvalidSaveDialogBacking = NULL;
 	}
 }

@@ -11,6 +11,7 @@
 
 #include "revenge/dos.h"
 #include "revenge/dos_memory.h"
+#include "revenge/heap.h"
 #include "revenge/types.h"
 #include "revenge/unit.h"
 
@@ -43,14 +44,6 @@ typedef struct LocalClockSnapshot
 
 _Static_assert(sizeof(LocalClockSnapshot) == 0x0A,
 	"LocalClockSnapshot must retain its DOS layout");
-
-typedef struct FarHeapBlockHeader
-{
-	uint32 sizeAndAllocated;
-	segptr32 previousPhysical;
-	segptr32 previousFree;
-	segptr32 nextFree;
-} FarHeapBlockHeader;
 
 typedef struct DigitalSampleDescriptor DigitalSampleDescriptor;
 typedef struct DigitalDriverQueue DigitalDriverQueue;
@@ -229,13 +222,6 @@ extern word16 NarrationMode;
 extern word16 ActiveNarrationSubject;
 extern word16 NarrationEmphasis;
 
-enum
-{
-	FAR_HEAP_PAYLOAD_OFFSET = 0x08,
-	FAR_HEAP_MIN_SPLIT_REMAINDER = 0x10,
-	FAR_HEAP_ALLOCATED_FLAG = 0x01
-};
-
 #define LOW_BYTE(value) ((byte) ((uint32) (value) & 0x00FFU))
 #define HIGH_BYTE(value) ((byte) (((uint32) (value) >> 0x08) & 0x00FFU))
 #define LOW_WORD(value) ((word16) ((uint32) (value) & 0xFFFFU))
@@ -316,15 +302,6 @@ int16 ReadTranslatedKeypress(void);
 int16 NormalizeNavigationKeyCode(int16 keyCode);
 int16 RandomInRangeInclusive(word16 minimum, word16 maximum);
 segptr32 NormalizeFarPointer(word16 offset, word16 segment);
-void *AddSignedOffsetToFarPointer(
-	const void *pointer, int32 displacement);
-int16 CompareNormalizedFarPointers(
-	const void *left, const void *right);
-int32 CalculateFarPointerByteDistance(
-	word16 endOffset,
-	word16 startSegment,
-	word16 endSegment,
-	word16 startOffset);
 byte *AdvanceFarPointerBy32K(byte *pointer);
 uint32 MultiplyUnsignedLong(
 	word16 leftLow,
@@ -401,19 +378,6 @@ void DrawClippedSprite(
 	int16 x,
 	int16 y,
 	word16 preserveExistingPixels);
-word16 ResizeProgramBreak(void *newBreak);
-int16 SetProgramBreak(void *newBreak);
-void *AdjustProgramBreak(int32 increment);
-byte *AllocateFarHeapBytes16(word16 byteCount);
-byte *AllocateFarHeapBytes(uint32 byteCount);
-void FreeHeapBlock(byte *allocation);
-void FreeFarHeapAllocation(byte *allocation);
-uint32 GetAvailableHeapBytes(void);
-void PrintAllocationErrorAndExit(const char *message);
-byte *AllocateFarMemory(int32 byteCount);
-byte *AllocateParagraphAlignedMemory(uint32 byteCount);
-void FreeFarMemory(byte *allocation);
-void FreeParagraphAlignedMemory(byte *allocation);
 int16 ReadFileWithTextTranslation(
 	word16 fileHandle, byte *buffer, word16 requestedBytes);
 int16 WriteFileWithTextTranslation(

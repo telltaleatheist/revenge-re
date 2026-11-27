@@ -50,7 +50,6 @@ int16 DOS_GetSetFileAttributes(const char *filePath, byte operation, uint16 attr
 int16 DOS_DeviceIOControl(uint16 fileHandle, uint16 operation, void *data, uint16 count);
 int16 TranslateDOSError(int16 dosErrorCode);
 
-word16 DOS_ResizeMemoryBlock(word16 memorySegment, word16 paragraphCount);
 void DOS_GetSystemDate(DOS_Date *date);
 void DOS_GetSystemTime(DOS_Time *time);
 

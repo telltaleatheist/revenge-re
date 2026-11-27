@@ -36,7 +36,6 @@ int main(void)
 {
 	byte *block;
 
-	SDLBackend_InitializeDOSMemoryArena();
 	memset(&LoadedSceneFile, 0x00, sizeof(LoadedSceneFile));
 	LoadedSceneFile.header.instructionBlockOffset = INSTRUCTION_BLOCK_OFFSET;
 	SceneInstructionBaseOffset = INSTRUCTION_BASE;

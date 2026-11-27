@@ -45,7 +45,7 @@ Tokens, separated by spaces, commas or new lines; `#` starts a comment.
 | `mouse:X/Y[/B]` | moves the mouse to X,Y (320×200) with buttons B |
 | `@snap:NAME` | takes a snap at the next wait; names are unique in a script |
 | `quit` | the host's quit (the window's close button), at the next timer service: the game's shutdown and exit (3390:0024), as after its own quit, code 0 |
-| `fail:allocation`, `fail:abort` | at the next timer service, a fatal path forced: the far heap asked for 65520 bytes until it fails (the allocation error), or a tracked file's slot closed though it isn't open (the resource abort and its two messages); each waits for its keys, then exits with code 1 |
+| `fail:allocation`, `fail:abort` | at the next timer service: the heap's next request fails as if the host had no memory, and the game goes on until it asks (a fault naming the request's size and caller, exit code 70); or a fatal path forced, a tracked file's slot closed though it isn't open (the resource abort and its two messages), which waits for its keys, then exits with code 1 |
 
 The game polls the keyboard on every pass while a screen animates, so a few
 polls after a key the screen is often still the old one; `idle:` lets it
@@ -98,8 +98,8 @@ One JSON object a line, one line a snap:
 tools/map/README.md) by name, with the first 16 hex digits of the SHA-256 of
 its bytes (`src/SDL/map_dump.c`). In an object declared as a pointer or an
 array of them, each pointer is hashed as where it points: the object it is in
-and the offset there, the DOS memory block's linear address, a function by
-name, or "elsewhere"; so the hash is the same on every run and system, and
+and the offset there, a heap block by its number in allocation order and the
+offset in it, a function by name, or "elsewhere"; so the hash is the same on every run and system, and
 stays so when the port moves its objects. Other objects hash their bytes as
 they are. The
 file holds a snap's objects that changed since the snap before (all at a

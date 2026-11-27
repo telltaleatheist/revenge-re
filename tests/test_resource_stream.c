@@ -100,14 +100,15 @@ long DOS_SeekFile(uint16 fileHandle, long fileOffset, byte origin)
 	return fileOffset;
 }
 
-byte *AllocateFarHeapBytes(uint32 byteCount)
+void *Heap_Allocate(uint32 byteCount, const char *caller)
 {
-	return (byte *)malloc(byteCount);
+	(void)caller;
+	return malloc(byteCount);
 }
 
-void FreeFarHeapAllocation(byte *allocation)
+void Heap_Free(void *block)
 {
-	free(allocation);
+	free(block);
 }
 
 word16 GetLargestFreeConventionalMemoryKB(void)
@@ -165,9 +166,8 @@ static void TestDescriptorCatalogue(void)
 
 static void TestCachedStream(void)
 {
-	/* A heap block: its header, then the file's bytes. */
-	byte block[FAR_HEAP_PAYLOAD_OFFSET + 0x20];
-	byte *source = block + FAR_HEAP_PAYLOAD_OFFSET;
+	byte block[0x20];
+	byte *source = block;
 	byte destination[0x10];
 	word16 index;
 
@@ -198,38 +198,6 @@ static void TestCachedStream(void)
 	SeekTrackedFile(0x0000, -0x01, 0x0000);
 	Check(CachedFileDescriptors[0x0000].currentPosition == 0xFFFFFFFFUL,
 		"cached absolute seek preserves the original signed-high comparison");
-}
-
-/* 3390:0D86-0DA1: the position's low word is added to the cache's offset
- * (8, past the heap block's header) in 16 bits. In a file longer than 64K, a
- * read at FFFCh starts four bytes into the block's header, and one at
- * 10004h starts four bytes into the file, as at 0004h. */
-static void TestCachedStreamPast64K(void)
-{
-	static byte block[FAR_HEAP_PAYLOAD_OFFSET + 0x10010];
-	byte *source = block + FAR_HEAP_PAYLOAD_OFFSET;
-	byte destination[0x08];
-	uint32 index;
-
-	for (index = 0x00000000UL; index < sizeof(block); ++index)
-		block[index] = (byte)(index * 0x07);
-	CachedFileDescriptors[0x0000].cachedData = source;
-	CachedFileDescriptors[0x0000].fileLength = 0x00010010UL;
-
-	CachedFileDescriptors[0x0000].currentPosition = 0x0000FFFCUL;
-	Check(ReadCachedResource(0x0000, destination, 0x00000008UL) == 0x0008 &&
-		memcmp(destination, block + 0x0004, 0x08) == 0,
-		"a cached read at FFFCh wraps into the block's header");
-	CachedFileDescriptors[0x0000].currentPosition = 0x00010004UL;
-	Check(ReadCachedResource(0x0000, destination, 0x00000008UL) == 0x0008 &&
-		memcmp(destination, source + 0x0004, 0x08) == 0,
-		"a cached read at 10004h reads from 0004h");
-	Check(CachedFileDescriptors[0x0000].currentPosition == 0x0001000CUL,
-		"the position still counts all 32 bits");
-	CachedFileDescriptors[0x0000].currentPosition = 0x0000FFF0UL;
-	Check(ReadCachedResource(0x0000, destination, 0x00000008UL) == 0x0008 &&
-		memcmp(destination, source + 0xFFF0, 0x08) == 0,
-		"a cached read below FFF8h reads where it is");
 }
 
 static void TestChunkedStreams(void)
@@ -298,7 +266,6 @@ int main(void)
 	ResetStreamState();
 	TestDescriptorCatalogue();
 	TestCachedStream();
-	TestCachedStreamPast64K();
 	ResetStreamState();
 	TestChunkedStreams();
 	ResetStreamState();

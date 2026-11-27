@@ -326,16 +326,15 @@ NAMES_C = r"""
 /* The snaps by name (MapDump_WriteNames). A pointer is a host address, so
  * its bytes differ from run to run and system to system: each pointer-sized,
  * pointer-aligned word of an object that points into a data object, or into
- * the DOS memory block, is hashed as that place's name and the offset in it
- * (the block's as the original's linear address). Every other byte is hashed
- * as it is. */
+ * a block of the heap, is hashed as that place's name and the offset in it
+ * (a block's name is its number in allocation order, revenge/heap.h). Every
+ * other byte is hashed as it is. */
 
 typedef struct MapDumpRegion
 {
 	uintptr_t start;
 	size_t size;
-	const char *name;       /* NULL: the DOS memory block */
-	uint32_t linear;        /* the block's linear address */
+	const char *name;
 } MapDumpRegion;
 
 static MapDumpRegion *regions;
@@ -358,13 +357,10 @@ static int CompareRegions(const void *left, const void *right)
 static void FindRegions(void)
 {
 	size_t count = sizeof(objects) / sizeof(objects[0]);
-	const byte *block;
-	uint32 capacity;
-	word16 segment;
 	size_t index;
 
 	free(regions);
-	regions = (MapDumpRegion *) calloc(count + 1, sizeof(MapDumpRegion));
+	regions = (MapDumpRegion *) calloc(count, sizeof(MapDumpRegion));
 	if (regions == NULL)
 	{
 		regionCount = 0;
@@ -376,14 +372,6 @@ static void FindRegions(void)
 		regions[regionCount].start = (uintptr_t) objects[index].object;
 		regions[regionCount].size = ObjectSize(index);
 		regions[regionCount].name = objects[index].name;
-		++regionCount;
-	}
-	block = SDLBackend_DOSMemoryBlock(&capacity, &segment);
-	if (block != NULL)
-	{
-		regions[regionCount].start = (uintptr_t) block;
-		regions[regionCount].size = capacity;
-		regions[regionCount].linear = (uint32_t) segment << 4;
 		++regionCount;
 	}
 	qsort(regions, regionCount, sizeof(MapDumpRegion), CompareRegions);
@@ -415,8 +403,8 @@ static const MapDumpRegion *Locate(uintptr_t address)
 	return &regions[low - 1];
 }
 
-/* A pointer slot's place, written to the hash: the object or block it is
- * in, else the function it is, else "elsewhere" (a static the headers don't
+/* A pointer slot's place, written to the hash: the object or heap block it
+ * is in, else the function it is, else "elsewhere" (a static the headers don't
  * name, a literal, a buffer on the stack). NULL is its zero bytes. */
 static void HashPlace(Sha256 *hash, uintptr_t word, int *taken)
 {
@@ -424,15 +412,19 @@ static void HashPlace(Sha256 *hash, uintptr_t word, int *taken)
 	char place[96];
 	int length = 0;
 	size_t index;
+	uint32 number;
+	uint32 offset;
 
 	*taken = 0;
 	if (region != NULL)
 	{
-		size_t offset = (size_t) (word - region->start);
-
-		length = region->name != NULL
-			? snprintf(place, sizeof(place), "\x01%s+%zx\x01", region->name, offset)
-			: snprintf(place, sizeof(place), "\x01dos:%lx\x01", (unsigned long) (region->linear + offset));
+		length = snprintf(place, sizeof(place), "\x01%s+%zx\x01", region->name,
+			(size_t) (word - region->start));
+	}
+	else if (word != 0 && Heap_Find(word, &number, &offset))
+	{
+		length = snprintf(place, sizeof(place), "\x01heap:%lu+%lx\x01",
+			(unsigned long) number, (unsigned long) offset);
 	}
 	else if (word != 0)
 	{

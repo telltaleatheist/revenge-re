@@ -24,7 +24,6 @@ OriginalExitHandler RuntimeExitHook3 = RuntimeExitStepStub;
 
 // 38C6:0010: void RunExitHandlersAndTerminate(word16 exitCode)
 // Called from:
-//      PrintAllocationErrorAndExit
 //      ShowInvalidSaveVersionDialog
 //      ShutdownAndExit
 void RunExitHandlersAndTerminate(word16 exitCode)

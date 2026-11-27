@@ -26,7 +26,7 @@ byte *BuildPlanarDisplayBackingBuffer(
 
 	/* The EGA's sparse encoding (2FEA:0024-002D and the block it jumps
 	 * to) went with the EGA; the rebuild is VGA only. */
-	backingBuffer = AllocateFarMemory((int32) uncompressedPayloadBytes + 0x04);
+	backingBuffer = Heap_Allocate((uint32) uncompressedPayloadBytes + 0x04, "2FEA:0038");
 	if (backingBuffer == NULL)
 		return NULL;
 

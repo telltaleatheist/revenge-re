@@ -69,7 +69,7 @@ void AllocateMusicStagingBuffer(void)
 {
 	byte *musicDriverBuffer;
 
-	musicDriverBuffer = AllocateFarMemory(0x30D4);
+	musicDriverBuffer = Heap_Allocate(0x30D4, "3014:011E");
 	MusicStagingBuffer = musicDriverBuffer;
 	CachedMusicResourceIndex = 0xFFFF;
 }
@@ -79,7 +79,7 @@ void AllocateMusicStagingBuffer(void)
 //      ShutdownMusicDriver
 void ReleaseMusicDriverBuffer(void)
 {
-	FreeFarMemory(MusicStagingBuffer);
+	Heap_Free(MusicStagingBuffer);
 }
 
 // 3014:0143: void ShutdownMusicDriver(void)

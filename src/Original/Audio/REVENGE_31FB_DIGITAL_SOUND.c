@@ -89,7 +89,7 @@ void LoadDigitalWeaponEffectBank(void)
 		packedBytes += sampleLength;
 	}
 
-	DigitalWeaponSampleBuffer = AllocateFarMemory((uint32) packedBytes);
+	DigitalWeaponSampleBuffer = Heap_Allocate(packedBytes, "31FB:01D5");
 	REVENGE_PRESERVATION_TRACE("audio: weapon bank driver=%u bytes=%u buffer=%p\n",
 		SoundDriverIndex, packedBytes,
 		(void *) DigitalWeaponSampleBuffer);
@@ -119,7 +119,7 @@ void LoadDigitalWeaponEffectBank(void)
 //      InitializeTacticalScenario
 void ReleaseDigitalWeaponEffectBank(void)
 {
-	FreeFarMemory(DigitalWeaponSampleBuffer);
+	Heap_Free(DigitalWeaponSampleBuffer);
 }
 
 // 31FB:0567: choose the digital PCM path when one is configured, except effect
@@ -332,7 +332,7 @@ void LoadScenarioDigitalSoundBank(int8 scenarioCode)
 		}
 		++soundIndex;
 	}
-	DigitalSoundBuffer = AllocateFarMemory(packedBufferSize);
+	DigitalSoundBuffer = Heap_Allocate(packedBufferSize, "31FB:049D");
 	soundIndex = 0x00;
 	while (soundIndex < 0x0F && soundCodes[soundIndex] != 0x00)
 	{
@@ -729,5 +729,5 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 //      RunTitleAndMainMenu
 void ReleaseDigitalSoundBuffer(void)
 {
-	FreeFarMemory(DigitalSoundBuffer);
+	Heap_Free(DigitalSoundBuffer);
 }

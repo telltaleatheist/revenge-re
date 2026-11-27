@@ -107,7 +107,7 @@ void FreeGraphicsBufferRange(int16 firstBufferIndex, int16 lastBufferIndex)
 	int16 bufferIndex;
 	for (bufferIndex = firstBufferIndex; bufferIndex <= lastBufferIndex; ++bufferIndex)
 	{
-		FreeHeapBlock(UnitEditorGraphicsBuffer(bufferIndex));
+		Heap_Free(UnitEditorGraphicsBuffer(bufferIndex));
 	}
 }
 

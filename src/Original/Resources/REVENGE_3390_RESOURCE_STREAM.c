@@ -296,7 +296,7 @@ void ReleaseCachedResources(void)
 
 		if (resource->cachedData != NULL)
 		{
-			FreeFarHeapAllocation(resource->cachedData);
+			Heap_Free(resource->cachedData);
 			resource->cachedData = NULL;
 		}
 		++resourceIndex;
@@ -345,7 +345,7 @@ void InitializeResourceCache(void)
 			resource->fileLength, 0x00000400UL) + 0x0001;
 		cachedData = NULL;
 		if (remainingConventionalMemoryKB >= (int16)allocationKB)
-			cachedData = AllocateFarHeapBytes(resource->fileLength);
+			cachedData = Heap_Allocate(resource->fileLength, "3390:0AF1");
 		if (cachedData == NULL)
 		{
 			++resourceIndex;
@@ -357,7 +357,7 @@ void InitializeResourceCache(void)
 			0x8001, 0x0180);
 		if (fileHandle == -0x01)
 		{
-			FreeFarHeapAllocation(cachedData);
+			Heap_Free(cachedData);
 			++resourceIndex;
 			continue;
 		}
@@ -372,7 +372,7 @@ void InitializeResourceCache(void)
 		}
 		else
 		{
-			FreeFarHeapAllocation(cachedData);
+			Heap_Free(cachedData);
 			CRT_CloseFile(fileHandle);
 		}
 		++resourceIndex;
@@ -424,18 +424,14 @@ word16 ReadCachedResource(
 {
 	CachedFileDescriptor *resource = &CachedFileDescriptors[resourceIndex];
 	uint32 bytesToRead = requestedBytes;
-	word16 sourceOffset;
 
 	if (resource->currentPosition + bytesToRead > resource->fileLength)
 		bytesToRead = resource->fileLength - resource->currentPosition;
-	/* 3390:0D86-0DA1 add the position's low word to the cache's offset
-	 * (FAR_HEAP_PAYLOAD_OFFSET, past the heap block's header) in 16 bits: a
-	 * read from FFF8h on starts 64K back, in the block's header, then over
-	 * the file's start again. The game's main leaves files uncached
-	 * (preloadFiles, 2C7F:000F), so play never reads here. */
-	sourceOffset = (word16)(FAR_HEAP_PAYLOAD_OFFSET +
-		LOW_WORD(resource->currentPosition));
-	CopyFarBytes32(resource->cachedData - FAR_HEAP_PAYLOAD_OFFSET + sourceOffset,
+	/* 3390:0D86-0DA1 add the position's low word to the heap block's
+	 * offset (8) in 16 bits, which would wrap from position FFF8h on. Play
+	 * never reads here: the game's main leaves files uncached (preloadFiles,
+	 * 2C7F:000F), so the cache holds none. */
+	CopyFarBytes32(resource->cachedData + resource->currentPosition,
 		destination, bytesToRead);
 	resource->currentPosition += bytesToRead;
 	return LOW_WORD(bytesToRead);

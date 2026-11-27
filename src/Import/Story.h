@@ -37,7 +37,7 @@ struct ImportError : std::runtime_error {
 };
 
 // Raised the story file's version when what it holds, or how, changes.
-inline constexpr int kImportVersion = 5;
+inline constexpr int kImportVersion = 6;
 
 std::filesystem::path story_dir(const std::filesystem::path& write_dir);
 

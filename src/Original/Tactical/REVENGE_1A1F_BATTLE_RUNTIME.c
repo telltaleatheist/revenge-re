@@ -19,7 +19,7 @@ void RunTacticalBattle(word16 scenarioCode)
 	ScenarioFileSuffix = scenarioCode;
 
 	byte *runtimeMemory =
-		AllocateFarMemory((uint32) TACTICAL_RUNTIME_ALLOCATION_SIZE);
+		Heap_Allocate(TACTICAL_RUNTIME_ALLOCATION_SIZE, "1A1F:0016");
 	TerrainTypeMap = runtimeMemory;
 	TacticalOverviewMapBuffer = runtimeMemory + TACTICAL_OVERVIEW_MAP_OFFSET;
 	PackedTerrainDamageMap = runtimeMemory + PACKED_TERRAIN_DAMAGE_MAP_OFFSET;
@@ -128,10 +128,10 @@ void RunTacticalBattle(word16 scenarioCode)
 	RunTacticalInteractionLoop();
 
 	for (bufferIndex = 0x1D; bufferIndex >= 0x0F; bufferIndex -= 0x02)
-		FreeFarMemory(TACTICAL_BACKING_BUFFER(bufferIndex));
+		Heap_Free(TACTICAL_BACKING_BUFFER(bufferIndex));
 	for (bufferIndex = 0x0D; bufferIndex >= 0x01; --bufferIndex)
-		FreeFarMemory(TACTICAL_BACKING_BUFFER(bufferIndex));
-	FreeFarMemory(runtimeMemory);
+		Heap_Free(TACTICAL_BACKING_BUFFER(bufferIndex));
+	Heap_Free(runtimeMemory);
 }
 
 // 1A1F:0351: void UpdateTacticalFrame(

@@ -69,7 +69,6 @@ int main(int argc, char **argv)
 	/* What the game asks to be heard, for tools/trace/audio. */
 	AudioLog_Open(SDL_getenv("REVENGE_AUDIO_LOG"), AudioLogClock);
 	RevengeTrace("entry: initialize\n");
-	SDLBackend_InitializeDOSMemoryArena();
 	/* The player's settings stand for MEDIA.CFG from here on. */
 	if (!HostSettings_Prepare())
 		return 0x01;

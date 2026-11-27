@@ -19,7 +19,8 @@
  * slot 1, kept outside the repo) through the lance editor's card
  * preparation. A load leaves each card's sprite pointer as the original wrote
  * it, a far pointer into the original's memory, never one of ours; the editor
- * sets the pointer of every card it will draw before drawing it.
+ * sets the pointer of every card it will draw before drawing it. A card saves
+ * the pointer it was loaded with, set by the editor or not.
  *
  *   (no argument)  after the editor's preparation, every card it draws points
  *                  at the editor's buffer for its unit or pilot
@@ -72,7 +73,6 @@ int main(int argc, char **argv)
 	word16 slot;
 
 	RequireOriginalImport();
-	SDLBackend_InitializeDOSMemoryArena();
 	BuildEditorBuffers();
 	LoadOriginalSaveCards();
 
@@ -92,19 +92,13 @@ int main(int argc, char **argv)
 
 	/* The units: the first lance's six cards, as the campaign's start has them. */
 	PrepareLanceSelectionRecords(0x0000, 0x0000, FALSE);
-	/* A built card saves its sprite's far address in the DOS memory block. */
+	/* A card the editor has set still saves the pointer it was loaded with. */
 	{
 		RevengeSavedSelectionCard saved;
-		uint32 capacity;
-		word16 segment;
-		const byte *block = SDLBackend_DOSMemoryBlock(&capacity, &segment);
-		uint32 linear;
 
+		assert(UnitSelectionCards[0x00].spriteBuffer != NULL);
 		UnitSelectionCard_Store(&saved, &UnitSelectionCards[0x00]);
-		linear = ((uint32) segment << 0x04) +
-			(uint32) (UnitSelectionCards[0x00].spriteBuffer - block);
-		assert(saved.spriteBuffer.segment == (word16) (linear >> 0x04) &&
-			saved.spriteBuffer.offset == (word16) (linear & 0x0F));
+		assert(saved.spriteBuffer.segment == 0x7929 && saved.spriteBuffer.offset == 0x0008);
 	}
 	for (slot = 0x0000; slot < UnitEditorScenarioCardCount; ++slot)
 	{
@@ -129,5 +123,18 @@ int main(int argc, char **argv)
 		assert(LanceEditorCardSprite(card) ==
 			UnitEditorGraphicsBuffer(PilotPortraitIndexById[card->selectionId]));
 	}
+
+	/* A new campaign's cards, from the image's start cards, set by the editor:
+	 * each saves 0000:0000, as the image holds them. */
+	UnitSelectionCards_LoadStart();
+	PrepareLanceSelectionRecords(0x0000, 0x0000, FALSE);
+	for (slot = 0x0000; slot < UNIT_SELECTION_CARD_COUNT; ++slot)
+	{
+		RevengeSavedSelectionCard saved;
+
+		UnitSelectionCard_Store(&saved, &UnitSelectionCards[slot]);
+		assert(saved.spriteBuffer.segment == 0x0000 && saved.spriteBuffer.offset == 0x0000);
+	}
+	assert(UnitSelectionCards[0x00].spriteBuffer != NULL);
 	return 0;
 }

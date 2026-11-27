@@ -81,18 +81,20 @@ long DOS_SeekFile(word16 fileHandle, long fileOffset, byte origin)
 	return (long) filePosition;
 }
 
-byte *AllocateFarHeapBytes16(word16 byteCount)
+void *Heap_Allocate(uint32 byteCount, const char *caller)
 {
 	byte *allocation = (byte *) malloc(byteCount);
+
+	(void) caller;
 	if (allocation != NULL)
 		++allocationCount;
 	return allocation;
 }
 
-void FreeHeapBlock(byte *allocation)
+void Heap_Free(void *block)
 {
 	++freeCount;
-	free(allocation);
+	free(block);
 }
 
 static void PrepareValidFont(void)
@@ -132,7 +134,7 @@ static void TestValidFontLoad(void)
 	Check(MeasureTextWidth("ABC") == 0x0012,
 		"text width resolves the active font and multiplies string length");
 
-	FreeHeapBlock(fontResource);
+	Heap_Free(fontResource);
 }
 
 static void TestInvalidPhysicalLength(void)

@@ -10,7 +10,7 @@ void RebuildMouseCursorBackingBuffer(void)
 {
 	byte *replacement;
 
-	FreeFarMemory(SharedGraphicsBackingBuffers[0x00]);
+	Heap_Free(SharedGraphicsBackingBuffers[0x00]);
 	replacement = BuildDisplayBackingBuffer(
 		MouseCursorBackingSourceTileX,
 		MouseCursorBackingSourcePixelY,

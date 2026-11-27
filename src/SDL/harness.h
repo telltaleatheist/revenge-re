@@ -65,8 +65,9 @@ int Harness_ParseKey(const char *token, int *scancode, byte *modifiers);
 void Platform_SendHarnessMouse(uint16 x, uint16 y, byte buttons);
 /* A script's quit item: the host's quit, as the window's close button asks it. */
 void Platform_RequestHarnessQuit(void);
-/* A script's fail item: fail:allocation or fail:abort, a fatal path the
- * game has, forced (platform.c, FailIfAsked). */
+/* A script's fail item: fail:allocation, the heap's next request failing,
+ * or fail:abort, a fatal path the game has, forced (platform.c,
+ * FailIfAsked). */
 enum
 {
 	HARNESS_FAIL_NONE,

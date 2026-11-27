@@ -36,7 +36,6 @@ int main(int argc, char **argv)
 
 	assert(current != NULL);
 	RequireOriginalImport();
-	SDLBackend_InitializeDOSMemoryArena();
 	/* The cached files' names, as the start sets them. */
 	OriginalData_InitializeResourceDescriptorPointers();
 	SDL_snprintf(folder, sizeof(folder), "%stracked-file-test/", current);

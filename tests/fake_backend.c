@@ -110,15 +110,6 @@ int16 SDLBackend_DeviceIOControl(
     return 0x0080;
 }
 
-word16 SDLBackend_ResizeMemoryBlock(
-    word16 memorySegment,
-    word16 paragraphCount)
-{
-    fakeBackend.firstWord = memorySegment;
-    fakeBackend.secondWord = paragraphCount;
-    return 0xFFFF;
-}
-
 word16 SDLBackend_GetLargestFreeConventionalMemoryParagraphs(
 	word16 requestedParagraphs)
 {

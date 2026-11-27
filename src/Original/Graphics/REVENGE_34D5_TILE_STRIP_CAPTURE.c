@@ -6,7 +6,6 @@
 #include "revenge/original_data.h"
 #include "revenge/video.h"
 
-byte *AllocateFarMemory(int32 byteCount);
 
 // 34D5:000C: byte far *CaptureVideoTileStrip(
 //     void far *source, int16 startTileX, uint16 startTileY, int16 tileCount)
@@ -32,7 +31,7 @@ byte *CaptureVideoTileStrip(
 		: 0x05;
 	shiftedTileBytes = (word16)((word16)tileCount << tileSizeShift);
 	allocationSize = (int32)(int16)shiftedTileBytes;
-	tileBuffer = AllocateFarMemory(allocationSize);
+	tileBuffer = Heap_Allocate((uint32) allocationSize, "34D5:003F");
 	tileDestination = tileBuffer;
 	for (tileIndex = 0x0000; tileIndex < tileCount; ++tileIndex)
 	{

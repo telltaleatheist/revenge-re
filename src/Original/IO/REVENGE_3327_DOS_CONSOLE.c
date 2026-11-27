@@ -7,7 +7,6 @@
 
 // 3327:0007: void DOS_PrintString(const char *text)
 // Called from:
-//      PrintAllocationErrorAndExit
 //      InitializeGame
 //      LoadMediaConfiguration
 //      ApplyVideoConfigOption

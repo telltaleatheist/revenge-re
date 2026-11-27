@@ -93,7 +93,6 @@ int main(void)
 	assert(SDL_setenv_unsafe("SDL_MAC_BACKGROUND_APP", "1", 1) == 0);
 	assert(SDL_setenv_unsafe("SDL_VIDEO_DRIVER", "dummy", 1) == 0);
 	assert(SDL_setenv_unsafe("SDL_AUDIO_DRIVER", "dummy", 1) == 0);
-	SDLBackend_InitializeDOSMemoryArena();
 	assert(SDLBackend_Open());
 	windows = SDL_GetWindows(NULL);
 	assert(windows != NULL && windows[0] != NULL);

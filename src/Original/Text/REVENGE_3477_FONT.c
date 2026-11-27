@@ -49,7 +49,7 @@ byte *LoadFontResource(const char *fileName)
 						if (allocationSize == totalFileSize)
 						{
 							fontResource = (byte *)
-								AllocateFarHeapBytes16(allocationSize);
+								Heap_Allocate(allocationSize, "3477:00FF");
 							if (fontResource != NULL)
 							{
 								if ((int32) DOS_SeekFile(
@@ -64,13 +64,13 @@ byte *LoadFontResource(const char *fileName)
 											totalFileSize);
 									if (fontBytesRead != totalFileSize)
 									{
-										FreeHeapBlock(fontResource);
+										Heap_Free(fontResource);
 										fontResource = NULL;
 									}
 								}
 								else
 								{
-									FreeHeapBlock(fontResource);
+									Heap_Free(fontResource);
 									fontResource = NULL;
 								}
 							}

@@ -8,9 +8,6 @@
 #
 # KIND says how the place was found: table, import, annotation, run, procedure.
 # SIZE is the original's bytes (for an import piece, the piece's own size).
-place MinimumProgramBreakOffset 3A6A:0087 2 annotation
-place CurrentProgramBreakOffset 3A6A:008B 2 annotation
-place MaximumProgramBreakOffset 3A6A:008F 2 annotation
 place SaveTransferState 3A6A:0094 2 annotation
 place VideoPathUnavailable 3A6A:0096 1 annotation
 place MovementRatingByWalkMP 3A6A:0097 9 run
@@ -235,7 +232,6 @@ place UiNavigationDownKey 3A6A:6244 2 annotation
 place UiPreviousRegionKey 3A6A:6246 2 annotation
 place UiNextRegionKey 3A6A:6248 2 annotation
 place MIDISequence 3A6A:624A 1C table
-place MinimumProgramBreakSegment 3A6A:6295 2 run
 place MIDIParser 3A6A:62B0 A table
 place MIDIChannelMap 3A6A:6728 10 table
 place MIDISystemExclusive 3A6A:6738 28 table
@@ -251,7 +247,6 @@ place RuntimeExitHook1 3A6A:700A 4 procedure
 place RuntimeExitHook2 3A6A:700E 4 procedure
 place RuntimeExitHook3 3A6A:7012 4 procedure
 place ExitHandlerCount 3A6A:7018 2 annotation
-place ProgramBreakKilobytes 3A6A:7026 2 annotation
 place CharacterClassTable 3A6A:7029 100 run
 place FileRuntime 3A6A:712A 2C table
 place MonthLengthTable 3A6A:7156 C run
@@ -458,7 +453,6 @@ unplaced CombatRatingNoneText 4 host pointer
 unplaced CommanderListWindowHeight 1 zero at every snap
 unplaced ConditionDescriptionTable 14 host pointer
 unplaced ContinueText 4 host pointer
-unplaced CurrentProgramBreakSegment 2 its bytes match nowhere (pointers or values differ)
 unplaced CurrentUnitDurabilityTotal 2 its bytes match nowhere (pointers or values differ)
 unplaced DamagedTerrainSpriteLookup 4 host pointer
 unplaced DateCommaSpaceText 4 host pointer
@@ -492,15 +486,7 @@ unplaced EnemyAssessmentTextTable 48 host pointer
 unplaced EnemyCycleUnitIndex 2 several places match
 unplaced EnemyUnitStatusHeading 4 zero at every snap
 unplaced ExitToDosPrompt 4 host pointer
-unplaced FailedAllocationSizeHigh 2 zero at every snap
-unplaced FailedAllocationSizeLow 2 zero at every snap
 unplaced FallenPilotListWindowHeight 1 zero at every snap
-unplaced FarHeapArenaBaseOffset 2 zero at every snap
-unplaced FarHeapArenaBaseSegment 2 its bytes match nowhere (pointers or values differ)
-unplaced FarHeapFreeListHeadOffset 2 zero at every snap
-unplaced FarHeapFreeListHeadSegment 2 its bytes match nowhere (pointers or values differ)
-unplaced FarHeapTailBlockOffset 2 zero at every snap
-unplaced FarHeapTailBlockSegment 2 its bytes match nowhere (pointers or values differ)
 unplaced FirstLanceOrdersEnabled 2 several places match
 unplaced FocusLanceText 4 host pointer
 unplaced FocusUnitText 4 host pointer
@@ -529,10 +515,8 @@ unplaced MapEdgeEffectCount 2 zero at every snap
 unplaced MapEdgeEffectQueue 18 zero at every snap
 unplaced MapHeight 2 its bytes match nowhere (pointers or values differ)
 unplaced MapWidth 2 its bytes match nowhere (pointers or values differ)
-unplaced MaximumProgramBreakSegment 2 several places match
 unplaced MaximumUnitDurabilityTotal 2 its bytes match nowhere (pointers or values differ)
 unplaced MediaConfigAssignmentDelimiter 2 zero at every snap
-unplaced MemoryBlockSegment 2 several places match
 unplaced MissionMapHeaderText 4 host pointer
 unplaced MouseCursorBackground 4 host pointer
 unplaced MouseCursorBitmap 4 host pointer

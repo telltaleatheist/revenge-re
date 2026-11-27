@@ -393,8 +393,6 @@ int main(void)
 	unsigned differing = 0;
 
 	RequireOriginalImport();
-	/* The start the program makes before the game's own (src/SDL/entry.c). */
-	SDLBackend_InitializeDOSMemoryArena();
 	OriginalData_InitializeResourceDescriptorPointers();
 	LoadImage();
 	for (index = 0; index < sizeof(rows) / sizeof(rows[0]); ++index)

@@ -66,9 +66,13 @@ typedef struct UnitSelectionCard
     DosAddress loadedSpriteBuffer;
 } UnitSelectionCard;
 
-/* The save boundary: a card from its saved record, and back. A sprite the
- * editor set is stored as its far address in the DOS memory block
- * (revenge/dos_memory.h). */
+/* The save boundary: a card from its saved record, and back. The sprite
+ * pointer is stored as the card was loaded with it, from a save or the
+ * image's start cards (0000:0000 in every one), never as one the editor set:
+ * the host's pointer has no far address, and the original sets each card's
+ * sprite before it draws the card, after a new campaign (its 0000:0000) and
+ * after a load (another session's heap) alike, so it never reads the saved
+ * one. */
 void UnitSelectionCard_Load(UnitSelectionCard *card,
     const RevengeSavedSelectionCard *saved);
 void UnitSelectionCard_Store(RevengeSavedSelectionCard *saved,

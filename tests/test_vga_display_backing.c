@@ -11,8 +11,9 @@ static byte encodingBuffer[0x0400];
 static byte allocation[0x0400];
 static int32 requestedAllocationSize;
 
-byte *AllocateFarMemory(int32 byteCount)
+void *Heap_Allocate(uint32 byteCount, const char *caller)
 {
+	(void) caller;
 	requestedAllocationSize = byteCount;
 	memset(allocation, 0xCC, sizeof(allocation));
 	return allocation;

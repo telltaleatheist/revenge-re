@@ -82,7 +82,7 @@ byte *BuildVgaDisplayBackingBuffer(
 		sourceRow += 0x0140;
 	}
 
-	allocation = AllocateFarMemory((int32) encodedByteCount);
+	allocation = Heap_Allocate(encodedByteCount, "0D73:562F");
 	if (allocation != NULL)
 	{
 		CopyFarBytes32(

@@ -94,9 +94,8 @@ target_sources(chr_original_runtime PRIVATE
     src/Support/dos_memory.c
     src/Support/host_dispatch.c
     src/Support/digital_bridge.c
-    src/Support/far_heap_bridge.c
+    src/Support/heap.c
     src/Support/midi_data.c
-    src/Support/program_break_bridge.c
     src/Support/video_bridge.c
     src/Support/presentation_callback_bridge.c
 	src/Support/tactical_panel_data.c
@@ -118,7 +117,6 @@ chr_strict(chr_original_runtime)
 add_library(chr_original_dos STATIC
     ${CHR_3A6A_DATA_SOURCES}
     src/Original/IO/REVENGE_38C3_DOS_ERROR.c
-    src/Original/IO/REVENGE_3913_DOS_MEMORY.c
     src/Original/IO/REVENGE_3915_FILE_CREATE.c
     src/Original/IO/REVENGE_392F_FILE_OPEN.c
     src/Original/IO/REVENGE_3934_DEVICE_IO.c
@@ -533,30 +531,19 @@ if(BUILD_TESTING)
     chr_strict(test_dos_memory)
     add_test(NAME support.dos_memory COMMAND test_dos_memory)
 
-    add_executable(test_program_break
-        tests/test_program_break.c
-        src/Original/Runtime/REVENGE_38FE_PROGRAM_BREAK.c
-        ${CHR_3A6A_DATA_SOURCES}
-        src/Support/debug.c
-        src/Support/dos_memory.c
-        src/Support/program_break_bridge.c)
-    target_include_directories(test_program_break PRIVATE
-        include src/Original)
-    chr_strict(test_program_break)
-    add_test(NAME runtime.original_program_break COMMAND test_program_break)
-
-    add_executable(test_far_heap
-        tests/test_far_heap.c
-        src/Original/Runtime/REVENGE_0D56_FAR_MEMORY.c
-        src/Original/Runtime/REVENGE_38CD_FAR_HEAP_UNLINK.c
-        src/Original/Runtime/REVENGE_398D_FAR_HEAP.c
-        ${CHR_3A6A_DATA_SOURCES}
-        src/Support/debug.c
-        src/Support/dos_memory.c
-        src/Support/far_heap_bridge.c)
-    target_include_directories(test_far_heap PRIVATE include src/Original)
-    chr_strict(test_far_heap)
-    add_test(NAME runtime.original_far_heap COMMAND test_far_heap)
+    add_executable(test_heap
+        tests/test_heap.c
+        src/Support/heap.c
+        src/Support/debug.c)
+    target_include_directories(test_heap PRIVATE include)
+    chr_strict(test_heap)
+    add_test(NAME support.heap COMMAND test_heap)
+    add_test(NAME support.heap_failure COMMAND test_heap fail)
+    set_tests_properties(support.heap_failure PROPERTIES
+        PASS_REGULAR_EXPRESSION "fault: no host memory for a 65520-byte allocation, called from 1234:5678")
+    add_test(NAME support.heap_zero COMMAND test_heap zero)
+    set_tests_properties(support.heap_zero PROPERTIES
+        PASS_REGULAR_EXPRESSION "fault: a 0-byte allocation, called from 1234:5678")
 
     add_executable(test_formatted_text
         tests/test_formatted_text.c

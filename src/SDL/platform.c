@@ -1,6 +1,7 @@
 #include "revenge/platform_backend.h"
 #include "revenge/audio.h"
 #include "revenge/debug.h"
+#include "revenge/heap.h"
 #include "revenge/input.h"
 #include "revenge/original_data.h"
 #include "revenge/video.h"
@@ -377,9 +378,8 @@ static void DeliverHostEvents(void);
 
 /* 3390:0024: the game's shutdown (2C7F:02E3) and the C library's exit, as
  * they end the game after its own quit (the title's, the in-game menu's).
- * 0D56:00B5 and 3390:0244, for the harness's fail items. */
+ * 3390:0244, for the harness's fail item. */
 void ShutdownAndExit(word16 exitCode);
-byte *AllocateFarMemory(int32_t byteCount);
 void CloseTrackedFile(int16 handleSlot);
 
 /* A quit the player asked of the host ends the program between the game's
@@ -402,12 +402,12 @@ static void QuitIfAsked(void)
     ShutdownAndExit(0x0000);
 }
 
-/* A harness script's fail item (harness.h): one of the game's fatal paths,
- * taken where a quit would be. The allocation error: the far heap asked for
- * 65520 bytes until it has none (0D56:00B5's failure, 0D56:0007's message).
- * The abort: a tracked file's slot closed though it isn't open (3390:0244,
- * then 3390:0002's two messages). Each ends the program with exit code 1
- * after its keys; neither returns. */
+/* A harness script's fail item (harness.h), taken where a quit would be.
+ * The allocation: the heap's next request fails as if the host had no
+ * memory, and the game goes on until it asks (revenge/heap.h: a fault, exit
+ * 70). The abort: one of the game's fatal paths, a tracked file's slot
+ * closed though it isn't open (3390:0244, then 3390:0002's two messages); it
+ * ends the program with exit code 1 after its keys and doesn't return. */
 static int failureRequested;
 
 static void FailIfAsked(void)
@@ -420,8 +420,8 @@ static void FailIfAsked(void)
     RevengeTrace("fail: %s\n", failure == HARNESS_FAIL_ALLOCATION ? "allocation" : "abort");
     if (failure == HARNESS_FAIL_ALLOCATION)
     {
-        for (;;)
-            (void) AllocateFarMemory(0xFFF0L);
+        Heap_FailNextAllocation();
+        return;
     }
     for (int16 slot = 0x0000; slot < ORIGINAL_TRACKED_FILE_COUNT; ++slot)
     {

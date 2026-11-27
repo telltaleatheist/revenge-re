@@ -33,13 +33,6 @@ word16 UiNextRegionKey;
 OriginalUiRegionRecord UiRegionTable[ORIGINAL_UI_REGION_COUNT];
 int16 RuntimeErrno;
 int16 RuntimeDOSError;
-word16 FarHeapArenaBaseOffset;
-word16 FarHeapArenaBaseSegment;
-word16 FarHeapTailBlockOffset;
-word16 FarHeapTailBlockSegment;
-word16 FarHeapFreeListHeadOffset;
-word16 FarHeapFreeListHeadSegment;
-word16 ProgramBreakKilobytes;
 
 const int8_t DOSErrorToErrnoTable[0x59] =
 {

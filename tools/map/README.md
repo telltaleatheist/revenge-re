@@ -48,8 +48,8 @@ headers). Unset, it does nothing.
 Every snap also writes `SNAP.names` (`MapDump_WriteNames`): each object by
 name with a hash of its bytes. An object declared as a pointer or an array of
 them has each pointer hashed as the place it points to (an object's name and
-offset, the DOS memory block's linear address, a function's name, or
-"elsewhere"), so it is the same on every run and system. So has each pointer
+offset, a heap block's number in allocation order and the offset in it, a
+function's name, or "elsewhere"), so it is the same on every run and system. So has each pointer
 member of a struct or union, and of the structs inside it: the generator reads
 their definitions from the headers and lists each pointer member's offset
 (`offsetof`, repeated over the arrays it sits in). Every other byte is hashed

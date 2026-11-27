@@ -13,7 +13,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces_dos100[0x145] =
+const OriginalPiece OriginalPieces_dos100[0x13C] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, NULL, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, NULL, "2de063a6fef0f14a" },
@@ -64,12 +64,6 @@ const OriginalPiece OriginalPieces_dos100[0x145] =
 	{ "MIDIParser", ORIGINAL_PIECE_BYTES, 0x62B0, 0xA, 4, 10, &MIDIParser, "609f8b66779f2c2b" },
 	{ "PilotRosterRecordPastEnd", ORIGINAL_PIECE_BYTES, 0x2148, 0x4, 4, 4, &PilotRosterRecordPastEnd, "795e741e32ef279a" },
 	{ "UnitNameSplitIndex", ORIGINAL_PIECE_BYTES, 0x3172, 0x59, 4, 89, &UnitNameSplitIndex, "863f1491250b4d50" },
-	{ "print_allocation_error_and_exit.0", ORIGINAL_PIECE_TEXT, 0x232B, 0, 0, 19, NULL, "21c3e217021da4b4" },
-	{ "print_allocation_error_and_exit.1", ORIGINAL_PIECE_TEXT, 0x233F, 0, 0, 9, NULL, "a833217c628541a3" },
-	{ "print_allocation_error_and_exit.2", ORIGINAL_PIECE_TEXT, 0x2349, 0, 0, 5, NULL, "4163f3dbaeeedbde" },
-	{ "print_allocation_error_and_exit.3", ORIGINAL_PIECE_TEXT, 0x234F, 0, 0, 14, NULL, "d65c37a26346320d" },
-	{ "allocate_far_memory.0", ORIGINAL_PIECE_TEXT, 0x235E, 0, 0, 19, NULL, "ca7c1506cb9b7d35" },
-	{ "allocate_far_memory.1", ORIGINAL_PIECE_TEXT, 0x22DC, 0, 0, 78, NULL, "e76688a3b0959feb" },
 	{ "invalid_save_version", ORIGINAL_PIECE_TEXT, 0x2372, 0, 0, 118, NULL, "2d9a3b9a98bf83a9" },
 	{ "mission_map_header", ORIGINAL_PIECE_TEXT, 0x2489, 0, 0, 23, NULL, "948e611ab3db6a0a" },
 	{ "exit_to_dos_prompt", ORIGINAL_PIECE_TEXT, 0x2562, 0, 0, 52, NULL, "9180455f67232bea" },
@@ -121,15 +115,12 @@ const OriginalPiece OriginalPieces_dos100[0x145] =
 	{ "initialize_game.0", ORIGINAL_PIECE_TEXT, 0x38E4, 0, 0, 64, NULL, "b3590befe66cba01" },
 	{ "initialize_game.1", ORIGINAL_PIECE_TEXT, 0x3925, 0, 0, 9, NULL, "93260ce734bac239" },
 	{ "initialize_game.2", ORIGINAL_PIECE_TEXT, 0x392F, 0, 0, 226, NULL, "02fbcf4cc58521a2" },
-	{ "initialize_game.4", ORIGINAL_PIECE_TEXT, 0x3A12, 0, 0, 64, NULL, "8ec64d5f851e6c7b" },
-	{ "initialize_game.3", ORIGINAL_PIECE_TEXT, 0x3A53, 0, 0, 56, NULL, "d553ea18017a39b9" },
 	{ "config_option_names.0", ORIGINAL_PIECE_TEXT, 0x3A91, 0, 0, 5, NULL, "15352f3636d2a0e7" },
 	{ "config_option_names.1", ORIGINAL_PIECE_TEXT, 0x3AA1, 0, 0, 5, NULL, "73b70b9fb19cc9cf" },
 	{ "config_option_names.2", ORIGINAL_PIECE_TEXT, 0x3AB1, 0, 0, 5, NULL, "368b6821290b9050" },
 	{ "config_option_names.3", ORIGINAL_PIECE_TEXT, 0x3AC1, 0, 0, 11, NULL, "ded126960679c954" },
 	{ "media_configuration_error", ORIGINAL_PIECE_TEXT, 0x3C05, 0, 0, 59, NULL, "1289959db0944118" },
 	{ "initialize_game.6", ORIGINAL_PIECE_TEXT, 0x3C41, 0, 0, 46, NULL, "1ba1f9fd591a7983" },
-	{ "initialize_game.5", ORIGINAL_PIECE_TEXT, 0x3C70, 0, 0, 57, NULL, "4d9d0049c8422955" },
 	{ "unit_status_rating_labels", ORIGINAL_PIECE_TEXT, 0x40EB, 0, 0, 25, NULL, "28196086f511c2e3" },
 	{ "unit_status_heat_detail_label", ORIGINAL_PIECE_TEXT, 0x4105, 0, 0, 6, NULL, "8791aa7d0c5abf39" },
 	{ "unit_status_damage_label", ORIGINAL_PIECE_TEXT, 0x410C, 0, 0, 4, NULL, "0d7aca10c2a8371c" },
@@ -837,12 +828,6 @@ const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
 	{ 0x0003457FUL, 0x3A6A, 0x5, 0, "68e1d5cdf6a8c9b5" }, /* weapon_name.20 */
 	{ 0x00034585UL, 0x3A6A, 0x5, 0, "e18f0483f2a575a9" }, /* weapon_name.21 */
 	{ 0x0003458BUL, 0x3A6A, 0x5, 0, "85d88f9c8a5ab9c9" }, /* weapon_name.22 */
-	{ 0x000349CBUL, 0x3A6A, 0x13, 0, "21c3e217021da4b4" }, /* print_allocation_error_and_exit.0 */
-	{ 0x000349DFUL, 0x3A6A, 0x9, 0, "a833217c628541a3" }, /* print_allocation_error_and_exit.1 */
-	{ 0x000349E9UL, 0x3A6A, 0x5, 0, "4163f3dbaeeedbde" }, /* print_allocation_error_and_exit.2 */
-	{ 0x000349EFUL, 0x3A6A, 0xE, 0, "d65c37a26346320d" }, /* print_allocation_error_and_exit.3 */
-	{ 0x000349FEUL, 0x3A6A, 0x13, 0, "ca7c1506cb9b7d35" }, /* allocate_far_memory.0 */
-	{ 0x0003497CUL, 0x3A6A, 0x4E, 0, "e76688a3b0959feb" }, /* allocate_far_memory.1 */
 	{ 0x00034A12UL, 0x3A6A, 0x76, 0, "2d9a3b9a98bf83a9" }, /* invalid_save_version */
 	{ 0x00034B29UL, 0x3A6A, 0x17, 0, "948e611ab3db6a0a" }, /* mission_map_header */
 	{ 0x00034C02UL, 0x3A6A, 0x34, 0, "9180455f67232bea" }, /* exit_to_dos_prompt */
@@ -894,15 +879,12 @@ const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
 	{ 0x00035F84UL, 0x3A6A, 0x40, 0, "b3590befe66cba01" }, /* initialize_game.0 */
 	{ 0x00035FC5UL, 0x3A6A, 0x9, 0, "93260ce734bac239" }, /* initialize_game.1 */
 	{ 0x00035FCFUL, 0x3A6A, 0xE2, 0, "02fbcf4cc58521a2" }, /* initialize_game.2 */
-	{ 0x000360B2UL, 0x3A6A, 0x40, 0, "8ec64d5f851e6c7b" }, /* initialize_game.4 */
-	{ 0x000360F3UL, 0x3A6A, 0x38, 0, "d553ea18017a39b9" }, /* initialize_game.3 */
 	{ 0x00036131UL, 0x3A6A, 0x5, 0, "15352f3636d2a0e7" }, /* config_option_names.0 */
 	{ 0x00036141UL, 0x3A6A, 0x5, 0, "73b70b9fb19cc9cf" }, /* config_option_names.1 */
 	{ 0x00036151UL, 0x3A6A, 0x5, 0, "368b6821290b9050" }, /* config_option_names.2 */
 	{ 0x00036161UL, 0x3A6A, 0xB, 0, "ded126960679c954" }, /* config_option_names.3 */
 	{ 0x000362A5UL, 0x3A6A, 0x3B, 0, "1289959db0944118" }, /* media_configuration_error */
 	{ 0x000362E1UL, 0x3A6A, 0x2E, 0, "1ba1f9fd591a7983" }, /* initialize_game.6 */
-	{ 0x00036310UL, 0x3A6A, 0x39, 0, "4d9d0049c8422955" }, /* initialize_game.5 */
 	{ 0x0003678BUL, 0x3A6A, 0x19, 0, "28196086f511c2e3" }, /* unit_status_rating_labels */
 	{ 0x000367A5UL, 0x3A6A, 0x6, 0, "8791aa7d0c5abf39" }, /* unit_status_heat_detail_label */
 	{ 0x000367ACUL, 0x3A6A, 0x4, 0, "0d7aca10c2a8371c" }, /* unit_status_damage_label */

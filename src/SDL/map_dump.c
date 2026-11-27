@@ -178,16 +178,9 @@ static const MapDumpObject objects[] =
 	{ "DestroyedUnitNarrationTextTable", &DestroyedUnitNarrationTextTable, sizeof(DestroyedUnitNarrationTextTable), 1 },
 	{ "ScenarioEventNarrationTextTable", &ScenarioEventNarrationTextTable, sizeof(ScenarioEventNarrationTextTable), 1 },
 	{ "SceneNarrationSeparatorText", &SceneNarrationSeparatorText, sizeof(SceneNarrationSeparatorText), 1 },
-	{ "MemoryBlockSegment", &MemoryBlockSegment, sizeof(MemoryBlockSegment), 0 },
 	{ "MapWidth", &MapWidth, sizeof(MapWidth), 0 },
 	{ "MapHeight", &MapHeight, sizeof(MapHeight), 0 },
-	{ "MinimumProgramBreakOffset", &MinimumProgramBreakOffset, sizeof(MinimumProgramBreakOffset), 0 },
-	{ "MinimumProgramBreakSegment", &MinimumProgramBreakSegment, sizeof(MinimumProgramBreakSegment), 0 },
 	{ "VideoPathUnavailable", &VideoPathUnavailable, sizeof(VideoPathUnavailable), 0 },
-	{ "CurrentProgramBreakOffset", &CurrentProgramBreakOffset, sizeof(CurrentProgramBreakOffset), 0 },
-	{ "CurrentProgramBreakSegment", &CurrentProgramBreakSegment, sizeof(CurrentProgramBreakSegment), 0 },
-	{ "MaximumProgramBreakOffset", &MaximumProgramBreakOffset, sizeof(MaximumProgramBreakOffset), 0 },
-	{ "MaximumProgramBreakSegment", &MaximumProgramBreakSegment, sizeof(MaximumProgramBreakSegment), 0 },
 	{ "SavedBIOSVideoMode", &SavedBIOSVideoMode, sizeof(SavedBIOSVideoMode), 0 },
 	{ "BIOSVideoModeByAdapter", &BIOSVideoModeByAdapter, sizeof(BIOSVideoModeByAdapter), 0 },
 	{ "GameInitialized", &GameInitialized, sizeof(GameInitialized), 0 },
@@ -250,13 +243,6 @@ static const MapDumpObject objects[] =
 	{ "UiNextRegionKey", &UiNextRegionKey, sizeof(UiNextRegionKey), 0 },
 	{ "RuntimeErrno", &RuntimeErrno, sizeof(RuntimeErrno), 0 },
 	{ "RuntimeDOSError", &RuntimeDOSError, sizeof(RuntimeDOSError), 0 },
-	{ "FarHeapArenaBaseOffset", &FarHeapArenaBaseOffset, sizeof(FarHeapArenaBaseOffset), 0 },
-	{ "FarHeapArenaBaseSegment", &FarHeapArenaBaseSegment, sizeof(FarHeapArenaBaseSegment), 0 },
-	{ "FarHeapTailBlockOffset", &FarHeapTailBlockOffset, sizeof(FarHeapTailBlockOffset), 0 },
-	{ "FarHeapTailBlockSegment", &FarHeapTailBlockSegment, sizeof(FarHeapTailBlockSegment), 0 },
-	{ "FarHeapFreeListHeadOffset", &FarHeapFreeListHeadOffset, sizeof(FarHeapFreeListHeadOffset), 0 },
-	{ "FarHeapFreeListHeadSegment", &FarHeapFreeListHeadSegment, sizeof(FarHeapFreeListHeadSegment), 0 },
-	{ "ProgramBreakKilobytes", &ProgramBreakKilobytes, sizeof(ProgramBreakKilobytes), 0 },
 	{ "DOSErrorToErrnoTable", &DOSErrorToErrnoTable, sizeof(DOSErrorToErrnoTable), 0 },
 	{ "PITCalibration", &PITCalibration, sizeof(PITCalibration), 0 },
 	{ "VerticalRetraceEdgeMode", &VerticalRetraceEdgeMode, sizeof(VerticalRetraceEdgeMode), 0 },
@@ -694,8 +680,6 @@ static const MapDumpObject objects[] =
 	{ "TacticalMechSetFileName", &TacticalMechSetFileName, sizeof(TacticalMechSetFileName), 0 },
 	{ "ResourceRetryCount", &ResourceRetryCount, sizeof(ResourceRetryCount), 0 },
 	{ "ReservedConventionalMemoryKB", &ReservedConventionalMemoryKB, sizeof(ReservedConventionalMemoryKB), 0 },
-	{ "FailedAllocationSizeLow", &FailedAllocationSizeLow, sizeof(FailedAllocationSizeLow), 0 },
-	{ "FailedAllocationSizeHigh", &FailedAllocationSizeHigh, sizeof(FailedAllocationSizeHigh), 0 },
 	{ "ExitHandlerCount", &ExitHandlerCount, sizeof(ExitHandlerCount), 0 },
 	{ "ExitHandlerTable", &ExitHandlerTable, sizeof(ExitHandlerTable), 1 },
 	{ "RuntimeExitHook1", &RuntimeExitHook1, sizeof(RuntimeExitHook1), 1 },
@@ -782,28 +766,28 @@ static const MapDumpSlot pointerSlots[] =
 	{ 116, offsetof(ResourceFileRuntime, errorText), 1, 0, 1, 0 },
 	{ 117, offsetof(CachedFileDescriptor, fileName), sizeof(CachedFileDescriptors) / sizeof(CachedFileDescriptors[0]), sizeof(CachedFileDescriptors[0]), 1, 0 },
 	{ 117, offsetof(CachedFileDescriptor, cachedData), sizeof(CachedFileDescriptors) / sizeof(CachedFileDescriptors[0]), sizeof(CachedFileDescriptors[0]), 1, 0 },
-	{ 705, offsetof(DigitalPlaybackRuntimeState, ActiveDriverQueue), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, PlaybackTimerQueue.First), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, PlaybackTimerQueue.End.Next), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, PlaybackTimerQueue.End.PreviousLink), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, CalibrationQueue.First), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, CalibrationQueue.End.Next), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, CalibrationQueue.End.PreviousLink), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.Link.Next), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.Link.PreviousLink), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.OwnerQueue), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.SampleData), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.Completion), 1, 0, 1, 0 },
-	{ 706, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.CompletionArgument), 1, 0, 1, 0 },
-	{ 708, offsetof(DigitalSampleDescriptor, Link.Next), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
-	{ 708, offsetof(DigitalSampleDescriptor, Link.PreviousLink), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
-	{ 708, offsetof(DigitalSampleDescriptor, OwnerQueue), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
-	{ 708, offsetof(DigitalSampleDescriptor, SampleData), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
-	{ 708, offsetof(DigitalSampleDescriptor, Completion), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
-	{ 708, offsetof(DigitalSampleDescriptor, CompletionArgument), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
-	{ 710, offsetof(DigitalDriverQueue, First), 1, 0, 1, 0 },
-	{ 710, offsetof(DigitalDriverQueue, End.Next), 1, 0, 1, 0 },
-	{ 710, offsetof(DigitalDriverQueue, End.PreviousLink), 1, 0, 1, 0 },
+	{ 689, offsetof(DigitalPlaybackRuntimeState, ActiveDriverQueue), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, PlaybackTimerQueue.First), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, PlaybackTimerQueue.End.Next), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, PlaybackTimerQueue.End.PreviousLink), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, CalibrationQueue.First), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, CalibrationQueue.End.Next), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, CalibrationQueue.End.PreviousLink), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.Link.Next), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.Link.PreviousLink), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.OwnerQueue), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.SampleData), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.Completion), 1, 0, 1, 0 },
+	{ 690, offsetof(DigitalPlaybackWorkingSet, CalibrationSample.CompletionArgument), 1, 0, 1, 0 },
+	{ 692, offsetof(DigitalSampleDescriptor, Link.Next), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
+	{ 692, offsetof(DigitalSampleDescriptor, Link.PreviousLink), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
+	{ 692, offsetof(DigitalSampleDescriptor, OwnerQueue), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
+	{ 692, offsetof(DigitalSampleDescriptor, SampleData), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
+	{ 692, offsetof(DigitalSampleDescriptor, Completion), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
+	{ 692, offsetof(DigitalSampleDescriptor, CompletionArgument), sizeof(DigitalSamplePlaybackDescriptorTable) / sizeof(DigitalSamplePlaybackDescriptorTable[0]), sizeof(DigitalSamplePlaybackDescriptorTable[0]), 1, 0 },
+	{ 694, offsetof(DigitalDriverQueue, First), 1, 0, 1, 0 },
+	{ 694, offsetof(DigitalDriverQueue, End.Next), 1, 0, 1, 0 },
+	{ 694, offsetof(DigitalDriverQueue, End.PreviousLink), 1, 0, 1, 0 },
 };
 
 typedef void (*MapDumpFunction)(void);
@@ -855,16 +839,15 @@ void MapDump_Write(const char *snap)
 /* The snaps by name (MapDump_WriteNames). A pointer is a host address, so
  * its bytes differ from run to run and system to system: each pointer-sized,
  * pointer-aligned word of an object that points into a data object, or into
- * the DOS memory block, is hashed as that place's name and the offset in it
- * (the block's as the original's linear address). Every other byte is hashed
- * as it is. */
+ * a block of the heap, is hashed as that place's name and the offset in it
+ * (a block's name is its number in allocation order, revenge/heap.h). Every
+ * other byte is hashed as it is. */
 
 typedef struct MapDumpRegion
 {
 	uintptr_t start;
 	size_t size;
-	const char *name;       /* NULL: the DOS memory block */
-	uint32_t linear;        /* the block's linear address */
+	const char *name;
 } MapDumpRegion;
 
 static MapDumpRegion *regions;
@@ -887,13 +870,10 @@ static int CompareRegions(const void *left, const void *right)
 static void FindRegions(void)
 {
 	size_t count = sizeof(objects) / sizeof(objects[0]);
-	const byte *block;
-	uint32 capacity;
-	word16 segment;
 	size_t index;
 
 	free(regions);
-	regions = (MapDumpRegion *) calloc(count + 1, sizeof(MapDumpRegion));
+	regions = (MapDumpRegion *) calloc(count, sizeof(MapDumpRegion));
 	if (regions == NULL)
 	{
 		regionCount = 0;
@@ -905,14 +885,6 @@ static void FindRegions(void)
 		regions[regionCount].start = (uintptr_t) objects[index].object;
 		regions[regionCount].size = ObjectSize(index);
 		regions[regionCount].name = objects[index].name;
-		++regionCount;
-	}
-	block = SDLBackend_DOSMemoryBlock(&capacity, &segment);
-	if (block != NULL)
-	{
-		regions[regionCount].start = (uintptr_t) block;
-		regions[regionCount].size = capacity;
-		regions[regionCount].linear = (uint32_t) segment << 4;
 		++regionCount;
 	}
 	qsort(regions, regionCount, sizeof(MapDumpRegion), CompareRegions);
@@ -944,8 +916,8 @@ static const MapDumpRegion *Locate(uintptr_t address)
 	return &regions[low - 1];
 }
 
-/* A pointer slot's place, written to the hash: the object or block it is
- * in, else the function it is, else "elsewhere" (a static the headers don't
+/* A pointer slot's place, written to the hash: the object or heap block it
+ * is in, else the function it is, else "elsewhere" (a static the headers don't
  * name, a literal, a buffer on the stack). NULL is its zero bytes. */
 static void HashPlace(Sha256 *hash, uintptr_t word, int *taken)
 {
@@ -953,15 +925,19 @@ static void HashPlace(Sha256 *hash, uintptr_t word, int *taken)
 	char place[96];
 	int length = 0;
 	size_t index;
+	uint32 number;
+	uint32 offset;
 
 	*taken = 0;
 	if (region != NULL)
 	{
-		size_t offset = (size_t) (word - region->start);
-
-		length = region->name != NULL
-			? snprintf(place, sizeof(place), "\x01%s+%zx\x01", region->name, offset)
-			: snprintf(place, sizeof(place), "\x01dos:%lx\x01", (unsigned long) (region->linear + offset));
+		length = snprintf(place, sizeof(place), "\x01%s+%zx\x01", region->name,
+			(size_t) (word - region->start));
+	}
+	else if (word != 0 && Heap_Find(word, &number, &offset))
+	{
+		length = snprintf(place, sizeof(place), "\x01heap:%lu+%lx\x01",
+			(unsigned long) number, (unsigned long) offset);
 	}
 	else if (word != 0)
 	{

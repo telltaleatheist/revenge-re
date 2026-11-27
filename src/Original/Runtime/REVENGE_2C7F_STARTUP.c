@@ -35,9 +35,6 @@ void TranslateCharactersInPlace(
 	const char *sourceAlphabet,
 	const char *replacementAlphabet);
 word16 WaitForDismissInputOrTimeout(word16 timeoutRetraces);
-byte *AllocateFarMemory(int32 byteCount);
-byte *AllocateParagraphAlignedMemory(uint32 byteCount);
-void FreeFarMemory(byte *allocation);
 void LoadVideoPalette(const byte *paletteData);
 void InitializeMouseSupport(void);
 void ShutdownMouseSupport(void);
@@ -97,7 +94,6 @@ void InitializeGame(void)
 	byte *font8;
 	byte *primaryScreenBuffer;
 	byte *secondaryBuffer;
-	word16 availableMemoryKiB;
 	word16 startupChecksPassed;
 	char versionText[0x0A];
 
@@ -127,25 +123,14 @@ void InitializeGame(void)
 	DOS_PrintString("\r\n");
 	DOS_PrintString("\r\n");
 
-	// The runtime helper returns a byte count; dividing by 0400h gives KiB.
-	availableMemoryKiB = (word16) (GetAvailableHeapBytes() >> 0x0A);
+	/* The heap's free bytes (2C7F:012A-0136) and the check that 110h KB are
+	 * free (0143-0157, its text DS:3A53) went with the Borland heap: the
+	 * game's peak is 261,360 bytes and the host has far more
+	 * (revenge/heap.h). The Tandy's check (0159-0173) went with the Tandy;
+	 * the rebuild is VGA only. With neither, the failed check's text
+	 * (DS:3C70) and its key (0174-0189) went too: a failed media
+	 * configuration skips them (013F-0141). */
 	startupChecksPassed = LoadMediaConfiguration();
-	if (startupChecksPassed != FALSE)
-	{
-		if (availableMemoryKiB < 0x0110)
-		{
-			DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_3)); // TEXT DS:3A53
-			startupChecksPassed = FALSE;
-		}
-		/* The Tandy's memory check (2C7F:0159-0173) went with the Tandy;
-		 * the rebuild is VGA only. */
-		if (startupChecksPassed == FALSE)
-		{
-			DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_5)); // TEXT DS:3C70
-			FlushPendingInput();
-			ReadTranslatedKeypress();
-		}
-	}
 	if (startupChecksPassed == FALSE)
 		return;
 
@@ -165,7 +150,7 @@ void InitializeGame(void)
 
 	SetVideoModeForAdapter(VideoAdapterType);
 	SetActiveFontResource(Font8Resource);
-	primaryScreenBuffer = AllocateParagraphAlignedMemory(0x0001FD00);
+	primaryScreenBuffer = Heap_Allocate(0x0001FD00, "2C7F:0203");
 	PrimaryScreenBuffer = primaryScreenBuffer;
 	secondaryBuffer = primaryScreenBuffer + 0x00010000UL;
 	SecondaryScreenBuffer = secondaryBuffer;
@@ -195,7 +180,6 @@ void InitializeGame(void)
 
 // 2C7F:02E3: void ShutdownGame(void)
 // Called from:
-//      PrintAllocationErrorAndExit
 //      ShowInvalidSaveVersionDialog
 //      main
 //      ShutdownAndExit
@@ -276,7 +260,6 @@ word16 ServiceMusicAndCheckKeyboardInput(void)
 
 // 2C7F:045C: Register int16 ReadTranslatedKeypress(void)
 // Called from:
-//      PrintAllocationErrorAndExit
 //      WaitForDismissInputOrTimeout
 //      WaitForKeyboardOrMouseInput
 //      FlushPendingInput
@@ -316,7 +299,7 @@ word16 LoadMediaConfiguration(void)
 		/* One byte more than the text: the loop below reads a byte past
 		 * the end before it stops (the original reads whatever follows the
 		 * buffer and drops it). */
-		byte *configBuffer = AllocateFarMemory((uint32) configTextLength + 0x01);
+		byte *configBuffer = Heap_Allocate((uint32) configTextLength + 0x01, "2C7F:04F1");
 		word16 bytesRemaining = configTextLength;
 		byte *readCursor = configBuffer;
 
@@ -376,7 +359,7 @@ word16 LoadMediaConfiguration(void)
 				}
 			}
 		}
-		FreeFarMemory(configBuffer);
+		Heap_Free(configBuffer);
 	}
 	ResourceRuntimeInitialized = 0x01;
 	SecondaryResourceDriveEnabled = FALSE;

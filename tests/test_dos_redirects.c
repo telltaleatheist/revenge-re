@@ -65,10 +65,6 @@ static void TestSystemServices(void)
 
     FakeBackend_Reset();
 
-    assert(DOS_ResizeMemoryBlock(0x3A6A, 0x0200) == 0xFFFF);
-    assert(fakeBackend.firstWord == 0x3A6A);
-    assert(fakeBackend.secondWord == 0x0200);
-
     memset(&date, 0, sizeof(date));
     memset(&timeValue, 0, sizeof(timeValue));
     DOS_GetSystemDate(&date);

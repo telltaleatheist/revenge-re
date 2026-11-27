@@ -121,17 +121,17 @@ void DecodeWestwoodPackedResource(
 
 	case 0x01:
 	{
-		byte *dictionary = AllocateParagraphAlignedMemory(0x3C00);
+		byte *dictionary = Heap_Allocate(0x3C00, "21E7:0163");
 		DecodeWestwoodLzw12(compressedBlock, destination, dictionary);
-		FreeParagraphAlignedMemory(dictionary);
+		Heap_Free(dictionary);
 		break;
 	}
 
 	case 0x02:
 	{
-		byte *dictionary = AllocateParagraphAlignedMemory(0xBD00);
+		byte *dictionary = Heap_Allocate(0xBD00, "21E7:01B8");
 		DecodeWestwoodLzw14(compressedBlock, destination, dictionary);
-		FreeParagraphAlignedMemory(dictionary);
+		Heap_Free(dictionary);
 		break;
 	}
 

@@ -44,7 +44,7 @@ void RebuildTacticalVideoResources(
 	 * the EGA. */
 
 	oldTileStrip = TacticalTileStrip;
-	FreeFarMemory(oldTileStrip);
+	Heap_Free(oldTileStrip);
 	newTileStrip = CaptureVideoTileStrip(
 		primaryScreenBuffer, 0x0000, 0x0000, 0x0008);
 	TacticalTileStrip = newTileStrip;

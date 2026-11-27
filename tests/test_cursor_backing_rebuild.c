@@ -12,9 +12,9 @@ static word16 capturedSourcePixelY;
 static word16 capturedWidthTiles;
 static word16 capturedHeightPixels;
 
-void FreeFarMemory(byte *allocation)
+void Heap_Free(void *block)
 {
-	freedBacking = allocation;
+	freedBacking = (byte *) block;
 }
 
 byte *BuildDisplayBackingBuffer(

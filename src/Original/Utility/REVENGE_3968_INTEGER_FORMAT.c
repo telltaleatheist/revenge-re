@@ -83,7 +83,6 @@ char *IntegerToString(
 // 3968:00DA: Register far pointer LongToString(
 //     Stack int32 value, Stack far pointer destination, Stack uint16 radix)
 // Called from:
-//      PrintAllocationErrorAndExit
 char *LongToString(
 	int32 value,
 	char *destination,

@@ -7,16 +7,9 @@
 #include "REVENGE.h"
 #include "revenge/story_text.h"
 
-word16 MemoryBlockSegment;
 byte VideoPathUnavailable;
-word16 MinimumProgramBreakOffset;
-word16 MinimumProgramBreakSegment;
-word16 CurrentProgramBreakOffset;
 word16 MapWidth;
 word16 MapHeight;
-word16 CurrentProgramBreakSegment;
-word16 MaximumProgramBreakOffset;
-word16 MaximumProgramBreakSegment;
 word16 SavedBIOSVideoMode;
 word16 GameInitialized;
 word16 StartupResourceState; /* DS:5FCE: 0 in the image; startup sets it */

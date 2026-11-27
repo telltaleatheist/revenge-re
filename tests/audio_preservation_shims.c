@@ -8,15 +8,16 @@
 
 #include "../src/Original/REVENGE.h"
 
-byte *AllocateFarMemory(int32 byteCount)
+void *Heap_Allocate(uint32 byteCount, const char *caller)
 {
 	(void) byteCount;
+	(void) caller;
 	return (byte *) 0;
 }
 
-void FreeFarMemory(byte *allocation)
+void Heap_Free(void *block)
 {
-	(void) allocation;
+	(void) block;
 }
 
 word16 ReadWholeResourceFile(

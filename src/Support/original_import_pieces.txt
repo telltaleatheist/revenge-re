@@ -96,12 +96,6 @@ bytes                MIDIParser                              62B0 0A
 bytes                PilotRosterRecordPastEnd                2148 04
 
 # Single texts
-text                 print_allocation_error_and_exit.0       232B
-text                 print_allocation_error_and_exit.1       233F
-text                 print_allocation_error_and_exit.2       2349
-text                 print_allocation_error_and_exit.3       234F
-text                 allocate_far_memory.0                   235E
-text                 allocate_far_memory.1                   22DC
 text                 invalid_save_version                    2372
 text                 mission_map_header                      2489
 text                 exit_to_dos_prompt                      2562
@@ -153,15 +147,12 @@ text                 training_unit_selection_prompt          33F1
 text                 initialize_game.0                       38E4
 text                 initialize_game.1                       3925
 text                 initialize_game.2                       392F
-text                 initialize_game.4                       3A12
-text                 initialize_game.3                       3A53
 text                 config_option_names.0                   3A91
 text                 config_option_names.1                   3AA1
 text                 config_option_names.2                   3AB1
 text                 config_option_names.3                   3AC1
 text                 media_configuration_error               3C05
 text                 initialize_game.6                       3C41
-text                 initialize_game.5                       3C70
 text                 unit_status_rating_labels               40EB
 text                 unit_status_heat_detail_label           4105
 text                 unit_status_damage_label                410C

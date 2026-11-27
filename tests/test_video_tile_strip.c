@@ -17,8 +17,9 @@ static int32 requestedAllocationSize;
 static CaptureCall captureCalls[0x08];
 static word16 captureCallCount;
 
-byte *AllocateFarMemory(int32 byteCount)
+void *Heap_Allocate(uint32 byteCount, const char *caller)
 {
+	(void) caller;
 	requestedAllocationSize = byteCount;
 	return allocation;
 }
