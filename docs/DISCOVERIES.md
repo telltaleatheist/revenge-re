@@ -57,3 +57,11 @@ page on what the original does.
   with overburn, where a pilot's limit is 8 to 20. They fire only while their
   heat is 0 (or 2), so once they have fired they wait to cool right down
   before firing again. Kept; `tools/trace/README.md` (finding 9).
+
+- **Stage 7 can wait for ever.** Around 07:40 the lance leader takes an
+  engine hit and can no longer move. The other two hold formation on it, and
+  the last enemy, far across the map, never comes, so the battle never ends.
+  Send one of the other two after it (F2 or F3, then Move), but only once the
+  nearer enemy is down; sent earlier, it leaves the leader alone, the enemy
+  destroys it, and the battle is lost. The original does exactly this
+  (tools/trace/scripts/stage_07.keys, checked against its capture to 07:55).

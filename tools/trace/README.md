@@ -83,6 +83,7 @@ stopped. (Every item also waits 4 polls, well inside one step.)
 | `stage_05` | campaign set; from the original's save after stage 4: the story, the first of the two plans chosen (through the forest), its battle won hands-off at 07:14; the transmission after it, Save & Continue to slot 1 |
 | `stage_06_lost` | campaign set; from the original's save after stage 5: the Dragon battle (stage 6) lost, the lance sent at the Dragon at once and its leader lost at 07:27; the defeat, the menu after it, slot 1 loaded again |
 | `stage_06_made` | campaign set; from the original's save after stage 5: the Dragon battle played to 07:33 (the lance sent east after the ally's loss), then the Dragon ended by `destroy:20`; the scene's own win, the transmission, Save & Continue to slot 1. Made, not played: no original trace can match it |
+| `stage_07` | campaign set; from stage_06_made's save: the eighth battle (stage 7), its five stops answered; hands-off it stalls (the leader immobile from 07:40, the last enemy far off), so at 07:41 the second unit is sent at the last enemy and the battle is won at 07:43; the transmission, Save & Continue to slot 1 |
 
 ## Trace records (`traces/*.jsonl`)
 
@@ -186,14 +187,16 @@ Continue, and the SAVEGAME.DAT the original writes there (under DOSBox-X,
 never the port's) starts the next script. Each link's save is named by its own
 variable: `REVENGE_SAVE_STAGE_04` for the one stages_02_04 ends with, which
 stage_05 starts from, `REVENGE_SAVE_STAGE_05` for stage_05's, which
-stage 6's scripts start from, `REVENGE_SAVE_STAGE_06` for stage_06_made's.
+stage 6's scripts start from, `REVENGE_SAVE_STAGE_06` for stage_06_made's,
+which stage_07 starts from, `REVENGE_SAVE_STAGE_07` for stage_07's.
 
 From stage 7 on, the chain starts from a made save, loaded alike by both
 sides: no script wins stage 6 by play, so stage_06_made ends it with the
 harness's `destroy:20` and lets the scene's own ending write the save. The
 comparison needs only that both sides load the same file, and they do: stage 7
-from it matches the original at every state line until timing apart from the
-game's own (the time a message's wait takes) leads them apart.
+from it matches the original at every state line, the stall included (findings
+10 and 11 settled the two places they parted), and stage_07 wins it by play, so
+the chain goes on from the original's own save again.
 
 To re-record a golden after an intended change, record over it and say in the
 commit what moved and why.
@@ -229,7 +232,11 @@ A battle message's wait polls the keyboard, and each of the harness's polls
 costs a millisecond of its clock, where one of REVSNAP's costs the original
 almost nothing. A script answers a battle message after `still:200`, not
 `still:2000`, so the wait doesn't run down the step's update countdown
-(finding 10).
+(finding 10). The other way round, while a battle runs the original polls
+once a frame (about 33 ms of its time) and the harness once a millisecond:
+an `idle:N` there costs the original some thirty times the harness's time, so
+keys given to a running battle go back to back (stage_07's F2 and Return),
+and idles wait until a menu or message has stopped the battle.
 
 ## The original (`tools/capture/`)
 

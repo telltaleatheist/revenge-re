@@ -1,0 +1,44 @@
+# The eighth battle (stage 7) won by play, from the made save after stage 6
+# (stage_06_made): both sides load that file alike. Battle messages are
+# answered after still:200 (finding 10). Hands-off, the battle stalls: by
+# 07:40 the lance's leader stands with its engine hit and can't move, the
+# two others hold formation on it, and the last enemy (unit 19) waits across
+# the map at 5,65; nothing moves or fires again. So at a quiet step past
+# 07:41 the second unit (F2) is ordered to unit 19, the third follows it,
+# and the two win at 07:43. The transmission after it, then Save & Continue
+# to slot 1: the save is REVENGE_SAVE_STAGE_07.
+# set: campaign
+# start-save: REVENGE_SAVE_STAGE_06
+# Load Game, slot 1; the battle running.
+idle:1000 Return idle:50 Right idle:50 Return idle:300
+Return steps:2 @snap:stage7_battle
+# The battle's stops: messages at 07:34:33, :57 and 07:35:42, a unit's loss
+# reported at 07:34:44 and 07:36:54 (each prompt continued).
+still:200 @snap:stage7_message1 Return idle:300
+still:200 @snap:stage7_message2 Return idle:300
+still:200 @snap:stage7_message3 Return idle:300
+still:200 @snap:stage7_message4 Return idle:300
+still:200 @snap:stage7_message5 Return idle:300
+# 200 steps on (07:41): the last near enemy gone, the leader unable to move.
+steps:200 @snap:stage7_quiet
+# The second unit's Commands (F2, Return back to back: an idle in a running
+# battle costs the original a frame a poll, the harness a millisecond), then
+# Move: the cursor 35 cells down and left, then 39 left, at unit 19; the order
+# given (Done). The battle waits while the menu is up.
+F2 Return idle:300 Return idle:300
+End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20 End idle:20
+Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20 Left idle:20
+idle:100 @snap:stage7_cursor Return idle:300 Return idle:300 @snap:stage7_commands
+Return steps:1 @snap:stage7_ordered
+# The walk and the fight: unit 19 destroyed, the battle won (07:43).
+still:200 @snap:stage7_won Return idle:300
+# The transmission after it, each page answered.
+still:2000 @snap:stage7_after1 Return idle:300
+still:2000 @snap:stage7_after2 Return idle:300
+# The menu over it: Save & Continue to slot 1, as stage_05 does.
+still:2000 @snap:stage7_menu
+Down idle:50 Down idle:50 @snap:stage7_save
+Return idle:300 @snap:stage7_slots
+Return idle:300 @snap:stage7_save1 Return idle:300 @snap:stage7_save2
+# Saved; the story goes on to stage 8.
+Return idle:600 @snap:stage7_saved
