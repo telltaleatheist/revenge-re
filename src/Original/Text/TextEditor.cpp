@@ -94,19 +94,19 @@ uint16_t EditTextField(
             uint8_t characterClass;
 
             characterClass = CharacterClassTable[(uint8_t) keyCode];
-            if ((allowedCharacterClasses & 0x02) != 0x00 &&
-                ((characterClass & 0x0C) != 0x00 || keyCode == KEY_SPACE))
+            if ((allowedCharacterClasses & TEXT_FIELD_ALLOW_LETTERS) != 0x00 &&
+                ((characterClass & CHARACTER_CLASS_LETTER) != 0x00 || keyCode == KEY_SPACE))
             {
                 keyCode &= 0x007F;
                 acceptedCharacter = TRUE;
             }
-            if ((allowedCharacterClasses & 0x01) != 0x00 &&
+            if ((allowedCharacterClasses & TEXT_FIELD_ALLOW_DIGITS) != 0x00 &&
                 acceptedCharacter == FALSE &&
-                (characterClass & 0x02) != 0x00)
+                (characterClass & CHARACTER_CLASS_DIGIT) != 0x00)
             {
                 acceptedCharacter = TRUE;
             }
-            if ((allowedCharacterClasses & 0x04) != 0x00 &&
+            if ((allowedCharacterClasses & TEXT_FIELD_ALLOW_PUNCTUATION) != 0x00 &&
                 acceptedCharacter == FALSE)
             {
                 uint16_t punctuationIndex;

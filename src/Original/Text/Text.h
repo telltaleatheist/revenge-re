@@ -7,6 +7,11 @@
 void ShowScenarioMessage(uint16_t messageIndex);
 void ShowMissionFollowupMessage(uint16_t messageIndex);
 void UpdateTextEntryCursorBlink(void);
+/* EditTextField's allowedCharacterClasses: digits, letters and the space,
+ * and the punctuation it lists. */
+inline constexpr uint8_t TEXT_FIELD_ALLOW_DIGITS = 0x01;
+inline constexpr uint8_t TEXT_FIELD_ALLOW_LETTERS = 0x02;
+inline constexpr uint8_t TEXT_FIELD_ALLOW_PUNCTUATION = 0x04;
 uint16_t EditTextField(
     uint16_t maximumLength,
     const char *initialText,

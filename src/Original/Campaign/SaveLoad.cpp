@@ -602,7 +602,7 @@ uint16_t RenameSaveSlot(int16_t slotIndex)
     ActiveTextCursorRow = slotIndex;
     do
     {
-        wasRenamed = EditTextField(0x0014, slot->name, 0x07);
+        wasRenamed = EditTextField(0x0014, slot->name, TEXT_FIELD_ALLOW_DIGITS | TEXT_FIELD_ALLOW_LETTERS | TEXT_FIELD_ALLOW_PUNCTUATION);
     } while (wasRenamed == FALSE);
     strcpy(slot->name, (const char *) TextEntryBuffer);
     ActiveTextBackgroundColor = previousBackground;

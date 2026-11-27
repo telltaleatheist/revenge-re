@@ -19,7 +19,8 @@ enum FormattedTextControl
     FORMATTED_TEXT_SET_COLUMN = 0x09,
     FORMATTED_TEXT_NEWLINE = 0x0D,
     FORMATTED_TEXT_PAD_TO_COLUMN = 0x13,
-    FORMATTED_TEXT_SPACE = 0x20
+    FORMATTED_TEXT_SPACE = 0x20,
+    FORMATTED_TEXT_LINE_CAPACITY = 0x52
 };
 
 // 35CE:000A: void RenderFormattedText(Stack far pointer formattedText)
@@ -40,8 +41,8 @@ void RenderFormattedText(const char *formattedText)
     // Verified against ASM 35CE:000A-0530. Render the encoded NUL-terminated
     // text stream, including the original two-byte dictionary expansion,
     // wrapping, layout controls, color controls and mutable render buffers.
-    char composedLine[0x52];
-    char tokenBuffer[0x52];
+    char composedLine[FORMATTED_TEXT_LINE_CAPACITY];
+    char tokenBuffer[FORMATTED_TEXT_LINE_CAPACITY];
     // V: 35CE:0031 explicitly writes this terminator; Reko omitted it.
     composedLine[0x00] = '\0';
     uint16_t allowLeadingSpace = 0x01;
@@ -175,7 +176,7 @@ void RenderFormattedText(const char *formattedText)
                     (int16_t) remainingPaddingColumns;
                     --remainingPaddingColumns)
                 {
-                    tokenBuffer[tokenLength] = 0x20;
+                    tokenBuffer[tokenLength] = FORMATTED_TEXT_SPACE;
                     tokenLength = (uint16_t) tokenLength + 0x01;
                 }
                 tokenBuffer[tokenLength] = 0x00;
@@ -194,7 +195,7 @@ void RenderFormattedText(const char *formattedText)
                         ActiveTextWindowWidthTiles << 0x03 &&
                     (tokenLength + lineColumn != 0x00 || allowLeadingSpace != 0x00))
                 {
-                    tokenBuffer[tokenLength] = 0x20;
+                    tokenBuffer[tokenLength] = FORMATTED_TEXT_SPACE;
                     tokenLength = (uint16_t) tokenLength + 0x01;
                 }
                 tokenBuffer[tokenLength] = 0x00;
@@ -207,7 +208,7 @@ void RenderFormattedText(const char *formattedText)
                         ActiveTextWindowWidthTiles << 0x03 &&
                     tokenLength != 0x00)
                 {
-                    tokenBuffer[tokenLength] = 0x20;
+                    tokenBuffer[tokenLength] = FORMATTED_TEXT_SPACE;
                     tokenLength = (uint16_t) tokenLength + 0x01;
                 }
                 tokenBuffer[tokenLength] = 0x00;
