@@ -302,6 +302,8 @@ static const ImageRow rows[] =
 	DS(CampaignClockState, 0x8337),
 	DS(TacticalBattleResult, 0x833C),
 	DS(TacticalSelectedUnitIndex, 0x03DC),
+	DS(TacticalOverviewMapMode, 0x03E5),
+	DS(TacticalScenarioLanceEnabled, 0x03EA),
 	DS(TacticalOverviewActive, 0x8104),
 	DS(TacticalUpdateDelayTicks, 0x5923),
 	DS(TacticalCursorMapX, 0xA96D),

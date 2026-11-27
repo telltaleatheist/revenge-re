@@ -15,7 +15,9 @@ place TrainingScenarioCompletionFlags 3A6A:00A0 6 table
 place VideoPaletteData 3A6A:00AC 310 import
 place TacticalSelectedUnitIndex 3A6A:03DC 2 table
 place WeaponAIHeatLimitByExperience 3A6A:03E0 5 run
+place TacticalOverviewMapMode 3A6A:03E5 2 procedure
 place SensorDamageProximityRangeTable 3A6A:03E7 3 run
+place TacticalScenarioLanceEnabled 3A6A:03EA 3 procedure
 place SpriteFacingByDirection 3A6A:042D 8 run
 place AmmoCapacityMultiplierTable 3A6A:058E 1C run
 place CompressedTextFirstByteTable 3A6A:05AA 10 import
@@ -639,7 +641,6 @@ unplaced TacticalNoUnitStatusText 1C zero at every snap
 unplaced TacticalOverburnTextTable 8 host pointer
 unplaced TacticalOverviewClockNoticeActive 2 zero at every snap
 unplaced TacticalOverviewMapBuffer 4 host pointer
-unplaced TacticalOverviewMapMode 2 zero at every snap
 unplaced TacticalOverviewMarkerX 18 zero at every snap
 unplaced TacticalOverviewMarkerY 18 zero at every snap
 unplaced TacticalOverviewNoticeChance 1 zero at every snap
@@ -651,7 +652,6 @@ unplaced TacticalPaddingSpace 2 zero at every snap
 unplaced TacticalProjectileCount 2 zero at every snap
 unplaced TacticalProjectileRecords 460 zero at every snap
 unplaced TacticalRuntimeState 2 zero at every snap
-unplaced TacticalScenarioLanceEnabled 3 zero at every snap
 unplaced TacticalSlotSpriteState 18 its bytes match nowhere (pointers or values differ)
 unplaced TacticalSpriteClipBottomPixel 2 its bytes match nowhere (pointers or values differ)
 unplaced TacticalSpriteClipLeftTile 2 its bytes match nowhere (pointers or values differ)

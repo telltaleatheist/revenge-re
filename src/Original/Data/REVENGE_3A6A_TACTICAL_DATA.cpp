@@ -259,7 +259,9 @@ word16 SelectedUnitEquipmentLocation;
 RevengeUnitRecord EstimatedUnitRecord;
 RevengeTacticalCombatRatings UnitCombatRatings[0x1A];
 byte UnitLanceFormationState[0x18];
-byte TacticalScenarioLanceEnabled[0x03];
+/* DS:03EA starts as the image has it, lances 1 and 2 on, until a battle's
+ * scene header sets it (1A1F:1C48). */
+byte TacticalScenarioLanceEnabled[0x03] = { 0x01, 0x01, 0x00 };
 /* Filled at start from data/rules/combat.json (revenge/rules.h). */
 byte SensorDamageProximityRangeTable[0x03];
 byte LanceFormationProfile[0x06];
@@ -364,7 +366,9 @@ RevengeTacticalProjectileRecord
 word16 TacticalOverviewDisplayMode;
 word16 LrmShipmentLoaded;
 word16 SrmShipmentLoaded;
-word16 TacticalOverviewMapMode;
+/* DS:03E5 starts at 0001h, as the image has it, until a battle's scene
+ * header sets it (1A1F:1C48). */
+word16 TacticalOverviewMapMode = 0x0001;
 word16 NarrationSourceUnit;
 word16 LastAttackingUnitIndex;
 word16 PendingMouseButtonEvent;

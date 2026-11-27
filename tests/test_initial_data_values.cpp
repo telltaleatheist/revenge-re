@@ -12,7 +12,9 @@
 /* Objects the image starts with values, as the game's data segment holds
  * them when DOS has loaded it: the pilots' records (DS:1D4C, 59 of 4 bytes:
  * identity, experience, gunnery, availability) and DS:1B8C-1B8E (the random
- * pilot pool's count, three copies) come from the player's copy; the selected unit (DS:03DC) starts at FFFFh, no unit. The
+ * pilot pool's count, three copies) come from the player's copy; the selected unit (DS:03DC) starts at FFFFh, no unit;
+ * the overview map's mode (DS:03E5) at 0001h and the battle's lances
+ * (DS:03EA) at 1, 1, 0, until a battle's scene header sets them. The
  * screens' dismiss timeout (DS:240F) and the MIDI byte parser's state
  * (DS:62B0-62B9, its first state the one for data before any status) come
  * from the player's copy too. */
@@ -29,6 +31,9 @@ int main(void)
 	assert(memcmp(&RandomPilotPoolCounts, Image(0x1B8C), sizeof(RandomPilotPoolCounts)) == 0);
 	assert(TacticalSelectedUnitIndex == 0xFFFF);
 	assert(TacticalSelectedUnitIndex == (word16) (Image(0x03DC)[0] | Image(0x03DC)[1] << 8));
+	assert(TacticalOverviewMapMode == 0x0001);
+	assert(TacticalOverviewMapMode == (word16) (Image(0x03E5)[0] | Image(0x03E5)[1] << 8));
+	assert(memcmp(TacticalScenarioLanceEnabled, Image(0x03EA), sizeof(TacticalScenarioLanceEnabled)) == 0);
 	assert(PresentationDismissTimeout == (word16) (Image(0x240F)[0] | Image(0x240F)[1] << 8));
 	assert(sizeof(MIDIParser) == 0x0A);
 	assert(memcmp(&MIDIParser, Image(0x62B0), sizeof(MIDIParser)) == 0);

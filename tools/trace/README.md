@@ -378,3 +378,11 @@ What the comparison found in the port, and how each was fixed:
    (UnitActionMaskByExperiencePastEnd, EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT;
    tactical.original_experience_mask). None of those words changes in any
    capture.
+8. **Two more initial values the image has.** The overview map's mode
+   (DS:03E5) starts at 0001h and the battle's lances (DS:03EA) at 1, 1, 0 in
+   the image; the port started both at zero, so the snaps before a stage's
+   battle differed from the original's (stage_05's first seven against its
+   capture). A battle's scene header sets all four bytes when the battle
+   loads (1A1F:1C48), before anything reads them, so play was the same and
+   the overview map looks the same. They start as the image has them now
+   (import.original_initial_data_image, import.original_initial_data_values).
