@@ -350,7 +350,6 @@ extern uint16_t TacticalCursorMapY;
 extern uint16_t LastOverviewNoticeHour;
 extern uint16_t TacticalOverviewRuntimeState;
 extern uint8_t PrimaryLanceResourceCode;
-#define SceneInstructionBase SceneInstructionBaseOffset
 extern uint8_t UnitEditorAllegiance;
 extern uint16_t UnitEditorScenarioGroupCount;
 extern uint16_t UnitEditorScenarioCardCount;
@@ -401,7 +400,6 @@ extern const char *DurabilityDescriptionTable[0x04];
 extern const char *ConditionDescriptionTable[0x05];
 extern const char *FriendlyEquipmentDescriptionTable[0x02];
 extern const char *EnemyAssessmentTextTable[0x12];
-#define NarrationMessageData (LoadedSceneFile.raw)
 extern uint8_t UnitEnemyVisible[0x18];
 extern RevengeUnitSlot UnitTacticalTarget[0x19];
 extern uint16_t EnemyCycleUnitIndex;
