@@ -2,8 +2,8 @@
 // PackedResources.cpp
 // Maintained annotation of the packed-resource loading leaf routines.
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Resources/Resources.h"
+#include "revenge/heap.h"
 
 #pragma pack(push, 1)
 typedef struct WestwoodCompressionHeader

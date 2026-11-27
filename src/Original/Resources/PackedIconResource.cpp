@@ -2,7 +2,7 @@
 // PackedIconResource.cpp
 // Length-prefixed tactical graphics resource loader.
 
-#include "REVENGE.h"
+#include "Resources/Resources.h"
 
 // 34B3:0008
 void LoadPackedIconResource(

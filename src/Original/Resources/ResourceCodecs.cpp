@@ -4,8 +4,8 @@
 // REVENGE.EXE segment 0800.
 
 // Packed-resource codecs and DOS runtime edges from segment 0800.
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/ResourceData.h"
+#include "Resources/Resources.h"
 #include "revenge/platform_backend.h"
 #include "revenge/video.h"
 
@@ -113,7 +113,6 @@ void DecodeRLEBlock(
     }
 }
 
-
 /* CS:0C93-0C99. The stream's segment (CS:0C97) is its pointer: the
  * caller gives a segment alone (21E7:00F4), so the stream starts at offset
  * 0 and a code's offset is counted from there, in 16 bits. */
@@ -134,7 +133,6 @@ uint16_t ReadWestwoodLzw12Code(
 uint16_t ReadWestwoodLzw14Code(
     uint16_t sourceOffset,
     uint16_t *nextSourceOffset);
-
 
 uint32_t PrepareRLEOutputRun(
     uint32_t remainingOutputBytes,
