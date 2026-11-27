@@ -310,7 +310,7 @@ def render(img, edition):
         data = piece_bytes(img, kind, offset, count, stride)
         if kind in ("bytes", "media"):
             length, target = str(count), f"&{name}"
-            checks.append(f"_Static_assert(sizeof({name}) == 0x{count:X}, \"{name} is the piece's size\");")
+            checks.append(f"static_assert(sizeof({name}) == 0x{count:X}, \"{name} is the piece's size\");")
         else:
             length, target = "0", "NULL"     # a text: the story file places it
         lines.append(f'\t{{ "{name}", {KINDS[kind]}, 0x{offset:04X}, 0x{count:X}, {stride}, {length}, '
@@ -416,12 +416,12 @@ def render_slots(img, edition):
     lines += ["};", ""]
     for kind, name, offset, count, stride in rows:
         if kind in ("text_table", "expanded_text_table", "mutable_text_table"):
-            lines.append(f"_Static_assert(sizeof({name}) / sizeof({name}[0]) == 0x{count:X}, "
+            lines.append(f"static_assert(sizeof({name}) / sizeof({name}[0]) == 0x{count:X}, "
                          f"\"{name} has the piece's entries\");")
         elif kind == "mutable_pointed_text":
             text = next(t for t in story_texts() if t["name"] == name)
             need = len(story_source(img, text)[2]) + 1
-            lines.append(f"_Static_assert(sizeof({name}) >= 0x{need:X}, \"{name} holds its text\");")
+            lines.append(f"static_assert(sizeof({name}) >= 0x{need:X}, \"{name} holds its text\");")
     return "\n".join(lines) + "\n"
 
 
@@ -480,7 +480,7 @@ def render_rules(image):
         lines.append(f'\t{{ "{ident}", &{name}, sizeof({name}), 0x{segment:04X}, 0x{offset:04X}, '
                      f'0x{length:X}, "{digest}" }},')
     lines += ["};", "const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);", ""]
-    lines += [f'_Static_assert(sizeof({name}) == 0x{length:X}, "{ident} is the original\'s size");'
+    lines += [f'static_assert(sizeof({name}) == 0x{length:X}, "{ident} is the original\'s size");'
               for ident, name, _, _, length, _ in rows]
     return "\n".join(lines) + "\n"
 
