@@ -66,7 +66,6 @@
     <ClCompile Include="src\Original\Input\REVENGE_35AB_UI_REGION_SETUP.c" />
     <ClCompile Include="src\Original\UI\REVENGE_35CA_UI_REGION_HIGHLIGHT.c" />
     <ClCompile Include="src\Original\Text\REVENGE_35CE_FORMATTED_TEXT.c" />
-    <ClCompile Include="src\Original\Audio\REVENGE_3717_PC_SPEAKER_CONVERSION.c" />
     <ClCompile Include="src\Original\IO\REVENGE_39D9_SYSTEM_TIME.c" />
     <ClCompile Include="src\Original\IO\REVENGE_39E3_INTERRUPT_VECTOR.c" />
     <ClCompile Include="src\Original\REVENGE_4184_TACTICAL_GRAPHICS_DATA.c" />

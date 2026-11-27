@@ -26,7 +26,8 @@ over the executable.
 
 ## Procedure identity
 
-Every executable procedure retains:
+Every executable procedure the rebuild keeps (all but those `Replaced`, below)
+retains:
 
 - one stable `SEG:OFFSET` key;
 - one reconstructed C procedure boundary;
@@ -76,6 +77,14 @@ The same standard applies, except that a lowest-level DOS, BIOS, interrupt,
 direct-hardware or host-representation operation is redirected to the approved
 Support/SDL boundary. The ledger must name the redirect. The original wrapper,
 inputs, outputs, control flow and game-visible behavior remain present.
+
+### `Replaced`
+
+The rebuild took the procedure out with the old hardware layer it served (a
+sound card's driver, the speaker's bit patterns), so it has no C procedure
+boundary. Its rows keep the address, name and evidence and name no C file;
+`PlatformRedirect` says what does the work now, and the caller's comment cites
+the call it no longer makes.
 
 ## Source boundaries
 

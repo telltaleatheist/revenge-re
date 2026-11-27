@@ -37,9 +37,6 @@ void AudioMix_SpeakerDivisor(uint16_t divisor);
 void AudioMix_SampleRate(uint32_t sourceRateHz);
 /* One unsigned 8-bit sample, played after those queued. */
 void AudioMix_QueueUnsigned8(uint8_t sample);
-/* A 1-bit stream (least significant bit first, whole words only), a bit per
- * source sample, played after what is queued. */
-void AudioMix_QueueBits(const uint8_t *data, uint16_t byteCount);
 
 /* The music (src/Audio/Music.h): the soundfont's bytes and the instrument
  * table's text. 1 if both load; else 0, with why in `error`. Until then, and

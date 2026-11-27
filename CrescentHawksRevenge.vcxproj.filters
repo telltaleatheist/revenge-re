@@ -31,7 +31,6 @@
     <ClCompile Include="src\Original\Input\REVENGE_35AB_UI_REGION_SETUP.c"><Filter>Original - Verified</Filter></ClCompile>
     <ClCompile Include="src\Original\UI\REVENGE_35CA_UI_REGION_HIGHLIGHT.c"><Filter>Original - Verified</Filter></ClCompile>
     <ClCompile Include="src\Original\Text\REVENGE_35CE_FORMATTED_TEXT.c"><Filter>Original - Verified</Filter></ClCompile>
-    <ClCompile Include="src\Original\Audio\REVENGE_3717_PC_SPEAKER_CONVERSION.c"><Filter>Original - Verified</Filter></ClCompile>
     <ClCompile Include="src\Original\IO\REVENGE_39D9_SYSTEM_TIME.c"><Filter>Original - Verified</Filter></ClCompile>
     <ClCompile Include="src\Original\IO\REVENGE_39E3_INTERRUPT_VECTOR.c"><Filter>Original - Verified</Filter></ClCompile>
     <ClCompile Include="src\Original\REVENGE_4184_TACTICAL_GRAPHICS_DATA.c"><Filter>Original - Verified</Filter></ClCompile>

@@ -66,8 +66,6 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Resources/REVENGE_3390_RESOURCE_STREAM.c
     src/Original/Graphics/REVENGE_3471_RECTANGLE_FILL.c
     src/Original/Text/REVENGE_3477_FONT.c
-    src/Original/Audio/REVENGE_373D_PC_SPEAKER_OUTPUT.c
-    src/Original/Audio/REVENGE_3717_PC_SPEAKER_CONVERSION.c
 	src/Original/Audio/REVENGE_375F_AUDIO_HARDWARE.c
 	src/Original/Audio/REVENGE_375F_DIGITAL_PLAYBACK.c
 	src/Original/Audio/REVENGE_38AE_PIT_CALIBRATION.c

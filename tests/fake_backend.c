@@ -416,26 +416,6 @@ void SDLBackend_AdvanceAudio(void)
 {
 }
 
-void SDLBackend_BeginPCSpeakerTimedOutput(word16 delayScale)
-{
-    fakeBackend.firstWord = delayScale;
-    fakeBackend.secondWord = 0x0000;
-}
-
-void SDLBackend_WritePCSpeakerBitstream(
-    const byte *sampleData,
-    word16 byteCount)
-{
-    fakeBackend.buffer = (void *)sampleData;
-    fakeBackend.secondWord = (word16)(fakeBackend.secondWord + byteCount);
-}
-
-word16 SDLBackend_EndPCSpeakerTimedOutput(void)
-{
-    return (word16)((uint32)fakeBackend.firstWord
-        * fakeBackend.secondWord * 0x08);
-}
-
 void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz)
 {
     fakeBackend.buffer = (void *)samples;

@@ -55,28 +55,6 @@ _Static_assert(offsetof(RevengeMusicTimerState,
 
 extern RevengeMusicTimerState Seg426B;
 
-/* Exact contiguous game-data block at DS:B6D4-B807. */
-#pragma pack(push, 1)
-typedef struct PCSpeakerSampleConversionData
-{
-	byte SampleLookup[0x0100];
-	word16 TargetTimerTicks;
-	word16 DelayScale;
-	word16 CalibrationBitstream[0x18];
-} PCSpeakerSampleConversionData;
-#pragma pack(pop)
-
-_Static_assert(sizeof(PCSpeakerSampleConversionData) == 0x0134,
-	"The reconstructed DS:B6D4-B807 conversion block must be exact.");
-_Static_assert(offsetof(PCSpeakerSampleConversionData,
-	TargetTimerTicks) == 0x0100,
-	"The target timer count must remain at DS:B7D4.");
-_Static_assert(offsetof(PCSpeakerSampleConversionData,
-	CalibrationBitstream) == 0x0104,
-	"The calibration bitstream must remain at DS:B7D8.");
-
-extern PCSpeakerSampleConversionData PCSpeakerSampleConversion;
-
 enum
 {
 	PC_SPEAKER_EFFECT_STREAM_FIRST_OFFSET = 0x5642,

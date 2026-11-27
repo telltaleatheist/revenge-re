@@ -98,11 +98,6 @@ void SDLBackend_AdvanceAudio(void);
 byte SDLBackend_EnablePCSpeaker(void);
 void SDLBackend_SilencePCSpeaker(void);
 void SDLBackend_WritePCSpeakerPITDivisor(uint16 divisor);
-void SDLBackend_BeginPCSpeakerTimedOutput(word16 delayScale);
-void SDLBackend_WritePCSpeakerBitstream(
-	const byte *sampleData,
-	word16 byteCount);
-word16 SDLBackend_EndPCSpeakerTimedOutput(void);
 /* Speech when the sound is the speaker, played clean: unsigned 8-bit samples
  * at their rate. The game waits until they end, its timers held as long, as
  * the original's speaker speech ran with interrupts off (373D:0022). */

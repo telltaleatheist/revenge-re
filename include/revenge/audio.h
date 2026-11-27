@@ -17,10 +17,6 @@ enum
 	SOUND_HARDWARE_AVAILABLE = 0x0001,
 	SOUND_HARDWARE_UNAVAILABLE = 0xFFFF,
     PIT_INPUT_FREQUENCY_HZ = 0x001234DE,
-    PC_SPEAKER_CALIBRATION_BYTE_COUNT = 0x0030,
-    PC_SPEAKER_CALIBRATION_WORD_COUNT = 0x0018,
-    PC_SPEAKER_CALIBRATION_PATTERN = 0x4A4A,
-    PC_SPEAKER_CALIBRATION_TOLERANCE_DIVISOR = 0x0005,
     SPEAKER_EFFECT_NOTE_MAX = 0x5F,
     SPEAKER_EFFECT_COMMAND_LOOP1_BEGIN = 0xCD,
     SPEAKER_EFFECT_COMMAND_LOOP1_END = 0xCE,
@@ -106,7 +102,6 @@ typedef struct RevengeMusicResourcePlayer
     byte musicEnabled;
 } RevengeMusicResourcePlayer;
 
-extern const int16 PCSpeakerErrorDiffusionCoefficients[0x07];
 
 byte EnablePCSpeaker(void);
 void SilencePCSpeaker(void);
@@ -122,25 +117,6 @@ void InitializeSpeakerEffectState(void);
 void StartPCSpeakerEffectStream(const byte *effectStream);
 void SetPCSpeakerEffectStopRequest(void);
 void DecodePCSpeakerEffectTick(void);
-
-void BeginPCSpeakerTimedOutput(word16 delayScale);
-void WritePCSpeakerBitstream(
-    const byte *sampleData,
-    word16 byteCount);
-word16 EndPCSpeakerTimedOutput(void);
-
-uint16 InitializePCSpeakerSampleConversion(uint16 sampleRateHz);
-void TranslatePCSpeakerSampleBuffer(
-    byte *sampleData,
-    uint16 byteCount);
-void PlayPCSpeakerBitstream(
-    const byte *sampleData,
-    uint16 byteCount);
-word16 FindPCSpeakerDelayScale(uint16 targetTimerTicks);
-uint16 PCSpeakerCalibrationExceedsTolerance(
-    uint16 targetTimerTicks,
-    uint16 delayScale);
-void BuildPCSpeakerSampleLookup(void);
 
 void SetMIDITimingDivisor(uint16 timerCallsPerMinute);
 void ConfigureMIDITempo(

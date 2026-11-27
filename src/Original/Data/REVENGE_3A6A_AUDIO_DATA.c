@@ -171,10 +171,3 @@ _Static_assert(sizeof(PCSpeakerEffectStreamData) == 0x0299,
 	"The reconstructed DS:5642-58DA speaker stream data must be exact.");
 _Static_assert(sizeof(PCSpeakerEffectStreamPointerTable) == 0x0040,
 	"The reconstructed DS:58DB-591A far-pointer table must be exact.");
-
-PCSpeakerSampleConversionData PCSpeakerSampleConversion;
-const int16 PCSpeakerErrorDiffusionCoefficients[0x07] =
-{
-	0x0007, 0x0006, 0x0005, 0x0004, 0x0003, 0x0002, 0x0001
-};
-

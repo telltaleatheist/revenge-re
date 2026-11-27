@@ -116,7 +116,6 @@ void AudioMix_SpeakerDivisor(uint16_t divisor) {
 
 void AudioMix_SampleRate(uint32_t sourceRateHz) { mixer.samples.setRate(sourceRateHz); }
 void AudioMix_QueueUnsigned8(uint8_t sample) { mixer.samples.queueUnsigned8(sample); }
-void AudioMix_QueueBits(const uint8_t* data, uint16_t byteCount) { mixer.samples.queueBits(data, byteCount); }
 
 int AudioMix_LoadMusic(const void* soundfont, size_t soundfontSize, const char* table, size_t tableSize, char* error,
                        size_t errorCapacity) {

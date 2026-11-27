@@ -18,9 +18,6 @@ public:
     void setRate(uint32_t sourceRateHz);
     // An unsigned 8-bit sample (80h is silence) at the source rate.
     void queueUnsigned8(uint8_t sample);
-    // A 1-bit stream, least significant bit first, a bit per source sample:
-    // whole little-endian words only, as the speaker routine takes them.
-    void queueBits(const uint8_t* data, uint16_t byteCount);
     // The next frame, from -1 to 1; 0 when nothing is queued.
     float next();
 

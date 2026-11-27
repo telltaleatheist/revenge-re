@@ -246,7 +246,6 @@ place AdLibNineVoiceResetList 3A6A:6B9A 4 run
 place AdLibElevenVoiceResetList 3A6A:6B9E 14 run
 place AdLibDeactivateRegisterList 3A6A:6BB2 26 run
 place RolandMPU401 3A6A:6C0E 10A table
-place PCSpeakerErrorDiffusionCoefficients 3A6A:6D18 E run
 place NullDigitalHardware 3A6A:6D28 10 table
 place Tandy3VoiceHardware 3A6A:6D40 10 table
 place TandyDACHardware 3A6A:6D6A 10 table
@@ -426,7 +425,6 @@ place SharedNumericTextBuffer 3A6A:B67E 20 run
 place VideoAdapterType 3A6A:B6CE 2 run
 place ActiveUiRegionIndex 3A6A:B6D0 2 run
 place ExpandFirstUiRowHighlight 3A6A:B6D2 2 annotation
-place PCSpeakerSampleConversion 3A6A:B6D4 134 table
 place RuntimeExitHook1 3A6A:B808 8 procedure
 place CriticalErrorCallback 3A6A:B888 4 table
 place StandardTimezoneName 3A6A:B892 4 run

@@ -39,8 +39,6 @@ static SDL_AudioStream *audioStream;
 static FILE *pcmFile;
 static int musicLoaded;
 static int speakerSounding;
-static word16 timedDelayScale;
-static word16 timedByteCount;
 
 static void PutFrames(const float *frames, uint32_t count)
 {
@@ -136,31 +134,6 @@ void SDLBackend_SilencePCSpeaker(void)
 void SDLBackend_WritePCSpeakerPITDivisor(uint16 divisor)
 {
 	AudioMix_SpeakerDivisor(divisor);
-}
-
-void SDLBackend_BeginPCSpeakerTimedOutput(word16 delayScale)
-{
-	/* 373D:000E loads the word argument into DX, but every delay loop uses
-	 * DL/DH/AH. The high argument byte is therefore discarded by the DOS
-	 * routine before any timed output is produced. */
-	timedDelayScale = (word16) (byte) delayScale;
-	timedByteCount = 0x0000;
-}
-
-void SDLBackend_WritePCSpeakerBitstream(const byte *sampleData, word16 byteCount)
-{
-	/* 373D:0057-005A converts the byte count to a word count. The original
-	 * unrolled loop therefore consumes complete little-endian words only. */
-	timedByteCount = (word16) (timedByteCount + (byteCount & 0xFFFE));
-	AudioMix_QueueBits(sampleData, byteCount);
-}
-
-word16 SDLBackend_EndPCSpeakerTimedOutput(void)
-{
-	/* The DOS routine measured calibration output with PIT channel zero. The
-	 * host has no corresponding busy-loop cost, so report the instruction-
-	 * proportional count used by the recovered scale search. */
-	return (word16) ((uint32) timedByteCount * 0x08 * timedDelayScale);
 }
 
 void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz)

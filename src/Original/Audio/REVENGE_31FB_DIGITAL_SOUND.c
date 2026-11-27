@@ -264,8 +264,10 @@ void InitializeDigitalSoundDriver(void)
 		if (DigitalPlaybackRateHz < 0x0BB8)
 			SoundDriverIndex = SOUND_DRIVER_PC_SPEAKER;
 	}
-	if (SoundDriverIndex == SOUND_DRIVER_PC_SPEAKER)
-		InitializePCSpeakerSampleConversion(DIGITAL_SOUND_SAMPLE_RATE_HZ);
+	/* 31FB:00A9 then built the speaker's bit patterns for 8000 Hz
+	 * (InitializePCSpeakerSampleConversion) when the sound was the speaker;
+	 * the rebuild plays speech on the speaker as clean samples
+	 * (SDLBackend_PlaySpeech) and needs none. */
 }
 
 // 31FB:0256: int16 FindDigitalSoundEntryByCode(byte soundCode)

@@ -578,13 +578,6 @@ void LoadMusicResource(word16 resourceIndex);
 void PlayMusicResource(word16 resourceIndex);
 void InstallMusicTimer(void);
 void RestoreSystemTimer(void);
-word16 InitializePCSpeakerSampleConversion(word16 sampleRateHz);
-void TranslatePCSpeakerSampleBuffer(
-	byte *sampleData,
-	word16 byteCount);
-void PlayPCSpeakerBitstream(
-	const byte *sampleData,
-	word16 byteCount);
 void PlayPCSpeakerEffectByIndex(word16 effectId);
 word16 InvokeDigitalHardwareProbe(word16 hardwareDescriptorOffset);
 void AcquireDigitalHardware(

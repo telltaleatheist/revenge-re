@@ -621,14 +621,6 @@ if(BUILD_TESTING)
     chr_strict(test_asset_decoders)
     add_test(NAME assets.original_codec_transcriptions COMMAND test_asset_decoders)
 
-    add_executable(test_pc_speaker
-        tests/test_pc_speaker.c
-        tests/fake_backend.c)
-    target_include_directories(test_pc_speaker PRIVATE src/SDL tests)
-    target_link_libraries(test_pc_speaker PRIVATE chr_original_runtime)
-    chr_strict(test_pc_speaker)
-    add_test(NAME audio.pc_speaker_conversion COMMAND test_pc_speaker)
-
     add_executable(test_midi_sequence
         tests/test_midi_sequence.c
         tests/fake_backend.c)

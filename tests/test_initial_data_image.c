@@ -158,7 +158,6 @@ static const ImageRow rows[] =
 	DS(HitLocationTable, 0x1038),
 	DS(HitLocationDirectionSelectorTable, 0x3CFE),
 	DS(VideoConfigurationRecords, 0x3AD1),
-	DS(PCSpeakerSampleConversion, 0xB6D4),
 	DS(MIDISequence, 0x624A),
 	DS(MIDIParser, 0x62B0),
 	DS(MIDIChannelMap, 0x6728),

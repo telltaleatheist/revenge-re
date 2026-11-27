@@ -6,10 +6,11 @@
 docs/METHOD_TABLE.csv and docs/SOURCE_CONVERSION_TABLE.csv:
 - every method address is SEG:OFF in upper-case hex, and each is listed once
   in each table;
-- every method's status is final (Verified, Verified [SDL] or Not a
-  procedure); a procedure has a C name, an annotation file and a C file that
-  exist (paths under evidence/, kept outside this tree, stay as references);
-  Verified [SDL] names its platform redirect;
+- every method's status is final (Verified, Verified [SDL], Replaced or Not
+  a procedure); a procedure has a C name and an annotation file, and a C file
+  that exists unless it is Replaced (paths under evidence/, kept outside this
+  tree, stay as references); Verified [SDL] names its platform redirect, and
+  Replaced names what replaced it there and has no C file;
 - the conversion table lists exactly the procedures of the method table;
 - a C name used by two addresses lives in one file and says it's an alias.
 
@@ -26,8 +27,9 @@ import re
 import sys
 
 ADDRESS = re.compile(r"^[0-9A-F]{4}:[0-9A-F]{4}$")
-STATUSES = {"verified", "verified [sdl]", "not a procedure"}
+STATUSES = {"verified", "verified [sdl]", "replaced", "not a procedure"}
 NOT_A_PROCEDURE = "not a procedure"
+REPLACED = "replaced"
 STATIC_FUNCTION = re.compile(r"(?m)^\s*static\s+(?:[A-Za-z_][A-Za-z0-9_]*\s+|\*\s*)+"
                              r"[A-Za-z_][A-Za-z0-9_]*\s*\([^;{}]*\)\s*\{")
 SEGMENT_OFFSET = re.compile(r"[0-9A-Fa-f]{4}:[0-9A-Fa-f]{4}")
@@ -75,9 +77,15 @@ def check(root):
             if blank(row.get("CName")):
                 errors.append(f"{address} has no CName.")
             check_paths(address, "AnnotationFile", row.get("AnnotationFile"))
+        if status(row) not in (NOT_A_PROCEDURE, REPLACED):
             check_paths(address, "OriginalCFile", row.get("OriginalCFile"))
         if status(row) == "verified [sdl]" and blank(row.get("PlatformRedirect")):
             errors.append(f"{address} is Verified [SDL] without PlatformRedirect.")
+        if status(row) == REPLACED:
+            if blank(row.get("PlatformRedirect")):
+                errors.append(f"{address} is Replaced without PlatformRedirect.")
+            if not blank(row.get("OriginalCFile")):
+                errors.append(f"{address} is Replaced but names a C file.")
 
     for name, rows in (("METHOD_TABLE", methods), ("SOURCE_CONVERSION_TABLE", conversions)):
         seen = {}
