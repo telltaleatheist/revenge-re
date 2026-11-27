@@ -3,7 +3,6 @@
 
 #include "revenge/dos.h"
 #include "revenge/input.h"
-#include "revenge/interrupts.h"
 
 /*
  * Portable declarations for the DOS, BIOS, and direct-hardware boundary.
@@ -35,22 +34,6 @@ void SDLBackend_InitializeDOSMemoryArena(void);
 void SDLBackend_GetSystemDate(DOS_Date *date);
 void SDLBackend_GetSystemTime(DOS_Time *time);
 const char *SDLBackend_GetEnvironmentVariable(const char *name);
-void SDLBackend_InvokeInterrupt(
-	byte interruptNumber,
-	const InterruptRegisterBlock *inputRegisters,
-	InterruptRegisterBlock *outputRegisters,
-	InterruptSegmentState *segmentState);
-void SDLBackend_SetInterruptVector(
-	byte interruptNumber, DOS_InterruptHandler handler);
-DOS_InterruptHandler SDLBackend_SwapInterruptHandler(
-	byte interruptNumber, DOS_InterruptHandler handler);
-uint32 SDLBackend_SwapInterruptVector(
-	byte interruptNumber, uint32 newVector);
-void SDLBackend_ChainInterruptVector(uint32 interruptVector);
-void SDLBackend_DispatchInstalledInterruptVector(byte interruptNumber);
-void SDLBackend_ProgramPITChannel0(word16 divisor);
-void SDLBackend_ProgramPITChannel0Mode(byte mode, word16 divisor);
-void SDLBackend_AcknowledgeInterrupt(byte interruptNumber);
 uint32 SDLBackend_GetBIOSTickCount(void);
 _Noreturn void SDLBackend_TerminateProcess(byte exitCode);
 
@@ -105,16 +88,26 @@ void SDLBackend_WritePCSpeakerPITDivisor(uint16 divisor);
 void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz);
 void SDLBackend_WriteMIDIByte(byte midiByte);
 /*
- * Deliver every PIT/BIOS interrupt whose host-time deadline has elapsed.
- * DOS hardware interrupted otherwise empty busy-waits asynchronously; the
- * single-threaded hosted build calls this pump cooperatively at those waits
- * and at existing platform boundaries.
+ * The game's clock. What its timer interrupts did, the host calls between the
+ * game's own calls: at the waits and polls, never inside a procedure, so
+ * there is no interrupt flag and no vector table.
+ * - The game's INT 1Ch handler (InstallGameClockTimer until
+ *   RestoreGameClockTimer) at the BIOS tick's 1193182 / 10000h Hz.
+ * - The music timer's services (InstallMusicTimer until RestoreSystemTimer)
+ *   at the rates its PIT divisor gave them (30B2:0010).
+ * - The digital sample tick (InstallDigitalPlaybackTimer until
+ *   RestoreDigitalPlaybackTimer) at 1193182 / divisor Hz.
  */
+void SDLBackend_SetGameClockHandler(void (*handler)(void));
+void SDLBackend_StartMusicClock(word16 pitDivisor);
+void SDLBackend_StopMusicClock(void);
+void SDLBackend_StartDigitalPlaybackClock(word16 pitDivisor);
+void SDLBackend_StopDigitalPlaybackClock(void);
+/* Runs everything the game's clock has due by now. */
 void SDLBackend_ServiceTimers(void);
 /* Every timer's next tick put off by `nanoseconds`: what fell due in that
  * time comes that much later. */
 void SDLBackend_HoldTimers(uint64_t nanoseconds);
-void SDLBackend_DispatchInterrupt(byte interruptNumber);
 void SDLBackend_SetDigitalOutputRate(word16 sampleRateHz);
 void SDLBackend_WriteUnsigned8Sample(byte sample);
 

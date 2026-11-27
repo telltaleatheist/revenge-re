@@ -1,23 +1,10 @@
 #include "fake_backend.h"
 #include "REVENGE.h"
-#include "revenge/interrupts.h"
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
 #include "revenge/video.h"
 
 #include <assert.h>
-
-static void TestInterruptVectorExchange(void)
-{
-	uint32 oldVector;
-
-	fakeBackend.interruptVectors[INTERRUPT_SYSTEM_TIMER_IRQ] = 0x12345678U;
-	oldVector = SwapInterruptVector(
-		0x38AE00D7U, INTERRUPT_SYSTEM_TIMER_IRQ);
-	assert(oldVector == 0x12345678U);
-	assert(fakeBackend.interruptVectors[INTERRUPT_SYSTEM_TIMER_IRQ] ==
-		0x38AE00D7U);
-}
 
 static void TestPITDivisorExchange(void)
 {
@@ -27,7 +14,6 @@ static void TestPITDivisorExchange(void)
 	oldDivisor = SetPITChannel0Divisor(0x5678);
 	assert(oldDivisor == 0x1234);
 	assert(PITCalibration.Channel0Divisor == 0x5678);
-	assert(fakeBackend.pitChannel0Divisor == 0x5678);
 }
 
 static void TestPITMath(void)
@@ -56,7 +42,6 @@ static void TestVideoTimingCalibration(void)
 int main(void)
 {
 	FakeBackend_Reset();
-	TestInterruptVectorExchange();
 	TestPITDivisorExchange();
 	TestPITMath();
 	TestVideoTimingCalibration();

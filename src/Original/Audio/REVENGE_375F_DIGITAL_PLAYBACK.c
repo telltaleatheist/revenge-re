@@ -8,7 +8,6 @@
 
 /* Digital descriptor queues, timer service, and software mixer. */
 
-#define INTERRUPT_SYSTEM_TIMER_IRQ 0x08
 #define ResolveDigitalPlaybackDescriptor \
 	DigitalBridge_ResolvePlaybackDescriptor
 
@@ -75,14 +74,15 @@ void InstallDigitalPlaybackTimer(uint16 playbackRateHz)
 	InstallDigitalDriverQueueCallback(
 		ResolveDigitalPlaybackDescriptor(DIGITAL_DESCRIPTOR_NULL),
 		&DigitalPlaybackBuffers.PlaybackTimerQueue);
-	DisableHardwareInterrupts();
-	uint32 savedIrq0Vector = SwapInterruptVector(
-		MAKE_FAR_POINTER(0x375F, 0x0A1D), INTERRUPT_SYSTEM_TIMER_IRQ);
-	DigitalPlaybackRuntime.SavedSystemTimerVector =
-		DosAddress_FromValue(savedIrq0Vector);
+	/* 375F:0659-066F: CLI, then 38AE:0010 swaps the IRQ0 vector for
+	 * 375F:0A1D, keeping the old one in SavedSystemTimerVector. Host: the
+	 * game's clock calls the sample tick from the PIT's reprogramming on
+	 * (below). */
 	word16 systemTimerDivisor = ProgramDigitalPlaybackTimerRate(playbackRateHz);
 	DigitalPlaybackRuntime.SystemTimerDivisor = systemTimerDivisor;
 	DigitalPlaybackRuntime.SystemTimerAccumulator = systemTimerDivisor - 0x01;
+	SDLBackend_StartDigitalPlaybackClock(
+		DigitalPlaybackRuntime.DigitalTimerReloadMinusOne + 0x01);
 }
 
 // 375F:0689: Register word16 ProgramDigitalPlaybackTimerRate(Register uint16 ax)
@@ -103,11 +103,9 @@ word16 ProgramDigitalPlaybackTimerRate(uint16 playbackRateHz)
 //      PlayScenarioDigitalSoundSequence
 void RestoreDigitalPlaybackTimer(void)
 {
-	DisableHardwareInterrupts();
-	SwapInterruptVector(
-		DosAddress_ToValue(
-			DigitalPlaybackRuntime.SavedSystemTimerVector),
-		INTERRUPT_SYSTEM_TIMER_IRQ);
+	/* 375F:06AA-06BB: CLI, then 38AE:0010 puts SavedSystemTimerVector
+	 * back. Host: the game's clock stops the sample tick. */
+	SDLBackend_StopDigitalPlaybackClock();
 	SetPITChannel0Divisor(
 		DigitalPlaybackRuntime.SystemTimerDivisor);
 }
@@ -162,7 +160,7 @@ void InstallDigitalDriverQueueCallback(
 {
 	uint32 queueAddress;
 
-	DisableHardwareInterrupts();
+	/* CLI (375F:070F) goes. */
 	queueAddress = HostFarPointer_Register(queue, sizeof(*queue));
 	DigitalPlaybackRuntime.WriteSampleCallbackOffset =
 		playbackDescriptor->WriteSampleCallbackOffset;
@@ -242,7 +240,7 @@ void CalculateDigitalSampleStep(DigitalSampleDescriptor *descriptor,
 	uint32 fractionalProduct = (uint32) sourceFraction * scaleFraction;
 	uint32 fixedPointStep = (wholeProduct << 0x10) + crossProducts +
 		(fractionalProduct >> 0x10);
-	DisableHardwareInterrupts();
+	/* CLI (375F:07E4) goes. */
 	descriptor->SourceStepWhole = HIGH_WORD(fixedPointStep);
 	descriptor->SourceStepFraction = LOW_WORD(fixedPointStep);
 }
@@ -260,7 +258,7 @@ void ConfigureDigitalSampleLoop(DigitalSampleDescriptor *descriptor,
 word16 SetDigitalSampleLoopRange(DigitalSampleDescriptor *descriptor,
 	word16 loopStart, word16 loopEnd)
 {
-	DisableHardwareInterrupts();
+	/* CLI (375F:0806) goes. */
 	descriptor->LoopStart = loopStart;
 	descriptor->LoopEnd = loopEnd;
 	word16 loopLength = loopEnd - loopStart;
@@ -278,7 +276,7 @@ void SetDigitalSampleCompletionCallback(
 	word16 callbackOffset,
 	word16 callbackSegment)
 {
-	DisableHardwareInterrupts();
+	/* CLI (375F:0833) goes. */
 	descriptor->CompletionArgumentLow = argumentLow;
 	descriptor->CompletionArgumentHigh = argumentHigh;
 	if ((callbackSegment | callbackOffset) == 0x00)
@@ -333,7 +331,7 @@ void LinkDigitalSampleDescriptor(DigitalDriverQueue *queue,
 	{
 		descriptor->OwnerQueueOffset = queueOffset;
 		descriptor->OwnerQueueSegment = queueSegment;
-		DisableHardwareInterrupts();
+		/* CLI (375F:0877) goes. */
 		word16 previousCount = queue->ActiveDescriptorCount;
 		queue->ActiveDescriptorCount = previousCount + 0x01;
 		queue->MixBias = DigitalMixBiasOffsets[previousCount];
@@ -373,7 +371,7 @@ void UnlinkDigitalSampleDescriptor(
 		DigitalDriverQueue *queue;
 		word16 activeCount;
 
-		DisableHardwareInterrupts();
+		/* CLI (375F:08D3) goes. */
 		nextDescriptor = FAR_POINTER(DigitalSampleDescriptor,
 			descriptor->NextDescriptorSegment, descriptor->NextDescriptorOffset);
 		previousLink = FAR_POINTER(word16,
@@ -440,7 +438,7 @@ void FinishDigitalSampleLoopCore(
 {
 	if (descriptor->PlaybackHandlerOffset == DIGITAL_SAMPLE_HANDLER_LOOP)
 	{
-		DisableHardwareInterrupts();
+		/* CLI (375F:0972) goes. */
 		descriptor->RemainingWhole = descriptor->SampleDataOffset +
 			descriptor->SampleLength - descriptor->SourceCursorOffset;
 		descriptor->PlaybackHandlerOffset = DIGITAL_SAMPLE_HANDLER_ONESHOT;
@@ -554,40 +552,11 @@ uint32 RebuildDigitalMixLookup(int16 mixScale)
 
 #define InvokeDigitalSampleCompletion DigitalBridge_InvokeSampleCompletion
 
-/*
- * 375F:0A1D: IRQ0 entry installed by InstallDigitalPlaybackTimer.
- * The original acknowledges the master PIC, services one digital sample,
- * and uses a 16-bit accumulator to chain the displaced BIOS timer at its
- * original rate. CS:04C4 is a FFFFh-based nesting guard: only the outermost
- * interrupt advances and chains the BIOS clock.
- */
-void ServiceDigitalPlaybackInterrupt(void)
-{
-	word16 accumulator;
-
-	SDLBackend_AcknowledgeInterrupt(INTERRUPT_SYSTEM_TIMER_IRQ);
-	ServiceDigitalAudioTick();
-	accumulator = DigitalPlaybackRuntime.SystemTimerAccumulator;
-	++DigitalPlaybackRuntime.InterruptNestingGuard;
-	if (DigitalPlaybackRuntime.InterruptNestingGuard == 0x0000)
-	{
-		word16 digitalTimerDivisor =
-			DigitalPlaybackRuntime.DigitalTimerReloadMinusOne +
-			0x01;
-		word16 previousAccumulator = accumulator;
-
-		accumulator -= digitalTimerDivisor;
-		if (previousAccumulator < digitalTimerDivisor)
-		{
-			accumulator +=
-				DigitalPlaybackRuntime.SystemTimerDivisor;
-			SDLBackend_ChainInterruptVector(DosAddress_ToValue(
-				DigitalPlaybackRuntime.SavedSystemTimerVector));
-		}
-	}
-	--DigitalPlaybackRuntime.InterruptNestingGuard;
-	DigitalPlaybackRuntime.SystemTimerAccumulator = accumulator;
-}
+/* 375F:0A1D, the IRQ0 handler InstallDigitalPlaybackTimer installed, is
+ * Replaced: it acknowledged the PIC, ran ServiceDigitalAudioTick, and chained
+ * the saved vector at the BIOS's 18.2 Hz through SystemTimerAccumulator. The
+ * game's clock calls ServiceDigitalAudioTick at the playback rate itself, and
+ * keeps the BIOS tick on its own. */
 
 // 375F:0A62: mix and advance one sample for every descriptor in the active
 // queue. The hardware receives the byte produced on the previous tick.
@@ -599,7 +568,7 @@ void ServiceDigitalAudioTick(void)
 	word16 activeDescriptorCount = queue->ActiveDescriptorCount;
 	if (activeDescriptorCount == 0x0000)
 	{
-		EnableHardwareInterrupts();
+		/* STI (375F:0AE4) goes. */
 		return;
 	}
 
@@ -656,7 +625,6 @@ void ServiceDigitalAudioTick(void)
 		else
 		{
 			// Unknown computed-jump targets are invalid descriptor state.
-			EnableHardwareInterrupts();
 			return;
 		}
 
@@ -679,5 +647,4 @@ void ServiceDigitalAudioTick(void)
 		queue->OutputSample =
 			DigitalPlaybackRuntime.MixLookup[(byte) mixedSample];
 	}
-	EnableHardwareInterrupts();
 }

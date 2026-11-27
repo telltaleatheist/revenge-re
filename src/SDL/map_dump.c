@@ -750,7 +750,6 @@ static const MapDumpObject objects[] =
 	{ "DigitalSoundBuffer", &DigitalSoundBuffer, sizeof(DigitalSoundBuffer) },
 	{ "DigitalSoundDriverMutationGuard", &DigitalSoundDriverMutationGuard, sizeof(DigitalSoundDriverMutationGuard) },
 	{ "NarrationMode", &NarrationMode, sizeof(NarrationMode) },
-	{ "SavedGameClockVector", &SavedGameClockVector, sizeof(SavedGameClockVector) },
 };
 
 void MapDump_Write(const char *snap)

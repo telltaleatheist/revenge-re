@@ -41,11 +41,12 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
 		uint16 mouseButtonState;
 		uint16 pendingMouseButtonEvent;
 
-		DisableHardwareInterrupts();
+		/* 34E6:005C and 0073 called DisableHardwareInterrupts and
+		 * EnableHardwareInterrupts (0800:34F6, 34F4) around this; the
+		 * host's mouse events never arrive inside it. */
 		mouseButtonState = MouseButtonState;
 		pendingMouseButtonEvent = PendingMouseButtonEvent;
 		PendingMouseButtonEvent = FALSE;
-		EnableHardwareInterrupts();
 
 		if (pendingMouseButtonEvent != 0x00 &&
 			mouseButtonState != 0x00 &&
@@ -72,12 +73,13 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
 			uint16 candidateBottom = candidateTop +
 				lineHeight * candidateRegion->rowCount - 0x01;
 
-			DisableHardwareInterrupts();
+			/* 34E6:0143 called DisableHardwareInterrupts (0800:34F6) here, and
+			 * 34E6:0169 and 0392 EnableHardwareInterrupts on the two ways out:
+			 * not made. */
 			int16 mouseY = (int16) MouseY;
 			if (IsMouseCursorInsideRectangle(
 				candidateLeft, candidateTop, candidateRight, candidateBottom) != 0x00)
 			{
-				EnableHardwareInterrupts();
 				int16 hoveredRow = (int16) ((mouseY -
 					(int16) candidateTop) / lineHeight);
 				if (selectedRow != hoveredRow || activeRegionIndex != candidateRegionIndex)
@@ -129,7 +131,6 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
 						mouseKey = KEY_CARRIAGE_RETURN;
 				}
 			}
-			EnableHardwareInterrupts();
 		}
 	}
 

@@ -31,11 +31,10 @@ void CalibrateVideoTiming(void)
 
 	VerticalRetraceEdgeMode = VERTICAL_RETRACE_WAIT_FOR_END;
 
-	// Read the BIOS-maintained dword with interrupts masked so the timer ISR
-	// cannot update its two constituent words between reads.
-	DisableHardwareInterrupts();
+	// The original read the BIOS dword between CLI and STI (34B8:0022 and
+	// 0037 called 0800:34F6 and 34F4) so the timer could not change it
+	// halfway; the host's tick count changes only between the game's calls.
 	initialTick = SDLBackend_GetBIOSTickCount();
-	EnableHardwareInterrupts();
 
 	// Align the calibration interval to the beginning of a BIOS timer tick.
 	do
@@ -43,10 +42,9 @@ void CalibrateVideoTiming(void)
 		calibrationEndTick = SDLBackend_GetBIOSTickCount();
 	} while (calibrationEndTick == initialTick);
 
-	DisableHardwareInterrupts();
+	// Likewise 34B8:0052 and 006D.
 	calibrationEndTick = SDLBackend_GetBIOSTickCount() +
 		VIDEO_TIMING_CALIBRATION_TICKS;
-	EnableHardwareInterrupts();
 
 	while (SDLBackend_GetBIOSTickCount() < calibrationEndTick)
 	{

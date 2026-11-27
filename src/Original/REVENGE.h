@@ -11,7 +11,6 @@
 
 #include "revenge/dos.h"
 #include "revenge/far_memory.h"
-#include "revenge/interrupts.h"
 #include "revenge/types.h"
 #include "revenge/unit.h"
 
@@ -262,8 +261,6 @@ enum
 };
 
 /* Verified DOS and BIOS boundary contracts. */
-void EnableHardwareInterrupts(void);
-void DisableHardwareInterrupts(void);
 void SetVideoAdapterType(word16 adapterType);
 word16 GetCurrentBIOSVideoMode(void);
 void SetVideoModeForAdapter(word16 adapterOrRestoreSlot);
@@ -304,9 +301,7 @@ word16 IsVerticalRetraceActive(void);
 void WaitForVerticalRetraceEdge(byte waitForRetraceStart);
 void CalibrateVideoTiming(void);
 
-/* Verified interrupt and programmable-timer boundary contracts. */
-uint32 SwapInterruptVector(
-	uint32 newVector, word16 interruptNumber);
+/* Programmable-timer contracts (segment 38AE). */
 word16 SetPITChannel0Divisor(word16 divisor);
 word16 PITFrequencyToDivisor(word16 frequencyHz);
 
@@ -534,8 +529,6 @@ word16 GetDigitalSamplePlaybackState(
 	DigitalSampleDescriptor *descriptor);
 uint32 SetDigitalPlaybackTimingScale(word16 timingScale);
 void ServiceDigitalAudioTick(void);
-void ServiceDigitalPlaybackInterrupt(void);
-extern uint32 SavedGameClockVector;
 void InstallGameClockTimer(void);
 void RestoreGameClockTimer(void);
 void GameClockInt1CHandler(void);
@@ -567,7 +560,6 @@ void DecodeWestwoodPackedResource(
 	void *destination);
 void RunExitHandlersAndTerminate(word16 exitCode);
 void DOS_TerminateProcess(word16 exitCode);
-void InstallExceptionHandlers(void);
 
 /* Verified resource-stream contracts from segment 3390. */
 void AbortRuntimeWithMessage(const char *errorText);
@@ -637,17 +629,6 @@ word16 IsDaylightSavingTime(
 uint32 ConvertLocalDateTimeToEpochSeconds(
 	const DOS_Date *date,
 	const DOS_Time *time);
-void CaptureInterruptSegmentState(
-	InterruptSegmentState *segmentState);
-void InvokeInterruptThunk(
-	word16 interruptNumber,
-	InterruptRegisterBlock *inputRegisters,
-	InterruptRegisterBlock *outputRegisters,
-	InterruptSegmentState *segmentState);
-void InvokeInterruptWithRegisterBlocks(
-	word16 interruptNumber,
-	InterruptRegisterBlock *inputRegisters,
-	InterruptRegisterBlock *outputRegisters);
 void DrawCombatRatingDescription(
 	int16 combatRating,
 	word16 x,

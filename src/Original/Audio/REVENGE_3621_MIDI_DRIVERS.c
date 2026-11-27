@@ -4,7 +4,6 @@
 #include "REVENGE.h"
 #include "revenge/audio.h"
 #include "revenge/audio_log.h"
-#include "revenge/interrupts.h"
 #include "revenge/host_dispatch.h"
 #include "revenge/midi_data.h"
 #include "revenge/platform_backend.h"
@@ -72,21 +71,19 @@ word16 SpeakerMIDIDriverProbe(void) { return SOUND_HARDWARE_AVAILABLE; }
 void ActivateSpeakerMIDIDriver(word16 activationArgument)
 {
 	(void) activationArgument;
-	DisableHardwareInterrupts();
+	/* CLI/STI around this (3621:08BA, 08D1) go. */
 	SpeakerMIDIRuntime.ActivePITDivisor = 0x0014;
 	AudioLog_SpeakerGate(1);
 	SDLBackend_EnablePCSpeaker();
 	AudioLog_SpeakerDivisor(0x0014);
 	SDLBackend_WritePCSpeakerPITDivisor(0x0014);
-	EnableHardwareInterrupts();
 }
 
 void DeactivateSpeakerMIDIDriver(void)
 {
-	DisableHardwareInterrupts();
+	/* CLI/STI around this (3621:08D3, 08DA) go. */
 	AudioLog_SpeakerGate(0);
 	SDLBackend_SilencePCSpeaker();
-	EnableHardwareInterrupts();
 }
 
 word16 FilterSpeakerMIDIByte(word16 midiByte)
@@ -228,13 +225,12 @@ word16 RolandMIDIDriverProbe(void)
 void ActivateRolandMIDIDriver(word16 activationArgument)
 {
 	(void) activationArgument;
-	DisableHardwareInterrupts();
+	/* The STI after this (3621:0ED8) goes. */
 	RolandMPU401.WriteIndex = 0x0000;
 	RolandMPU401.ReadIndex = 0x0000;
 	RolandMPU401.ByteCount = 0x0000;
 	RolandMPU401.SavedIRQVector.offset = 0x0000;
 	RolandMPU401.SavedIRQVector.segment = 0x0000;
-	EnableHardwareInterrupts();
 }
 
 // 3621:0EDA. The queue is drained as the original drained it; the original
@@ -258,7 +254,7 @@ word16 FilterRolandMIDIByte(word16 midiByte)
 	}
 	while (RolandMPU401.ByteCount >= 0x0100)
 		ServiceRolandMIDIDriver();
-	DisableHardwareInterrupts();
+	/* CLI/STI around the queue write (3621:0F0F, 0F29) go. */
 	writeIndex = RolandMPU401.WriteIndex;
 	RolandMPU401.TransmitQueue[writeIndex] = outputByte;
 	++writeIndex;
@@ -266,7 +262,6 @@ word16 FilterRolandMIDIByte(word16 midiByte)
 		writeIndex = 0x0000;
 	RolandMPU401.WriteIndex = writeIndex;
 	++RolandMPU401.ByteCount;
-	EnableHardwareInterrupts();
 	return TRUE;
 }
 

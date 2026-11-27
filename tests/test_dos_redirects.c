@@ -4,10 +4,6 @@
 #include <assert.h>
 #include <string.h>
 
-static void TestInterruptHandler(void)
-{
-}
-
 static void TestConsoleAndDrive(void)
 {
     FakeBackend_Reset();
@@ -80,10 +76,6 @@ static void TestSystemServices(void)
     assert(date.year == 0x07EA && date.month == 0x09 && date.day == 0x1A);
     assert(timeValue.hour == 0x0C && timeValue.minute == 0x22);
     assert(timeValue.second == 0x38 && timeValue.hundredth == 0x4E);
-
-    DOS_SetInterruptVector(0x24, TestInterruptHandler);
-    assert(fakeBackend.firstByte == 0x24);
-    assert(fakeBackend.interruptHandler == TestInterruptHandler);
 }
 
 int main(void)

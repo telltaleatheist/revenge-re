@@ -1,7 +1,6 @@
 #include "fake_backend.h"
 #include "revenge/media_settings.h"
 #include "revenge/platform_backend.h"
-#include "revenge/interrupts.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -11,14 +10,6 @@ FakeBackendState fakeBackend;
 _Noreturn void SDLBackend_TerminateProcess(byte exitCode)
 {
 	exit((int) exitCode);
-}
-
-void RevengeHost_EnableInterruptDelivery(void)
-{
-}
-
-void RevengeHost_DisableInterruptDelivery(void)
-{
 }
 
 void FakeBackend_Reset(void)
@@ -154,69 +145,29 @@ const char *SDLBackend_GetEnvironmentVariable(const char *name)
 	return 0;
 }
 
-void SDLBackend_InvokeInterrupt(
-	byte interruptNumber,
-	const InterruptRegisterBlock *inputRegisters,
-	InterruptRegisterBlock *outputRegisters,
-	InterruptSegmentState *segmentState)
+void SDLBackend_SetGameClockHandler(void (*handler)(void))
 {
-	*outputRegisters = *inputRegisters;
-	outputRegisters->carry = FALSE;
-	outputRegisters->flags = 0x0000;
-	fakeBackend.firstByte = interruptNumber;
-	(void) segmentState;
+    fakeBackend.gameClockHandler = handler;
 }
 
-void SDLBackend_SetInterruptVector(
-    byte interruptNumber,
-    DOS_InterruptHandler handler)
+void SDLBackend_StartMusicClock(word16 pitDivisor)
 {
-    fakeBackend.firstByte = interruptNumber;
-    fakeBackend.interruptHandler = handler;
+    fakeBackend.musicClockDivisor = pitDivisor;
 }
 
-DOS_InterruptHandler SDLBackend_SwapInterruptHandler(
-    byte interruptNumber,
-    DOS_InterruptHandler handler)
+void SDLBackend_StopMusicClock(void)
 {
-    DOS_InterruptHandler previousHandler;
-
-    fakeBackend.firstByte = interruptNumber;
-    previousHandler = fakeBackend.interruptHandler;
-    fakeBackend.interruptHandler = handler;
-    return previousHandler;
+    fakeBackend.musicClockDivisor = 0x0000;
 }
 
-uint32 SDLBackend_SwapInterruptVector(
-    byte interruptNumber,
-    uint32 newVector)
+void SDLBackend_StartDigitalPlaybackClock(word16 pitDivisor)
 {
-    uint32 oldVector;
-
-    oldVector = fakeBackend.interruptVectors[interruptNumber];
-    fakeBackend.interruptVectors[interruptNumber] = newVector;
-    return oldVector;
+    fakeBackend.digitalPlaybackClockDivisor = pitDivisor;
 }
 
-void SDLBackend_ChainInterruptVector(uint32 interruptVector)
+void SDLBackend_StopDigitalPlaybackClock(void)
 {
-	fakeBackend.chainedInterruptVector = interruptVector;
-}
-
-void SDLBackend_ProgramPITChannel0(word16 divisor)
-{
-    fakeBackend.pitChannel0Divisor = divisor;
-}
-
-void SDLBackend_ProgramPITChannel0Mode(byte mode, word16 divisor)
-{
-    fakeBackend.pitChannel0Mode = mode;
-    fakeBackend.pitChannel0Divisor = divisor;
-}
-
-void SDLBackend_AcknowledgeInterrupt(byte interruptNumber)
-{
-    fakeBackend.acknowledgedInterrupt = interruptNumber;
+    fakeBackend.digitalPlaybackClockDivisor = 0x0000;
 }
 
 uint32 SDLBackend_GetBIOSTickCount(void)

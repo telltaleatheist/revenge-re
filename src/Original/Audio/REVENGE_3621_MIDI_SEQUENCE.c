@@ -5,7 +5,6 @@
 #include "revenge/audio.h"
 #include "revenge/audio_log.h"
 #include "revenge/debug.h"
-#include "revenge/interrupts.h"
 #include "revenge/host_dispatch.h"
 #include "revenge/midi_data.h"
 #include "revenge/platform_backend.h"
@@ -32,10 +31,9 @@ void SetMIDITimingDivisor(uint16 timerCallsPerMinute)
 {
 	if (timerCallsPerMinute != 0x0000)
 	{
-		DisableHardwareInterrupts();
+		/* CLI/STI around the pair (3621:003F, 0048) go. */
 		MIDISequence.MIDITimerCallsPerMinute = timerCallsPerMinute;
 		MIDISequence.MIDITickRateRemainder = 0x0000;
-		EnableHardwareInterrupts();
 	}
 }
 
@@ -50,10 +48,9 @@ void ConfigureMIDITempo(uint16 ticksPerQuarterNote, uint16 beatsPerMinute)
 	// the stream's 60h ticks-per-quarter-note division into ticks per minute.
 	MIDISequence.MIDIBeatsPerMinute = beatsPerMinute;
 	ticksPerMinute = (uint16) (ticksPerQuarterNote * beatsPerMinute);
-	DisableHardwareInterrupts();
+	/* CLI/STI around the pair (3621:0057, 0060) go. */
 	MIDISequence.MIDITicksPerMinute = ticksPerMinute;
 	MIDISequence.MIDITickRateRemainder = 0x0000;
-	EnableHardwareInterrupts();
 }
 
 // 3621:0063: void ConfigureMIDITimeSignature(
@@ -186,11 +183,10 @@ void StopMIDISequence(void)
 }
 
 // 3621:01E8: void ServiceMIDISequenceTick(void)
-// Called from MusicTimerIRQ0Handler with DS restored to Seg3A6A.
-// Verified against 3621:01E8-0387.
+// The music timer's tick (30B2:0010, now the game's clock) with DS restored
+// to Seg3A6A. Verified against 3621:01E8-0387; its leading STI goes.
 void ServiceMIDISequenceTick(void)
 {
-	EnableHardwareInterrupts();
 	if ((MIDISequence.MIDIPlaybackFlags & 0x03) != 0x01)
 		return;
 

@@ -605,7 +605,6 @@ unplaced SaveLoadMenuDefaultSelection 1 zero at every snap
 unplaced SavedBIOSVideoMode 2 several places match
 unplaced SavedBoundsHandler 8 zero at every snap
 unplaced SavedDivideErrorHandler 8 zero at every snap
-unplaced SavedGameClockVector 4 zero at every snap
 unplaced SavedInvalidOpcodeHandler 8 zero at every snap
 unplaced SavedOverflowHandler 8 zero at every snap
 unplaced SavedSaveTransferState 2 zero at every snap

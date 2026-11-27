@@ -13,14 +13,6 @@ static word16 showCallCount;
 static word16 xorCallCount;
 static word16 serviceCallCount;
 
-void DisableHardwareInterrupts(void)
-{
-}
-
-void EnableHardwareInterrupts(void)
-{
-}
-
 void HideMouseCursorOverlay(void)
 {
 	++hideCallCount;

@@ -32,7 +32,6 @@
     <ClCompile Include="src\Original\UI\REVENGE_35CA_UI_REGION_HIGHLIGHT.c"><Filter>Original - Verified</Filter></ClCompile>
     <ClCompile Include="src\Original\Text\REVENGE_35CE_FORMATTED_TEXT.c"><Filter>Original - Verified</Filter></ClCompile>
     <ClCompile Include="src\Original\IO\REVENGE_39D9_SYSTEM_TIME.c"><Filter>Original - Verified</Filter></ClCompile>
-    <ClCompile Include="src\Original\IO\REVENGE_39E3_INTERRUPT_VECTOR.c"><Filter>Original - Verified</Filter></ClCompile>
     <ClCompile Include="src\Original\REVENGE_4184_TACTICAL_GRAPHICS_DATA.c"><Filter>Original - Verified</Filter></ClCompile>
     <ClCompile Include="src\Original\REVENGE_426A_ENCODED_SPRITE_DATA.c"><Filter>Original - Verified</Filter></ClCompile>
     <ClCompile Include="src\SDL\audio.c"><Filter>SDL Boundary</Filter></ClCompile>
@@ -46,7 +45,6 @@
     <ClInclude Include="include\revenge\audio.h"><Filter>Headers</Filter></ClInclude>
     <ClInclude Include="include\revenge\dos.h"><Filter>Headers</Filter></ClInclude>
     <ClInclude Include="include\revenge\input.h"><Filter>Headers</Filter></ClInclude>
-    <ClInclude Include="include\revenge\interrupts.h"><Filter>Headers</Filter></ClInclude>
     <ClInclude Include="include\revenge\original_data.h"><Filter>Headers</Filter></ClInclude>
     <ClInclude Include="include\revenge\original\io_data.h"><Filter>Headers</Filter></ClInclude>
     <ClInclude Include="include\revenge\original\input_data.h"><Filter>Headers</Filter></ClInclude>

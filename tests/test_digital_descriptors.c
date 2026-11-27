@@ -1,5 +1,6 @@
 #include "REVENGE.h"
 #include "revenge/digital_bridge.h"
+#include "revenge/original_data.h"
 #include "fake_backend.h"
 
 #include <assert.h>
@@ -37,24 +38,14 @@ int main(void)
 		&DigitalPlaybackBuffers.PlaybackTimerQueue);
 	InstallDigitalDriverQueueCallback(&NullDigitalPlayback,
 		&DigitalPlaybackBuffers.PlaybackTimerQueue);
-	DigitalPlaybackRuntime.SavedSystemTimerVector =
-		DosAddress_FromValue(0xF000FFF0UL);
-	DigitalPlaybackRuntime.SystemTimerDivisor = 0x1234;
-	DigitalPlaybackRuntime.SystemTimerAccumulator = 0x0200;
-	DigitalPlaybackRuntime.InterruptNestingGuard = 0xFFFF;
-	DigitalPlaybackRuntime.DigitalTimerReloadMinusOne = 0x000F;
-	ServiceDigitalPlaybackInterrupt();
-	assert(fakeBackend.acknowledgedInterrupt == 0x08);
-	assert(DigitalPlaybackRuntime.SystemTimerAccumulator ==
-		0x01F0);
-	assert(DigitalPlaybackRuntime.InterruptNestingGuard ==
-		0xFFFF);
-	assert(fakeBackend.chainedInterruptVector == 0x00000000UL);
-
-	DigitalPlaybackRuntime.SystemTimerAccumulator = 0x0005;
-	ServiceDigitalPlaybackInterrupt();
-	assert(DigitalPlaybackRuntime.SystemTimerAccumulator ==
-		0x1229);
-	assert(fakeBackend.chainedInterruptVector == 0xF000FFF0UL);
+	/* The IRQ0 swap is now the game clock's sample tick, from the PIT's
+	 * divisor (1193182 / 8000 = 149) until the restore. */
+	PITCalibration.Channel0Divisor = 0x0400;
+	InstallDigitalPlaybackTimer(0x1F40);
+	assert(fakeBackend.digitalPlaybackClockDivisor == 0x0095);
+	assert(DigitalPlaybackRuntime.DigitalTimerReloadMinusOne == 0x0094);
+	assert(PITCalibration.Channel0Divisor == 0x0095);
+	RestoreDigitalPlaybackTimer();
+	assert(fakeBackend.digitalPlaybackClockDivisor == 0x0000);
 	return 0x00;
 }

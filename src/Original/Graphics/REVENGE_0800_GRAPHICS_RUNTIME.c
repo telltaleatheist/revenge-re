@@ -4,7 +4,6 @@
 
 // Video-buffer, adapter, timer, and arithmetic procedures from segment 0800.
 #include "REVENGE.h"
-#include "revenge/interrupts.h"
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
 #include "revenge/random.h"
@@ -505,9 +504,10 @@ uint32 DivideUnsignedLong(uint32 dividend, uint32 divisor)
 {
 	return dividend / divisor;
 }
-uint32 SavedGameClockVector;
-static DOS_InterruptHandler SavedGameClockHostHandler;
-
+/* 0800:2440: the game's INT 1Ch handler, 18.2 times a second. Host: the
+ * game's clock calls it (SDLBackend_SetGameClockHandler) at the BIOS tick's
+ * rate. Its far jump to the saved vector (the BIOS's own INT 1Ch, an IRET)
+ * goes with the vector table. */
 void GameClockInt1CHandler(void)
 {
 	if (TacticalUpdateDelayTicks != 0x00)
@@ -516,40 +516,25 @@ void GameClockInt1CHandler(void)
 		--TacticalKeyRepeatDelayTicks;
 	++GameTimerTicks;
 	++GameAnimationTicks;
-	if (SavedGameClockHostHandler != NULL)
-		SavedGameClockHostHandler();
-	else if (SavedGameClockVector != 0x00000000UL)
-		SDLBackend_ChainInterruptVector(
-			SavedGameClockVector);
 }
 
+/* 0800:23F0: saves the INT 1Ch vector and installs 0800:2440 (INT 21h
+ * AH=35h and AH=25h). Host: the game's clock calls the handler from now. */
 void InstallGameClockTimer(void)
 {
-	/* 0800:23F0 -- save and replace DOS INT 1Ch. */
-	SavedGameClockVector = SDLBackend_SwapInterruptVector(
-		0x1C, 0x08002440UL);
-	SavedGameClockHostHandler = SDLBackend_SwapInterruptHandler(
-		0x1C, GameClockInt1CHandler);
+	SDLBackend_SetGameClockHandler(GameClockInt1CHandler);
 }
 
+/* 0800:241E: puts the saved INT 1Ch vector back (INT 21h AH=25h). Host: the
+ * game's clock stops calling the handler. */
 void RestoreGameClockTimer(void)
 {
-	/* 0800:241E -- restore the saved DOS INT 1Ch handler. */
-	SDLBackend_SwapInterruptVector(0x1C, SavedGameClockVector);
-	SDLBackend_SwapInterruptHandler(0x1C, SavedGameClockHostHandler);
+	SDLBackend_SetGameClockHandler(NULL);
 }
 
-void EnableHardwareInterrupts(void)
-{
-	/* 0800:34F4 -- STI. */
-	RevengeHost_EnableInterruptDelivery();
-}
-
-void DisableHardwareInterrupts(void)
-{
-	/* 0800:34F6 -- CLI. */
-	RevengeHost_DisableInterruptDelivery();
-}
+/* 0800:34F4 (STI) and 0800:34F6 (CLI) are Replaced: the host's timer and
+ * input services run between the game's calls, never inside one, so there
+ * is no interrupt flag to set or clear. */
 
 void InitializeMouseSupport(void)
 {
@@ -698,10 +683,9 @@ void WaitForVerticalRetraceEdge(byte waitForRetraceStart)
 void ClearActiveVideoBuffer(void)
 {
 	/* 0800:2D59 clears the entire adapter framebuffer: the VGA's 8000h
-	 * words, the host's 320x200 indexed image. */
-	DisableHardwareInterrupts();
+	 * words, the host's 320x200 indexed image. The CLI and STI around it
+	 * (2D64, 2DAA) go: nothing interrupts the host's clear. */
 	SDLBackend_ClearIndexedFramebuffer(0x00);
-	EnableHardwareInterrupts();
 }
 
 void DrawVerticalSpan(

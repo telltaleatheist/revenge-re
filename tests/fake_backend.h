@@ -17,14 +17,11 @@ typedef struct FakeBackendState
     byte firstByte;
     void *buffer;
     long fileOffset;
-    DOS_InterruptHandler interruptHandler;
-    uint32 interruptVectors[0x0100];
-	uint32 chainedInterruptVector;
+    void (*gameClockHandler)(void);
+    word16 musicClockDivisor;
+    word16 digitalPlaybackClockDivisor;
     uint32 biosTickCount;
     uint32 biosTickStep;
-    word16 pitChannel0Divisor;
-    byte pitChannel0Mode;
-    byte acknowledgedInterrupt;
     byte biosKeyboardFlags[0x03];  /* 0040:0017, 0018, 0096 */
     word16 keyboardHandlerInstalled;
     word16 inputPolls;

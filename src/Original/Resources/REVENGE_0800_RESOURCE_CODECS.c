@@ -4,7 +4,6 @@
 
 // Packed-resource codecs and DOS runtime edges from segment 0800.
 #include "REVENGE.h"
-#include "revenge/interrupts.h"
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
 #include "revenge/video.h"
@@ -30,25 +29,13 @@ enum
 //      RunExitHandlersAndTerminate
 void DOS_TerminateProcess(word16 exitCode)
 {
-	InstallExceptionHandlers();
+	/* 0800:0112 called InstallExceptionHandlers (0800:0172) first, which
+	 * put back the divide, overflow, bounds and invalid-opcode vectors (00h,
+	 * 04h, 05h, 06h) saved at start-up: Replaced, there is no vector table. */
 	RuntimeTerminationHook();
 	// ANNOTATION: DOS INT 21h/AH=4Ch process termination.
 	SDLBackend_TerminateProcess((byte) exitCode);
 }
-
-// 0800:0172: void InstallExceptionHandlers()
-// Called from:
-//      TerminateProcess
-void InstallExceptionHandlers(void)
-{
-	// ANNOTATION: DOS INT 21h/AH=25h installs startup exception handlers:
-	// 00h divide, 04h overflow, 05h bounds/Print Screen, 06h invalid opcode.
-	DOS_SetInterruptVector(0x00, SavedDivideErrorHandler);
-	DOS_SetInterruptVector(0x04, SavedOverflowHandler);
-	DOS_SetInterruptVector(0x05, SavedBoundsHandler);
-	DOS_SetInterruptVector(0x06, SavedInvalidOpcodeHandler);
-}
-
 
 // 0800:0C34: copy a 32-bit byte count between normalized far buffers.
 // Called from:

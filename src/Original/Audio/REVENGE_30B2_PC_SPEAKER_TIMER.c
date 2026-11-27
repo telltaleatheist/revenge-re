@@ -6,8 +6,6 @@
 #include "revenge/audio_log.h"
 #include "revenge/platform_backend.h"
 
-static DOS_InterruptHandler SavedSystemTimerHandler;
-
 enum
 {
 	MUSIC_DRIVER_NONE = 0x00,
@@ -67,13 +65,15 @@ void DisablePCSpeaker(void)
 
 // 30B2:02D9
 // Called from InitializeGame and PlayScenarioDigitalSoundSequence.
+// The original saves the IRQ0 vector, installs its timer handler (30B2:0010)
+// and programs the PIT's channel 0 to 1193182 / timerDivisor Hz. Host: the
+// game's clock runs the handler's services from now, at the rates the divisor
+// gave them (SDLBackend_StartMusicClock).
 void InstallMusicTimer(void)
 {
 	word16 timerDivisor;
 
 	Seg426B.GameDataSegment = 0x3A6A;
-	SavedSystemTimerHandler = SDLBackend_SwapInterruptHandler(
-		0x08, MusicTimerIRQ0Handler);
 	Seg426B.SystemTickReload = MUSIC_SYSTEM_TICK_RELOAD;
 	Seg426B.SystemTickCountdown = 0x0000;
 	if (Seg426B.MusicDriverMode == MUSIC_DRIVER_MODE_1 ||
@@ -88,17 +88,17 @@ void InstallMusicTimer(void)
 		timerDivisor = MUSIC_PIT_DIVISOR_NORMAL_DRIVER;
 	else
 		timerDivisor = MUSIC_PIT_DIVISOR_FAST_DRIVER;
-	SDLBackend_ProgramPITChannel0Mode(0x36, timerDivisor);
+	SDLBackend_StartMusicClock(timerDivisor);
 	DisablePCSpeaker();
 }
 
 // 30B2:0382
 // Called from ShutdownGame and PlayScenarioDigitalSoundSequence.
+// The original puts the saved IRQ0 vector back and the PIT to the BIOS's
+// 18.2 Hz. Host: the game's clock stops the handler's services.
 void RestoreSystemTimer(void)
 {
-	(void) SDLBackend_SwapInterruptHandler(
-		0x08, SavedSystemTimerHandler);
-	SDLBackend_ProgramPITChannel0Mode(0x36, 0x0000);
+	SDLBackend_StopMusicClock();
 	DisablePCSpeaker();
 }
 
@@ -118,61 +118,15 @@ void SetPCSpeakerEffectStopRequest(void)
 	Seg426B.SpeakerEffectStopRequested = 0x01;
 }
 
-// 30B2:0010
-// Hardware IRQ0 entry: register preservation and IRET are implicit here.
-void MusicTimerIRQ0Handler(void)
-{
-	if ((byte) Seg426B.MusicServiceCountdown == 0x00)
-	{
-		if (++Seg426B.MusicElapsedSubtick > MUSIC_ELAPSED_SUBTICK_MAX)
-		{
-			Seg426B.MusicElapsedSubtick = 0x0000;
-			if (++Seg426B.MusicElapsedUnit > MUSIC_ELAPSED_UNIT_MAX)
-				Seg426B.MusicElapsedUnit = 0x00;
-		}
-
-		DecodePCSpeakerEffectTick();
-		if ((byte) Seg426B.SystemTickCountdown == 0x00)
-		{
-			Seg426B.SystemTickCountdown =
-				Seg426B.SystemTickReload;
-			Seg426B.ChainSystemTimerThisTick = 0x01;
-		}
-		else
-			--Seg426B.SystemTickCountdown;
-	}
-
-	if (Seg426B.MusicDriverMode != MUSIC_DRIVER_NONE)
-		ServiceActiveMIDIDriver();
-
-	if ((byte) Seg426B.MusicServiceCountdown != 0x00)
-		--Seg426B.MusicServiceCountdown;
-	else
-		Seg426B.MusicServiceCountdown =
-			Seg426B.MusicServiceReload;
-
-	if (Seg426B.ChainSystemTimerThisTick != 0x00)
-	{
-		Seg426B.ChainSystemTimerThisTick = 0x00;
-		if (SavedSystemTimerHandler != NULL)
-			SavedSystemTimerHandler();
-		return;
-	}
-
-	SDLBackend_AcknowledgeInterrupt(0x08);
-	if (Seg426B.MusicDriverMode != MUSIC_DRIVER_NONE &&
-		Seg426B.MusicServiceCountdown == 0x0001 &&
-		(Seg426B.SystemTickCountdown & 0x0003) == 0x0001)
-	{
-		EnableHardwareInterrupts();
-		if (Seg426B.MusicServiceBusy == 0x0000)
-		{
-			Seg426B.MusicServiceBusy = 0x0001;
-			ServiceMIDISequenceTick();
-			Seg426B.MusicServiceBusy = 0x0000;
-		}
-	}
-}
+// 30B2:0010, the IRQ0 handler InstallMusicTimer installed, is Replaced: the
+// game's clock calls its services itself (src/SDL/platform.c), at the rates
+// its countdowns gave them. Every MusicServiceReload + 1 interrupts (one
+// without a music driver, four with one: 1193182 / 1000h Hz either way) it
+// ran DecodePCSpeakerEffectTick and counted SystemTickCountdown, chaining the
+// BIOS's handler (the BIOS tick) once in 16 of those. With a music driver it
+// also ran ServiceActiveMIDIDriver on every interrupt and
+// ServiceMIDISequenceTick once in 16 (MusicServiceCountdown 1 with
+// SystemTickCountdown & 3 == 1), with interrupts enabled (STI at 30B2:00B5).
 
 // 30B2:00DF
 // Consume one PC-speaker stream tick. DS is implicit Seg426B, not an argument.

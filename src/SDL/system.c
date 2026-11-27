@@ -3,7 +3,6 @@
 #endif
 
 #include "revenge/platform_backend.h"
-#include "revenge/interrupts.h"
 #include "revenge/far_memory.h"
 #include "revenge/original_data.h"
 #include "revenge/original_import.h"
@@ -17,15 +16,12 @@
 #include <string.h>
 #include <time.h>
 
-static DOS_InterruptHandler interruptHandlers[0x100];
-static uint32 legacyInterruptVectors[0x100];
 static byte *dosMemoryBlock;
 static uint32 dosMemoryBlockBytes;
 static uint32 dosMemoryBlockCapacity;
 static word16 dosMemoryBlockSegment;
 static byte originalDataSegment[0x10000];
 
-void ServiceDigitalPlaybackInterrupt(void);
 
 #define ORIGINAL_DATA_SEGMENT_MAPPED_BYTES 0xB8A0
 
@@ -140,17 +136,6 @@ _Noreturn void SDLBackend_TerminateProcess(byte exitCode)
 	exit((int) exitCode);
 }
 
-void RevengeHost_EnableInterruptDelivery(void)
-{
-    /* Timer services are dispatched cooperatively by the host main loop, so
-       they cannot pre-empt an original procedure between these boundaries. */
-}
-
-void RevengeHost_DisableInterruptDelivery(void)
-{
-    /* See RevengeHost_EnableInterruptDelivery. */
-}
-
 word16 SDLBackend_ResizeMemoryBlock(
     word16 memorySegment,
     word16 paragraphCount)
@@ -233,104 +218,6 @@ void SDLBackend_GetSystemTime(DOS_Time *timeValue)
 const char *SDLBackend_GetEnvironmentVariable(const char *name)
 {
 	return getenv(name);
-}
-
-void SDLBackend_InvokeInterrupt(
-	byte interruptNumber,
-	const InterruptRegisterBlock *inputRegisters,
-	InterruptRegisterBlock *outputRegisters,
-	InterruptSegmentState *segmentState)
-{
-	*outputRegisters = *inputRegisters;
-	outputRegisters->carry = FALSE;
-	outputRegisters->flags = 0x0000;
-
-	if (interruptNumber == 0x10)
-	{
-		byte service = (byte) (inputRegisters->ax >> 0x08);
-		if (service == 0x00)
-			SDLBackend_SetVideoMode((byte) inputRegisters->ax);
-		else if (service == 0x0F)
-			outputRegisters->ax = SDLBackend_GetVideoMode();
-	}
-	(void) segmentState;
-}
-
-void SDLBackend_SetInterruptVector(
-    byte interruptNumber,
-    DOS_InterruptHandler handler)
-{
-    /* Host callbacks replace the DOS IVT. Registration is retained so timer,
-     * keyboard, and critical-error seams can be connected incrementally. */
-    interruptHandlers[interruptNumber] = handler;
-}
-
-void SDLBackend_DispatchInterrupt(byte interruptNumber)
-{
-	DOS_InterruptHandler handler = interruptHandlers[interruptNumber];
-
-	if (handler != NULL)
-		handler();
-}
-
-DOS_InterruptHandler SDLBackend_SwapInterruptHandler(
-    byte interruptNumber,
-    DOS_InterruptHandler handler)
-{
-    DOS_InterruptHandler previousHandler;
-
-    previousHandler = interruptHandlers[interruptNumber];
-    interruptHandlers[interruptNumber] = handler;
-    return previousHandler;
-}
-
-uint32 SDLBackend_SwapInterruptVector(
-    byte interruptNumber,
-    uint32 newVector)
-{
-    uint32 oldVector;
-
-    oldVector = legacyInterruptVectors[interruptNumber];
-    legacyInterruptVectors[interruptNumber] = newVector;
-    return oldVector;
-}
-
-void SDLBackend_ChainInterruptVector(uint32 interruptVector)
-{
-	DOS_InterruptHandler handler = NULL;
-
-	switch (interruptVector)
-	{
-	case 0x375F0A1DUL:
-		handler = ServiceDigitalPlaybackInterrupt;
-		break;
-	}
-	if (handler != NULL)
-		handler();
-}
-
-void SDLBackend_DispatchInstalledInterruptVector(byte interruptNumber)
-{
-	SDLBackend_ChainInterruptVector(legacyInterruptVectors[interruptNumber]);
-}
-
-void SDLBackend_ProgramPITChannel0(word16 divisor)
-{
-    /* The cooperative host timer has no programmable PIT. The preserved
-       procedure still owns the divisor state exchanged around this call. */
-    (void)divisor;
-}
-
-void SDLBackend_ProgramPITChannel0Mode(byte mode, word16 divisor)
-{
-    (void)mode;
-    (void)divisor;
-}
-
-void SDLBackend_AcknowledgeInterrupt(byte interruptNumber)
-{
-    /* Host callbacks do not require a programmable-interrupt-controller EOI. */
-    (void)interruptNumber;
 }
 
 uint32 SDLBackend_GetBIOSTickCount(void)

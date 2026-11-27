@@ -32,6 +32,9 @@ static uint64_t nextMIDIDriverTick;
 static uint64_t nextGameClockTick;
 static uint64_t nextDigitalPlaybackTick;
 static uint64_t nextVideoPresentTick;
+static void (*gameClockHandler)(void);
+static word16 musicClockDivisor;
+static word16 digitalPlaybackClockDivisor;
 static word16 mouseEventMask;
 static word16 hostMouseButtons;
 
@@ -149,10 +152,8 @@ void SDLBackend_ServiceTimers(void)
         while (nextDigitalPlaybackTick <= now &&
             DigitalSoundBusy != FALSE)
         {
-            /* DOS delivered the currently installed IRQ0 handler from the
-             * programmable interval timer.  The hosted boundary performs
-             * the same dispatch cooperatively. */
-            SDLBackend_DispatchInstalledInterruptVector(0x08);
+            if (digitalPlaybackClockDivisor != 0x0000)
+                ServiceDigitalAudioTick();
             nextDigitalPlaybackTick += digitalPlaybackPeriod;
         }
         if (DigitalSoundBusy == FALSE)
@@ -180,13 +181,39 @@ void SDLBackend_ServiceTimers(void)
     }
     while (nextGameClockTick <= now)
     {
-        SDLBackend_DispatchInterrupt(0x1C);
+        if (gameClockHandler != NULL)
+            gameClockHandler();
         nextGameClockTick += gameClockPeriod;
     }
     SDLBackend_AdvanceAudio();
     /* The keyboard's and the mouse's interrupts, delivered at the same
      * passes as the timer's. */
     DeliverHostEvents();
+}
+
+void SDLBackend_SetGameClockHandler(void (*handler)(void))
+{
+    gameClockHandler = handler;
+}
+
+void SDLBackend_StartMusicClock(word16 pitDivisor)
+{
+    musicClockDivisor = pitDivisor;
+}
+
+void SDLBackend_StopMusicClock(void)
+{
+    musicClockDivisor = 0x0000;
+}
+
+void SDLBackend_StartDigitalPlaybackClock(word16 pitDivisor)
+{
+    digitalPlaybackClockDivisor = pitDivisor;
+}
+
+void SDLBackend_StopDigitalPlaybackClock(void)
+{
+    digitalPlaybackClockDivisor = 0x0000;
 }
 
 void SDLBackend_HoldTimers(uint64_t nanoseconds)

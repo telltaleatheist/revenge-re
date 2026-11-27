@@ -53,6 +53,5 @@ int16 TranslateDOSError(int16 dosErrorCode);
 word16 DOS_ResizeMemoryBlock(word16 memorySegment, word16 paragraphCount);
 void DOS_GetSystemDate(DOS_Date *date);
 void DOS_GetSystemTime(DOS_Time *time);
-void DOS_SetInterruptVector(byte interruptNumber, DOS_InterruptHandler handler);
 
 #endif

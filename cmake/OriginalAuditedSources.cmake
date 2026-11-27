@@ -120,11 +120,8 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Campaign/REVENGE_39CC_CLOCK_SNAPSHOT.c
     src/Original/IO/REVENGE_39D9_SYSTEM_TIME.c
 	src/Original/IO/REVENGE_39DC_ENVIRONMENT.c
-    src/Original/IO/REVENGE_39E3_INTERRUPT_VECTOR.c
-	src/Original/Runtime/REVENGE_39E5_INTERRUPT_CALL.c
 	src/Original/Utility/REVENGE_39F8_STRING_TOKENIZE.c
 	src/Original/Utility/REVENGE_39F4_STRING_COPY_N.c
-	src/Original/Runtime/REVENGE_39F3_INTERRUPT_SEGMENTS.c
 	src/Original/Campaign/REVENGE_3A07_EPOCH_TIME.c
 	src/Original/Campaign/REVENGE_3A3C_TIMEZONE.c
     src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.c

@@ -104,13 +104,14 @@ void WritePCSpeakerPITDivisor(
     byte divisorHighByte);
 void StartPCSpeakerFixedTone(void);
 void DisablePCSpeaker(void);
-void MusicTimerIRQ0Handler(void);
 void InstallMusicTimer(void);
 void RestoreSystemTimer(void);
 void InitializeSpeakerEffectState(void);
 void StartPCSpeakerEffectStream(const byte *effectStream);
 void SetPCSpeakerEffectStopRequest(void);
 void DecodePCSpeakerEffectTick(void);
+/* 375F:0A62: one digital sample mixed and advanced for every playing one. */
+void ServiceDigitalAudioTick(void);
 
 void SetMIDITimingDivisor(uint16 timerCallsPerMinute);
 void ConfigureMIDITempo(
