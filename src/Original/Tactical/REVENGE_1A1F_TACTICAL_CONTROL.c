@@ -3,6 +3,7 @@
 
 #include "REVENGE_1A1F_INTERNAL.h"
 #include "revenge/debug.h"
+#include "revenge/platform_backend.h"
 
 // 1A1F:5755: translate pending mouse input into a tactical input code.
 // Verified against 1A1F:5755-5961.
@@ -641,9 +642,11 @@ word16 RunGameOptionsMenu(word16 embeddedMode)
 
 	// V: The menu cannot safely reconfigure sound while a digitized effect is
 	// active. The original busy-waits here before constructing the window.
-	do
-	{
-	} while (DigitalSoundBusy != 0x00);
+	// DOS finished the effect from IRQ0 meanwhile; the port services its
+	// timers in the loop, as the other waits on the effect do (only while
+	// the effect plays: the original's empty loop costs nothing otherwise).
+	while (DigitalSoundBusy != 0x00)
+		SDLBackend_ServiceTimers();
 
 	menuEntryCount = (int16) (embeddedMode + 0x06);
 	menuHeightTiles = (int16) (word16)

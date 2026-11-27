@@ -3,6 +3,7 @@
 
 #include "REVENGE_1A1F_INTERNAL.h"
 #include "revenge/debug.h"
+#include "revenge/platform_backend.h"
 
 // 1A1F:0000: void RunTacticalBattle(word16 scenarioCode)
 // Called from:
@@ -616,8 +617,10 @@ void RunTacticalInteractionLoop(void)
 	{
 		CampaignFlags |= 0x0004;
 	}
+	/* DOS finished the effect from IRQ0 while this loop spun; the port
+	 * services its timers here, as the other waits on the effect do. */
 	while (DigitalSoundBusy != 0x00)
-		;
+		SDLBackend_ServiceTimers();
 }
 
 // 1A1F:10CD: void LoadUnitTemplateRecord(short unitType)
