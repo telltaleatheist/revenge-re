@@ -20,20 +20,29 @@ run from source (below).
 
 - Builds on Windows (MSVC), macOS 12 or later (one universal build for Intel
   and Apple silicon) and Linux (GCC).
-- The game's text and data come from the player's copy: each piece is checked
-  against offsets, lengths and keyed hashes before play
-  (`src/Support/original_import*.c`, `tools/import`), and
-  `tools/text_audit.py` checks that the tree holds none of it.
+- The game's own words, pictures and sounds come from the player's copy: the
+  first start imports them into a story folder of the player's own, each piece
+  checked by offset, length and keyed hash, and play never opens the game's
+  program again (`trace.exe_free`). `tools/text_audit.py` checks that this tree
+  holds none of them.
+- The rules, the screen layout and a new campaign's starting state are ours, in
+  `data/rules`, `data/ui` and `data/start`, each table checked against the
+  player's copy (`rules.exe`).
+- Music plays from a General MIDI soundfont, each MT-32 sound the songs choose
+  mapped to its nearest instrument (`data/music`); `music = speaker` and `off`
+  are there too. Effects and speech play as recorded samples, or as the
+  speaker's tones with the speech kept clean (`sound = speaker`).
 - Runs can be recorded and replayed exactly, and compared with the original
-  running under DOSBox-X ([tools/trace](tools/trace/README.md)). Eleven scripts
-  so far, from the title through the first two battles and a save and its load,
-  match the original's state at every snapshot.
-- Those comparisons, and building with more compilers, found bugs in the
-  reconstruction, among them line of sight on every map. They are fixed here
-  and reported upstream
+  running under DOSBox-X ([tools/trace](tools/trace/README.md)). Thirteen
+  scripts, from the title through the first two battles, a save and its load,
+  and a save made by the original itself, match the original's state.
+- Those comparisons, and building with more compilers and the address
+  sanitizer, found bugs in the reconstruction, among them line of sight on
+  every map. They are fixed here and reported upstream
   ([issue #1](https://github.com/Elthial/Crescent-Hawks-Revenge-sdl-port/issues/1)).
-- Not yet: the rest of the campaign compared, music through a soundfont, the
-  setup screens and packages, and the BattleTech launcher.
+- Not yet: the rest of the campaign compared, the old hardware layers replaced
+  (graphics, input and timing), the setup screens and packages, and the
+  BattleTech launcher.
 
 The tree started from Elthial's v1.0 (d75ee14). His evidence tree
 (disassembly and annotations) and documentation images are not carried here;
