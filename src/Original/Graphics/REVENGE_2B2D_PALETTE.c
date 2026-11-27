@@ -7,47 +7,22 @@
 #include "revenge/original_data.h"
 #include "revenge/video.h"
 
-void Tandy_LoadPaletteRegisters(
-	const byte *logicalPalette);
-
 // 2B2D:0004: void LoadVideoPalette(Stack far pointer paletteData)
 // Called from:
 //      LoadScreenPalette
 //      InitializeGame
 void LoadVideoPalette(const byte *paletteData)
 {
-	const byte *logicalPalette;
-	int16 paletteRegister;
-
-	logicalPalette = paletteData + VGA_PALETTE_BYTE_COUNT;
 	REVENGE_PRESERVATION_TRACE(
 		"palette: adapter=%u color15=%u,%u,%u logical15=%u\n",
 		VideoAdapterType,
 		paletteData[0x2D], paletteData[0x2E], paletteData[0x2F],
-		logicalPalette[0x0F]);
+		paletteData[VGA_PALETTE_BYTE_COUNT + 0x0F]);
 	WaitForVerticalRetraceEdge((byte) VerticalRetraceEdgeMode);
-	switch (VideoAdapterType)
-	{
-	case VIDEO_ADAPTER_TANDY:
-		Tandy_LoadPaletteRegisters(logicalPalette);
-		break;
-	case VIDEO_ADAPTER_EGA:
-		for (paletteRegister = 0x00;
-			 paletteRegister < EGA_LOGICAL_PALETTE_ENTRY_COUNT;
-			 ++paletteRegister)
-		{
-			int16 paletteValue;
-
-			paletteValue = (int8) logicalPalette[paletteRegister];
-			if (paletteValue > 0x07)
-				paletteValue += 0x08;
-			EGA_SetPaletteRegister(
-				(byte) paletteRegister, (byte) paletteValue);
-		}
-		break;
-	case VIDEO_ADAPTER_VGA:
+	/* The Tandy's palette registers (2B2D:0013-002C, 0800:4E6A) and the
+	 * EGA's (2B2D:002E-005D, 0800:4DB1) went with those adapters; the
+	 * rebuild is VGA only. */
+	if (VideoAdapterType == VIDEO_ADAPTER_VGA)
 		VGA_LoadPalette(paletteData);
-		break;
-	}
 }
 

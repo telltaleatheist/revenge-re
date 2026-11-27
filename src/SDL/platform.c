@@ -26,7 +26,6 @@ static byte indexedFramebuffer[VIDEO_SEGMENT_SIZE];
 static uint32_t scanoutPixels[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
 static uint32_t logicalPalette[VGA_DAC_ENTRY_COUNT];
 static byte currentVideoMode = 0x03;
-static uint16 currentVideoAdapter = VIDEO_ADAPTER_EGA;
 static uint64_t nextSpeakerEffectTick;
 static uint64_t nextMIDIServiceTick;
 static uint64_t nextMIDIDriverTick;
@@ -196,9 +195,9 @@ static void SetEgaColor(byte logicalColor, byte egaColor)
     byte blue;
     byte intensity;
 
-    /* The game's 200-line EGA mode is displayed through an RGBI monitor.
-       Attribute-controller bit 4 is the shared intensity signal; bits 3 and
-       5 are not independent blue/red intensity channels in this mode. */
+    /* The palette a mode set leaves: the first 16 DAC entries hold the
+       EGA's default colours, as on an RGBI monitor (bit 4 the shared
+       intensity), the rest black. */
     intensity = (egaColor & 0x10) != 0 ? 0x55 : 0x00;
     red = (byte)(((egaColor & 0x04) != 0 ? 0xAA : 0x00) + intensity);
     green = (byte)(((egaColor & 0x02) != 0 ? 0xAA : 0x00) + intensity);
@@ -463,30 +462,6 @@ void SDLBackend_SetVideoMode(byte videoMode)
         (void)SDLBackend_Open();
 }
 
-void SDLBackend_SetVideoAdapter(uint16 adapterType)
-{
-    currentVideoAdapter = adapterType;
-    (void)currentVideoAdapter;
-}
-
-void SDLBackend_SelectCgaPalette(byte paletteId)
-{
-    static const byte cgaPalette0[0x03] = { 0x02, 0x04, 0x06 };
-    static const byte cgaPalette1[0x03] = { 0x03, 0x05, 0x07 };
-    const byte *palette;
-
-    palette = paletteId == 0x00 ? cgaPalette0 : cgaPalette1;
-    SetEgaColor(0x01, palette[0x00]);
-    SetEgaColor(0x02, palette[0x01]);
-    SetEgaColor(0x03, palette[0x02]);
-}
-
-void SDLBackend_SetPaletteRegister(byte paletteRegister, byte paletteValue)
-{
-    if (paletteRegister < EGA_LOGICAL_PALETTE_ENTRY_COUNT)
-        SetEgaColor(paletteRegister, paletteValue);
-}
-
 void SDLBackend_SetEgaGraphicsControllerRegister(byte registerIndex, byte value)
 {
     /* The indexed host framebuffer does not expose EGA latches or planes.
@@ -580,14 +555,11 @@ uint16 Platform_RawKeypressForScancode(int scancode, byte modifierFlags)
 
 uint16 Platform_PaletteRgb(byte out[0x300])
 {
-    uint16 count;
     uint16 color;
 
-    /* In the 16-colour mode only the first 16 can be on the screen. */
-    count = currentVideoMode == 0x0D ? EGA_LOGICAL_PALETTE_ENTRY_COUNT : VGA_DAC_ENTRY_COUNT;
-    for (color = 0x0000; color < count; ++color)
+    for (color = 0x0000; color < VGA_DAC_ENTRY_COUNT; ++color)
         memcpy(&out[color * 0x03], &logicalPalette[color], 0x03);
-    return count;
+    return VGA_DAC_ENTRY_COUNT;
 }
 
 byte *SDLBackend_GetIndexedFramebuffer(void)

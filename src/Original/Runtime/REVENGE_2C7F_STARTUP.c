@@ -39,8 +39,6 @@ void FreeFarMemory(byte *allocation);
 char *FarStringTokenize(
 	char *string, const char *delimiters);
 void LoadVideoPalette(const byte *paletteData);
-void InitializeCgaPixelTranslationTables(
-	const byte *seedTable);
 void InitializeMouseSupport(void);
 void ShutdownMouseSupport(void);
 void InitializeDigitalSoundDriver(void);
@@ -52,13 +50,9 @@ void RequestPCSpeakerEffectStop(void);
 
 enum
 {
-	VIDEO_ADAPTER_CGA = 0x00,
-	VIDEO_ADAPTER_TANDY = 0x01,
-	VIDEO_ADAPTER_EGA = 0x02,
 	VIDEO_ADAPTER_VGA = 0x03,
 	VIDEO_ADAPTER_MCGA_CONFIG = 0x07,
-	VIDEO_MEMORY_SEGMENT_EGA_VGA = 0xA000,
-	VIDEO_MEMORY_SEGMENT_CGA_TANDY = 0xB800
+	VIDEO_MEMORY_SEGMENT_VGA = 0xA000
 };
 
 static const char *const MediaConfigurationErrorText =
@@ -143,11 +137,8 @@ void InitializeGame(void)
 			DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_3)); // TEXT DS:3A53
 			startupChecksPassed = FALSE;
 		}
-		else if (VideoAdapterType == VIDEO_ADAPTER_TANDY && availableMemoryKiB < 0x0120)
-		{
-			DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_4)); // TEXT DS:3A12
-			startupChecksPassed = FALSE;
-		}
+		/* The Tandy's memory check (2C7F:0159-0173) went with the Tandy;
+		 * the rebuild is VGA only. */
 		if (startupChecksPassed == FALSE)
 		{
 			DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_5)); // TEXT DS:3C70
@@ -181,21 +172,15 @@ void InitializeGame(void)
 	SecondaryScreenBuffer = secondaryBuffer;
 	PlanarScreenBuffer = secondaryBuffer;
 
+	/* 2C7F:023B-0260: B800 for the CGA and the Tandy, A000 for the EGA and
+	 * the VGA; the rebuild is VGA only. */
 	VideoFramebuffer = HostFarPointer_Resolve(
-		MAKE_DWORD(VIDEO_MEMORY_SEGMENT_CGA_TANDY, 0x00));
-	if (VideoAdapterType == VIDEO_ADAPTER_EGA ||
-		VideoAdapterType == VIDEO_ADAPTER_VGA)
-		VideoFramebuffer = HostFarPointer_Resolve(
-			MAKE_DWORD(VIDEO_MEMORY_SEGMENT_EGA_VGA, 0x00));
+		MAKE_DWORD(VIDEO_MEMORY_SEGMENT_VGA, 0x00));
 	ActiveRenderTarget = VideoFramebuffer;
 
 	LoadVideoPalette(VideoPaletteData);
-	if (VideoAdapterType == VIDEO_ADAPTER_CGA)
-	{
-		BIOS_SelectCgaPalette(0x01);
-		InitializeCgaPixelTranslationTables(
-			FAR_POINTER(byte, 0x3A6A, 0x03BC));
-	}
+	/* The CGA's palette and pixel tables (2C7F:0279-0295, 0800:4D98,
+	 * 34F8) went with the CGA. */
 	InstallDefaultCriticalErrorHandler();
 	GameInitialized = TRUE;
 	InitializeMouseSupport();

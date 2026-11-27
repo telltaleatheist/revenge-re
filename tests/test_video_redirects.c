@@ -25,11 +25,11 @@ int main(void)
     assert(GetCurrentBIOSVideoMode() == 0x03);
     SavedBIOSVideoMode = GetCurrentBIOSVideoMode();
     SetVideoModeForAdapter(VIDEO_ADAPTER_CGA);
-    assert(fakeBackend.videoAdapter == VIDEO_ADAPTER_CGA);
+    assert(ActiveVideoAdapterType == VIDEO_ADAPTER_CGA);
     assert(fakeBackend.videoMode == 0x04);
 
     SetVideoModeForAdapter(VIDEO_ADAPTER_EGA);
-    assert(fakeBackend.videoAdapter == VIDEO_ADAPTER_EGA);
+    assert(ActiveVideoAdapterType == VIDEO_ADAPTER_EGA);
     assert(fakeBackend.videoMode == 0x0D);
 
     SetVideoModeForAdapter(0x0004);
@@ -39,11 +39,6 @@ int main(void)
     SetVideoModeForAdapter(0x0006);
     assert(fakeBackend.videoMode == 0x03);
 
-    BIOS_SelectCgaPalette(0x01);
-    assert(fakeBackend.paletteValue == 0x01);
-    EGA_SetPaletteRegister(0x0A, 0x3E);
-    assert(fakeBackend.paletteRegister == 0x0A);
-    assert(fakeBackend.paletteValue == 0x3E);
     memset(vgaPalette, 0x2A, sizeof(vgaPalette));
     VGA_LoadPalette(vgaPalette);
     assert(memcmp(fakeBackend.vgaPalette, vgaPalette,

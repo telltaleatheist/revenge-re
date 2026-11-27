@@ -264,8 +264,6 @@ enum
 /* Verified DOS and BIOS boundary contracts. */
 void EnableHardwareInterrupts(void);
 void DisableHardwareInterrupts(void);
-void BIOS_SelectCgaPalette(byte paletteId);
-void EGA_SetPaletteRegister(byte paletteRegister, byte paletteValue);
 void SetVideoAdapterType(word16 adapterType);
 word16 GetCurrentBIOSVideoMode(void);
 void SetVideoModeForAdapter(word16 adapterOrRestoreSlot);

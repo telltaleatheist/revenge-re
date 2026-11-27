@@ -284,22 +284,6 @@ void SDLBackend_SetVideoMode(byte videoMode)
     fakeBackend.videoMode = videoMode;
 }
 
-void SDLBackend_SetVideoAdapter(uint16 adapterType)
-{
-    fakeBackend.videoAdapter = adapterType;
-}
-
-void SDLBackend_SelectCgaPalette(byte paletteId)
-{
-    fakeBackend.paletteValue = paletteId;
-}
-
-void SDLBackend_SetPaletteRegister(byte paletteRegister, byte paletteValue)
-{
-    fakeBackend.paletteRegister = paletteRegister;
-    fakeBackend.paletteValue = paletteValue;
-}
-
 void SDLBackend_SetEgaGraphicsControllerRegister(byte registerIndex, byte value)
 {
     fakeBackend.paletteRegister = registerIndex;

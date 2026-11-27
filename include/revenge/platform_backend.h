@@ -64,10 +64,6 @@ void SDLBackend_Delay(uint32_t milliseconds);
 
 byte SDLBackend_GetVideoMode(void);
 void SDLBackend_SetVideoMode(byte videoMode);
-void SDLBackend_SetVideoAdapter(uint16 adapterType);
-void SDLBackend_SelectCgaPalette(byte paletteId);
-void SDLBackend_SetPaletteRegister(
-	byte paletteRegister, byte paletteValue);
 void SDLBackend_SetEgaGraphicsControllerRegister(
 	byte registerIndex, byte value);
 void SDLBackend_SetEgaSequencerRegister(

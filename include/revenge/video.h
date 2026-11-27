@@ -44,8 +44,6 @@ extern word16 VerticalRetraceEdgeMode;
 
 uint16 GetCurrentBIOSVideoMode(void);
 void SetVideoModeForAdapter(uint16 adapterOrRestoreSlot);
-void BIOS_SelectCgaPalette(byte paletteId);
-void EGA_SetPaletteRegister(byte paletteRegister, byte paletteValue);
 void VGA_LoadPalette(const byte *paletteRgbTriplets);
 void SetVideoAdapterType(uint16 adapterType);
 uint16 IsVerticalRetraceActive(void);

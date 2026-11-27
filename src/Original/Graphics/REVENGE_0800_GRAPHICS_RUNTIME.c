@@ -980,28 +980,6 @@ void DisableHardwareInterrupts(void)
 	RevengeHost_DisableInterruptDelivery();
 }
 
-void InitializeCgaPixelTranslationTables(const byte *seedTable)
-{
-	word16 packedPixels;
-
-	if (ActiveVideoAdapterType != VIDEO_ADAPTER_CGA)
-		return;
-	memcpy(CgaPackedPixelSeedTable, seedTable,
-		sizeof(CgaPackedPixelSeedTable));
-	for (packedPixels = 0x00; packedPixels < 0x0100; ++packedPixels)
-	{
-		byte highPixel = (byte) (packedPixels >> 0x04);
-		byte lowPixel = (byte) (packedPixels & 0x0F);
-
-		CgaEvenPixelPhaseLookup[packedPixels] =
-			(byte) ((CgaPackedPixelSeedTable[highPixel] << 0x02) |
-			CgaPackedPixelSeedTable[0x10 + lowPixel]);
-		CgaOddPixelPhaseLookup[packedPixels] =
-			(byte) ((CgaPackedPixelSeedTable[0x10 + highPixel] << 0x02) |
-			CgaPackedPixelSeedTable[lowPixel]);
-	}
-}
-
 void InitializeMouseSupport(void)
 {
 	/* 0800:36A6 reserves the 0240h-byte cursor backing store, initializes
@@ -1104,17 +1082,6 @@ void ShutdownMouseSupport(void)
 		SDLBackend_SetMouseVisible(FALSE);
 }
 
-void Tandy_LoadPaletteRegisters(const byte *paletteValues)
-{
-	byte paletteRegister;
-
-	if (ActiveVideoAdapterType != VIDEO_ADAPTER_TANDY)
-		return;
-	for (paletteRegister = 0x00; paletteRegister < 0x10; ++paletteRegister)
-		SDLBackend_SetPaletteRegister(
-			(byte) (0x10 + paletteRegister), paletteValues[paletteRegister]);
-}
-
 uint16 DOS_PrintCharacter(char character)
 {
 	/* 0800:3BBF -- DOS INT 21h/AH=06h. */
@@ -1127,18 +1094,6 @@ void DOS_SelectDefaultDrive(byte zeroBasedDrive)
 	SDLBackend_SelectDefaultDrive(zeroBasedDrive);
 }
 
-void BIOS_SelectCgaPalette(byte paletteId)
-{
-	/* 0800:4D98 -- BIOS INT 10h/AH=0Bh. */
-	SDLBackend_SelectCgaPalette(paletteId);
-}
-
-void EGA_SetPaletteRegister(byte paletteRegister, byte paletteValue)
-{
-	/* 0800:4DB1 -- EGA attribute-controller register write. */
-	SDLBackend_SetPaletteRegister(paletteRegister, paletteValue);
-}
-
 void VGA_LoadPalette(const byte *paletteRgbTriplets)
 {
 	/* 0800:0974 -- BIOS INT 10h/AX=1012h. */
@@ -1149,7 +1104,6 @@ void SetVideoAdapterType(uint16 adapterType)
 {
 	/* 0800:4DE7 -- original assignment to 4184:0E4C. */
 	ActiveVideoAdapterType = adapterType;
-	SDLBackend_SetVideoAdapter(adapterType);
 }
 
 uint16 IsVerticalRetraceActive(void)
