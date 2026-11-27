@@ -4,7 +4,7 @@
 {"digest": "b8b93714c24d4cee", "kinds": {"snap": 1, "tone": 206, "tone-effect": 9}, "lines": 216, "snap": "won"}
 {"digest": "6423e492c69bc2bf", "kinds": {"midi --": 2, "midi 80": 67, "midi 90": 73, "midi B0": 7, "midi C0": 15, "midi E0": 11, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 53, "tone": 22}, "lines": 253, "snap": "story"}
 {"digest": "04c95442b1a525bc", "kinds": {"midi 80": 34, "midi 90": 31, "midi C0": 2, "snap": 1, "tone": 9}, "lines": 77, "snap": "menu"}
-{"digest": "7d3b0f97d76bcb66", "kinds": {"midi --": 1, "midi 80": 118, "midi 90": 121, "midi B0": 39, "midi C0": 9, "midi E0": 8, "midi F7": 1, "midi reset": 1, "pcm done": 4, "pcm speech": 4, "snap": 1, "sysex": 52, "tone": 23}, "lines": 382, "snap": "start"}
+{"digest": "4ca38564cdde2fa7", "kinds": {"midi --": 1, "midi 80": 118, "midi 90": 121, "midi B0": 39, "midi C0": 9, "midi E0": 8, "midi F7": 1, "midi reset": 1, "pcm done": 4, "pcm speech": 4, "snap": 1, "sysex": 52, "tone": 23}, "lines": 382, "snap": "start"}
 {"digest": "bf5f1c4db15fe354", "kinds": {"snap": 1}, "lines": 1, "snap": "options"}
 {"digest": "9880dccec81d76d6", "kinds": {"snap": 1}, "lines": 1, "snap": "commands"}
 {"digest": "3feef75b5515e4dd", "kinds": {"snap": 1}, "lines": 1, "snap": "ordered"}

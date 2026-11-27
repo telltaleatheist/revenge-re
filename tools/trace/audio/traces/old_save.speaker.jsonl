@@ -1,3 +1,3 @@
 {"digest": "6e3e5404b4014e2b", "kinds": {"midi --": 3, "midi 80": 380, "midi 90": 384, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi F7": 1, "midi reset": 2, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71, "tone": 47}, "lines": 933, "snap": "slots"}
 {"digest": "a937445a3baf02bb", "kinds": {"midi --": 1, "midi 90": 2, "midi B0": 23, "midi C0": 8, "midi E0": 8, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 52, "tone": 4}, "lines": 101, "snap": "loaded"}
-{"digest": "584315a315ef2f50", "kinds": {"midi 80": 57, "midi 90": 60, "midi B0": 16, "midi C0": 1, "pcm done": 4, "pcm speech": 4, "snap": 1, "tone": 11}, "lines": 154, "snap": "second"}
+{"digest": "1bc452beb305f47a", "kinds": {"midi 80": 57, "midi 90": 60, "midi B0": 16, "midi C0": 1, "pcm done": 4, "pcm speech": 4, "snap": 1, "tone": 11}, "lines": 154, "snap": "second"}
