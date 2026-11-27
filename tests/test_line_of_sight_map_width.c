@@ -11,6 +11,7 @@
  * width into eight of those words, at 3A6A:7A9B-7ACB, the same memory, so the
  * trace walks rows of the loaded map's width. No map is 96 wide, the width
  * the image starts the tables at. */
+void InitializeResourceCache(void);
 void LoadTacticalMap(word16 mapNumber);
 word16 TraceMapLineOfSight(int16 sourceX, int16 sourceY, int16 targetX, int16 targetY,
 	const byte *terrainTypeMap, byte specialTerrainMinimum, byte specialTerrainMaximum,
@@ -43,7 +44,9 @@ int main(void)
 	assert(TerrainTypeMap != NULL);
 	HostFarPointer_Reset();
 	HostFarPointer_Register(TerrainTypeMap, 0x8000);
-	OriginalData_InitializeResourceDescriptorPointers();
+	/* As the game's start-up does (2C7F): every tracked file's slot free, no
+	 * file cached. */
+	InitializeResourceCache();
 	/* The test backend's reads leave the buffer as it is: the header the
 	 * loader reads first is these bytes, and the cells read over it after are
 	 * the ones filled in below. */

@@ -2,6 +2,7 @@
 #include "revenge/media_settings.h"
 #include "revenge/platform_backend.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -175,9 +176,15 @@ void SDLBackend_PollInput(void)
     ++fakeBackend.inputPolls;
 }
 
+/* The game waits here only when its keyboard ring is empty (3037:01B5), and
+ * nothing fills the ring on this backend but the test itself: the wait would
+ * never end. A test that reaches it is waiting for a key it didn't queue (a
+ * message box, an error it didn't expect), so it fails here, naming that. */
 void SDLBackend_WaitInput(void)
 {
     ++fakeBackend.inputPolls;
+    fputs("fake backend: the game waits for a key, and none is queued\n", stderr);
+    abort();
 }
 
 byte SDLBackend_ReadBiosKeyboardFlags(word16 offset)

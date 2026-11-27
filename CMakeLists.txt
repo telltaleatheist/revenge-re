@@ -1305,3 +1305,20 @@ foreach(chr_target IN LISTS chr_targets)
 		endif()
 	endif()
 endforeach()
+
+# Every test here fails after 120 seconds unless it names a longer TIMEOUT
+# (soundfont.bank's, and these three, which play the game many times: 20 to 45
+# seconds on a Release build, more under ASan or a loaded machine). A test that
+# hangs fails fast instead of holding the run.
+get_property(chr_tests DIRECTORY PROPERTY TESTS)
+foreach(chr_test IN ITEMS audio.check trace.goldens trace.exe_free)
+	if(chr_test IN_LIST chr_tests)
+		set_tests_properties(${chr_test} PROPERTIES TIMEOUT 300)
+	endif()
+endforeach()
+foreach(chr_test IN LISTS chr_tests)
+	get_test_property(${chr_test} TIMEOUT chr_test_timeout)
+	if(NOT chr_test_timeout)
+		set_tests_properties(${chr_test} PROPERTIES TIMEOUT 120)
+	endif()
+endforeach()
