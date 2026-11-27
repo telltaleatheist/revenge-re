@@ -10,7 +10,7 @@
 //      DrawUnitStatusScreen
 void SetActiveRenderTarget(byte *renderTarget)
 {
-	ActiveRenderTarget = renderTarget;
-	/* The EGA's routing of the primary buffer to its A200 page
+    ActiveRenderTarget = renderTarget;
+    /* The EGA's routing of the primary buffer to its A200 page
 	 * (3596:0012-0036) went with the EGA; the rebuild is VGA only. */
 }

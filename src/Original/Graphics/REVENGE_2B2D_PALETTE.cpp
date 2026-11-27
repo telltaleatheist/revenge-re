@@ -13,16 +13,15 @@
 //      InitializeGame
 void LoadVideoPalette(const byte *paletteData)
 {
-	REVENGE_PRESERVATION_TRACE(
-		"palette: adapter=%u color15=%u,%u,%u logical15=%u\n",
-		VideoAdapterType,
-		paletteData[0x2D], paletteData[0x2E], paletteData[0x2F],
-		paletteData[VGA_PALETTE_BYTE_COUNT + 0x0F]);
-	WaitForVerticalRetraceEdge((byte) VerticalRetraceEdgeMode);
-	/* The Tandy's palette registers (2B2D:0013-002C, 0800:4E6A) and the
+    REVENGE_PRESERVATION_TRACE(
+        "palette: adapter=%u color15=%u,%u,%u logical15=%u\n",
+        VideoAdapterType,
+        paletteData[0x2D], paletteData[0x2E], paletteData[0x2F],
+        paletteData[VGA_PALETTE_BYTE_COUNT + 0x0F]);
+    WaitForVerticalRetraceEdge((byte) VerticalRetraceEdgeMode);
+    /* The Tandy's palette registers (2B2D:0013-002C, 0800:4E6A) and the
 	 * EGA's (2B2D:002E-005D, 0800:4DB1) went with those adapters; the
 	 * rebuild is VGA only. */
-	if (VideoAdapterType == VIDEO_ADAPTER_VGA)
-		VGA_LoadPalette(paletteData);
+    if (VideoAdapterType == VIDEO_ADAPTER_VGA)
+        VGA_LoadPalette(paletteData);
 }
-

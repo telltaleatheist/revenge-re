@@ -7,7 +7,6 @@
 //      RunGameOptionsMenu
 void SelectAndClearTextWindow(word16 windowIndex)
 {
-	SelectTextWindow(windowIndex);
-	ClearActiveTextWindow();
+    SelectTextWindow(windowIndex);
+    ClearActiveTextWindow();
 }
-

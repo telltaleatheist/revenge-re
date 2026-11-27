@@ -28,19 +28,18 @@ OriginalExitHandler RuntimeExitHook3 = RuntimeExitStepStub;
 //      ShutdownAndExit
 void RunExitHandlersAndTerminate(word16 exitCode)
 {
-	word16 previousHandlerCount;
+    word16 previousHandlerCount;
 
-	do
-	{
-		previousHandlerCount = ExitHandlerCount;
-		--ExitHandlerCount;
-		if (previousHandlerCount != 0x00)
-			ExitHandlerTable[ExitHandlerCount]();
-	}
-	while (previousHandlerCount != 0x00);
+    do
+    {
+        previousHandlerCount = ExitHandlerCount;
+        --ExitHandlerCount;
+        if (previousHandlerCount != 0x00)
+            ExitHandlerTable[ExitHandlerCount]();
+    } while (previousHandlerCount != 0x00);
 
-	RuntimeExitHook1();
-	RuntimeExitHook2();
-	RuntimeExitHook3();
-	DOS_TerminateProcess(exitCode);
+    RuntimeExitHook1();
+    RuntimeExitHook2();
+    RuntimeExitHook3();
+    DOS_TerminateProcess(exitCode);
 }

@@ -48,25 +48,25 @@ byte UnitClassTypeListBytes[0x44];
 LanceEditorLayoutData LanceEditorLayout;
 
 void UnitSelectionCard_Load(UnitSelectionCard *card,
-	const RevengeSavedSelectionCard *saved)
+    const RevengeSavedSelectionCard *saved)
 {
-	card->left = saved->left;
-	card->top = saved->top;
-	card->width = saved->width;
-	card->state = saved->state;
-	card->persistentUnitSlot = saved->persistentUnitSlot;
-	card->assignmentSlot = saved->assignmentSlot;
-	card->selectionId = saved->selectionId;
-	card->alternateId = saved->alternateId;
-	card->spriteBuffer = NULL;
-	card->loadedSpriteBuffer = saved->spriteBuffer;
+    card->left = saved->left;
+    card->top = saved->top;
+    card->width = saved->width;
+    card->state = saved->state;
+    card->persistentUnitSlot = saved->persistentUnitSlot;
+    card->assignmentSlot = saved->assignmentSlot;
+    card->selectionId = saved->selectionId;
+    card->alternateId = saved->alternateId;
+    card->spriteBuffer = NULL;
+    card->loadedSpriteBuffer = saved->spriteBuffer;
 }
 
 void UnitSelectionCards_LoadStart(void)
 {
-	word16 index;
+    word16 index;
 
-	for (index = 0x0000; index < UNIT_SELECTION_CARD_COUNT; ++index)
-		UnitSelectionCard_Load(&UnitSelectionCards[index],
-			&UnitSelectionCardStart[index]);
+    for (index = 0x0000; index < UNIT_SELECTION_CARD_COUNT; ++index)
+        UnitSelectionCard_Load(&UnitSelectionCards[index],
+            &UnitSelectionCardStart[index]);
 }

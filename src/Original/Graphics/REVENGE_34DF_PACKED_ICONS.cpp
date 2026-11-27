@@ -6,18 +6,18 @@
 #include "revenge/video.h"
 
 void LoadPackedIconResource(
-	const char *resourcePath,
-	byte *packedDisplayBuffer);
+    const char *resourcePath,
+    byte *packedDisplayBuffer);
 
 // 34DF:0003
 void LoadPackedIconPageDirect(
-	const char *resourcePath,
-	byte *packedDisplayBuffer,
-	byte *iconPageDestination)
+    const char *resourcePath,
+    byte *packedDisplayBuffer,
+    byte *iconPageDestination)
 {
-	LoadPackedIconResource(resourcePath, packedDisplayBuffer);
-	/* The CGA's switch to the Tandy's decode and back, with its mask
+    LoadPackedIconResource(resourcePath, packedDisplayBuffer);
+    /* The CGA's switch to the Tandy's decode and back, with its mask
 	 * builder (34DF:001D-0036, 004F-0070, 0800:35D8), went with the CGA;
 	 * the rebuild is VGA only. */
-	CopyDecodedIconPage(packedDisplayBuffer, iconPageDestination);
+    CopyDecodedIconPage(packedDisplayBuffer, iconPageDestination);
 }

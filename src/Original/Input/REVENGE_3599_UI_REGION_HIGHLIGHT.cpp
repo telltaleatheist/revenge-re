@@ -11,43 +11,42 @@
 //      RunSingleUiRegionSelection
 void HighlightUiRegionSelection(int16 regionIndex)
 {
-	OriginalUiRegionRecord *region;
-	word16 selectedRow;
-	int16 glyphWidth;
-	int16 lineHeight;
-	word16 selectionLeft;
-	word16 selectionTop;
-	word16 selectionRight;
-	word16 selectionBottom;
+    OriginalUiRegionRecord *region;
+    word16 selectedRow;
+    int16 glyphWidth;
+    int16 lineHeight;
+    word16 selectionLeft;
+    word16 selectionTop;
+    word16 selectionRight;
+    word16 selectionBottom;
 
-	region = &UiRegionTable[regionIndex];
-	selectedRow = region->selectedRow;
+    region = &UiRegionTable[regionIndex];
+    selectedRow = region->selectedRow;
 
-	/* Invalid persisted selections, and either of the two modal UI reset
+    /* Invalid persisted selections, and either of the two modal UI reset
 	 * conditions, restart this region at its first row. */
-	if ((int16) selectedRow >= (int16) region->rowCount)
-		selectedRow = 0x00;
-	if (UiSelectionResetFlagA != 0x00 ||
-		UiSelectionResetFlagB != 0x00)
-		selectedRow = 0x00;
-	region->selectedRow = selectedRow;
-	SavedUiRegionSelectionRows[0x00] = (byte) selectedRow;
+    if ((int16) selectedRow >= (int16) region->rowCount)
+        selectedRow = 0x00;
+    if (UiSelectionResetFlagA != 0x00 ||
+        UiSelectionResetFlagB != 0x00)
+        selectedRow = 0x00;
+    region->selectedRow = selectedRow;
+    SavedUiRegionSelectionRows[0x00] = (byte) selectedRow;
 
-	glyphWidth = ActiveFontGlyphAdvanceX;
-	lineHeight = ActiveFontLineHeight;
-	selectionLeft = (word16) ((ActiveTextWindowLeftTile << 0x03) +
-		glyphWidth * region->leftColumn);
-	selectionTop = (word16) ((ActiveTextWindowTopTile << 0x03) +
-		lineHeight * (region->topRow + selectedRow));
-	selectionRight = (word16) (selectionLeft +
-		glyphWidth * region->widthColumns - 0x01);
-	selectionBottom = (word16) (selectionTop + lineHeight - 0x01);
-	XorVideoRectangle(
-		selectionLeft,
-		selectionTop,
-		selectionRight,
-		selectionBottom,
-		(byte) region->xorColor);
-	ActiveUiRegionIndex = regionIndex;
+    glyphWidth = ActiveFontGlyphAdvanceX;
+    lineHeight = ActiveFontLineHeight;
+    selectionLeft = (word16) ((ActiveTextWindowLeftTile << 0x03) +
+        glyphWidth * region->leftColumn);
+    selectionTop = (word16) ((ActiveTextWindowTopTile << 0x03) +
+        lineHeight * (region->topRow + selectedRow));
+    selectionRight = (word16) (selectionLeft +
+        glyphWidth * region->widthColumns - 0x01);
+    selectionBottom = (word16) (selectionTop + lineHeight - 0x01);
+    XorVideoRectangle(
+        selectionLeft,
+        selectionTop,
+        selectionRight,
+        selectionBottom,
+        (byte) region->xorColor);
+    ActiveUiRegionIndex = regionIndex;
 }
-

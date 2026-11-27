@@ -7,8 +7,8 @@
 // 39DC:0009
 char *GetEnvironmentVariable(const char *name)
 {
-	if (name == 0x00 || *name == '\0')
-		return 0x00;
+    if (name == 0x00 || *name == '\0')
+        return 0x00;
 
-	return (char *) SDLBackend_GetEnvironmentVariable(name);
+    return (char *) SDLBackend_GetEnvironmentVariable(name);
 }

@@ -15,9 +15,8 @@ word16 GameInitialized;
 word16 StartupResourceState; /* DS:5FCE: 0 in the image; startup sets it */
 byte *InvalidSaveDialogBacking;
 
-const word16 BIOSVideoModeByAdapter[0x07] =
-{
-	0x0004, 0x0009, 0x000D, 0x0013, 0x0007, 0x0002, 0x0000
+const word16 BIOSVideoModeByAdapter[0x07] = {
+    0x0004, 0x0009, 0x000D, 0x0013, 0x0007, 0x0002, 0x0000
 };
 
 const char MediaConfigurationFileName[] = "MEDIA.CFG";
@@ -27,7 +26,7 @@ char TacticalDestroyIconFileName[0x0D] = "DESTROYx.ICN";
 char TacticalIconListFileName[0x0D] = "ICONLIST.DAT";
 char TacticalMechSetFileName[0x0D] = "MECHSETX.ICN";
 const char *const InvalidSaveVersionText =
-	STORY_TEXT(INVALID_SAVE_VERSION);
+    STORY_TEXT(INVALID_SAVE_VERSION);
 const char CampaignClockSeparatorText[] = ":";
 const char FormattedLineBreak[] = "\r";
 const char PathSeparatorText[] = "/";

@@ -9,6 +9,6 @@
 //      PresentScreenAndMessage
 word16 FlushInputAndWait(word16 timeoutRetraces)
 {
-	FlushPendingInput();
-	return WaitForDismissInputOrTimeout(timeoutRetraces);
+    FlushPendingInput();
+    return WaitForDismissInputOrTimeout(timeoutRetraces);
 }

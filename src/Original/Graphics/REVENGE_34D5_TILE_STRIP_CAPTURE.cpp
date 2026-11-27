@@ -12,41 +12,38 @@
 // Called from:
 //      RunCampaignLoop
 byte *CaptureVideoTileStrip(
-	byte *source,
-	int16 startTileX,
-	word16 startTileY,
-	int16 tileCount)
+    byte *source,
+    int16 startTileX,
+    word16 startTileY,
+    int16 tileCount)
 {
-	byte tileSizeShift;
-	byte *tileBuffer;
-	byte *tileDestination;
-	int16 tileIndex;
-	int16 tileX;
-	int32 allocationSize;
-	word16 shiftedTileBytes;
+    byte tileSizeShift;
+    byte *tileBuffer;
+    byte *tileDestination;
+    int16 tileIndex;
+    int16 tileX;
+    int32 allocationSize;
+    word16 shiftedTileBytes;
 
-	tileX = startTileX;
-	tileSizeShift = VideoAdapterType == VIDEO_ADAPTER_VGA ?
-		0x06 :
-		0x05;
-	shiftedTileBytes = (word16)((word16)tileCount << tileSizeShift);
-	allocationSize = (int32)(int16)shiftedTileBytes;
-	tileBuffer = (byte *) Heap_Allocate((uint32) allocationSize, "34D5:003F");
-	tileDestination = tileBuffer;
-	for (tileIndex = 0x0000; tileIndex < tileCount; ++tileIndex)
-	{
-		Capture8x8VideoTile(
-			source, tileDestination, tileX, startTileY);
-		++tileX;
-		if (tileX > 0x27)
-		{
-			tileX = 0x0000;
-			++startTileY;
-		}
-		tileDestination += 0x20;
-		if (VideoAdapterType == VIDEO_ADAPTER_VGA)
-			tileDestination += 0x20;
-	}
-	return tileBuffer;
+    tileX = startTileX;
+    tileSizeShift = VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05;
+    shiftedTileBytes = (word16) ((word16) tileCount << tileSizeShift);
+    allocationSize = (int32) (int16) shiftedTileBytes;
+    tileBuffer = (byte *) Heap_Allocate((uint32) allocationSize, "34D5:003F");
+    tileDestination = tileBuffer;
+    for (tileIndex = 0x0000; tileIndex < tileCount; ++tileIndex)
+    {
+        Capture8x8VideoTile(
+            source, tileDestination, tileX, startTileY);
+        ++tileX;
+        if (tileX > 0x27)
+        {
+            tileX = 0x0000;
+            ++startTileY;
+        }
+        tileDestination += 0x20;
+        if (VideoAdapterType == VIDEO_ADAPTER_VGA)
+            tileDestination += 0x20;
+    }
+    return tileBuffer;
 }
-

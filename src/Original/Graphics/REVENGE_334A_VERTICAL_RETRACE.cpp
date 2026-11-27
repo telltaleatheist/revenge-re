@@ -13,9 +13,8 @@
 //      ShutdownGame
 void WaitVerticalRetraces(word16 retraceCount)
 {
-	while (retraceCount-- != 0x0000)
-	{
-		WaitForVerticalRetraceEdge((byte) VerticalRetraceEdgeMode);
-	}
+    while (retraceCount-- != 0x0000)
+    {
+        WaitForVerticalRetraceEdge((byte) VerticalRetraceEdgeMode);
+    }
 }
-

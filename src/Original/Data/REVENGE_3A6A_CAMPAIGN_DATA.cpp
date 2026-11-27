@@ -9,26 +9,25 @@
 #include "revenge/story_text.h"
 
 const char *const RestartConfirmationText =
-	STORY_TEXT(RESTART_CONFIRMATION);
+    STORY_TEXT(RESTART_CONFIRMATION);
 const char *const MissionMapHeaderText = STORY_TEXT(MISSION_MAP_HEADER);
 char TextEntryBuffer[0x16];
 word16 TextEntryCursorIndex;
 byte TextEntryActive;
 const char TextEntryPunctuation[] = "!\"&'+,-./:;?";
 const char TextCursorBlinkGlyph[] = "_";
-const char * const InGameMenuTextTable[0x0B] =
-{
-	STORY_TEXT(IN_GAME_MENU_0),             /* DS:2A89 */
-	STORY_TEXT(IN_GAME_MENU_1),             /* DS:2A8E */
-	STORY_TEXT(IN_GAME_MENU_2),         /* DS:2A93 */
-	STORY_TEXT(IN_GAME_MENU_3),       /* DS:2A9C */
-	STORY_TEXT(IN_GAME_MENU_4),  /* DS:2AA7 */
-	STORY_TEXT(IN_GAME_MENU_5),      /* DS:2AB7 */
-	STORY_TEXT(IN_GAME_MENU_6),        /* DS:2AC3 */
-	STORY_TEXT(IN_GAME_MENU_7),  /* DS:2ACD */
-	STORY_TEXT(IN_GAME_MENU_8),     /* DS:2ADD */
-	STORY_TEXT(IN_GAME_MENU_9),     /* DS:2AEA */
-	STORY_TEXT(IN_GAME_MENU_10)      /* DS:2AF7 */
+const char *const InGameMenuTextTable[0x0B] = {
+    STORY_TEXT(IN_GAME_MENU_0),             /* DS:2A89 */
+    STORY_TEXT(IN_GAME_MENU_1),             /* DS:2A8E */
+    STORY_TEXT(IN_GAME_MENU_2),         /* DS:2A93 */
+    STORY_TEXT(IN_GAME_MENU_3),       /* DS:2A9C */
+    STORY_TEXT(IN_GAME_MENU_4),  /* DS:2AA7 */
+    STORY_TEXT(IN_GAME_MENU_5),      /* DS:2AB7 */
+    STORY_TEXT(IN_GAME_MENU_6),        /* DS:2AC3 */
+    STORY_TEXT(IN_GAME_MENU_7),  /* DS:2ACD */
+    STORY_TEXT(IN_GAME_MENU_8),     /* DS:2ADD */
+    STORY_TEXT(IN_GAME_MENU_9),     /* DS:2AEA */
+    STORY_TEXT(IN_GAME_MENU_10)      /* DS:2AF7 */
 };
 const char *const SaveGameSeparatorText = STORY_TEXT(SAVE_GAME_SEPARATOR);
 
@@ -69,15 +68,13 @@ word16 MissionSpriteHeightPixels[CAMPAIGN_SPRITE_LAYOUT_COUNT];
 /* Filled at start from data/ui/screens.json (revenge/rules.h). */
 CampaignMessageEntry CampaignMessageTable[CAMPAIGN_MESSAGE_COUNT];
 
-const byte MonthLengthTable[0x0C] =
-{
-	0x1F, 0x1C, 0x1F, 0x1E, 0x1F, 0x1E,
-	0x1F, 0x1F, 0x1E, 0x1F, 0x1E, 0x1F
+const byte MonthLengthTable[0x0C] = {
+    0x1F, 0x1C, 0x1F, 0x1E, 0x1F, 0x1E,
+    0x1F, 0x1F, 0x1E, 0x1F, 0x1E, 0x1F
 };
-const word16 CalendarBoundaryTable[0x0D] =
-{
-	0x0000, 0x001F, 0x003B, 0x005A, 0x0078, 0x0097, 0x00B5,
-	0x00D4, 0x00F3, 0x0111, 0x0130, 0x014E, 0x016D
+const word16 CalendarBoundaryTable[0x0D] = {
+    0x0000, 0x001F, 0x003B, 0x005A, 0x0078, 0x0097, 0x00B5,
+    0x00D4, 0x00F3, 0x0111, 0x0130, 0x014E, 0x016D
 };
 char StandardTimezoneName[0x04];
 char DaylightTimezoneName[0x04];
@@ -87,4 +84,3 @@ word16 DaylightSavingEnabled = 0x0001;
 const char TimezoneEnvironmentName[0x03] = "TZ";
 const char DefaultStandardTimezoneName[0x04] = "EST";
 const char DefaultDaylightTimezoneName[0x04] = "EDT";
-

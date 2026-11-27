@@ -5,14 +5,14 @@
 
 // 34B3:0008
 void LoadPackedIconResource(
-	const char *resourcePath,
-	byte *packedDisplayBuffer)
+    const char *resourcePath,
+    byte *packedDisplayBuffer)
 {
-	word16 packedByteCount;
-	int16 fileHandle;
+    word16 packedByteCount;
+    int16 fileHandle;
 
-	fileHandle = OpenTrackedFile((char *)resourcePath, 0x0001);
-	ReadTrackedFile(fileHandle, &packedByteCount, 0x00000002U);
-	ReadTrackedFile(fileHandle, packedDisplayBuffer, packedByteCount);
-	CloseTrackedFile(fileHandle);
+    fileHandle = OpenTrackedFile((char *) resourcePath, 0x0001);
+    ReadTrackedFile(fileHandle, &packedByteCount, 0x00000002U);
+    ReadTrackedFile(fileHandle, packedDisplayBuffer, packedByteCount);
+    CloseTrackedFile(fileHandle);
 }

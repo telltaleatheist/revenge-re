@@ -11,9 +11,9 @@
 //      CaptureLocalClockSnapshot
 void DOS_GetSystemDate(DOS_Date *date)
 {
-	/* Host local date replaces DOS INT 21h/AH=2Ah. DOS_Date retains the
+    /* Host local date replaces DOS INT 21h/AH=2Ah. DOS_Date retains the
 	 * original CX, DH, DL byte layout. */
-	SDLBackend_GetSystemDate(date);
+    SDLBackend_GetSystemDate(date);
 }
 
 // 39D9:0023: reconstructed C signature follows.
@@ -21,8 +21,7 @@ void DOS_GetSystemDate(DOS_Date *date)
 //      CaptureLocalClockSnapshot
 void DOS_GetSystemTime(DOS_Time *time)
 {
-	/* Host local time replaces DOS INT 21h/AH=2Ch. DOS_Time retains the
+    /* Host local time replaces DOS INT 21h/AH=2Ch. DOS_Time retains the
 	 * original CH, CL, DH, DL byte layout. */
-	SDLBackend_GetSystemTime(time);
+    SDLBackend_GetSystemTime(time);
 }
-

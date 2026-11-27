@@ -19,20 +19,19 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount);
 //      RunOptionsMenuSelection
 int16 RunSingleUiRegionSelection(int16 regionIndex)
 {
-	word16 savedCursorHideDepth;
-	int16 selectedRegion;
+    word16 savedCursorHideDepth;
+    int16 selectedRegion;
 
-	savedCursorHideDepth = MouseCursorHideDepth;
-	if (savedCursorHideDepth == 0x00)
-		HideMouseCursorOverlay();
-	HighlightUiRegionSelection(regionIndex);
-	ShowMouseCursorOverlay();
-	PendingMouseButtonEvent = FALSE;
-	do
-		selectedRegion = PollUiRegionSelection(regionIndex, 0x01);
-	while (selectedRegion == ORIGINAL_UI_SELECTION_PENDING);
-	if (savedCursorHideDepth != 0x00)
-		HideMouseCursorOverlay();
-	return selectedRegion;
+    savedCursorHideDepth = MouseCursorHideDepth;
+    if (savedCursorHideDepth == 0x00)
+        HideMouseCursorOverlay();
+    HighlightUiRegionSelection(regionIndex);
+    ShowMouseCursorOverlay();
+    PendingMouseButtonEvent = FALSE;
+    do
+        selectedRegion = PollUiRegionSelection(regionIndex, 0x01);
+    while (selectedRegion == ORIGINAL_UI_SELECTION_PENDING);
+    if (savedCursorHideDepth != 0x00)
+        HideMouseCursorOverlay();
+    return selectedRegion;
 }
-

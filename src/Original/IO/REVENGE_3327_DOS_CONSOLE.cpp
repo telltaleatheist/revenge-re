@@ -15,13 +15,12 @@
 //      ApplyInputDeviceConfigOption
 void DOS_PrintString(const char *text)
 {
-	word16 textIndex;
+    word16 textIndex;
 
-	textIndex = 0x0000;
-	while (text[textIndex] != 0x00)
-	{
-		DOS_PrintCharacter(text[textIndex]);
-		textIndex = (word16) (textIndex + 0x0001);
-	}
+    textIndex = 0x0000;
+    while (text[textIndex] != 0x00)
+    {
+        DOS_PrintCharacter(text[textIndex]);
+        textIndex = (word16) (textIndex + 0x0001);
+    }
 }
-

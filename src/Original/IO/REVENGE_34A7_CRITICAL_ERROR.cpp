@@ -15,19 +15,19 @@
 // -1 instead (revenge/game_file.h).
 void InstallCriticalErrorHandler(void *criticalErrorCallback)
 {
-	uintptr_t callbackToken;
+    uintptr_t callbackToken;
 
-	callbackToken = (uintptr_t)criticalErrorCallback;
-	CriticalErrorCallback.offset = LOW_WORD(callbackToken);
-	CriticalErrorCallback.segment = HIGH_WORD(callbackToken);
+    callbackToken = (uintptr_t) criticalErrorCallback;
+    CriticalErrorCallback.offset = LOW_WORD(callbackToken);
+    CriticalErrorCallback.segment = HIGH_WORD(callbackToken);
 }
 
 // 34A7:0014: install the executable's default INT 24h callback at CS:0006.
 // Called from InitializeGame.
 void InstallDefaultCriticalErrorHandler(void)
 {
-	InstallCriticalErrorHandler(
-		(void *)(uintptr_t)MAKE_FAR_POINTER(
-			CRITICAL_ERROR_CODE_SEGMENT,
-			CRITICAL_ERROR_DEFAULT_CALLBACK_OFFSET));
+    InstallCriticalErrorHandler(
+        (void *) (uintptr_t) MAKE_FAR_POINTER(
+            CRITICAL_ERROR_CODE_SEGMENT,
+            CRITICAL_ERROR_DEFAULT_CALLBACK_OFFSET));
 }

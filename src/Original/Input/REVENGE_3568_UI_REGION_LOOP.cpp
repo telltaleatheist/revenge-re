@@ -15,23 +15,22 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount);
 //      RunMainMenuSelection
 int16 RunUiRegionSelectionLoop(int16 firstRegionIndex, uint16 regionCount)
 {
-	word16 savedCursorHideDepth;
-	int16 selectionResult;
+    word16 savedCursorHideDepth;
+    int16 selectionResult;
 
-	savedCursorHideDepth = MouseCursorHideDepth;
-	if (savedCursorHideDepth == 0x00)
-		HideMouseCursorOverlay();
+    savedCursorHideDepth = MouseCursorHideDepth;
+    if (savedCursorHideDepth == 0x00)
+        HideMouseCursorOverlay();
 
-	BeginUiRegionSelection(firstRegionIndex, regionCount);
-	ShowMouseCursorOverlay();
-	PendingMouseButtonEvent = FALSE;
+    BeginUiRegionSelection(firstRegionIndex, regionCount);
+    ShowMouseCursorOverlay();
+    PendingMouseButtonEvent = FALSE;
 
-	do
-		selectionResult = PollUiRegionSelection(firstRegionIndex, regionCount);
-	while (selectionResult == ORIGINAL_UI_SELECTION_PENDING);
+    do
+        selectionResult = PollUiRegionSelection(firstRegionIndex, regionCount);
+    while (selectionResult == ORIGINAL_UI_SELECTION_PENDING);
 
-	if (savedCursorHideDepth != 0x00)
-		HideMouseCursorOverlay();
-	return selectionResult;
+    if (savedCursorHideDepth != 0x00)
+        HideMouseCursorOverlay();
+    return selectionResult;
 }
-

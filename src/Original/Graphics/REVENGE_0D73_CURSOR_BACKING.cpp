@@ -8,13 +8,13 @@
 /* 0D73:4126-4154 */
 void RebuildMouseCursorBackingBuffer(void)
 {
-	byte *replacement;
+    byte *replacement;
 
-	Heap_Free(SharedGraphicsBackingBuffers[0x00]);
-	replacement = BuildDisplayBackingBuffer(
-		MouseCursorBackingSourceTileX,
-		MouseCursorBackingSourcePixelY,
-		MouseCursorBackingWidthTiles,
-		MouseCursorBackingHeightPixels);
-	SharedGraphicsBackingBuffers[0x00] = replacement;
+    Heap_Free(SharedGraphicsBackingBuffers[0x00]);
+    replacement = BuildDisplayBackingBuffer(
+        MouseCursorBackingSourceTileX,
+        MouseCursorBackingSourcePixelY,
+        MouseCursorBackingWidthTiles,
+        MouseCursorBackingHeightPixels);
+    SharedGraphicsBackingBuffers[0x00] = replacement;
 }

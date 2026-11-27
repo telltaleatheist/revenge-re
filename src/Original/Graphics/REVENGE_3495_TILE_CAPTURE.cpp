@@ -9,27 +9,27 @@
 // Capture one 8x8 tile from a framebuffer into the adapter-native backing-store
 // layout: the VGA's 64 bytes.
 void Capture8x8VideoTile(
-	byte *framebuffer,
-	byte *destination,
-	int16 tileX,
-	word16 tileY)
+    byte *framebuffer,
+    byte *destination,
+    int16 tileX,
+    word16 tileY)
 {
-	word16 column;
-	word16 row;
-	byte *source;
+    word16 column;
+    word16 row;
+    byte *source;
 
-	/* The EGA's planar read (3495:0010-0017, 0800:4DFD) and the CGA's and
+    /* The EGA's planar read (3495:0010-0017, 0800:4DFD) and the CGA's and
 	 * the Tandy's layouts (3495:00A0-010B) went with them; the rebuild is
 	 * VGA only. */
-	if (VideoAdapterType == VIDEO_ADAPTER_VGA)
-	{
-		source = framebuffer + tileY * 0x0A00 + tileX * 0x08;
-		for (row = 0x00; row < 0x08; ++row)
-		{
-			for (column = 0x00; column < 0x08; ++column)
-				destination[column] = source[column];
-			destination += 0x08;
-			source += 0x0140;
-		}
-	}
+    if (VideoAdapterType == VIDEO_ADAPTER_VGA)
+    {
+        source = framebuffer + tileY * 0x0A00 + tileX * 0x08;
+        for (row = 0x00; row < 0x08; ++row)
+        {
+            for (column = 0x00; column < 0x08; ++column)
+                destination[column] = source[column];
+            destination += 0x08;
+            source += 0x0140;
+        }
+    }
 }

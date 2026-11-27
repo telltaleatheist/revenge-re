@@ -14,18 +14,18 @@
 // retrace edge, which on the host is always the end.
 void CalibrateVideoTiming(void)
 {
-	// 34B8:0017-001E: the edge starts as the retrace's end.
-	VerticalRetraceEdgeMode = VERTICAL_RETRACE_WAIT_FOR_END;
+    // 34B8:0017-001E: the edge starts as the retrace's end.
+    VerticalRetraceEdgeMode = VERTICAL_RETRACE_WAIT_FOR_END;
 
-	// 34B8:0022-00A9 counted delay loops of C8h spins over four BIOS ticks
-	// (0000:046C), from the start of a tick, and kept the count less 190h,
-	// at least zero, in DS:B650 (BusyWaitLoopCalibration). Nothing reads it;
-	// the host has no machine speed to measure, and it keeps its zero.
+    // 34B8:0022-00A9 counted delay loops of C8h spins over four BIOS ticks
+    // (0000:046C), from the start of a tick, and kept the count less 190h,
+    // at least zero, in DS:B650 (BusyWaitLoopCalibration). Nothing reads it;
+    // the host has no machine speed to measure, and it keeps its zero.
 
-	// 34B8:00AA-00E1 sampled the input-status port's retrace bit
-	// (IsVerticalRetraceActive) 2710h times and took the retrace's start as
-	// the edge when more samples found the retrace than the display. The
-	// host's retrace is the last tenth of each 70 Hz frame
-	// (SDLBackend_WaitVerticalRetrace), so the display always wins and the
-	// edge stays the end.
+    // 34B8:00AA-00E1 sampled the input-status port's retrace bit
+    // (IsVerticalRetraceActive) 2710h times and took the retrace's start as
+    // the edge when more samples found the retrace than the display. The
+    // host's retrace is the last tenth of each 70 Hz frame
+    // (SDLBackend_WaitVerticalRetrace), so the display always wins and the
+    // edge stays the end.
 }

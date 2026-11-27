@@ -13,12 +13,12 @@
 // WeaponDefinition.effectId dispatched by 31FB:0567.
 void PlayPCSpeakerEffectByIndex(word16 effectId)
 {
-	if (SoundEffectsEnabled != FALSE)
-	{
-		AudioLog_ToneEffect(effectId);
-		StartPCSpeakerEffectStream(
-			PCSpeakerEffectStreamPointerTable[effectId]);
-	}
+    if (SoundEffectsEnabled != FALSE)
+    {
+        AudioLog_ToneEffect(effectId);
+        StartPCSpeakerEffectStream(
+            PCSpeakerEffectStreamPointerTable[effectId]);
+    }
 }
 
 // 30AF:002E: void RequestPCSpeakerEffectStop()
@@ -26,6 +26,5 @@ void PlayPCSpeakerEffectByIndex(word16 effectId)
 //      ServiceMusicAndCheckKeyboardInput
 void RequestPCSpeakerEffectStop(void)
 {
-	SetPCSpeakerEffectStopRequest();
+    SetPCSpeakerEffectStopRequest();
 }
-

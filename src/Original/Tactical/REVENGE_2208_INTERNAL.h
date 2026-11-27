@@ -12,40 +12,40 @@
 #define TACTICAL_ORDER_HOLD_POSITION    0x01
 #define TACTICAL_ORDER_SEEK_AND_DESTROY 0x02
 
-#define TACTICAL_FORCE_FIRST_UNIT_OFFSET              FRIENDLY_FORCE_FIRST_UNIT
-#define TACTICAL_ORDER_MODE_COUNT                     0x03
-#define NARRATION_LEADER_SUBSTITUTION_FIRST_UNIT      0x0004
-#define CONTACT_NARRATION_CATEGORY_SCRIPTED_ROUTE     0x0006
-#define CONTACT_NARRATION_CATEGORY_HOLD_POSITION      0x0004
-#define CONTACT_NARRATION_CATEGORY_SEEK_AND_DESTROY   0x0003
-#define NO_UNIT_INDEX                                 0xFFFF
+#define TACTICAL_FORCE_FIRST_UNIT_OFFSET            FRIENDLY_FORCE_FIRST_UNIT
+#define TACTICAL_ORDER_MODE_COUNT                   0x03
+#define NARRATION_LEADER_SUBSTITUTION_FIRST_UNIT    0x0004
+#define CONTACT_NARRATION_CATEGORY_SCRIPTED_ROUTE   0x0006
+#define CONTACT_NARRATION_CATEGORY_HOLD_POSITION    0x0004
+#define CONTACT_NARRATION_CATEGORY_SEEK_AND_DESTROY 0x0003
+#define NO_UNIT_INDEX                               0xFFFF
 
 void LoadUnitTemplateRecord(int16 unitType);
 void UpdateUnitSpriteForFacing(word16 unitIndex, word16 facing);
 void RecalculateUnitCombatRatings(
-	RevengeUnitRecord *unitRecord,
-	word16 unitSlot,
-	word16 rebuildWeaponCounts,
-	word16 advanceRecovery);
+    RevengeUnitRecord *unitRecord,
+    word16 unitSlot,
+    word16 rebuildWeaponCounts,
+    word16 advanceRecovery);
 word16 HasUnitLineOfSight(int16 sourceUnitIndex, int16 targetUnitIndex);
 uint16 CalculateApproximateMapDistance(
-	int16 sourceX, int16 sourceY, int16 targetX, int16 targetY);
+    int16 sourceX, int16 sourceY, int16 targetX, int16 targetY);
 uint16 DetermineRelativeAttackDirection(
-	int16 sourceX, int16 sourceY, int16 targetX, int16 targetY);
+    int16 sourceX, int16 sourceY, int16 targetX, int16 targetY);
 word16 FindOperationalLanceLeader(word16 unitIndex);
 word16 HasNarrationMessage(
-	word16 narrationSubject, word16 messageCategory);
+    word16 narrationSubject, word16 messageCategory);
 word16 GeneratePseudoRandomByte(void);
 int16 CompareLanceCombatRatings(
-	word16 firstUnitIndex, int16 secondUnitIndex);
+    word16 firstUnitIndex, int16 secondUnitIndex);
 void DrawLanceFormationMarker(
-	int16 formationCode, word16 tileColumnOffset);
+    int16 formationCode, word16 tileColumnOffset);
 void DrawTacticalUnitControlPanel(word16 unitIndex);
 void FormatTacticalMapCoordinates(word16 mapX, word16 mapY);
 void HighlightLanceFollowers(word16 leaderUnitIndex);
 word16 HasActiveLanceFollowers(word16 unitIndex);
 void SelectLanceFormationMode(
-	word16 leaderUnitIndex, word16 randomizeFormation);
+    word16 leaderUnitIndex, word16 randomizeFormation);
 void RunTacticalUnitCommandMenu(word16 unitIndex);
 void RunTacticalGameOptionsMenu(void);
 word16 ValidatePrimaryLanceLeader(word16 unitIndex);
@@ -60,33 +60,33 @@ void DrawTacticalCellOutline(int16 leftX, int16 topY, word16 color);
 void DrawClippedPixel(int16 x, int16 y, word16 color);
 void DrawTacticalCursorOutline(word16 color);
 void DrawClippedWeaponTraceLine(
-	int16 startX,
-	int16 startY,
-	int16 endX,
-	int16 endY,
-	word16 color,
-	word16 dashedTrace);
+    int16 startX,
+    int16 startY,
+    int16 endX,
+    int16 endY,
+    word16 color,
+    word16 dashedTrace);
 void DrawWeaponAttackTrace(
-	word16 attackerUnitIndex,
-	int16 targetMapX,
-	int16 targetMapY,
-	word16 offsetEndpoints,
-	word16 shotHit,
-	word16 weaponIndex);
+    word16 attackerUnitIndex,
+    int16 targetMapX,
+    int16 targetMapY,
+    word16 offsetEndpoints,
+    word16 shotHit,
+    word16 weaponIndex);
 void DrawCenteredTextInActiveWindow(
-	const char *text,
-	word16 rowOffset,
-	word16 foregroundColor,
-	word16 backgroundColor);
+    const char *text,
+    word16 rowOffset,
+    word16 foregroundColor,
+    word16 backgroundColor);
 void RenderFormattedLineBreak(void);
 void RenderFormattedText(const char *formattedText);
 void FormatUnitDurabilityPercentage(int16 unitIndex);
 void DrawTileAlignedText(
-	const char *text,
-	word16 tileX,
-	word16 tileY,
-	byte foregroundColor,
-	byte backgroundColor);
+    const char *text,
+    word16 tileX,
+    word16 tileY,
+    byte foregroundColor,
+    byte backgroundColor);
 int16 RunOptionsMenuSelection(int16 firstRegionIndex);
 void EnterTacticalOverview(void);
 void SelectTacticalMapCoordinate(word16 unitIndex);
@@ -104,14 +104,14 @@ void MoveTacticalCursorByInput(int16 inputCode);
 void ScrollTacticalViewportToCursor(void);
 void FocusTacticalViewOnUnit(word16 unitIndex);
 void RefreshTacticalCoordinateSelection(
-	word16 unitIndex,
-	word16 selectionMode,
-	word16 savedCursorColumn);
+    word16 unitIndex,
+    word16 selectionMode,
+    word16 savedCursorColumn);
 void CycleTacticalEnemyTarget(void);
 void ShowTacticalCommandPrompt(const char *prompt);
 void AdvanceLanceFormation(word16 unitIndex);
 word16 SelectTacticalMoveDestination(
-	word16 unitIndex, word16 selectionMode);
+    word16 unitIndex, word16 selectionMode);
 
 
 #endif

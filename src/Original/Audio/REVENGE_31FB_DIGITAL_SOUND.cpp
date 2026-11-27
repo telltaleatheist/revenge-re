@@ -14,30 +14,29 @@
 
 #include <string.h>
 
-#define DIGITAL_SOUND_ENTRY_COUNT 0x16
-#define DIGITAL_SOUND_ENTRY_SIZE  0x0B
-#define DIGITAL_SOUND_SAMPLE_RATE_HZ        0x1F40
+#define DIGITAL_SOUND_ENTRY_COUNT          0x16
+#define DIGITAL_SOUND_ENTRY_SIZE           0x0B
+#define DIGITAL_SOUND_SAMPLE_RATE_HZ       0x1F40
 #define DIGITAL_SOUND_UNITY_PLAYBACK_SCALE 0x6633
-#define SOUND_DRIVER_PC_SPEAKER 0x00
+#define SOUND_DRIVER_PC_SPEAKER            0x00
 
 #define DigitalSoundDriverDescriptorOffsets() \
-	(DigitalSoundData.Layout.DriverDescriptorOffsets)
+    (DigitalSoundData.Layout.DriverDescriptorOffsets)
 #define DigitalSamplePlaybackDescriptors() \
-	(DigitalSamplePlaybackDescriptorTable)
+    (DigitalSamplePlaybackDescriptorTable)
 #define DigitalWeaponEffectTable() \
-	(DigitalSoundData.Layout.WeaponEffects)
+    (DigitalSoundData.Layout.WeaponEffects)
 #define DigitalSoundEntries() \
-	(DigitalSoundData.Layout.SoundEntries)
+    (DigitalSoundData.Layout.SoundEntries)
 #define DigitalSoundString(dataSegmentOffset) \
-	((const char *) &DigitalSoundData.Layout.ScenarioCodeStrings[ \
-		(dataSegmentOffset) - 0x5DEE])
+    ((const char *) &DigitalSoundData.Layout.ScenarioCodeStrings[(dataSegmentOffset) - 0x5DEE])
 
 // WeaponDefinition.effectId (+0Eh) is shared by the PC-speaker stream table
 // and the digital PCM record table. Effect 03h has an FFFFh digital resource
 // sentinel and is explicitly routed through the PC-speaker path.
 
 void HandleDigitalWeaponEffectCompletion(
-	DigitalSampleDescriptor *descriptor);
+    DigitalSampleDescriptor *descriptor);
 void PlayDigitalWeaponEffect(word16 weaponEffectId);
 
 // 31FB:00B3: void LoadDigitalWeaponEffectBank(void)
@@ -45,73 +44,72 @@ void PlayDigitalWeaponEffect(word16 weaponEffectId);
 //      InitializeTacticalScenario
 void LoadDigitalWeaponEffectBank(void)
 {
-	// Verified against 31FB:00B3-0255.
-	if (SoundDriverIndex < 0x01)
-		return;
+    // Verified against 31FB:00B3-0255.
+    if (SoundDriverIndex < 0x01)
+        return;
 
-	word16 effectIndex;
-	for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
-	{
-		DigitalWeaponEffectRecord *effect =
-			&DigitalWeaponEffectTable()[effectIndex];
-		if ((int16) effect->ResourceIndex >= 0x00)
-			effect->LoadState = 0x00;
-	}
+    word16 effectIndex;
+    for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
+    {
+        DigitalWeaponEffectRecord *effect =
+            &DigitalWeaponEffectTable()[effectIndex];
+        if ((int16) effect->ResourceIndex >= 0x00)
+            effect->LoadState = 0x00;
+    }
 
-	word16 packedBytes = 0x00;
-	for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
-	{
-		DigitalWeaponEffectRecord *effect =
-			&DigitalWeaponEffectTable()[effectIndex];
-		if ((int16) effect->ResourceIndex < 0x00 ||
-			effect->LoadState != 0x00)
-			continue;
+    word16 packedBytes = 0x00;
+    for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
+    {
+        DigitalWeaponEffectRecord *effect =
+            &DigitalWeaponEffectTable()[effectIndex];
+        if ((int16) effect->ResourceIndex < 0x00 ||
+            effect->LoadState != 0x00)
+            continue;
 
-		word16 sampleLength = (word16)
-			CachedFileDescriptors[
-				effect->ResourceIndex].fileLength;
-		effect->PackedBufferOffset = packedBytes;
-		effect->SampleLength = sampleLength;
-		effect->LoadState = 0x01;
+        word16 sampleLength = (word16)
+                                  CachedFileDescriptors[effect->ResourceIndex]
+                                      .fileLength;
+        effect->PackedBufferOffset = packedBytes;
+        effect->SampleLength = sampleLength;
+        effect->LoadState = 0x01;
 
-		word16 aliasIndex;
-		for (aliasIndex = effectIndex + 0x01; aliasIndex < 0x10; ++aliasIndex)
-		{
-			DigitalWeaponEffectRecord *alias =
-				&DigitalWeaponEffectTable()[aliasIndex];
-			if (alias->ResourceIndex == effect->ResourceIndex)
-			{
-				alias->PackedBufferOffset = packedBytes;
-				alias->SampleLength = sampleLength;
-				alias->LoadState = 0x02;
-			}
-		}
-		packedBytes += sampleLength;
-	}
+        word16 aliasIndex;
+        for (aliasIndex = effectIndex + 0x01; aliasIndex < 0x10; ++aliasIndex)
+        {
+            DigitalWeaponEffectRecord *alias =
+                &DigitalWeaponEffectTable()[aliasIndex];
+            if (alias->ResourceIndex == effect->ResourceIndex)
+            {
+                alias->PackedBufferOffset = packedBytes;
+                alias->SampleLength = sampleLength;
+                alias->LoadState = 0x02;
+            }
+        }
+        packedBytes += sampleLength;
+    }
 
-	DigitalWeaponSampleBuffer = (byte *) Heap_Allocate(packedBytes, "31FB:01D5");
-	REVENGE_PRESERVATION_TRACE("audio: weapon bank driver=%u bytes=%u buffer=%p\n",
-		SoundDriverIndex, packedBytes,
-		(void *) DigitalWeaponSampleBuffer);
+    DigitalWeaponSampleBuffer = (byte *) Heap_Allocate(packedBytes, "31FB:01D5");
+    REVENGE_PRESERVATION_TRACE("audio: weapon bank driver=%u bytes=%u buffer=%p\n",
+        SoundDriverIndex, packedBytes,
+        (void *) DigitalWeaponSampleBuffer);
 
-	for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
-	{
-		DigitalWeaponEffectRecord *effect =
-			&DigitalWeaponEffectTable()[effectIndex];
-		if ((int16) effect->ResourceIndex >= 0x00 &&
-			effect->LoadState == 0x01)
-		{
-			const CachedFileDescriptor *resource;
+    for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
+    {
+        DigitalWeaponEffectRecord *effect =
+            &DigitalWeaponEffectTable()[effectIndex];
+        if ((int16) effect->ResourceIndex >= 0x00 &&
+            effect->LoadState == 0x01)
+        {
+            const CachedFileDescriptor *resource;
 
-			resource = &CachedFileDescriptors[
-				effect->ResourceIndex];
-			ReadWholeResourceFile(
-				resource->fileName,
-				DigitalWeaponSampleBuffer +
-					effect->PackedBufferOffset,
-				effect->SampleLength);
-		}
-	}
+            resource = &CachedFileDescriptors[effect->ResourceIndex];
+            ReadWholeResourceFile(
+                resource->fileName,
+                DigitalWeaponSampleBuffer +
+                    effect->PackedBufferOffset,
+                effect->SampleLength);
+        }
+    }
 }
 
 // 31FB:12A7: void ReleaseDigitalWeaponEffectBank(void)
@@ -119,111 +117,108 @@ void LoadDigitalWeaponEffectBank(void)
 //      InitializeTacticalScenario
 void ReleaseDigitalWeaponEffectBank(void)
 {
-	Heap_Free(DigitalWeaponSampleBuffer);
+    Heap_Free(DigitalWeaponSampleBuffer);
 }
 
 // 31FB:0567: choose the digital PCM path when one is configured, except effect
 // 03h, whose table record is the FFFFh sentinel and always uses PC speaker.
 void DispatchWeaponEffect(int16 weaponEffectId)
 {
-	REVENGE_PRESERVATION_TRACE(
-		"audio: dispatch effect=%d driver=%u enabled=%u busy=%u bank=%p rate=%u\n",
-		weaponEffectId, SoundDriverIndex, SoundEffectsEnabled,
-		DigitalSoundBusy, (void *) DigitalWeaponSampleBuffer,
-		DigitalPlaybackRateHz);
-	if (SoundDriverIndex != SOUND_DRIVER_PC_SPEAKER &&
-		weaponEffectId != 0x03)
-		PlayDigitalWeaponEffect(weaponEffectId);
-	else
-		PlayPCSpeakerEffectByIndex(weaponEffectId);
+    REVENGE_PRESERVATION_TRACE(
+        "audio: dispatch effect=%d driver=%u enabled=%u busy=%u bank=%p rate=%u\n",
+        weaponEffectId, SoundDriverIndex, SoundEffectsEnabled,
+        DigitalSoundBusy, (void *) DigitalWeaponSampleBuffer,
+        DigitalPlaybackRateHz);
+    if (SoundDriverIndex != SOUND_DRIVER_PC_SPEAKER &&
+        weaponEffectId != 0x03)
+        PlayDigitalWeaponEffect(weaponEffectId);
+    else
+        PlayPCSpeakerEffectByIndex(weaponEffectId);
 }
 
 // 31FB:058D: configure and queue one digital weapon-effect sample.
 void PlayDigitalWeaponEffect(word16 weaponEffectId)
 {
-	// Verified against 31FB:058D-06E8.
-	if (SoundEffectsEnabled == FALSE)
-		return;
+    // Verified against 31FB:058D-06E8.
+    if (SoundEffectsEnabled == FALSE)
+        return;
 
-	DigitalSoundDriverMutationGuard = TRUE;
-	if (DigitalSoundBusy == FALSE)
-	{
-		DigitalSoundBusy = TRUE;
-		RestoreSystemTimer();
-		InstallDigitalPlaybackTimer(DigitalPlaybackRateHz);
-		AcquireDigitalPlaybackDriver(
-			DigitalSoundDriverDescriptorOffsets()[
-				SoundDriverIndex],
-			DigitalPlaybackRateHz);
-		SetDigitalPlaybackTimingScale(0x0100);
-	}
-	else
-		RemoveDigitalSampleDescriptor(
-			ActiveDigitalSampleDescriptor);
-	DigitalSoundDriverMutationGuard = FALSE;
+    DigitalSoundDriverMutationGuard = TRUE;
+    if (DigitalSoundBusy == FALSE)
+    {
+        DigitalSoundBusy = TRUE;
+        RestoreSystemTimer();
+        InstallDigitalPlaybackTimer(DigitalPlaybackRateHz);
+        AcquireDigitalPlaybackDriver(
+            DigitalSoundDriverDescriptorOffsets()[SoundDriverIndex],
+            DigitalPlaybackRateHz);
+        SetDigitalPlaybackTimingScale(0x0100);
+    }
+    else
+        RemoveDigitalSampleDescriptor(
+            ActiveDigitalSampleDescriptor);
+    DigitalSoundDriverMutationGuard = FALSE;
 
-	DigitalWeaponEffectRepeatCount =
-		weaponEffectId == 0x06 ? 0x03 :
-		weaponEffectId == 0x0F ? 0x06 : 0x00;
-	ActiveDigitalSampleDescriptor =
-		&DigitalSamplePlaybackDescriptors()[0x00];
+    DigitalWeaponEffectRepeatCount =
+        weaponEffectId == 0x06 ? 0x03 : weaponEffectId == 0x0F ? 0x06
+                                                               : 0x00;
+    ActiveDigitalSampleDescriptor =
+        &DigitalSamplePlaybackDescriptors()[0x00];
 
-	DigitalWeaponEffectRecord *effect =
-		&DigitalWeaponEffectTable()[weaponEffectId];
-	AudioLog_PcmStart("effect", weaponEffectId, effect->SampleLength);
-	REVENGE_PRESERVATION_TRACE(
-		"audio: digital effect=%u offset=%lu length=%lu scale=%u\n",
-		weaponEffectId, (unsigned long) effect->PackedBufferOffset,
-		(unsigned long) effect->SampleLength,
-		effect->PlaybackScale);
-	InitializeDigitalSampleDescriptor(
-		ActiveDigitalSampleDescriptor,
-		DigitalWeaponSampleBuffer + effect->PackedBufferOffset, effect->SampleLength, DIGITAL_SOUND_SAMPLE_RATE_HZ,
-		DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
-	ConfigureDigitalSampleTiming(
-		ActiveDigitalSampleDescriptor,
-		effect->PlaybackScale);
-	/* 31FB:06E9, given the descriptor's own far pointer. */
-	ConfigureDigitalSampleCompletion(
-		ActiveDigitalSampleDescriptor,
-		HandleDigitalWeaponEffectCompletion,
-		ActiveDigitalSampleDescriptor);
-	PrepareDigitalSamplePlayback(
-		ActiveDigitalSampleDescriptor);
-	EnqueueDigitalSampleDescriptor(
-		ActiveDigitalSampleDescriptor,
-		&ActiveDigitalDriverQueue);
-	AttachDigitalDriverQueue(
-		DigitalSoundDriverDescriptorOffsets()[
-			SoundDriverIndex],
-		&ActiveDigitalDriverQueue);
+    DigitalWeaponEffectRecord *effect =
+        &DigitalWeaponEffectTable()[weaponEffectId];
+    AudioLog_PcmStart("effect", weaponEffectId, effect->SampleLength);
+    REVENGE_PRESERVATION_TRACE(
+        "audio: digital effect=%u offset=%lu length=%lu scale=%u\n",
+        weaponEffectId, (unsigned long) effect->PackedBufferOffset,
+        (unsigned long) effect->SampleLength,
+        effect->PlaybackScale);
+    InitializeDigitalSampleDescriptor(
+        ActiveDigitalSampleDescriptor,
+        DigitalWeaponSampleBuffer + effect->PackedBufferOffset, effect->SampleLength, DIGITAL_SOUND_SAMPLE_RATE_HZ,
+        DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
+    ConfigureDigitalSampleTiming(
+        ActiveDigitalSampleDescriptor,
+        effect->PlaybackScale);
+    /* 31FB:06E9, given the descriptor's own far pointer. */
+    ConfigureDigitalSampleCompletion(
+        ActiveDigitalSampleDescriptor,
+        HandleDigitalWeaponEffectCompletion,
+        ActiveDigitalSampleDescriptor);
+    PrepareDigitalSamplePlayback(
+        ActiveDigitalSampleDescriptor);
+    EnqueueDigitalSampleDescriptor(
+        ActiveDigitalSampleDescriptor,
+        &ActiveDigitalDriverQueue);
+    AttachDigitalDriverQueue(
+        DigitalSoundDriverDescriptorOffsets()[SoundDriverIndex],
+        &ActiveDigitalDriverQueue);
 }
 
 // 31FB:06E9: completion callback installed by PlayDigitalWeaponEffect.
 void HandleDigitalWeaponEffectCompletion(
-	DigitalSampleDescriptor *descriptor)
+    DigitalSampleDescriptor *descriptor)
 {
-	// Verified against 31FB:06E9-0741.
-	if (DigitalSoundDriverMutationGuard != FALSE)
-		return;
+    // Verified against 31FB:06E9-0741.
+    if (DigitalSoundDriverMutationGuard != FALSE)
+        return;
 
-	if (DigitalWeaponEffectRepeatCount != 0x00)
-	{
-		--DigitalWeaponEffectRepeatCount;
-		PrepareDigitalSamplePlayback(descriptor);
-		return;
-	}
+    if (DigitalWeaponEffectRepeatCount != 0x00)
+    {
+        --DigitalWeaponEffectRepeatCount;
+        PrepareDigitalSamplePlayback(descriptor);
+        return;
+    }
 
-	AudioLog_PcmDone();
-	DigitalSoundDriverMutationGuard = TRUE;
-	RemoveDigitalSampleDescriptor(descriptor);
-	word16 playbackDescriptorOffset =
-		DigitalSoundDriverDescriptorOffsets()[
-			SoundDriverIndex];
-	ReleaseDigitalPlaybackDriver(playbackDescriptorOffset);
-	RestoreDigitalPlaybackTimer();
-	InstallMusicTimer();
-	DigitalSoundBusy = FALSE;
+    AudioLog_PcmDone();
+    DigitalSoundDriverMutationGuard = TRUE;
+    RemoveDigitalSampleDescriptor(descriptor);
+    word16 playbackDescriptorOffset =
+        DigitalSoundDriverDescriptorOffsets()[SoundDriverIndex];
+    ReleaseDigitalPlaybackDriver(playbackDescriptorOffset);
+    RestoreDigitalPlaybackTimer();
+    InstallMusicTimer();
+    DigitalSoundBusy = FALSE;
 }
 
 // 31FB:0005: void InitializeDigitalSoundDriver(void)
@@ -231,19 +226,19 @@ void HandleDigitalWeaponEffectCompletion(
 //      InitializeGame
 void InitializeDigitalSoundDriver(void)
 {
-	// Verified against 31FB:0005-00B2.
-	if (SoundDriverIndex > SOUND_DRIVER_PC_SPEAKER)
-	{
-		/* 31FB:0015-0082 probed (375F:0006, the AdLib only) and acquired
+    // Verified against 31FB:0005-00B2.
+    if (SoundDriverIndex > SOUND_DRIVER_PC_SPEAKER)
+    {
+        /* 31FB:0015-0082 probed (375F:0006, the AdLib only) and acquired
 		 * (375F:0044) the card, measured how fast the mixer ran on it
 		 * (CalibrateDigitalPlaybackRate, 375F:05D6, after a zero-scale mix
 		 * at 31FB:0049), kept that rate under 8000 Hz, and at 31FB:0091
 		 * fell back to the speaker below 3000 Hz. The rebuild's mixer runs
 		 * on the host at the samples' own rate. */
-		DigitalPlaybackRateHz = DIGITAL_SOUND_SAMPLE_RATE_HZ;
-		InitializeDigitalDriverQueue(&ActiveDigitalDriverQueue);
-	}
-	/* 31FB:00A9 then built the speaker's bit patterns for 8000 Hz
+        DigitalPlaybackRateHz = DIGITAL_SOUND_SAMPLE_RATE_HZ;
+        InitializeDigitalDriverQueue(&ActiveDigitalDriverQueue);
+    }
+    /* 31FB:00A9 then built the speaker's bit patterns for 8000 Hz
 	 * (InitializePCSpeakerSampleConversion) when the sound was the speaker;
 	 * the rebuild plays speech on the speaker as clean samples
 	 * (SDLBackend_PlaySpeech) and needs none. */
@@ -255,16 +250,16 @@ void InitializeDigitalSoundDriver(void)
 //      PlayScenarioDigitalSoundSequence
 int16 FindDigitalSoundEntryByCode(byte soundCode)
 {
-	int16 foundIndex = -0x01;
-	int16 entryIndex = 0x00;
-	while (entryIndex < DIGITAL_SOUND_ENTRY_COUNT && foundIndex < 0x00)
-	{
-		// DigitalSoundEntries +00 is the one-byte lookup code.
-		if (DigitalSoundEntries()[entryIndex].SoundCode == soundCode)
-			foundIndex = entryIndex;
-		++entryIndex;
-	}
-	return foundIndex;
+    int16 foundIndex = -0x01;
+    int16 entryIndex = 0x00;
+    while (entryIndex < DIGITAL_SOUND_ENTRY_COUNT && foundIndex < 0x00)
+    {
+        // DigitalSoundEntries +00 is the one-byte lookup code.
+        if (DigitalSoundEntries()[entryIndex].SoundCode == soundCode)
+            foundIndex = entryIndex;
+        ++entryIndex;
+    }
+    return foundIndex;
 }
 
 // 31FB:0297: void LoadScenarioDigitalSoundBank(int8 scenarioCode)
@@ -272,88 +267,87 @@ int16 FindDigitalSoundEntryByCode(byte soundCode)
 //      RunTitleAndMainMenu
 void LoadScenarioDigitalSoundBank(int8 scenarioCode)
 {
-	// DS:5DEE-5E6D is a table of NUL-terminated lists. Every byte is a
-	// lookup key in DigitalSoundEntries; punctuation is sample data,
-	// not control syntax. The selected list determines which samples are
-	// packed into the scenario's resident narration bank.
-	char soundCodes[0x10];
-	soundCodes[0x00] = 0x00;
+    // DS:5DEE-5E6D is a table of NUL-terminated lists. Every byte is a
+    // lookup key in DigitalSoundEntries; punctuation is sample data,
+    // not control syntax. The selected list determines which samples are
+    // packed into the scenario's resident narration bank.
+    char soundCodes[0x10];
+    soundCodes[0x00] = 0x00;
 
-	// Verified against 31FB:0297-0566.
-	switch (scenarioCode)
-	{
-	case -0x01:
-		strcpy(soundCodes, DigitalSoundString(0x5DEE));
-		break;
-	case -0x02:
-		strcpy(soundCodes, DigitalSoundString(0x5DF0));
-		break;
-	default:
-		if (scenarioCode >= 0x31 && scenarioCode <= 0x35)
-			strcpy(soundCodes, DigitalSoundString(0x5DF2));
-		else if (scenarioCode == 0x36)
-			strcpy(soundCodes, DigitalSoundString(0x5DF9));
-		else if (scenarioCode == 0x37)
-			strcpy(soundCodes, DigitalSoundString(0x5E03));
-		else if (scenarioCode == 0x38)
-			strcpy(soundCodes, DigitalSoundString(0x5E0A));
-		else if (scenarioCode == 0x39)
-			strcpy(soundCodes, DigitalSoundString(0x5E14));
-		else if (scenarioCode == 0x41)
-			strcpy(soundCodes, DigitalSoundString(0x5E1D));
-		else if ((scenarioCode >= 0x42 && scenarioCode <= 0x45) || scenarioCode == 0x54)
-			strcpy(soundCodes, DigitalSoundString(0x5E26));
-		else if (scenarioCode >= 0x46 && scenarioCode <= 0x4E)
-			strcpy(soundCodes, DigitalSoundString(0x5E32));
-		else if (scenarioCode == 0x4F)
-			strcpy(soundCodes, DigitalSoundString(0x5E3E));
-		else if (scenarioCode >= 0x50 && scenarioCode <= 0x52)
-			strcpy(soundCodes, DigitalSoundString(0x5E4A));
-		else if (scenarioCode == 0x53)
-			strcpy(soundCodes, DigitalSoundString(0x5E56));
-		else if (scenarioCode == 0x55)
-			strcpy(soundCodes, DigitalSoundString(0x5E62));
-		break;
-	}
-	word16 packedBufferSize = 0x00;
-	word16 soundIndex = 0x00;
-	while (soundIndex < 0x0F && soundCodes[soundIndex] != 0x00)
-	{
-		int16 entryIndex = FindDigitalSoundEntryByCode(soundCodes[soundIndex]);
-		if (entryIndex >= 0x00)
-		{
-			DigitalSoundEntryRecord *entry;
-			word16 sampleLength;
+    // Verified against 31FB:0297-0566.
+    switch (scenarioCode)
+    {
+    case -0x01:
+        strcpy(soundCodes, DigitalSoundString(0x5DEE));
+        break;
+    case -0x02:
+        strcpy(soundCodes, DigitalSoundString(0x5DF0));
+        break;
+    default:
+        if (scenarioCode >= 0x31 && scenarioCode <= 0x35)
+            strcpy(soundCodes, DigitalSoundString(0x5DF2));
+        else if (scenarioCode == 0x36)
+            strcpy(soundCodes, DigitalSoundString(0x5DF9));
+        else if (scenarioCode == 0x37)
+            strcpy(soundCodes, DigitalSoundString(0x5E03));
+        else if (scenarioCode == 0x38)
+            strcpy(soundCodes, DigitalSoundString(0x5E0A));
+        else if (scenarioCode == 0x39)
+            strcpy(soundCodes, DigitalSoundString(0x5E14));
+        else if (scenarioCode == 0x41)
+            strcpy(soundCodes, DigitalSoundString(0x5E1D));
+        else if ((scenarioCode >= 0x42 && scenarioCode <= 0x45) || scenarioCode == 0x54)
+            strcpy(soundCodes, DigitalSoundString(0x5E26));
+        else if (scenarioCode >= 0x46 && scenarioCode <= 0x4E)
+            strcpy(soundCodes, DigitalSoundString(0x5E32));
+        else if (scenarioCode == 0x4F)
+            strcpy(soundCodes, DigitalSoundString(0x5E3E));
+        else if (scenarioCode >= 0x50 && scenarioCode <= 0x52)
+            strcpy(soundCodes, DigitalSoundString(0x5E4A));
+        else if (scenarioCode == 0x53)
+            strcpy(soundCodes, DigitalSoundString(0x5E56));
+        else if (scenarioCode == 0x55)
+            strcpy(soundCodes, DigitalSoundString(0x5E62));
+        break;
+    }
+    word16 packedBufferSize = 0x00;
+    word16 soundIndex = 0x00;
+    while (soundIndex < 0x0F && soundCodes[soundIndex] != 0x00)
+    {
+        int16 entryIndex = FindDigitalSoundEntryByCode(soundCodes[soundIndex]);
+        if (entryIndex >= 0x00)
+        {
+            DigitalSoundEntryRecord *entry;
+            word16 sampleLength;
 
-			entry = &DigitalSoundEntries()[entryIndex];
-			sampleLength = entry->SampleLength;
-			entry->PackedBufferOffset = packedBufferSize;
-			packedBufferSize += sampleLength;
-		}
-		++soundIndex;
-	}
-	DigitalSoundBuffer = (byte *) Heap_Allocate(packedBufferSize, "31FB:049D");
-	soundIndex = 0x00;
-	while (soundIndex < 0x0F && soundCodes[soundIndex] != 0x00)
-	{
-		int16 entryIndex = FindDigitalSoundEntryByCode(soundCodes[soundIndex]);
-		if (entryIndex >= 0x00)
-		{
-			DigitalSoundEntryRecord *entry;
-			const CachedFileDescriptor *resource;
+            entry = &DigitalSoundEntries()[entryIndex];
+            sampleLength = entry->SampleLength;
+            entry->PackedBufferOffset = packedBufferSize;
+            packedBufferSize += sampleLength;
+        }
+        ++soundIndex;
+    }
+    DigitalSoundBuffer = (byte *) Heap_Allocate(packedBufferSize, "31FB:049D");
+    soundIndex = 0x00;
+    while (soundIndex < 0x0F && soundCodes[soundIndex] != 0x00)
+    {
+        int16 entryIndex = FindDigitalSoundEntryByCode(soundCodes[soundIndex]);
+        if (entryIndex >= 0x00)
+        {
+            DigitalSoundEntryRecord *entry;
+            const CachedFileDescriptor *resource;
 
-			entry = &DigitalSoundEntries()[entryIndex];
-			resource = &CachedFileDescriptors[
-				entry->ResourceIndex];
-			ReadResourceFileSpan(
-				resource->fileName,
-				(int32) entry->SourceFileOffset,
-				DigitalSoundBuffer + entry->PackedBufferOffset,
-				entry->SampleLength);
-		}
-		++soundIndex;
-	}
-	/* 31FB:0559 then turned the bank into speaker bit patterns
+            entry = &DigitalSoundEntries()[entryIndex];
+            resource = &CachedFileDescriptors[entry->ResourceIndex];
+            ReadResourceFileSpan(
+                resource->fileName,
+                (int32) entry->SourceFileOffset,
+                DigitalSoundBuffer + entry->PackedBufferOffset,
+                entry->SampleLength);
+        }
+        ++soundIndex;
+    }
+    /* 31FB:0559 then turned the bank into speaker bit patterns
 	 * (TranslatePCSpeakerSampleBuffer) when the sound was the speaker. The
 	 * rebuild keeps the samples as they are and plays them clean
 	 * (SDLBackend_PlaySpeech). */
@@ -364,364 +358,362 @@ void LoadScenarioDigitalSoundBank(int8 scenarioCode)
 //      RunTitleAndMainMenu
 void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 {
-	// Verified against 31FB:0742-12A6.
-	// Verified [SDL]: cooperative timer service replaces asynchronous IRQ0
-	// delivery only while the preserved synchronous playback wait is active.
-	// DS:5E6E-5F6A contains NUL-terminated playback fragments assembled by
-	// scenario, narration mode, force index, and alternate-result state.
-	// Every character resolves through DigitalSoundEntries.
-	char soundCodes[0x10];
-	ui16 narrationMode = NarrationMode;
-	soundCodes[0x00] = 0x00;
-	switch (scenarioCode)
-	{
-	case ~0x00:
-		strcpy(soundCodes, DigitalSoundString(0x5E6E));
-		break;
-	case ~0x01:
-		strcpy(soundCodes, DigitalSoundString(0x5E70));
-		break;
-	default:
-		if (scenarioCode < 0x31 || scenarioCode > 0x35)
-		{
-			if (scenarioCode != 0x36)
-			{
-				if (scenarioCode == 0x37)
-				{
-					if (narrationMode == 0x02)
-						strcpy(soundCodes, DigitalSoundString(0x5E92));
-					else
-						strcpy(soundCodes, DigitalSoundString(0x5E96));
-					strcat(soundCodes, DigitalSoundString(0x5E98));
-					if (NarrationEmphasis != 0x00)
-						strcat(soundCodes, DigitalSoundString(0x5E9B));
-					else if (narrationMode == 0x02)
-						strcat(soundCodes, DigitalSoundString(0x5E9D));
-				}
-				else if (scenarioCode != 0x38)
-				{
-					if (scenarioCode != 0x39)
-					{
-						if (scenarioCode != 0x41)
-						{
-							if ((scenarioCode >= 0x42 && scenarioCode <= 0x45) || scenarioCode == 0x54)
-							{
-								if (narrationMode == 0x02)
-									strcpy(soundCodes, DigitalSoundString(0x5ED5));
-								else
-									strcpy(soundCodes, DigitalSoundString(0x5ED9));
-								if (ActiveNarrationSubject == 0x01)
-									strcat(soundCodes, DigitalSoundString(0x5EDB));
-								else if (ActiveNarrationSubject == 0x02)
-									strcat(soundCodes, DigitalSoundString(0x5EDE));
-								else if (ActiveNarrationSubject == 0x03)
-									strcat(soundCodes, DigitalSoundString(0x5EE1));
-								else if (ActiveNarrationSubject == 0x04)
-									strcat(soundCodes, DigitalSoundString(0x5EE4));
-								else
-									strcat(soundCodes, DigitalSoundString(0x5EE7));
-								if (NarrationEmphasis != 0x00)
-									strcat(soundCodes, DigitalSoundString(0x5EEA));
-								else if (narrationMode == 0x02)
-									strcat(soundCodes, DigitalSoundString(0x5EEC));
-							}
-							else if (scenarioCode < 0x46 || scenarioCode > 0x4E)
-							{
-								if (scenarioCode != 0x4F)
-								{
-									if (scenarioCode < 0x50 || scenarioCode > 0x52)
-									{
-										if (scenarioCode != 0x53)
-										{
-											if (scenarioCode == 0x55)
-											{
-												if (narrationMode == 0x02)
-													strcpy(soundCodes, DigitalSoundString(0x5F52));
-												else
-													strcpy(soundCodes, DigitalSoundString(0x5F56));
-												if (ActiveNarrationSubject == 0x01)
-													strcat(soundCodes, DigitalSoundString(0x5F58));
-												else if (ActiveNarrationSubject == 0x02)
-													strcat(soundCodes, DigitalSoundString(0x5F5B));
-												else if (ActiveNarrationSubject == 0x03)
-													strcat(soundCodes, DigitalSoundString(0x5F5E));
-												else if (ActiveNarrationSubject == 0x04)
-													strcat(soundCodes, DigitalSoundString(0x5F61));
-												else
-													strcat(soundCodes, DigitalSoundString(0x5F64));
-												if (NarrationEmphasis != 0x00)
-													strcat(soundCodes, DigitalSoundString(0x5F67));
-												else if (narrationMode == 0x02)
-													strcat(soundCodes, DigitalSoundString(0x5F69));
-											}
-										}
-										else
-										{
-											if (narrationMode == 0x02)
-												strcpy(soundCodes, DigitalSoundString(0x5F39));
-											else
-												strcpy(soundCodes, DigitalSoundString(0x5F3D));
-											if (ActiveNarrationSubject == 0x01)
-												strcat(soundCodes, DigitalSoundString(0x5F3F));
-											else if (ActiveNarrationSubject == 0x02)
-												strcat(soundCodes, DigitalSoundString(0x5F42));
-											else if (ActiveNarrationSubject == 0x03)
-												strcat(soundCodes, DigitalSoundString(0x5F45));
-											else if (ActiveNarrationSubject == 0x04)
-												strcat(soundCodes, DigitalSoundString(0x5F48));
-											else
-												strcat(soundCodes, DigitalSoundString(0x5F4B));
-											if (NarrationEmphasis != 0x00)
-												strcat(soundCodes, DigitalSoundString(0x5F4E));
-											else if (narrationMode == 0x02)
-												strcat(soundCodes, DigitalSoundString(0x5F50));
-										}
-									}
-									else
-									{
-										if (narrationMode == 0x02)
-											strcpy(soundCodes, DigitalSoundString(0x5F20));
-										else
-											strcpy(soundCodes, DigitalSoundString(0x5F24));
-										if (ActiveNarrationSubject == 0x01)
-											strcat(soundCodes, DigitalSoundString(0x5F26));
-										else if (ActiveNarrationSubject == 0x02)
-											strcat(soundCodes, DigitalSoundString(0x5F29));
-										else if (ActiveNarrationSubject == 0x03)
-											strcat(soundCodes, DigitalSoundString(0x5F2C));
-										else if (ActiveNarrationSubject == 0x04)
-											strcat(soundCodes, DigitalSoundString(0x5F2F));
-										else
-											strcat(soundCodes, DigitalSoundString(0x5F32));
-										if (NarrationEmphasis != 0x00)
-											strcat(soundCodes, DigitalSoundString(0x5F35));
-										else if (narrationMode == 0x02)
-											strcat(soundCodes, DigitalSoundString(0x5F37));
-									}
-								}
-								else
-								{
-									if (narrationMode == 0x02)
-										strcpy(soundCodes, DigitalSoundString(0x5F07));
-									else
-										strcpy(soundCodes, DigitalSoundString(0x5F0B));
-									if (ActiveNarrationSubject == 0x01)
-										strcat(soundCodes, DigitalSoundString(0x5F0D));
-									else if (ActiveNarrationSubject == 0x02)
-										strcat(soundCodes, DigitalSoundString(0x5F10));
-									else if (ActiveNarrationSubject == 0x03)
-										strcat(soundCodes, DigitalSoundString(0x5F13));
-									else if (ActiveNarrationSubject == 0x04)
-										strcat(soundCodes, DigitalSoundString(0x5F16));
-									else
-										strcat(soundCodes, DigitalSoundString(0x5F19));
-									if (NarrationEmphasis != 0x00)
-										strcat(soundCodes, DigitalSoundString(0x5F1C));
-									else if (narrationMode == 0x02)
-										strcat(soundCodes, DigitalSoundString(0x5F1E));
-								}
-							}
-							else
-							{
-								if (narrationMode == 0x02)
-									strcpy(soundCodes, DigitalSoundString(0x5EEE));
-								else
-									strcpy(soundCodes, DigitalSoundString(0x5EF2));
-								if (ActiveNarrationSubject == 0x01)
-									strcat(soundCodes, DigitalSoundString(0x5EF4));
-								else if (ActiveNarrationSubject == 0x02)
-									strcat(soundCodes, DigitalSoundString(0x5EF7));
-								else if (ActiveNarrationSubject == 0x03)
-									strcat(soundCodes, DigitalSoundString(0x5EFA));
-								else if (ActiveNarrationSubject == 0x04)
-									strcat(soundCodes, DigitalSoundString(0x5EFD));
-								else
-									strcat(soundCodes, DigitalSoundString(0x5F00));
-								if (NarrationEmphasis != 0x00)
-									strcat(soundCodes, DigitalSoundString(0x5F03));
-								else if (narrationMode == 0x02)
-									strcat(soundCodes, DigitalSoundString(0x5F05));
-							}
-						}
-						else
-						{
-							if (narrationMode == 0x02)
-								strcpy(soundCodes, DigitalSoundString(0x5EC2));
-							else
-								strcpy(soundCodes, DigitalSoundString(0x5EC6));
-							if (ActiveNarrationSubject == 0x01)
-								strcat(soundCodes, DigitalSoundString(0x5EC8));
-							else if (ActiveNarrationSubject == 0x02)
-								strcat(soundCodes, DigitalSoundString(0x5ECB));
-							else
-								strcat(soundCodes, DigitalSoundString(0x5ECE));
-							if (NarrationEmphasis != 0x00)
-								strcat(soundCodes, DigitalSoundString(0x5ED1));
-							else if (narrationMode == 0x02)
-								strcat(soundCodes, DigitalSoundString(0x5ED3));
-						}
-					}
-					else
-					{
-						if (narrationMode == 0x02)
-							strcpy(soundCodes, DigitalSoundString(0x5EB2));
-						else
-							strcpy(soundCodes, DigitalSoundString(0x5EB6));
-						if (ActiveNarrationSubject == 0x01)
-							strcat(soundCodes, DigitalSoundString(0x5EB8));
-						else
-							strcat(soundCodes, DigitalSoundString(0x5EBB));
-						if (NarrationEmphasis != 0x00)
-							strcat(soundCodes, DigitalSoundString(0x5EBE));
-						else if (narrationMode == 0x02)
-							strcat(soundCodes, DigitalSoundString(0x5EC0));
-					}
-				}
-				else
-				{
-					if (narrationMode == 0x02)
-						strcpy(soundCodes, DigitalSoundString(0x5E9F));
-					else
-						strcpy(soundCodes, DigitalSoundString(0x5EA3));
-					if (ActiveNarrationSubject == 0x01)
-						strcat(soundCodes, DigitalSoundString(0x5EA5));
-					else if (ActiveNarrationSubject == 0x02)
-						strcat(soundCodes, DigitalSoundString(0x5EA8));
-					else
-						strcat(soundCodes, DigitalSoundString(0x5EAB));
-					if (NarrationEmphasis != 0x00)
-						strcat(soundCodes, DigitalSoundString(0x5EAE));
-					else if (narrationMode == 0x02)
-						strcat(soundCodes, DigitalSoundString(0x5EB0));
-				}
-			}
-			else
-			{
-				if (narrationMode == 0x02)
-					strcpy(soundCodes, DigitalSoundString(0x5E7F));
-				else
-					strcpy(soundCodes, DigitalSoundString(0x5E83));
-				if (ActiveNarrationSubject == 0x01)
-					strcat(soundCodes, DigitalSoundString(0x5E85));
-				else if (ActiveNarrationSubject == 0x02)
-					strcat(soundCodes, DigitalSoundString(0x5E88));
-				else
-					strcat(soundCodes, DigitalSoundString(0x5E8B));
-				if (NarrationEmphasis != 0x00)
-					strcat(soundCodes, DigitalSoundString(0x5E8E));
-				else if (narrationMode == 0x02)
-					strcat(soundCodes, DigitalSoundString(0x5E90));
-			}
-		}
-		else
-		{
-			if (narrationMode == 0x02)
-				strcpy(soundCodes, DigitalSoundString(0x5E72));
-			else
-				strcpy(soundCodes, DigitalSoundString(0x5E75));
-			if (ActiveNarrationSubject == 0x01)
-				strcat(soundCodes, DigitalSoundString(0x5E77));
-			else
-				strcat(soundCodes, DigitalSoundString(0x5E79));
-			if (NarrationEmphasis != 0x00)
-				strcat(soundCodes, DigitalSoundString(0x5E7B));
-			else if (narrationMode == 0x02)
-				strcat(soundCodes, DigitalSoundString(0x5E7D));
-		}
-		break;
-	}
-	if (narrationMode != 0x00)
-	{
-		if (SoundDriverIndex >= 0x01)
-		{
-			DigitalSoundDriverMutationGuard = 0x01;
-			if (DigitalSoundBusy == 0x00)
-			{
-				DigitalSoundBusy = 0x01;
-				RestoreSystemTimer();
-				InstallDigitalPlaybackTimer(DigitalPlaybackRateHz);
-				AcquireDigitalPlaybackDriver(
-					DigitalSoundDriverDescriptorOffsets()[SoundDriverIndex],
-					DigitalPlaybackRateHz);
-				SetDigitalPlaybackTimingScale(0x0100);
-			}
-			else
-				RemoveDigitalSampleDescriptor(ActiveDigitalSampleDescriptor);
-			DigitalSoundDriverMutationGuard = 0x00;
-		}
-		word16 descriptorCount = 0x0000;
-		int16 descriptorEntries[0x10];
-		int16 soundCodeIndex = 0x0000;
-		while (soundCodeIndex < 0x0F && soundCodes[soundCodeIndex] != 0x00)
-		{
-			int16 soundEntryIndex = FindDigitalSoundEntryByCode(soundCodes[soundCodeIndex]);
-			if (soundEntryIndex >= 0x00)
-			{
-				DigitalSoundEntryRecord *entry;
+    // Verified against 31FB:0742-12A6.
+    // Verified [SDL]: cooperative timer service replaces asynchronous IRQ0
+    // delivery only while the preserved synchronous playback wait is active.
+    // DS:5E6E-5F6A contains NUL-terminated playback fragments assembled by
+    // scenario, narration mode, force index, and alternate-result state.
+    // Every character resolves through DigitalSoundEntries.
+    char soundCodes[0x10];
+    ui16 narrationMode = NarrationMode;
+    soundCodes[0x00] = 0x00;
+    switch (scenarioCode)
+    {
+    case ~0x00:
+        strcpy(soundCodes, DigitalSoundString(0x5E6E));
+        break;
+    case ~0x01:
+        strcpy(soundCodes, DigitalSoundString(0x5E70));
+        break;
+    default:
+        if (scenarioCode < 0x31 || scenarioCode > 0x35)
+        {
+            if (scenarioCode != 0x36)
+            {
+                if (scenarioCode == 0x37)
+                {
+                    if (narrationMode == 0x02)
+                        strcpy(soundCodes, DigitalSoundString(0x5E92));
+                    else
+                        strcpy(soundCodes, DigitalSoundString(0x5E96));
+                    strcat(soundCodes, DigitalSoundString(0x5E98));
+                    if (NarrationEmphasis != 0x00)
+                        strcat(soundCodes, DigitalSoundString(0x5E9B));
+                    else if (narrationMode == 0x02)
+                        strcat(soundCodes, DigitalSoundString(0x5E9D));
+                }
+                else if (scenarioCode != 0x38)
+                {
+                    if (scenarioCode != 0x39)
+                    {
+                        if (scenarioCode != 0x41)
+                        {
+                            if ((scenarioCode >= 0x42 && scenarioCode <= 0x45) || scenarioCode == 0x54)
+                            {
+                                if (narrationMode == 0x02)
+                                    strcpy(soundCodes, DigitalSoundString(0x5ED5));
+                                else
+                                    strcpy(soundCodes, DigitalSoundString(0x5ED9));
+                                if (ActiveNarrationSubject == 0x01)
+                                    strcat(soundCodes, DigitalSoundString(0x5EDB));
+                                else if (ActiveNarrationSubject == 0x02)
+                                    strcat(soundCodes, DigitalSoundString(0x5EDE));
+                                else if (ActiveNarrationSubject == 0x03)
+                                    strcat(soundCodes, DigitalSoundString(0x5EE1));
+                                else if (ActiveNarrationSubject == 0x04)
+                                    strcat(soundCodes, DigitalSoundString(0x5EE4));
+                                else
+                                    strcat(soundCodes, DigitalSoundString(0x5EE7));
+                                if (NarrationEmphasis != 0x00)
+                                    strcat(soundCodes, DigitalSoundString(0x5EEA));
+                                else if (narrationMode == 0x02)
+                                    strcat(soundCodes, DigitalSoundString(0x5EEC));
+                            }
+                            else if (scenarioCode < 0x46 || scenarioCode > 0x4E)
+                            {
+                                if (scenarioCode != 0x4F)
+                                {
+                                    if (scenarioCode < 0x50 || scenarioCode > 0x52)
+                                    {
+                                        if (scenarioCode != 0x53)
+                                        {
+                                            if (scenarioCode == 0x55)
+                                            {
+                                                if (narrationMode == 0x02)
+                                                    strcpy(soundCodes, DigitalSoundString(0x5F52));
+                                                else
+                                                    strcpy(soundCodes, DigitalSoundString(0x5F56));
+                                                if (ActiveNarrationSubject == 0x01)
+                                                    strcat(soundCodes, DigitalSoundString(0x5F58));
+                                                else if (ActiveNarrationSubject == 0x02)
+                                                    strcat(soundCodes, DigitalSoundString(0x5F5B));
+                                                else if (ActiveNarrationSubject == 0x03)
+                                                    strcat(soundCodes, DigitalSoundString(0x5F5E));
+                                                else if (ActiveNarrationSubject == 0x04)
+                                                    strcat(soundCodes, DigitalSoundString(0x5F61));
+                                                else
+                                                    strcat(soundCodes, DigitalSoundString(0x5F64));
+                                                if (NarrationEmphasis != 0x00)
+                                                    strcat(soundCodes, DigitalSoundString(0x5F67));
+                                                else if (narrationMode == 0x02)
+                                                    strcat(soundCodes, DigitalSoundString(0x5F69));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (narrationMode == 0x02)
+                                                strcpy(soundCodes, DigitalSoundString(0x5F39));
+                                            else
+                                                strcpy(soundCodes, DigitalSoundString(0x5F3D));
+                                            if (ActiveNarrationSubject == 0x01)
+                                                strcat(soundCodes, DigitalSoundString(0x5F3F));
+                                            else if (ActiveNarrationSubject == 0x02)
+                                                strcat(soundCodes, DigitalSoundString(0x5F42));
+                                            else if (ActiveNarrationSubject == 0x03)
+                                                strcat(soundCodes, DigitalSoundString(0x5F45));
+                                            else if (ActiveNarrationSubject == 0x04)
+                                                strcat(soundCodes, DigitalSoundString(0x5F48));
+                                            else
+                                                strcat(soundCodes, DigitalSoundString(0x5F4B));
+                                            if (NarrationEmphasis != 0x00)
+                                                strcat(soundCodes, DigitalSoundString(0x5F4E));
+                                            else if (narrationMode == 0x02)
+                                                strcat(soundCodes, DigitalSoundString(0x5F50));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (narrationMode == 0x02)
+                                            strcpy(soundCodes, DigitalSoundString(0x5F20));
+                                        else
+                                            strcpy(soundCodes, DigitalSoundString(0x5F24));
+                                        if (ActiveNarrationSubject == 0x01)
+                                            strcat(soundCodes, DigitalSoundString(0x5F26));
+                                        else if (ActiveNarrationSubject == 0x02)
+                                            strcat(soundCodes, DigitalSoundString(0x5F29));
+                                        else if (ActiveNarrationSubject == 0x03)
+                                            strcat(soundCodes, DigitalSoundString(0x5F2C));
+                                        else if (ActiveNarrationSubject == 0x04)
+                                            strcat(soundCodes, DigitalSoundString(0x5F2F));
+                                        else
+                                            strcat(soundCodes, DigitalSoundString(0x5F32));
+                                        if (NarrationEmphasis != 0x00)
+                                            strcat(soundCodes, DigitalSoundString(0x5F35));
+                                        else if (narrationMode == 0x02)
+                                            strcat(soundCodes, DigitalSoundString(0x5F37));
+                                    }
+                                }
+                                else
+                                {
+                                    if (narrationMode == 0x02)
+                                        strcpy(soundCodes, DigitalSoundString(0x5F07));
+                                    else
+                                        strcpy(soundCodes, DigitalSoundString(0x5F0B));
+                                    if (ActiveNarrationSubject == 0x01)
+                                        strcat(soundCodes, DigitalSoundString(0x5F0D));
+                                    else if (ActiveNarrationSubject == 0x02)
+                                        strcat(soundCodes, DigitalSoundString(0x5F10));
+                                    else if (ActiveNarrationSubject == 0x03)
+                                        strcat(soundCodes, DigitalSoundString(0x5F13));
+                                    else if (ActiveNarrationSubject == 0x04)
+                                        strcat(soundCodes, DigitalSoundString(0x5F16));
+                                    else
+                                        strcat(soundCodes, DigitalSoundString(0x5F19));
+                                    if (NarrationEmphasis != 0x00)
+                                        strcat(soundCodes, DigitalSoundString(0x5F1C));
+                                    else if (narrationMode == 0x02)
+                                        strcat(soundCodes, DigitalSoundString(0x5F1E));
+                                }
+                            }
+                            else
+                            {
+                                if (narrationMode == 0x02)
+                                    strcpy(soundCodes, DigitalSoundString(0x5EEE));
+                                else
+                                    strcpy(soundCodes, DigitalSoundString(0x5EF2));
+                                if (ActiveNarrationSubject == 0x01)
+                                    strcat(soundCodes, DigitalSoundString(0x5EF4));
+                                else if (ActiveNarrationSubject == 0x02)
+                                    strcat(soundCodes, DigitalSoundString(0x5EF7));
+                                else if (ActiveNarrationSubject == 0x03)
+                                    strcat(soundCodes, DigitalSoundString(0x5EFA));
+                                else if (ActiveNarrationSubject == 0x04)
+                                    strcat(soundCodes, DigitalSoundString(0x5EFD));
+                                else
+                                    strcat(soundCodes, DigitalSoundString(0x5F00));
+                                if (NarrationEmphasis != 0x00)
+                                    strcat(soundCodes, DigitalSoundString(0x5F03));
+                                else if (narrationMode == 0x02)
+                                    strcat(soundCodes, DigitalSoundString(0x5F05));
+                            }
+                        }
+                        else
+                        {
+                            if (narrationMode == 0x02)
+                                strcpy(soundCodes, DigitalSoundString(0x5EC2));
+                            else
+                                strcpy(soundCodes, DigitalSoundString(0x5EC6));
+                            if (ActiveNarrationSubject == 0x01)
+                                strcat(soundCodes, DigitalSoundString(0x5EC8));
+                            else if (ActiveNarrationSubject == 0x02)
+                                strcat(soundCodes, DigitalSoundString(0x5ECB));
+                            else
+                                strcat(soundCodes, DigitalSoundString(0x5ECE));
+                            if (NarrationEmphasis != 0x00)
+                                strcat(soundCodes, DigitalSoundString(0x5ED1));
+                            else if (narrationMode == 0x02)
+                                strcat(soundCodes, DigitalSoundString(0x5ED3));
+                        }
+                    }
+                    else
+                    {
+                        if (narrationMode == 0x02)
+                            strcpy(soundCodes, DigitalSoundString(0x5EB2));
+                        else
+                            strcpy(soundCodes, DigitalSoundString(0x5EB6));
+                        if (ActiveNarrationSubject == 0x01)
+                            strcat(soundCodes, DigitalSoundString(0x5EB8));
+                        else
+                            strcat(soundCodes, DigitalSoundString(0x5EBB));
+                        if (NarrationEmphasis != 0x00)
+                            strcat(soundCodes, DigitalSoundString(0x5EBE));
+                        else if (narrationMode == 0x02)
+                            strcat(soundCodes, DigitalSoundString(0x5EC0));
+                    }
+                }
+                else
+                {
+                    if (narrationMode == 0x02)
+                        strcpy(soundCodes, DigitalSoundString(0x5E9F));
+                    else
+                        strcpy(soundCodes, DigitalSoundString(0x5EA3));
+                    if (ActiveNarrationSubject == 0x01)
+                        strcat(soundCodes, DigitalSoundString(0x5EA5));
+                    else if (ActiveNarrationSubject == 0x02)
+                        strcat(soundCodes, DigitalSoundString(0x5EA8));
+                    else
+                        strcat(soundCodes, DigitalSoundString(0x5EAB));
+                    if (NarrationEmphasis != 0x00)
+                        strcat(soundCodes, DigitalSoundString(0x5EAE));
+                    else if (narrationMode == 0x02)
+                        strcat(soundCodes, DigitalSoundString(0x5EB0));
+                }
+            }
+            else
+            {
+                if (narrationMode == 0x02)
+                    strcpy(soundCodes, DigitalSoundString(0x5E7F));
+                else
+                    strcpy(soundCodes, DigitalSoundString(0x5E83));
+                if (ActiveNarrationSubject == 0x01)
+                    strcat(soundCodes, DigitalSoundString(0x5E85));
+                else if (ActiveNarrationSubject == 0x02)
+                    strcat(soundCodes, DigitalSoundString(0x5E88));
+                else
+                    strcat(soundCodes, DigitalSoundString(0x5E8B));
+                if (NarrationEmphasis != 0x00)
+                    strcat(soundCodes, DigitalSoundString(0x5E8E));
+                else if (narrationMode == 0x02)
+                    strcat(soundCodes, DigitalSoundString(0x5E90));
+            }
+        }
+        else
+        {
+            if (narrationMode == 0x02)
+                strcpy(soundCodes, DigitalSoundString(0x5E72));
+            else
+                strcpy(soundCodes, DigitalSoundString(0x5E75));
+            if (ActiveNarrationSubject == 0x01)
+                strcat(soundCodes, DigitalSoundString(0x5E77));
+            else
+                strcat(soundCodes, DigitalSoundString(0x5E79));
+            if (NarrationEmphasis != 0x00)
+                strcat(soundCodes, DigitalSoundString(0x5E7B));
+            else if (narrationMode == 0x02)
+                strcat(soundCodes, DigitalSoundString(0x5E7D));
+        }
+        break;
+    }
+    if (narrationMode != 0x00)
+    {
+        if (SoundDriverIndex >= 0x01)
+        {
+            DigitalSoundDriverMutationGuard = 0x01;
+            if (DigitalSoundBusy == 0x00)
+            {
+                DigitalSoundBusy = 0x01;
+                RestoreSystemTimer();
+                InstallDigitalPlaybackTimer(DigitalPlaybackRateHz);
+                AcquireDigitalPlaybackDriver(
+                    DigitalSoundDriverDescriptorOffsets()[SoundDriverIndex],
+                    DigitalPlaybackRateHz);
+                SetDigitalPlaybackTimingScale(0x0100);
+            }
+            else
+                RemoveDigitalSampleDescriptor(ActiveDigitalSampleDescriptor);
+            DigitalSoundDriverMutationGuard = 0x00;
+        }
+        word16 descriptorCount = 0x0000;
+        int16 descriptorEntries[0x10];
+        int16 soundCodeIndex = 0x0000;
+        while (soundCodeIndex < 0x0F && soundCodes[soundCodeIndex] != 0x00)
+        {
+            int16 soundEntryIndex = FindDigitalSoundEntryByCode(soundCodes[soundCodeIndex]);
+            if (soundEntryIndex >= 0x00)
+            {
+                DigitalSoundEntryRecord *entry;
 
-				entry = &DigitalSoundEntries()[soundEntryIndex];
-				InitializeDigitalSampleDescriptor(
-					&DigitalSamplePlaybackDescriptors()[descriptorCount],
-					DigitalSoundBuffer + entry->PackedBufferOffset,
-					entry->SampleLength,
-					DIGITAL_SOUND_SAMPLE_RATE_HZ,
-					DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
-				descriptorEntries[descriptorCount] = soundEntryIndex;
-				++descriptorCount;
-			}
-			++soundCodeIndex;
-		}
-		word16 descriptorIndex = 0x0000;
-		while (descriptorIndex < descriptorCount)
-		{
-			DigitalSampleDescriptor *descriptor =
-				&DigitalSamplePlaybackDescriptors()[descriptorIndex];
-			ActiveDigitalSampleDescriptor = descriptor;
-			AudioLog_PcmStart("speech", (unsigned) descriptorEntries[descriptorIndex],
-				descriptor->SampleLength);
-			if (SoundDriverIndex == 0x00)
-			{
-				/* The original played the bank's bit patterns on the
+                entry = &DigitalSoundEntries()[soundEntryIndex];
+                InitializeDigitalSampleDescriptor(
+                    &DigitalSamplePlaybackDescriptors()[descriptorCount],
+                    DigitalSoundBuffer + entry->PackedBufferOffset,
+                    entry->SampleLength,
+                    DIGITAL_SOUND_SAMPLE_RATE_HZ,
+                    DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
+                descriptorEntries[descriptorCount] = soundEntryIndex;
+                ++descriptorCount;
+            }
+            ++soundCodeIndex;
+        }
+        word16 descriptorIndex = 0x0000;
+        while (descriptorIndex < descriptorCount)
+        {
+            DigitalSampleDescriptor *descriptor =
+                &DigitalSamplePlaybackDescriptors()[descriptorIndex];
+            ActiveDigitalSampleDescriptor = descriptor;
+            AudioLog_PcmStart("speech", (unsigned) descriptorEntries[descriptorIndex],
+                descriptor->SampleLength);
+            if (SoundDriverIndex == 0x00)
+            {
+                /* The original played the bank's bit patterns on the
 				 * speaker (PlayPCSpeakerBitstream, 31FB:11F1) with
 				 * interrupts off; the rebuild plays the samples clean,
 				 * the game held as long. */
-				SDLBackend_PlaySpeech(
-					descriptor->SampleData, descriptor->SampleLength,
-					DIGITAL_SOUND_SAMPLE_RATE_HZ);
-				AudioLog_PcmDone();
-			}
-			else
-			{
-				ConfigureDigitalSampleTiming(descriptor,
-					DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
-				PrepareDigitalSamplePlayback(descriptor);
-				EnqueueDigitalSampleDescriptor(descriptor, &ActiveDigitalDriverQueue);
-				AttachDigitalDriverQueue(
-					DigitalSoundDriverDescriptorOffsets()[
-						SoundDriverIndex],
-					&ActiveDigitalDriverQueue);
-				do
-				{
-					/* DOS advanced the descriptor asynchronously from IRQ0.
+                SDLBackend_PlaySpeech(
+                    descriptor->SampleData, descriptor->SampleLength,
+                    DIGITAL_SOUND_SAMPLE_RATE_HZ);
+                AudioLog_PcmDone();
+            }
+            else
+            {
+                ConfigureDigitalSampleTiming(descriptor,
+                    DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
+                PrepareDigitalSamplePlayback(descriptor);
+                EnqueueDigitalSampleDescriptor(descriptor, &ActiveDigitalDriverQueue);
+                AttachDigitalDriverQueue(
+                    DigitalSoundDriverDescriptorOffsets()[SoundDriverIndex],
+                    &ActiveDigitalDriverQueue);
+                do
+                {
+                    /* DOS advanced the descriptor asynchronously from IRQ0.
 					 * SDL preserves that boundary through cooperative timer
 					 * dispatch while this original busy-wait is active. */
-					SDLBackend_ServiceTimers();
-				}
-				while (GetDigitalSamplePlaybackState(descriptor) > 0x00);
-				AudioLog_PcmDone();
-				RemoveDigitalSampleDescriptor(descriptor);
-			}
-			++descriptorIndex;
-		}
-		if (SoundDriverIndex >= 0x01)
-		{
-			ReleaseDigitalPlaybackDriver(
-				DigitalSoundDriverDescriptorOffsets()[SoundDriverIndex]);
-			RestoreDigitalPlaybackTimer();
-			InstallMusicTimer();
-		}
-		DigitalSoundBusy = 0x00;
-	}
+                    SDLBackend_ServiceTimers();
+                } while (GetDigitalSamplePlaybackState(descriptor) > 0x00);
+                AudioLog_PcmDone();
+                RemoveDigitalSampleDescriptor(descriptor);
+            }
+            ++descriptorIndex;
+        }
+        if (SoundDriverIndex >= 0x01)
+        {
+            ReleaseDigitalPlaybackDriver(
+                DigitalSoundDriverDescriptorOffsets()[SoundDriverIndex]);
+            RestoreDigitalPlaybackTimer();
+            InstallMusicTimer();
+        }
+        DigitalSoundBusy = 0x00;
+    }
 }
 
 // 31FB:12B7: void ReleaseDigitalSoundBuffer(void)
@@ -729,5 +721,5 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 //      RunTitleAndMainMenu
 void ReleaseDigitalSoundBuffer(void)
 {
-	Heap_Free(DigitalSoundBuffer);
+    Heap_Free(DigitalSoundBuffer);
 }

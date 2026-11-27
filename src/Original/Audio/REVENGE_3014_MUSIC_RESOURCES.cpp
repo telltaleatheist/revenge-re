@@ -15,8 +15,8 @@
 //      StartLoadedMusicTrack
 void DisableMusicPlayback(void)
 {
-	PauseMIDISequence();
-	RequestedMusicEnabled = 0x0000;
+    PauseMIDISequence();
+    RequestedMusicEnabled = 0x0000;
 }
 
 // 3014:001A: void EnableMusicPlayback(void)
@@ -25,8 +25,8 @@ void DisableMusicPlayback(void)
 //      StartLoadedMusicTrack
 void EnableMusicPlayback(void)
 {
-	ResumeMIDISequence();
-	RequestedMusicEnabled = 0x0001;
+    ResumeMIDISequence();
+    RequestedMusicEnabled = 0x0001;
 }
 
 // 3014:0038: void InitializeMusicDriver()
@@ -35,33 +35,33 @@ void EnableMusicPlayback(void)
 // Verified against 3014:0038-0116.
 void InitializeMusicDriver(void)
 {
-	word16 musicDriverIndex;
+    word16 musicDriverIndex;
 
-	AllocateMusicStagingBuffer();
-	musicDriverIndex = MusicDriverIndex;
-	REVENGE_PRESERVATION_TRACE("music: initialize driver=%04X enabled=%04X\n",
-		musicDriverIndex, RequestedMusicEnabled);
-	if (musicDriverIndex <= MIDI_DRIVER_ROLAND)
-	{
-		switch (musicDriverIndex)
-		{
-	case MIDI_DRIVER_INTERNAL_SPEAKER:
-			PrepareMIDIDriver(&SpeakerMIDIDriverDescriptor);
-			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
-			ActivateMIDIDriver(&SpeakerMIDIDriverDescriptor);
-			Seg426B.MusicDriverMode = 0x01;
-			break;
-	/* Drivers 1-3 (Tandy, PS/1, AdLib) set up the same way on their own
+    AllocateMusicStagingBuffer();
+    musicDriverIndex = MusicDriverIndex;
+    REVENGE_PRESERVATION_TRACE("music: initialize driver=%04X enabled=%04X\n",
+        musicDriverIndex, RequestedMusicEnabled);
+    if (musicDriverIndex <= MIDI_DRIVER_ROLAND)
+    {
+        switch (musicDriverIndex)
+        {
+        case MIDI_DRIVER_INTERNAL_SPEAKER:
+            PrepareMIDIDriver(&SpeakerMIDIDriverDescriptor);
+            SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
+            ActivateMIDIDriver(&SpeakerMIDIDriverDescriptor);
+            Seg426B.MusicDriverMode = 0x01;
+            break;
+    /* Drivers 1-3 (Tandy, PS/1, AdLib) set up the same way on their own
 	 * descriptors; the music setting reaches only 0 and 4, and the rebuild
 	 * has no driver for those cards. */
-	case MIDI_DRIVER_ROLAND:
-			PrepareMIDIDriver(&RolandMIDIDriverDescriptor);
-			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
-			ActivateMIDIDriver(&RolandMIDIDriverDescriptor);
-			Seg426B.MusicDriverMode = 0x02;
-			break;
-		}
-	}
+        case MIDI_DRIVER_ROLAND:
+            PrepareMIDIDriver(&RolandMIDIDriverDescriptor);
+            SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
+            ActivateMIDIDriver(&RolandMIDIDriverDescriptor);
+            Seg426B.MusicDriverMode = 0x02;
+            break;
+        }
+    }
 }
 
 // 3014:0117: void AllocateMusicStagingBuffer(void)
@@ -69,11 +69,11 @@ void InitializeMusicDriver(void)
 //      InitializeMusicDriver
 void AllocateMusicStagingBuffer(void)
 {
-	byte *musicDriverBuffer;
+    byte *musicDriverBuffer;
 
-	musicDriverBuffer = (byte *) Heap_Allocate(0x30D4, "3014:011E");
-	MusicStagingBuffer = musicDriverBuffer;
-	CachedMusicResourceIndex = 0xFFFF;
+    musicDriverBuffer = (byte *) Heap_Allocate(0x30D4, "3014:011E");
+    MusicStagingBuffer = musicDriverBuffer;
+    CachedMusicResourceIndex = 0xFFFF;
 }
 
 // 3014:0133: void ReleaseMusicDriverBuffer(void)
@@ -82,7 +82,7 @@ void AllocateMusicStagingBuffer(void)
 //      ShutdownMusicDriver
 void ReleaseMusicDriverBuffer(void)
 {
-	Heap_FreeFrom(MusicStagingBuffer, "3014:011E", "3014:0133");
+    Heap_FreeFrom(MusicStagingBuffer, "3014:011E", "3014:0133");
 }
 
 // 3014:0143: void ShutdownMusicDriver(void)
@@ -90,17 +90,17 @@ void ReleaseMusicDriverBuffer(void)
 //      ShutdownGame
 void ShutdownMusicDriver(void)
 {
-	StopMIDISequence();
-	DeactivateMIDIDriver();
-	// A shutdown in a battle frees the buffer the battle freed (0D73:025E)
-	// and hasn't asked for again (0D73:033D): the original's heap took that
-	// free as it found it, and the program ends before it allocates again.
-	// Here that block is still kept, or another request of its size has taken
-	// it since; either way it isn't the music's to free.
-	if (Heap_Caller(MusicStagingBuffer) == NULL ||
-		strcmp(Heap_Caller(MusicStagingBuffer), "3014:011E") != 0)
-		return;
-	ReleaseMusicDriverBuffer();
+    StopMIDISequence();
+    DeactivateMIDIDriver();
+    // A shutdown in a battle frees the buffer the battle freed (0D73:025E)
+    // and hasn't asked for again (0D73:033D): the original's heap took that
+    // free as it found it, and the program ends before it allocates again.
+    // Here that block is still kept, or another request of its size has taken
+    // it since; either way it isn't the music's to free.
+    if (Heap_Caller(MusicStagingBuffer) == NULL ||
+        strcmp(Heap_Caller(MusicStagingBuffer), "3014:011E") != 0)
+        return;
+    ReleaseMusicDriverBuffer();
 }
 
 // 3014:0153: void StartLoadedMusicTrack(void)
@@ -108,21 +108,21 @@ void ShutdownMusicDriver(void)
 //      PlayMusicResource
 void StartLoadedMusicTrack(void)
 {
-	word16 startResult;
+    word16 startResult;
 
-	if (MusicDriverIndex == 0x00)
-		StartPCSpeakerFixedTone();
-	startResult = StartMIDISequence(MusicStagingBuffer, 0x0009);
-	REVENGE_PRESERVATION_TRACE("music: start cached=%04X result=%04X bytes=%02X%02X%02X%02X\n",
-		CachedMusicResourceIndex,
-		startResult,
-		MusicStagingBuffer[0x00], MusicStagingBuffer[0x01],
-		MusicStagingBuffer[0x02], MusicStagingBuffer[0x03]);
-	(void) startResult;                 /* read only by the trace */
-	if (RequestedMusicEnabled != 0x00)
-		EnableMusicPlayback();
-	else
-		DisableMusicPlayback();
+    if (MusicDriverIndex == 0x00)
+        StartPCSpeakerFixedTone();
+    startResult = StartMIDISequence(MusicStagingBuffer, 0x0009);
+    REVENGE_PRESERVATION_TRACE("music: start cached=%04X result=%04X bytes=%02X%02X%02X%02X\n",
+        CachedMusicResourceIndex,
+        startResult,
+        MusicStagingBuffer[0x00], MusicStagingBuffer[0x01],
+        MusicStagingBuffer[0x02], MusicStagingBuffer[0x03]);
+    (void) startResult;                 /* read only by the trace */
+    if (RequestedMusicEnabled != 0x00)
+        EnableMusicPlayback();
+    else
+        DisableMusicPlayback();
 }
 
 // 3014:0185: void StopLoadedMusicTrack(void)
@@ -131,9 +131,9 @@ void StartLoadedMusicTrack(void)
 //      PlayMusicResource
 void StopLoadedMusicTrack(void)
 {
-	StopMIDISequence();
-	if (MusicDriverIndex == 0x00)
-		DisablePCSpeaker();
+    StopMIDISequence();
+    if (MusicDriverIndex == 0x00)
+        DisablePCSpeaker();
 }
 
 // 3014:0197: void LoadMusicResource(word16 resourceIndex)
@@ -142,27 +142,27 @@ void StopLoadedMusicTrack(void)
 // Verified against 3014:0197-01F4.
 void LoadMusicResource(word16 resourceIndex)
 {
-	if (RequestedMusicEnabled != 0x00)
-	{
-		const CachedFileDescriptor *descriptor;
-		int16 resourceLength;
+    if (RequestedMusicEnabled != 0x00)
+    {
+        const CachedFileDescriptor *descriptor;
+        int16 resourceLength;
 
-		descriptor = &CachedFileDescriptors[resourceIndex];
-		resourceLength = (int16) descriptor->fileLength;
+        descriptor = &CachedFileDescriptors[resourceIndex];
+        resourceLength = (int16) descriptor->fileLength;
 
-		if (resourceLength <= 0x30D4 &&
-			CachedMusicResourceIndex != resourceIndex)
-		{
-			const char *resourceName;
+        if (resourceLength <= 0x30D4 &&
+            CachedMusicResourceIndex != resourceIndex)
+        {
+            const char *resourceName;
 
-			resourceName = descriptor->fileName;
-			ReadWholeResourceFile(
-				resourceName,
-				MusicStagingBuffer,
-				(word16)resourceLength);
-			CachedMusicResourceIndex = resourceIndex;
-		}
-	}
+            resourceName = descriptor->fileName;
+            ReadWholeResourceFile(
+                resourceName,
+                MusicStagingBuffer,
+                (word16) resourceLength);
+            CachedMusicResourceIndex = resourceIndex;
+        }
+    }
 }
 
 // 3014:01F5: void PlayMusicResource(word16 resourceIndex)
@@ -171,26 +171,25 @@ void LoadMusicResource(word16 resourceIndex)
 // Verified against 3014:01F5-0239.
 void PlayMusicResource(word16 resourceIndex)
 {
-	word16 compatibleResourceIndex;
+    word16 compatibleResourceIndex;
 
-	compatibleResourceIndex = resourceIndex;
-	REVENGE_PRESERVATION_TRACE("music: request=%04X driver=%04X enabled=%04X abort=%04X\n",
-		resourceIndex, MusicDriverIndex, RequestedMusicEnabled,
-		SceneTransitionAbortFlag);
-	if (SceneTransitionAbortFlag == 0x00)
-	{
-		StopLoadedMusicTrack();
-		/* 3014:0207-021A swapped two songs for drivers 0-2 (the speaker, Tandy
+    compatibleResourceIndex = resourceIndex;
+    REVENGE_PRESERVATION_TRACE("music: request=%04X driver=%04X enabled=%04X abort=%04X\n",
+        resourceIndex, MusicDriverIndex, RequestedMusicEnabled,
+        SceneTransitionAbortFlag);
+    if (SceneTransitionAbortFlag == 0x00)
+    {
+        StopLoadedMusicTrack();
+        /* 3014:0207-021A swapped two songs for drivers 0-2 (the speaker, Tandy
 		 * and PS/1); of those the rebuild has the speaker. */
-		if (MusicDriverIndex == MIDI_DRIVER_INTERNAL_SPEAKER)
-		{
-			if (resourceIndex == 0x49)
-				compatibleResourceIndex = 0x48;
-			else if (resourceIndex == 0x4B)
-				compatibleResourceIndex = 0x4C;
-		}
-		LoadMusicResource(compatibleResourceIndex);
-		StartLoadedMusicTrack();
-	}
+        if (MusicDriverIndex == MIDI_DRIVER_INTERNAL_SPEAKER)
+        {
+            if (resourceIndex == 0x49)
+                compatibleResourceIndex = 0x48;
+            else if (resourceIndex == 0x4B)
+                compatibleResourceIndex = 0x4C;
+        }
+        LoadMusicResource(compatibleResourceIndex);
+        StartLoadedMusicTrack();
+    }
 }
-

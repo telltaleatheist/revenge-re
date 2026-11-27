@@ -6,68 +6,68 @@
 #include "revenge/video.h"
 
 void CopyVideoRegion(
-	int16 sourceX,
-	int16 sourceY,
-	int16 destinationX,
-	int16 destinationY,
-	word16 width,
-	word16 height,
-	const byte *sourceBase,
-	byte *destinationBase);
+    int16 sourceX,
+    int16 sourceY,
+    int16 destinationX,
+    int16 destinationY,
+    word16 width,
+    word16 height,
+    const byte *sourceBase,
+    byte *destinationBase);
 
 // 3329:000E
 // Clip a region copy to 40 eight-pixel columns by 200 scanlines.
 // Verified against 3329:000E-00F5.
 void CopyClippedVideoRegion(
-	short sourceX,
-	short sourceY,
-	short destinationX,
-	short destinationY,
-	unsigned short widthColumns,
-	unsigned short heightPixels,
-	const byte *source,
-	byte *destination)
+    short sourceX,
+    short sourceY,
+    short destinationX,
+    short destinationY,
+    unsigned short widthColumns,
+    unsigned short heightPixels,
+    const byte *source,
+    byte *destination)
 {
-	if (widthColumns > VIDEO_SCREEN_8PX_COLUMN_COUNT)
-		widthColumns = VIDEO_SCREEN_8PX_COLUMN_COUNT;
-	if (heightPixels > VIDEO_SCREEN_HEIGHT)
-		heightPixels = VIDEO_SCREEN_HEIGHT;
+    if (widthColumns > VIDEO_SCREEN_8PX_COLUMN_COUNT)
+        widthColumns = VIDEO_SCREEN_8PX_COLUMN_COUNT;
+    if (heightPixels > VIDEO_SCREEN_HEIGHT)
+        heightPixels = VIDEO_SCREEN_HEIGHT;
 
-	if (sourceX < VIDEO_SCREEN_MIN_COLUMN)
-	{
-		destinationX -= sourceX;
-		widthColumns += sourceX;
-		sourceX = VIDEO_SCREEN_MIN_COLUMN;
-	}
-	if (destinationX < VIDEO_SCREEN_MIN_COLUMN)
-	{
-		sourceX -= destinationX;
-		widthColumns += destinationX;
-		destinationX = VIDEO_SCREEN_MIN_COLUMN;
-	}
-	if (sourceY < VIDEO_SCREEN_MIN_Y)
-	{
-		destinationY -= sourceY;
-		heightPixels += sourceY;
-		sourceY = VIDEO_SCREEN_MIN_Y;
-	}
-	if (destinationY < VIDEO_SCREEN_MIN_Y)
-	{
-		sourceY -= destinationY;
-		heightPixels += destinationY;
-		destinationY = VIDEO_SCREEN_MIN_Y;
-	}
+    if (sourceX < VIDEO_SCREEN_MIN_COLUMN)
+    {
+        destinationX -= sourceX;
+        widthColumns += sourceX;
+        sourceX = VIDEO_SCREEN_MIN_COLUMN;
+    }
+    if (destinationX < VIDEO_SCREEN_MIN_COLUMN)
+    {
+        sourceX -= destinationX;
+        widthColumns += destinationX;
+        destinationX = VIDEO_SCREEN_MIN_COLUMN;
+    }
+    if (sourceY < VIDEO_SCREEN_MIN_Y)
+    {
+        destinationY -= sourceY;
+        heightPixels += sourceY;
+        sourceY = VIDEO_SCREEN_MIN_Y;
+    }
+    if (destinationY < VIDEO_SCREEN_MIN_Y)
+    {
+        sourceY -= destinationY;
+        heightPixels += destinationY;
+        destinationY = VIDEO_SCREEN_MIN_Y;
+    }
 
-	/* The EGA's routing of the primary buffer to its A200 page
+    /* The EGA's routing of the primary buffer to its A200 page
 	 * (3329:0070-0075, 009B-00F4) went with the EGA; the rebuild is VGA
 	 * only. */
-	CopyVideoRegion(
-		sourceX,
-		sourceY,
-		destinationX,
-		destinationY,
-		widthColumns,
-		heightPixels,
-		source,
-		destination);
+    CopyVideoRegion(
+        sourceX,
+        sourceY,
+        destinationX,
+        destinationY,
+        widthColumns,
+        heightPixels,
+        source,
+        destination);
 }

@@ -9,30 +9,30 @@
 // caller changes windows, then restored with the selected window.
 void SelectTextWindow(word16 windowIndex)
 {
-	TextWindowContext *previous;
-	TextWindowContext *selected;
+    TextWindowContext *previous;
+    TextWindowContext *selected;
 
-	if (TextWindowStateInitialized != FALSE)
-	{
-		previous = &TextWindowContexts[ActiveTextWindowIndex];
-		previous->foregroundColor = ActiveTextForegroundColor;
-		previous->backgroundColor = ActiveTextBackgroundColor;
-		previous->cursorColumn = ActiveTextCursorColumn;
-		previous->cursorRow = ActiveTextCursorRow;
-	}
-	else
-	{
-		TextWindowStateInitialized = TRUE;
-	}
+    if (TextWindowStateInitialized != FALSE)
+    {
+        previous = &TextWindowContexts[ActiveTextWindowIndex];
+        previous->foregroundColor = ActiveTextForegroundColor;
+        previous->backgroundColor = ActiveTextBackgroundColor;
+        previous->cursorColumn = ActiveTextCursorColumn;
+        previous->cursorRow = ActiveTextCursorRow;
+    }
+    else
+    {
+        TextWindowStateInitialized = TRUE;
+    }
 
-	selected = &TextWindowContexts[windowIndex];
-	ActiveTextWindowIndex = windowIndex;
-	ActiveTextWindowLeftTile = selected->leftTile;
-	ActiveTextWindowTopTile = selected->topTile;
-	ActiveTextWindowWidthTiles = selected->widthTiles;
-	ActiveTextWindowHeightTiles = selected->heightTiles;
-	ActiveTextForegroundColor = selected->foregroundColor;
-	ActiveTextBackgroundColor = selected->backgroundColor;
-	ActiveTextCursorColumn = selected->cursorColumn;
-	ActiveTextCursorRow = selected->cursorRow;
+    selected = &TextWindowContexts[windowIndex];
+    ActiveTextWindowIndex = windowIndex;
+    ActiveTextWindowLeftTile = selected->leftTile;
+    ActiveTextWindowTopTile = selected->topTile;
+    ActiveTextWindowWidthTiles = selected->widthTiles;
+    ActiveTextWindowHeightTiles = selected->heightTiles;
+    ActiveTextForegroundColor = selected->foregroundColor;
+    ActiveTextBackgroundColor = selected->backgroundColor;
+    ActiveTextCursorColumn = selected->cursorColumn;
+    ActiveTextCursorRow = selected->cursorRow;
 }

@@ -13,13 +13,12 @@
 //      SelectAndClearTextWindow
 void ClearActiveTextWindow(void)
 {
-	FillVideoTileRectangle(
-		ActiveTextWindowLeftTile,
-		ActiveTextWindowTopTile,
-		ActiveTextWindowWidthTiles,
-		ActiveTextWindowHeightTiles,
-		(byte) ActiveTextBackgroundColor);
-	ActiveTextCursorRow = 0x00;
-	ActiveTextCursorColumn = 0x00;
+    FillVideoTileRectangle(
+        ActiveTextWindowLeftTile,
+        ActiveTextWindowTopTile,
+        ActiveTextWindowWidthTiles,
+        ActiveTextWindowHeightTiles,
+        (byte) ActiveTextBackgroundColor);
+    ActiveTextCursorRow = 0x00;
+    ActiveTextCursorColumn = 0x00;
 }
-

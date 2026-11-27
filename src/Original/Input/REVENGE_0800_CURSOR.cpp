@@ -12,242 +12,236 @@
  * ShutdownMouseSupport. */
 void MouseEventCallback(word16 buttons, word16 x, word16 y)
 {
-	if (MouseInputDisabled != FALSE)
-		return;
-	/* 0800:3781-3791 reports the middle button as the word at DS:7FA2
+    if (MouseInputDisabled != FALSE)
+        return;
+    /* 0800:3781-3791 reports the middle button as the word at DS:7FA2
 	 * when that is set; nothing sets it, so the middle button keeps
 	 * bit 2. */
-	if (MouseButtonState != buttons)
-		PendingMouseButtonEvent |= MouseButtonState ^ buttons;
-	MouseButtonState = buttons;
-	/* 0800:37A9-37B3 sets the word at DS:7FA6 while a button is down;
+    if (MouseButtonState != buttons)
+        PendingMouseButtonEvent |= MouseButtonState ^ buttons;
+    MouseButtonState = buttons;
+    /* 0800:37A9-37B3 sets the word at DS:7FA6 while a button is down;
 	 * nothing reads it. */
 
-	if (MouseCursorUpdateLock != 0x0000)
-		return;
-	MouseCursorUpdateLock = 0x0001;
-	if (MouseDriverDoubleX == 0x0001)
-		x >>= 0x01;
-	MouseCursorRequestedX = (int16) x;
-	MouseY = y;
-	if (MouseCursorDisplayedX != MouseCursorRequestedX ||
-		MouseCursorDisplayedY != (int16) MouseY)
-	{
-		HideMouseCursorOverlayUnlocked();
-		ShowMouseCursorOverlayUnlocked();
-	}
-	MouseCursorUpdateLock = 0x0000;
+    if (MouseCursorUpdateLock != 0x0000)
+        return;
+    MouseCursorUpdateLock = 0x0001;
+    if (MouseDriverDoubleX == 0x0001)
+        x >>= 0x01;
+    MouseCursorRequestedX = (int16) x;
+    MouseY = y;
+    if (MouseCursorDisplayedX != MouseCursorRequestedX ||
+        MouseCursorDisplayedY != (int16) MouseY)
+    {
+        HideMouseCursorOverlayUnlocked();
+        ShowMouseCursorOverlayUnlocked();
+    }
+    MouseCursorUpdateLock = 0x0000;
 }
 
 /* 0800:3665-36A5 */
 void ConfigureMouseCursorOverlay(
-	int16 hotspotX,
-	int16 hotspotY,
-	const byte *cursorBitmap)
+    int16 hotspotX,
+    int16 hotspotY,
+    const byte *cursorBitmap)
 {
-	while (MouseCursorUpdateLock != 0x0000)
-		;
-	++MouseCursorUpdateLock;
-	HideMouseCursorOverlayUnlocked();
-	MouseCursorHotspotX = hotspotX;
-	MouseCursorHotspotY = hotspotY;
-	MouseCursorBitmap = cursorBitmap;
-	ShowMouseCursorOverlayUnlocked();
-	--MouseCursorUpdateLock;
+    while (MouseCursorUpdateLock != 0x0000);
+    ++MouseCursorUpdateLock;
+    HideMouseCursorOverlayUnlocked();
+    MouseCursorHotspotX = hotspotX;
+    MouseCursorHotspotY = hotspotY;
+    MouseCursorBitmap = cursorBitmap;
+    ShowMouseCursorOverlayUnlocked();
+    --MouseCursorUpdateLock;
 }
 
 /* 0800:3825-387C */
 word16 IsMouseCursorInsideRectangle(
-	int16 left,
-	int16 top,
-	int16 right,
-	int16 bottom)
+    int16 left,
+    int16 top,
+    int16 right,
+    int16 bottom)
 {
-	word16 isInside;
+    word16 isInside;
 
-	while (MouseCursorUpdateLock != 0x0000)
-		;
-	++MouseCursorUpdateLock;
-	MouseCursorTestX = MouseCursorDisplayedX;
-	MouseCursorTestY = MouseCursorDisplayedY;
-	isInside = MouseCursorTestX >= left &&
-		MouseCursorTestX <= right &&
-		MouseCursorTestY >= top &&
-		MouseCursorTestY <= bottom;
-	--MouseCursorUpdateLock;
-	return isInside;
+    while (MouseCursorUpdateLock != 0x0000);
+    ++MouseCursorUpdateLock;
+    MouseCursorTestX = MouseCursorDisplayedX;
+    MouseCursorTestY = MouseCursorDisplayedY;
+    isInside = MouseCursorTestX >= left &&
+        MouseCursorTestX <= right &&
+        MouseCursorTestY >= top &&
+        MouseCursorTestY <= bottom;
+    --MouseCursorUpdateLock;
+    return isInside;
 }
 
 /* 0800:387D-3967 */
 void HideMouseCursorOverlayUnlocked(void)
 {
-	if (MouseInputDisabled != 0x0000)
-		return;
-	if (MouseCursorHideDepth == 0x0000)
-	{
-		int16 cursorLeft;
-		int16 cursorTop;
-		int16 tileLeft;
-		int16 tileTop;
+    if (MouseInputDisabled != 0x0000)
+        return;
+    if (MouseCursorHideDepth == 0x0000)
+    {
+        int16 cursorLeft;
+        int16 cursorTop;
+        int16 tileLeft;
+        int16 tileTop;
 
-		MouseCursorErasedX = MouseCursorDisplayedX;
-		MouseCursorErasedY = MouseCursorDisplayedY;
-		cursorLeft = MouseCursorDisplayedX - MouseCursorHotspotX;
-		cursorTop = MouseCursorDisplayedY - MouseCursorHotspotY;
-		tileLeft = cursorLeft >> 0x03;
-		if (tileLeft > -0x03 && tileLeft < VIDEO_SCREEN_8PX_COLUMN_COUNT)
-		{
-			MouseCursorRestoreTileLeft = tileLeft;
-			MouseCursorRestoreTileRight = tileLeft + 0x03;
-			if (MouseCursorRestoreTileLeft < 0x0000)
-				MouseCursorRestoreTileLeft = 0x0000;
-			if (MouseCursorRestoreTileRight > VIDEO_SCREEN_8PX_COLUMN_COUNT)
-				MouseCursorRestoreTileRight = VIDEO_SCREEN_8PX_COLUMN_COUNT;
-			tileTop = cursorTop >> 0x03;
-			if (tileTop > -0x03 && tileTop < VIDEO_SCREEN_HEIGHT / 0x0008)
-			{
-				MouseCursorRestoreTileTop = tileTop;
-				MouseCursorRestoreTileBottom = tileTop + 0x03;
-				if (MouseCursorRestoreTileTop < 0x0000)
-					MouseCursorRestoreTileTop = 0x0000;
-				if (MouseCursorRestoreTileBottom > VIDEO_SCREEN_HEIGHT / 0x0008)
-					MouseCursorRestoreTileBottom = VIDEO_SCREEN_HEIGHT / 0x0008;
-				CopyBufferToVideoRegion(
-					MouseCursorRestoreTileLeft,
-					(word16) MouseCursorRestoreTileTop,
-					(word16) (MouseCursorRestoreTileRight -
-						MouseCursorRestoreTileLeft),
-					(word16) (MouseCursorRestoreTileBottom -
-						MouseCursorRestoreTileTop),
-					MouseCursorBackground);
-			}
-		}
-	}
-	++MouseCursorHideDepth;
-	if (MouseCursorHideDepth == 0x0000)
-		--MouseCursorHideDepth;
+        MouseCursorErasedX = MouseCursorDisplayedX;
+        MouseCursorErasedY = MouseCursorDisplayedY;
+        cursorLeft = MouseCursorDisplayedX - MouseCursorHotspotX;
+        cursorTop = MouseCursorDisplayedY - MouseCursorHotspotY;
+        tileLeft = cursorLeft >> 0x03;
+        if (tileLeft > -0x03 && tileLeft < VIDEO_SCREEN_8PX_COLUMN_COUNT)
+        {
+            MouseCursorRestoreTileLeft = tileLeft;
+            MouseCursorRestoreTileRight = tileLeft + 0x03;
+            if (MouseCursorRestoreTileLeft < 0x0000)
+                MouseCursorRestoreTileLeft = 0x0000;
+            if (MouseCursorRestoreTileRight > VIDEO_SCREEN_8PX_COLUMN_COUNT)
+                MouseCursorRestoreTileRight = VIDEO_SCREEN_8PX_COLUMN_COUNT;
+            tileTop = cursorTop >> 0x03;
+            if (tileTop > -0x03 && tileTop < VIDEO_SCREEN_HEIGHT / 0x0008)
+            {
+                MouseCursorRestoreTileTop = tileTop;
+                MouseCursorRestoreTileBottom = tileTop + 0x03;
+                if (MouseCursorRestoreTileTop < 0x0000)
+                    MouseCursorRestoreTileTop = 0x0000;
+                if (MouseCursorRestoreTileBottom > VIDEO_SCREEN_HEIGHT / 0x0008)
+                    MouseCursorRestoreTileBottom = VIDEO_SCREEN_HEIGHT / 0x0008;
+                CopyBufferToVideoRegion(
+                    MouseCursorRestoreTileLeft,
+                    (word16) MouseCursorRestoreTileTop,
+                    (word16) (MouseCursorRestoreTileRight -
+                        MouseCursorRestoreTileLeft),
+                    (word16) (MouseCursorRestoreTileBottom -
+                        MouseCursorRestoreTileTop),
+                    MouseCursorBackground);
+            }
+        }
+    }
+    ++MouseCursorHideDepth;
+    if (MouseCursorHideDepth == 0x0000)
+        --MouseCursorHideDepth;
 }
 
 /* 0800:3968-398B */
 void HideMouseCursorOverlay(void)
 {
-	while (MouseCursorUpdateLock != 0x0000)
-		;
-	++MouseCursorUpdateLock;
-	HideMouseCursorOverlayUnlocked();
-	--MouseCursorUpdateLock;
+    while (MouseCursorUpdateLock != 0x0000);
+    ++MouseCursorUpdateLock;
+    HideMouseCursorOverlayUnlocked();
+    --MouseCursorUpdateLock;
 }
 
 /* 0800:398C-39FA */
 void SetMouseCursorPositionUnlocked(int16 requestedX, int16 requestedY)
 {
-	if (MouseInputDisabled != 0x0000)
-		return;
+    if (MouseInputDisabled != 0x0000)
+        return;
 
-	if (requestedX < MouseCursorMinX)
-		requestedX = MouseCursorMinX;
-	else if (requestedX > MouseCursorMaxX)
-		requestedX = MouseCursorMaxX;
-	MouseCursorRequestedX = requestedX;
+    if (requestedX < MouseCursorMinX)
+        requestedX = MouseCursorMinX;
+    else if (requestedX > MouseCursorMaxX)
+        requestedX = MouseCursorMaxX;
+    MouseCursorRequestedX = requestedX;
 
-	if (requestedY < MouseCursorMinY)
-		requestedY = MouseCursorMinY;
-	else if (requestedY > MouseCursorMaxY)
-		requestedY = MouseCursorMaxY;
-	MouseY = (word16) requestedY;
+    if (requestedY < MouseCursorMinY)
+        requestedY = MouseCursorMinY;
+    else if (requestedY > MouseCursorMaxY)
+        requestedY = MouseCursorMaxY;
+    MouseY = (word16) requestedY;
 
-	if (MouseDriverInstalled != 0x0000)
-		SDLBackend_SetMousePosition(requestedX, requestedY);
+    if (MouseDriverInstalled != 0x0000)
+        SDLBackend_SetMousePosition(requestedX, requestedY);
 
-	if (requestedX != MouseCursorDisplayedX ||
-		requestedY != MouseCursorDisplayedY)
-	{
-		HideMouseCursorOverlayUnlocked();
-		ShowMouseCursorOverlayUnlocked();
-	}
+    if (requestedX != MouseCursorDisplayedX ||
+        requestedY != MouseCursorDisplayedY)
+    {
+        HideMouseCursorOverlayUnlocked();
+        ShowMouseCursorOverlayUnlocked();
+    }
 }
 
 /* 0800:39FB-3A22 */
 void SetMouseCursorPosition(int16 x, int16 y)
 {
-	while (MouseCursorUpdateLock != 0x0000)
-		;
-	++MouseCursorUpdateLock;
-	SetMouseCursorPositionUnlocked(x, y);
-	--MouseCursorUpdateLock;
+    while (MouseCursorUpdateLock != 0x0000);
+    ++MouseCursorUpdateLock;
+    SetMouseCursorPositionUnlocked(x, y);
+    --MouseCursorUpdateLock;
 }
 
 /* 0800:3A23-3A52 */
 void MoveMouseCursorRelative(int16 deltaX, int16 deltaY)
 {
-	while (MouseCursorUpdateLock != 0x0000)
-		;
-	++MouseCursorUpdateLock;
-	SetMouseCursorPositionUnlocked(
-		(int16) (MouseCursorRequestedX + deltaX),
-		(int16) ((int16) MouseY + deltaY));
-	--MouseCursorUpdateLock;
+    while (MouseCursorUpdateLock != 0x0000);
+    ++MouseCursorUpdateLock;
+    SetMouseCursorPositionUnlocked(
+        (int16) (MouseCursorRequestedX + deltaX),
+        (int16) ((int16) MouseY + deltaY));
+    --MouseCursorUpdateLock;
 }
 
 /* 0800:3A53-3B79 */
 void ShowMouseCursorOverlayUnlocked(void)
 {
-	int16 drawLeft;
-	int16 drawTop;
-	int16 tileLeft;
-	int16 tileTop;
+    int16 drawLeft;
+    int16 drawTop;
+    int16 tileLeft;
+    int16 tileTop;
 
-	if (MouseInputDisabled != 0x0000 ||
-		MouseCursorHideDepth == 0x0000)
-		return;
-	--MouseCursorHideDepth;
-	if (MouseCursorHideDepth != 0x0000)
-		return;
-	MouseCursorDisplayedX = MouseCursorRequestedX;
-	MouseCursorDrawnX = MouseCursorRequestedX;
-	MouseCursorDisplayedY = (int16) MouseY;
-	MouseCursorDrawnY = (int16) MouseY;
-	drawLeft = MouseCursorDisplayedX - MouseCursorHotspotX;
-	drawTop = MouseCursorDisplayedY - MouseCursorHotspotY;
-	MouseCursorDrawLeft = drawLeft;
-	MouseCursorDrawTop = drawTop;
-	tileLeft = drawLeft >> 0x03;
-	if (tileLeft <= -0x03 || tileLeft >= VIDEO_SCREEN_8PX_COLUMN_COUNT)
-		return;
-	MouseCursorCaptureTileLeft = tileLeft;
-	MouseCursorCaptureTileRight = tileLeft + 0x03;
-	if (MouseCursorCaptureTileLeft < 0x0000)
-		MouseCursorCaptureTileLeft = 0x0000;
-	if (MouseCursorCaptureTileRight > VIDEO_SCREEN_8PX_COLUMN_COUNT)
-		MouseCursorCaptureTileRight = VIDEO_SCREEN_8PX_COLUMN_COUNT;
-	tileTop = drawTop >> 0x03;
-	if (tileTop <= -0x03 || tileTop >= VIDEO_SCREEN_HEIGHT / 0x0008)
-		return;
-	MouseCursorCaptureTileTop = tileTop;
-	MouseCursorCaptureTileBottom = tileTop + 0x03;
-	if (MouseCursorCaptureTileTop < 0x0000)
-		MouseCursorCaptureTileTop = 0x0000;
-	if (MouseCursorCaptureTileBottom > VIDEO_SCREEN_HEIGHT / 0x0008)
-		MouseCursorCaptureTileBottom = VIDEO_SCREEN_HEIGHT / 0x0008;
-	CopyVideoRegionToBuffer(
-		MouseCursorCaptureTileLeft,
-		(word16) MouseCursorCaptureTileTop,
-		(word16) (MouseCursorCaptureTileRight -
-			MouseCursorCaptureTileLeft),
-		(word16) (MouseCursorCaptureTileBottom -
-			MouseCursorCaptureTileTop),
-		MouseCursorBackground);
-	DrawClippedSprite(
-		Video_GetIndexedFramebuffer(), MouseCursorBitmap,
-		drawLeft, drawTop, 0x0000);
+    if (MouseInputDisabled != 0x0000 ||
+        MouseCursorHideDepth == 0x0000)
+        return;
+    --MouseCursorHideDepth;
+    if (MouseCursorHideDepth != 0x0000)
+        return;
+    MouseCursorDisplayedX = MouseCursorRequestedX;
+    MouseCursorDrawnX = MouseCursorRequestedX;
+    MouseCursorDisplayedY = (int16) MouseY;
+    MouseCursorDrawnY = (int16) MouseY;
+    drawLeft = MouseCursorDisplayedX - MouseCursorHotspotX;
+    drawTop = MouseCursorDisplayedY - MouseCursorHotspotY;
+    MouseCursorDrawLeft = drawLeft;
+    MouseCursorDrawTop = drawTop;
+    tileLeft = drawLeft >> 0x03;
+    if (tileLeft <= -0x03 || tileLeft >= VIDEO_SCREEN_8PX_COLUMN_COUNT)
+        return;
+    MouseCursorCaptureTileLeft = tileLeft;
+    MouseCursorCaptureTileRight = tileLeft + 0x03;
+    if (MouseCursorCaptureTileLeft < 0x0000)
+        MouseCursorCaptureTileLeft = 0x0000;
+    if (MouseCursorCaptureTileRight > VIDEO_SCREEN_8PX_COLUMN_COUNT)
+        MouseCursorCaptureTileRight = VIDEO_SCREEN_8PX_COLUMN_COUNT;
+    tileTop = drawTop >> 0x03;
+    if (tileTop <= -0x03 || tileTop >= VIDEO_SCREEN_HEIGHT / 0x0008)
+        return;
+    MouseCursorCaptureTileTop = tileTop;
+    MouseCursorCaptureTileBottom = tileTop + 0x03;
+    if (MouseCursorCaptureTileTop < 0x0000)
+        MouseCursorCaptureTileTop = 0x0000;
+    if (MouseCursorCaptureTileBottom > VIDEO_SCREEN_HEIGHT / 0x0008)
+        MouseCursorCaptureTileBottom = VIDEO_SCREEN_HEIGHT / 0x0008;
+    CopyVideoRegionToBuffer(
+        MouseCursorCaptureTileLeft,
+        (word16) MouseCursorCaptureTileTop,
+        (word16) (MouseCursorCaptureTileRight -
+            MouseCursorCaptureTileLeft),
+        (word16) (MouseCursorCaptureTileBottom -
+            MouseCursorCaptureTileTop),
+        MouseCursorBackground);
+    DrawClippedSprite(
+        Video_GetIndexedFramebuffer(), MouseCursorBitmap,
+        drawLeft, drawTop, 0x0000);
 }
 
 /* 0800:3B7A-3B9D */
 void ShowMouseCursorOverlay(void)
 {
-	while (MouseCursorUpdateLock != 0x0000)
-		;
-	++MouseCursorUpdateLock;
-	ShowMouseCursorOverlayUnlocked();
-	--MouseCursorUpdateLock;
+    while (MouseCursorUpdateLock != 0x0000);
+    ++MouseCursorUpdateLock;
+    ShowMouseCursorOverlayUnlocked();
+    --MouseCursorUpdateLock;
 }

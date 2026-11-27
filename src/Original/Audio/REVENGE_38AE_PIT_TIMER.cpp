@@ -15,14 +15,14 @@
 //      RestoreDigitalPlaybackTimer
 word16 SetPITChannel0Divisor(word16 divisor)
 {
-	word16 previousDivisor;
+    word16 previousDivisor;
 
-	// The CLI and the OUT 43h,36h with the divisor's two bytes to port 40h
-	// (38AE:002B-0039) go: there is no PIT. The game's clock takes the rate
-	// from the caller. The XCHG with DS:6FA4 stays.
-	previousDivisor = PITCalibration.Channel0Divisor;
-	PITCalibration.Channel0Divisor = divisor;
-	return previousDivisor;
+    // The CLI and the OUT 43h,36h with the divisor's two bytes to port 40h
+    // (38AE:002B-0039) go: there is no PIT. The game's clock takes the rate
+    // from the caller. The XCHG with DS:6FA4 stays.
+    previousDivisor = PITCalibration.Channel0Divisor;
+    PITCalibration.Channel0Divisor = divisor;
+    return previousDivisor;
 }
 
 // 38AE:0046: Register uint16 PITFrequencyToDivisor(Register uint16 frequencyHz)
@@ -30,7 +30,7 @@ word16 SetPITChannel0Divisor(word16 divisor)
 //      ProgramDigitalPlaybackTimerRate
 uint16 PITFrequencyToDivisor(uint16 frequencyHz)
 {
-	if (frequencyHz <= 0x12)
-		return 0x00;
-	return (uint16) (0x1234DEUL / frequencyHz);
+    if (frequencyHz <= 0x12)
+        return 0x00;
+    return (uint16) (0x1234DEUL / frequencyHz);
 }

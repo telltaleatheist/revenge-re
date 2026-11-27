@@ -17,15 +17,14 @@
 //      FindResourceDescriptorIndex
 char *UppercaseStringInPlace(char *text)
 {
-	// V: Borland-style far strupr. Convert only ASCII a-z and return the
-	// original far pointer; punctuation and already-uppercase text are intact.
-	char *cursor = text;
-	while (*cursor != '\0')
-	{
-		if (*cursor >= 'a' && *cursor <= 'z')
-			*cursor -= 'a' - 'A';
-		++cursor;
-	}
-	return text;
+    // V: Borland-style far strupr. Convert only ASCII a-z and return the
+    // original far pointer; punctuation and already-uppercase text are intact.
+    char *cursor = text;
+    while (*cursor != '\0')
+    {
+        if (*cursor >= 'a' && *cursor <= 'z')
+            *cursor -= 'a' - 'A';
+        ++cursor;
+    }
+    return text;
 }
-

@@ -42,17 +42,17 @@ const char *const UnitStatusExitLabel = STORY_TEXT(UNIT_STATUS_EXIT_LABEL);
 const char *const UnitStatusHeatDetailLabel = STORY_TEXT(UNIT_STATUS_HEAT_DETAIL_LABEL);
 const char *const UnitStatusDamageLabel = STORY_TEXT(UNIT_STATUS_DAMAGE_LABEL);
 const char *const UnitStatusRatingLabels =
-	STORY_TEXT(UNIT_STATUS_RATING_LABELS);
+    STORY_TEXT(UNIT_STATUS_RATING_LABELS);
 const char *const IntelligenceHeading = STORY_TEXT(INTELLIGENCE_HEADING);
 const char *const ScannedByActiveProbeText = STORY_TEXT(SCANNED_BY_ACTIVE_PROBE);
 const char *const DetectedByText = STORY_TEXT(DETECTED_BY);
 const char *const RadarSensorText = STORY_TEXT(RADAR_SENSOR);
 const char *const EnemyAndFriendlyLancesText =
-	STORY_TEXT(ENEMY_AND_FRIENDLY_LANCES);
+    STORY_TEXT(ENEMY_AND_FRIENDLY_LANCES);
 const char *const UnknownUnitText = STORY_TEXT(UNKNOWN_UNIT);
 const char *const NoSatelliteUplinkText = STORY_TEXT(NO_SATELLITE_UPLINK);
 const char *const UplinkJammedText =
-	STORY_TEXT(UPLINK_JAMMED);
+    STORY_TEXT(UPLINK_JAMMED);
 const char *const OutOfScanningText = STORY_TEXT(OUT_OF_SCANNING);
 const char *const RangeText = STORY_TEXT(RANGE_TEXT);
 const char *const ArrowTagEquipmentText = STORY_TEXT(ARROW_TAG_EQUIPMENT);
@@ -72,49 +72,45 @@ const char *const ViewSatelliteMapText = STORY_TEXT(VIEW_SATELLITE_MAP);
 const char *const SelectStrafingAreaPrompt = STORY_TEXT(SELECT_STRAFING_AREA_PROMPT);
 const char *const SelectArtilleryTargetPrompt = STORY_TEXT(SELECT_ARTILLERY_TARGET_PROMPT);
 const char *const SelectBarrageStartPrompt =
-	STORY_TEXT(SELECT_BARRAGE_START_PROMPT);
+    STORY_TEXT(SELECT_BARRAGE_START_PROMPT);
 const char *const SelectBarrageEndPrompt = STORY_TEXT(SELECT_BARRAGE_END_PROMPT);
 const char *const SelectFireTargetPrompt = STORY_TEXT(SELECT_FIRE_TARGET_PROMPT);
-const char *TacticalUnitCommandTextTable[0x0E] =
-{
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_0), /* TacticalCommandsText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_1), /* TacticalLanceCommandsText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_2), /* TacticalTargetText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_3), /* TacticalCeaseFireAtText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_4), /* TacticalStopText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_5), /* TacticalWalkingSpeedText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_6), /* TacticalRunningSpeedText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_7), /* TacticalMoveText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_8), /* TacticalStoppedText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_9), /* TacticalCruisingSpeedText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_10), /* TacticalFlankSpeedText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_11), /* TacticalFireAtNoOneText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_12), /* TacticalFireDefensivelyText */
-	STORY_TEXT(TACTICAL_UNIT_COMMAND_13) /* TacticalFireAtWillText */
+const char *TacticalUnitCommandTextTable[0x0E] = {
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_0), /* TacticalCommandsText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_1), /* TacticalLanceCommandsText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_2), /* TacticalTargetText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_3), /* TacticalCeaseFireAtText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_4), /* TacticalStopText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_5), /* TacticalWalkingSpeedText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_6), /* TacticalRunningSpeedText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_7), /* TacticalMoveText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_8), /* TacticalStoppedText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_9), /* TacticalCruisingSpeedText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_10), /* TacticalFlankSpeedText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_11), /* TacticalFireAtNoOneText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_12), /* TacticalFireDefensivelyText */
+    STORY_TEXT(TACTICAL_UNIT_COMMAND_13) /* TacticalFireAtWillText */
 };
-const char *TacticalSupportCommandTextTable[0x08] =
-{
-	STORY_TEXT(TACTICAL_SUPPORT_COMMAND_0), /* ShellCoordinateText */
-	STORY_TEXT(TACTICAL_SUPPORT_COMMAND_1), /* CallOffShellingText */
-	STORY_TEXT(TACTICAL_SUPPORT_COMMAND_2), /* RollingBarrageText */
-	STORY_TEXT(TACTICAL_SUPPORT_COMMAND_3), /* CallOffBarrageText */
-	STORY_TEXT(TACTICAL_SUPPORT_COMMAND_4), /* CallStrafingText */
-	STORY_TEXT(TACTICAL_SUPPORT_COMMAND_5), /* CallOffStrafingText */
-	STORY_TEXT(TACTICAL_SUPPORT_COMMAND_6), /* CloseAssaultText */
-	STORY_TEXT(TACTICAL_SUPPORT_COMMAND_7) /* CeaseAssaultText */
+const char *TacticalSupportCommandTextTable[0x08] = {
+    STORY_TEXT(TACTICAL_SUPPORT_COMMAND_0), /* ShellCoordinateText */
+    STORY_TEXT(TACTICAL_SUPPORT_COMMAND_1), /* CallOffShellingText */
+    STORY_TEXT(TACTICAL_SUPPORT_COMMAND_2), /* RollingBarrageText */
+    STORY_TEXT(TACTICAL_SUPPORT_COMMAND_3), /* CallOffBarrageText */
+    STORY_TEXT(TACTICAL_SUPPORT_COMMAND_4), /* CallStrafingText */
+    STORY_TEXT(TACTICAL_SUPPORT_COMMAND_5), /* CallOffStrafingText */
+    STORY_TEXT(TACTICAL_SUPPORT_COMMAND_6), /* CloseAssaultText */
+    STORY_TEXT(TACTICAL_SUPPORT_COMMAND_7) /* CeaseAssaultText */
 };
-const char *TacticalOverburnTextTable[0x02] =
-	{ STORY_TEXT(TACTICAL_OVERBURN_0) /* OverburnOffText */, STORY_TEXT(TACTICAL_OVERBURN_1) /* OverburnOnText */ };
-const char *LanceStatusTextTable[0x08] =
-{
-	STORY_TEXT(LANCE_STATUS_0), /* LanceCommandText */
-	STORY_TEXT(LANCE_STATUS_1), /* LanceFireText */
-	STORY_TEXT(LANCE_STATUS_2), /* LanceAssaultText */
-	STORY_TEXT(LANCE_STATUS_3), /* LanceReconText */
-	STORY_TEXT(LANCE_STATUS_4), /* LanceLightText */
-	STORY_TEXT(LANCE_STATUS_5), /* LanceMediumText */
-	STORY_TEXT(LANCE_STATUS_6), /* LanceHeavyText */
-	STORY_TEXT(LANCE_STATUS_7) /* LanceAssaultWeightText */
+const char *TacticalOverburnTextTable[0x02] = { STORY_TEXT(TACTICAL_OVERBURN_0) /* OverburnOffText */, STORY_TEXT(TACTICAL_OVERBURN_1) /* OverburnOnText */ };
+const char *LanceStatusTextTable[0x08] = {
+    STORY_TEXT(LANCE_STATUS_0), /* LanceCommandText */
+    STORY_TEXT(LANCE_STATUS_1), /* LanceFireText */
+    STORY_TEXT(LANCE_STATUS_2), /* LanceAssaultText */
+    STORY_TEXT(LANCE_STATUS_3), /* LanceReconText */
+    STORY_TEXT(LANCE_STATUS_4), /* LanceLightText */
+    STORY_TEXT(LANCE_STATUS_5), /* LanceMediumText */
+    STORY_TEXT(LANCE_STATUS_6), /* LanceHeavyText */
+    STORY_TEXT(LANCE_STATUS_7) /* LanceAssaultWeightText */
 };
 /* DS:42D6 (2208:2181), the end of a longer string. */
 const char *const DeadText = STORY_TEXT(DEAD_TEXT);
@@ -137,16 +133,12 @@ word16 TacticalOverviewScreenOriginX;
 word16 DisplayedTacticalStatusRow;
 word16 TacticalStatusBlinkCountdown;
 byte TacticalStatusBlinkVisible;
-const int8_t WeaponTraceMajorStepX[0x08] =
-	{ 0x00, 0x01, 0x01, 0x00, 0x00, -0x01, -0x01, 0x00 };
-const int8_t WeaponTraceMajorStepY[0x08] =
-	{ -0x01, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, -0x01 };
-const int8_t WeaponTraceMinorStepX[0x08] =
-	{ 0x01, 0x00, 0x00, 0x01, -0x01, 0x00, 0x00, -0x01 };
-const int8_t WeaponTraceMinorStepY[0x08] =
-	{ 0x00, -0x01, 0x01, 0x00, 0x00, 0x01, -0x01, 0x00 };
+const int8_t WeaponTraceMajorStepX[0x08] = { 0x00, 0x01, 0x01, 0x00, 0x00, -0x01, -0x01, 0x00 };
+const int8_t WeaponTraceMajorStepY[0x08] = { -0x01, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, -0x01 };
+const int8_t WeaponTraceMinorStepX[0x08] = { 0x01, 0x00, 0x00, 0x01, -0x01, 0x00, 0x00, -0x01 };
+const int8_t WeaponTraceMinorStepY[0x08] = { 0x00, -0x01, 0x01, 0x00, 0x00, 0x01, -0x01, 0x00 };
 const char TacticalNoUnitStatusText[] =
-	"                           ";
+    "                           ";
 const char *const FriendlyUnitStatusHeading = STORY_TEXT(FRIENDLY_UNIT_STATUS_HEADING); /* DS:4620 */
 const char EnemyUnitStatusHeading[] = "   ";
 const char UnitStatusSeparatorText[] = " ";
@@ -161,15 +153,14 @@ const char *const CombatRatingBrutalText = STORY_TEXT(COMBAT_RATING_BRUTAL);
 const char *const CombatRatingDevastatingText = STORY_TEXT(COMBAT_RATING_DEVASTATING);
 const char *const CombatRatingIncredibleText = STORY_TEXT(COMBAT_RATING_INCREDIBLE);
 const char *const CombatRatingNoneText = STORY_TEXT(COMBAT_RATING_NONE);
-const char *CombatRatingDescriptionTable[0x07] =
-{
-	STORY_TEXT(UNIT_CLASS_LABEL_0), /* CombatRatingLightText */
-	STORY_TEXT(COMBAT_RATING_MODERATE), /* CombatRatingModerateText */
-	STORY_TEXT(COMBAT_RATING_HEAVY), /* CombatRatingHeavyText */
-	STORY_TEXT(COMBAT_RATING_BRUTAL), /* CombatRatingBrutalText */
-	STORY_TEXT(COMBAT_RATING_DEVASTATING), /* CombatRatingDevastatingText */
-	STORY_TEXT(COMBAT_RATING_INCREDIBLE), /* CombatRatingIncredibleText */
-	STORY_TEXT(COMBAT_RATING_NONE) /* CombatRatingNoneText */
+const char *CombatRatingDescriptionTable[0x07] = {
+    STORY_TEXT(UNIT_CLASS_LABEL_0), /* CombatRatingLightText */
+    STORY_TEXT(COMBAT_RATING_MODERATE), /* CombatRatingModerateText */
+    STORY_TEXT(COMBAT_RATING_HEAVY), /* CombatRatingHeavyText */
+    STORY_TEXT(COMBAT_RATING_BRUTAL), /* CombatRatingBrutalText */
+    STORY_TEXT(COMBAT_RATING_DEVASTATING), /* CombatRatingDevastatingText */
+    STORY_TEXT(COMBAT_RATING_INCREDIBLE), /* CombatRatingIncredibleText */
+    STORY_TEXT(COMBAT_RATING_NONE) /* CombatRatingNoneText */
 };
 RevengeUnitRecord PersistentUnitRoster[0x18];
 RevengeUnitRecord LiveScenarioUnits[0x18];
@@ -193,7 +184,7 @@ byte WeaponAIHeatLimitByExperiencePastEnd[0xFC];
 /* Filled at start from data/ui/lance_editor.json (the places) and
  * data/start/lance_editor.json (the starting state); revenge/rules.h. */
 RevengeUnitLanceAssignment
-	LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];
+    LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];
 /* Filled at start from data/rules/units.json (revenge/rules.h). */
 byte ScenarioLanceAllegianceTable[0x07][0x03];
 /* Filled at start from data/rules/weapons.json (revenge/rules.h). */
@@ -293,10 +284,8 @@ RevengeUnitSlot UnitLastNarratedTarget[0x18];
 byte UnitPreferredEngagementMode[0x18];
 byte UnitTerrainType[0x18];
 byte UnitBelowHalfDurability[TACTICAL_UNIT_COUNT + 0x01];
-byte UnitCachedWeaponCounts[
-	(TACTICAL_UNIT_COUNT + 0x01) * WEAPON_DEFINITION_COUNT];
-byte UnitWeaponRecoveryCounters[
-	(TACTICAL_UNIT_COUNT + 0x01) * WEAPON_DEFINITION_COUNT];
+byte UnitCachedWeaponCounts[(TACTICAL_UNIT_COUNT + 0x01) * WEAPON_DEFINITION_COUNT];
+byte UnitWeaponRecoveryCounters[(TACTICAL_UNIT_COUNT + 0x01) * WEAPON_DEFINITION_COUNT];
 byte UnitHeatSinkCount[TACTICAL_UNIT_COUNT + 0x01];
 uint32 UnitWeaponAvailabilityMask[TACTICAL_UNIT_COUNT + 0x01];
 word16 WeaponCountScratch[0x17];
@@ -305,16 +294,11 @@ byte *TacticalOverviewMapBuffer;
 byte *PackedTerrainDamageMap;
 byte *ActiveTerrainDamageByte;
 byte *TerrainDamageCapabilityTable;
-const byte TerrainDamageCellIncrementMask[0x04] =
-	{ 0x01, 0x04, 0x10, 0x40 };
-const byte TerrainDamageExtractMask[0x04] =
-	{ 0x03, 0x0C, 0x30, 0xC0 };
-const byte TerrainDamageShift[0x04] =
-	{ 0x00, 0x02, 0x04, 0x06 };
-const byte TerrainDamageCellOccupiedMask[0x04] =
-	{ 0xC0, 0x30, 0x0C, 0x03 };
-const byte TerrainDamageStageIncrement[0x04] =
-	{ 0x40, 0x10, 0x04, 0x01 };
+const byte TerrainDamageCellIncrementMask[0x04] = { 0x01, 0x04, 0x10, 0x40 };
+const byte TerrainDamageExtractMask[0x04] = { 0x03, 0x0C, 0x30, 0xC0 };
+const byte TerrainDamageShift[0x04] = { 0x00, 0x02, 0x04, 0x06 };
+const byte TerrainDamageCellOccupiedMask[0x04] = { 0xC0, 0x30, 0x0C, 0x03 };
+const byte TerrainDamageStageIncrement[0x04] = { 0x40, 0x10, 0x04, 0x01 };
 word16 PackedTerrainDamageRowBytes;
 byte DestructibleTerrainTypeBase;
 byte TerrainImpactAnimationTypeMinimum;
@@ -332,7 +316,7 @@ word16 ProtectUnitZero;
 word16 ImpassableTerrainTypeMinimum;
 int8_t TerrainToHitModifier[0x100];
 RevengeTerrainImpactAnimationRecord
-	TerrainImpactAnimationRecords[TERRAIN_IMPACT_ANIMATION_RECORD_COUNT];
+    TerrainImpactAnimationRecords[TERRAIN_IMPACT_ANIMATION_RECORD_COUNT];
 word16 NarrationMessageCategory;
 word16 PendingNarrationDelay;
 byte DamagedWeaponRangeFlags[0x03];
@@ -349,22 +333,19 @@ word16 TacticalBattleResult;
 word16 TacticalClockDivider;
 word16 TacticalImpactQueueCount;
 RevengeTacticalImpactRecord
-	TacticalImpactQueue[TACTICAL_IMPACT_RECORD_COUNT];
-const int16 TacticalCursorSearchOffsetX[0x09] =
-	{ 0x00, 0x00, 0x01, 0x00, -0x01, -0x01, 0x01, 0x01, -0x01 };
-const int16 TacticalCursorSearchOffsetY[0x09] =
-	{ 0x00, -0x01, 0x00, 0x01, 0x00, -0x01, -0x01, 0x01, 0x01 };
+    TacticalImpactQueue[TACTICAL_IMPACT_RECORD_COUNT];
+const int16 TacticalCursorSearchOffsetX[0x09] = { 0x00, 0x00, 0x01, 0x00, -0x01, -0x01, 0x01, 0x01, -0x01 };
+const int16 TacticalCursorSearchOffsetY[0x09] = { 0x00, -0x01, 0x00, 0x01, 0x00, -0x01, -0x01, 0x01, 0x01 };
 /* 1A1F:58A0 sign-extends these (cbw), so the extended key codes B0h-B9h
  * arrive negative. */
-const int8 TacticalMouseEdgeInputByMask[0x10] =
-	{ 0x00, -0x4B, -0x50, -0x4F, -0x4D, 0x00, -0x51, 0x00,
-	  -0x48, -0x47, 0x00, 0x00, -0x49, 0x00, 0x00, 0x00 };
+const int8 TacticalMouseEdgeInputByMask[0x10] = { 0x00, -0x4B, -0x50, -0x4F, -0x4D, 0x00, -0x51, 0x00,
+    -0x48, -0x47, 0x00, 0x00, -0x49, 0x00, 0x00, 0x00 };
 byte SceneNarrationEventFlags[0x06];
 word16 HeatDissipationBySinkCountQ8_8[0x30];
 word16 TerrainDamageQueueWordCount;
 word16 TacticalProjectileCount;
 RevengeTacticalProjectileRecord
-	TacticalProjectileRecords[TACTICAL_PROJECTILE_RECORD_COUNT];
+    TacticalProjectileRecords[TACTICAL_PROJECTILE_RECORD_COUNT];
 word16 TacticalOverviewDisplayMode;
 word16 LrmShipmentLoaded;
 word16 SrmShipmentLoaded;

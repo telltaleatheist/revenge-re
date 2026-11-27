@@ -13,22 +13,22 @@
 /* 0D73:3DA9-3E1D */
 void UpdateTextEntryCursorBlink(void)
 {
-	LocalClockSnapshot clockSnapshot;
-	word16 savedCursorColumn;
-	word16 savedCursorRow;
-	char cursorText[0x02];
+    LocalClockSnapshot clockSnapshot;
+    word16 savedCursorColumn;
+    word16 savedCursorRow;
+    char cursorText[0x02];
 
-	CaptureLocalClockSnapshot(&clockSnapshot);
-	savedCursorColumn = ActiveTextCursorColumn;
-	savedCursorRow = ActiveTextCursorRow;
-	cursorText[0x00] = TextEntryBuffer[TextEntryCursorIndex];
-	cursorText[0x01] = '\0';
-	if ((clockSnapshot.milliseconds & 0x0200) != 0x0000)
-		strcpy(cursorText, TextCursorBlinkGlyph);
-	ActiveTextCursorColumn += TextEntryCursorIndex;
-	HideMouseCursorOverlay();
-	RenderFormattedText(cursorText);
-	ShowMouseCursorOverlay();
-	ActiveTextCursorColumn = savedCursorColumn;
-	ActiveTextCursorRow = savedCursorRow;
+    CaptureLocalClockSnapshot(&clockSnapshot);
+    savedCursorColumn = ActiveTextCursorColumn;
+    savedCursorRow = ActiveTextCursorRow;
+    cursorText[0x00] = TextEntryBuffer[TextEntryCursorIndex];
+    cursorText[0x01] = '\0';
+    if ((clockSnapshot.milliseconds & 0x0200) != 0x0000)
+        strcpy(cursorText, TextCursorBlinkGlyph);
+    ActiveTextCursorColumn += TextEntryCursorIndex;
+    HideMouseCursorOverlay();
+    RenderFormattedText(cursorText);
+    ShowMouseCursorOverlay();
+    ActiveTextCursorColumn = savedCursorColumn;
+    ActiveTextCursorRow = savedCursorRow;
 }
