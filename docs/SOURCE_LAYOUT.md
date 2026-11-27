@@ -32,7 +32,16 @@ header beside the file that defines it: `Tactical/Tactical.h` declares what
 the files of `src/Original/Tactical` define, and `Data/TacticalData.h` what
 `Data/TacticalData.cpp` defines. A file includes the headers whose names it
 uses, spelled with their folder (`#include "Tactical/Tactical.h"`).
-`tools/check_headers.py` (ctest `preservation.header_placement`) checks both.
+
+A named constant sits beside its users: in the `.cpp` that alone uses it, in
+the domain's internal header when the domain's files share it, in
+`<Domain>/<Domain>.h` of the domain that owns it when other domains use it
+too, and beside the variable whose values it names (`Data/<Name>.h`).
+`include/revenge` keeps the ones `src/SDL` and `src/Support` share. Each is
+defined once.
+
+`tools/check_headers.py` (ctest `preservation.header_placement`) checks the
+declarations, the includes and that each constant is defined once.
 
 The files were first named for their segment (`REVENGE_2D1B_UNIT_DAMAGE`).
 [`RENAMES.tsv`](RENAMES.tsv) lists each old name with its new one, and

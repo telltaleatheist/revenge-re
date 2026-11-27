@@ -207,6 +207,10 @@ extern uint16_t TacticalCursorMapY;
 extern uint16_t LastOverviewNoticeHour;
 extern uint16_t TacticalOverviewRuntimeState;
 extern uint8_t PrimaryLanceResourceCode;
+/* TacticalEffects' and TacticalStatus' names for these two in their other
+ * use. */
+#define TacticalOverlayTerrainSpriteId TacticalRuntimeState
+#define TacticalStatusHeaderSpriteId   PrimaryLanceResourceCode
 extern uint8_t UnitEditorAllegiance;
 extern uint16_t UnitEditorScenarioGroupCount;
 extern uint16_t UnitEditorScenarioCardCount;

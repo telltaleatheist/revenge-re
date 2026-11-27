@@ -13,19 +13,6 @@
 #include <stdint.h>
 #include <string.h>
 
-enum
-{
-    EGA_GC_ENABLE_SET_RESET_REGISTER = 0x01,
-    EGA_GC_MODE_REGISTER = 0x05,
-    EGA_GC_BIT_MASK_REGISTER = 0x08,
-    EGA_GC_WRITE_MODE_0 = 0x00,
-    EGA_GC_WRITE_MODE_1 = 0x01,
-    EGA_GC_WRITE_MODE_2 = 0x02,
-    EGA_SEQ_MAP_MASK_REGISTER = 0x02,
-    EGA_ALL_PLANES = 0x0F,
-    EGA_ALL_WRITABLE_PIXEL_BITS = 0xFF
-};
-
 // 0800:06D1: uint16 DetermineRelativeAttackDirection(
 //     int16 sourceX, int16 sourceY, int16 targetX, int16 targetY)
 uint16_t DetermineRelativeAttackDirection(
@@ -353,17 +340,8 @@ void BuildTacticalOverviewMapBuffer(
     }
 }
 
-#define TACTICAL_VIEWPORT_WIDTH_CELLS    0x0013
-#define TACTICAL_VIEWPORT_HEIGHT_CELLS   0x000C
-#define TACTICAL_VIEWPORT_CELL_COUNT     0x00E4
-#define PACKED_TERRAIN_DAMAGE_MAP_OFFSET 0xA000
-#define DAMAGED_TERRAIN_SPRITE_FLAG      0x0200
+constexpr uint16_t DAMAGED_TERRAIN_SPRITE_FLAG = 0x0200;
 
-#define CGA_BYTES_PER_SCANLINE         0x0050
-#define TANDY_BYTES_PER_SCANLINE_GROUP 0x00A0
-#define EGA_BYTES_PER_SCANLINE         0x0028
-#define VGA_BYTES_PER_SCANLINE         0x0140
-#define CGA_TANDY_BANK_SIZE            0x2000
 
 // 0800:0999: clear the 19x12 byte overlay map used while composing transient
 // terrain-impact sprites. DS:7978 and 4184:07D8 are physical aliases.

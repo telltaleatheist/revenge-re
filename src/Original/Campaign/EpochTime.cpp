@@ -8,12 +8,12 @@
 uint16_t IsDaylightSavingTime(
     uint16_t yearsSince1970, uint16_t month, uint16_t dayOrDayOfYear, uint8_t hour);
 
-#define SECONDS_PER_MINUTE      0x0000003CUL
-#define SECONDS_PER_HOUR        0x00000E10UL
-#define SECONDS_PER_DAY         0x00015180UL
-#define SECONDS_PER_COMMON_YEAR 0x01E13380UL
-#define SECONDS_PER_FOUR_YEARS  0x07861F80UL
-#define EPOCH_SECONDS_AT        0x12CEA600UL
+constexpr uint32_t SECONDS_PER_MINUTE = 0x0000003C;
+constexpr uint32_t SECONDS_PER_HOUR = 0x00000E10;
+constexpr uint32_t SECONDS_PER_DAY = 0x00015180;
+constexpr uint32_t SECONDS_PER_COMMON_YEAR = 0x01E13380;
+constexpr uint32_t SECONDS_PER_FOUR_YEARS = 0x07861F80;
+constexpr uint32_t EPOCH_SECONDS_AT = 0x12CEA600;
 
 // 3A07:0001: convert the DOS local date/time fields to the runtime's signed-
 // timezone-adjusted Unix epoch value. The original returns this in DX:AX.

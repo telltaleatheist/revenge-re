@@ -85,7 +85,7 @@ void RunUnitAssignmentEditor(uint16_t configurationIndex)
         {
             inputCode = NormalizeNavigationKeyCode(
                 ReadTranslatedKeypress());
-            if (inputCode == KEY_ESC)
+            if (inputCode == KEY_ESCAPE)
             {
                 if (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + 0x0003] != 0x00)
                     finished = TRUE;
@@ -108,7 +108,7 @@ void RunUnitAssignmentEditor(uint16_t configurationIndex)
                 } while (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
                     selectedSection != sectionBeforeInput);
             }
-            else if (inputCode == KEY_CARRIAGERETURN || inputCode == KEY_SPACE)
+            else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
                 if (selectedSection == 0x0003)
                     finished = TRUE;
@@ -327,7 +327,7 @@ void RunUnitAssignmentGrid(
         {
             inputCode = NormalizeNavigationKeyCode(
                 ReadTranslatedKeypress());
-            if (inputCode == KEY_ESC)
+            if (inputCode == KEY_ESCAPE)
             {
                 exitRequested = TRUE;
                 actionRequested = TRUE;
@@ -340,7 +340,7 @@ void RunUnitAssignmentGrid(
                 --selectedUnitCard;
             else if (inputCode == TranslatedExtendedKey(KEY_RIGHT))
                 ++selectedUnitCard;
-            else if (inputCode == KEY_CARRIAGERETURN || inputCode == KEY_SPACE)
+            else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
                 if (selectedLanceSlot == 0x0004)
                     exitRequested = TRUE;

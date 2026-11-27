@@ -28,6 +28,7 @@
 #include "revenge/platform_backend.h"
 #include "revenge/story_text.h"
 #include "revenge/media_settings.h"
+#include "revenge/video.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -62,8 +63,6 @@ void RequestPCSpeakerEffectStop(void);
 
 enum
 {
-    VIDEO_ADAPTER_VGA = 0x03,
-    VIDEO_ADAPTER_MCGA_CONFIG = 0x07,
     VIDEO_MEMORY_SEGMENT_VGA = 0xA000
 };
 

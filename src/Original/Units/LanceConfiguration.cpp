@@ -139,7 +139,7 @@ int16_t RunLanceConfigurationEditor(
             {
                 ++selectedSection;
             }
-            else if (inputCode == KEY_CARRIAGERETURN || inputCode == KEY_SPACE)
+            else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
                 if (selectedSection == 0x0003)
                 {
@@ -163,7 +163,7 @@ int16_t RunLanceConfigurationEditor(
                     selectionActivated = TRUE;
                 }
             }
-            else if (inputCode == KEY_ESC)
+            else if (inputCode == KEY_ESCAPE)
             {
                 if (ValidatePilotConfiguration(
                         configurationIndex + 0x0001) == FALSE)
@@ -341,7 +341,7 @@ int16_t RunLanceConfigurationEditor(
         highlightPhase ^= 0x0001;
     }
 
-    if (inputCode == KEY_ESC || selectedSection == 0x0000 ||
+    if (inputCode == KEY_ESCAPE || selectedSection == 0x0000 ||
         selectedSection == 0x0003 ||
         (selectedSection == 0x0001 && UnitEditorPilotCardCount != 0x0000) ||
         (selectedSection == 0x0002 && UnitEditorScenarioCardCount != 0x0000))
@@ -354,7 +354,7 @@ int16_t RunLanceConfigurationEditor(
         LanceEditorReloadGraphics = 0x0000;
     }
 
-    if (inputCode == KEY_ESC)
+    if (inputCode == KEY_ESCAPE)
     {
         if (LanceEditorBriefingPresented == 0x0000)
             ShowLanceConfigurationBriefing(configurationIndex);
@@ -596,7 +596,7 @@ int16_t SelectScenarioVariant(uint16_t presentationMode)
             {
                 selectedVariant ^= 0x0001;
             }
-            else if (inputCode == KEY_CARRIAGERETURN || inputCode == KEY_SPACE)
+            else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
                 selectionComplete = TRUE;
             }

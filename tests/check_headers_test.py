@@ -71,6 +71,14 @@ def main():
         ("a header that includes an umbrella by a relative path",
          {"src/Original/Units/Units.h": '#include "../REVENGE.h"\n\nvoid ResetUnits(void);\n'},
          1, 'src/Original/Units/Units.h: includes "../REVENGE.h"'),
+        ("a constant defined twice",
+         {"src/Original/Tactical/Tactical.h": "enum\n{\n    LANCE_SIZE = 0x04\n};\n\nvoid ApplyDamage(int amount);\n"
+                                              "uint16_t CountUnits(\n    uint16_t side);\n",
+          "src/Original/Units/Units.h": "inline constexpr int LANCE_SIZE = 0x04;\n\nvoid ResetUnits(void);\n"},
+         1, "src/Original/Units/Units.h: the constant LANCE_SIZE is defined in src/Original/Tactical/Tactical.h too"),
+        ("an integer #define",
+         {"src/Original/Units/Units.h": "#define LANCE_SIZE 0x04\n\nvoid ResetUnits(void);\n"},
+         1, "src/Original/Units/Units.h: #define LANCE_SIZE is a number; make it a constexpr"),
     ]
     for what, changes, code, expected in cases:
         returncode, output = run(changes)

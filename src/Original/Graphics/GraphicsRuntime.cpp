@@ -15,7 +15,7 @@
 
 #include <string.h>
 
-#define VGA_BYTES_PER_SCANLINE 0x0140
+constexpr int VGA_BYTES_PER_SCANLINE = 0x0140;
 
 // 0800:2B00: copy an adapter-formatted rectangle between far video buffers.
 // Called from:

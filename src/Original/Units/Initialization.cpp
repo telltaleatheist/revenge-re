@@ -5,11 +5,6 @@
 #include "Tactical/Tactical.h"
 #include "Units/Units.h"
 
-enum
-{
-    TACTICAL_ORDER_SEEK_AND_DESTROY = 0x02
-};
-
 void LoadUnitTemplateRecord(int16_t unitType);
 void UpdateUnitSpriteForFacing(uint16_t unitIndex, uint16_t facing);
 void RecalculateUnitCombatRatings(

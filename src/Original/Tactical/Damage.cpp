@@ -209,8 +209,8 @@ uint8_t UpdateUnitHeatShutdown(uint16_t unitIndex)
     return (uint8_t) shutdownTriggered;
 }
 
-#define TERRAIN_IMPACT_RECORD_COUNT 0x5A
-#define TERRAIN_IMPACT_UNUSED_X     (-1)
+constexpr int TERRAIN_IMPACT_RECORD_COUNT = 0x5A;
+constexpr int16_t TERRAIN_IMPACT_UNUSED_X = -1;
 
 // 2D1B:276F: void ApplyTerrainImpact(
 //     int16 mapX, int16 mapY, word16 advanceBeforeRecording,

@@ -18,11 +18,10 @@
 
 #include <string.h>
 
-#define DIGITAL_SOUND_ENTRY_COUNT          0x16
-#define DIGITAL_SOUND_ENTRY_SIZE           0x0B
-#define DIGITAL_SOUND_SAMPLE_RATE_HZ       0x1F40
-#define DIGITAL_SOUND_UNITY_PLAYBACK_SCALE 0x6633
-#define SOUND_DRIVER_PC_SPEAKER            0x00
+constexpr int DIGITAL_SOUND_ENTRY_COUNT = 0x16;
+constexpr uint16_t DIGITAL_SOUND_SAMPLE_RATE_HZ = 0x1F40;
+constexpr uint16_t DIGITAL_SOUND_UNITY_PLAYBACK_SCALE = 0x6633;
+constexpr int8_t SOUND_DRIVER_PC_SPEAKER = 0x00;
 
 #define DigitalSoundDriverDescriptorOffsets() \
     (DigitalSoundData.Layout.DriverDescriptorOffsets)

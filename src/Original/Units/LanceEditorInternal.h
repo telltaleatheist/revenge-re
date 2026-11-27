@@ -9,9 +9,6 @@
 
 #include <stdbool.h>
 
-#define KEY_ESC            KEY_ESCAPE
-#define KEY_CARRIAGERETURN KEY_CARRIAGE_RETURN
-
 enum
 {
     LIVE_SCENARIO_UNITS_OFFSET = 0x99E0,

@@ -74,41 +74,32 @@ void EnableMusicPlayback(void);
 #define TacticalOverviewSavedMode TacticalOverviewDisplayMode
 #define NarrationReady            FriendlyUnitDestroyed
 
-#define TACTICAL_RUNTIME_ALLOCATION_SIZE 0xCB90
-#define TACTICAL_VIEWPORT_WIDTH_CELLS    0x0013
-#define TACTICAL_VIEWPORT_HEIGHT_CELLS   0x000C
-#define CAMPAIGN_MINUTES_PER_HOUR        0x003C
-#define CAMPAIGN_HOURS_PER_DAY           0x0018
-#define TACTICAL_OVERVIEW_MAP_OFFSET     0x4E20
-#define PACKED_TERRAIN_DAMAGE_MAP_OFFSET 0xA000
-#define TACTICAL_CELL_SPRITE_MAP_OFFSET  0xC800
-#define TACTICAL_CELL_TERRAIN_MAP_OFFSET 0xC9C8
+inline constexpr uint16_t TACTICAL_RUNTIME_ALLOCATION_SIZE = 0xCB90;
+inline constexpr uint8_t CAMPAIGN_MINUTES_PER_HOUR = 0x003C;
+inline constexpr uint8_t CAMPAIGN_HOURS_PER_DAY = 0x0018;
+inline constexpr uint16_t TACTICAL_OVERVIEW_MAP_OFFSET = 0x4E20;
+inline constexpr uint16_t TACTICAL_CELL_SPRITE_MAP_OFFSET = 0xC800;
+inline constexpr uint16_t TACTICAL_CELL_TERRAIN_MAP_OFFSET = 0xC9C8;
 #define TACTICAL_BACKING_BUFFER(index) \
     SharedGraphicsBackingBuffers[(index)]
 #define SET_TACTICAL_BACKING_BUFFER(index, buffer) \
     (SharedGraphicsBackingBuffers[(index)] = (buffer))
 
-// Proposed behavioral names from the complete tactical-AI consumer pass.
-// 00 follows only the scripted route, 01 attacks without autonomous pursuit,
-// and 02 selects and pursues targets autonomously.
-#define TACTICAL_ORDER_SCRIPTED_ROUTE   0x00
-#define TACTICAL_ORDER_HOLD_POSITION    0x01
-#define TACTICAL_ORDER_SEEK_AND_DESTROY 0x02
 
-#define CAMPAIGN_MILESTONE_APC_BRIDGE         0x00
-#define CAMPAIGN_MILESTONE_SRM_SHIPMENT       0x01
-#define CAMPAIGN_MILESTONE_LRM_SHIPMENT       0x02
-#define CAMPAIGN_MILESTONE_PILOT_EJECTED      0x03
-#define CAMPAIGN_MILESTONE_UNKNOWN_04         0x04
-#define CAMPAIGN_MILESTONE_UNKNOWN_05         0x05
-#define CAMPAIGN_MILESTONE_COMMANDER_CRIPPLED 0x06
-#define CAMPAIGN_MILESTONE_MECH_SHOP_REACHED  0x07
+inline constexpr uint8_t CAMPAIGN_MILESTONE_APC_BRIDGE = 0x00;
+inline constexpr uint8_t CAMPAIGN_MILESTONE_SRM_SHIPMENT = 0x01;
+inline constexpr uint8_t CAMPAIGN_MILESTONE_LRM_SHIPMENT = 0x02;
+inline constexpr uint8_t CAMPAIGN_MILESTONE_PILOT_EJECTED = 0x03;
+inline constexpr uint8_t CAMPAIGN_MILESTONE_UNKNOWN_04 = 0x04;
+inline constexpr uint8_t CAMPAIGN_MILESTONE_UNKNOWN_05 = 0x05;
+inline constexpr uint8_t CAMPAIGN_MILESTONE_COMMANDER_CRIPPLED = 0x06;
+inline constexpr uint8_t CAMPAIGN_MILESTONE_MECH_SHOP_REACHED = 0x07;
 
-#define UNIT_UPGRADE_MISSILE_SYSTEM        0x00
-#define UNIT_UPGRADE_BEAGLE_ACTIVE_PROBE   0x01
-#define UNIT_UPGRADE_INDIRECT_FIRE_SPOTTER 0x02
-#define UNIT_UPGRADE_CASE                  0x03
-#define UNIT_UPGRADE_CAMPAIGN_AWARD        0x04
+inline constexpr uint8_t UNIT_UPGRADE_MISSILE_SYSTEM = 0x00;
+inline constexpr uint8_t UNIT_UPGRADE_BEAGLE_ACTIVE_PROBE = 0x01;
+inline constexpr uint8_t UNIT_UPGRADE_INDIRECT_FIRE_SPOTTER = 0x02;
+inline constexpr uint8_t UNIT_UPGRADE_CASE = 0x03;
+inline constexpr uint8_t UNIT_UPGRADE_CAMPAIGN_AWARD = 0x04;
 
 void AssignPilotRosterEntryToUnit(
     uint16_t unitIndex,
@@ -163,14 +154,9 @@ void CreateRandomAreaImpact(
     int16_t centerY,
     uint16_t chanceDenominator);
 
-#define TACTICAL_UNIT_NONE                   0xFFFF
-#define TACTICAL_ENEMY_FIRST_UNIT            0x000C
-#define TACTICAL_ENEMY_SPRITE_LIMIT          0x00DC
-#define TACTICAL_ENEMY_SPRITE_EXCLUDED_FIRST 0x00C0
-#define TACTICAL_ENEMY_SPRITE_EXCLUDED_END   0x00D0
-#define NARRATION_READY_OFFSET               0xB5D2
-#define TACTICAL_OVERVIEW_ZOOMED_OFFSET      0x8335
-#define TACTICAL_OVERVIEW_SAVED_UNIT_OFFSET  0x8102
+inline constexpr uint16_t TACTICAL_ENEMY_SPRITE_LIMIT = 0x00DC;
+inline constexpr uint16_t TACTICAL_ENEMY_SPRITE_EXCLUDED_FIRST = 0x00C0;
+inline constexpr uint16_t TACTICAL_ENEMY_SPRITE_EXCLUDED_END = 0x00D0;
 
 #define PERSISTENT_UNIT_RECORD(unitIndex) \
     (&PersistentUnitRoster[(unitIndex)])

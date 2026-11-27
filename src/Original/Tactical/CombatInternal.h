@@ -8,19 +8,16 @@
 
 #include "Data/TacticalData.h"
 
-#define TACTICAL_ENGAGEMENT_NONE     0x00
-#define TACTICAL_ENGAGEMENT_CLOSE    0x01
-#define TACTICAL_ENGAGEMENT_MEDIUM   0x02
-#define TACTICAL_ENGAGEMENT_LONG     0x03
-#define TACTICAL_ENGAGEMENT_WITHDRAW 0x04
-#define TACTICAL_ENGAGEMENT_POSITION 0x05
+inline constexpr uint8_t TACTICAL_ENGAGEMENT_NONE = 0x00;
+inline constexpr uint8_t TACTICAL_ENGAGEMENT_CLOSE = 0x01;
+inline constexpr uint8_t TACTICAL_ENGAGEMENT_MEDIUM = 0x02;
+inline constexpr uint8_t TACTICAL_ENGAGEMENT_LONG = 0x03;
+inline constexpr uint8_t TACTICAL_ENGAGEMENT_WITHDRAW = 0x04;
+inline constexpr uint8_t TACTICAL_ENGAGEMENT_POSITION = 0x05;
 
-#define TACTICAL_ORDER_SCRIPTED_ROUTE   0x00
-#define TACTICAL_ORDER_HOLD_POSITION    0x01
-#define TACTICAL_ORDER_SEEK_AND_DESTROY 0x02
 
 /* UnitActionMaskByExperience's entries (DS:3CF6). */
-#define ACTION_MASK_EXPERIENCE_COUNT 0x04
+inline constexpr int ACTION_MASK_EXPERIENCE_COUNT = 0x04;
 
 #define UnitRouteFirstX UnitRouteTargetMapX
 #define UnitRouteFirstY UnitRouteTargetMapY

@@ -12,15 +12,6 @@
 #include "Text/Text.h"
 #include "revenge/video.h"
 
-#define TACTICAL_VIEWPORT_WIDTH_CELLS  0x0013
-#define TACTICAL_VIEWPORT_HEIGHT_CELLS 0x000C
-#define TACTICAL_VIEWPORT_CELL_COUNT   0x00E4
-#define NO_TACTICAL_OVERLAY_SPRITE_ID  0x0000
-#define TACTICAL_CURSOR_PIXEL_LEFT     0x0010
-#define TACTICAL_CELL_PIXEL_SIZE       0x0010
-#define TACTICAL_TRACE_DASH_INTERVAL   0x0006
-#define TacticalOverlayTerrainSpriteId TacticalRuntimeState
-#define TacticalStatusHeaderSpriteId   PrimaryLanceResourceCode
 
 void ApplyTerrainImpact(
     int16_t mapX, int16_t mapY,

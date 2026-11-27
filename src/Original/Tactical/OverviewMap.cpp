@@ -11,17 +11,15 @@
 #include "Text/Text.h"
 #include "revenge/text.h"
 
-#define TACTICAL_UNIT_COUNT             0x18
-#define FIRST_OPPOSING_UNIT_INDEX       0x0C
-#define OVERVIEW_VIEWPORT_WIDTH_CELLS   0x13
-#define OVERVIEW_VIEWPORT_HEIGHT_CELLS  0x0C
-#define OVERVIEW_INVALID_COORDINATE     0xFF
-#define OVERVIEW_FRIENDLY_MARKER_COLOR  0xDD
-#define OVERVIEW_OPPOSING_MARKER_COLOR  0x66
-#define OVERVIEW_SPECIAL_OPPOSING_COLOR 0xAA
-#define OVERVIEW_VIEWPORT_FRAME_COLOR   0x0F
-#define OVERVIEW_RUNTIME_SLOT_COUNT     0x09
-#define TACTICAL_OVERVIEW_MAP_BUFFER    TacticalOverviewMapBuffer
+constexpr int OVERVIEW_VIEWPORT_WIDTH_CELLS = 0x13;
+constexpr int OVERVIEW_VIEWPORT_HEIGHT_CELLS = 0x0C;
+constexpr uint8_t OVERVIEW_INVALID_COORDINATE = 0xFF;
+constexpr uint8_t OVERVIEW_FRIENDLY_MARKER_COLOR = 0xDD;
+constexpr uint8_t OVERVIEW_OPPOSING_MARKER_COLOR = 0x66;
+constexpr uint8_t OVERVIEW_SPECIAL_OPPOSING_COLOR = 0xAA;
+constexpr uint8_t OVERVIEW_VIEWPORT_FRAME_COLOR = 0x0F;
+constexpr int OVERVIEW_RUNTIME_SLOT_COUNT = 0x09;
+#define TACTICAL_OVERVIEW_MAP_BUFFER TacticalOverviewMapBuffer
 
 // These callees are maintained in other segment files or will be promoted in
 // the following tactical pass. Their stack contracts are already unambiguous.
@@ -200,7 +198,7 @@ void RefreshTacticalOverview(void)
         RevengeUnitRecord *unitRecord =
             &PersistentUnitRoster[unitIndex];
         uint8_t markerColor = OVERVIEW_FRIENDLY_MARKER_COLOR;
-        if (unitIndex >= FIRST_OPPOSING_UNIT_INDEX)
+        if (unitIndex >= ENEMY_FORCE_FIRST_UNIT)
             markerColor = opposingMarkerColor;
 
         if (unitRecord->deploymentState == 0x00)

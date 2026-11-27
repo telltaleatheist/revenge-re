@@ -16,8 +16,12 @@ It fails when such a header declares a function or a variable that isn't
 defined where the rule says, when two of them declare the same name, when
 a file includes one by its bare name ("Audio.h" for "Audio/Audio.h"), and
 when a header includes REVENGE.h or revenge/original_data.h, the two
-headers everything was once declared in. Exits 0 when the tree keeps the
-rule, 1 otherwise.
+headers everything was once declared in.
+
+It also fails a named integer constant (a constexpr, an enumerator or an
+object-like #define of a number) defined twice in include/ or src/, and an
+object-like #define of a number in src/Original, which docs/CODE_STYLE.md
+spells as a constexpr. Exits 0 when the tree keeps the rules, 1 otherwise.
 """
 import argparse
 import os
@@ -27,6 +31,10 @@ import sys
 UMBRELLAS = ("REVENGE.h", "original_data.h")
 ORIGINAL = "src/Original"
 INCLUDE = re.compile(r'^\s*#\s*include\s+"([^"]+)"', re.M)
+NUMBER = r"\(?\s*(\(\s*\w+\s*\)\s*)?-?\s*(0[xX][0-9A-Fa-f]+|\d+)[uUlL]*\s*\)?"
+NUMBER_DEFINE = re.compile(r"^[ \t]*#[ \t]*define[ \t]+([A-Za-z_]\w*)[ \t]+" + NUMBER + r"[ \t]*$", re.M)
+CONSTEXPR = re.compile(r"^(?:inline\s+|static\s+)*constexpr\s+[\w:]+\s+([A-Za-z_]\w*)\s*=", re.M)
+ENUM = re.compile(r"^(?:typedef\s+)?enum\b[^{;]*\{([^}]*)\}", re.M)
 
 
 def umbrella(included):
@@ -110,6 +118,18 @@ def defined(kind, name, masked):
                              masked, re.M))
 
 
+def constants(masked):
+    """[(kind, name)] for the file-scope integer constants of a masked file."""
+    found = [("define", name) for name in (m.group(1) for m in NUMBER_DEFINE.finditer(masked))]
+    found += [("constexpr", m.group(1)) for m in CONSTEXPR.finditer(masked)]
+    for m in ENUM.finditer(masked):
+        for enumerator in m.group(1).split(","):
+            name = re.match(r"\s*([A-Za-z_]\w*)", enumerator)
+            if name:
+                found.append(("enumerator", name.group(1)))
+    return found
+
+
 def owned_header(relative):
     """(header, the .cpp files whose definitions it may declare) for a header the rule covers, else None."""
     parts = relative.split("/")
@@ -161,19 +181,31 @@ def check(root):
                 problems.append(f'{relative}: includes "{included}"; spell it "{covered[included]}"')
             if relative.endswith(".h") and umbrella(included):
                 problems.append(f'{relative}: includes "{included}"; include the headers it needs')
-    return problems, len(owners), len({h for h in owners.values()})
+    defined_at = {}
+    for relative in sorted(masked):
+        if not relative.startswith(("include/", "src/")):
+            continue
+        for kind, name in constants(masked[relative]):
+            if kind == "define" and relative.startswith(ORIGINAL + "/"):
+                problems.append(f"{relative}: #define {name} is a number; make it a constexpr")
+            if name in defined_at:
+                problems.append(f"{relative}: the constant {name} is defined in {defined_at[name]} too")
+            else:
+                defined_at[name] = relative
+    return problems, len(owners), len({h for h in owners.values()}), len(defined_at)
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     arguments = parser.parse_args()
-    problems, names, headers = check(arguments.root)
+    problems, names, headers, constant_count = check(arguments.root)
     for problem in problems:
         print("check_headers: " + problem)
     if problems:
         return 1
-    print(f"check_headers: valid: {names} declarations in {headers} headers, each beside its definition")
+    print(f"check_headers: valid: {names} declarations in {headers} headers, each beside its definition; "
+          f"{constant_count} constants, each defined once")
     return 0
 
 

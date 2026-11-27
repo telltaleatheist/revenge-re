@@ -7,48 +7,33 @@
 void InitializeTacticalScenario(void);
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
+#include "revenge/input.h"
 #include "revenge/save_data.h"
 #include "revenge/video.h"
 
-/* Narrow declaration avoids importing the hosted input-key enum into this
- * segment-local header, which retains the executable's own key constants. */
+/* A narrow declaration rather than the whole backend header. */
 void SDLBackend_ServiceTimers(void);
-
-#define VIDEO_ADAPTER_VGA 0x0003
-
-enum
-{
-    KEY_BACKSPACE = 0x08,
-    KEY_CARRIAGE_RETURN = 0x0D,
-    KEY_ESCAPE = 0x1B,
-    KEY_SPACE = 0x20,
-    KEY_DELETE = 0x7F,
-    KEY_CTRL_S = 0x13
-};
 
 #define CACHED_FILE_NAME(index) (CachedFileDescriptors[(index)].fileName)
 
-#define SAVE_SLOT_COUNT                0x06
-#define SAVE_LOAD_MODE_SAVE            0x03
-#define SAVE_LOAD_MODE_LOAD            0x04
-#define SAVE_LOAD_ACTION_CANCEL        0x00
-#define SAVE_LOAD_ACTION_SLOT          0x01
-#define SAVE_LOAD_ACTION_TRAINING      0x02
-#define SAVE_LOAD_ACTION_REOPEN_MENU   ((int16_t) -0x01)
-#define SAVE_LOAD_ACTION_EXIT_DOS      ((int16_t) -0x02)
-#define UI_SELECTION_PENDING           0x00FF
-#define REVENGE_UNIT_SLOT_COUNT        0x18
-#define REVENGE_CAMPAIGN_SNAPSHOT_SIZE 0x0221
-#define VGA_DAC_PALETTE_BYTE_COUNT     0x0300
-#define IN_GAME_MENU_CONTINUE          0x00
-#define IN_GAME_MENU_JUMP_STORY        0x01
-#define IN_GAME_MENU_SAVE_CONTINUE     0x02
-#define IN_GAME_MENU_SAVE_QUIT         0x03
-#define IN_GAME_MENU_LOAD              0x04
-#define IN_GAME_MENU_REPLAY_SCENARIO   0x05
-#define IN_GAME_MENU_REPLAY_STORY      0x06
-#define IN_GAME_MENU_RESTART           0x07
-#define IN_GAME_MENU_OPTIONS           0x08
+inline constexpr int SAVE_SLOT_COUNT = 0x06;
+inline constexpr uint16_t SAVE_LOAD_MODE_SAVE = 0x03;
+inline constexpr uint16_t SAVE_LOAD_MODE_LOAD = 0x04;
+inline constexpr int16_t SAVE_LOAD_ACTION_CANCEL = 0x00;
+inline constexpr int16_t SAVE_LOAD_ACTION_SLOT = 0x01;
+inline constexpr int16_t SAVE_LOAD_ACTION_TRAINING = 0x02;
+inline constexpr int16_t SAVE_LOAD_ACTION_REOPEN_MENU = -0x01;
+inline constexpr int16_t SAVE_LOAD_ACTION_EXIT_DOS = -0x02;
+inline constexpr int16_t UI_SELECTION_PENDING = 0x00FF;
+inline constexpr uint16_t IN_GAME_MENU_CONTINUE = 0x00;
+inline constexpr uint16_t IN_GAME_MENU_JUMP_STORY = 0x01;
+inline constexpr uint16_t IN_GAME_MENU_SAVE_CONTINUE = 0x02;
+inline constexpr uint16_t IN_GAME_MENU_SAVE_QUIT = 0x03;
+inline constexpr uint16_t IN_GAME_MENU_LOAD = 0x04;
+inline constexpr uint16_t IN_GAME_MENU_REPLAY_SCENARIO = 0x05;
+inline constexpr uint16_t IN_GAME_MENU_REPLAY_STORY = 0x06;
+inline constexpr uint16_t IN_GAME_MENU_RESTART = 0x07;
+inline constexpr uint16_t IN_GAME_MENU_OPTIONS = 0x08;
 
 typedef int16_t (*CampaignStageHandler)(void);
 

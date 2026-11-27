@@ -186,7 +186,7 @@ void RunPilotAssignmentEditor(uint16_t selectionFamily)
         {
             inputCode = NormalizeNavigationKeyCode(
                 ReadTranslatedKeypress());
-            if (inputCode == KEY_ESC)
+            if (inputCode == KEY_ESCAPE)
             {
                 if (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + 0x03] != 0x00)
                     finished = TRUE;
@@ -209,7 +209,7 @@ void RunPilotAssignmentEditor(uint16_t selectionFamily)
                 } while (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
                     selectedSection != sectionBeforeInput);
             }
-            else if (inputCode == KEY_CARRIAGERETURN || inputCode == KEY_SPACE)
+            else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
                 if (selectedSection == 0x0003)
                     finished = TRUE;
@@ -357,7 +357,7 @@ void RunPilotAssignmentGrid(uint16_t lanceGroupIndex)
         {
             inputCode = NormalizeNavigationKeyCode(
                 ReadTranslatedKeypress());
-            if (inputCode == KEY_ESC)
+            if (inputCode == KEY_ESCAPE)
             {
                 finished = TRUE;
                 actionRequested = TRUE;
@@ -378,7 +378,7 @@ void RunPilotAssignmentGrid(uint16_t lanceGroupIndex)
             {
                 ++selectedPilotRecord;
             }
-            else if (inputCode == KEY_CARRIAGERETURN || inputCode == KEY_SPACE)
+            else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
                 if (selectedLanceSlot == 0x0004)
                     finished = TRUE;

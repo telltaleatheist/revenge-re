@@ -8,17 +8,12 @@
 #include "revenge/unit.h"
 #include "revenge/input.h"
 
-#define TACTICAL_ORDER_SCRIPTED_ROUTE   0x00
-#define TACTICAL_ORDER_HOLD_POSITION    0x01
-#define TACTICAL_ORDER_SEEK_AND_DESTROY 0x02
 
-#define TACTICAL_FORCE_FIRST_UNIT_OFFSET            FRIENDLY_FORCE_FIRST_UNIT
-#define TACTICAL_ORDER_MODE_COUNT                   0x03
-#define NARRATION_LEADER_SUBSTITUTION_FIRST_UNIT    0x0004
-#define CONTACT_NARRATION_CATEGORY_SCRIPTED_ROUTE   0x0006
-#define CONTACT_NARRATION_CATEGORY_HOLD_POSITION    0x0004
-#define CONTACT_NARRATION_CATEGORY_SEEK_AND_DESTROY 0x0003
-#define NO_UNIT_INDEX                               0xFFFF
+inline constexpr int TACTICAL_ORDER_MODE_COUNT = 0x03;
+inline constexpr int NARRATION_LEADER_SUBSTITUTION_FIRST_UNIT = 0x0004;
+inline constexpr uint16_t CONTACT_NARRATION_CATEGORY_SCRIPTED_ROUTE = 0x0006;
+inline constexpr uint16_t CONTACT_NARRATION_CATEGORY_HOLD_POSITION = 0x0004;
+inline constexpr uint16_t CONTACT_NARRATION_CATEGORY_SEEK_AND_DESTROY = 0x0003;
 
 void LoadUnitTemplateRecord(int16_t unitType);
 void UpdateUnitSpriteForFacing(uint16_t unitIndex, uint16_t facing);

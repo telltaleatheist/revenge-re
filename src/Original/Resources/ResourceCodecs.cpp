@@ -12,19 +12,6 @@
 #include <stdint.h>
 #include <string.h>
 
-enum
-{
-    EGA_GC_ENABLE_SET_RESET_REGISTER = 0x01,
-    EGA_GC_MODE_REGISTER = 0x05,
-    EGA_GC_BIT_MASK_REGISTER = 0x08,
-    EGA_GC_WRITE_MODE_0 = 0x00,
-    EGA_GC_WRITE_MODE_1 = 0x01,
-    EGA_GC_WRITE_MODE_2 = 0x02,
-    EGA_SEQ_MAP_MASK_REGISTER = 0x02,
-    EGA_ALL_PLANES = 0x0F,
-    EGA_ALL_WRITABLE_PIXEL_BITS = 0xFF
-};
-
 // 0800:019F: void RuntimeTerminationStub(void)
 // The near hook DOS_TerminateProcess calls through DS:71A4 (with CS pushed,
 // so it ends in retf): mov word ptr [0081h],0000h; retf. The image holds

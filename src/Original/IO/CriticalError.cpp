@@ -6,8 +6,8 @@
 #include "Utility/Utility.h"
 #include "revenge/original/io_data.h"
 
-#define CRITICAL_ERROR_DEFAULT_CALLBACK_OFFSET 0x0006
-#define CRITICAL_ERROR_CODE_SEGMENT            0x34A7
+constexpr uint16_t CRITICAL_ERROR_DEFAULT_CALLBACK_OFFSET = 0x0006;
+constexpr uint16_t CRITICAL_ERROR_CODE_SEGMENT = 0x34A7;
 
 // 34A7:0059: retain the application callback and install the resident INT 24h
 // assembly dispatcher at 34A7:0021, which preserves all registers, switches

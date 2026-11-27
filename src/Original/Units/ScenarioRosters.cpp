@@ -16,10 +16,10 @@ void UpdatePilotAvailability(void);
 void InvalidateEmptyRosterSlots(void);
 void CompactScenarioLances(void);
 
-#define CAMPAIGN_UNIT_COUNT        0x18
-#define ACTIVE_CAMPAIGN_UNIT_COUNT 0x0C
-#define PILOT_STATE_COUNT          0x25
-#define INVALID_ROSTER_INDEX       0xFF
+constexpr int CAMPAIGN_UNIT_COUNT = 0x18;
+constexpr int ACTIVE_CAMPAIGN_UNIT_COUNT = 0x0C;
+constexpr int PILOT_STATE_COUNT = 0x25;
+constexpr uint8_t INVALID_ROSTER_INDEX = 0xFF;
 
 #define PILOT_ROSTER_RECORD(index) \
     (&PilotRoster[(uint16_t) (index)])

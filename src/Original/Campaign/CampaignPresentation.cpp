@@ -313,7 +313,7 @@ void LoadScreenPalette(uint16_t screenResourceIndex)
                 (uint16_t) (screenResourceIndex - 0x0001))];
         ReadWholeResourceFile(
             CACHED_FILE_NAME(paletteResourceIndex),
-            VideoPaletteData, VGA_DAC_PALETTE_BYTE_COUNT);
+            VideoPaletteData, VGA_PALETTE_BYTE_COUNT);
         ClearActiveVideoBuffer();
         LoadVideoPalette(VideoPaletteData);
     }

@@ -79,7 +79,7 @@ uint16_t SaveGame(void)
                 TrainingScenarioCompletionFlags,
                 sizeof(snapshot->trainingScenarioCompletionFlags));
             for (unitIndex = 0x0000;
-                unitIndex < REVENGE_UNIT_SLOT_COUNT;
+                unitIndex < TACTICAL_UNIT_COUNT;
                 ++unitIndex)
             {
                 snapshot->scenarioUnitMapX[unitIndex] = ScenarioUnitMapX[unitIndex];
@@ -250,7 +250,7 @@ uint16_t LoadGame(void)
                     snapshot->trainingScenarioCompletionFlags,
                     sizeof(snapshot->trainingScenarioCompletionFlags));
                 for (unitIndex = 0x0000;
-                    unitIndex < REVENGE_UNIT_SLOT_COUNT;
+                    unitIndex < TACTICAL_UNIT_COUNT;
                     ++unitIndex)
                 {
                     ScenarioUnitMapX[unitIndex] = snapshot->scenarioUnitMapX[unitIndex];

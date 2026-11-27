@@ -4,6 +4,7 @@
 
 #include "CombatInternal.h"
 #include "Data/TacticalTables.h"
+#include "Tactical/Tactical.h"
 #include "revenge/debug.h"
 
 // The heat limit at `index` of the table at DS:03E0 (2D1B:14A4 reads it with

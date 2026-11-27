@@ -83,6 +83,30 @@ void DrawTacticalCellOutline(
 void UpdatePrimaryUnitStatusRowHighlight(uint16_t rowIndex);
 void UpdateSecondaryUnitStatusRowHighlight(uint16_t rowIndex);
 
+/* The battle view: 19 columns by 12 rows of 16-pixel cells. */
+inline constexpr int TACTICAL_VIEWPORT_WIDTH_CELLS = 0x0013;
+inline constexpr int TACTICAL_VIEWPORT_HEIGHT_CELLS = 0x000C;
+inline constexpr int TACTICAL_VIEWPORT_CELL_COUNT = 0x00E4;
+inline constexpr int TACTICAL_CELL_PIXEL_SIZE = 0x0010;
+inline constexpr int TACTICAL_CURSOR_PIXEL_LEFT = 0x0010;
+inline constexpr uint16_t NO_TACTICAL_OVERLAY_SPRITE_ID = 0x0000;
+inline constexpr uint16_t TACTICAL_TRACE_DASH_INTERVAL = 0x0006;
+
+/* Where the packed terrain-damage map starts in the battle's runtime
+ * allocation. */
+inline constexpr uint16_t PACKED_TERRAIN_DAMAGE_MAP_OFFSET = 0xA000;
+
+/* A unit's order (UnitTacticalOrderMode). Proposed behavioural names from the
+ * complete tactical-AI consumer pass: 00 follows only the scripted route, 01
+ * attacks without autonomous pursuit, and 02 selects and pursues targets
+ * autonomously. */
+inline constexpr uint8_t TACTICAL_ORDER_SCRIPTED_ROUTE = 0x00;
+inline constexpr uint8_t TACTICAL_ORDER_HOLD_POSITION = 0x01;
+inline constexpr uint8_t TACTICAL_ORDER_SEEK_AND_DESTROY = 0x02;
+
+/* No unit: TacticalSelectedUnitIndex, a lance leader, a narration subject. */
+inline constexpr uint16_t TACTICAL_UNIT_NONE = 0xFFFF;
+
 /* How long a narration stays up, in ms of battle time (the game clock's
  * ticks while the battle loop runs). The original counted it in battle-loop
  * passes: 25Dh (605) of them, so its length, and whether its prompt still
@@ -90,11 +114,11 @@ void UpdateSecondaryUnitStatusRowHighlight(uint16_t rowIndex);
  * 3000 cycles) a pass takes 33.06 ms on average: 70,580 passes over nine
  * battle stretches of stages 3 to 7, 31 to 40 ms by stretch. 605 passes are
  * 20,000 ms. */
-#define NARRATION_DELAY_MS 20000
+inline constexpr int NARRATION_DELAY_MS = 20000;
 /* The narration's sound came on the pass at which five had gone by since
  * the set (the test for 258h): five passes, 165 ms. */
-#define NARRATION_SOUND_AFTER_MS 165
+inline constexpr int NARRATION_SOUND_AFTER_MS = 165;
 /* One tick of the game clock (GameTimerTicks, 18.2 a second), in whole ms. */
-#define GAME_CLOCK_TICK_MS 55
+inline constexpr int GAME_CLOCK_TICK_MS = 55;
 
 #endif

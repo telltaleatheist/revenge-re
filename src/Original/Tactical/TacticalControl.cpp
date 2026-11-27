@@ -976,7 +976,7 @@ void HandleTacticalFunctionKey(uint16_t inputAction)
             {
                 ++unitIndex;
                 if (unitIndex >= TACTICAL_UNIT_COUNT)
-                    unitIndex = TACTICAL_ENEMY_FIRST_UNIT;
+                    unitIndex = ENEMY_FORCE_FIRST_UNIT;
                 if (unitIndex == rememberedUnit)
                 {
                     searchComplete = TRUE;
@@ -1015,7 +1015,7 @@ void HandleTacticalFunctionKey(uint16_t inputAction)
         if (rememberedUnitSelected == FALSE &&
             (selectedUnit != rememberedUnit || rememberedUnit == TACTICAL_UNIT_NONE))
         {
-            for (unitIndex = TACTICAL_ENEMY_FIRST_UNIT;
+            for (unitIndex = ENEMY_FORCE_FIRST_UNIT;
                 unitIndex < TACTICAL_UNIT_COUNT;
                 ++unitIndex)
             {
@@ -1034,7 +1034,7 @@ void HandleTacticalFunctionKey(uint16_t inputAction)
         }
 
         if ((int16_t) TacticalSelectedUnitIndex >=
-            TACTICAL_ENEMY_FIRST_UNIT)
+            ENEMY_FORCE_FIRST_UNIT)
             FirstLanceOrdersEnabled = FALSE;
         return;
     }

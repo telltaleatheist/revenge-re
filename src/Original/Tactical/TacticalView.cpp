@@ -623,7 +623,7 @@ int16_t ResolveUnitAtTacticalCursor(void)
     int16_t selectedUnitIndex = -0x01;
     uint16_t unitIndex = 0x00;
 
-    while (unitIndex < TACTICAL_ENEMY_FIRST_UNIT &&
+    while (unitIndex < ENEMY_FORCE_FIRST_UNIT &&
         selectedUnitIndex == -0x01)
     {
         if (PersistentUnitRoster[unitIndex].deploymentState == 0x01 &&
@@ -638,7 +638,7 @@ int16_t ResolveUnitAtTacticalCursor(void)
 
     if (selectedUnitIndex == -0x01)
     {
-        for (unitIndex = TACTICAL_ENEMY_FIRST_UNIT;
+        for (unitIndex = ENEMY_FORCE_FIRST_UNIT;
             unitIndex < TACTICAL_UNIT_COUNT;
             ++unitIndex)
         {
@@ -693,7 +693,7 @@ void OpenTacticalUnitControlPanel(uint16_t unitIndex)
     uint16_t commandsEnabled = FALSE;
 
     RefreshTacticalDisplay(FALSE);
-    if (unitIndex < TACTICAL_ENEMY_FIRST_UNIT &&
+    if (unitIndex < ENEMY_FORCE_FIRST_UNIT &&
         IsCurrentLanceLeader(unitIndex) != FALSE &&
         HasActiveLanceFollowers(unitIndex) != FALSE)
     {
@@ -713,7 +713,7 @@ void OpenTacticalUnitControlPanel(uint16_t unitIndex)
             commandsEnabled = TRUE;
         }
     }
-    else if (unitIndex < TACTICAL_ENEMY_FIRST_UNIT &&
+    else if (unitIndex < ENEMY_FORCE_FIRST_UNIT &&
         TacticalScenarioLanceEnabled[0x02] != FALSE &&
         IsCurrentLanceLeader(unitIndex) != FALSE)
     {

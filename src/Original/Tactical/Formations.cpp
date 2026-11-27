@@ -138,7 +138,7 @@ int16_t UpdateUnitEnemyVisibility(uint16_t unitIndex)
         if (HasNarrationMessage(narrationSubject,
                 NarrationMessageCategory) == FALSE)
         {
-            ActiveNarrationSubject = NO_UNIT_INDEX;
+            ActiveNarrationSubject = TACTICAL_UNIT_NONE;
             for (narrationSubject = TACTICAL_FORCE_LAST_UNIT_OFFSET;
                 ;
                 --narrationSubject)
@@ -179,14 +179,14 @@ int16_t UpdateUnitEnemyProximityState(uint16_t unitIndex)
     // Verified against 2208:1E43-1F0B.
     UnitEnemyInProximityRange[unitIndex] = FALSE;
     result = FALSE;
-    opposingBase = TACTICAL_FORCE_FIRST_UNIT_OFFSET;
+    opposingBase = FRIENDLY_FORCE_FIRST_UNIT;
     if ((int16_t) unitIndex < TACTICAL_FORCE_UNIT_COUNT)
         opposingBase = TACTICAL_FORCE_UNIT_COUNT;
 
     if (UnitEnemyContactEstablished[unitIndex] == FALSE)
         return result;
 
-    for (opposingOffset = TACTICAL_FORCE_FIRST_UNIT_OFFSET;
+    for (opposingOffset = FRIENDLY_FORCE_FIRST_UNIT;
         opposingOffset < TACTICAL_FORCE_UNIT_COUNT;
         ++opposingOffset)
     {
