@@ -141,6 +141,10 @@ int main(int argc, char** argv) {
         {"shared", "weapons.json", "\"improved_missile_damage_bonus\": 0}", "\"improved_missile_damage_bonus\": 1}"},
         {"location", "combat.json", "[\"center_rear_torso\", ", "[\"tail\", "},
         {"direction", "combat.json", "\"hit_table_by_direction\": [0,", "\"hit_table_by_direction\": [4,"},
+        {"engagement", "ai.json", "\"engagement_by_comparison_mask\": [\n    \"withdraw\"",
+         "\"engagement_by_comparison_mask\": [\n    \"retreat\""},
+        {"overfull", "ai.json", "\"weapon_priorities\": [\n    [\n",
+         "\"weapon_priorities\": [\n    [\n      {\"if_ready\": [\"ppc\"], \"fire\": \"ppc\"},\n"},
         {"nofile", "combat.json", nullptr, nullptr},
     };
     for (const Broken& one : broken)

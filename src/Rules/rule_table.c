@@ -19,6 +19,16 @@ const RulePiece RulePieces[] =
 	{ "combat.action_mask_by_experience", &UnitActionMaskByExperience, sizeof(UnitActionMaskByExperience), 0x3A6A, 0x3CF6, 0x8, "148a7e5565fe6600" },
 	{ "combat.movement_timing_masks", &MovementTimingMaskTable, sizeof(MovementTimingMaskTable), 0x3A6A, 0x1026, 0x12, "5397e3a5c20ad67d" },
 	{ "combat.movement_rating_by_walk_mp", &MovementRatingByWalkMP, sizeof(MovementRatingByWalkMP), 0x3A6A, 0x0097, 0x9, "3f96755d2e19a279" },
+	{ "ai.heat_limit_by_experience", &WeaponAIHeatLimitByExperience, sizeof(WeaponAIHeatLimitByExperience), 0x3A6A, 0x03E0, 0x5, "705b4ccab5c04b2d" },
+	{ "ai.engagement_by_comparison_mask", &EngagementModeByComparisonMask, sizeof(EngagementModeByComparisonMask), 0x3A6A, 0x08C6, 0x100, "e51db07782afd025" },
+	{ "ai.weapon_priorities", &WeaponPriorityData, sizeof(WeaponPriorityData), 0x3A6A, 0x09C6, 0x580, "3bf24bcaa69324b2" },
+	{ "ai.weapon_priority_counts", &WeaponPriorityCountTable, sizeof(WeaponPriorityCountTable), 0x3A6A, 0x0F46, 0x20, "8b7feecd63b90d44" },
+	{ "ai.weapon_priority_lists", &WeaponPriorityListPointers, sizeof(WeaponPriorityListPointers), 0x3A6A, 0x0F66, 0x40, "2f90e757e0eb3b77" },
+	{ "ai.priority_list_by_range_heat", &WeaponPriorityProfileByRangeHeat, sizeof(WeaponPriorityProfileByRangeHeat), 0x3A6A, 0x0FA6, 0x80, "136ff1108b18585e" },
+	{ "ai.formation_offsets", &FormationOffsetTable, sizeof(FormationOffsetTable), 0x3A6A, 0x17DE, 0xF0, "2c359b9dcfd3ad17" },
+	{ "ai.formation_choices_aggressive", &FormationSelectionAggressive, sizeof(FormationSelectionAggressive), 0x3A6A, 0x2F72, 0xC, "72f6c97993e592dd" },
+	{ "ai.formation_choices_defensive", &FormationSelectionDefensive, sizeof(FormationSelectionDefensive), 0x3A6A, 0x2F7E, 0xC, "58d91cd8eeebf566" },
+	{ "ai.formation_choices_balanced", &FormationSelectionBalanced, sizeof(FormationSelectionBalanced), 0x3A6A, 0x2F8A, 0xC, "97f471c7b807f850" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -33,3 +43,13 @@ _Static_assert(sizeof(SensorDamageProximityRangeTable) == 0x3, "combat.sensor_da
 _Static_assert(sizeof(UnitActionMaskByExperience) == 0x8, "combat.action_mask_by_experience is the original's size");
 _Static_assert(sizeof(MovementTimingMaskTable) == 0x12, "combat.movement_timing_masks is the original's size");
 _Static_assert(sizeof(MovementRatingByWalkMP) == 0x9, "combat.movement_rating_by_walk_mp is the original's size");
+_Static_assert(sizeof(WeaponAIHeatLimitByExperience) == 0x5, "ai.heat_limit_by_experience is the original's size");
+_Static_assert(sizeof(EngagementModeByComparisonMask) == 0x100, "ai.engagement_by_comparison_mask is the original's size");
+_Static_assert(sizeof(WeaponPriorityData) == 0x580, "ai.weapon_priorities is the original's size");
+_Static_assert(sizeof(WeaponPriorityCountTable) == 0x20, "ai.weapon_priority_counts is the original's size");
+_Static_assert(sizeof(WeaponPriorityListPointers) == 0x40, "ai.weapon_priority_lists is the original's size");
+_Static_assert(sizeof(WeaponPriorityProfileByRangeHeat) == 0x80, "ai.priority_list_by_range_heat is the original's size");
+_Static_assert(sizeof(FormationOffsetTable) == 0xF0, "ai.formation_offsets is the original's size");
+_Static_assert(sizeof(FormationSelectionAggressive) == 0xC, "ai.formation_choices_aggressive is the original's size");
+_Static_assert(sizeof(FormationSelectionDefensive) == 0xC, "ai.formation_choices_defensive is the original's size");
+_Static_assert(sizeof(FormationSelectionBalanced) == 0xC, "ai.formation_choices_balanced is the original's size");

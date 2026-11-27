@@ -29,3 +29,15 @@ combat.sensor_damage_proximity_range    SensorDamageProximityRangeTable   3A6A:0
 combat.action_mask_by_experience        UnitActionMaskByExperience        3A6A:3CF6 8
 combat.movement_timing_masks            MovementTimingMaskTable           3A6A:1026 12
 combat.movement_rating_by_walk_mp       MovementRatingByWalkMP            3A6A:0097 9
+
+# ai.json
+ai.heat_limit_by_experience             WeaponAIHeatLimitByExperience     3A6A:03E0 5
+ai.engagement_by_comparison_mask        EngagementModeByComparisonMask    3A6A:08C6 100
+ai.weapon_priorities                    WeaponPriorityData                3A6A:09C6 580
+ai.weapon_priority_counts               WeaponPriorityCountTable          3A6A:0F46 20
+ai.weapon_priority_lists                WeaponPriorityListPointers        3A6A:0F66 40
+ai.priority_list_by_range_heat          WeaponPriorityProfileByRangeHeat  3A6A:0FA6 80
+ai.formation_offsets                    FormationOffsetTable              3A6A:17DE F0
+ai.formation_choices_aggressive         FormationSelectionAggressive      3A6A:2F72 C
+ai.formation_choices_defensive          FormationSelectionDefensive       3A6A:2F7E C
+ai.formation_choices_balanced           FormationSelectionBalanced        3A6A:2F8A C

@@ -478,22 +478,20 @@ extern word16 ProtectUnitZero;
 extern word16 ImpassableTerrainTypeMinimum;
 extern int8_t TerrainToHitModifier[0x100];
 
-extern const byte WeaponAIHeatLimitByExperience[0x05];
+extern byte WeaponAIHeatLimitByExperience[0x05];  /* the rules' */
 extern const byte SpriteFacingByDirection[0x08];
-extern const byte EngagementModeByComparisonMask[0x100];
-extern const RevengeWeaponPriorityData WeaponPriorityData;
-extern const word16 WeaponPriorityCountTable[
-	WEAPON_PRIORITY_PROFILE_COUNT];
-extern const DosAddress WeaponPriorityListPointers[
-	WEAPON_PRIORITY_PROFILE_COUNT];
-extern const byte WeaponPriorityProfileByRangeHeat[0x80];
+extern byte EngagementModeByComparisonMask[0x100];  /* the rules' */
+extern RevengeWeaponPriorityData WeaponPriorityData;  /* the rules' */
+extern word16 WeaponPriorityCountTable[WEAPON_PRIORITY_PROFILE_COUNT];  /* the rules' */
+extern DosAddress WeaponPriorityListPointers[WEAPON_PRIORITY_PROFILE_COUNT];  /* the rules' */
+extern byte WeaponPriorityProfileByRangeHeat[0x80];  /* the rules' */
 extern word16 MovementTimingMaskTable[0x09];  /* the rules' */
 /* Forty formations of three x and three y offsets: a facing band (0, 0Ah,
  * 14h, 1Eh) plus one of the ten formation modes. SaveDirectory follows. */
-extern const int8 FormationOffsetTable[0xF0];
-extern const byte FormationSelectionAggressive[0x0C];
-extern const byte FormationSelectionDefensive[0x0C];
-extern const byte FormationSelectionBalanced[0x0C];
+extern int8 FormationOffsetTable[0xF0];  /* the rules' */
+extern byte FormationSelectionAggressive[0x0C];  /* the rules' */
+extern byte FormationSelectionDefensive[0x0C];  /* the rules' */
+extern byte FormationSelectionBalanced[0x0C];  /* the rules' */
 extern const int16 FormationMarkerOriginX[0x0A];
 extern const int16 FormationMarkerOriginY[0x0A];
 extern const int16 FacingVectorStartX[0x10];

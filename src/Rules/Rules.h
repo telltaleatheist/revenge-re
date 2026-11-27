@@ -37,6 +37,23 @@
 //     "movement_rating_by_walk_mp"  9, the movement class each walking MP
 //         shows as
 //
+//   ai.json:
+//     "heat_limit_by_experience"  5, the heat above which a computer unit
+//         holds its fire, by pilot experience plus one (one less overburning)
+//     "engagement_by_comparison_mask"  256 TACTICAL_ENGAGEMENT_ modes (none,
+//         close, medium, long, withdraw, position), by the mask comparing a
+//         unit's combat ratings with its target's
+//     "weapon_priorities"  16 lists of {"if_ready": [weapons], "fire":
+//         weapon}: a unit fires the first entry any of whose weapons is
+//         ready. The lists fill the bank one after another (176 entries in
+//         all), and the counts and pointers to them are rebuilt from them.
+//     "priority_list_by_range_heat"  128 list numbers (0 to 15)
+//     "formation_offsets"  4 facing bands of 10 formations, each
+//         {"x": [3], "y": [3]}, the three followers' offsets from the leader
+//     "formation_choices"  {"aggressive", "defensive", "balanced"}: 12
+//         formations each (0 to 9), by pilot experience times three plus a
+//         random 0 to 2
+//
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
 // file and the key.

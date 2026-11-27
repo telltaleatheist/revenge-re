@@ -57,6 +57,16 @@ constexpr std::size_t kHitLocationRolls = 0x0B;   // 2d6: 2 to 12
 constexpr std::size_t kHitLocationWords = 0x0C;   // the rolls and a zero word
 constexpr unsigned kFacingHitTables = 0x04;       // HIT_LOCATION_FACING_TABLE_COUNT
 
+// The TACTICAL_ENGAGEMENT_ modes' names (src/Original/Tactical/REVENGE_2D1B_INTERNAL.h).
+constexpr std::array<std::string_view, 0x06> kEngagementModes = {
+    "none", "close", "medium", "long", "withdraw", "position"};
+constexpr std::size_t kPriorityProfiles = 0x10;    // WEAPON_PRIORITY_PROFILE_COUNT
+constexpr std::size_t kPriorityBankBytes = 0x580;  // WEAPON_PRIORITY_DATA_BYTE_COUNT
+constexpr unsigned kPriorityBankOffset = 0x09C6;   // the bank's DS offset, which its pointers name
+constexpr unsigned kDataSegment = 0x3A6A;          // DS, as the image loaded at 0800h names it
+constexpr std::size_t kFacingBands = 0x04;         // FormationOffsetTable: bands of ten modes
+constexpr std::size_t kFormationModes = 0x0A;
+
 // "weapons.json: weapons.ppc.heat is missing".
 [[noreturn]] void fail(const std::string& where, const std::string& why) {
     throw RulesError(where + " " + why);
@@ -117,6 +127,25 @@ std::vector<std::uint8_t> numbers(const Json& value, const std::string& where, s
             put_word(&out[index * 2], number);
         else
             out[index] = std::uint8_t(number);
+    }
+    return out;
+}
+
+// An array of `count` whole numbers from `minimum` to `maximum`, as signed
+// bytes.
+std::vector<std::uint8_t> signed_bytes(const Json& value, const std::string& where, std::size_t count, int minimum,
+                                       int maximum) {
+    if (!value.is_array() || value.array().size() != count)
+        fail(where, "is not an array of " + std::to_string(count) + " numbers");
+    std::vector<std::uint8_t> out(count, 0);
+    for (std::size_t index = 0; index < count; ++index) {
+        const Json& item = value.array()[index];
+        const std::string at = where + "[" + std::to_string(index) + "]";
+        if (!item.is_number()) fail(at, "is not a number");
+        const double number = item.number();
+        if (number != std::floor(number) || number < minimum || number > maximum)
+            fail(at, "is not a whole number from " + std::to_string(minimum) + " to " + std::to_string(maximum));
+        out[index] = std::uint8_t(int(number) & 0xFF);
     }
     return out;
 }
@@ -221,6 +250,107 @@ void read_combat(const Json& root, Tables& tables) {
     file.done();
 }
 
+// An array of `count` names, each one of `names`, as their indexes in bytes.
+std::vector<std::uint8_t> names_of(const Json& value, const std::string& where, std::size_t count,
+                                   const std::string_view* names, std::size_t name_count, const char* what) {
+    if (!value.is_array() || value.array().size() != count)
+        fail(where, "is not an array of " + std::to_string(count) + " names");
+    std::vector<std::uint8_t> out(count, 0);
+    for (std::size_t index = 0; index < count; ++index)
+        out[index] = std::uint8_t(
+            named(value.array()[index], where + "[" + std::to_string(index) + "]", names, name_count, what));
+    return out;
+}
+
+void read_ai(const Json& root, Tables& tables) {
+    Fields file(root, "ai.json:");
+    tables["ai.heat_limit_by_experience"] = numbers(
+        file.take("heat_limit_by_experience"), file.at("heat_limit_by_experience"), 0x05, 0xFF, 1);
+    tables["ai.engagement_by_comparison_mask"] =
+        names_of(file.take("engagement_by_comparison_mask"), file.at("engagement_by_comparison_mask"), 0x100,
+                 kEngagementModes.data(), kEngagementModes.size(), "an engagement mode the code names");
+
+    // The priority lists, one after another in the bank: each list's masks,
+    // then its weapons (one-based), as longwords; the counts and the far
+    // pointers to each list follow from them.
+    const Json& lists = file.take("weapon_priorities");
+    const std::string lists_where = file.at("weapon_priorities");
+    if (!lists.is_array() || lists.array().size() != kPriorityProfiles)
+        fail(lists_where, "is not an array of " + std::to_string(kPriorityProfiles) + " lists");
+    std::vector<std::uint8_t>& bank = tables["ai.weapon_priorities"];
+    std::vector<std::uint8_t>& counts = tables["ai.weapon_priority_counts"];
+    std::vector<std::uint8_t>& pointers = tables["ai.weapon_priority_lists"];
+    bank.assign(kPriorityBankBytes, 0);
+    counts.assign(kPriorityProfiles * 2, 0);
+    pointers.assign(kPriorityProfiles * 4, 0);
+    std::size_t used = 0;
+    for (std::size_t profile = 0; profile < kPriorityProfiles; ++profile) {
+        const Json& list = lists.array()[profile];
+        const std::string where = lists_where + "[" + std::to_string(profile) + "]";
+        if (!list.is_array()) fail(where, "is not an array of entries");
+        const std::size_t count = list.array().size();
+        if (used + count * 8 > kPriorityBankBytes)
+            fail(where, "doesn't fit: the bank holds " + std::to_string(kPriorityBankBytes / 8) + " entries in all");
+        put_word(&counts[profile * 2], unsigned(count));
+        put_word(&pointers[profile * 4], unsigned(kPriorityBankOffset + used));
+        put_word(&pointers[profile * 4 + 2], kDataSegment);
+        for (std::size_t entry = 0; entry < count; ++entry) {
+            Fields fields(list.array()[entry], where + "[" + std::to_string(entry) + "]");
+            const Json& ready = fields.take("if_ready");
+            if (!ready.is_array() || ready.array().empty())
+                fail(fields.at("if_ready"), "is not an array of weapons");
+            std::uint32_t mask = 0;
+            for (std::size_t index = 0; index < ready.array().size(); ++index)
+                mask |= std::uint32_t(1) << named(ready.array()[index],
+                                                  fields.at("if_ready") + "[" + std::to_string(index) + "]",
+                                                  kWeapons.data(), kWeapons.size(), "a weapon the code names");
+            const std::size_t fire =
+                1 + named(fields.take("fire"), fields.at("fire"), kWeapons.data(), kWeapons.size(),
+                          "a weapon the code names");
+            fields.done();
+            std::uint8_t* at_mask = &bank[used + entry * 4];
+            std::uint8_t* at_fire = &bank[used + (count + entry) * 4];
+            put_word(at_mask, mask & 0xFFFF);
+            put_word(at_mask + 2, mask >> 16);
+            put_word(at_fire, unsigned(fire));
+        }
+        used += count * 8;
+    }
+
+    tables["ai.priority_list_by_range_heat"] = numbers(
+        file.take("priority_list_by_range_heat"), file.at("priority_list_by_range_heat"), 0x80,
+        unsigned(kPriorityProfiles - 1), 1);
+
+    const Json& bands = file.take("formation_offsets");
+    const std::string bands_where = file.at("formation_offsets");
+    if (!bands.is_array() || bands.array().size() != kFacingBands)
+        fail(bands_where, "is not an array of " + std::to_string(kFacingBands) + " facing bands");
+    std::vector<std::uint8_t>& offsets = tables["ai.formation_offsets"];
+    offsets.clear();
+    for (std::size_t band = 0; band < kFacingBands; ++band) {
+        const Json& modes = bands.array()[band];
+        const std::string where = bands_where + "[" + std::to_string(band) + "]";
+        if (!modes.is_array() || modes.array().size() != kFormationModes)
+            fail(where, "is not an array of " + std::to_string(kFormationModes) + " formations");
+        for (std::size_t mode = 0; mode < kFormationModes; ++mode) {
+            Fields formation(modes.array()[mode], where + "[" + std::to_string(mode) + "]");
+            for (const char* axis : {"x", "y"}) {
+                const std::vector<std::uint8_t> three =
+                    signed_bytes(formation.take(axis), formation.at(axis), 0x03, -0x80, 0x7F);
+                offsets.insert(offsets.end(), three.begin(), three.end());
+            }
+            formation.done();
+        }
+    }
+
+    Fields choices(file.take("formation_choices"), file.at("formation_choices"));
+    for (const char* stance : {"aggressive", "defensive", "balanced"})
+        tables[std::string("ai.formation_choices_") + stance] =
+            numbers(choices.take(stance), choices.at(stance), 0x0C, unsigned(kFormationModes - 1), 1);
+    choices.done();
+    file.done();
+}
+
 // Bytes two tables share in the original's memory must agree.
 void check_shared(const Tables& tables) {
     // The first missile weapon's bonus is the high byte of the last direction
@@ -252,6 +382,7 @@ void load(const std::filesystem::path& data_dir) {
     Tables tables;
     read_weapons(read_file(rules / "weapons.json", "weapons.json"), tables);
     read_combat(read_file(rules / "combat.json", "combat.json"), tables);
+    read_ai(read_file(rules / "ai.json", "ai.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {
