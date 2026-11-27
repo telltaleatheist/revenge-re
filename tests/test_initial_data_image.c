@@ -99,7 +99,7 @@ static const ImageRow rows[] =
 	DS(UnitEditorLanceSlotCount, 0x3112),
 	DS(RandomUnitTypeCount, 0x3118),
 	DS(UnitEditorUnitSpriteIndex, 0x3119),
-	DS(UnitMovementClassByType, 0x3172),
+	DS(UnitNameSplitIndex, 0x3172),
 	DS(PredefinedUnitTypeTable, 0x31CB),
 	DS(UnitEditorSectionEnabled, 0x31E9),
 	DS(UnitEditorScenarioCardCountByFamily, 0x3206),

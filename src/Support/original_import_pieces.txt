@@ -278,6 +278,8 @@ text                 unit_name.85                            4AB7
 text                 unit_name.86                            4ABF
 text                 unit_name.87                            4AC7
 text                 unit_name.88                            4AD4
+# Where each unit name splits onto two lines, which goes with the names.
+bytes                UnitNameSplitIndex                      3172 59
 text                 unit_affiliation_name.0                 4D9A
 text                 unit_affiliation_name.1                 4DA9
 text                 unit_affiliation_name.2                 4DB5

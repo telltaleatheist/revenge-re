@@ -144,7 +144,7 @@ place UnitStatHeaderTextTable 3A6A:30F2 18 import
 place UnitEditorLanceSlotCount 3A6A:3112 6 table
 place RandomUnitTypeCount 3A6A:3118 1 table
 place UnitEditorUnitSpriteIndex 3A6A:3119 59 table
-place UnitMovementClassByType 3A6A:3172 59 table
+place UnitNameSplitIndex 3A6A:3172 59 import
 place PredefinedUnitTypeTable 3A6A:31CB 1E table
 place UnitEditorSectionEnabled 3A6A:31E9 1D table
 place UnitEditorScenarioCardCountByFamily 3A6A:3206 7 table

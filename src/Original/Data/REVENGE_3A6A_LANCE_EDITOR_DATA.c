@@ -13,7 +13,8 @@ word16 UnitEditorLanceSlotCount[0x03];
 byte RandomUnitTypeCount;
 /* Filled at start from data/ui/lance_editor.json (revenge/rules.h). */
 byte UnitEditorUnitSpriteIndex[LANCE_EDITOR_UNIT_TYPE_COUNT];
-byte UnitMovementClassByType[LANCE_EDITOR_UNIT_TYPE_COUNT];
+/* Taken from the player's copy at start (src/Support/original_import_pieces.txt). */
+byte UnitNameSplitIndex[LANCE_EDITOR_UNIT_TYPE_COUNT];
 /* Filled at start from data/rules/units.json (revenge/rules.h). */
 byte PredefinedUnitTypeTable[0x1E];
 byte UnitEditorSectionEnabled[0x1D];

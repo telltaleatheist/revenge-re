@@ -3,7 +3,7 @@
 #include "revenge/original_import.h"
 #include "revenge/story_text.h"
 
-extern const OriginalPiece OriginalPieces_dos100[0x142];
+extern const OriginalPiece OriginalPieces_dos100[0x143];
 extern const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT];
 
 static const OriginalVariant Variants_dos100[] =
@@ -13,7 +13,7 @@ static const OriginalVariant Variants_dos100[] =
 
 const OriginalEdition OriginalEditions[] =
 {
-	{ "DOS 1.00", 256411, 0x420, "dce27be0dd72d8d1", OriginalPieces_dos100, 0x142, StoryTextSources_dos100,
+	{ "DOS 1.00", 256411, 0x420, "dce27be0dd72d8d1", OriginalPieces_dos100, 0x143, StoryTextSources_dos100,
 		Variants_dos100, sizeof(Variants_dos100) / sizeof(Variants_dos100[0]) },
 };
 

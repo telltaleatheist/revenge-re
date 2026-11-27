@@ -205,7 +205,7 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	REGISTER_DATA_OBJECT(UnitEditorLanceSlotCount, 0x3112);
 	REGISTER_DATA_OBJECT(RandomUnitTypeCount, 0x3118);
 	REGISTER_DATA_OBJECT(UnitEditorUnitSpriteIndex, 0x3119);
-	REGISTER_DATA_OBJECT(UnitMovementClassByType, 0x3172);
+	REGISTER_DATA_OBJECT(UnitNameSplitIndex, 0x3172);
 	REGISTER_DATA_OBJECT(PredefinedUnitTypeTable, 0x31CB);
 	REGISTER_DATA_OBJECT(UnitEditorSectionEnabled, 0x31E9);
 	REGISTER_DATA_OBJECT(UnitEditorScenarioCardCountByFamily, 0x3206);
@@ -286,7 +286,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HYDRATE_DATA_OBJECT(LanceEditorReloadGraphics, 0x30C8);
 	HYDRATE_DATA_OBJECT(UnitEditorLanceSlotCount, 0x3112);
 	HYDRATE_DATA_OBJECT(RandomUnitTypeCount, 0x3118);
-	HYDRATE_DATA_OBJECT(UnitMovementClassByType, 0x3172);
 	HYDRATE_DATA_OBJECT(UnitEditorSectionEnabled, 0x31E9);
 #undef HYDRATE_DATA_OBJECT
 }

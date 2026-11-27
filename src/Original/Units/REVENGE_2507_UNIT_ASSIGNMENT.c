@@ -1136,7 +1136,7 @@ void DrawUnitStatusScreen(
 	unitTypeId = unitRecord->unitTypeId;
 	DrawCenteredClippedText(
 		UnitNameTable[unitTypeId],
-		UnitMovementClassByType[unitTypeId],
+		UnitNameSplitIndex[unitTypeId],
 		leftX - 0x01, topY + 0x38, panelWidth,
 		(byte)panelTextColor, 0x00);
 
@@ -1179,7 +1179,7 @@ void DrawUnitStatusScreen(
 
 		DrawCenteredClippedText(
 			UnitNameTable[unitTypeId],
-			UnitMovementClassByType[unitTypeId],
+			UnitNameSplitIndex[unitTypeId],
 			0xEC, 0x02, 0x54, (byte)detailTextColor, 0x00);
 		CountUnitWeaponsByType(unitRecord);
 		weaponListX = 0xEC;

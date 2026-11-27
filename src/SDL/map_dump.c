@@ -130,7 +130,7 @@ static const MapDumpObject objects[] =
 	{ "UnitEditorLanceSlotCount", &UnitEditorLanceSlotCount, sizeof(UnitEditorLanceSlotCount) },
 	{ "RandomUnitTypeCount", &RandomUnitTypeCount, sizeof(RandomUnitTypeCount) },
 	{ "UnitEditorUnitSpriteIndex", &UnitEditorUnitSpriteIndex, sizeof(UnitEditorUnitSpriteIndex) },
-	{ "UnitMovementClassByType", &UnitMovementClassByType, sizeof(UnitMovementClassByType) },
+	{ "UnitNameSplitIndex", &UnitNameSplitIndex, sizeof(UnitNameSplitIndex) },
 	{ "PredefinedUnitTypeTable", &PredefinedUnitTypeTable, sizeof(PredefinedUnitTypeTable) },
 	{ "UnitEditorSectionEnabled", &UnitEditorSectionEnabled, sizeof(UnitEditorSectionEnabled) },
 	{ "UnitEditorScenarioCardCountByFamily", &UnitEditorScenarioCardCountByFamily, sizeof(UnitEditorScenarioCardCountByFamily) },

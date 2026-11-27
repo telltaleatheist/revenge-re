@@ -49,7 +49,9 @@ extern const char *UnitStatHeaderTextTable[0x06];
 extern word16 UnitEditorLanceSlotCount[0x03];
 extern byte RandomUnitTypeCount;
 extern byte UnitEditorUnitSpriteIndex[LANCE_EDITOR_UNIT_TYPE_COUNT];
-extern byte UnitMovementClassByType[LANCE_EDITOR_UNIT_TYPE_COUNT];
+/* DS:3172: by unit type, where DrawCenteredClippedText splits the unit's
+ * name (unit_name.N) onto two lines; the edition's own, with its names. */
+extern byte UnitNameSplitIndex[LANCE_EDITOR_UNIT_TYPE_COUNT];
 extern byte PredefinedUnitTypeTable[0x1E];
 extern byte UnitEditorSectionEnabled[0x1D];
 extern byte UnitEditorScenarioCardCountByFamily[0x07];

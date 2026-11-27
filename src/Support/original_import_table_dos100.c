@@ -13,7 +13,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces_dos100[0x142] =
+const OriginalPiece OriginalPieces_dos100[0x143] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, NULL, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, NULL, "2de063a6fef0f14a" },
@@ -63,6 +63,7 @@ const OriginalPiece OriginalPieces_dos100[0x142] =
 	{ "RandomPilotPoolCounts", ORIGINAL_PIECE_BYTES, 0x1B8C, 0x3, 4, 3, &RandomPilotPoolCounts, "9aa5762952aa130c" },
 	{ "PresentationDismissTimeout", ORIGINAL_PIECE_BYTES, 0x240F, 0x2, 4, 2, &PresentationDismissTimeout, "c02198fcd61de6b3" },
 	{ "MIDIParser", ORIGINAL_PIECE_BYTES, 0x62B0, 0xA, 4, 10, &MIDIParser, "609f8b66779f2c2b" },
+	{ "UnitNameSplitIndex", ORIGINAL_PIECE_BYTES, 0x3172, 0x59, 4, 89, &UnitNameSplitIndex, "863f1491250b4d50" },
 	{ "print_allocation_error_and_exit.0", ORIGINAL_PIECE_TEXT, 0x232B, 0, 0, 19, NULL, "21c3e217021da4b4" },
 	{ "print_allocation_error_and_exit.1", ORIGINAL_PIECE_TEXT, 0x233F, 0, 0, 9, NULL, "a833217c628541a3" },
 	{ "print_allocation_error_and_exit.2", ORIGINAL_PIECE_TEXT, 0x2349, 0, 0, 5, NULL, "4163f3dbaeeedbde" },
@@ -1121,3 +1122,4 @@ _Static_assert(sizeof(SoundConfigurationRecords) == 0x7E, "SoundConfigurationRec
 _Static_assert(sizeof(RandomPilotPoolCounts) == 0x3, "RandomPilotPoolCounts is the piece's size");
 _Static_assert(sizeof(PresentationDismissTimeout) == 0x2, "PresentationDismissTimeout is the piece's size");
 _Static_assert(sizeof(MIDIParser) == 0xA, "MIDIParser is the piece's size");
+_Static_assert(sizeof(UnitNameSplitIndex) == 0x59, "UnitNameSplitIndex is the piece's size");
