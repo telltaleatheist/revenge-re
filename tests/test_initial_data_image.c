@@ -216,6 +216,10 @@ static const ImageRow rows[] =
 	DS(CovoxPlayback, 0x6F40),
 
 	/* Places the data map's checks settled (tools/map/data_map.txt). */
+	/* Found by the port's bytes in the loaded image: the weapon records'
+	 * name pointers are relocated words, so the file alone doesn't match. */
+	DS(WeaponDefinitions, 0x0435),
+	DS(FormationOffsetTable, 0x17DE),
 	DS(StartupResourceState, 0x5FCE),
 	/* Where cached-file descriptor 45h's name points (DS:158A). */
 	{ "MediaConfigurationFileName", MediaConfigurationFileName, 0x0A, 0x3A6A, 0x21F4, 0, 0, 0 },

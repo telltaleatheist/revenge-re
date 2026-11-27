@@ -538,7 +538,7 @@ unplaced FocusUnitText 4 host pointer
 unplaced Font6Resource 4 host pointer
 unplaced Font8Resource 4 host pointer
 unplaced FormationHeading 4 host pointer
-unplaced FormationOffsetTable F6 its bytes match nowhere (pointers or values differ)
+place FormationOffsetTable 3A6A:17DE F0 table
 unplaced FormattedLineBreak 2 zero at every snap
 unplaced FriendlyEquipmentDescriptionTable 8 host pointer
 unplaced FriendlyUnitStatusHeading 4 host pointer
@@ -774,7 +774,7 @@ unplaced VerticalRetraceEdgeMode 2 zero at every snap
 unplaced VideoConfigTokenDelimiters 4 zero at every snap
 unplaced VideoFramebuffer 4 host pointer
 unplaced ViewSatelliteMapText 4 host pointer
-unplaced WeaponDefinitions 159 its bytes match nowhere (pointers or values differ)
+place WeaponDefinitions 3A6A:0435 159 table
 
 # Places two objects share, each to be looked at (tools/map/README.md):
 #

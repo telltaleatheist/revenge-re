@@ -488,7 +488,9 @@ extern const DosAddress WeaponPriorityListPointers[
 	WEAPON_PRIORITY_PROFILE_COUNT];
 extern const byte WeaponPriorityProfileByRangeHeat[0x80];
 extern const word16 MovementTimingMaskTable[0x09];
-extern const int8 FormationOffsetTable[0xF6];
+/* Forty formations of three x and three y offsets: a facing band (0, 0Ah,
+ * 14h, 1Eh) plus one of the ten formation modes. SaveDirectory follows. */
+extern const int8 FormationOffsetTable[0xF0];
 extern const byte FormationSelectionAggressive[0x0C];
 extern const byte FormationSelectionDefensive[0x0C];
 extern const byte FormationSelectionBalanced[0x0C];

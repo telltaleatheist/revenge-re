@@ -2,6 +2,7 @@
 // Procedures preserved from REVENGE_2208_TACTICAL_INTERACTION.c.
 
 #include "REVENGE_2208_INTERNAL.h"
+#include "revenge/debug.h"
 
 // 2208:060D
 void SelectTacticalMapCoordinate(word16 unitIndex)
@@ -964,9 +965,11 @@ void DrawLanceFormationMarker(
 	{
 		tableOffset = formationIndex * 0x06 + memberIndex;
 		memberX = (int16) (originX +
-			(FormationOffsetTable[tableOffset] << 0x02));
+			(FormationOffsetTable[REVENGE_INDEX(
+				FormationOffsetTable, tableOffset)] << 0x02));
 		memberY = (int16) (originY +
-			(FormationOffsetTable[tableOffset + 0x03]
+			(FormationOffsetTable[REVENGE_INDEX(
+				FormationOffsetTable, tableOffset + 0x03)]
 				<< 0x01));
 		DrawClippedPixel(memberX, memberY, 0x0F);
 		DrawClippedPixel((int16) (memberX + 0x01), memberY, 0x0F);

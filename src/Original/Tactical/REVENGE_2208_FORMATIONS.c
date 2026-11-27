@@ -2,6 +2,7 @@
 // Procedures preserved from REVENGE_2208_TACTICAL_INTERACTION.c.
 
 #include "REVENGE_2208_INTERNAL.h"
+#include "revenge/debug.h"
 
 // 2208:1829: word16 IsCurrentLanceLeader(word16 unitIndex)
 // Called from:
@@ -298,10 +299,12 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
 			&& ScenarioUnitMapY[leaderUnitIndex]
 				== UnitRouteTargetMapY[leaderUnitIndex])
 		{
-			int16 xOffset = FormationOffsetTable[
-				formationIndex * 0x06 + formationSlot];
-			int16 yOffset = FormationOffsetTable[
-				formationIndex * 0x06 + formationSlot + 0x03];
+			int16 xOffset = FormationOffsetTable[REVENGE_INDEX(
+				FormationOffsetTable,
+				formationIndex * 0x06 + formationSlot)];
+			int16 yOffset = FormationOffsetTable[REVENGE_INDEX(
+				FormationOffsetTable,
+				formationIndex * 0x06 + formationSlot + 0x03)];
 			if (leaderFormationMode != 0x01 && leaderFormationMode != 0x08)
 			{
 				xOffset *= 0x03;
