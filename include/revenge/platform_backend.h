@@ -11,8 +11,6 @@
  */
 uint16 SDLBackend_DirectConsoleIO(byte character);
 
-word16 SDLBackend_GetLargestFreeConventionalMemoryParagraphs(
-	word16 requestedParagraphs);
 void SDLBackend_GetSystemDate(DOS_Date *date);
 void SDLBackend_GetSystemTime(DOS_Time *time);
 const char *SDLBackend_GetEnvironmentVariable(const char *name);

@@ -23,7 +23,6 @@
 typedef int8_t int8;
 typedef uint8_t uint8;
 typedef uint32_t word32;
-typedef uint32_t segptr32;
 typedef uint8 ui8;
 typedef uint16 ui16;
 typedef const uint8 cu8;
@@ -293,21 +292,7 @@ int8 TranslateKeyCode(void);
 int16 ReadTranslatedKeypress(void);
 int16 NormalizeNavigationKeyCode(int16 keyCode);
 int16 RandomInRangeInclusive(word16 minimum, word16 maximum);
-segptr32 NormalizeFarPointer(word16 offset, word16 segment);
 byte *AdvanceFarPointerBy32K(byte *pointer);
-uint32 MultiplyUnsignedLong(
-	word16 leftLow,
-	word16 rightHigh,
-	word16 leftHigh,
-	word16 rightLow);
-uint32 ShiftLeft32_DXAX(
-	word16 valueLow,
-	byte shiftCount,
-	word16 valueHigh);
-uint32 ShiftRight32_DXAX(
-	word16 valueLow,
-	byte shiftCount,
-	word16 valueHigh);
 word16 EncodeDisplayBackingRows(
 	const byte *source,
 	byte *destination,
@@ -462,16 +447,10 @@ void ServiceDigitalAudioTick(void);
 void InstallGameClockTimer(void);
 void RestoreGameClockTimer(void);
 void GameClockInt1CHandler(void);
-void CopyFarBytes32(
-	const void *source,
-	void *destination,
-	uint32 byteCount);
 void CopyUncompressedFarBlock(
 	const void *source,
 	void *destination,
 	uint32 byteCount);
-word16 GetLargestFreeConventionalMemoryKB(void);
-uint32 DivideUnsignedLong(uint32 dividend, uint32 divisor);
 word16 ReadWholeResourceFile(
 	const char *resourceName,
 	void *destination,

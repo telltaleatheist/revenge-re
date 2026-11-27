@@ -824,8 +824,7 @@ int16 PrepareTrainingDeployment(void)
 		{
 			LoadUnitTemplateRecord(unitRecord->unitTypeId);
 			EstimatedUnitRecord.deploymentState = 0x01;
-			CopyFarBytes32(&EstimatedUnitRecord,
-				unitRecord, UNIT_RECORD_SIZE);
+			*unitRecord = EstimatedUnitRecord;
 			if (index < 0x0C)
 				unitRecord->pilotId = 0x3A;
 		}

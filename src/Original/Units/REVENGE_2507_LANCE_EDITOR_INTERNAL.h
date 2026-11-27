@@ -69,10 +69,6 @@ void LoadGraphicsBufferRange(
 	int16 firstBufferIndex,
 	int16 lastBufferIndex);
 void LoadUnitTemplateRecord(int16 unitType);
-void CopyFarBytes32(
-	const void *source,
-	void *destination,
-	uint32 byteCount);
 void InitializeLanceAssignments(
 	word16 firstRosterIndex,
 	int16 selectionMode);

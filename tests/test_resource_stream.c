@@ -105,29 +105,6 @@ void Heap_Free(void *block)
 	free(block);
 }
 
-word16 GetLargestFreeConventionalMemoryKB(void)
-{
-	return 0x0200;
-}
-
-uint32 DivideUnsignedLong(uint32 dividend, uint32 divisor)
-{
-	return dividend / divisor;
-}
-
-segptr32 NormalizeFarPointer(word16 offset, word16 segment)
-{
-	uint32 linearAddress = (uint32)segment * 0x10UL + offset;
-
-	return ((linearAddress >> 0x04) << 0x10) | (linearAddress & 0x0F);
-}
-
-void CopyFarBytes32(
-	const void *source, void *destination, uint32 byteCount)
-{
-	memmove(destination, source, byteCount);
-}
-
 static void ResetStreamState(void)
 {
 	word16 index;

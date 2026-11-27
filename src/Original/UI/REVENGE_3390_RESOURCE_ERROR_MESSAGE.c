@@ -34,10 +34,7 @@ void ShowResourceErrorMessage(void)
 		/* 0746-074D: the 16-bit product, sign-extended (cwd). */
 		backingSize = (uint32) (int32) (int16) (word16)
 			(ActiveTextWindowWidthTiles * ActiveTextWindowHeightTiles);
-		backingSize = ShiftLeft32_DXAX(
-			LOW_WORD(backingSize),
-			VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05,
-			HIGH_WORD(backingSize));
+		backingSize <<= VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05;
 		InvalidSaveDialogBacking = Heap_Allocate(backingSize, "3390:077F");
 		allocatedHere = TRUE;
 	}

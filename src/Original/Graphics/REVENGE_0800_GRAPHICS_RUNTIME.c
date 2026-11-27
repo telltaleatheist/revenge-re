@@ -377,58 +377,11 @@ word16 GeneratePseudoRandomByte(void)
 	return (word16) (state[0x00] ^ state[0x01]);
 }
 
-uint32 NormalizeFarPointer(word16 offset, word16 segment)
-{
-	/* 0800:3B9E -- normalize to an offset in 0000h..000Fh. */
-	return ((uint32) (segment + (offset >> 0x04)) << 0x10) |
-		(offset & 0x000F);
-}
-
-void CopyFarBytes32(
-	const void *source,
-	void *destination,
-	uint32 byteCount)
-{
-	const byte *sourceByte = (const byte *) source;
-	byte *destinationByte = (byte *) destination;
-
-	/* 0800:2EC8 is a forward REP MOVSW/MOVSB copy, not memmove. */
-	while (byteCount-- != 0x00000000UL)
-		*destinationByte++ = *sourceByte++;
-}
-
-uint32 MultiplyUnsignedLong(
-	word16 leftLow,
-	word16 rightHigh,
-	word16 leftHigh,
-	word16 rightLow)
-{
-	/* 0800:542C returns the low 32 bits of unsigned DX:AX * CX:BX. */
-	return (uint32) (((uint32) leftHigh << 0x10) | leftLow) *
-		(uint32) (((uint32) rightHigh << 0x10) | rightLow);
-}
-
-uint32 ShiftLeft32_DXAX(
-	word16 valueLow,
-	byte shiftCount,
-	word16 valueHigh)
-{
-	uint32 value = ((uint32) valueHigh << 0x10) | valueLow;
-
-	/* All callers supply counts in the original helper's defined 0..31
-	 * domain. The two assembly branches split that domain at 10h. */
-	return value << shiftCount;
-}
-
-uint32 ShiftRight32_DXAX(
-	word16 valueLow,
-	byte shiftCount,
-	word16 valueHigh)
-{
-	uint32 value = ((uint32) valueHigh << 0x10) | valueLow;
-
-	return value >> shiftCount;
-}
+/* 0800:3B9E (NormalizeFarPointer) has no caller left, and 0800:2EC8
+ * (CopyFarBytes32), the long multiply (542C) and the DX:AX shifts (54E8,
+ * 5507) are Replaced: memcpy and the host's 32-bit arithmetic do them.
+ * Every copy was between two different objects, so the original's forward
+ * copy and memcpy never differ. */
 
 word16 EncodeDisplayBackingRows(
 	const byte *source,
@@ -457,10 +410,8 @@ word16 EncodeDisplayBackingRows(
 	return (word16) (destination - destinationStart);
 }
 
-uint32 DivideUnsignedLong(uint32 dividend, uint32 divisor)
-{
-	return dividend / divisor;
-}
+/* 0800:5445 (DivideUnsignedLong) is Replaced: its one caller divides by
+ * 400h with the host's unsigned 32-bit division. */
 /* 0800:2440: the game's INT 1Ch handler, 18.2 times a second. Host: the
  * game's clock calls it (SDLBackend_SetGameClockHandler) at the BIOS tick's
  * rate. Its far jump to the saved vector (the BIOS's own INT 1Ch, an IRET)
@@ -733,12 +684,9 @@ void XorVideoRectangle(
 	}
 }
 
-word16 GetLargestFreeConventionalMemoryKB(void)
-{
-	word16 paragraphs =
-		SDLBackend_GetLargestFreeConventionalMemoryParagraphs(0xA000);
-
-	return paragraphs >= 0xA000 ? 0x0280 : paragraphs >> 0x06;
-}
+/* 0800:33A8 (GetLargestFreeConventionalMemoryKB) is Replaced: it asked DOS
+ * for A000h paragraphs and answered 280h KiB when they were free. The host
+ * has no conventional-memory arena, so its one caller (3390:0A22) reads that
+ * answer as HostConventionalMemoryKB. */
 
 

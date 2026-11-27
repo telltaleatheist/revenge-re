@@ -310,6 +310,13 @@ void ReleaseCachedResources(void)
 	}
 }
 
+/* What 0800:33A8 answered when DOS had its A000h paragraphs free: 280h KiB,
+ * the most it reports. The host has no conventional-memory arena. */
+enum
+{
+	HostConventionalMemoryKB = 0x0280
+};
+
 // 3390:0A22
 void InitializeResourceCache(void)
 {
@@ -323,7 +330,7 @@ void InitializeResourceCache(void)
 		ResourceFiles.trackedHandles[handleSlot] = ORIGINAL_TRACKED_FILE_UNUSED;
 
 	remainingConventionalMemoryKB = (int16)(
-		GetLargestFreeConventionalMemoryKB() - ReservedConventionalMemoryKB);
+		HostConventionalMemoryKB - ReservedConventionalMemoryKB);
 	ResourceFiles.availableDriveMask = 0x0000;
 	resourceIndex = 0x0000;
 	while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
@@ -342,8 +349,7 @@ void InitializeResourceCache(void)
 		}
 
 		resource->fileName = UppercaseStringInPlace(resource->fileName);
-		allocationKB = (word16)DivideUnsignedLong(
-			resource->fileLength, 0x00000400UL) + 0x0001;
+		allocationKB = (word16)(resource->fileLength / 0x00000400UL) + 0x0001;
 		cachedData = NULL;
 		if (remainingConventionalMemoryKB >= (int16)allocationKB)
 			cachedData = Heap_Allocate(resource->fileLength, "3390:0AF1");
@@ -430,8 +436,8 @@ word16 ReadCachedResource(
 	 * offset (8) in 16 bits, which would wrap from position FFF8h on. Play
 	 * never reads here: the game's main leaves files uncached (preloadFiles,
 	 * 2C7F:000F), so the cache holds none. */
-	CopyFarBytes32(resource->cachedData + resource->currentPosition,
-		destination, bytesToRead);
+	memcpy(destination, resource->cachedData + resource->currentPosition,
+		bytesToRead);
 	resource->currentPosition += bytesToRead;
 	return LOW_WORD(bytesToRead);
 }

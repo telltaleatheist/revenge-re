@@ -5,6 +5,8 @@
 #include "revenge/original_data.h"
 #include "revenge/video.h"
 
+#include <string.h>
+
 /* 0D73:54B9-5507 */
 byte *BuildDisplayBackingBuffer(
 	word16 sourceTileX,
@@ -85,8 +87,7 @@ byte *BuildVgaDisplayBackingBuffer(
 	allocation = Heap_Allocate(encodedByteCount, "0D73:562F");
 	if (allocation != NULL)
 	{
-		CopyFarBytes32(
-			encodedBuffer, allocation, encodedByteCount);
+		memcpy(allocation, encodedBuffer, encodedByteCount);
 	}
 	return allocation;
 }

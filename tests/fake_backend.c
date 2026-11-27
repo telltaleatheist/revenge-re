@@ -64,12 +64,6 @@ int32 GameFile_Length(int16 handle) { (void) handle; return 0x12345678L; }
 
 int16 GameFile_Delete(const char *name) { (void) name; return 0x0000; }
 
-word16 SDLBackend_GetLargestFreeConventionalMemoryParagraphs(
-	word16 requestedParagraphs)
-{
-	return requestedParagraphs;
-}
-
 void SDLBackend_GetSystemDate(DOS_Date *date)
 {
     date->year = 0x07EA;

@@ -21,15 +21,6 @@ _Noreturn void SDLBackend_TerminateProcess(byte exitCode)
 	exit((int) exitCode);
 }
 
-word16 SDLBackend_GetLargestFreeConventionalMemoryParagraphs(
-	word16 requestedParagraphs)
-{
-	/* The host has no DOS conventional-memory arena. Report the requested
-	 * capacity at this lowest platform boundary; the preserved caller retains
-	 * the original paragraph-to-KiB conversion and 640-KiB cap. */
-	return requestedParagraphs;
-}
-
 void SDLBackend_GetSystemDate(DOS_Date *date)
 {
     struct tm localTime;

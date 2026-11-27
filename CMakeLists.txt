@@ -474,17 +474,6 @@ if(BUILD_TESTING)
 	chr_strict(test_borland_strings)
 	add_test(NAME utility.original_borland_strings COMMAND test_borland_strings)
 
-    add_executable(test_far_memory_primitives
-        tests/test_far_memory_primitives.c
-        tests/fake_backend.c)
-    target_include_directories(test_far_memory_primitives PRIVATE
-        src/Original tests)
-    target_link_libraries(test_far_memory_primitives PRIVATE
-        chr_original_runtime)
-    chr_strict(test_far_memory_primitives)
-    add_test(NAME utility.original_far_memory_primitives
-        COMMAND test_far_memory_primitives)
-
     add_executable(test_display_backing_encoding
         tests/test_display_backing_encoding.c
         tests/fake_backend.c)
