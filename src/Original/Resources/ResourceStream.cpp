@@ -38,7 +38,7 @@ int16_t OpenTrackedFile(char *path, uint16_t openMode)
     int16_t trackedHandle;
     int16_t handleSlot;
 
-    if (openMode == 0x0001)
+    if (openMode == TRACKED_FILE_OPEN_READ)
     {
         /* 3390:007C-0091 asked for the disk the file is on (SelectResourceDrive).
 		 * Every file is in the install or the save folder here, so a file
@@ -47,12 +47,12 @@ int16_t OpenTrackedFile(char *path, uint16_t openMode)
             RevengeFault("can't open %s: it is in neither the game's folder nor the save folder", path);
         access = GAME_FILE_READ; /* 8001h */
     }
-    else if (openMode == 0x0002)
+    else if (openMode == TRACKED_FILE_CREATE)
     {
         DeleteFileIgnoringErrors(path);
         access = GAME_FILE_WRITE; /* 8002h */
     }
-    else if (openMode == 0x0003)
+    else if (openMode == TRACKED_FILE_OPEN_READ_WRITE)
     {
         /* 3390:00BB-010A asked again, ResourceRetryCount times, when the file
 		 * couldn't be made (a full or protected disk). The save folder is
@@ -126,6 +126,10 @@ void CloseTrackedFile(int16_t handleSlot)
     ResourceFiles.trackedHandles[handleSlot] = ORIGINAL_TRACKED_FILE_UNUSED;
 }
 
+/* A read or write goes to DOS in pieces of at most FA00h bytes. */
+constexpr uint16_t TRACKED_FILE_CHUNK_BYTES = 0xFA00;
+constexpr uint32_t BYTES_PER_KILOBYTE = 0x0400;
+
 // 3390:028C
 uint32_t ReadTrackedFile(int16_t handleSlot, void *destination, uint32_t byteCount)
 {
@@ -135,15 +139,15 @@ uint32_t ReadTrackedFile(int16_t handleSlot, void *destination, uint32_t byteCou
     if (trackedHandle == ORIGINAL_TRACKED_FILE_UNUSED)
         AbortRuntimeWithMessage(ResourceReadUnopenedErrorText);
     if ((trackedHandle & ORIGINAL_TRACKED_FILE_CACHED) != 0x0000)
-        return ReadCachedResource(trackedHandle & 0x7FFF, destination, byteCount);
+        return ReadCachedResource(trackedHandle & ORIGINAL_TRACKED_FILE_INDEX_MASK, destination, byteCount);
 
     while ((int16_t) HIGH_WORD(byteCount) > 0x0000 ||
-        (HIGH_WORD(byteCount) == 0x0000 && LOW_WORD(byteCount) > 0xFA00))
+        (HIGH_WORD(byteCount) == 0x0000 && LOW_WORD(byteCount) > TRACKED_FILE_CHUNK_BYTES))
     {
         int16_t chunkBytesRead = GameFile_Read(
-            (int16_t) trackedHandle, destination, 0xFA00);
+            (int16_t) trackedHandle, destination, TRACKED_FILE_CHUNK_BYTES);
 
-        byteCount -= 0x0000FA00UL;
+        byteCount -= TRACKED_FILE_CHUNK_BYTES;
         if (chunkBytesRead == -0x01)
             return 0x00000000UL;
         totalBytesRead += (uint16_t) chunkBytesRead;
@@ -171,14 +175,14 @@ uint32_t WriteTrackedFile(int16_t handleSlot, const void *source, uint32_t byteC
         AbortRuntimeWithMessage(ResourceWriteCachedErrorText);
 
     while ((int16_t) HIGH_WORD(byteCount) > 0x0000 ||
-        (HIGH_WORD(byteCount) == 0x0000 && LOW_WORD(byteCount) > 0xFA00))
+        (HIGH_WORD(byteCount) == 0x0000 && LOW_WORD(byteCount) > TRACKED_FILE_CHUNK_BYTES))
     {
         int16_t chunkBytesWritten = GameFile_Write(
-            (int16_t) trackedHandle, source, 0xFA00);
+            (int16_t) trackedHandle, source, TRACKED_FILE_CHUNK_BYTES);
 
         if (chunkBytesWritten == -0x01)
             return 0x00000000UL;
-        byteCount -= 0x0000FA00UL;
+        byteCount -= TRACKED_FILE_CHUNK_BYTES;
         totalBytesWritten += (uint16_t) chunkBytesWritten;
     }
 
@@ -199,7 +203,7 @@ void SeekTrackedFile(int16_t handleSlot, int32_t distance, uint16_t origin)
 
     if (trackedHandle == ORIGINAL_TRACKED_FILE_UNUSED)
         AbortRuntimeWithMessage(ResourceSeekUnopenedErrorText);
-    if (origin > 0x0002)
+    if (origin > GAME_FILE_FROM_END)
         AbortRuntimeWithMessage(ResourceIllegalSeekOriginErrorText);
 
     if ((trackedHandle & ORIGINAL_TRACKED_FILE_CACHED) == 0x0000)
@@ -209,7 +213,7 @@ void SeekTrackedFile(int16_t handleSlot, int32_t distance, uint16_t origin)
     else
     {
         CachedFileDescriptor *resource =
-            &CachedFileDescriptors[trackedHandle & 0x7FFF];
+            &CachedFileDescriptors[trackedHandle & ORIGINAL_TRACKED_FILE_INDEX_MASK];
         int32_t basePosition;
         int32_t newPosition;
 
@@ -355,7 +359,7 @@ void InitializeResourceCache(void)
         }
 
         resource->fileName = UppercaseStringInPlace(resource->fileName);
-        allocationKB = (uint16_t) (resource->fileLength / 0x00000400UL) + 0x0001;
+        allocationKB = (uint16_t) (resource->fileLength / BYTES_PER_KILOBYTE) + 0x0001;
         cachedData = NULL;
         if (remainingConventionalMemoryKB >= (int16_t) allocationKB)
             cachedData = (uint8_t *) Heap_Allocate(resource->fileLength, "3390:0AF1");

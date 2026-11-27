@@ -9,6 +9,7 @@
 #include "revenge/platform_backend.h"
 #include "revenge/video.h"
 
+#include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -68,10 +69,10 @@ void DecodeRLEBlock(
     uint32_t remainingOutputBytes;
     uint16_t sourceOffset;
 
-    memcpy(&remainingOutputBytes, compressedBlock + 0x02,
+    memcpy(&remainingOutputBytes, compressedBlock + offsetof(WestwoodCompressionHeader, uncompressedByteCount),
         sizeof(remainingOutputBytes));
-    memcpy(&sourceOffset, compressedBlock + 0x06, sizeof(sourceOffset));
-    compressedBlock += sourceOffset + 0x08;
+    memcpy(&sourceOffset, compressedBlock + offsetof(WestwoodCompressionHeader, optionalHeaderByteCount), sizeof(sourceOffset));
+    compressedBlock += sourceOffset + WESTWOOD_HEADER_SIZE;
     while (remainingOutputBytes != 0x00000000UL)
     {
         uint8_t command = *compressedBlock++;
@@ -150,13 +151,13 @@ void DecodeWestwoodLzw12(
     uint8_t previousFirst;
 
     memcpy(&WestwoodLzwDecoder.OutputByteCount,
-        compressed + 0x02, sizeof(uint16_t));
-    memcpy(&sourceOffset, compressed + 0x06, sizeof(sourceOffset));
+        compressed + offsetof(WestwoodCompressionHeader, uncompressedByteCount), sizeof(uint16_t));
+    memcpy(&sourceOffset, compressed + offsetof(WestwoodCompressionHeader, optionalHeaderByteCount), sizeof(sourceOffset));
     WestwoodLzwDecoder.CompressedStream = compressed;
     WestwoodLzwDecoder.CodePhase = 0x00;
-    sourceOffset = sourceOffset + 0x08;
+    sourceOffset = sourceOffset + WESTWOOD_HEADER_SIZE;
     outputOffset = 0x0000;
-    nextCode = 0x0100;
+    nextCode = LZW_FIRST_DICTIONARY_CODE;
     previousCode = ReadWestwoodLzw12Code(
         0x04, sourceOffset, &sourceOffset);
     previousFirst = (uint8_t) previousCode;
@@ -175,9 +176,9 @@ void DecodeWestwoodLzw12(
             destination[outputOffset++] = previousFirst;
             expandedCode = previousCode;
         }
-        while (expandedCode >= 0x0100)
+        while (expandedCode >= LZW_FIRST_DICTIONARY_CODE)
         {
-            uint16_t dictionaryOffset = (expandedCode - 0x0100) << 0x02;
+            uint16_t dictionaryOffset = (expandedCode - LZW_FIRST_DICTIONARY_CODE) << 0x02;
 
             destination[outputOffset++] = dictionary[dictionaryOffset + 0x02];
             memcpy(&expandedCode, dictionary + dictionaryOffset,
@@ -194,9 +195,9 @@ void DecodeWestwoodLzw12(
             destination[left++] = destination[right];
             destination[right--] = swap;
         }
-        if (nextCode < 0x1000)
+        if (nextCode < LZW12_CODE_LIMIT)
         {
-            uint16_t dictionaryOffset = (nextCode - 0x0100) << 0x02;
+            uint16_t dictionaryOffset = (nextCode - LZW_FIRST_DICTIONARY_CODE) << 0x02;
 
             memcpy(dictionary + dictionaryOffset, &previousCode,
                 sizeof(previousCode));
@@ -243,13 +244,13 @@ void DecodeWestwoodLzw14(
     uint8_t previousFirst;
 
     memcpy(&WestwoodLzwDecoder.OutputByteCount,
-        compressed + 0x02, sizeof(uint16_t));
-    memcpy(&sourceOffset, compressed + 0x06, sizeof(sourceOffset));
+        compressed + offsetof(WestwoodCompressionHeader, uncompressedByteCount), sizeof(uint16_t));
+    memcpy(&sourceOffset, compressed + offsetof(WestwoodCompressionHeader, optionalHeaderByteCount), sizeof(sourceOffset));
     WestwoodLzwDecoder.CompressedStream = compressed;
     WestwoodLzwDecoder.CodePhase = 0x00;
-    sourceOffset = sourceOffset + 0x08;
+    sourceOffset = sourceOffset + WESTWOOD_HEADER_SIZE;
     outputOffset = 0x0000;
-    nextCode = 0x0100;
+    nextCode = LZW_FIRST_DICTIONARY_CODE;
     previousCode = ReadWestwoodLzw14Code(sourceOffset, &sourceOffset);
     previousFirst = (uint8_t) previousCode;
     destination[outputOffset++] = previousFirst;
@@ -267,11 +268,11 @@ void DecodeWestwoodLzw14(
             destination[outputOffset++] = previousFirst;
             expandedCode = previousCode;
         }
-        while (expandedCode >= 0x0100)
+        while (expandedCode >= LZW_FIRST_DICTIONARY_CODE)
         {
-            uint16_t dictionaryIndex = expandedCode - 0x0100;
+            uint16_t dictionaryIndex = expandedCode - LZW_FIRST_DICTIONARY_CODE;
 
-            destination[outputOffset++] = dictionary[0x7E00 + dictionaryIndex];
+            destination[outputOffset++] = dictionary[LZW14_DICTIONARY_BYTES + dictionaryIndex];
             memcpy(&expandedCode,
                 dictionary + (dictionaryIndex << 0x01),
                 sizeof(expandedCode));
@@ -287,13 +288,13 @@ void DecodeWestwoodLzw14(
             destination[left++] = destination[right];
             destination[right--] = swap;
         }
-        if (nextCode < 0x4000)
+        if (nextCode < LZW14_CODE_LIMIT)
         {
-            uint16_t dictionaryIndex = nextCode - 0x0100;
+            uint16_t dictionaryIndex = nextCode - LZW_FIRST_DICTIONARY_CODE;
 
             memcpy(dictionary + (dictionaryIndex << 0x01),
                 &previousCode, sizeof(previousCode));
-            dictionary[0x7E00 + dictionaryIndex] = previousFirst;
+            dictionary[LZW14_DICTIONARY_BYTES + dictionaryIndex] = previousFirst;
             ++nextCode;
         }
         previousCode = code;

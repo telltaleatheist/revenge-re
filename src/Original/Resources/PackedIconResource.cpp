@@ -12,8 +12,8 @@ void LoadPackedIconResource(
     uint16_t packedByteCount;
     int16_t fileHandle;
 
-    fileHandle = OpenTrackedFile((char *) resourcePath, 0x0001);
-    ReadTrackedFile(fileHandle, &packedByteCount, 0x00000002U);
+    fileHandle = OpenTrackedFile((char *) resourcePath, TRACKED_FILE_OPEN_READ);
+    ReadTrackedFile(fileHandle, &packedByteCount, sizeof packedByteCount);
     ReadTrackedFile(fileHandle, packedDisplayBuffer, packedByteCount);
     CloseTrackedFile(fileHandle);
 }
