@@ -109,8 +109,12 @@ word16 TraceMapLineOfSight(
 
 	currentX = sourceX;
 	currentY = sourceY;
-	terrainOffset = (word16) (FAR_OFFSET(terrainTypeMap) +
-		(word16) sourceX +
+	/* The original adds the map's far offset (8, the heap's payload offset)
+	 * and keeps the sum in 16 bits, inside the map's segment. The walk stays
+	 * between source and target, so every cell it reads is inside the map
+	 * (at most 4E20h bytes, 1A1F's TACTICAL_OVERVIEW_MAP_OFFSET): the sum
+	 * never wraps, and the offset here starts at the map's first byte. */
+	terrainOffset = (word16) ((word16) sourceX +
 		(word16) ((byte) sourceY *
 			(byte) LinePrimaryRowOffset[0x03]));
 	verticalDelta = (int16) ((word16) sourceY - (word16) targetY);
@@ -191,8 +195,7 @@ word16 TraceMapLineOfSight(
 			return TRUE;
 		}
 
-		terrainCell = FAR_POINTER(
-			const byte, FAR_SEGMENT(terrainTypeMap), terrainOffset);
+		terrainCell = terrainTypeMap + terrainOffset;
 		terrainType = *terrainCell;
 		if (terrainType >= blockingTerrainThreshold)
 		{
@@ -408,15 +411,16 @@ void BuildTacticalTerrainCellMaps(
 	// deliberately use only the low bytes of viewportY and the row strides.
 	mapWidth = (word16) LinePrimaryRowOffset[0x03];
 	packedRowStride = (word16) (((mapWidth + 0x03) & 0x01FC) >> 0x02);
-	terrainRowOffset = (word16) (FAR_OFFSET(terrainTypeMap) + viewportX
+	// The original adds the map's far offset (8) in 16 bits too. Neither sum
+	// can wrap: at most 8 + FFh + FFh * FFh = FF08h for the terrain row, and
+	// 8 + A000h + 3Fh + FFh * 40h = E007h for the damage row.
+	terrainRowOffset = (word16) (viewportX
 		+ (byte) viewportY * (byte) mapWidth);
-	packedDamageRowOffset = (word16) (FAR_OFFSET(terrainTypeMap)
-		+ PACKED_TERRAIN_DAMAGE_MAP_OFFSET + (viewportX >> 0x02)
+	packedDamageRowOffset = (word16) (PACKED_TERRAIN_DAMAGE_MAP_OFFSET
+		+ (viewportX >> 0x02)
 		+ (byte) viewportY * (byte) packedRowStride);
-	terrainRow = FAR_POINTER(
-		const byte, FAR_SEGMENT(terrainTypeMap), terrainRowOffset);
-	packedDamageRow = FAR_POINTER(
-		const byte, FAR_SEGMENT(terrainTypeMap), packedDamageRowOffset);
+	terrainRow = terrainTypeMap + terrainRowOffset;
+	packedDamageRow = terrainTypeMap + packedDamageRowOffset;
 	terrainCellMap = tacticalCellSpriteMap + TACTICAL_VIEWPORT_CELL_COUNT;
 	damagedTerrainSpriteLookup = DamagedTerrainSpriteLookup;
 

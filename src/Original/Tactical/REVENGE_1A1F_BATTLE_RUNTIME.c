@@ -21,14 +21,12 @@ void RunTacticalBattle(word16 scenarioCode)
 	byte *runtimeMemory =
 		AllocateFarMemory((uint32) TACTICAL_RUNTIME_ALLOCATION_SIZE);
 	TerrainTypeMap = runtimeMemory;
-	TacticalOverviewMapBuffer = AddBytesToFarPointer(
-		runtimeMemory, TACTICAL_OVERVIEW_MAP_OFFSET);
-	PackedTerrainDamageMap = AddBytesToFarPointer(
-		runtimeMemory, PACKED_TERRAIN_DAMAGE_MAP_OFFSET);
+	TacticalOverviewMapBuffer = runtimeMemory + TACTICAL_OVERVIEW_MAP_OFFSET;
+	PackedTerrainDamageMap = runtimeMemory + PACKED_TERRAIN_DAMAGE_MAP_OFFSET;
 	TacticalCellSpriteMap = (word16 *)
-		AddBytesToFarPointer(runtimeMemory, TACTICAL_CELL_SPRITE_MAP_OFFSET);
+		(runtimeMemory + TACTICAL_CELL_SPRITE_MAP_OFFSET);
 	TacticalCellTerrainMap = (word16 *)
-		AddBytesToFarPointer(runtimeMemory, TACTICAL_CELL_TERRAIN_MAP_OFFSET);
+		(runtimeMemory + TACTICAL_CELL_TERRAIN_MAP_OFFSET);
 	memset(runtimeMemory, 0x00, TACTICAL_RUNTIME_ALLOCATION_SIZE);
 	InstallDamagedTerrainSpriteLookup();
 

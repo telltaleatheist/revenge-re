@@ -545,8 +545,6 @@ extern word16 SrmShipmentLoaded;
 extern word16 TacticalOverviewMapMode;
 extern word16 NarrationSourceUnit;
 extern word16 LastAttackingUnitIndex;
-extern word16 SharedCompressionDictionarySegment;
-extern word16 SharedCompressionDictionaryByteCount;
 extern word16 PendingMouseButtonEvent;
 extern int16 MouseCursorTestX;
 extern int16 MouseCursorTestY;

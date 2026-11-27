@@ -26,8 +26,6 @@ word16 ApplyMusicConfigOption(void);
 word16 ApplySoundConfigOption(void);
 word16 ApplyInputDeviceConfigOption(void);
 word16 ParseHexValue(const char *text);
-byte *AddBytesToFarPointer(
-	byte *base, uint32 byteCount);
 char *IntegerToString(
 	int16 value, char *destination, word16 radix);
 void RightAlignStringField(
@@ -169,8 +167,7 @@ void InitializeGame(void)
 	SetActiveFontResource(Font8Resource);
 	primaryScreenBuffer = AllocateParagraphAlignedMemory(0x0001FD00);
 	PrimaryScreenBuffer = primaryScreenBuffer;
-	secondaryBuffer = AddBytesToFarPointer(
-		primaryScreenBuffer, 0x00010000);
+	secondaryBuffer = primaryScreenBuffer + 0x00010000UL;
 	SecondaryScreenBuffer = secondaryBuffer;
 	PlanarScreenBuffer = secondaryBuffer;
 
@@ -249,19 +246,6 @@ void SetVideoModeForAdapter(word16 adapterOrRestoreSlot)
 	{
 		SDLBackend_SetVideoMode((byte) requestedVideoMode);
 	}
-}
-
-// 2C7F:039D: far pointer AddBytesToFarPointer(far pointer base, uint32 byteCount)
-// Called from:
-//      InitializeGame
-byte *AddBytesToFarPointer(byte *base, uint32 byteCount)
-{
-	// V: Convert segment:offset to a linear address, add byteCount, then
-	// normalize back to segment:offset with an offset in the range 0..0Fh.
-	uint32 linearAddress = DOSMemory_Linear(base) + byteCount;
-	return (byte *) DOSMemory_Pointer(MAKE_FAR_POINTER(
-		(word16) (linearAddress >> 0x04),
-		(word16) (linearAddress & 0x000F)));
 }
 
 // 2C7F:0427: Register word16 ServiceMusicAndCheckKeyboardInput(void)

@@ -193,9 +193,7 @@ void InitializeTacticalScenario(void)
 
 	StopLoadedMusicTrack();
 	ReleaseMusicDriverBuffer();
-	tacticalIconBuffer = AddBytesToFarPointer(
-		PrimaryScreenBuffer,
-		0x00008000UL);
+	tacticalIconBuffer = PrimaryScreenBuffer + 0x00008000UL;
 	PlanarScreenBuffer = tacticalIconBuffer;
 
 	LoadDigitalWeaponEffectBank();

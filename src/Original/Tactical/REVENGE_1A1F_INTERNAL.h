@@ -58,7 +58,6 @@ void ExecuteSceneInstructions(void);
 word16 AdvanceTerrainDamageState(
 	int16 mapX, int16 mapY, word16 damageAmount);
 void UpdateUnitSpriteForFacing(word16 unitIndex, word16 facing);
-byte *AddBytesToFarPointer(byte *base, uint32 byteCount);
 void DrawTacticalOverviewMap(void);
 word16 RunGameOptionsMenu(word16 embeddedMode);
 void UpdateUnitHeatAccumulators(void);

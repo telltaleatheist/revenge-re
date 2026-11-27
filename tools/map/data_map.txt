@@ -627,8 +627,6 @@ unplaced SelectBarrageEndPrompt 4 host pointer
 unplaced SelectBarrageStartPrompt 4 host pointer
 unplaced SelectFireTargetPrompt 4 host pointer
 unplaced SelectStrafingAreaPrompt 4 host pointer
-unplaced SharedCompressionDictionaryByteCount 2 zero at every snap
-unplaced SharedCompressionDictionarySegment 2 zero at every snap
 unplaced ConfigOptionNames 10 host pointer: the names in the option records at DS:3A91, 10h apart
 unplaced SharedGraphicsBackingBuffers 98 host pointer: the table at DS:83EE-8485, 26h far pointers
 unplaced SoundConfigTokenDelimiters 4 zero at every snap

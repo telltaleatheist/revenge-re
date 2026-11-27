@@ -104,7 +104,12 @@ void DecodeWestwoodPackedResource(
 	const WestwoodCompressionHeader *header =
 		(const WestwoodCompressionHeader *)compressedBlock;
 
-	// Verified against 21E7:00F4-0201.
+	// Verified against 21E7:00F4-0201. The LZW cases first compare the
+	// shared dictionary's size (DS:2F70) with what they need and use the
+	// shared one (segment DS:2F6E) when it is big enough (21E7:0193, 01E8).
+	// Both words lie past the load image, in the zeroed BSS, and nothing in
+	// the program writes either, so the size is always 0 and each decode
+	// allocates its own dictionary.
 	switch (header->compressionType)
 	{
 	case 0x00:
@@ -115,32 +120,20 @@ void DecodeWestwoodPackedResource(
 		break;
 
 	case 0x01:
-		if (SharedCompressionDictionaryByteCount < 0x3C00)
-		{
-			byte *dictionary = AllocateParagraphAlignedMemory(0x3C00);
-			DecodeWestwoodLzw12(
-				compressedBlock, destination, dictionary);
-			FreeParagraphAlignedMemory(dictionary);
-		}
-		else
-			DecodeWestwoodLzw12(
-				compressedBlock, destination,
-				FAR_POINTER(byte, SharedCompressionDictionarySegment, 0x0000));
+	{
+		byte *dictionary = AllocateParagraphAlignedMemory(0x3C00);
+		DecodeWestwoodLzw12(compressedBlock, destination, dictionary);
+		FreeParagraphAlignedMemory(dictionary);
 		break;
+	}
 
 	case 0x02:
-		if (SharedCompressionDictionaryByteCount < 0xBD00)
-		{
-			byte *dictionary = AllocateParagraphAlignedMemory(0xBD00);
-			DecodeWestwoodLzw14(
-				compressedBlock, destination, dictionary);
-			FreeParagraphAlignedMemory(dictionary);
-		}
-		else
-			DecodeWestwoodLzw14(
-				compressedBlock, destination,
-				FAR_POINTER(byte, SharedCompressionDictionarySegment, 0x0000));
+	{
+		byte *dictionary = AllocateParagraphAlignedMemory(0xBD00);
+		DecodeWestwoodLzw14(compressedBlock, destination, dictionary);
+		FreeParagraphAlignedMemory(dictionary);
 		break;
+	}
 
 	case 0x03:
 		DecodeRLEBlock(compressedBlock, destination);

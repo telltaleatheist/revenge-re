@@ -85,8 +85,6 @@ void OriginalData_InitializeResourceDescriptorPointers(void)
 
 word16 ResourceRetryCount = 0x0003;
 word16 ReservedConventionalMemoryKB = 0x00C8;
-word16 SharedCompressionDictionarySegment;
-word16 SharedCompressionDictionaryByteCount;
 word16 FailedAllocationSizeLow;
 word16 FailedAllocationSizeHigh;
 ResourceFileRuntime ResourceFiles;

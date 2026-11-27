@@ -1,4 +1,3 @@
-#include "revenge/dos_memory.h"
 #include "revenge/original_data.h"
 
 #include <assert.h>
@@ -38,10 +37,9 @@ int main(void)
 	int x;
 	int y;
 
-	/* The map as the game allocates it: one block a far pointer addresses. */
+	/* The map as the game allocates it: one block. */
 	TerrainTypeMap = (byte *) calloc(0x8000, 1);
 	assert(TerrainTypeMap != NULL);
-	DOSMemory_SetBlock(TerrainTypeMap, 0x8000, 0x2000);
 	/* As the game's start-up does (2C7F): every tracked file's slot free, no
 	 * file cached. */
 	InitializeResourceCache();
