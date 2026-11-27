@@ -232,7 +232,8 @@ void DecodeLinearRleScreen(
 
 		if (control == 0x00)
 		{
-			runLength = *(const word16 *)compressedData;
+			// The stream's word, little-endian at any byte.
+			runLength = (word16) (compressedData[0x00] | compressedData[0x01] << 0x08);
 			compressedData += 0x02;
 		}
 		else if (control >= 0x80)
@@ -268,7 +269,8 @@ void DecodeColumnMajorRleScreen(
 
 		if (control == 0x00)
 		{
-			runLength = *(const word16 *)compressedData;
+			// The stream's word, little-endian at any byte.
+			runLength = (word16) (compressedData[0x00] | compressedData[0x01] << 0x08);
 			compressedData += 0x02;
 		}
 		else if (control >= 0x80)

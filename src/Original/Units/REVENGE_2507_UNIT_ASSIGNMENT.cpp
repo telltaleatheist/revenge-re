@@ -1137,7 +1137,8 @@ void DrawUnitStatusScreen(
 		: LanceEditorLayout.UnitCardTextColorByState[panelFlags];
 
 	HideMouseCursorOverlay();
-	unitRecord = &PersistentUnitRoster[statusPanel->persistentUnitSlot];
+	unitRecord = &PersistentUnitRoster[
+		REVENGE_INDEX(PersistentUnitRoster, statusPanel->persistentUnitSlot)];
 	unitTypeId = unitRecord->unitTypeId;
 	DrawCenteredClippedText(
 		UnitNameTable[unitTypeId],
