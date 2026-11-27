@@ -1,15 +1,15 @@
-{"digest": "bd67d2e3d72a9936", "kinds": {"midi --": 5, "midi 80": 1751, "midi 90": 1761, "midi B0": 70, "midi C0": 58, "midi E0": 29, "midi reset": 1, "pcm done": 8, "pcm effect": 6, "pcm speech": 2, "snap": 1, "sysex": 164}, "lines": 3856, "snap": "battle"}
-{"digest": "43013b3c39ab3a85", "kinds": {"snap": 1}, "lines": 1, "snap": "route"}
-{"digest": "0e2e5467701462c3", "kinds": {"pcm done": 3, "pcm effect": 6, "snap": 1}, "lines": 10, "snap": "contact"}
-{"digest": "efd54462113a5028", "kinds": {"pcm done": 5, "pcm effect": 9, "snap": 1}, "lines": 15, "snap": "won"}
-{"digest": "8b55b4b34afd1b77", "kinds": {"midi --": 2, "midi 80": 67, "midi 90": 73, "midi B0": 7, "midi C0": 15, "midi E0": 11, "snap": 1, "sysex": 53}, "lines": 229, "snap": "story"}
-{"digest": "ea41d85ea354dbac", "kinds": {"midi 80": 34, "midi 90": 31, "midi C0": 2, "snap": 1}, "lines": 68, "snap": "menu"}
-{"digest": "521e069e00cafb3f", "kinds": {"midi --": 1, "midi 80": 118, "midi 90": 121, "midi B0": 39, "midi C0": 9, "midi E0": 8, "pcm done": 4, "pcm speech": 4, "snap": 1, "sysex": 52}, "lines": 357, "snap": "start"}
-{"digest": "6b10f644ab8f1200", "kinds": {"snap": 1}, "lines": 1, "snap": "options"}
-{"digest": "29ae2539d603c490", "kinds": {"snap": 1}, "lines": 1, "snap": "commands"}
-{"digest": "c87a6b10f776c0ed", "kinds": {"snap": 1}, "lines": 1, "snap": "ordered"}
-{"digest": "daf3b46faec41e63", "kinds": {"snap": 1}, "lines": 1, "snap": "step08"}
-{"digest": "54255977bf3df916", "kinds": {"snap": 1}, "lines": 1, "snap": "step16"}
-{"digest": "49e7e2258bea7a20", "kinds": {"pcm done": 15, "pcm effect": 29, "snap": 1}, "lines": 45, "snap": "end1"}
-{"digest": "618efc7f43847f9b", "kinds": {"pcm done": 1, "pcm effect": 2, "snap": 1}, "lines": 4, "snap": "end2"}
-{"digest": "65bfa07e9903630d", "kinds": {"snap": 1}, "lines": 1, "snap": "end3"}
+{"digest": "714d679ee17888c4", "kinds": {"midi --": 5, "midi 80": 1751, "midi 90": 1761, "midi B0": 70, "midi C0": 58, "midi E0": 29, "midi reset": 1, "pcm done": 8, "pcm effect": 6, "pcm speech": 2, "snap": 1, "sysex": 164}, "lines": 3856, "snap": "battle"}
+{"digest": "29f46d9c0842fd86", "kinds": {"snap": 1}, "lines": 1, "snap": "route"}
+{"digest": "63609a1113ff4a99", "kinds": {"pcm done": 3, "pcm effect": 6, "snap": 1}, "lines": 10, "snap": "contact"}
+{"digest": "92a61ab46b9472bd", "kinds": {"pcm done": 5, "pcm effect": 9, "snap": 1}, "lines": 15, "snap": "won"}
+{"digest": "57319c7429b77e66", "kinds": {"midi --": 2, "midi 80": 67, "midi 90": 73, "midi B0": 7, "midi C0": 15, "midi E0": 11, "snap": 1, "sysex": 53}, "lines": 229, "snap": "story"}
+{"digest": "7e2c5b55c87f0eea", "kinds": {"midi 80": 34, "midi 90": 31, "midi C0": 2, "snap": 1}, "lines": 68, "snap": "menu"}
+{"digest": "f0cf958bc9d38768", "kinds": {"midi --": 1, "midi 80": 118, "midi 90": 121, "midi B0": 39, "midi C0": 9, "midi E0": 8, "pcm done": 4, "pcm speech": 4, "snap": 1, "sysex": 52}, "lines": 357, "snap": "start"}
+{"digest": "055d4c74721e5ae9", "kinds": {"snap": 1}, "lines": 1, "snap": "options"}
+{"digest": "eed386ef0d3051fa", "kinds": {"snap": 1}, "lines": 1, "snap": "commands"}
+{"digest": "ad474b291108b999", "kinds": {"snap": 1}, "lines": 1, "snap": "ordered"}
+{"digest": "937fe00fa0bbd3a4", "kinds": {"snap": 1}, "lines": 1, "snap": "step08"}
+{"digest": "ae52dfb9d9fc930e", "kinds": {"snap": 1}, "lines": 1, "snap": "step16"}
+{"digest": "bedad086ee585d8f", "kinds": {"pcm done": 15, "pcm effect": 29, "snap": 1}, "lines": 45, "snap": "end1"}
+{"digest": "91009dc416155c14", "kinds": {"pcm done": 1, "pcm effect": 2, "snap": 1}, "lines": 4, "snap": "end2"}
+{"digest": "e7621bd0186db96d", "kinds": {"snap": 1}, "lines": 1, "snap": "end3"}

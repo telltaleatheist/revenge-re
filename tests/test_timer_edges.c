@@ -7,8 +7,6 @@
 
 #include <assert.h>
 
-extern word16 CalibrationIRQCount;
-
 static void TestInterruptVectorExchange(void)
 {
 	uint32 oldVector;
@@ -39,23 +37,6 @@ static void TestPITMath(void)
 		(word16)(0x001234DEUL / 0x0013));
 	assert(PITFrequencyToDivisor(0x4440) ==
 		(word16)(0x001234DEUL / 0x4440));
-
-	assert(DivideUnsigned32By32(0x00000000U, 0x00000001U) ==
-		0x00000000U);
-	assert(DivideUnsigned32By32(0x00000001U, 0x00000000U) ==
-		0x00000000U);
-	assert(DivideUnsigned32By32(0x00000001U, 0x00000002U) ==
-		0x00000000U);
-	assert(DivideUnsigned32By32(0xFEDCBA98U, 0x00001234U) ==
-		0xFEDCBA98U / 0x00001234U);
-}
-
-static void TestCalibrationIRQ(void)
-{
-	CalibrationIRQCount = 0xFFFF;
-	PITCalibrationIRQ0Handler();
-	assert(CalibrationIRQCount == 0x0000);
-	assert(fakeBackend.acknowledgedInterrupt == INTERRUPT_SYSTEM_TIMER_IRQ);
 }
 
 static void TestVideoTimingCalibration(void)
@@ -78,7 +59,6 @@ int main(void)
 	TestInterruptVectorExchange();
 	TestPITDivisorExchange();
 	TestPITMath();
-	TestCalibrationIRQ();
 	TestVideoTimingCalibration();
 	return 0;
 }

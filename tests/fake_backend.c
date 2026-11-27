@@ -25,7 +25,6 @@ void FakeBackend_Reset(void)
 {
     memset(&fakeBackend, 0, sizeof(fakeBackend));
     fakeBackend.biosTickStep = 0x00000001U;
-    fakeBackend.interruptFlags = 0x0200;
 }
 
 uint16 SDLBackend_DirectConsoleIO(byte character)
@@ -213,29 +212,6 @@ void SDLBackend_ProgramPITChannel0Mode(byte mode, word16 divisor)
 {
     fakeBackend.pitChannel0Mode = mode;
     fakeBackend.pitChannel0Divisor = divisor;
-}
-
-word16 SDLBackend_LatchPITChannel0Count(void)
-{
-    return fakeBackend.latchedPITChannel0Count;
-}
-
-void SDLBackend_WaitPITChannel0Interrupt(void)
-{
-}
-
-word16 SDLBackend_SaveAndDisableInterrupts(void)
-{
-    word16 oldFlags;
-
-    oldFlags = fakeBackend.interruptFlags;
-    fakeBackend.interruptFlags &= (word16)~0x0200;
-    return oldFlags;
-}
-
-void SDLBackend_RestoreInterruptFlags(word16 flags)
-{
-    fakeBackend.interruptFlags = flags;
 }
 
 void SDLBackend_AcknowledgeInterrupt(byte interruptNumber)

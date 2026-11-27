@@ -68,7 +68,7 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Text/REVENGE_3477_FONT.c
 	src/Original/Audio/REVENGE_375F_AUDIO_HARDWARE.c
 	src/Original/Audio/REVENGE_375F_DIGITAL_PLAYBACK.c
-	src/Original/Audio/REVENGE_38AE_PIT_CALIBRATION.c
+	src/Original/Audio/REVENGE_38AE_PIT_TIMER.c
     src/Original/Graphics/REVENGE_34B8_VIDEO_TIMING.c
     src/Original/Utility/REVENGE_34C6_RANDOM_RANGE.c
     src/Original/Input/REVENGE_34C8_NAVIGATION_KEY.c

@@ -139,7 +139,6 @@ const word16 IBMPS1MIDIFrequencyWords[0x4A] =
 DigitalSoundDataImage DigitalSoundData;
 
 DigitalSampleDescriptor *ActiveDigitalSampleDescriptor;
-word16 DigitalDriverHardwareOffset;
 DigitalDriverQueue ActiveDigitalDriverQueue;
 word16 DigitalPlaybackRateHz;
 byte DigitalWeaponEffectRepeatCount;

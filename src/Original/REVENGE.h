@@ -115,25 +115,15 @@ typedef struct DigitalPlaybackRuntimeState
 	byte MixLookup[0x0100];
 } DigitalPlaybackRuntimeState;
 
-/* Exact contiguous DS:6F4C-6FA3 queues and calibration descriptor. */
+/* Exact contiguous DS:6F4C-6FA3 queues and calibration descriptor. The
+ * rebuild has no calibration (375F:05D6): its queue and descriptor stay as
+ * places in the original's data, unused. */
 typedef struct DigitalPlaybackWorkingSet
 {
 	DigitalDriverQueue PlaybackTimerQueue;
 	DigitalDriverQueue CalibrationQueue;
 	DigitalSampleDescriptor CalibrationSample;
 } DigitalPlaybackWorkingSet;
-
-typedef struct DigitalHardwareDescriptor
-{
-	word16 DeviceNameOffset;
-	word16 DefaultProbeParameter;
-	word16 ProbeCandidateCount;
-	word16 ProbeCandidateListOffset;
-	word16 ProbeCallbackOffset;
-	word16 AcquireCallbackOffset;
-	word16 ReleaseCallbackOffset;
-	word16 ReferenceCount;
-} DigitalHardwareDescriptor;
 
 typedef struct DigitalPlaybackDescriptor
 {
@@ -190,8 +180,6 @@ _Static_assert(offsetof(DigitalPlaybackWorkingSet, CalibrationSample) == 0x24,
 	"digital calibration sample must remain at DS:6F70");
 _Static_assert(sizeof(DigitalPlaybackWorkingSet) == 0x58,
 	"digital playback working set must retain DS:6F4C-6FA3 layout");
-_Static_assert(sizeof(DigitalHardwareDescriptor) == 0x10,
-	"DigitalHardwareDescriptor must retain its DOS layout");
 _Static_assert(sizeof(DigitalPlaybackDescriptor) == 0x0C,
 	"DigitalPlaybackDescriptor must retain its DOS layout");
 _Static_assert(sizeof(DigitalWeaponEffectRecord) == 0x0A,
@@ -215,30 +203,8 @@ typedef union DigitalSoundDataImage
 	byte Bytes[0x062D];
 } DigitalSoundDataImage;
 
-extern DigitalHardwareDescriptor NullDigitalHardware;
-extern DigitalHardwareDescriptor Tandy3VoiceHardware;
-extern DigitalHardwareDescriptor TandyDACHardware;
-extern DigitalHardwareDescriptor IBMPS1AudioHardware;
-extern DigitalHardwareDescriptor SoundBlasterHardware;
-extern DigitalHardwareDescriptor AdLibSoundHardware;
-extern DigitalHardwareDescriptor CMSSoundHardware;
-extern DigitalHardwareDescriptor InnovationSoundHardware;
-extern DigitalHardwareDescriptor CovoxSoundHardware;
-
-extern const word16 SoundBlasterProbePorts[0x06];
-extern const word16 CMSProbePorts[0x06];
-extern const word16 InnovationProbePorts[0x04];
-extern const word16 CovoxProbePorts[0x04];
-
 extern DigitalPlaybackDescriptor NullDigitalPlayback;
-extern DigitalPlaybackDescriptor Tandy3VoicePlayback;
-extern DigitalPlaybackDescriptor TandyDACPlayback;
-extern DigitalPlaybackDescriptor IBMPS1Playback;
 extern DigitalPlaybackDescriptor SoundBlasterPlayback;
-extern DigitalPlaybackDescriptor AdLibPlayback;
-extern DigitalPlaybackDescriptor CMSPlayback;
-extern DigitalPlaybackDescriptor InnovationPlayback;
-extern DigitalPlaybackDescriptor CovoxPlayback;
 extern DigitalPlaybackRuntimeState DigitalPlaybackRuntime;
 extern DigitalPlaybackWorkingSet DigitalPlaybackBuffers;
 
@@ -252,7 +218,6 @@ enum
 
 extern DigitalSoundDataImage DigitalSoundData;
 extern DigitalSampleDescriptor *ActiveDigitalSampleDescriptor;
-extern word16 DigitalDriverHardwareOffset;
 extern DigitalDriverQueue ActiveDigitalDriverQueue;
 extern word16 DigitalPlaybackRateHz;
 extern byte DigitalWeaponEffectRepeatCount;
@@ -293,14 +258,7 @@ enum
 	DIGITAL_SAMPLE_HANDLER_ONESHOT = 0x0A82,
 	DIGITAL_SAMPLE_HANDLER_LOOP = 0x0AAB,
 	DIGITAL_DESCRIPTOR_NULL = 0x6EB2,
-	DIGITAL_DESCRIPTOR_TANDY = 0x6EBE,
-	DIGITAL_DESCRIPTOR_TANDY_DAC = 0x6ECA,
-	DIGITAL_DESCRIPTOR_IBM_PS1 = 0x6ED6,
-	DIGITAL_DESCRIPTOR_SOUND_BLASTER = 0x6EE2,
-	DIGITAL_DESCRIPTOR_ADLIB = 0x6EEE,
-	DIGITAL_DESCRIPTOR_CMS = 0x6F28,
-	DIGITAL_DESCRIPTOR_INNOVATION = 0x6F34,
-	DIGITAL_DESCRIPTOR_COVOX = 0x6F40
+	DIGITAL_DESCRIPTOR_SOUND_BLASTER = 0x6EE2
 };
 
 /* Verified DOS and BIOS boundary contracts. */
@@ -353,9 +311,6 @@ uint32 SwapInterruptVector(
 	uint32 newVector, word16 interruptNumber);
 word16 SetPITChannel0Divisor(word16 divisor);
 word16 PITFrequencyToDivisor(word16 frequencyHz);
-void PITCalibrationIRQ0Handler(void);
-uint32 DivideUnsigned32By32(
-	uint32 dividend, uint32 divisor);
 
 /* Verified input and utility contracts used across original segment files. */
 word16 GeneratePseudoRandomByte(void);
@@ -579,18 +534,10 @@ void PlayMusicResource(word16 resourceIndex);
 void InstallMusicTimer(void);
 void RestoreSystemTimer(void);
 void PlayPCSpeakerEffectByIndex(word16 effectId);
-word16 InvokeDigitalHardwareProbe(word16 hardwareDescriptorOffset);
-void AcquireDigitalHardware(
-	word16 hardwareDescriptorOffset,
-	word16 driverParameter);
 void AcquireDigitalPlaybackDriver(
 	word16 driverDescriptorOffset,
 	word16 playbackRateHz);
 void ReleaseDigitalPlaybackDriver(word16 driverDescriptorOffset);
-uint32 CalibrateDigitalPlaybackRate(
-	word16 playbackScale,
-	word16 sourceRateHz,
-	word16 driverDescriptorOffset);
 void InstallDigitalPlaybackTimer(word16 playbackRateHz);
 void RestoreDigitalPlaybackTimer(void);
 void InitializeDigitalDriverQueue(DigitalDriverQueue *queue);

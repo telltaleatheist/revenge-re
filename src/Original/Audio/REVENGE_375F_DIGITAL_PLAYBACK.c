@@ -1,4 +1,4 @@
-/* REVENGE_375F_AUDIO_HARDWARE.c -- digital-output drivers and software mixer. */
+/* REVENGE_375F_DIGITAL_PLAYBACK.c -- digital sample queues, timer service and software mixer. */
 
 #include "REVENGE.h"
 #include "revenge/digital_bridge.h"
@@ -9,24 +9,11 @@
 /* Digital descriptor queues, timer service, and software mixer. */
 
 #define INTERRUPT_SYSTEM_TIMER_IRQ 0x08
-#define ResolveDigitalHardwareDescriptor \
-	DigitalBridge_ResolveHardwareDescriptor
 #define ResolveDigitalPlaybackDescriptor \
 	DigitalBridge_ResolvePlaybackDescriptor
-#define ResolveProbeCandidateList DigitalBridge_ResolveProbeCandidateList
-#define DispatchDigitalHardwareProbe DigitalBridge_DispatchHardwareProbe
-#define DispatchDigitalHardwareAcquire DigitalBridge_DispatchHardwareAcquire
-#define DispatchDigitalHardwareRelease DigitalBridge_DispatchHardwareRelease
 
 void WriteNullDigitalSample(byte sample);
-void WriteTandy3VoiceDigitalSample(byte sample);
-void WriteTandyDACDigitalSample(byte sample);
-void WriteIBMPS1DigitalSample(byte sample);
 void WriteSoundBlasterDigitalSample(byte sample);
-void WriteAdLibDigitalSample(byte sample);
-void WriteCMSDigitalSample(byte sample);
-void WriteInnovationDigitalSample(byte sample);
-void WriteCovoxDigitalSample(byte sample);
 
 DigitalPlaybackWorkingSet DigitalPlaybackBuffers;
 static const word16 DigitalMixBiasOffsets[0x04] =
@@ -75,45 +62,9 @@ uint32 ApplyDigitalMixScale(uint16 timingScale);
 uint32 RebuildDigitalMixLookup(int16 mixScale);
 void ServiceDigitalAudioTick(void);
 word16 ProgramDigitalPlaybackTimerRate(uint16 playbackRateHz);
-void BeginPITCalibration(void);
-uint32 EndPITCalibration(void);
 void HandleDigitalWeaponEffectCompletion(
 	word16 descriptorOffset,
 	word16 descriptorSegment);
-// 375F:05D6: uint32 CalibrateDigitalPlaybackRate; result is DX:AX
-// Called from:
-//      InitializeDigitalSoundDriver
-uint32 CalibrateDigitalPlaybackRate(word16 playbackScale, word16 sourceRateHz,
-	word16 driverDescriptorOffset)
-{
-	DigitalPlaybackDescriptor *driver;
-
-	DisableHardwareInterrupts();
-	InitializeDigitalSampleDescriptorCore(
-		&DigitalPlaybackBuffers.CalibrationSample, 0x0E0D,
-		playbackScale, sourceRateHz, 0x0000, 0x375F);
-	ResetDigitalSamplePlayback(
-		&DigitalPlaybackBuffers.CalibrationSample);
-	InitializeDigitalDriverQueueCore(
-		&DigitalPlaybackBuffers.CalibrationQueue);
-	LinkDigitalSampleDescriptor(
-		&DigitalPlaybackBuffers.CalibrationQueue,
-		&DigitalPlaybackBuffers.CalibrationSample);
-	driver = ResolveDigitalPlaybackDescriptor(driverDescriptorOffset);
-	InstallDigitalDriverQueueCallback(
-		driver, &DigitalPlaybackBuffers.CalibrationQueue);
-	BeginPITCalibration();
-	{
-		word16 serviceTicksRemaining;
-		for (serviceTicksRemaining = 0x0E0D;
-		serviceTicksRemaining != 0x0000; --serviceTicksRemaining)
-			ServiceDigitalAudioTick();
-	}
-
-	return DivideUnsigned32By32(0xFFD0CE97UL,
-		EndPITCalibration());
-}
-
 // 375F:063B: void InstallDigitalPlaybackTimer(Stack uint16 wArg04)
 // Called from:
 //      PlayScenarioDigitalSoundSequence
@@ -171,7 +122,6 @@ void InitializeDigitalDriverQueue(DigitalDriverQueue *queue)
 
 // 375F:06D5: reconstructed C signature follows.
 // Called from:
-//      CalibrateDigitalPlaybackRate
 //      InstallDigitalPlaybackTimer
 //      InitializeDigitalDriverQueue
 void InitializeDigitalDriverQueueCore(DigitalDriverQueue *queue)
@@ -204,7 +154,6 @@ void AttachDigitalDriverQueue(word16 driverDescriptorOffset,
 
 // 375F:070C: reconstructed C signature follows.
 // Called from:
-//      CalibrateDigitalPlaybackRate
 //      InstallDigitalPlaybackTimer
 //      AttachDigitalDriverQueue
 void InstallDigitalDriverQueueCallback(
@@ -238,7 +187,6 @@ void InitializeDigitalSampleDescriptor(DigitalSampleDescriptor *descriptor,
 
 // 375F:0757: reconstructed C signature follows.
 // Called from:
-//      CalibrateDigitalPlaybackRate
 //      InitializeDigitalSampleDescriptor
 void InitializeDigitalSampleDescriptorCore(
 	DigitalSampleDescriptor *descriptor,
@@ -366,7 +314,6 @@ void EnqueueDigitalSampleDescriptor(
 
 // 375F:0868: reconstructed C signature follows.
 // Called from:
-//      CalibrateDigitalPlaybackRate
 //      EnqueueDigitalSampleDescriptor
 void LinkDigitalSampleDescriptor(DigitalDriverQueue *queue,
 	DigitalSampleDescriptor *descriptor)
@@ -458,7 +405,6 @@ void PrepareDigitalSamplePlayback(
 
 // 375F:0927: reconstructed C signature follows.
 // Called from:
-//      CalibrateDigitalPlaybackRate
 //      PrepareDigitalSamplePlayback
 void ResetDigitalSamplePlayback(
 	DigitalSampleDescriptor *descriptor)
@@ -597,8 +543,9 @@ uint32 RebuildDigitalMixLookup(int16 mixScale)
 	}
 
 	// The original exposes the final 24-bit AH:DX accumulator and last output
-	// byte in DX:AX. DX is intentionally consumed as the silent calibration
-	// descriptor's source-rate seed immediately after a zero-scale rebuild.
+	// byte in DX:AX. The original's set-up (31FB:0049) took DX after a
+	// zero-scale rebuild as the source rate of its silent calibration
+	// descriptor; the rebuild has no calibration, and no caller reads it.
 	word16 axResult = MAKE_WORD(
 		(byte) (((uint32) accumulator >> 0x10) & 0x00FF),
 		outputSample);
@@ -659,14 +606,7 @@ void ServiceDigitalAudioTick(void)
 	switch (DigitalPlaybackRuntime.WriteSampleCallbackOffset)
 	{
 	case 0x02F0: WriteNullDigitalSample(queue->OutputSample); break;
-	case 0x02FC: WriteTandy3VoiceDigitalSample(queue->OutputSample); break;
-	case 0x031A: WriteTandyDACDigitalSample(queue->OutputSample); break;
-	case 0x0326: WriteIBMPS1DigitalSample(queue->OutputSample); break;
 	case 0x032E: WriteSoundBlasterDigitalSample(queue->OutputSample); break;
-	case 0x036C: WriteAdLibDigitalSample(queue->OutputSample); break;
-	case 0x038C: WriteCMSDigitalSample(queue->OutputSample); break;
-	case 0x049E: WriteInnovationDigitalSample(queue->OutputSample); break;
-	case 0x04B5: WriteCovoxDigitalSample(queue->OutputSample); break;
 	}
 	word16 mixTableOffset = queue->MixBias;
 	DigitalSampleDescriptor *descriptor = FAR_POINTER(DigitalSampleDescriptor,
@@ -741,5 +681,3 @@ void ServiceDigitalAudioTick(void)
 	}
 	EnableHardwareInterrupts();
 }
-
-

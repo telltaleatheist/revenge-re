@@ -26,7 +26,6 @@ static word16 dosMemoryBlockSegment;
 static byte originalDataSegment[0x10000];
 
 void ServiceDigitalPlaybackInterrupt(void);
-void PITCalibrationIRQ0Handler(void);
 
 #define ORIGINAL_DATA_SEGMENT_MAPPED_BYTES 0xB8A0
 
@@ -305,9 +304,6 @@ void SDLBackend_ChainInterruptVector(uint32 interruptVector)
 	case 0x375F0A1DUL:
 		handler = ServiceDigitalPlaybackInterrupt;
 		break;
-	case 0x38AE00D7UL:
-		handler = PITCalibrationIRQ0Handler;
-		break;
 	}
 	if (handler != NULL)
 		handler();
@@ -329,28 +325,6 @@ void SDLBackend_ProgramPITChannel0Mode(byte mode, word16 divisor)
 {
     (void)mode;
     (void)divisor;
-}
-
-word16 SDLBackend_LatchPITChannel0Count(void)
-{
-    return 0x0000;
-}
-
-void SDLBackend_WaitPITChannel0Interrupt(void)
-{
-    SDLBackend_Delay(0x0037);
-}
-
-word16 SDLBackend_SaveAndDisableInterrupts(void)
-{
-    RevengeHost_DisableInterruptDelivery();
-    return 0x0200;
-}
-
-void SDLBackend_RestoreInterruptFlags(word16 flags)
-{
-    if ((flags & 0x0200) != 0x0000)
-        RevengeHost_EnableInterruptDelivery();
 }
 
 void SDLBackend_AcknowledgeInterrupt(byte interruptNumber)

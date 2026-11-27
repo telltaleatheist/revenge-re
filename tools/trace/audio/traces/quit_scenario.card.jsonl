@@ -1,4 +1,4 @@
-{"digest": "f5d86b755e7aa6dd", "kinds": {"midi --": 5, "midi 80": 1751, "midi 90": 1761, "midi B0": 70, "midi C0": 58, "midi E0": 29, "midi reset": 1, "pcm done": 8, "pcm effect": 6, "pcm speech": 2, "snap": 1, "sysex": 164}, "lines": 3856, "snap": "options"}
-{"digest": "8b406e75fc29ad82", "kinds": {"snap": 1}, "lines": 1, "snap": "in_game"}
-{"digest": "49ce9f4deb2984f7", "kinds": {"snap": 1}, "lines": 1, "snap": "replay05"}
-{"digest": "503a3e4f8115c43e", "kinds": {"snap": 1}, "lines": 1, "snap": "replay10"}
+{"digest": "36ad89cc1d8f452d", "kinds": {"midi --": 5, "midi 80": 1751, "midi 90": 1761, "midi B0": 70, "midi C0": 58, "midi E0": 29, "midi reset": 1, "pcm done": 8, "pcm effect": 6, "pcm speech": 2, "snap": 1, "sysex": 164}, "lines": 3856, "snap": "options"}
+{"digest": "138ba22af5ca265b", "kinds": {"snap": 1}, "lines": 1, "snap": "in_game"}
+{"digest": "1a5398d4a0bd479c", "kinds": {"snap": 1}, "lines": 1, "snap": "replay05"}
+{"digest": "f5155169c718edd5", "kinds": {"snap": 1}, "lines": 1, "snap": "replay10"}

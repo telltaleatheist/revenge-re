@@ -13,13 +13,6 @@
 #define DIGITAL_SOUND_SAMPLE_RATE_HZ        0x1F40
 #define DIGITAL_SOUND_UNITY_PLAYBACK_SCALE 0x6633
 #define SOUND_DRIVER_PC_SPEAKER 0x00
-#define SOUND_DRIVER_ADLIB      0x04
-
-static const word16 DigitalDriverHardwareOffsetsByIndex[0x09] =
-{
-	0x0000, 0x6D40, 0x6DA2, 0x6D6A, 0x6DEC,
-	0x6DC2, 0x6E84, 0x6E52, 0x6E12
-};
 
 #define DigitalSoundDriverDescriptorOffsets() \
 	(DigitalSoundData.Layout.DriverDescriptorOffsets)
@@ -240,29 +233,14 @@ void InitializeDigitalSoundDriver(void)
 	// Verified against 31FB:0005-00B2.
 	if (SoundDriverIndex > SOUND_DRIVER_PC_SPEAKER)
 	{
-		word16 driverDescriptorOffset = DigitalSoundDriverDescriptorOffsets()[
-			SoundDriverIndex];
-		DigitalDriverHardwareOffset =
-			DigitalDriverHardwareOffsetsByIndex[
-				SoundDriverIndex];
-		if (SoundDriverIndex == SOUND_DRIVER_ADLIB)
-			InvokeDigitalHardwareProbe(DigitalDriverHardwareOffset);
-		AcquireDigitalHardware(DigitalDriverHardwareOffset,
-			SoundDriverNumericParameter);
-		uint32 zeroScaleMixState = SetDigitalPlaybackTimingScale(0x0000);
-		uint32 calibratedRate = CalibrateDigitalPlaybackRate(0x0000,
-			HIGH_WORD(zeroScaleMixState), driverDescriptorOffset) >> 0x01;
-		if ((int16) HIGH_WORD(calibratedRate) > 0x00 ||
-			(HIGH_WORD(calibratedRate) == 0x00 &&
-			LOW_WORD(calibratedRate) > DIGITAL_SOUND_SAMPLE_RATE_HZ))
-		{
-			DigitalPlaybackRateHz = DIGITAL_SOUND_SAMPLE_RATE_HZ;
-		}
-		else
-			DigitalPlaybackRateHz = LOW_WORD(calibratedRate);
+		/* 31FB:0015-0082 probed (375F:0006, the AdLib only) and acquired
+		 * (375F:0044) the card, measured how fast the mixer ran on it
+		 * (CalibrateDigitalPlaybackRate, 375F:05D6, after a zero-scale mix
+		 * at 31FB:0049), kept that rate under 8000 Hz, and at 31FB:0091
+		 * fell back to the speaker below 3000 Hz. The rebuild's mixer runs
+		 * on the host at the samples' own rate. */
+		DigitalPlaybackRateHz = DIGITAL_SOUND_SAMPLE_RATE_HZ;
 		InitializeDigitalDriverQueue(&ActiveDigitalDriverQueue);
-		if (DigitalPlaybackRateHz < 0x0BB8)
-			SoundDriverIndex = SOUND_DRIVER_PC_SPEAKER;
 	}
 	/* 31FB:00A9 then built the speaker's bit patterns for 8000 Hz
 	 * (InitializePCSpeakerSampleConversion) when the sound was the speaker;

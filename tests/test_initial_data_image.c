@@ -187,28 +187,8 @@ static const ImageRow rows[] =
 	/* The sampled-sound devices: each output descriptor (DS:6EB2, 0Ch apart)
 	 * names its hardware descriptor; four of those name a probe list. The last
 	 * three come after the carrier register list at DS:6EFA. */
-	DS(NullDigitalHardware, 0x6D28),
-	DS(Tandy3VoiceHardware, 0x6D40),
-	DS(TandyDACHardware, 0x6D6A),
-	DS(IBMPS1AudioHardware, 0x6DA2),
-	DS(SoundBlasterHardware, 0x6DC2),
-	DS(SoundBlasterProbePorts, 0x6DD2),
-	DS(AdLibSoundHardware, 0x6DEC),
-	DS(CMSSoundHardware, 0x6E12),
-	DS(CMSProbePorts, 0x6E22),
-	DS(InnovationSoundHardware, 0x6E52),
-	DS(InnovationProbePorts, 0x6E62),
-	DS(CovoxSoundHardware, 0x6E84),
-	DS(CovoxProbePorts, 0x6E94),
 	DS(NullDigitalPlayback, 0x6EB2),
-	DS(Tandy3VoicePlayback, 0x6EBE),
-	DS(TandyDACPlayback, 0x6ECA),
-	DS(IBMPS1Playback, 0x6ED6),
 	DS(SoundBlasterPlayback, 0x6EE2),
-	DS(AdLibPlayback, 0x6EEE),
-	DS(CMSPlayback, 0x6F28),
-	DS(InnovationPlayback, 0x6F34),
-	DS(CovoxPlayback, 0x6F40),
 
 	/* Places the data map's checks settled (tools/map/data_map.txt). */
 	/* Found by the port's bytes in the loaded image: the weapon records'

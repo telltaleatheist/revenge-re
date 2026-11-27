@@ -24,8 +24,6 @@ typedef struct FakeBackendState
     uint32 biosTickStep;
     word16 pitChannel0Divisor;
     byte pitChannel0Mode;
-    word16 latchedPITChannel0Count;
-    word16 interruptFlags;
     byte acknowledgedInterrupt;
     uint16 rawKeypress;
     word16 inputPending;

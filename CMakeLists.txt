@@ -337,7 +337,7 @@ if(BUILD_TESTING)
     add_executable(test_timer_edges
         tests/test_timer_edges.c
         tests/fake_backend.c
-        src/Original/Audio/REVENGE_38AE_PIT_CALIBRATION.c)
+        src/Original/Audio/REVENGE_38AE_PIT_TIMER.c)
     target_include_directories(test_timer_edges PRIVATE
         src/Original src/SDL tests)
     target_link_libraries(test_timer_edges PRIVATE chr_original_runtime)

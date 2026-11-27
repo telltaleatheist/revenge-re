@@ -65,17 +65,20 @@ int main(void)
 	DigitalPlaybackRateHz = 0x1F40;
 	InitializeDigitalDriverQueue(&ActiveDigitalDriverQueue);
 	DigitalSoundBusy = FALSE;
-	SoundDriverIndex = 0x01;
+	SoundDriverIndex = 0x05; /* the samples output, 6EE2h */
 	DispatchWeaponEffect(0x06);
 	assert(DigitalSoundBusy == TRUE);
 	assert(DigitalWeaponEffectRepeatCount == 0x03);
 	assert(ActiveDigitalSampleDescriptor != NULL);
 	assert(ActiveDigitalSampleDescriptor->SampleLength == 0x0004);
 
+	/* The host was given the rate; the second tick writes the first mixed
+	 * byte: sample 00h through the lookup at the output's mix scale 70h,
+	 * (100h - 70h) << 7 >> 8 = 48h. */
+	assert(fakeBackend.firstWord == 0x1F40);
 	ServiceDigitalAudioTick();
 	ServiceDigitalAudioTick();
-	assert(fakeBackend.firstWord == 0x00C0);
-	assert(fakeBackend.firstByte == 0x90);
+	assert(fakeBackend.firstByte == 0x48);
 	HandleDigitalWeaponEffectCompletion(
 		FAR_OFFSET(ActiveDigitalSampleDescriptor),
 		FAR_SEGMENT(ActiveDigitalSampleDescriptor));
@@ -83,7 +86,7 @@ int main(void)
 	assert(GetDigitalSamplePlaybackState(
 		ActiveDigitalSampleDescriptor) == 0x02);
 	RemoveDigitalSampleDescriptor(ActiveDigitalSampleDescriptor);
-	ReleaseDigitalPlaybackDriver(0x6EBE);
+	ReleaseDigitalPlaybackDriver(0x6EE2);
 	RestoreDigitalPlaybackTimer();
 	DigitalSoundBusy = FALSE;
 

@@ -246,28 +246,8 @@ place AdLibNineVoiceResetList 3A6A:6B9A 4 run
 place AdLibElevenVoiceResetList 3A6A:6B9E 14 run
 place AdLibDeactivateRegisterList 3A6A:6BB2 26 run
 place RolandMPU401 3A6A:6C0E 10A table
-place NullDigitalHardware 3A6A:6D28 10 table
-place Tandy3VoiceHardware 3A6A:6D40 10 table
-place TandyDACHardware 3A6A:6D6A 10 table
-place IBMPS1AudioHardware 3A6A:6DA2 10 table
-place SoundBlasterHardware 3A6A:6DC2 10 table
-place SoundBlasterProbePorts 3A6A:6DD2 C table
-place AdLibSoundHardware 3A6A:6DEC 10 table
-place CMSSoundHardware 3A6A:6E12 10 table
-place CMSProbePorts 3A6A:6E22 C table
-place InnovationSoundHardware 3A6A:6E52 10 table
-place InnovationProbePorts 3A6A:6E62 8 table
-place CovoxSoundHardware 3A6A:6E84 10 table
-place CovoxProbePorts 3A6A:6E94 8 table
 place NullDigitalPlayback 3A6A:6EB2 C table
-place Tandy3VoicePlayback 3A6A:6EBE C table
-place TandyDACPlayback 3A6A:6ECA C table
-place IBMPS1Playback 3A6A:6ED6 C table
 place SoundBlasterPlayback 3A6A:6EE2 C table
-place AdLibPlayback 3A6A:6EEE C table
-place CMSPlayback 3A6A:6F28 C table
-place InnovationPlayback 3A6A:6F34 C table
-place CovoxPlayback 3A6A:6F40 C table
 place DigitalPlaybackBuffers 3A6A:6F4C 58 table
 place PITCalibration 3A6A:6FA4 A table
 place DOSErrorToErrnoTable 3A6A:6FB0 59 run
@@ -490,7 +470,6 @@ unplaced DateSpaceText 4 host pointer
 unplaced DeadText 4 host pointer
 unplaced DeferredStage16Story 2 zero at every snap
 unplaced DetectedByText 4 host pointer
-unplaced DigitalDriverHardwareOffset 2 zero at every snap
 unplaced DigitalPlaybackRateHz 2 zero at every snap
 unplaced DigitalPlaybackRuntime 11A its bytes match nowhere (pointers or values differ)
 unplaced DigitalSoundBuffer 4 host pointer
