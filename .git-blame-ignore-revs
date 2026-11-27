@@ -1,0 +1,35 @@
+# Commits that only changed the layout (whitespace, the same tokens in the
+# same order). git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# format: include
+c57a815775e710b69060ee2a3be8d78ce5a6fc8d
+
+# format: src/Audio
+76aa7d057ee97dd074efa20d9afa9a433586ce34
+
+# format: src/Import
+52f9efa13148a6892d35ed0eb3a46b59b0af4bc0
+
+# format: src/Rules
+9e868b2e47ea62da936a8c9284c28271c3e80da3
+
+# format: src/SDL
+65604aeb964ff9c9bbf3e4e674930c764f54a539
+
+# format: src/Setup
+ef329cbbd9afd393a08046db5a9ef45a9acf69f2
+
+# format: src/Support
+2b41b58658a79bc1a044d4be316526679ebc9099
+
+# format: tests
+77264c4e49295d2b8226db9037f41289d805bfa0
+
+# format: tools
+fb07211dd39a3814b7a8587e431b0a8ff7d48de7
+
+# format: src/Original's leading operators move to the line before
+10843c8aeeee775e1d03ea91486a09dbfd05db69
+
+# format: src/Original
+6f4939270597fe10ae5096973a13d93074ceff3a

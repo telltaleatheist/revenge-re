@@ -76,3 +76,7 @@ and `--fix` formats it; run it with each change. Files in
 `.clang-format-ignore` are not formatted: the libraries in `extern/`, kept
 as their authors wrote them, and the files tools write, which their `--check`
 compares byte for byte.
+
+The commits that only formatted the tree are listed in
+`.git-blame-ignore-revs`; `git config blame.ignoreRevsFile
+.git-blame-ignore-revs` makes `git blame` look past them.
