@@ -71,9 +71,17 @@ enum
 };
 
 /* With no MEDIA.CFG: VGA (the MCGA record), the music on the soundfont, the effects as
- * digital samples, the keyboard. */
+ * digital samples, the mouse. The keys work as fully with the mouse chosen
+ * (the mouse only adds to them); with the keys chosen the game ignores the
+ * mouse (0D73:0006), which a player clicking would take for broken. */
+enum
+{
+	INPUT_RECORD_MOUSE = 0
+};
+
 static const RevengeMediaChoices DefaultChoices = {
-	{ VIDEO_RECORD_VGA, MUSIC_RECORD_ROLAND, SOUND_RECORD_SAMPLES, 1 }, "220", MEDIA_MUSIC_SOUNDFONT, MEDIA_SOUND_SAMPLES
+	{ VIDEO_RECORD_VGA, MUSIC_RECORD_ROLAND, SOUND_RECORD_SAMPLES, INPUT_RECORD_MOUSE }, "220",
+	MEDIA_MUSIC_SOUNDFONT, MEDIA_SOUND_SAMPLES
 };
 
 static RevengeMediaChoices choices;
@@ -252,7 +260,9 @@ static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
 
 /* The DOS installer's MEDIA.CFG: "KEY=VALUE[ PARAMETER]" lines. What it
  * names that the game knows is taken (a sound card's parameter is not: the
- * samples keep theirs); anything else keeps our default. */
+ * samples keep theirs), but the video, which is always the MCGA record,
+ * and the input, which starts as the mouse: the installs ship with the
+ * keys chosen. Anything else keeps our default. */
 static void ReadMediaConfiguration(char *text, RevengeMediaChoices *out)
 {
 	char *cursor = text;
@@ -272,7 +282,7 @@ static void ReadMediaConfiguration(char *text, RevengeMediaChoices *out)
 		if (option < 0)
 			continue;
 		choice = MediaSettings_ChoiceIndex((word16) option, words[1]);
-		if (choice < 0)
+		if (choice < 0 || option == MEDIA_OPTION_INPUT)
 			continue;
 		out->choice[option] = (word16) choice;
 	}

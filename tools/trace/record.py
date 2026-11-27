@@ -28,6 +28,11 @@ import tempfile
 
 TIMEOUT_SECONDS = 600
 SKIP = 77
+# The settings every trace runs with, as the original's captures were made:
+# the speaker for the music and the sound, and the keys (a new settings.txt
+# starts with the mouse, whose cursor and battle cursor the scripts don't
+# drive).
+TRACE_SETTINGS = "video = vga\nmusic = speaker\nsound = speaker\ninput = keys\n"
 START_SAVE = re.compile(r"^#\s*start-save:\s*(\w+)\s*$", re.M)
 
 
@@ -65,17 +70,19 @@ def tokens_by_snap(script):
 def run(exe, game, script, work, story=None, settings=None, env_extra=None):
     """Runs the port; returns (exit code, the run's output). With story, a
     story folder (an earlier run's saves/story) is put in the save folder
-    first, so the run finds its story already imported. With settings, that
-    text is the save folder's settings.txt (the player's settings, in place
-    of the install's MEDIA.CFG). env_extra adds variables to the run's."""
+    first, so the run finds its story already imported. settings is the
+    text of the save folder's settings.txt (the player's settings, in place
+    of the install's MEDIA.CFG): TRACE_SETTINGS unless given. env_extra adds
+    variables to the run's."""
     if os.path.isdir(work):
         shutil.rmtree(work)
     os.makedirs(os.path.join(work, "saves"))
     if story:
         shutil.copytree(story, os.path.join(work, "saves", "story"))
-    if settings is not None:
-        with open(os.path.join(work, "saves", "settings.txt"), "w", encoding="ascii", newline="\n") as f:
-            f.write(settings)
+    if settings is None:
+        settings = TRACE_SETTINGS
+    with open(os.path.join(work, "saves", "settings.txt"), "w", encoding="ascii", newline="\n") as f:
+        f.write(settings)
     wanted = start_save(script)
     if wanted:
         if wanted[1] is None:

@@ -1253,6 +1253,14 @@ if(CHR_BUILD_SDL)
             ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_sdl_renderer_fallback)
         add_test(NAME platform.sdl_renderer_fallback COMMAND test_sdl_renderer_fallback)
+
+        # The pointer leaving the window never parks the game's cursor on an edge.
+        add_executable(test_mouse_leave tests/test_mouse_leave.c)
+        target_include_directories(test_mouse_leave PRIVATE src/Original tests)
+        target_link_libraries(test_mouse_leave PRIVATE
+            ${CHR_RUNTIME_WITH_BACKEND})
+        chr_strict(test_mouse_leave)
+        add_test(NAME platform.mouse_leave COMMAND test_mouse_leave)
     endif()
 endif()
 

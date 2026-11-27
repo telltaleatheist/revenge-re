@@ -27,15 +27,16 @@
  *   first    the first start takes the install's MEDIA.CFG: the text the game
  *            then parses is that file's bytes but the video's, which is
  *            always the MCGA record (the 256-colour mode on every screen),
- *            and settings.txt is written; the next start reads settings.txt
- *            alone, to the same choices
- *   none     with no MEDIA.CFG, our defaults
+ *            and the input's, which starts as the mouse; settings.txt is
+ *            written; the next start reads settings.txt alone, to the same
+ *            choices
+ *   none     with no MEDIA.CFG, our defaults (the mouse among them)
  *   own      a settings.txt of the player's own words wins; an old card
  *            word for the music reads as the soundfont, for the sound (its
  *            parameter passed over) as the samples, any video record's
  *            word as vga, and the file is written again in the new words
  *   words    the music's words (off, speaker) and the sound's (speaker,
- *            samples), each its record
+ *            samples), each its record; the file's input word (keys) kept
  *   bad      a choice it doesn't know is a fault naming the file and line
  *   extra    so is a parameter after one of the new sound words
  *   parse    the game's own parse applies every line, the last (the input
@@ -72,24 +73,52 @@ static void Folders(const char *name)
 		assert(CHANGE_DIRECTORY(getenv("REVENGE_GAME")) == 0);
 }
 
-/* The install's MEDIA.CFG as the game is handed it: its first line, the
- * video's, names the MCGA record. */
-static char *ExpectedText(char *original, size_t *size)
+/* The value on the line of the text that starts "NAME=", replaced. */
+static char *ReplaceValue(char *text, size_t *size, const char *name, const char *value)
 {
-	const char *lineEnd = strstr(original, "\r\n");
-	char *expected;
+	char key[0x20];
+	char *line = text;
+	char *valueStart;
+	char *valueEnd;
+	char *replaced;
+	size_t keyLength;
 	int written;
 
-	assert(lineEnd != NULL && strncmp(original, ConfigOptionNames[MEDIA_OPTION_VIDEO],
-		strlen(ConfigOptionNames[MEDIA_OPTION_VIDEO])) == 0);
-	expected = (char *) SDL_malloc(*size + 0x20);
-	assert(expected != NULL);
-	written = SDL_snprintf(expected, *size + 0x20, "%s=%.12s%s",
-		ConfigOptionNames[MEDIA_OPTION_VIDEO], VideoConfigurationRecords[1].name, lineEnd);
+	keyLength = (size_t) SDL_snprintf(key, sizeof(key), "%s=", name);
+	while (strncmp(line, key, keyLength) != 0)
+	{
+		line = strstr(line, "\n");
+		assert(line != NULL);
+		++line;
+	}
+	valueStart = line + keyLength;
+	valueEnd = valueStart + strcspn(valueStart, "\r\n");
+	replaced = (char *) SDL_malloc(*size + 0x20);
+	assert(replaced != NULL);
+	written = SDL_snprintf(replaced, *size + 0x20, "%.*s%.12s%s",
+		(int) (valueStart - text), text, value, valueEnd);
 	assert(written > 0);
-	SDL_free(original);
+	SDL_free(text);
 	*size = (size_t) written;
-	return expected;
+	return replaced;
+}
+
+/* The install's MEDIA.CFG as the game is handed it: its video names the
+ * MCGA record and its input the mouse's (records 1 and 0). */
+static char *ExpectedText(char *original, size_t *size)
+{
+	char *expected = (char *) SDL_malloc(*size + 0x01);
+
+	assert(expected != NULL);
+	memcpy(expected, original, *size);
+	expected[*size] = '\0';
+	SDL_free(original);
+	assert(strncmp(expected, ConfigOptionNames[MEDIA_OPTION_VIDEO],
+		strlen(ConfigOptionNames[MEDIA_OPTION_VIDEO])) == 0);
+	expected = ReplaceValue(expected, size, ConfigOptionNames[MEDIA_OPTION_VIDEO],
+		VideoConfigurationRecords[1].name);
+	return ReplaceValue(expected, size, ConfigOptionNames[MEDIA_OPTION_INPUT],
+		InputConfigurationRecords[0].name);
 }
 
 static void Text(char *text, word16 capacity, word16 *length)
@@ -137,7 +166,7 @@ int main(int argc, char **argv)
 		assert(HostSettings_Prepare());
 		choices = HostSettings_MediaChoices();
 		assert(choices->choice[MEDIA_OPTION_VIDEO] == 1 && choices->choice[MEDIA_OPTION_MUSIC] == 1);
-		assert(choices->choice[MEDIA_OPTION_SOUND] == 0 && choices->choice[MEDIA_OPTION_INPUT] == 1);
+		assert(choices->choice[MEDIA_OPTION_SOUND] == 0 && choices->choice[MEDIA_OPTION_INPUT] == 0);
 		assert(strcmp(choices->soundParameter, "220") == 0);
 		assert(choices->music == MEDIA_MUSIC_SOUNDFONT && choices->sound == MEDIA_SOUND_SAMPLES);
 		assert(SDL_GetPathInfo(settingsPath, NULL));
@@ -173,6 +202,8 @@ int main(int argc, char **argv)
 		choices = HostSettings_MediaChoices();
 		assert(choices->music == MEDIA_MUSIC_OFF && choices->choice[MEDIA_OPTION_MUSIC] == 1);
 		assert(choices->sound == MEDIA_SOUND_SPEAKER && choices->choice[MEDIA_OPTION_SOUND] == 8);
+		/* A file's own input word is kept: the keys stay the keys. */
+		assert(choices->choice[MEDIA_OPTION_INPUT] == 1);
 		written = (char *) SDL_LoadFile(settingsPath, NULL);
 		assert(written != NULL && strcmp(written, off) == 0);
 		SDL_free(written);

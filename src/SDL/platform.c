@@ -34,6 +34,10 @@ static uint64_t nextVideoPresentTick;
 static void (*gameClockHandler)(void);
 static word16 mouseEventMask;
 static word16 hostMouseButtons;
+static byte pointerOutside;
+static byte lastInsideMouseSeen;
+static word16 lastInsideMouseX;
+static word16 lastInsideMouseY;
 
 enum
 {
@@ -947,8 +951,12 @@ static void PresentPendingVideoFrame(void)
  * Nothing under the harness, whose keys come at the game's polls. */
 /* A mouse event as the driver called the game's handler: the buttons (1
  * left, 2 right, 4 middle) and the position in the game's 320x200, from the
- * window's coordinates. */
-static void SendMouseEvent(float windowX, float windowY)
+ * window's coordinates. A position outside the game's picture (the pointer
+ * gone past the window's edge, or over the letterbox) is not passed on: the
+ * game keeps the last one seen inside, so the pointer leaving the window
+ * never parks the game's cursor on an edge, where a battle scrolls. A
+ * button there is passed at that last position. */
+static void SendMouseEvent(float windowX, float windowY, int moved)
 {
     float logicalX = windowX;
     float logicalY = windowY;
@@ -958,17 +966,20 @@ static void SendMouseEvent(float windowX, float windowY)
     if (renderer != NULL)
         (void)SDL_RenderCoordinatesFromWindow(
             renderer, windowX, windowY, &logicalX, &logicalY);
-    if (logicalX < 0.0f)
-        logicalX = 0.0f;
-    if (logicalY < 0.0f)
-        logicalY = 0.0f;
-    if (logicalX >= VIDEO_SCREEN_WIDTH)
-        logicalX = VIDEO_SCREEN_WIDTH - 0x01;
-    if (logicalY >= VIDEO_SCREEN_HEIGHT)
-        logicalY = VIDEO_SCREEN_HEIGHT - 0x01;
-    RevengeTrace("input: mouse x=%u y=%u buttons=%u\n", (unsigned)logicalX,
-        (unsigned)logicalY, (unsigned)hostMouseButtons);
-    MouseEventCallback(hostMouseButtons, (word16)logicalX, (word16)logicalY);
+    if (pointerOutside == FALSE &&
+        logicalX >= 0.0f && logicalX < VIDEO_SCREEN_WIDTH &&
+        logicalY >= 0.0f && logicalY < VIDEO_SCREEN_HEIGHT)
+    {
+        lastInsideMouseX = (word16)logicalX;
+        lastInsideMouseY = (word16)logicalY;
+        lastInsideMouseSeen = TRUE;
+    }
+    else if (moved != FALSE || lastInsideMouseSeen == FALSE)
+        return;
+    RevengeTrace("input: mouse x=%u y=%u buttons=%u\n",
+        (unsigned)lastInsideMouseX, (unsigned)lastInsideMouseY,
+        (unsigned)hostMouseButtons);
+    MouseEventCallback(hostMouseButtons, lastInsideMouseX, lastInsideMouseY);
 }
 
 static word16 MouseButtonBit(Uint8 button)
@@ -1005,16 +1016,22 @@ static void DeliverHostEvents(void)
         case SDL_EVENT_KEY_UP:
             SendKeyEvent(event.key.scancode, FALSE);
             break;
+        case SDL_EVENT_WINDOW_MOUSE_LEAVE:
+            pointerOutside = TRUE;
+            break;
+        case SDL_EVENT_WINDOW_MOUSE_ENTER:
+            pointerOutside = FALSE;
+            break;
         case SDL_EVENT_MOUSE_MOTION:
-            SendMouseEvent(event.motion.x, event.motion.y);
+            SendMouseEvent(event.motion.x, event.motion.y, TRUE);
             break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
             hostMouseButtons |= MouseButtonBit(event.button.button);
-            SendMouseEvent(event.button.x, event.button.y);
+            SendMouseEvent(event.button.x, event.button.y, FALSE);
             break;
         case SDL_EVENT_MOUSE_BUTTON_UP:
             hostMouseButtons &= (word16)~MouseButtonBit(event.button.button);
-            SendMouseEvent(event.button.x, event.button.y);
+            SendMouseEvent(event.button.x, event.button.y, FALSE);
             break;
         default:
             break;
