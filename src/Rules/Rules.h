@@ -196,14 +196,16 @@
 #include <filesystem>
 #include <stdexcept>
 
-namespace revenge::rules {
+namespace revenge::rules
+{
 
-struct RulesError : std::runtime_error {
+struct RulesError : std::runtime_error
+{
     using std::runtime_error::runtime_error;
 };
 
 // Reads every file under data_dir/rules, /ui and /start into its tables, or
 // throws RulesError naming the file and the key.
-void load(const std::filesystem::path& data_dir);
+void load(const std::filesystem::path &data_dir);
 
 }  // namespace revenge::rules
