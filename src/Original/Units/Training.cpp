@@ -7,6 +7,17 @@
 #endif
 
 #include "LanceEditorInternal.h"
+#include "Campaign/Campaign.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Runtime/Runtime.h"
+#include "Text/Text.h"
+#include "UI/UI.h"
+#include "revenge/tactical_panel_data.h"
 #include "revenge/story_text.h"
 
 #include <string.h>

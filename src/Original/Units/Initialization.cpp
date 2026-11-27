@@ -1,9 +1,9 @@
 // 2208: scenario unit initialization
 /* Scenario-unit initialization procedure from original segment 2208. */
 
-#include "REVENGE.h"
-
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
+#include "Tactical/Tactical.h"
+#include "Units/Units.h"
 
 enum
 {

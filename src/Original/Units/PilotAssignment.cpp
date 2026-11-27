@@ -3,6 +3,15 @@
 // Reconstructed from the original procedures in segment 2507.
 
 #include "LanceEditorInternal.h"
+#include "Campaign/Campaign.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Runtime/Runtime.h"
+#include "Utility/Utility.h"
+#include "revenge/text.h"
 
 // 2507:5016: prepare pilot-selection records and portrait buffers.
 // VERIFIED against ASM 2507:5016-5116.

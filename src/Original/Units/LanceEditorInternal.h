@@ -2,10 +2,8 @@
 #ifndef REVENGE_UNITS_LANCE_EDITOR_INTERNAL_H
 #define REVENGE_UNITS_LANCE_EDITOR_INTERNAL_H
 
-#include "REVENGE.h"
 #include "revenge/input.h"
 #include "revenge/original/lance_editor_data.h"
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 #include "revenge/debug.h"
 
@@ -13,7 +11,6 @@
 
 #define KEY_ESC            KEY_ESCAPE
 #define KEY_CARRIAGERETURN KEY_CARRIAGE_RETURN
-
 
 enum
 {
@@ -144,7 +141,6 @@ void DrawTrainingChoiceButton(
     uint16_t topY,
     const char *label,
     uint16_t width);
-
 
 /* A selection card's sprite, for drawing. The editor points every card it
  * builds at one of its graphics buffers before drawing it (2507:2BD9 for the

@@ -3,6 +3,11 @@
 // Reconstructed from the original procedures in segment 2507.
 
 #include "LanceEditorInternal.h"
+#include "Data/StartupData.h"
+#include "Graphics/Graphics.h"
+#include "Text/Text.h"
+#include "revenge/heap.h"
+#include "revenge/text.h"
 
 // 2507:60D2: draw the first four unit stat headers (UnitStatHeaderTextTable 0-3), 7 pixels apart.
 void DrawRangeAndSpeedStatHeaders(uint16_t topY)

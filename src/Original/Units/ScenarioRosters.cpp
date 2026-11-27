@@ -3,8 +3,8 @@
 // Reconstructed from REVENGE.EXE and its annotated instruction listing.
 // using Reko decompiler version 0.11.4.0.
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
+#include "Units/Units.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/debug.h"
 
