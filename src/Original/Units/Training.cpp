@@ -35,7 +35,7 @@ void EnableTrainingUnitSelectionSlots(void)
         for (lanceSlot = 0x0000; lanceSlot < 0x0004; ++lanceSlot)
         {
             pilotId = DefaultPilotIdsByScenario[pilotRow * 0x0004 + lanceSlot];
-            PilotRoster[pilotId].availability = 0x01;
+            PilotRoster[pilotId].availability = REVENGE_PILOT_ACTIVE;
         }
     }
 }
@@ -812,7 +812,7 @@ int16_t PrepareTrainingDeployment(void)
         DrawTrainingUnitChoice(selectedChoice, FALSE);
     }
 
-    for (index = 0x00; index < 0x18; ++index)
+    for (index = 0x00; index < TACTICAL_UNIT_COUNT; ++index)
     {
         unitRecord = &LiveScenarioUnits[index];
         if (unitRecord->unitTypeId == REVENGE_UNIT_TYPE_NONE)

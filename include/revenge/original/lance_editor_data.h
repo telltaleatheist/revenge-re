@@ -16,6 +16,12 @@ enum
     UNIT_SELECTION_CARD_COUNT = 0x12,
     LANCE_EDITOR_GRAPHICS_BUFFER_COUNT = 0x20,
     LANCE_EDITOR_SECTION_COUNT = 0x04,
+    /* The lance editor's sections after the briefing: the pilots, the
+     * units, and the last, which ends the editor (in the pilot and unit
+     * editors too). */
+    LANCE_EDITOR_SECTION_PILOTS = 0x01,
+    LANCE_EDITOR_SECTION_UNITS = 0x02,
+    LANCE_EDITOR_SECTION_DONE = 0x03,
     LANCE_EDITOR_SECTION_LAYOUT_COUNT = 0x08,
     LANCE_EDITOR_UNIT_TYPE_COUNT = 0x59,
     LANCE_EDITOR_PILOT_NAME_COUNT = 0x3B

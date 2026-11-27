@@ -24,7 +24,7 @@ void InitializeScenarioUnitFromTemplate(
 
     unitRecord = &PersistentUnitRoster[unitIndex];
     preservedAllegiance = unitRecord->allegiance;
-    if (unitType != 0xFFFF)
+    if (unitType != UNIT_TEMPLATE_NONE)
     {
         LoadUnitTemplateRecord((int16_t) unitType);
         *unitRecord = EstimatedUnitRecord;

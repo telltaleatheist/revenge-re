@@ -156,7 +156,7 @@ void RunPilotAssignmentEditor(uint16_t selectionFamily)
     configurationIndex = selectionFamily + 0x0001;
     selectedSection = 0x0000;
     while (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
-        selectedSection < 0x0003)
+        selectedSection < LANCE_EDITOR_SECTION_DONE)
     {
         ++selectedSection;
     }
@@ -196,7 +196,7 @@ void RunPilotAssignmentEditor(uint16_t selectionFamily)
                 do
                 {
                     if ((int16_t) --selectedSection < 0x0000)
-                        selectedSection = 0x0003;
+                        selectedSection = LANCE_EDITOR_SECTION_DONE;
                 } while (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
                     selectedSection != sectionBeforeInput);
             }
@@ -204,14 +204,14 @@ void RunPilotAssignmentEditor(uint16_t selectionFamily)
             {
                 do
                 {
-                    if (++selectedSection > 0x0003)
+                    if (++selectedSection > LANCE_EDITOR_SECTION_DONE)
                         selectedSection = 0x0000;
                 } while (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
                     selectedSection != sectionBeforeInput);
             }
             else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
-                if (selectedSection == 0x0003)
+                if (selectedSection == LANCE_EDITOR_SECTION_DONE)
                     finished = TRUE;
                 else
                     activateSection = TRUE;
@@ -233,7 +233,7 @@ void RunPilotAssignmentEditor(uint16_t selectionFamily)
             }
             else
             {
-                for (sectionIndex = 0x0000; sectionIndex < 0x0004;
+                for (sectionIndex = 0x0000; sectionIndex < LANCE_EDITOR_SECTION_COUNT;
                     ++sectionIndex)
                 {
                     if (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + sectionIndex] == 0x00)
@@ -248,7 +248,7 @@ void RunPilotAssignmentEditor(uint16_t selectionFamily)
                         if (mouseButtonEvent != 0x0000 &&
                             (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x0000)
                         {
-                            if (selectedSection == 0x0003)
+                            if (selectedSection == LANCE_EDITOR_SECTION_DONE)
                                 finished = TRUE;
                             else
                                 activateSection = TRUE;
@@ -283,7 +283,7 @@ void RunPilotAssignmentEditor(uint16_t selectionFamily)
         {
             if (previousSection != 0x0003)
                 RefreshPilotAssignmentSlots(previousSection, FALSE);
-            if (selectedSection != 0x0003)
+            if (selectedSection != LANCE_EDITOR_SECTION_DONE)
                 RefreshPilotAssignmentSlots(selectedSection, TRUE);
             previousSection = selectedSection;
             FlushPendingInput();
@@ -338,7 +338,7 @@ void RunPilotAssignmentGrid(uint16_t lanceGroupIndex)
     assignmentGroupBase = lanceGroupIndex * 0x0004;
     selectedAssignmentIndex = assignmentGroupBase + selectedLanceSlot;
     assignment = &LanceAssignments[selectedAssignmentIndex];
-    assignment->style |= 0x01;
+    assignment->style |= LANCE_ASSIGNMENT_HIGHLIGHTED;
     DrawLanceAssignmentSlot(selectedAssignmentIndex, TRUE, FALSE);
 
     selectedPilotRecord = 0x0000;
@@ -380,16 +380,16 @@ void RunPilotAssignmentGrid(uint16_t lanceGroupIndex)
             }
             else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
-                if (selectedLanceSlot == 0x0004)
+                if (selectedLanceSlot == LANCE_EDITOR_EXIT_SLOT)
                     finished = TRUE;
                 actionRequested = TRUE;
             }
-            if (selectedLanceSlot > 0x0004)
+            if (selectedLanceSlot > LANCE_EDITOR_EXIT_SLOT)
                 selectedLanceSlot = 0x0000;
             if (selectedLanceSlot > UnitEditorLanceSlotCount[lanceGroupIndex])
-                selectedLanceSlot = 0x0004;
+                selectedLanceSlot = LANCE_EDITOR_EXIT_SLOT;
             if ((int16_t) selectedLanceSlot < 0x0000)
-                selectedLanceSlot = 0x0004;
+                selectedLanceSlot = LANCE_EDITOR_EXIT_SLOT;
             if (selectedPilotRecord >= UnitEditorPilotCardCount)
                 selectedPilotRecord = 0x0000;
             if ((int16_t) selectedPilotRecord < 0x0000)
@@ -424,7 +424,7 @@ void RunPilotAssignmentGrid(uint16_t lanceGroupIndex)
                         if (mouseButtonEvent != 0x0000 &&
                             (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x0000)
                         {
-                            if (selectedLanceSlot == 0x0004)
+                            if (selectedLanceSlot == LANCE_EDITOR_EXIT_SLOT)
                                 finished = TRUE;
                             actionRequested = TRUE;
                         }
@@ -458,11 +458,11 @@ void RunPilotAssignmentGrid(uint16_t lanceGroupIndex)
                     if (mouseButtonEvent != 0x0000 &&
                         (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x0000)
                     {
-                        if (selectedLanceSlot == 0x0004)
+                        if (selectedLanceSlot == LANCE_EDITOR_EXIT_SLOT)
                             finished = TRUE;
                         actionRequested = TRUE;
                     }
-                    selectedLanceSlot = 0x0004;
+                    selectedLanceSlot = LANCE_EDITOR_EXIT_SLOT;
                 }
             }
         }
@@ -471,25 +471,25 @@ void RunPilotAssignmentGrid(uint16_t lanceGroupIndex)
         previousAssignmentIndex = assignmentGroupBase + previousLanceSlot;
         if (selectedLanceSlot != previousLanceSlot)
         {
-            if (previousLanceSlot == 0x0004)
+            if (previousLanceSlot == LANCE_EDITOR_EXIT_SLOT)
             {
-                UnitEditorExitButtonState &= 0xFE;
+                UnitEditorExitButtonState &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
             }
             else
             {
-                LanceAssignments[previousAssignmentIndex].style &= 0xFE;
+                LanceAssignments[previousAssignmentIndex].style &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DrawLanceAssignmentSlot(
                     previousAssignmentIndex, TRUE, FALSE);
             }
-            if (selectedLanceSlot == 0x0004)
+            if (selectedLanceSlot == LANCE_EDITOR_EXIT_SLOT)
             {
-                UnitEditorExitButtonState |= 0x01;
+                UnitEditorExitButtonState |= LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
             }
             else
             {
-                LanceAssignments[selectedAssignmentIndex].style |= 0x01;
+                LanceAssignments[selectedAssignmentIndex].style |= LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DrawLanceAssignmentSlot(
                     selectedAssignmentIndex, TRUE, FALSE);
             }
@@ -506,15 +506,15 @@ void RunPilotAssignmentGrid(uint16_t lanceGroupIndex)
         }
 
         if (actionRequested == FALSE || finished != FALSE ||
-            UnitEditorLanceSlotCount[lanceGroupIndex] >= 0x0004)
+            UnitEditorLanceSlotCount[lanceGroupIndex] >= LANCE_UNIT_COUNT)
             continue;
         assignment = &LanceAssignments[selectedAssignmentIndex];
-        if ((assignment->style & 0x02) != 0x00)
+        if ((assignment->style & LANCE_ASSIGNMENT_HAS_PILOT) != 0x00)
             continue;
 
         pilotCard = &UnitSelectionCards[selectedPilotRecord];
         assignment->pilotId = pilotCard->selectionId;
-        assignment->style |= 0x02;
+        assignment->style |= LANCE_ASSIGNMENT_HAS_PILOT;
         DrawLanceAssignmentSlot(selectedAssignmentIndex, TRUE, FALSE);
         pilotCard->state = 0x00;
         DrawPilotSelectionSlot(selectedPilotRecord, TRUE, -0x0001);
@@ -563,19 +563,19 @@ void RunPilotAssignmentGrid(uint16_t lanceGroupIndex)
             }
             ++destinationPilotRecord;
         }
-        if (UnitEditorLanceSlotCount[lanceGroupIndex] == 0x0004)
+        if (UnitEditorLanceSlotCount[lanceGroupIndex] == LANCE_UNIT_COUNT)
             finished = TRUE;
     }
 
-    if (selectedLanceSlot != 0x0004)
+    if (selectedLanceSlot != LANCE_EDITOR_EXIT_SLOT)
     {
         previousAssignmentIndex = assignmentGroupBase + previousLanceSlot;
-        LanceAssignments[previousAssignmentIndex].style &= 0xFE;
+        LanceAssignments[previousAssignmentIndex].style &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
         DrawLanceAssignmentSlot(previousAssignmentIndex, TRUE, FALSE);
-        UnitEditorExitButtonState |= 0x01;
+        UnitEditorExitButtonState |= LANCE_ASSIGNMENT_HIGHLIGHTED;
         DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
     }
-    UnitEditorExitButtonState &= 0xFE;
+    UnitEditorExitButtonState &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
     DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
     if (UnitEditorPilotCardCount != 0x0000)
     {
@@ -654,7 +654,7 @@ void RefreshPilotAssignmentSlots(
         UnitEditorLanceSlotCount[selectionFamily];
     while ((int16_t) assignmentIndex < (int16_t) lastAssignmentIndex)
     {
-        LanceAssignments[assignmentIndex].style &= 0xFE;
+        LanceAssignments[assignmentIndex].style &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
         DrawLanceAssignmentSlot(
             assignmentIndex,
             showPilotCards != FALSE ? TRUE : FALSE,

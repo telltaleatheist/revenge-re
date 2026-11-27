@@ -335,7 +335,7 @@ void PrepareScenarioUnitRosters(void)
             {
                 LiveScenarioUnits[rosterIndex4E] =
                     PersistentUnitRoster[rosterIndex4E];
-                if ((CampaignFlags & 0x01) != 0x00)
+                if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) != 0x00)
                     ResetLiveUnitState(rosterIndex4E);
                 ++rosterIndex4E;
             }

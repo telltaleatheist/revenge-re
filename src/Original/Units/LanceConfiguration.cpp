@@ -141,17 +141,17 @@ int16_t RunLanceConfigurationEditor(
             }
             else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
-                if (selectedSection == 0x0003)
+                if (selectedSection == LANCE_EDITOR_SECTION_DONE)
                 {
                     if (ValidatePilotConfiguration(
                             configurationIndex + 0x0001) == FALSE)
                     {
-                        selectedSection = 0x0001;
+                        selectedSection = LANCE_EDITOR_SECTION_PILOTS;
                     }
                     else if (ValidateLanceConfiguration(
                                  configurationIndex + 0x0001) == FALSE)
                     {
-                        selectedSection = 0x0002;
+                        selectedSection = LANCE_EDITOR_SECTION_UNITS;
                     }
                     else
                     {
@@ -168,24 +168,24 @@ int16_t RunLanceConfigurationEditor(
                 if (ValidatePilotConfiguration(
                         configurationIndex + 0x0001) == FALSE)
                 {
-                    selectedSection = 0x0001;
+                    selectedSection = LANCE_EDITOR_SECTION_PILOTS;
                 }
                 else if (ValidateLanceConfiguration(
                              configurationIndex + 0x0001) == FALSE)
                 {
-                    selectedSection = 0x0002;
+                    selectedSection = LANCE_EDITOR_SECTION_UNITS;
                 }
                 else
                 {
-                    selectedSection = 0x0003;
+                    selectedSection = LANCE_EDITOR_SECTION_DONE;
                     selectionActivated = TRUE;
                     repeatEditor = FALSE;
                 }
             }
 
             if ((int16_t) selectedSection < 0x0000)
-                selectedSection = 0x0003;
-            if ((int16_t) selectedSection > 0x0003)
+                selectedSection = LANCE_EDITOR_SECTION_DONE;
+            if ((int16_t) selectedSection > LANCE_EDITOR_SECTION_DONE)
                 selectedSection = 0x0000;
         }
         else if (MouseInputDisabled == 0x0000)
@@ -202,23 +202,23 @@ int16_t RunLanceConfigurationEditor(
                 if (ValidatePilotConfiguration(
                         configurationIndex + 0x0001) == FALSE)
                 {
-                    selectedSection = 0x0001;
+                    selectedSection = LANCE_EDITOR_SECTION_PILOTS;
                 }
                 else if (ValidateLanceConfiguration(
                              configurationIndex + 0x0001) == FALSE)
                 {
-                    selectedSection = 0x0002;
+                    selectedSection = LANCE_EDITOR_SECTION_UNITS;
                 }
                 else
                 {
-                    selectedSection = 0x0003;
+                    selectedSection = LANCE_EDITOR_SECTION_DONE;
                     selectionActivated = TRUE;
                     repeatEditor = FALSE;
                 }
             }
             else
             {
-                for (sectionIndex = 0x0000; sectionIndex < 0x0004;
+                for (sectionIndex = 0x0000; sectionIndex < LANCE_EDITOR_SECTION_COUNT;
                     ++sectionIndex)
                 {
                     leftX = (int16_t) (LanceEditorLayout.UnitEditorSectionLeft[sectionIndex] << 0x03);
@@ -232,14 +232,14 @@ int16_t RunLanceConfigurationEditor(
                         if (mouseButtonEvent != 0x0000 &&
                             (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x0000)
                         {
-                            if (selectedSection == 0x0003)
+                            if (selectedSection == LANCE_EDITOR_SECTION_DONE)
                             {
                                 if (ValidatePilotConfiguration(
                                         configurationIndex + 0x0001) == FALSE)
-                                    selectedSection = 0x0001;
+                                    selectedSection = LANCE_EDITOR_SECTION_PILOTS;
                                 else if (ValidateLanceConfiguration(
                                              configurationIndex + 0x0001) == FALSE)
-                                    selectedSection = 0x0002;
+                                    selectedSection = LANCE_EDITOR_SECTION_UNITS;
                                 else
                                     selectionActivated = TRUE;
                             }
@@ -342,9 +342,9 @@ int16_t RunLanceConfigurationEditor(
     }
 
     if (inputCode == KEY_ESCAPE || selectedSection == 0x0000 ||
-        selectedSection == 0x0003 ||
-        (selectedSection == 0x0001 && UnitEditorPilotCardCount != 0x0000) ||
-        (selectedSection == 0x0002 && UnitEditorScenarioCardCount != 0x0000))
+        selectedSection == LANCE_EDITOR_SECTION_DONE ||
+        (selectedSection == LANCE_EDITOR_SECTION_PILOTS && UnitEditorPilotCardCount != 0x0000) ||
+        (selectedSection == LANCE_EDITOR_SECTION_UNITS && UnitEditorScenarioCardCount != 0x0000))
     {
         FreeGraphicsBufferRange(0x0013, 0x0016);
         LanceEditorReloadGraphics = 0x0001;
@@ -364,14 +364,14 @@ int16_t RunLanceConfigurationEditor(
     {
         ShowLanceConfigurationBriefing(configurationIndex);
     }
-    else if (selectedSection == 0x0001)
+    else if (selectedSection == LANCE_EDITOR_SECTION_PILOTS)
     {
         if (UnitEditorPilotCardCount != 0x0000)
             RunPilotSelection(configurationIndex, 0x0000);
         else
             ShowNoSelectionOptions();
     }
-    else if (selectedSection == 0x0002)
+    else if (selectedSection == LANCE_EDITOR_SECTION_UNITS)
     {
         if (UnitEditorScenarioCardCount != 0x0000)
             PrepareLanceSelection(configurationIndex + 0x0003, 0x0000);
@@ -928,7 +928,7 @@ void PrepareLanceSelectionRecords(
             UnitEditorScenarioGroupCount = 0x0001;
             UnitEditorLanceGroupCount = 0x0001;
             if (selectionMode != 0x0000)
-                UnitEditorLanceSlotCount[0x00] = 0x0004;
+                UnitEditorLanceSlotCount[0x00] = LANCE_UNIT_COUNT;
         }
         else if (firstRosterIndex == 0x0001)
         {
@@ -936,7 +936,7 @@ void PrepareLanceSelectionRecords(
             UnitEditorScenarioGroupCount = 0x0001;
             UnitEditorLanceGroupCount = 0x0001;
             if (selectionMode != 0x0000)
-                UnitEditorLanceSlotCount[0x00] = 0x0004;
+                UnitEditorLanceSlotCount[0x00] = LANCE_UNIT_COUNT;
         }
         else
         {
@@ -944,9 +944,9 @@ void PrepareLanceSelectionRecords(
             UnitEditorLanceGroupCount = 0x0003;
             if (selectionMode != 0x0000)
             {
-                UnitEditorLanceSlotCount[0x00] = 0x0004;
-                UnitEditorLanceSlotCount[0x01] = 0x0004;
-                UnitEditorLanceSlotCount[0x02] = 0x0004;
+                UnitEditorLanceSlotCount[0x00] = LANCE_UNIT_COUNT;
+                UnitEditorLanceSlotCount[0x01] = LANCE_UNIT_COUNT;
+                UnitEditorLanceSlotCount[0x02] = LANCE_UNIT_COUNT;
             }
         }
     }
@@ -965,9 +965,9 @@ void PrepareLanceSelectionRecords(
                 RandomUnitTypePool[poolIndex] =
                     RandomUnitTypePoolByFamily[(firstRosterIndex - 0x0003) * 0x0007 + poolIndex];
             }
-            UnitEditorLanceSlotCount[0x00] = 0x0004;
-            UnitEditorLanceSlotCount[0x01] = 0x0004;
-            UnitEditorLanceSlotCount[0x02] = 0x0004;
+            UnitEditorLanceSlotCount[0x00] = LANCE_UNIT_COUNT;
+            UnitEditorLanceSlotCount[0x01] = LANCE_UNIT_COUNT;
+            UnitEditorLanceSlotCount[0x02] = LANCE_UNIT_COUNT;
         }
     }
 
@@ -1083,9 +1083,9 @@ void InitializeLanceAssignments(
                     if (pilotId != REVENGE_PILOT_ID_NONE)
                     {
                         if (PilotRoster[pilotId].availability !=
-                            0xFF)
+                            REVENGE_PILOT_FALLEN)
                         {
-                            assignment->style |= 0x02;
+                            assignment->style |= LANCE_ASSIGNMENT_HAS_PILOT;
                         }
                         else
                         {
@@ -1098,7 +1098,7 @@ void InitializeLanceAssignments(
                     {
                         if (LiveScenarioUnits[liveUnitSlot].deploymentState != FALSE)
                         {
-                            assignment->style |= 0x04;
+                            assignment->style |= LANCE_ASSIGNMENT_HAS_UNIT;
                         }
                         else
                         {

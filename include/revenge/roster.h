@@ -21,6 +21,13 @@ typedef struct RevengePilotRosterRecord
     uint8_t availability;        /* +03 */
 } RevengePilotRosterRecord;
 
+/* RevengeUnitLanceAssignment.style's bits: under the cursor (the editor's
+ * exit button state uses it too), a pilot assigned, a deployed unit
+ * assigned. */
+inline constexpr uint8_t LANCE_ASSIGNMENT_HIGHLIGHTED = 0x01;
+inline constexpr uint8_t LANCE_ASSIGNMENT_HAS_PILOT = 0x02;
+inline constexpr uint8_t LANCE_ASSIGNMENT_HAS_UNIT = 0x04;
+
 /* RevengePilotRosterRecord.availability: in the lance and out of it for good. */
 inline constexpr uint8_t REVENGE_PILOT_ACTIVE = 0x01;
 inline constexpr uint8_t REVENGE_PILOT_FALLEN = 0xFF;

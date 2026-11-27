@@ -22,7 +22,9 @@ enum
     UNIT_CLASS_OMNI_INDEX = 0x05,      /* its list is at DS:32D7 in the original */
     UNIT_ROSTER_COLUMN_X_ADJUSTMENT = 0x0001,
     UNIT_ROSTER_FIRST_ROW_Y = 0x00B0,
-    UNIT_ROSTER_TEXT_WIDTH_PIXELS = 0x009E
+    UNIT_ROSTER_TEXT_WIDTH_PIXELS = 0x009E,
+    /* The lance slot past the four: the editor's exit button. */
+    LANCE_EDITOR_EXIT_SLOT = LANCE_UNIT_COUNT
 };
 
 int16_t RandomInRangeInclusive(uint16_t minimum, uint16_t maximum);

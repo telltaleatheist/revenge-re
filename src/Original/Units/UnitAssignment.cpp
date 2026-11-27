@@ -55,7 +55,7 @@ void RunUnitAssignmentEditor(uint16_t configurationIndex)
     useSeparateScenarioGroups = configurationIndex < 0x0003 ? 0x0003 : 0x0000;
     configurationIndex -= 0x0002;
     while (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
-        selectedSection < 0x0003)
+        selectedSection < LANCE_EDITOR_SECTION_DONE)
     {
         ++selectedSection;
     }
@@ -95,7 +95,7 @@ void RunUnitAssignmentEditor(uint16_t configurationIndex)
                 do
                 {
                     if ((int16_t) --selectedSection < 0x0000)
-                        selectedSection = 0x0003;
+                        selectedSection = LANCE_EDITOR_SECTION_DONE;
                 } while (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
                     selectedSection != sectionBeforeInput);
             }
@@ -103,14 +103,14 @@ void RunUnitAssignmentEditor(uint16_t configurationIndex)
             {
                 do
                 {
-                    if (++selectedSection > 0x0003)
+                    if (++selectedSection > LANCE_EDITOR_SECTION_DONE)
                         selectedSection = 0x0000;
                 } while (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
                     selectedSection != sectionBeforeInput);
             }
             else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
-                if (selectedSection == 0x0003)
+                if (selectedSection == LANCE_EDITOR_SECTION_DONE)
                     finished = TRUE;
                 else
                     activateSection = TRUE;
@@ -132,7 +132,7 @@ void RunUnitAssignmentEditor(uint16_t configurationIndex)
             }
             else
             {
-                for (sectionIndex = 0x0000; sectionIndex < 0x0004;
+                for (sectionIndex = 0x0000; sectionIndex < LANCE_EDITOR_SECTION_COUNT;
                     ++sectionIndex)
                 {
                     if (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + sectionIndex] == 0x00)
@@ -147,7 +147,7 @@ void RunUnitAssignmentEditor(uint16_t configurationIndex)
                         if (mouseButtonEvent != 0x0000 &&
                             (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x0000)
                         {
-                            if (selectedSection == 0x0003)
+                            if (selectedSection == LANCE_EDITOR_SECTION_DONE)
                                 finished = TRUE;
                             else
                                 activateSection = TRUE;
@@ -185,7 +185,7 @@ void RunUnitAssignmentEditor(uint16_t configurationIndex)
                 if (previousSection != 0x0003)
                     RefreshLanceSelectionSlots(
                         previousSection, previousSection, FALSE);
-                if (selectedSection != 0x0003)
+                if (selectedSection != LANCE_EDITOR_SECTION_DONE)
                     RefreshLanceSelectionSlots(
                         selectedSection, selectedSection, TRUE);
             }
@@ -194,7 +194,7 @@ void RunUnitAssignmentEditor(uint16_t configurationIndex)
                 if (previousSection != 0x0003)
                     RefreshLanceSelectionSlots(
                         0x0000, previousSection, FALSE);
-                if (selectedSection != 0x0003)
+                if (selectedSection != LANCE_EDITOR_SECTION_DONE)
                     RefreshLanceSelectionSlots(
                         0x0000, selectedSection, TRUE);
             }
@@ -292,14 +292,14 @@ void RunUnitAssignmentGrid(
     lanceGroupBase = lanceGroupIndex * 0x0004;
     selectedAssignmentIndex = lanceGroupBase + selectedLanceSlot;
     previousAssignmentIndex = selectedAssignmentIndex;
-    if (selectedLanceSlot == 0x0004)
+    if (selectedLanceSlot == LANCE_EDITOR_EXIT_SLOT)
     {
-        UnitEditorExitButtonState |= 0x01;
+        UnitEditorExitButtonState |= LANCE_ASSIGNMENT_HIGHLIGHTED;
         DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
     }
     else
     {
-        LanceAssignments[selectedAssignmentIndex].style |= 0x01;
+        LanceAssignments[selectedAssignmentIndex].style |= LANCE_ASSIGNMENT_HIGHLIGHTED;
         DRAW_ASSIGNMENT(selectedAssignmentIndex);
     }
 
@@ -342,7 +342,7 @@ void RunUnitAssignmentGrid(
                 ++selectedUnitCard;
             else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
-                if (selectedLanceSlot == 0x0004)
+                if (selectedLanceSlot == LANCE_EDITOR_EXIT_SLOT)
                     exitRequested = TRUE;
                 actionRequested = TRUE;
             }
@@ -375,7 +375,7 @@ void RunUnitAssignmentGrid(
                         if (mouseButtonEvent != 0x0000 &&
                             (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x0000)
                         {
-                            if (selectedLanceSlot == 0x0004)
+                            if (selectedLanceSlot == LANCE_EDITOR_EXIT_SLOT)
                                 exitRequested = TRUE;
                             actionRequested = TRUE;
                         }
@@ -410,12 +410,12 @@ void RunUnitAssignmentGrid(
                         exitRequested = TRUE;
                         actionRequested = TRUE;
                     }
-                    selectedLanceSlot = 0x0004;
+                    selectedLanceSlot = LANCE_EDITOR_EXIT_SLOT;
                 }
             }
         }
 
-        if (selectedLanceSlot > 0x0004)
+        if (selectedLanceSlot > LANCE_EDITOR_EXIT_SLOT)
             selectedLanceSlot = 0x0000;
         if (selectedLanceSlot >=
             (int16_t) UnitEditorLanceSlotCount[lanceGroupIndex])
@@ -437,24 +437,24 @@ void RunUnitAssignmentGrid(
         previousUnitCardIndex = unitCardGroupBase + previousUnitCard;
         if (selectedLanceSlot != previousLanceSlot)
         {
-            if (previousLanceSlot == 0x0004)
+            if (previousLanceSlot == LANCE_EDITOR_EXIT_SLOT)
             {
-                UnitEditorExitButtonState &= 0xFE;
+                UnitEditorExitButtonState &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
             }
             else
             {
-                LanceAssignments[previousAssignmentIndex].style &= 0xFE;
+                LanceAssignments[previousAssignmentIndex].style &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DRAW_ASSIGNMENT(previousAssignmentIndex);
             }
-            if (selectedLanceSlot == 0x0004)
+            if (selectedLanceSlot == LANCE_EDITOR_EXIT_SLOT)
             {
-                UnitEditorExitButtonState |= 0x01;
+                UnitEditorExitButtonState |= LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
             }
             else
             {
-                LanceAssignments[selectedAssignmentIndex].style |= 0x01;
+                LanceAssignments[selectedAssignmentIndex].style |= LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DRAW_ASSIGNMENT(selectedAssignmentIndex);
             }
             previousLanceSlot = selectedLanceSlot;
@@ -479,13 +479,13 @@ void RunUnitAssignmentGrid(
         // The exit button, or a card another lance holds, skips the
         // assignment and goes on to the next free slot.
         uint16_t assignCard = TRUE;
-        if (exitRequested != FALSE && selectedLanceSlot == 0x0004)
+        if (exitRequested != FALSE && selectedLanceSlot == LANCE_EDITOR_EXIT_SLOT)
         {
             selectedLanceSlot = 0x0000;
             selectedAssignmentIndex = lanceGroupBase;
             assignmentRecord =
                 &LanceAssignments[selectedAssignmentIndex];
-            UnitEditorExitButtonState &= 0xFE;
+            UnitEditorExitButtonState &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
             DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
             previousLanceSlot = selectedLanceSlot;
             assignCard = FALSE;
@@ -678,9 +678,9 @@ void RunUnitAssignmentGrid(
 
                 previousRecord =
                     &LanceAssignments[oldAssignmentIndex];
-                if ((previousRecord->style & 0x01) != 0x00)
+                if ((previousRecord->style & LANCE_ASSIGNMENT_HIGHLIGHTED) != 0x00)
                 {
-                    previousRecord->style &= 0xFE;
+                    previousRecord->style &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
                     DRAW_ASSIGNMENT(oldAssignmentIndex);
                 }
 
@@ -690,7 +690,7 @@ void RunUnitAssignmentGrid(
                     &LanceAssignments[selectedAssignmentIndex];
                 if (assignmentRecord->liveUnitSlot == REVENGE_UNIT_SLOT_NONE)
                 {
-                    assignmentRecord->style |= 0x01;
+                    assignmentRecord->style |= LANCE_ASSIGNMENT_HIGHLIGHTED;
                     DRAW_ASSIGNMENT(selectedAssignmentIndex);
                     break;
                 }
@@ -698,10 +698,10 @@ void RunUnitAssignmentGrid(
 
             if (finished != FALSE && exitRequested == FALSE)
             {
-                assignmentRecord->style &= 0xFE;
+                assignmentRecord->style &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DRAW_ASSIGNMENT(selectedAssignmentIndex);
-                selectedLanceSlot = 0x0004;
-                UnitEditorExitButtonState |= 0x01;
+                selectedLanceSlot = LANCE_EDITOR_EXIT_SLOT;
+                UnitEditorExitButtonState |= LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
                 finished = FALSE;
             }
@@ -713,10 +713,10 @@ void RunUnitAssignmentGrid(
         {
             if (exitRequested == FALSE)
             {
-                assignmentRecord->style &= 0xFE;
+                assignmentRecord->style &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DRAW_ASSIGNMENT(selectedAssignmentIndex);
-                selectedLanceSlot = 0x0004;
-                UnitEditorExitButtonState |= 0x01;
+                selectedLanceSlot = LANCE_EDITOR_EXIT_SLOT;
+                UnitEditorExitButtonState |= LANCE_ASSIGNMENT_HIGHLIGHTED;
                 DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
             }
             else
@@ -726,14 +726,14 @@ void RunUnitAssignmentGrid(
         }
     }
 
-    if (selectedLanceSlot == 0x0004)
+    if (selectedLanceSlot == LANCE_EDITOR_EXIT_SLOT)
     {
-        UnitEditorExitButtonState &= 0xFE;
+        UnitEditorExitButtonState &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
         DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
     }
     else
     {
-        LanceAssignments[lanceGroupBase + selectedLanceSlot].style &= 0xFE;
+        LanceAssignments[lanceGroupBase + selectedLanceSlot].style &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
         DRAW_ASSIGNMENT(lanceGroupBase + selectedLanceSlot);
     }
     if (UnitEditorScenarioCardCount != 0x0000)
@@ -942,7 +942,7 @@ void RefreshLanceSelectionSlots(
     {
         if ((int16_t) assignmentIndex < (int16_t) lastActiveAssignmentIndex)
         {
-            LanceAssignments[assignmentIndex].style &= 0xFE;
+            LanceAssignments[assignmentIndex].style &= (uint8_t) ~LANCE_ASSIGNMENT_HIGHLIGHTED;
             DrawLanceAssignmentSlot(
                 assignmentIndex,
                 showSelectionContents != FALSE ? TRUE : FALSE,
@@ -1000,7 +1000,7 @@ int16_t DrawUnitEditorSectionMenu(uint16_t configurationIndex)
     fontWidth = ActiveFontGlyphAdvanceX;
     fontHeight = ActiveFontLineHeight;
     firstEnabledSection = -0x0001;
-    for (sectionIndex = 0x0000; sectionIndex < 0x0004; ++sectionIndex)
+    for (sectionIndex = 0x0000; sectionIndex < LANCE_EDITOR_SECTION_COUNT; ++sectionIndex)
     {
         buttonRow = LanceEditorLayout.UnitEditorSectionButtonRows[sectionIndex];
         label = UnitEditorSectionButtonLabelTextTable[sectionIndex];
