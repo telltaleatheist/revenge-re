@@ -24,6 +24,7 @@ typedef struct CampaignMessageEntry
 	int8 windowHeight;
 } CampaignMessageEntry;
 
+REVENGE_ANONYMOUS_STRUCTS_BEGIN
 typedef union CampaignSaveDirectory
 {
 	struct
@@ -34,6 +35,7 @@ typedef union CampaignSaveDirectory
 	byte raw[REVENGE_SAVE_DIRECTORY_PREFIX_SIZE +
 		REVENGE_SAVE_SLOT_COUNT * REVENGE_SAVE_DESCRIPTOR_SIZE];
 } CampaignSaveDirectory;
+REVENGE_ANONYMOUS_STRUCTS_END
 #pragma pack(pop)
 
 static_assert(sizeof(CampaignMessageEntry) == 0x05,

@@ -114,6 +114,7 @@ typedef union SceneFileBuffer
 	byte raw[SCENE_FILE_BUFFER_SIZE];
 } SceneFileBuffer;
 
+REVENGE_ANONYMOUS_STRUCTS_BEGIN
 typedef union SceneUnitRoute
 {
 	struct
@@ -126,6 +127,7 @@ typedef union SceneUnitRoute
 	};
 	byte raw[0x0B];
 } SceneUnitRoute;
+REVENGE_ANONYMOUS_STRUCTS_END
 #pragma pack(pop)
 
 static_assert(sizeof(SceneFileHeader) == SCENE_HEADER_SIZE,

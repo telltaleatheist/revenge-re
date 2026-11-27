@@ -182,6 +182,7 @@ enum
 };
 
 #pragma pack(push, 1)
+REVENGE_ANONYMOUS_STRUCTS_BEGIN
 typedef union RevengeUnitRecord
 {
     struct
@@ -305,6 +306,7 @@ typedef union RevengeUnitRecord
     };
     byte raw[UNIT_RECORD_SIZE];
 } RevengeUnitRecord;
+REVENGE_ANONYMOUS_STRUCTS_END
 #pragma pack(pop)
 
 #define REVENGE_UNIT_OFFSET_ASSERT(field, offset) \

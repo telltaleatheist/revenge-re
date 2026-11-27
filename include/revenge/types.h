@@ -13,6 +13,35 @@ typedef uint32_t uint32;
 typedef int32_t int32;
 
 /*
+ * The one language extension the rebuild allows (docs/CODE_STYLE.md): a
+ * struct without a name inside a union, so a record's fields and its raw
+ * bytes (or another view of the same bytes) are read by the same names as
+ * the original read them. C11 has it; C++ compilers accept it as an
+ * extension and warn. Only the three headers that hold such views
+ * (revenge/unit.h, original/campaign_data.h, original/scene_data.h) open
+ * this.
+ */
+#if defined(_MSC_VER)
+#define REVENGE_ANONYMOUS_STRUCTS_BEGIN \
+	__pragma(warning(push)) __pragma(warning(disable : 4201))
+#define REVENGE_ANONYMOUS_STRUCTS_END __pragma(warning(pop))
+#elif defined(__clang__)
+#define REVENGE_ANONYMOUS_STRUCTS_BEGIN \
+	_Pragma("clang diagnostic push") \
+	_Pragma("clang diagnostic ignored \"-Wgnu-anonymous-struct\"") \
+	_Pragma("clang diagnostic ignored \"-Wnested-anon-types\"")
+#define REVENGE_ANONYMOUS_STRUCTS_END _Pragma("clang diagnostic pop")
+#elif defined(__GNUC__)
+#define REVENGE_ANONYMOUS_STRUCTS_BEGIN \
+	_Pragma("GCC diagnostic push") \
+	_Pragma("GCC diagnostic ignored \"-Wpedantic\"")
+#define REVENGE_ANONYMOUS_STRUCTS_END _Pragma("GCC diagnostic pop")
+#else
+#define REVENGE_ANONYMOUS_STRUCTS_BEGIN
+#define REVENGE_ANONYMOUS_STRUCTS_END
+#endif
+
+/*
  * Original one-byte identifiers use FFh as the unassigned sentinel.  Keep
  * that signed interpretation in their C types so callers do not have to
  * reproduce the DOS compiler's CBW instruction at every use.
