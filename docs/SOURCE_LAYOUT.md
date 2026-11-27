@@ -27,6 +27,13 @@ segments it holds and what it is (`// 2D1B: unit damage`). A large segment may
 be split only between original procedure boundaries. Every procedure keeps its
 `SEG:OFFSET` in its leading comment and in both ledgers.
 
+A procedure or a variable that `src/Original` shares is declared once, in the
+header beside the file that defines it: `Tactical/Tactical.h` declares what
+the files of `src/Original/Tactical` define, and `Data/TacticalData.h` what
+`Data/TacticalData.cpp` defines. A file includes the headers whose names it
+uses, spelled with their folder (`#include "Tactical/Tactical.h"`).
+`tools/check_headers.py` (ctest `preservation.header_placement`) checks both.
+
 The files were first named for their segment (`REVENGE_2D1B_UNIT_DAMAGE`).
 [`RENAMES.tsv`](RENAMES.tsv) lists each old name with its new one, and
 `tools/rename_files.py` applies a row: the move, and every mention of the old

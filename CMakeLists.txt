@@ -135,6 +135,15 @@ if(BUILD_TESTING)
 		add_test(NAME preservation.ledger_rules
 			COMMAND ${Python3_EXECUTABLE} -I
 				${CMAKE_CURRENT_SOURCE_DIR}/tests/check_ledgers_test.py)
+		# Each shared procedure and variable is declared in the header beside
+		# the file that defines it (docs/SOURCE_LAYOUT.md).
+		add_test(NAME preservation.header_placement
+			COMMAND ${Python3_EXECUTABLE} -I
+				${CMAKE_CURRENT_SOURCE_DIR}/tools/check_headers.py
+				--root ${CMAKE_CURRENT_SOURCE_DIR})
+		add_test(NAME preservation.header_rules
+			COMMAND ${Python3_EXECUTABLE} -I
+				${CMAKE_CURRENT_SOURCE_DIR}/tests/check_headers_test.py)
 
 		# The game's text stays out of the tree, and the import tables match
 		# the sources and the player's copy. Both need a copy of the game named
