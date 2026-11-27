@@ -542,6 +542,7 @@ if(BUILD_TESTING)
         src/Original/Resources/REVENGE_3390_RESOURCE_STREAM.c
         src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.c
         ${CHR_3A6A_DATA_SOURCES}
+        src/Support/debug.c
         src/Support/far_memory.c
         src/Support/representation.c)
     target_include_directories(test_resource_stream PRIVATE
@@ -862,6 +863,20 @@ if(CHR_BUILD_SDL)
             chr_original_runtime
             chr_sdl_backend)
         chr_strict(test_settings)
+        # A file the game can't open is a fault naming it, not a disk prompt.
+        add_executable(test_tracked_file_fault tests/test_tracked_file_fault.c)
+        target_include_directories(test_tracked_file_fault PRIVATE src/Original tests)
+        target_link_libraries(test_tracked_file_fault PRIVATE
+            chr_original_runtime
+            chr_sdl_backend)
+        chr_strict(test_tracked_file_fault)
+        add_test(NAME resources.tracked_file_read COMMAND test_tracked_file_fault read)
+        add_test(NAME resources.tracked_file_make COMMAND test_tracked_file_fault make)
+        set_tests_properties(resources.tracked_file_read PROPERTIES SKIP_RETURN_CODE 77
+            PASS_REGULAR_EXPRESSION "fault: can't open ABSENT.DAT|skipped")
+        set_tests_properties(resources.tracked_file_make PROPERTIES SKIP_RETURN_CODE 77
+            PASS_REGULAR_EXPRESSION "fault: can't create ABSENT.DAT|skipped")
+
         foreach(mode first none own bad parse)
             add_test(NAME platform.settings_${mode} COMMAND test_settings ${mode})
             set_tests_properties(platform.settings_${mode} PROPERTIES SKIP_RETURN_CODE 77)

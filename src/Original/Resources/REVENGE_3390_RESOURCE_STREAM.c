@@ -4,6 +4,7 @@
 #include "REVENGE.h"
 #include "revenge/original_data.h"
 #include "revenge/representation.h"
+#include "revenge/debug.h"
 
 // 3390:0002
 void AbortRuntimeWithMessage(const char *errorText)
@@ -36,12 +37,11 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 
 	if (openMode == 0x0001)
 	{
+		/* 3390:007C-0091 asked for the disk the file is on (SelectResourceDrive).
+		 * Every file is in the install or the save folder here, so a file
+		 * in neither is missing from the copy. */
 		if (IsResourceCached(path) == FALSE && CanOpenFileForRead(path) == FALSE)
-		{
-			ResourceFiles.pendingDriveMask = GetResourceDriveMask(path);
-			if (ResourceFiles.availableDriveMask != 0x0000)
-				SelectResourceDrive(ResourceFiles.pendingDriveMask);
-		}
+			RevengeFault("can't open %s: it is in neither the game's folder nor the save folder", path);
 		openFlags = 0x8001;
 	}
 	else if (openMode == 0x0002)
@@ -51,33 +51,13 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 	}
 	else if (openMode == 0x0003)
 	{
-		word16 retriesRemaining = ResourceRetryCount;
-		uint32 errorTextPointer;
-
+		/* 3390:00BB-010A asked again, ResourceRetryCount times, when the file
+		 * couldn't be made (a full or protected disk). The save folder is
+		 * the only place it can go, so the first failure stops. */
 		if (CanOpenFileForRead(path) == FALSE)
 		{
-			do
-			{
-				if (CanOpenFileForWrite(path) != FALSE)
-					break;
-				--retriesRemaining;
-				if (retriesRemaining == 0x0000)
-					break;
-				errorTextPointer = HostFarPointer_Register(
-					(void *)ResourceCreateFileErrorText,
-					(uint32)StringLength(ResourceCreateFileErrorText) + 0x01);
-				ResourceFiles.errorText.segment = HIGH_WORD(errorTextPointer);
-				ResourceFiles.errorText.offset = LOW_WORD(errorTextPointer);
-				if (ResourceErrorDisplayCallback != NULL)
-					ResourceErrorDisplayCallback();
-			} while (TRUE);
-
-			if (CanOpenFileForRead(path) == FALSE)
-			{
-				if (ResourceErrorDismissCallback != NULL)
-					ResourceErrorDismissCallback();
-				ShutdownAndExit(0x0001);
-			}
+			if (CanOpenFileForWrite(path) == FALSE || CanOpenFileForRead(path) == FALSE)
+				RevengeFault("can't create %s in the save folder", path);
 		}
 		openFlags = 0x8004;
 	}
@@ -106,32 +86,12 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 	}
 	else
 	{
-		word16 retriesRemaining = ResourceRetryCount;
-		uint32 errorTextPointer;
-
+		/* 3390:0178-01BF asked for the file's disk and tried again,
+		 * ResourceRetryCount times. A failure here is the copy's, and no
+		 * disk can mend it. */
 		trackedHandle = CRT_OpenFile(path, openFlags, 0x0180);
-		while (trackedHandle == -0x01 && retriesRemaining != 0x0000)
-		{
-			trackedHandle = CRT_OpenFile(path, openFlags, 0x0180);
-			if (trackedHandle == -0x01)
-			{
-				--retriesRemaining;
-				ResourceFiles.pendingDriveMask = GetResourceDriveMask(path);
-				errorTextPointer = HostFarPointer_Register(
-					(void *)ResourceInsertDiskErrorText,
-					(uint32)StringLength(ResourceInsertDiskErrorText) + 0x01);
-				ResourceFiles.errorText.segment = HIGH_WORD(errorTextPointer);
-				ResourceFiles.errorText.offset = LOW_WORD(errorTextPointer);
-				if (ResourceErrorDisplayCallback != NULL)
-					ResourceErrorDisplayCallback();
-			}
-		}
 		if (trackedHandle == -0x01)
-		{
-			if (ResourceErrorDismissCallback != NULL)
-				ResourceErrorDismissCallback();
-			ShutdownAndExit(0x0001);
-		}
+			RevengeFault("can't open %s (open mode %u)", path, (unsigned) openMode);
 	}
 
 	handleSlot = ORIGINAL_TRACKED_FILE_COUNT;
