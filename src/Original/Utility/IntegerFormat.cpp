@@ -3,6 +3,13 @@
 
 #include "Utility/Utility.h"
 
+/* The radixes the formatter takes (2 to 36: digits, then letters), the one
+ * that signs, and its buffer: 32 binary digits, a sign and the NUL. */
+constexpr uint16_t MINIMUM_RADIX = 0x02;
+constexpr uint16_t MAXIMUM_RADIX = 0x24;
+constexpr uint16_t DECIMAL_RADIX = 0x0A;
+constexpr int FORMATTED_DIGITS_CAPACITY = 0x22;
+
 // 3968:0009: Register far pointer FormatLongInteger(
 //     Stack byte alphabeticDigitBase, Stack byte signedConversion,
 //     Stack uint16 radix, Stack far pointer destination, Stack uint32 value)
@@ -17,14 +24,14 @@ char *FormatLongInteger(
     uint32_t value)
 {
     char *result;
-    uint8_t reversedDigits[0x22];
+    uint8_t reversedDigits[FORMATTED_DIGITS_CAPACITY];
     uint16_t digitCount;
     uint32_t magnitude;
 
     result = destination;
     digitCount = 0x00;
 
-    if (radix < 0x02 || radix > 0x24)
+    if (radix < MINIMUM_RADIX || radix > MAXIMUM_RADIX)
     {
         *destination = 0x00;
         return result;
@@ -48,10 +55,10 @@ char *FormatLongInteger(
         uint8_t digit;
 
         digit = reversedDigits[--digitCount];
-        if (digit < 0x0A)
+        if (digit < DECIMAL_RADIX)
             *destination++ = (char) ('0' + digit);
         else
-            *destination++ = (char) (alphabeticDigitBase + digit - 0x0A);
+            *destination++ = (char) (alphabeticDigitBase + digit - DECIMAL_RADIX);
     }
 
     *destination = 0x00;
@@ -68,7 +75,7 @@ char *IntegerToString(
 {
     uint32_t extendedValue;
 
-    if (radix == 0x0A)
+    if (radix == DECIMAL_RADIX)
         extendedValue = (uint32_t) (int32_t) value;
     else
         extendedValue = (uint16_t) value;
@@ -91,7 +98,7 @@ char *LongToString(
 {
     return FormatLongInteger(
         'a',
-        radix == 0x0A,
+        radix == DECIMAL_RADIX,
         radix,
         destination,
         (uint32_t) value);

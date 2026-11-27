@@ -12,7 +12,7 @@ long ParseSignedDecimalLong(const char *text)
     long value = 0x00;
     uint16_t negative = FALSE;
 
-    while ((CharacterClassTable[(unsigned char) *text] & 0x01) != 0x00)
+    while ((CharacterClassTable[(unsigned char) *text] & CHARACTER_CLASS_SPACE) != 0x00)
         ++text;
 
     if (*text == '+' || *text == '-')
