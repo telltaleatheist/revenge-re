@@ -7,12 +7,17 @@ is a made-up word: a real one is never written anywhere.
 """
 import os
 from pathlib import Path
+import plistlib
+import re
+import subprocess
 import sys
+import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import DEFAULT, patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_package  # noqa: E402
+from build_package import background_app  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 SIGNING = ("RE_SIGN_IDENTITY", "RE_NOTARY_PROFILE", "RE_ALLOW_UNSIGNED",
@@ -83,6 +88,138 @@ class SigningHooks(unittest.TestCase):
         self.assertEqual(calls, [(signer, "app", app, "--entitlements", root / "tools/package/chr.entitlements"),
                                  (signer, "dmg", dmg, app)])
         self.assertFalse(any("made-up" in str(a) for c in calls for a in c))
+
+
+def smoke_checks():
+    return patch.multiple(build_package, check_usage=DEFAULT, check_served_setup=DEFAULT, check_first_run=DEFAULT)
+
+
+@unittest.skipIf(os.name == "nt", "A Mac app's layout")
+class BackgroundApp(unittest.TestCase):
+    """A check's runs of a Mac app are its background copy's; the app's own program starts once, with --status."""
+
+    def app(self, folder, program=b"#!/bin/sh\nexit 0\n"):
+        app = Path(folder) / "A game.app"
+        for name in ("MacOS/chr", "Resources/data/rules/x.json"):
+            (app / "Contents" / name).parent.mkdir(parents=True, exist_ok=True)
+            (app / "Contents" / name).write_bytes(program if name == "MacOS/chr" else b"{}")
+        (app / "Contents/MacOS/chr").chmod(0o755)
+        (app / "Contents/Info.plist").write_bytes(plistlib.dumps(build_package.mac_plist(ROOT, "12.0")))
+        subprocess.run(["codesign", "--force", "--sign", "-", str(app)], check=True, capture_output=True)
+        return app
+
+    @staticmethod
+    def files(app):
+        return {str(f.relative_to(app)): f.read_bytes() for f in Path(app).rglob("*") if f.is_file()}
+
+    def test_a_program_outside_an_app_runs_itself(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for program in (Path(directory) / "chr", Path(directory) / "Contents/MacOS/chr"):  # the second: no Info.plist
+                program.parent.mkdir(parents=True, exist_ok=True)
+                program.write_bytes(b"")
+                with background_app.runnable(program) as runs:
+                    self.assertEqual(runs, program)
+
+    def test_an_architecture_is_for_an_app(self):
+        with self.assertRaisesRegex(RuntimeError, "a Mac app only"):
+            with background_app.runnable(Path("chr"), "x86_64"):
+                self.fail("ran")
+
+    @unittest.skipIf(sys.platform != "darwin", "A Mac's apps and signatures")
+    def test_the_smoke_runs_the_copy_and_leaves_the_app(self):
+        with tempfile.TemporaryDirectory() as directory:
+            app = self.app(directory)
+            before, ran = self.files(app), []
+
+            def seen(program, *args):
+                copy = program.parents[2]
+                ran.append(copy)
+                self.assertEqual(program.name, "chr")
+                self.assertFalse(os.path.samefile(copy, app))
+                subprocess.run(["codesign", "--verify", "--deep", "--strict", str(copy)], check=True)
+                now = self.files(copy)
+                self.assertEqual(plistlib.loads(now["Contents/Info.plist"]),
+                                 {**plistlib.loads(before["Contents/Info.plist"]), "LSBackgroundOnly": True})
+                self.assertEqual({k for k in before if before[k] != now.get(k)} - {"Contents/Info.plist"},
+                                 {k for k in before if "_CodeSignature" in k and before[k] != now.get(k)})
+                self.assertEqual(now.keys(), before.keys())
+
+            with smoke_checks() as checks:
+                for check in checks.values():
+                    check.side_effect = seen
+                build_package.smoke(app / "Contents/MacOS/chr", Path(directory))
+                for check in checks.values():
+                    check.assert_called_once()
+            self.assertEqual(len(set(ran)), 1)
+            self.assertFalse(ran[0].exists())
+            self.assertEqual(self.files(app), before)
+
+    @unittest.skipIf(sys.platform != "darwin", "A Mac's apps and signatures")
+    def test_the_copy_of_a_runtime_signed_app_has_no_runtime(self):
+        def flags(app):
+            shown = subprocess.run(["codesign", "-dv", str(app)], capture_output=True, text=True).stderr
+            return re.search(r"flags=\S+", shown).group()
+
+        with tempfile.TemporaryDirectory() as directory:
+            app = self.app(directory)
+            subprocess.run(["codesign", "--force", "--sign", "-", "--options", "runtime", str(app)], check=True,
+                           capture_output=True)
+            self.assertIn("runtime", flags(app))
+            out = Path(directory) / "out"
+            out.mkdir()
+            copy = background_app.background_copy(app, out)
+            self.assertNotIn("runtime", flags(copy))
+            self.assertIn("runtime", flags(app))
+            subprocess.run(["codesign", "--verify", "--deep", "--strict", str(copy)], check=True)
+
+    @unittest.skipIf(sys.platform != "darwin", "A Mac's apps and signatures")
+    def test_the_smoke_starts_the_apps_own_program_once_with_status(self):
+        with tempfile.TemporaryDirectory() as directory:
+            log = Path(directory) / "started.txt"
+            app = self.app(directory, f'#!/bin/sh\necho "$0 $*" >> "{log}"\nexit 0\n'.encode())
+            with smoke_checks():
+                build_package.smoke(app / "Contents/MacOS/chr", Path(directory))
+            self.assertEqual(log.read_text().splitlines(), [f"{app}/Contents/MacOS/chr --status"])
+
+    @unittest.skipIf(sys.platform != "darwin", "A Mac's apps and signatures")
+    def test_an_app_whose_own_program_fails_is_not_smoked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            app = self.app(directory, b"#!/bin/sh\nexit 6\n")
+            with smoke_checks() as checks:
+                with self.assertRaisesRegex(RuntimeError, "failed to start as signed: 6"):
+                    build_package.smoke(app / "Contents/MacOS/chr", Path(directory))
+                for check in checks.values():
+                    check.assert_not_called()
+
+    @unittest.skipIf(sys.platform != "darwin", "A Mac's apps and signatures")
+    def test_an_app_with_a_broken_signature_is_not_run(self):
+        with tempfile.TemporaryDirectory() as directory:
+            app = self.app(directory)
+            (app / "Contents/Resources/data/rules/x.json").write_text("changed")
+            with smoke_checks() as checks, patch.object(build_package, "check_own_signature"):
+                with self.assertRaisesRegex(RuntimeError, "codesign"):
+                    build_package.smoke(app / "Contents/MacOS/chr", Path(directory))
+                for check in checks.values():
+                    check.assert_not_called()
+
+    @unittest.skipIf(sys.platform != "darwin", "A Mac's apps and signatures")
+    def test_one_half_of_the_program(self):
+        with tempfile.TemporaryDirectory() as directory:
+            app = self.app(directory, program=Path("/usr/bin/true").read_bytes())  # a universal one; only looked at
+            before = self.files(app)
+
+            def archs(file):
+                return subprocess.run(["lipo", "-archs", str(file)], check=True, capture_output=True,
+                                      text=True).stdout.split()
+
+            self.assertGreater(len(archs(app / "Contents/MacOS/chr")), 1)
+            with background_app.runnable(app / "Contents/MacOS/chr", "x86_64") as program:
+                self.assertEqual(archs(program), ["x86_64"])
+                subprocess.run(["codesign", "--verify", "--deep", "--strict", str(program.parents[2])], check=True)
+            with self.assertRaisesRegex(RuntimeError, "lipo"):
+                with background_app.runnable(app / "Contents/MacOS/chr", "ppc"):
+                    self.fail("ran")
+            self.assertEqual(self.files(app), before)
 
 
 if __name__ == "__main__":

@@ -5,6 +5,10 @@ says (that only keeps SDL from asking for it). So a check runs a temporary copy 
 LSBackgroundOnly, signed ad hoc again. The copy differs from the app in Info.plist and the signature, no more. The app's
 own signature is checked first, and the app is only read.
 
+The copy's signature has no hardened runtime, even when the app's has (a release's, a Developer ID): under the runtime an
+ad hoc program may load no library but the system's. What the app's own signature allows is checked by starting the
+app's program itself (build_package.check_own_signature).
+
 With an architecture, the copy's program is that half of it alone (lipo -thin), so nothing but that half can run: x86_64
 on an Apple silicon Mac is Rosetta's.
 
@@ -46,7 +50,7 @@ def background_copy(app, folder, architecture=None):
     if architecture:
         program = copy / "Contents/MacOS" / plist["CFBundleExecutable"]
         command("lipo", program, "-thin", architecture, "-output", program)
-    command("codesign", "--force", "--sign", "-", "--preserve-metadata=identifier,entitlements,flags", copy)
+    command("codesign", "--force", "--sign", "-", "--preserve-metadata=identifier,entitlements", copy)
     command("codesign", "--verify", "--deep", "--strict", copy)
     return copy
 
