@@ -159,6 +159,9 @@ tools/trace/frames.py RUN_DIR OUT_DIR [--scale N]
 
 # Every difference between two traces of a script (the port's and the original's)
 tools/trace/diff.py --port DIR --original DIR [--frames PORT_FRAMES ORIGINAL_FRAMES] NAME ...
+
+# Every script on a build with -fsanitize=bounds,undefined: each place flagged
+tools/trace/ubsan_sweep.py --build DIR --game GAME_DIR [-- CMAKE_ARGUMENT ...]
 ```
 
 `check.py` names, for each snap, the first state line that differs (both
@@ -194,6 +197,13 @@ game's own (the time a message's wait takes) leads them apart.
 
 To re-record a golden after an intended change, record over it and say in the
 commit what moved and why.
+
+`ubsan_sweep.py` is run at the end of each phase, not by ctest: it builds its
+own directory with the undefined-behaviour sanitizer, plays every script and
+lists each place flagged (an index past an array, a misaligned load, an
+overflow) once, with its count and stack. Each is either an original's
+over-read the port reproduces from the original's bytes (findings 4 and 7) or
+a port bug.
 
 ## Timing and the random generator
 
