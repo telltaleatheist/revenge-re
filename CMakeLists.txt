@@ -163,6 +163,14 @@ if(BUILD_TESTING)
     chr_strict(test_random)
     add_test(NAME runtime.original_random_generator COMMAND test_random)
 
+	add_executable(test_daylight_saving
+		tests/test_daylight_saving.c
+		tests/fake_backend.c)
+	target_include_directories(test_daylight_saving PRIVATE src/Original tests)
+	target_link_libraries(test_daylight_saving PRIVATE chr_original_runtime)
+	chr_strict(test_daylight_saving)
+	add_test(NAME runtime.original_daylight_saving COMMAND test_daylight_saving)
+
 	add_executable(test_battletech_mechanics
 		tests/test_battletech_mechanics.c
 		tests/fake_backend.c)

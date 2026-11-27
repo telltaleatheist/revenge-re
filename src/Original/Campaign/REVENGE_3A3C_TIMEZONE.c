@@ -89,14 +89,14 @@ word16 IsDaylightSavingTime(
 		if (dayOrDayOfYear >= 0x3B && ((yearsSince1970 + 0x46) & 0x03) == 0x00)
 			normalizedDay = dayOrDayOfYear - 0x01;
 		resolvedMonth = 0x00;
-		while (CalendarBoundaryTable[resolvedMonth + 0x01] <= normalizedDay)
+		while (CalendarBoundaryTable[resolvedMonth] <= normalizedDay)
 			++resolvedMonth;
 	}
 	else
 	{
 		if (month < 0x03 || ((yearsSince1970 + 0x46) & 0x03) != 0x00)
 			--dayOrDayOfYear;
-		dayOrDayOfYear += CalendarBoundaryTable[month];
+		dayOrDayOfYear += CalendarBoundaryTable[month - 0x01];
 	}
 	if (resolvedMonth < 0x04)
 	{
@@ -111,9 +111,9 @@ word16 IsDaylightSavingTime(
 	}
 	word16 transitionDay;
 	if (yearsSince1970 > 0x10 && resolvedMonth == 0x04)
-		transitionDay = CalendarBoundaryTable[resolvedMonth] + 0x07;
+		transitionDay = CalendarBoundaryTable[resolvedMonth - 0x01] + 0x07;
 	else
-		transitionDay = CalendarBoundaryTable[resolvedMonth + 0x01];
+		transitionDay = CalendarBoundaryTable[resolvedMonth];
 	if ((((byte)yearsSince1970 + 0xB2) & 0x03) != 0x00)
 		--transitionDay;
 	transitionDay -= (uint16)((uint32)(yearsSince1970 * 0x016D

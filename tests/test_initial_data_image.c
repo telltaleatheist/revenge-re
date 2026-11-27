@@ -220,6 +220,8 @@ static const ImageRow rows[] =
 	 * name pointers are relocated words, so the file alone doesn't match. */
 	DS(WeaponDefinitions, 0x0435),
 	DS(FormationOffsetTable, 0x17DE),
+	/* The asm's operands (3A3C:0217-0267); the port had it a word early. */
+	DS(CalendarBoundaryTable, 0x716E),
 	DS(StartupResourceState, 0x5FCE),
 	/* Where cached-file descriptor 45h's name points (DS:158A). */
 	{ "MediaConfigurationFileName", MediaConfigurationFileName, 0x0A, 0x3A6A, 0x21F4, 0, 0, 0 },

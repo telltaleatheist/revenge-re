@@ -621,7 +621,8 @@ extern const word16 PackedPixelShiftCounts[0x03];
 extern const word16 TextWindowFrameDefinition[0x0C];
 extern const word16 *const TextWindowFrameDefinitionTable[0x01];
 extern const byte MonthLengthTable[0x0C];
-extern const word16 CalendarBoundaryTable[0x0E];
+/* DS:716E: the days before each month of a common year, and the year's. */
+extern const word16 CalendarBoundaryTable[0x0D];
 extern char StandardTimezoneName[0x04];
 extern char DaylightTimezoneName[0x04];
 extern word16 TimezoneOffsetLowWord;

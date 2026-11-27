@@ -465,7 +465,7 @@ unplaced BusyWaitLoopCalibration 2 zero at every snap
 unplaced CachedMusicResourceIndex 2 its bytes match nowhere (pointers or values differ)
 unplaced CachedPrimaryStatusHighlightColor 2 its bytes match nowhere (pointers or values differ)
 unplaced CachedSecondaryStatusHighlightColor 2 its bytes match nowhere (pointers or values differ)
-unplaced CalendarBoundaryTable 1C its bytes match nowhere (pointers or values differ)
+place CalendarBoundaryTable 3A6A:716E 1A table
 unplaced CampaignClockSeparatorText 2 zero at every snap
 unplaced CampaignUpgradeAwards 4 zero at every snap
 unplaced CampaignUpgradeMarkerX 4 zero at every snap
