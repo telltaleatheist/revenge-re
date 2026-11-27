@@ -196,7 +196,8 @@ def locate(marks, position):
 
 def tracked(root):
     run = subprocess.run(["git", "-C", root, "ls-files", "-z", "--cached", "--others", "--exclude-standard"], capture_output=True)
-    if run.returncode == 0 and os.path.isdir(os.path.join(root, ".git")):
+    # .git is a folder in a checkout and a file in a worktree (.claude/worktrees/<name>).
+    if run.returncode == 0 and os.path.exists(os.path.join(root, ".git")):
         return [f.decode() for f in run.stdout.split(b"\0") if f]
     out = []
     for base, dirs, files in os.walk(root):
