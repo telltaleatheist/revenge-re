@@ -127,6 +127,144 @@ void SetPCSpeakerEffectStopRequest(void)
 // ServiceMIDISequenceTick once in 16 (MusicServiceCountdown 1 with
 // SystemTickCountdown & 3 == 1), with interrupts enabled (STI at 30B2:00B5).
 
+// The stop at 30B2:00DF's end: the speaker silenced and the effect ended, the
+// stream's cursor kept where it stopped.
+static void StopPCSpeakerEffect(word16 streamCursor)
+{
+	SilencePCSpeaker();
+	Seg426B.SpeakerEffectStopRequested = 0x00;
+	Seg426B.SpeakerEffectPlaybackActive = 0x00;
+	Seg426B.SpeakerEffectServiceActive = 0x00;
+	Seg426B.SpeakerEffectStreamCursor = streamCursor;
+}
+
+// 30B2:00DF's command loop: runs the stream's commands from *cursor to the
+// next tone, TRUE with its divisor in *pitDivisor and *cursor on its event;
+// or FALSE at the stream's end, an unknown command or a loop jump that
+// overflows, *cursor where the stream stopped.
+static word16 FetchPCSpeakerEffectEvent(
+	const byte *effectStream,
+	word16 *cursor,
+	word16 *pitDivisor)
+{
+	word16 streamCursor = *cursor;
+
+	while (TRUE)
+	{
+		byte command = effectStream[streamCursor];
+		if (command <= SPEAKER_EFFECT_NOTE_MAX)
+		{
+			*pitDivisor = Seg426B.MusicFrequencyDivisorTable[command];
+			*cursor = streamCursor;
+			return TRUE;
+		}
+
+		switch (command)
+		{
+		case SPEAKER_EFFECT_COMMAND_LOOP1_BEGIN:
+			Seg426B.SpeakerEffectLoop1Remaining =
+				effectStream[streamCursor + 0x01];
+			if (Seg426B.SpeakerEffectLoop1Remaining == 0x00)
+				Seg426B.SpeakerEffectLoop1Remaining = 0x01;
+			streamCursor += 0x02;
+			continue;
+		case SPEAKER_EFFECT_COMMAND_LOOP1_END:
+			if (--Seg426B.SpeakerEffectLoop1Remaining != 0x00)
+			{
+				word16 loopOrigin = streamCursor + 0x01;
+				word16 loopDistance = effectStream[streamCursor + 0x01]
+					| ((word16)effectStream[streamCursor + 0x02] << 0x08);
+				word16 loopTarget = loopOrigin - loopDistance;
+
+				streamCursor = loopTarget;
+				if (((loopOrigin ^ loopDistance)
+					& (loopOrigin ^ loopTarget) & 0x8000) != 0x00)
+				{
+					*cursor = streamCursor;
+					return FALSE;
+				}
+			}
+			else
+				streamCursor += 0x03;
+			continue;
+		case SPEAKER_EFFECT_COMMAND_LOOP2_BEGIN:
+			Seg426B.SpeakerEffectLoop2Remaining =
+				effectStream[streamCursor + 0x01];
+			if (Seg426B.SpeakerEffectLoop2Remaining == 0x00)
+				Seg426B.SpeakerEffectLoop2Remaining = 0x01;
+			streamCursor += 0x02;
+			continue;
+		case SPEAKER_EFFECT_COMMAND_LOOP2_END:
+			if (--Seg426B.SpeakerEffectLoop2Remaining != 0x00)
+			{
+				word16 loopOrigin = streamCursor + 0x01;
+				word16 loopDistance = effectStream[streamCursor + 0x01]
+					| ((word16)effectStream[streamCursor + 0x02] << 0x08);
+				word16 loopTarget = loopOrigin - loopDistance;
+
+				streamCursor = loopTarget;
+				if (((loopOrigin ^ loopDistance)
+					& (loopOrigin ^ loopTarget) & 0x8000) != 0x00)
+				{
+					*cursor = streamCursor;
+					return FALSE;
+				}
+			}
+			else
+				streamCursor += 0x03;
+			continue;
+		case SPEAKER_EFFECT_COMMAND_FREQUENCY_HZ:
+			*pitDivisor = (word16) (PIT_INPUT_FREQUENCY_HZ /
+				(effectStream[streamCursor + 0x01]
+					| ((word16)effectStream[streamCursor + 0x02] << 0x08)));
+			*cursor = (word16) (streamCursor + 0x02);
+			return TRUE;
+		case SPEAKER_EFFECT_COMMAND_SET_DURATION_SCALE:
+			Seg426B.SpeakerEffectDurationScale =
+				effectStream[streamCursor + 0x01];
+			if (Seg426B.SpeakerEffectDurationScale == 0x00)
+				Seg426B.SpeakerEffectDurationScale = 0x01;
+			streamCursor += 0x02;
+			continue;
+		case SPEAKER_EFFECT_COMMAND_DECREASE_DURATION_SCALE:
+		{
+			byte oldScale = Seg426B.SpeakerEffectDurationScale;
+			byte decrease = effectStream[streamCursor + 0x01];
+			byte result = oldScale - decrease;
+			byte signedOverflow = (byte) (
+				((oldScale ^ decrease) & (oldScale ^ result) & 0x80)
+				!= 0x00);
+			Seg426B.SpeakerEffectDurationScale = result;
+			// The original uses JNO followed by JNZ, not an unsigned borrow test.
+			// Preserve that unusual behavior exactly; in practice this condition
+			// cannot be true for SUB, so the byte subtraction wraps normally.
+			if (signedOverflow && result == 0x00)
+				Seg426B.SpeakerEffectDurationScale = 0x01;
+			streamCursor += 0x02;
+			continue;
+		}
+		case SPEAKER_EFFECT_COMMAND_INCREASE_DURATION_SCALE:
+		{
+			byte oldScale = Seg426B.SpeakerEffectDurationScale;
+			byte increase = effectStream[streamCursor + 0x01];
+			byte result = oldScale + increase;
+			byte signedOverflow = (byte) (
+				((~(oldScale ^ increase) & (oldScale ^ result)) & 0x80)
+				!= 0x00);
+			Seg426B.SpeakerEffectDurationScale = signedOverflow ? 0xFF : result;
+			streamCursor += 0x02;
+			continue;
+		}
+		case SPEAKER_EFFECT_COMMAND_END:
+			++streamCursor;
+			[[fallthrough]];
+		default:
+			*cursor = streamCursor;
+			return FALSE;
+		}
+	}
+}
+
 // 30B2:00DF
 // Consume one PC-speaker stream tick. DS is implicit Seg426B, not an argument.
 // Verified against 30B2:00DF-0290.
@@ -155,120 +293,21 @@ void DecodePCSpeakerEffectTick(void)
 			&& Seg426B.SpeakerEffectTicksRemaining != 0xFFFF)
 			Seg426B.SpeakerEffectFetchNextEvent = 0x01;
 		if (Seg426B.SpeakerEffectStopRequested != 0x00)
-			goto stopPlayback;
+		{
+			StopPCSpeakerEffect(streamCursor);
+			return;
+		}
 	}
 	else
 	{
 		const byte *effectStream = Seg426B.ActiveSpeakerEffectStream;
 		word16 pitDivisor;
 
-		while (TRUE)
+		if (FetchPCSpeakerEffectEvent(effectStream, &streamCursor, &pitDivisor) == FALSE)
 		{
-			byte command = effectStream[streamCursor];
-			if (command <= SPEAKER_EFFECT_NOTE_MAX)
-			{
-				pitDivisor = Seg426B.MusicFrequencyDivisorTable[command];
-				break;
-			}
-
-			switch (command)
-			{
-			case SPEAKER_EFFECT_COMMAND_LOOP1_BEGIN:
-				Seg426B.SpeakerEffectLoop1Remaining =
-					effectStream[streamCursor + 0x01];
-				if (Seg426B.SpeakerEffectLoop1Remaining == 0x00)
-					Seg426B.SpeakerEffectLoop1Remaining = 0x01;
-				streamCursor += 0x02;
-				continue;
-			case SPEAKER_EFFECT_COMMAND_LOOP1_END:
-				if (--Seg426B.SpeakerEffectLoop1Remaining != 0x00)
-				{
-					word16 loopOrigin = streamCursor + 0x01;
-					word16 loopDistance = effectStream[streamCursor + 0x01]
-						| ((word16)effectStream[streamCursor + 0x02] << 0x08);
-					word16 loopTarget = loopOrigin - loopDistance;
-
-					streamCursor = loopTarget;
-					if (((loopOrigin ^ loopDistance)
-						& (loopOrigin ^ loopTarget) & 0x8000) != 0x00)
-						goto stopPlayback;
-				}
-				else
-					streamCursor += 0x03;
-				continue;
-			case SPEAKER_EFFECT_COMMAND_LOOP2_BEGIN:
-				Seg426B.SpeakerEffectLoop2Remaining =
-					effectStream[streamCursor + 0x01];
-				if (Seg426B.SpeakerEffectLoop2Remaining == 0x00)
-					Seg426B.SpeakerEffectLoop2Remaining = 0x01;
-				streamCursor += 0x02;
-				continue;
-			case SPEAKER_EFFECT_COMMAND_LOOP2_END:
-				if (--Seg426B.SpeakerEffectLoop2Remaining != 0x00)
-				{
-					word16 loopOrigin = streamCursor + 0x01;
-					word16 loopDistance = effectStream[streamCursor + 0x01]
-						| ((word16)effectStream[streamCursor + 0x02] << 0x08);
-					word16 loopTarget = loopOrigin - loopDistance;
-
-					streamCursor = loopTarget;
-					if (((loopOrigin ^ loopDistance)
-						& (loopOrigin ^ loopTarget) & 0x8000) != 0x00)
-						goto stopPlayback;
-				}
-				else
-					streamCursor += 0x03;
-				continue;
-			case SPEAKER_EFFECT_COMMAND_FREQUENCY_HZ:
-				pitDivisor = (word16) (PIT_INPUT_FREQUENCY_HZ /
-					(effectStream[streamCursor + 0x01]
-						| ((word16)effectStream[streamCursor + 0x02] << 0x08)));
-				streamCursor += 0x02;
-				goto playEvent;
-			case SPEAKER_EFFECT_COMMAND_SET_DURATION_SCALE:
-				Seg426B.SpeakerEffectDurationScale =
-					effectStream[streamCursor + 0x01];
-				if (Seg426B.SpeakerEffectDurationScale == 0x00)
-					Seg426B.SpeakerEffectDurationScale = 0x01;
-				streamCursor += 0x02;
-				continue;
-			case SPEAKER_EFFECT_COMMAND_DECREASE_DURATION_SCALE:
-			{
-				byte oldScale = Seg426B.SpeakerEffectDurationScale;
-				byte decrease = effectStream[streamCursor + 0x01];
-				byte result = oldScale - decrease;
-				byte signedOverflow = (byte) (
-					((oldScale ^ decrease) & (oldScale ^ result) & 0x80)
-					!= 0x00);
-				Seg426B.SpeakerEffectDurationScale = result;
-				// The original uses JNO followed by JNZ, not an unsigned borrow test.
-				// Preserve that unusual behavior exactly; in practice this condition
-				// cannot be true for SUB, so the byte subtraction wraps normally.
-				if (signedOverflow && result == 0x00)
-					Seg426B.SpeakerEffectDurationScale = 0x01;
-				streamCursor += 0x02;
-				continue;
-			}
-			case SPEAKER_EFFECT_COMMAND_INCREASE_DURATION_SCALE:
-			{
-				byte oldScale = Seg426B.SpeakerEffectDurationScale;
-				byte increase = effectStream[streamCursor + 0x01];
-				byte result = oldScale + increase;
-				byte signedOverflow = (byte) (
-					((~(oldScale ^ increase) & (oldScale ^ result)) & 0x80)
-					!= 0x00);
-				Seg426B.SpeakerEffectDurationScale = signedOverflow ? 0xFF : result;
-				streamCursor += 0x02;
-				continue;
-			}
-			case SPEAKER_EFFECT_COMMAND_END:
-				++streamCursor;
-			default:
-				goto stopPlayback;
-			}
+			StopPCSpeakerEffect(streamCursor);
+			return;
 		}
-
-playEvent:
 		if (pitDivisor != 0x0000)
 		{
 			WritePCSpeakerPITDivisor(
@@ -285,13 +324,5 @@ playEvent:
 		streamCursor += 0x02;
 	}
 
-	Seg426B.SpeakerEffectStreamCursor = streamCursor;
-	return;
-
-stopPlayback:
-	SilencePCSpeaker();
-	Seg426B.SpeakerEffectStopRequested = 0x00;
-	Seg426B.SpeakerEffectPlaybackActive = 0x00;
-	Seg426B.SpeakerEffectServiceActive = 0x00;
 	Seg426B.SpeakerEffectStreamCursor = streamCursor;
 }

@@ -3,6 +3,130 @@
 #include "REVENGE_2D1B_INTERNAL.h"
 #include "revenge/debug.h"
 
+// 2D1B:1E2B's damage past the armour: the location's critical rolls, then
+// its internal structure; a location brought to zero is destroyed with its
+// equipment and the unit's ratings are recomputed.
+static void ApplyInternalStructureDamage(
+	RevengeUnitRecord *targetUnit,
+	int16 attackerUnitIndex,
+	int16 targetUnitIndex,
+	word16 internalLocation,
+	int16 damageRemaining)
+{
+	word16 equipmentSlotCount;
+	word16 removeDestroyedUnit;
+	byte *destroyedLocationEquipment;
+
+	if (internalLocation == BATTLEMECH_LOCATION_HEAD
+		&& Roll2D6() >= BATTLETECH_2D6_CRITICAL_TARGET)
+	{
+		// V: head criticals select either one of two sensor hits or a
+		// catastrophic cockpit/location result.
+		if (((byte) GeneratePseudoRandomByte() & 0x01) != 0x00)
+		{
+			if (targetUnit->sensorHits < BATTLEMECH_MAX_SENSOR_HITS)
+				++targetUnit->sensorHits;
+		}
+		else
+		{
+			damageRemaining = BATTLETECH_CATASTROPHIC_LOCATION_DAMAGE;
+		}
+	}
+
+	if (internalLocation == BATTLEMECH_LOCATION_CENTER_TORSO
+		&& Roll2D6() >= BATTLETECH_2D6_CRITICAL_TARGET
+		&& Roll2D6() < 0x07)
+	{
+		// V: three center-torso engine criticals destroy the unit.
+		++targetUnit->engineHits;
+		if (targetUnit->engineHits >= BATTLEMECH_ENGINE_HITS_DESTROYED)
+			damageRemaining = BATTLETECH_CATASTROPHIC_LOCATION_DAMAGE;
+	}
+
+	if (targetUnit->currentInternal[internalLocation]
+		> damageRemaining)
+	{
+		targetUnit->currentInternal[internalLocation] -=
+			(byte) damageRemaining;
+		return;
+	}
+
+	targetUnit->currentInternal[internalLocation] = 0x00;
+	equipmentSlotCount = 0x00;
+	removeDestroyedUnit = 0x00;
+	destroyedLocationEquipment = 0;
+
+	switch (internalLocation)
+	{
+	case BATTLEMECH_LOCATION_HEAD:
+		destroyedLocationEquipment = &targetUnit->headEquipment;
+		equipmentSlotCount = BATTLEMECH_HEAD_EQUIPMENT_SLOT_COUNT;
+		removeDestroyedUnit = 0x01;
+		break;
+	case BATTLEMECH_LOCATION_LEFT_ARM:
+		destroyedLocationEquipment = targetUnit->leftArmEquipment;
+		equipmentSlotCount = BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT;
+		break;
+	case BATTLEMECH_LOCATION_LEFT_TORSO:
+		destroyedLocationEquipment = targetUnit->leftTorsoEquipment;
+		equipmentSlotCount = BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT;
+		break;
+	case BATTLEMECH_LOCATION_CENTER_TORSO:
+		destroyedLocationEquipment = targetUnit->centerTorsoEquipment;
+		equipmentSlotCount = BATTLEMECH_CENTER_TORSO_EQUIPMENT_SLOT_COUNT;
+		removeDestroyedUnit = 0x01;
+		break;
+	case BATTLEMECH_LOCATION_RIGHT_TORSO:
+		destroyedLocationEquipment = targetUnit->rightTorsoEquipment;
+		equipmentSlotCount = BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT;
+		break;
+	case BATTLEMECH_LOCATION_RIGHT_ARM:
+		destroyedLocationEquipment = targetUnit->rightArmEquipment;
+		equipmentSlotCount = BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT;
+		break;
+	case BATTLEMECH_LOCATION_LEFT_LEG:
+		UnitJumpingState[targetUnitIndex] = 0x00;
+		targetUnit->walkMovement = 0x00;
+		destroyedLocationEquipment = targetUnit->leftLegEquipment;
+		equipmentSlotCount = BATTLEMECH_LEG_EQUIPMENT_SLOT_COUNT;
+		removeDestroyedUnit = ShouldDestroyUnitAfterLegLoss();
+		break;
+	case BATTLEMECH_LOCATION_RIGHT_LEG:
+		UnitJumpingState[targetUnitIndex] = 0x00;
+		targetUnit->walkMovement = 0x00;
+		destroyedLocationEquipment = targetUnit->rightLegEquipment;
+		equipmentSlotCount = BATTLEMECH_LEG_EQUIPMENT_SLOT_COUNT;
+		removeDestroyedUnit = ShouldDestroyUnitAfterLegLoss();
+		break;
+	}
+
+	ActiveNarrationSubject = attackerUnitIndex;
+	if (removeDestroyedUnit != 0x00)
+		DestroyScenarioUnit(targetUnitIndex);
+
+	if (destroyedLocationEquipment != 0)
+	{
+		word16 equipmentIndex;
+		byte firstEquipmentId = destroyedLocationEquipment[0x00];
+
+		for (equipmentIndex = 0x00;
+			 equipmentIndex < equipmentSlotCount;
+			 ++equipmentIndex)
+		{
+			// V: this deliberately preserves the executable's unusual test of
+			// firstEquipmentId + equipmentIndex, rather than testing each slot.
+			// A later behavioral pass should determine whether this is an
+			// original-game defect or a packed-location convention.
+			if ((int16) firstEquipmentId + equipmentIndex != 0x00)
+				destroyedLocationEquipment[equipmentIndex] |=
+					EQUIPMENT_DAMAGED_FLAG;
+		}
+	}
+
+	RecalculateUnitCombatRatings(
+		targetUnit, targetUnitIndex, 0x01, 0x01);
+}
+
 // 2D1B:1E2B: void ApplyWeaponDamage(
 //     Stack int16 attackerUnitIndex, Stack int16 weaponIndex,
 //     Stack int16 targetUnitIndex)
@@ -26,9 +150,6 @@ void ApplyWeaponDamage(
 	word16 hitLocationCode;
 	word16 internalLocation;
 	word16 penetratedArmor;
-	word16 equipmentSlotCount;
-	word16 removeDestroyedUnit;
-	byte *destroyedLocationEquipment;
 
 	if (targetUnitIndex == 0x00 && ProtectUnitZero != 0x00)
 		return;
@@ -120,120 +241,11 @@ void ApplyWeaponDamage(
 		}
 	}
 
-	if (penetratedArmor == 0x00
-		|| targetUnit->currentInternal[internalLocation] == 0x00)
-		goto CheckHalfDurabilityThreshold;
+	if (penetratedArmor != 0x00
+		&& targetUnit->currentInternal[internalLocation] != 0x00)
+		ApplyInternalStructureDamage(targetUnit, attackerUnitIndex,
+			targetUnitIndex, internalLocation, damageRemaining);
 
-	if (internalLocation == BATTLEMECH_LOCATION_HEAD
-		&& Roll2D6() >= BATTLETECH_2D6_CRITICAL_TARGET)
-	{
-		// V: head criticals select either one of two sensor hits or a
-		// catastrophic cockpit/location result.
-		if (((byte) GeneratePseudoRandomByte() & 0x01) != 0x00)
-		{
-			if (targetUnit->sensorHits < BATTLEMECH_MAX_SENSOR_HITS)
-				++targetUnit->sensorHits;
-		}
-		else
-		{
-			damageRemaining = BATTLETECH_CATASTROPHIC_LOCATION_DAMAGE;
-		}
-	}
-
-	if (internalLocation == BATTLEMECH_LOCATION_CENTER_TORSO
-		&& Roll2D6() >= BATTLETECH_2D6_CRITICAL_TARGET
-		&& Roll2D6() < 0x07)
-	{
-		// V: three center-torso engine criticals destroy the unit.
-		++targetUnit->engineHits;
-		if (targetUnit->engineHits >= BATTLEMECH_ENGINE_HITS_DESTROYED)
-			damageRemaining = BATTLETECH_CATASTROPHIC_LOCATION_DAMAGE;
-	}
-
-	if (targetUnit->currentInternal[internalLocation]
-		> damageRemaining)
-	{
-		targetUnit->currentInternal[internalLocation] -=
-			(byte) damageRemaining;
-		goto CheckHalfDurabilityThreshold;
-	}
-
-	targetUnit->currentInternal[internalLocation] = 0x00;
-	equipmentSlotCount = 0x00;
-	removeDestroyedUnit = 0x00;
-	destroyedLocationEquipment = 0;
-
-	switch (internalLocation)
-	{
-	case BATTLEMECH_LOCATION_HEAD:
-		destroyedLocationEquipment = &targetUnit->headEquipment;
-		equipmentSlotCount = BATTLEMECH_HEAD_EQUIPMENT_SLOT_COUNT;
-		removeDestroyedUnit = 0x01;
-		break;
-	case BATTLEMECH_LOCATION_LEFT_ARM:
-		destroyedLocationEquipment = targetUnit->leftArmEquipment;
-		equipmentSlotCount = BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT;
-		break;
-	case BATTLEMECH_LOCATION_LEFT_TORSO:
-		destroyedLocationEquipment = targetUnit->leftTorsoEquipment;
-		equipmentSlotCount = BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT;
-		break;
-	case BATTLEMECH_LOCATION_CENTER_TORSO:
-		destroyedLocationEquipment = targetUnit->centerTorsoEquipment;
-		equipmentSlotCount = BATTLEMECH_CENTER_TORSO_EQUIPMENT_SLOT_COUNT;
-		removeDestroyedUnit = 0x01;
-		break;
-	case BATTLEMECH_LOCATION_RIGHT_TORSO:
-		destroyedLocationEquipment = targetUnit->rightTorsoEquipment;
-		equipmentSlotCount = BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT;
-		break;
-	case BATTLEMECH_LOCATION_RIGHT_ARM:
-		destroyedLocationEquipment = targetUnit->rightArmEquipment;
-		equipmentSlotCount = BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT;
-		break;
-	case BATTLEMECH_LOCATION_LEFT_LEG:
-		UnitJumpingState[targetUnitIndex] = 0x00;
-		targetUnit->walkMovement = 0x00;
-		destroyedLocationEquipment = targetUnit->leftLegEquipment;
-		equipmentSlotCount = BATTLEMECH_LEG_EQUIPMENT_SLOT_COUNT;
-		removeDestroyedUnit = ShouldDestroyUnitAfterLegLoss();
-		break;
-	case BATTLEMECH_LOCATION_RIGHT_LEG:
-		UnitJumpingState[targetUnitIndex] = 0x00;
-		targetUnit->walkMovement = 0x00;
-		destroyedLocationEquipment = targetUnit->rightLegEquipment;
-		equipmentSlotCount = BATTLEMECH_LEG_EQUIPMENT_SLOT_COUNT;
-		removeDestroyedUnit = ShouldDestroyUnitAfterLegLoss();
-		break;
-	}
-
-	ActiveNarrationSubject = attackerUnitIndex;
-	if (removeDestroyedUnit != 0x00)
-		DestroyScenarioUnit(targetUnitIndex);
-
-	if (destroyedLocationEquipment != 0)
-	{
-		word16 equipmentIndex;
-		byte firstEquipmentId = destroyedLocationEquipment[0x00];
-
-		for (equipmentIndex = 0x00;
-			 equipmentIndex < equipmentSlotCount;
-			 ++equipmentIndex)
-		{
-			// V: this deliberately preserves the executable's unusual test of
-			// firstEquipmentId + equipmentIndex, rather than testing each slot.
-			// A later behavioral pass should determine whether this is an
-			// original-game defect or a packed-location convention.
-			if ((int16) firstEquipmentId + equipmentIndex != 0x00)
-				destroyedLocationEquipment[equipmentIndex] |=
-					EQUIPMENT_DAMAGED_FLAG;
-		}
-	}
-
-	RecalculateUnitCombatRatings(
-		targetUnit, targetUnitIndex, 0x01, 0x01);
-
-CheckHalfDurabilityThreshold:
 	if (targetUnit->deploymentState != 0x00
 		&& targetUnitIndex < ENEMY_FORCE_FIRST_UNIT
 		&& IsCurrentLanceLeader(targetUnitIndex) != 0x00

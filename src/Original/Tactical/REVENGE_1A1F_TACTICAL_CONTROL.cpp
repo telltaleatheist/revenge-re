@@ -954,6 +954,7 @@ void HandleTacticalFunctionKey(word16 inputAction)
 	{
 		word16 rememberedUnit = EnemyCycleUnitIndex;
 		word16 selectedUnit = TacticalSelectedUnitIndex;
+		word16 rememberedUnitSelected = FALSE;
 
 		if (selectedUnit != TACTICAL_UNIT_NONE
 			&& GetPersistentUnitRecord(selectedUnit)->deploymentState == 0x00)
@@ -1001,11 +1002,13 @@ void HandleTacticalFunctionKey(word16 inputAction)
 			{
 				TacticalSelectedUnitIndex = rememberedUnit;
 				FocusTacticalViewOnUnit(rememberedUnit);
-				goto enemy_selection_finished;
+				rememberedUnitSelected = TRUE;
 			}
 		}
 
-		if (selectedUnit != rememberedUnit || rememberedUnit == TACTICAL_UNIT_NONE)
+		// The remembered unit, selected again, ends the search.
+		if (rememberedUnitSelected == FALSE
+			&& (selectedUnit != rememberedUnit || rememberedUnit == TACTICAL_UNIT_NONE))
 		{
 			for (unitIndex = TACTICAL_ENEMY_FIRST_UNIT;
 				unitIndex < TACTICAL_UNIT_COUNT;
@@ -1025,7 +1028,6 @@ void HandleTacticalFunctionKey(word16 inputAction)
 			}
 		}
 
-enemy_selection_finished:
 		if ((int16)TacticalSelectedUnitIndex
 			>= TACTICAL_ENEMY_FIRST_UNIT)
 			FirstLanceOrdersEnabled = FALSE;

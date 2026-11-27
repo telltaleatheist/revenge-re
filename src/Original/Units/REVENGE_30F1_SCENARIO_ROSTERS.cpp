@@ -32,6 +32,16 @@ void CompactScenarioLances(void);
 // mech, vehicle, or infantry records. DS:8B81 is the 24-entry persistent roster
 // and DS:99E0 is the corresponding 24-entry live/scenario unit array.
 
+// 30F1:0006's selector 54h, which 43h joins after its own step: the 12
+// active units' live records from their roster records.
+static void CopyActiveUnitsToLiveRecords(void)
+{
+	uint16 rosterIndex;
+
+	for (rosterIndex = 0x00; rosterIndex < ACTIVE_CAMPAIGN_UNIT_COUNT; ++rosterIndex)
+		LiveScenarioUnits[rosterIndex] = PersistentUnitRoster[rosterIndex];
+}
+
 // 30F1:0006: void PrepareScenarioUnitRosters(void)
 // Called from:
 //      RunInGameMenu
@@ -75,7 +85,6 @@ void PrepareScenarioUnitRosters(void)
 	uint16 primaryUnitIndex51;
 	uint16 reserveUnitIndex51;
 	uint16 rosterIndex52;
-	uint16 rosterIndex54;
 	if (sceneSuffix <= 0x54)
 	{
 		switch (sceneSuffix)
@@ -269,7 +278,8 @@ void PrepareScenarioUnitRosters(void)
 			break;
 		case 0x43:
 			InvalidateEmptyRosterSlots();
-			goto l30F1;
+			CopyActiveUnitsToLiveRecords();
+			break;
 		case 0x44:
 			rosterIndex44 = 0x00;
 			while (rosterIndex44 < CAMPAIGN_UNIT_COUNT)
@@ -393,14 +403,7 @@ void PrepareScenarioUnitRosters(void)
 			InvalidateEmptyRosterSlots();
 			break;
 		case 0x54:
-l30F1:
-			rosterIndex54 = 0x00;
-			while (rosterIndex54 < ACTIVE_CAMPAIGN_UNIT_COUNT)
-			{
-				LiveScenarioUnits[rosterIndex54] =
-					PersistentUnitRoster[rosterIndex54];
-				++rosterIndex54;
-			}
+			CopyActiveUnitsToLiveRecords();
 			break;
 		}
 	}

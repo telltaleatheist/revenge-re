@@ -475,6 +475,9 @@ void RunUnitAssignmentGrid(
 
 		assignmentRecord = &LanceAssignments[selectedAssignmentIndex];
 		unitCardRecord = &UnitSelectionCards[selectedUnitCardIndex];
+		// The exit button, or a card another lance holds, skips the
+		// assignment and goes on to the next free slot.
+		word16 assignCard = TRUE;
 		if (exitRequested != FALSE && selectedLanceSlot == 0x0004)
 		{
 			selectedLanceSlot = 0x0000;
@@ -484,40 +487,155 @@ void RunUnitAssignmentGrid(
 			UnitEditorExitButtonState &= 0xFE;
 			DrawLanceAssignmentSlot(0x0000, TRUE, TRUE);
 			previousLanceSlot = selectedLanceSlot;
-			goto advance_assignment_selection;
+			assignCard = FALSE;
 		}
-
-		if (unitCardRecord->assignmentSlot != REVENGE_ASSIGNMENT_SLOT_NONE &&
+		else if (unitCardRecord->assignmentSlot != REVENGE_ASSIGNMENT_SLOT_NONE &&
 			(unitCardRecord->assignmentSlot >> 0x02) != (byte)lanceGroupIndex)
-			goto advance_assignment_selection;
+			assignCard = FALSE;
 
-		/* 2507:3AB8-4080.  Bit 2 records whether an assignment slot is
-		 * occupied.  The original toggles it before dispatching between the
-		 * occupied-slot and empty-slot paths. */
-		assignmentRecord->style ^= 0x04;
-		DRAW_ASSIGNMENT(selectedAssignmentIndex);
-		if (assignmentRecord->liveUnitSlot != REVENGE_UNIT_SLOT_NONE)
+		if (assignCard != FALSE)
 		{
-			if (assignmentRecord->liveUnitSlot ==
-				unitCardRecord->assignmentSlot)
+			/* 2507:3AB8-4080.  Bit 2 records whether an assignment slot is
+			 * occupied.  The original toggles it before dispatching between the
+			 * occupied-slot and empty-slot paths. */
+			assignmentRecord->style ^= 0x04;
+			DRAW_ASSIGNMENT(selectedAssignmentIndex);
+			if (assignmentRecord->liveUnitSlot != REVENGE_UNIT_SLOT_NONE)
 			{
-				assignmentRecord->persistentUnitSlot = REVENGE_UNIT_SLOT_NONE;
-				assignmentRecord->liveUnitSlot = REVENGE_UNIT_SLOT_NONE;
-				unitCardRecord->state ^= 0x01;
-				unitCardRecord->assignmentSlot = REVENGE_ASSIGNMENT_SLOT_NONE;
-				DRAW_UNIT_CARD(selectedUnitCardIndex, 0x0001);
+				if (assignmentRecord->liveUnitSlot ==
+					unitCardRecord->assignmentSlot)
+				{
+					assignmentRecord->persistentUnitSlot = REVENGE_UNIT_SLOT_NONE;
+					assignmentRecord->liveUnitSlot = REVENGE_UNIT_SLOT_NONE;
+					unitCardRecord->state ^= 0x01;
+					unitCardRecord->assignmentSlot = REVENGE_ASSIGNMENT_SLOT_NONE;
+					DRAW_UNIT_CARD(selectedUnitCardIndex, 0x0001);
+				}
+				else if (assignmentRecord->persistentUnitSlot !=
+					REVENGE_UNIT_SLOT_NONE)
+				{
+					/* The occupied slot's +07 field is a unit-card index.  It is
+					 * not an assignment index; confusing the two is what caused
+					 * replacements to propagate through a screen column. */
+					oldAssignmentIndex = assignmentRecord->persistentUnitSlot;
+					UnitSelectionCards[oldAssignmentIndex].state ^= 0x01;
+					UnitSelectionCards[oldAssignmentIndex].assignmentSlot =
+						REVENGE_ASSIGNMENT_SLOT_NONE;
+					DRAW_UNIT_CARD(oldAssignmentIndex, 0x0000);
+
+					if ((unitCardRecord->state & 0x01) != 0x00)
+					{
+						unitCardRecord->state ^= 0x01;
+						unitCardRecord->assignmentSlot =
+							(byte)selectedAssignmentIndex;
+						DRAW_UNIT_CARD(selectedUnitCardIndex, 0x0001);
+					}
+					else
+					{
+						oldAssignmentIndex = unitCardRecord->assignmentSlot;
+						previousRecord =
+							&LanceAssignments[oldAssignmentIndex];
+						previousRecord->style ^= 0x04;
+						DRAW_ASSIGNMENT(oldAssignmentIndex);
+						previousRecord->persistentUnitSlot =
+							REVENGE_UNIT_SLOT_NONE;
+						previousRecord->liveUnitSlot =
+							REVENGE_UNIT_SLOT_NONE;
+						unitCardRecord->assignmentSlot =
+							(byte)selectedAssignmentIndex;
+					}
+
+					/* Both branches above converge at 2507:3C12.  Restore the
+					 * occupied style after erasing the old label, install the
+					 * selected card, and redraw the replacement assignment. */
+					assignmentRecord->style ^= 0x04;
+					assignmentRecord->persistentUnitSlot =
+						(byte)selectedUnitCardIndex;
+					assignmentRecord->liveUnitSlot =
+						(byte)selectedAssignmentIndex;
+					persistentUnit =
+						&PersistentUnitRoster[selectedUnitCardIndex];
+					liveUnit =
+						&LiveScenarioUnits[selectedAssignmentIndex];
+					*liveUnit = *persistentUnit;
+					liveUnit->deploymentState = 0x01;
+					pilotId = assignmentRecord->pilotId;
+					liveUnit->pilotId = pilotId;
+					liveUnit->gunneryTargetNumber =
+						PilotRoster[pilotId].gunneryIndex;
+					liveUnit->pilotExperience =
+						PilotRoster[pilotId].experienceIndex;
+					DRAW_ASSIGNMENT(selectedAssignmentIndex);
+				}
+				else
+				{
+					/* 2507:3CFA-3EFA: this slot contains a non-roster unit.  The
+					 * executable exchanges its live record with the selected
+					 * persistent card through DS:84C7, then refreshes that card's
+					 * sprite pointer. */
+					if ((unitCardRecord->state & 0x01) == 0x00)
+					{
+						oldAssignmentIndex = unitCardRecord->assignmentSlot;
+						previousRecord =
+							&LanceAssignments[oldAssignmentIndex];
+						previousRecord->style ^= 0x04;
+						DRAW_ASSIGNMENT(oldAssignmentIndex);
+						previousRecord->persistentUnitSlot =
+							REVENGE_UNIT_SLOT_NONE;
+						previousRecord->liveUnitSlot =
+							REVENGE_UNIT_SLOT_NONE;
+						DRAW_UNIT_CARD(selectedUnitCardIndex, 0xFFFF);
+					}
+
+					persistentUnit =
+						&PersistentUnitRoster[selectedUnitCardIndex];
+					liveUnit = &LiveScenarioUnits[selectedAssignmentIndex];
+					scratchUnit = &EstimatedUnitRecord;
+					*scratchUnit = *persistentUnit;
+					*persistentUnit = *liveUnit;
+					*liveUnit = *scratchUnit;
+					liveUnit->deploymentState = 0x01;
+					unitType = persistentUnit->unitTypeId;
+					graphicsBufferIndex = UnitEditorUnitSpriteIndex[unitType];
+					unitCardRecord->spriteBuffer =
+						UnitEditorGraphicsBuffer(graphicsBufferIndex);
+					unitCardRecord->state |= 0x01;
+					unitCardRecord->persistentUnitSlot =
+						(byte)selectedUnitCardIndex;
+					unitCardRecord->assignmentSlot = REVENGE_ASSIGNMENT_SLOT_NONE;
+					DRAW_UNIT_CARD(selectedUnitCardIndex, 0x0001);
+
+					assignmentRecord->style ^= 0x04;
+					assignmentRecord->persistentUnitSlot =
+						(byte)selectedUnitCardIndex;
+					assignmentRecord->liveUnitSlot =
+						(byte)selectedAssignmentIndex;
+					pilotId = assignmentRecord->pilotId;
+					liveUnit->pilotId = pilotId;
+					liveUnit->gunneryTargetNumber =
+						PilotRoster[pilotId].gunneryIndex;
+					liveUnit->pilotExperience =
+						PilotRoster[pilotId].experienceIndex;
+					DRAW_ASSIGNMENT(selectedAssignmentIndex);
+				}
 			}
-			else if (assignmentRecord->persistentUnitSlot !=
-				REVENGE_UNIT_SLOT_NONE)
+			else
 			{
-				/* The occupied slot's +07 field is a unit-card index.  It is
-				 * not an assignment index; confusing the two is what caused
-				 * replacements to propagate through a screen column. */
-				oldAssignmentIndex = assignmentRecord->persistentUnitSlot;
-				UnitSelectionCards[oldAssignmentIndex].state ^= 0x01;
-				UnitSelectionCards[oldAssignmentIndex].assignmentSlot =
-					REVENGE_ASSIGNMENT_SLOT_NONE;
-				DRAW_UNIT_CARD(oldAssignmentIndex, 0x0000);
+				assignmentRecord->persistentUnitSlot =
+					(byte)selectedUnitCardIndex;
+				assignmentRecord->liveUnitSlot =
+					(byte)selectedAssignmentIndex;
+				persistentUnit = &PersistentUnitRoster[selectedUnitCardIndex];
+				liveUnit = &LiveScenarioUnits[selectedAssignmentIndex];
+				*liveUnit = *persistentUnit;
+				liveUnit->deploymentState = 0x01;
+				pilotId = assignmentRecord->pilotId;
+				liveUnit->pilotId = pilotId;
+				liveUnit->gunneryTargetNumber =
+					PilotRoster[pilotId].gunneryIndex;
+				liveUnit->pilotExperience =
+					PilotRoster[pilotId].experienceIndex;
+				DRAW_ASSIGNMENT(selectedAssignmentIndex);
 
 				if ((unitCardRecord->state & 0x01) != 0x00)
 				{
@@ -529,131 +647,17 @@ void RunUnitAssignmentGrid(
 				else
 				{
 					oldAssignmentIndex = unitCardRecord->assignmentSlot;
-					previousRecord =
-						&LanceAssignments[oldAssignmentIndex];
+					previousRecord = &LanceAssignments[oldAssignmentIndex];
 					previousRecord->style ^= 0x04;
 					DRAW_ASSIGNMENT(oldAssignmentIndex);
-					previousRecord->persistentUnitSlot =
-						REVENGE_UNIT_SLOT_NONE;
-					previousRecord->liveUnitSlot =
-						REVENGE_UNIT_SLOT_NONE;
+					previousRecord->persistentUnitSlot = REVENGE_UNIT_SLOT_NONE;
+					previousRecord->liveUnitSlot = REVENGE_UNIT_SLOT_NONE;
 					unitCardRecord->assignmentSlot =
 						(byte)selectedAssignmentIndex;
 				}
-
-				/* Both branches above converge at 2507:3C12.  Restore the
-				 * occupied style after erasing the old label, install the
-				 * selected card, and redraw the replacement assignment. */
-				assignmentRecord->style ^= 0x04;
-				assignmentRecord->persistentUnitSlot =
-					(byte)selectedUnitCardIndex;
-				assignmentRecord->liveUnitSlot =
-					(byte)selectedAssignmentIndex;
-				persistentUnit =
-					&PersistentUnitRoster[selectedUnitCardIndex];
-				liveUnit =
-					&LiveScenarioUnits[selectedAssignmentIndex];
-				*liveUnit = *persistentUnit;
-				liveUnit->deploymentState = 0x01;
-				pilotId = assignmentRecord->pilotId;
-				liveUnit->pilotId = pilotId;
-				liveUnit->gunneryTargetNumber =
-					PilotRoster[pilotId].gunneryIndex;
-				liveUnit->pilotExperience =
-					PilotRoster[pilotId].experienceIndex;
-				DRAW_ASSIGNMENT(selectedAssignmentIndex);
-			}
-			else
-			{
-				/* 2507:3CFA-3EFA: this slot contains a non-roster unit.  The
-				 * executable exchanges its live record with the selected
-				 * persistent card through DS:84C7, then refreshes that card's
-				 * sprite pointer. */
-				if ((unitCardRecord->state & 0x01) == 0x00)
-				{
-					oldAssignmentIndex = unitCardRecord->assignmentSlot;
-					previousRecord =
-						&LanceAssignments[oldAssignmentIndex];
-					previousRecord->style ^= 0x04;
-					DRAW_ASSIGNMENT(oldAssignmentIndex);
-					previousRecord->persistentUnitSlot =
-						REVENGE_UNIT_SLOT_NONE;
-					previousRecord->liveUnitSlot =
-						REVENGE_UNIT_SLOT_NONE;
-					DRAW_UNIT_CARD(selectedUnitCardIndex, 0xFFFF);
-				}
-
-				persistentUnit =
-					&PersistentUnitRoster[selectedUnitCardIndex];
-				liveUnit = &LiveScenarioUnits[selectedAssignmentIndex];
-				scratchUnit = &EstimatedUnitRecord;
-				*scratchUnit = *persistentUnit;
-				*persistentUnit = *liveUnit;
-				*liveUnit = *scratchUnit;
-				liveUnit->deploymentState = 0x01;
-				unitType = persistentUnit->unitTypeId;
-				graphicsBufferIndex = UnitEditorUnitSpriteIndex[unitType];
-				unitCardRecord->spriteBuffer =
-					UnitEditorGraphicsBuffer(graphicsBufferIndex);
-				unitCardRecord->state |= 0x01;
-				unitCardRecord->persistentUnitSlot =
-					(byte)selectedUnitCardIndex;
-				unitCardRecord->assignmentSlot = REVENGE_ASSIGNMENT_SLOT_NONE;
-				DRAW_UNIT_CARD(selectedUnitCardIndex, 0x0001);
-
-				assignmentRecord->style ^= 0x04;
-				assignmentRecord->persistentUnitSlot =
-					(byte)selectedUnitCardIndex;
-				assignmentRecord->liveUnitSlot =
-					(byte)selectedAssignmentIndex;
-				pilotId = assignmentRecord->pilotId;
-				liveUnit->pilotId = pilotId;
-				liveUnit->gunneryTargetNumber =
-					PilotRoster[pilotId].gunneryIndex;
-				liveUnit->pilotExperience =
-					PilotRoster[pilotId].experienceIndex;
-				DRAW_ASSIGNMENT(selectedAssignmentIndex);
-			}
-		}
-		else
-		{
-			assignmentRecord->persistentUnitSlot =
-				(byte)selectedUnitCardIndex;
-			assignmentRecord->liveUnitSlot =
-				(byte)selectedAssignmentIndex;
-			persistentUnit = &PersistentUnitRoster[selectedUnitCardIndex];
-			liveUnit = &LiveScenarioUnits[selectedAssignmentIndex];
-			*liveUnit = *persistentUnit;
-			liveUnit->deploymentState = 0x01;
-			pilotId = assignmentRecord->pilotId;
-			liveUnit->pilotId = pilotId;
-			liveUnit->gunneryTargetNumber =
-				PilotRoster[pilotId].gunneryIndex;
-			liveUnit->pilotExperience =
-				PilotRoster[pilotId].experienceIndex;
-			DRAW_ASSIGNMENT(selectedAssignmentIndex);
-
-			if ((unitCardRecord->state & 0x01) != 0x00)
-			{
-				unitCardRecord->state ^= 0x01;
-				unitCardRecord->assignmentSlot =
-					(byte)selectedAssignmentIndex;
-				DRAW_UNIT_CARD(selectedUnitCardIndex, 0x0001);
-			}
-			else
-			{
-				oldAssignmentIndex = unitCardRecord->assignmentSlot;
-				previousRecord = &LanceAssignments[oldAssignmentIndex];
-				previousRecord->style ^= 0x04;
-				DRAW_ASSIGNMENT(oldAssignmentIndex);
-				previousRecord->persistentUnitSlot = REVENGE_UNIT_SLOT_NONE;
-				previousRecord->liveUnitSlot = REVENGE_UNIT_SLOT_NONE;
-				unitCardRecord->assignmentSlot =
-					(byte)selectedAssignmentIndex;
 			}
 		}
 
-	advance_assignment_selection:
 		if (unitCardRecord->assignmentSlot != REVENGE_ASSIGNMENT_SLOT_NONE &&
 			UnitEditorScenarioCardCount != 0x0000)
 		{

@@ -796,6 +796,31 @@ const char *SDLBackend_RendererName(void)
     return renderer != 0 ? SDL_GetRendererName(renderer) : 0;
 }
 
+/* The window, its renderer and the audio, in turn, once SDL is up; FALSE at
+ * the first that fails, with what was made left for SDLBackend_Close. */
+static int OpenWindowRendererAndAudio(void)
+{
+    window = SDL_CreateWindow(
+        "BattleTech: The Crescent Hawks' Revenge",
+        VIDEO_SCREEN_WIDTH * WindowScale,
+        VIDEO_SCREEN_HEIGHT * WindowScale,
+        SDL_WINDOW_RESIZABLE);
+    if (window == 0)
+        return FALSE;
+
+    /* Without a working GPU driver the game still runs: SDL's software
+     * renderer draws the 320x200 screen on the CPU. */
+    if (!CreateScreenRenderer(0)
+        && !CreateScreenRenderer(SDL_SOFTWARE_RENDERER))
+        return FALSE;
+    RevengeTrace("video: renderer %s\n", SDLBackend_RendererName());
+
+    ResetEgaPalette();
+    memset(indexedFramebuffer, 0, sizeof(indexedFramebuffer));
+    hostMouseButtons = 0x0000;
+    return SDLBackend_OpenAudio();
+}
+
 int SDLBackend_Open(void)
 {
     if (window != 0)
@@ -808,34 +833,14 @@ int SDLBackend_Open(void)
 
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_AUDIO))
         return FALSE;
-
-    window = SDL_CreateWindow(
-        "BattleTech: The Crescent Hawks' Revenge",
-        VIDEO_SCREEN_WIDTH * WindowScale,
-        VIDEO_SCREEN_HEIGHT * WindowScale,
-        SDL_WINDOW_RESIZABLE);
-    if (window == 0)
-        goto failed;
-
-    /* Without a working GPU driver the game still runs: SDL's software
-     * renderer draws the 320x200 screen on the CPU. */
-    if (!CreateScreenRenderer(0)
-        && !CreateScreenRenderer(SDL_SOFTWARE_RENDERER))
-        goto failed;
-    RevengeTrace("video: renderer %s\n", SDLBackend_RendererName());
-
-    ResetEgaPalette();
-    memset(indexedFramebuffer, 0, sizeof(indexedFramebuffer));
-    hostMouseButtons = 0x0000;
-    if (!SDLBackend_OpenAudio())
-        goto failed;
+    if (!OpenWindowRendererAndAudio())
+    {
+        SDLBackend_Close();
+        return FALSE;
+    }
     RevengeTrace("video: SDL window ready window=%p renderer=%p\n",
         (void *)window, (void *)renderer);
     return TRUE;
-
-failed:
-    SDLBackend_Close();
-    return FALSE;
 }
 
 void SDLBackend_Close(void)

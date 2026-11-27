@@ -570,7 +570,11 @@ void StampTacticalSpriteRectangle(
 			+ TACTICAL_VIEWPORT_HEIGHT_CELLS)
 		|| rectangleRight <= viewportMapX
 		|| rectangleBottom <= viewportMapY)
-		goto clear_overlay;
+	{
+		// Off the viewport: nothing stamped, the overlay cleared all the same.
+		TacticalOverlayTerrainSpriteId = NO_TACTICAL_OVERLAY_SPRITE_ID;
+		return;
+	}
 
 	viewportX = (int16) (word16) ((word16) mapX - (word16) viewportMapX);
 	viewportY = (int16) (word16) ((word16) mapY - (word16) viewportMapY);
@@ -614,7 +618,6 @@ void StampTacticalSpriteRectangle(
 		viewportCellIndex += TACTICAL_VIEWPORT_WIDTH_CELLS;
 	}
 
-clear_overlay:
 	TacticalOverlayTerrainSpriteId =
 		NO_TACTICAL_OVERLAY_SPRITE_ID;
 }
