@@ -1,0 +1,26 @@
+{
+  "fade_colors": [13, 2, 14, 9],
+  "blink_rects": [
+    {"x": 145, "y": 112, "extent": 2},
+    {"x": 147, "y": 109, "extent": 2},
+    {"x": 154, "y": 110, "extent": 2},
+    {"x": 204, "y": 142, "extent": 4},
+    {"x": 120, "y": 73, "extent": 2},
+    {"x": 167, "y": 56, "extent": 2},
+    {"x": 183, "y": 64, "extent": 4}
+  ],
+  "sprites": [
+    {"tile_x": 9, "pixel_y": 24, "width_tiles": 20, "height_pixels": 136},
+    {"tile_x": 10, "pixel_y": 8, "width_tiles": 20, "height_pixels": 136},
+    {"tile_x": 9, "pixel_y": 24, "width_tiles": 20, "height_pixels": 168},
+    {"tile_x": 0, "pixel_y": 0, "width_tiles": 40, "height_pixels": 100},
+    {"tile_x": 0, "pixel_y": 100, "width_tiles": 40, "height_pixels": 100},
+    {"tile_x": 0, "pixel_y": 0, "width_tiles": 20, "height_pixels": 100},
+    {"tile_x": 20, "pixel_y": 0, "width_tiles": 20, "height_pixels": 100},
+    {"tile_x": 0, "pixel_y": 100, "width_tiles": 20, "height_pixels": 100},
+    {"tile_x": 20, "pixel_y": 100, "width_tiles": 20, "height_pixels": 100},
+    {"tile_x": 0, "pixel_y": 0, "width_tiles": 14, "height_pixels": 29},
+    {"tile_x": 0, "pixel_y": 100, "width_tiles": 14, "height_pixels": 36},
+    {"tile_x": 24, "pixel_y": 121, "width_tiles": 10, "height_pixels": 79}
+  ]
+}

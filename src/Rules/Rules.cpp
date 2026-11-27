@@ -6,6 +6,7 @@
 #include <cstring>
 #include <map>
 #include <fstream>
+#include <initializer_list>
 #include <iterator>
 #include <set>
 #include <string>
@@ -503,6 +504,50 @@ void read_campaign(const Json& root, Tables& tables) {
     file.done();
 }
 
+// Arrays of `count` objects with the given fields, each field one table of
+// `width`-byte numbers up to `maximum` (field name, table id, width, maximum).
+struct Column {
+    const char* field;
+    const char* table;
+    std::size_t width;
+    unsigned maximum;
+};
+
+void records(const Json& value, const std::string& where, std::size_t count, std::initializer_list<Column> columns,
+             Tables& tables) {
+    if (!value.is_array() || value.array().size() != count)
+        fail(where, "is not an array of " + std::to_string(count) + " records");
+    for (const Column& column : columns) tables[column.table].assign(count * column.width, 0);
+    for (std::size_t index = 0; index < count; ++index) {
+        Fields record(value.array()[index], where + "[" + std::to_string(index) + "]");
+        for (const Column& column : columns) {
+            const unsigned number = whole(record.take(column.field), record.at(column.field), column.maximum);
+            std::vector<std::uint8_t>& out = tables[column.table];
+            if (column.width == 2)
+                put_word(&out[index * 2], number);
+            else
+                out[index] = std::uint8_t(number);
+        }
+        record.done();
+    }
+}
+
+// data/ui: layout, ours as the rules are.
+void read_mission(const Json& root, Tables& tables) {
+    Fields file(root, "mission.json:");
+    tables["mission.fade_colors"] = numbers(file.take("fade_colors"), file.at("fade_colors"), 0x04, 0xFF, 1);
+    records(file.take("blink_rects"), file.at("blink_rects"), 0x07,
+            {{"x", "mission.blink_x", 2, 0xFFFF}, {"y", "mission.blink_y", 2, 0xFFFF},
+             {"extent", "mission.blink_extent", 1, 0xFF}},
+            tables);
+    records(file.take("sprites"), file.at("sprites"), 0x0C,
+            {{"tile_x", "mission.sprite_tile_x", 2, 0xFFFF}, {"pixel_y", "mission.sprite_pixel_y", 2, 0xFFFF},
+             {"width_tiles", "mission.sprite_width_tiles", 2, 0xFFFF},
+             {"height_pixels", "mission.sprite_height_pixels", 2, 0xFFFF}},
+            tables);
+    file.done();
+}
+
 // Bytes two tables share in the original's memory must agree.
 void check_shared(const Tables& tables) {
     // The first missile weapon's bonus is the high byte of the last direction
@@ -538,6 +583,8 @@ void load(const std::filesystem::path& data_dir) {
     read_units(read_file(rules / "units.json", "units.json"), tables);
     read_pilots(read_file(rules / "pilots.json", "pilots.json"), tables);
     read_campaign(read_file(rules / "campaign.json", "campaign.json"), tables);
+    const std::filesystem::path ui = data_dir / "ui";
+    read_mission(read_file(ui / "mission.json", "mission.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {

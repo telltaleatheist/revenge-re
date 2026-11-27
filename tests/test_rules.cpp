@@ -96,14 +96,16 @@ std::string read(const fs::path& path) {
     return std::string((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
 }
 
-// data/rules copied to a folder of the test's, with `from` made `to` in
-// `file` (or with no `file` when `from` is null).
+// data/rules and data/ui copied to a folder of the test's, with `from` made
+// `to` in rules/`file` (or with no rules/`file` when `from` is null).
 std::string broken_data(const char* mode, const char* file, const char* from, const char* to) {
     const fs::path folder = fs::current_path() / (std::string("rules-test-") + mode);
     fs::remove_all(folder);
-    fs::create_directories(folder / "rules");
-    for (const fs::directory_entry& entry : fs::directory_iterator(fs::path(CHR_DATA_DIRECTORY) / "rules"))
-        fs::copy_file(entry.path(), folder / "rules" / entry.path().filename());
+    for (const char* part : {"rules", "ui"}) {
+        fs::create_directories(folder / part);
+        for (const fs::directory_entry& entry : fs::directory_iterator(fs::path(CHR_DATA_DIRECTORY) / part))
+            fs::copy_file(entry.path(), folder / part / entry.path().filename());
+    }
     const fs::path target = folder / "rules" / file;
     if (from == nullptr) {
         fs::remove(target);

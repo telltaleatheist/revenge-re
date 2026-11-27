@@ -1,6 +1,6 @@
 // The rules (include/revenge/rules.h): numbers we own, the original's to
-// begin with, read from <data dir>/rules/*.json at start into the tables the
-// game reads. Never the game's text: a rule that names a text uses its story
+// begin with, read from <data dir>/rules/*.json and <data dir>/ui/*.json at
+// start into the tables the game reads. Never the game's text: a rule that names a text uses its story
 // id, and a name in a file is the name the code gives the thing.
 //
 //   weapons.json
@@ -47,6 +47,11 @@
 //         weapon}: a unit fires the first entry any of whose weapons is
 //         ready. The lists fill the bank one after another (176 entries in
 //         all), and the counts and pointers to them are rebuilt from them.
+//         In every entry but five the weapon fired is the one that must be
+//         ready. In the fifteenth list (number 14) the five weapons fired
+//         are shifted by one against their readiness: each entry fires the
+//         weapon the next one waits for, and the last fires the first's.
+//         The original plays so, and the file keeps it.
 //     "priority_list_by_range_heat"  128 list numbers (0 to 15)
 //     "formation_offsets"  4 facing bands of 10 formations, each
 //         {"x": [3], "y": [3]}, the three followers' offsets from the leader
@@ -83,6 +88,15 @@
 //         many unit and pilot cards the lance editor deals (0 to 18, the
 //         cards there are)
 //
+// data/ui holds the layout, ours as the rules are, read the same way:
+//
+//   mission.json:
+//     "fade_colors"  4 palette colours the mission texts fade through
+//     "blink_rects"  7 {"x", "y", "extent"}: the squares the mission map
+//         blinks, in pixels
+//     "sprites"  12 {"tile_x", "pixel_y", "width_tiles", "height_pixels"}:
+//         where each mission sprite is cut from its picture
+//
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
 // file and the key.
@@ -97,7 +111,7 @@ struct RulesError : std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
-// Reads every rules file under data_dir/rules into its tables, or throws
+// Reads every file under data_dir/rules and data_dir/ui into its tables, or throws
 // RulesError naming the file and the key.
 void load(const std::filesystem::path& data_dir);
 

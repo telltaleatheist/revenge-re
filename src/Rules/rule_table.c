@@ -46,6 +46,14 @@ const RulePiece RulePieces[] =
 	{ "campaign.mission_date_advance_months", &MissionDateAdvanceMonths, sizeof(MissionDateAdvanceMonths), 0x3A6A, 0x2763, 0x18, "ee893d85b5e03044" },
 	{ "campaign.scenario_unit_cards", &UnitEditorScenarioCardCountByFamily, sizeof(UnitEditorScenarioCardCountByFamily), 0x3A6A, 0x3206, 0x7, "a1d6daaf6fee93e6" },
 	{ "campaign.pilot_cards", &UnitEditorPilotCardCountByFamily, sizeof(UnitEditorPilotCardCountByFamily), 0x3A6A, 0x3291, 0x7, "e8d81d90ea6156e8" },
+	{ "mission.fade_colors", &MissionFadeColorTable, sizeof(MissionFadeColorTable), 0x3A6A, 0x2718, 0x4, "d3e8eeebdd9d39b7" },
+	{ "mission.blink_x", &MissionBlinkRectX, sizeof(MissionBlinkRectX), 0x3A6A, 0x271C, 0xE, "e8711111f886ee17" },
+	{ "mission.blink_y", &MissionBlinkRectY, sizeof(MissionBlinkRectY), 0x3A6A, 0x272A, 0xE, "36dfaa095982ab48" },
+	{ "mission.blink_extent", &MissionBlinkRectExtent, sizeof(MissionBlinkRectExtent), 0x3A6A, 0x2738, 0x7, "988864439a626bbe" },
+	{ "mission.sprite_tile_x", &MissionSpriteSourceTileX, sizeof(MissionSpriteSourceTileX), 0x3A6A, 0x2783, 0x18, "6a981c23a5e0ed2d" },
+	{ "mission.sprite_pixel_y", &MissionSpriteSourcePixelY, sizeof(MissionSpriteSourcePixelY), 0x3A6A, 0x279B, 0x18, "9654b93a1db1da5c" },
+	{ "mission.sprite_width_tiles", &MissionSpriteWidthTiles, sizeof(MissionSpriteWidthTiles), 0x3A6A, 0x27B3, 0x18, "0648481faaca095c" },
+	{ "mission.sprite_height_pixels", &MissionSpriteHeightPixels, sizeof(MissionSpriteHeightPixels), 0x3A6A, 0x27CB, 0x18, "814bb2f50c9d771d" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -85,3 +93,11 @@ _Static_assert(sizeof(MissionDateYear) == 0x18, "campaign.mission_date_years is 
 _Static_assert(sizeof(MissionDateAdvanceMonths) == 0x18, "campaign.mission_date_advance_months is the original's size");
 _Static_assert(sizeof(UnitEditorScenarioCardCountByFamily) == 0x7, "campaign.scenario_unit_cards is the original's size");
 _Static_assert(sizeof(UnitEditorPilotCardCountByFamily) == 0x7, "campaign.pilot_cards is the original's size");
+_Static_assert(sizeof(MissionFadeColorTable) == 0x4, "mission.fade_colors is the original's size");
+_Static_assert(sizeof(MissionBlinkRectX) == 0xE, "mission.blink_x is the original's size");
+_Static_assert(sizeof(MissionBlinkRectY) == 0xE, "mission.blink_y is the original's size");
+_Static_assert(sizeof(MissionBlinkRectExtent) == 0x7, "mission.blink_extent is the original's size");
+_Static_assert(sizeof(MissionSpriteSourceTileX) == 0x18, "mission.sprite_tile_x is the original's size");
+_Static_assert(sizeof(MissionSpriteSourcePixelY) == 0x18, "mission.sprite_pixel_y is the original's size");
+_Static_assert(sizeof(MissionSpriteWidthTiles) == 0x18, "mission.sprite_width_tiles is the original's size");
+_Static_assert(sizeof(MissionSpriteHeightPixels) == 0x18, "mission.sprite_height_pixels is the original's size");

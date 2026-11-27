@@ -64,3 +64,13 @@ campaign.mission_date_years             MissionDateYear                     3A6A
 campaign.mission_date_advance_months    MissionDateAdvanceMonths            3A6A:2763 18
 campaign.scenario_unit_cards            UnitEditorScenarioCardCountByFamily 3A6A:3206 7
 campaign.pilot_cards                    UnitEditorPilotCardCountByFamily    3A6A:3291 7
+
+# data/ui/mission.json
+mission.fade_colors                     MissionFadeColorTable               3A6A:2718 4
+mission.blink_x                         MissionBlinkRectX                   3A6A:271C E
+mission.blink_y                         MissionBlinkRectY                   3A6A:272A E
+mission.blink_extent                    MissionBlinkRectExtent              3A6A:2738 7
+mission.sprite_tile_x                   MissionSpriteSourceTileX            3A6A:2783 18
+mission.sprite_pixel_y                  MissionSpriteSourcePixelY           3A6A:279B 18
+mission.sprite_width_tiles              MissionSpriteWidthTiles             3A6A:27B3 18
+mission.sprite_height_pixels            MissionSpriteHeightPixels           3A6A:27CB 18

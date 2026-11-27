@@ -48,6 +48,8 @@ byte ReplayExtendedCampaignState[CAMPAIGN_EXTENDED_STATE_COUNT];
 /* Filled at start from data/rules/campaign.json (revenge/rules.h). */
 byte ScenarioOrdinalBaseByCampaignStage[CAMPAIGN_STAGE_COUNT];
 
+/* Filled at start from data/ui/mission.json (revenge/rules.h). */
+/* Filled at start from data/ui/mission.json (revenge/rules.h). */
 byte MissionFadeColorTable[0x04];
 word16 MissionBlinkRectX[CAMPAIGN_BLINK_RECT_COUNT];
 word16 MissionBlinkRectY[CAMPAIGN_BLINK_RECT_COUNT];
@@ -56,6 +58,8 @@ byte MissionBlinkRectExtent[CAMPAIGN_BLINK_RECT_COUNT];
 byte MissionDateMonthIndex[CAMPAIGN_MISSION_DATE_COUNT];
 word16 MissionDateYear[CAMPAIGN_MISSION_DATE_COUNT];
 word16 MissionDateAdvanceMonths[CAMPAIGN_MISSION_DATE_COUNT];
+/* Filled at start from data/ui/mission.json (revenge/rules.h). */
+/* Filled at start from data/ui/mission.json (revenge/rules.h). */
 word16 MissionSpriteSourceTileX[CAMPAIGN_SPRITE_LAYOUT_COUNT];
 word16 MissionSpriteSourcePixelY[CAMPAIGN_SPRITE_LAYOUT_COUNT];
 word16 MissionSpriteWidthTiles[CAMPAIGN_SPRITE_LAYOUT_COUNT];

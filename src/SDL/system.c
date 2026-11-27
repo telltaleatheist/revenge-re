@@ -272,14 +272,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HYDRATE_DATA_OBJECT(InitialExtendedCampaignState, 0x1B8F);
 	HYDRATE_DATA_OBJECT(ForwardExtendedCampaignState, 0x1B9E);
 	HYDRATE_DATA_OBJECT(ReplayExtendedCampaignState, 0x1BAD);
-	HYDRATE_DATA_OBJECT(MissionFadeColorTable, 0x2718);
-	HYDRATE_DATA_OBJECT(MissionBlinkRectX, 0x271C);
-	HYDRATE_DATA_OBJECT(MissionBlinkRectY, 0x272A);
-	HYDRATE_DATA_OBJECT(MissionBlinkRectExtent, 0x2738);
-	HYDRATE_DATA_OBJECT(MissionSpriteSourceTileX, 0x2783);
-	HYDRATE_DATA_OBJECT(MissionSpriteSourcePixelY, 0x279B);
-	HYDRATE_DATA_OBJECT(MissionSpriteWidthTiles, 0x27B3);
-	HYDRATE_DATA_OBJECT(MissionSpriteHeightPixels, 0x27CB);
 	HYDRATE_DATA_OBJECT(CampaignMessageTable, 0x2B54);
 	HYDRATE_DATA_OBJECT(LoadedSceneFile, 0x71A8);
 	HYDRATE_DATA_OBJECT(SceneUnitRoutes, 0x86C1);
