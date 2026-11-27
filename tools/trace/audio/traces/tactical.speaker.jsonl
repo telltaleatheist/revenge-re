@@ -1,0 +1,6 @@
+{"digest": "54d4aca67c48e079", "kinds": {"midi --": 3, "midi 80": 1742, "midi 90": 1754, "midi B0": 71, "midi C0": 60, "midi E0": 29, "midi F7": 3, "midi reset": 4, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 160, "tone": 8, "tone-effect": 6}, "lines": 3845, "snap": "battle"}
+{"digest": "8a247e71775636e7", "kinds": {"snap": 1}, "lines": 1, "snap": "message1"}
+{"digest": "663ee3378426869e", "kinds": {"snap": 1, "tone-effect": 17}, "lines": 18, "snap": "message2"}
+{"digest": "b85a6646eb3033fe", "kinds": {"snap": 1, "tone-effect": 5}, "lines": 6, "snap": "message3"}
+{"digest": "2a975d38efbad130", "kinds": {"midi 80": 81, "midi 90": 89, "midi B0": 8, "midi C0": 9, "midi E0": 9, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 43, "tone": 1, "tone-effect": 1}, "lines": 244, "snap": "message4"}
+{"digest": "62289d0d28f6fd6f", "kinds": {"midi 80": 34, "midi 90": 34, "snap": 1}, "lines": 69, "snap": "after"}

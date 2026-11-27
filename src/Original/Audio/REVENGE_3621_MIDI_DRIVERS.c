@@ -3,6 +3,7 @@
 
 #include "REVENGE.h"
 #include "revenge/audio.h"
+#include "revenge/audio_log.h"
 #include "revenge/interrupts.h"
 #include "revenge/host_dispatch.h"
 #include "revenge/midi_data.h"
@@ -75,7 +76,9 @@ void ActivateSpeakerMIDIDriver(word16 activationArgument)
 	(void) activationArgument;
 	DisableHardwareInterrupts();
 	SpeakerMIDIRuntime.ActivePITDivisor = 0x0014;
+	AudioLog_SpeakerGate(1);
 	SDLBackend_EnablePCSpeaker();
+	AudioLog_SpeakerDivisor(0x0014);
 	SDLBackend_WritePCSpeakerPITDivisor(0x0014);
 	EnableHardwareInterrupts();
 }
@@ -83,6 +86,7 @@ void ActivateSpeakerMIDIDriver(word16 activationArgument)
 void DeactivateSpeakerMIDIDriver(void)
 {
 	DisableHardwareInterrupts();
+	AudioLog_SpeakerGate(0);
 	SDLBackend_SilencePCSpeaker();
 	EnableHardwareInterrupts();
 }
@@ -160,6 +164,7 @@ void ServiceSpeakerMIDIDriver(void)
 	if (divisor != SpeakerMIDIRuntime.ActivePITDivisor)
 	{
 		SpeakerMIDIRuntime.ActivePITDivisor = divisor;
+		AudioLog_SpeakerDivisor(divisor);
 		SDLBackend_WritePCSpeakerPITDivisor(divisor);
 	}
 	voice += 0x20;

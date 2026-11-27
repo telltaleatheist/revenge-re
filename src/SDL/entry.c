@@ -1,14 +1,17 @@
 #include "revenge/original_data.h"
+#include "revenge/audio_log.h"
 #include "revenge/platform_backend.h"
 #include "revenge/debug.h"
 
 #include "host_config.h"
 #include "revenge/original_import.h"
 #include "game_paths.h"
+#include "harness.h"
 #include "settings.h"
 #include "revenge/rules.h"
 #include "revenge/story.h"
 
+#include <SDL3/SDL.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -52,6 +55,8 @@ int main(int argc, char **argv)
 	/* The rules, ours, from the data folder beside the program. */
 	Rules_Load(GamePaths_DataDirectory());
 	RevengeInstallCrashDiagnostics();
+	/* What the game asks to be heard, for tools/trace/audio. */
+	AudioLog_Open(SDL_getenv("REVENGE_AUDIO_LOG"), HostClock_NowNS);
 	RevengeTrace("entry: initialize\n");
 	SDLBackend_InitializeDOSMemoryArena();
 	/* The player's settings stand for MEDIA.CFG from here on. */

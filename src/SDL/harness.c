@@ -7,6 +7,7 @@
 #include "harness.h"
 #include "map_dump.h"
 
+#include "revenge/audio_log.h"
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
 #include "revenge/original/campaign_data.h"
@@ -461,6 +462,7 @@ static void Snap(const char *name)
 	WriteFile(name, ".save", save, sizeof(save));
 	WriteState(name);
 	MapDump_Write(name);
+	AudioLog_Snap(name);
 	OutPath(path, "snaps", ".txt");
 	list = fopen(path, "ab");
 	if (list == NULL || fprintf(list, "%s\n", name) < 0 || fclose(list) != 0)

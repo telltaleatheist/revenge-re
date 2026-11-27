@@ -1,0 +1,3 @@
+{"digest": "a6a3e114b007dce4", "kinds": {"midi --": 3, "midi 80": 370, "midi 90": 370, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi reset": 1, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71}, "lines": 860, "snap": "menu"}
+{"digest": "8f5d364c8a242396", "kinds": {"midi 80": 18, "midi 90": 22, "snap": 1}, "lines": 41, "snap": "map"}
+{"digest": "42930c18f7f6f98e", "kinds": {"midi 80": 425, "midi 90": 428, "midi C0": 7, "snap": 1}, "lines": 861, "snap": "first_input"}

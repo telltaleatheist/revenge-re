@@ -1,0 +1,5 @@
+{"digest": "8c9348da4c1a891d", "kinds": {"midi --": 3, "midi 80": 1022, "midi 90": 1029, "midi B0": 7, "midi C0": 32, "midi E0": 11, "midi reset": 1, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71}, "lines": 2181, "snap": "editor"}
+{"digest": "53e2d969187f0ecf", "kinds": {"midi 80": 8, "midi 90": 4, "snap": 1}, "lines": 13, "snap": "first_pilot"}
+{"digest": "e04b515619518595", "kinds": {"midi 80": 5, "midi 90": 5, "snap": 1}, "lines": 11, "snap": "second_pilot"}
+{"digest": "06c363499d69afa6", "kinds": {"midi 80": 23, "midi 90": 27, "snap": 1}, "lines": 51, "snap": "lance"}
+{"digest": "08dc9fe34e356409", "kinds": {"midi 80": 321, "midi 90": 314, "midi B0": 16, "midi C0": 8, "snap": 1}, "lines": 660, "snap": "story"}

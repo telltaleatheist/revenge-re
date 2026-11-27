@@ -1,0 +1,12 @@
+{"digest": "bd67d2e3d72a9936", "kinds": {"midi --": 5, "midi 80": 1751, "midi 90": 1761, "midi B0": 70, "midi C0": 58, "midi E0": 29, "midi reset": 1, "pcm done": 8, "pcm effect": 6, "pcm speech": 2, "snap": 1, "sysex": 164}, "lines": 3856, "snap": "battle"}
+{"digest": "43013b3c39ab3a85", "kinds": {"snap": 1}, "lines": 1, "snap": "route"}
+{"digest": "0e2e5467701462c3", "kinds": {"pcm done": 3, "pcm effect": 6, "snap": 1}, "lines": 10, "snap": "contact"}
+{"digest": "efd54462113a5028", "kinds": {"pcm done": 5, "pcm effect": 9, "snap": 1}, "lines": 15, "snap": "won"}
+{"digest": "8b55b4b34afd1b77", "kinds": {"midi --": 2, "midi 80": 67, "midi 90": 73, "midi B0": 7, "midi C0": 15, "midi E0": 11, "snap": 1, "sysex": 53}, "lines": 229, "snap": "story"}
+{"digest": "ea41d85ea354dbac", "kinds": {"midi 80": 34, "midi 90": 31, "midi C0": 2, "snap": 1}, "lines": 68, "snap": "menu"}
+{"digest": "b089891f90d69fda", "kinds": {"midi 80": 5, "midi 90": 5, "midi C0": 1, "snap": 1}, "lines": 12, "snap": "slots"}
+{"digest": "586fab982c035b87", "kinds": {"midi --": 1, "midi 80": 9, "midi 90": 12, "midi B0": 23, "midi C0": 8, "midi E0": 8, "snap": 1, "sysex": 52}, "lines": 114, "snap": "saved"}
+{"digest": "2b4c9f638dade28a", "kinds": {"midi 80": 57, "midi 90": 60, "midi B0": 16, "midi C0": 1, "pcm done": 4, "pcm speech": 4, "snap": 1}, "lines": 143, "snap": "second"}
+{"digest": "7d2514389c57d463", "kinds": {"snap": 1}, "lines": 1, "snap": "in_game"}
+{"digest": "6f92889c5fb44603", "kinds": {"snap": 1}, "lines": 1, "snap": "load"}
+{"digest": "ea7152a82947d9ed", "kinds": {"midi --": 1, "midi 90": 2, "midi B0": 7, "midi C0": 8, "midi E0": 8, "snap": 1, "sysex": 52}, "lines": 79, "snap": "loaded"}

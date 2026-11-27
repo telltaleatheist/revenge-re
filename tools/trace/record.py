@@ -62,15 +62,20 @@ def tokens_by_snap(script):
     return groups
 
 
-def run(exe, game, script, work, step_us=None, story=None):
+def run(exe, game, script, work, step_us=None, story=None, settings=None, env_extra=None):
     """Runs the port; returns (exit code, the run's output). With story, a
     story folder (an earlier run's saves/story) is put in the save folder
-    first, so the run finds its story already imported."""
+    first, so the run finds its story already imported. With settings, that
+    text is the save folder's settings.txt (the player's settings, in place
+    of the install's MEDIA.CFG). env_extra adds variables to the run's."""
     if os.path.isdir(work):
         shutil.rmtree(work)
     os.makedirs(os.path.join(work, "saves"))
     if story:
         shutil.copytree(story, os.path.join(work, "saves", "story"))
+    if settings is not None:
+        with open(os.path.join(work, "saves", "settings.txt"), "w", encoding="ascii", newline="\n") as f:
+            f.write(settings)
     wanted = start_save(script)
     if wanted:
         if wanted[1] is None:
@@ -87,6 +92,8 @@ def run(exe, game, script, work, step_us=None, story=None):
         "REVENGE_HARNESS_OUT": os.path.abspath(work),
     })
     env.pop("REVENGE_SMOKE_INPUT", None)
+    env.pop("REVENGE_AUDIO_LOG", None)
+    env.update(env_extra or {})
     if step_us is not None:
         env["REVENGE_HARNESS_STEP_US"] = str(step_us)
     else:

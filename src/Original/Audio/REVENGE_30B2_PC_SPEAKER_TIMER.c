@@ -3,6 +3,7 @@
 
 #include "REVENGE.h"
 #include "revenge/audio.h"
+#include "revenge/audio_log.h"
 #include "revenge/platform_backend.h"
 
 static DOS_InterruptHandler SavedSystemTimerHandler;
@@ -29,18 +30,22 @@ enum
 // 30B2:0291
 byte EnablePCSpeaker(void)
 {
+	AudioLog_SpeakerGate(1);
 	return SDLBackend_EnablePCSpeaker();
 }
 
 // 30B2:0298
 void SilencePCSpeaker(void)
 {
+	AudioLog_SpeakerGate(0);
 	SDLBackend_SilencePCSpeaker();
 }
 
 // 30B2:029F
 void WritePCSpeakerPITDivisor(byte divisorLowByte, byte divisorHighByte)
 {
+	AudioLog_SpeakerDivisor(
+		(uint16) divisorLowByte | ((uint16) divisorHighByte << 0x08));
 	SDLBackend_WritePCSpeakerPITDivisor(
 		(uint16) divisorLowByte | ((uint16) divisorHighByte << 0x08));
 }

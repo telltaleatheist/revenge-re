@@ -3,6 +3,7 @@
 
 #include "REVENGE.h"
 #include "revenge/audio.h"
+#include "revenge/audio_log.h"
 #include "revenge/debug.h"
 #include "revenge/interrupts.h"
 #include "revenge/host_dispatch.h"
@@ -410,6 +411,7 @@ void DispatchMIDIByte(uint16 midiByte)
 	byte value;
 
 	value = (byte) midiByte;
+	AudioLog_MidiByte(value);
 	if (MIDIDriverHandlesByte(midiByte) != FALSE)
 		return;
 
@@ -1006,6 +1008,7 @@ void DispatchMIDISystemByte(uint16 midiByte)
 				nodeOffset += 0x20;
 			}
 			driverDescriptor->VoiceRecordsOffset = 0x62C0;
+			AudioLog_MidiReset();
 			MIDI_DRIVER_DISPATCH(driverDescriptor)->reset();
 			break;
 		}
@@ -1055,6 +1058,7 @@ void ResetMIDIPlaybackState(void)
 		nodeOffset += 0x20;
 	}
 	driverDescriptor->VoiceRecordsOffset = 0x62C0;
+	AudioLog_MidiReset();
 	MIDI_DRIVER_DISPATCH(driverDescriptor)->reset();
 }
 

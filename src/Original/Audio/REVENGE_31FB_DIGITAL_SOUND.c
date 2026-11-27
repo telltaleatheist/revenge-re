@@ -3,6 +3,7 @@
 // using Reko decompiler version 0.11.4.0.
 
 #include "REVENGE.h"
+#include "revenge/audio_log.h"
 #include "revenge/debug.h"
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
@@ -171,6 +172,7 @@ void PlayDigitalWeaponEffect(word16 weaponEffectId)
 
 	DigitalWeaponEffectRecord *effect =
 		&DigitalWeaponEffectTable()[weaponEffectId];
+	AudioLog_PcmStart("effect", weaponEffectId, effect->SampleLength);
 	REVENGE_PRESERVATION_TRACE(
 		"audio: digital effect=%u offset=%lu length=%lu scale=%u\n",
 		weaponEffectId, (unsigned long) effect->PackedBufferOffset,
@@ -218,6 +220,7 @@ void HandleDigitalWeaponEffectCompletion(word16 descriptorOffset,
 		return;
 	}
 
+	AudioLog_PcmDone();
 	DigitalSoundDriverMutationGuard = TRUE;
 	RemoveDigitalSampleDescriptor(descriptor);
 	word16 playbackDescriptorOffset =
@@ -666,6 +669,7 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 			DigitalSoundDriverMutationGuard = 0x00;
 		}
 		word16 descriptorCount = 0x0000;
+		int16 descriptorEntries[0x10];
 		int16 soundCodeIndex = 0x0000;
 		while (soundCodeIndex < 0x0F && soundCodes[soundCodeIndex] != 0x00)
 		{
@@ -682,6 +686,7 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 					entry->SampleLength,
 					DIGITAL_SOUND_SAMPLE_RATE_HZ,
 					DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
+				descriptorEntries[descriptorCount] = soundEntryIndex;
 				++descriptorCount;
 			}
 			++soundCodeIndex;
@@ -692,10 +697,15 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 			DigitalSampleDescriptor *descriptor =
 				&DigitalSamplePlaybackDescriptors()[descriptorIndex];
 			ActiveDigitalSampleDescriptor = descriptor;
+			AudioLog_PcmStart("speech", (unsigned) descriptorEntries[descriptorIndex],
+				descriptor->SampleLength);
 			if (SoundDriverIndex == 0x00)
+			{
 				PlayPCSpeakerBitstream(
 					FAR_POINTER(byte, descriptor->SampleDataSegment,
 						descriptor->SampleDataOffset), descriptor->SampleLength);
+				AudioLog_PcmDone();
+			}
 			else
 			{
 				ConfigureDigitalSampleTiming(descriptor,
@@ -714,6 +724,7 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 					SDLBackend_ServiceTimers();
 				}
 				while (GetDigitalSamplePlaybackState(descriptor) > 0x00);
+				AudioLog_PcmDone();
 				RemoveDigitalSampleDescriptor(descriptor);
 			}
 			++descriptorIndex;

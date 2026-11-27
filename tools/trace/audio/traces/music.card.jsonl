@@ -1,0 +1,4 @@
+{"digest": "6ec63cf8c7a5b345", "kinds": {"snap": 1}, "lines": 1, "snap": "intro"}
+{"digest": "bde8ba3abf1a906d", "kinds": {"midi --": 3, "midi 80": 370, "midi 90": 370, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi reset": 1, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71}, "lines": 860, "snap": "title"}
+{"digest": "163a2125028f3632", "kinds": {"midi 80": 1009, "midi 90": 1009, "midi B0": 16, "midi C0": 18, "snap": 1}, "lines": 2053, "snap": "title_music"}
+{"digest": "a4eec69385537380", "kinds": {"snap": 1}, "lines": 1, "snap": "menu"}

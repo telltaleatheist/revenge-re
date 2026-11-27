@@ -1,0 +1,7 @@
+# The title's music to its end: the title script's screens, the title left to
+# play until its tune has finished (about 40 s of the test clock). The main
+# menu plays no music of its own.
+@snap:intro
+idle:1000 @snap:title
+idle:2500 @snap:title_music
+Return idle:20 @snap:menu

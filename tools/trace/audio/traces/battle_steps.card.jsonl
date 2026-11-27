@@ -1,0 +1,7 @@
+{"digest": "422f2df998ab5f4c", "kinds": {"midi --": 5, "midi 80": 1751, "midi 90": 1761, "midi B0": 70, "midi C0": 58, "midi E0": 29, "midi reset": 1, "pcm done": 8, "pcm effect": 6, "pcm speech": 2, "snap": 1, "sysex": 164}, "lines": 3856, "snap": "step01"}
+{"digest": "af850001d0c06585", "kinds": {"snap": 1}, "lines": 1, "snap": "step02"}
+{"digest": "0d15fb5aea0dfa2e", "kinds": {"snap": 1}, "lines": 1, "snap": "step04"}
+{"digest": "ef9c5d59f84a984b", "kinds": {"snap": 1}, "lines": 1, "snap": "step08"}
+{"digest": "fd36f9cc252f532f", "kinds": {"snap": 1}, "lines": 1, "snap": "step12"}
+{"digest": "4c4a727915add41b", "kinds": {"snap": 1}, "lines": 1, "snap": "step16"}
+{"digest": "8b041659137d51c9", "kinds": {"snap": 1}, "lines": 1, "snap": "step20"}

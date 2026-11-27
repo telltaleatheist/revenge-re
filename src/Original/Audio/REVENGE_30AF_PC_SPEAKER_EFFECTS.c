@@ -4,6 +4,7 @@
 
 #include "REVENGE.h"
 #include "revenge/audio.h"
+#include "revenge/audio_log.h"
 #include "revenge/original_data.h"
 
 // 3037:078C is the loader-visible alias for executable address 30AF:000C.
@@ -17,6 +18,7 @@ void PlayPCSpeakerEffectByIndex(word16 effectId)
 		DosAddress effectStream =
 			PCSpeakerEffectStreamPointerTable[effectId];
 
+		AudioLog_ToneEffect(effectId);
 		StartPCSpeakerEffectStream(
 			PCSpeakerEffectStreamData +
 			(effectStream.offset - PC_SPEAKER_EFFECT_STREAM_FIRST_OFFSET));

@@ -65,6 +65,7 @@ function(chr_uses_rules target)
 endfunction()
 add_library(chr_original_runtime STATIC ${CHR_ORIGINAL_SOURCES})
 target_sources(chr_original_runtime PRIVATE
+	src/Support/audio_log.c
 	src/Support/debug.c
 	src/Support/media_settings.c
     src/Support/far_memory.c
@@ -633,6 +634,12 @@ if(BUILD_TESTING)
     chr_strict(test_midi_sequence)
     add_test(NAME audio.midi_sequence_parser COMMAND test_midi_sequence)
 
+    # The audio log's lines (revenge/audio_log.h).
+    add_executable(test_audio_log tests/test_audio_log.c)
+    target_link_libraries(test_audio_log PRIVATE chr_original_runtime)
+    chr_strict(test_audio_log)
+    add_test(NAME audio.log_lines COMMAND test_audio_log)
+
     add_executable(test_digital_descriptors
         tests/test_digital_descriptors.c
         tests/fake_backend.c)
@@ -912,7 +919,14 @@ if(CHR_BUILD_SDL)
             COMMAND ${Python3_EXECUTABLE} -I
                 ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/exe_free.py
                 --exe $<TARGET_FILE:Revenge>)
-        set_tests_properties(trace.goldens trace.repeat trace.exe_free PROPERTIES SKIP_RETURN_CODE 77)
+        # What the game asks to be heard, on the card and on the speaker,
+        # against the audio goldens (tools/trace/audio/README.md).
+        add_test(NAME audio.check
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/audio.py check
+                --exe $<TARGET_FILE:Revenge>)
+        set_tests_properties(trace.goldens trace.repeat trace.exe_free audio.check
+            PROPERTIES SKIP_RETURN_CODE 77)
         # Bytes a run must hold, by the map's places, against the image.
         add_test(NAME map.dump_checks
             COMMAND ${Python3_EXECUTABLE} -I

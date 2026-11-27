@@ -126,6 +126,9 @@ tools/trace/repeat.py --exe BUILD/Revenge --game GAME_DIR --script tools/trace/s
 # Every golden with the story imported and no program file in the game folder
 tools/trace/exe_free.py --exe BUILD/Revenge --game GAME_DIR
 
+# What the game asks to be heard, on the card and the speaker (audio/README.md)
+tools/trace/audio.py check --exe BUILD/Revenge --game GAME_DIR
+
 # A run's snaps as PNGs, outside the repo
 tools/trace/frames.py RUN_DIR OUT_DIR [--scale N]
 
