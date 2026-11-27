@@ -5,6 +5,8 @@
     {"group": "a", "number": 0, "mt32": "AcouPiano1", "program": 0},
     {"group": "a", "number": 2, "mt32": "AcouPiano3", "program": 1},
     {"group": "a", "number": 3, "mt32": "ElecPiano1", "program": 4},
+    {"group": "a", "number": 6, "mt32": "ElecPiano4", "program": 5, "note": "a power-on patch the songs sound unwritten"},
+    {"group": "a", "number": 7, "mt32": "Honkytonk", "program": 3, "note": "a power-on patch the songs sound unwritten"},
     {"group": "a", "number": 9, "mt32": "Elec Org 2", "program": 17},
     {"group": "a", "number": 12, "mt32": "Pipe Org 1", "program": 19},
     {"group": "a", "number": 19, "mt32": "Clavi 1", "program": 7},
