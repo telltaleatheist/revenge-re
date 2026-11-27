@@ -181,11 +181,9 @@ def include_name(header):
 
 
 def source():
-    objects = [o for o in map_objects.externs() if o[3] not in LEFT_OUT]
-    headers = []
-    for _, _, _, header in objects:
-        if header not in headers:
-            headers.append(header)
+    # By name, so a declaration that moves between headers leaves the table as it is.
+    objects = sorted((o for o in map_objects.externs() if o[3] not in LEFT_OUT), key=lambda o: o[0])
+    headers = sorted({header for _, _, _, header in objects})
     lines = [
         "/* Written by tools/map/make_map_dump.py from the headers' externs; don't edit. */",
         "",
