@@ -1231,6 +1231,13 @@ if(CHR_BUILD_SDL)
         set_tests_properties(platform.settings_extra PROPERTIES PASS_REGULAR_EXPRESSION
             "fault: .*settings.txt:3: sound samples takes no parameter|skipped")
 
+        # The scene interpreter's plain jump from a battle's starting cursor.
+        add_executable(test_scene_jump tests/test_scene_jump.c)
+        target_include_directories(test_scene_jump PRIVATE src/Original tests)
+        target_link_libraries(test_scene_jump PRIVATE ${CHR_RUNTIME_WITH_BACKEND})
+        chr_strict(test_scene_jump)
+        add_test(NAME tactical.original_scene_jump COMMAND test_scene_jump)
+
         # The objects the source places in the data segment, as the program
         # starts them, against the player's copy's load image.
         add_executable(test_initial_data_image tests/test_initial_data_image.c)

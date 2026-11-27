@@ -206,14 +206,18 @@ static inline word16 ReadSceneWordLowFirst(void)
 	return (word16)(low | (word16)(high << 0x08));
 }
 #define ReadSceneWord() ReadSceneWordLowFirst()
+/* The target is taken before the cursor moves: an operand read through the
+ * cursor (SCENE_JUMP's) comes from where the cursor is, which at a battle's
+ * start is the buffer's own segment, not DS (1A1F:1C48). */
 #define JumpToSceneOffset(sceneOffset) \
 	do \
 	{ \
+		word16 jumpTarget = (word16) (sceneOffset); \
 		SceneInstructionCursor.segment = SCENE_DATA_SEGMENT; \
 		SceneInstructionCursor.offset = \
 			0x71A8 \
 			+ SceneInstructionBaseOffset \
-			+ (sceneOffset); \
+			+ jumpTarget; \
 	} while (0)
 #define BranchOrSkipSceneWord(takeBranch) \
 	do \
