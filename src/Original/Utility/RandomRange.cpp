@@ -1,3 +1,4 @@
+// 34C6: random range
 // Reconstructed original inclusive random-range utility (segment 34C6).
 
 #include "REVENGE.h"

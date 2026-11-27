@@ -135,3 +135,7 @@ file	src/Original/Units/REVENGE_2507_TRAINING.cpp	src/Original/Units/Training.cp
 file	src/Original/Units/REVENGE_2507_UNIT_ASSIGNMENT.cpp	src/Original/Units/UnitAssignment.cpp	2507	unit assignment
 file	src/Original/Units/REVENGE_2B34_UNIT_STATUS.cpp	src/Original/Units/UnitStatus.cpp	2B2D 2B34	unit status
 file	src/Original/Units/REVENGE_30F1_SCENARIO_ROSTERS.cpp	src/Original/Units/ScenarioRosters.cpp	30F1	scenario rosters
+file	src/Original/Utility/REVENGE_34C6_RANDOM_RANGE.cpp	src/Original/Utility/RandomRange.cpp	34C6	random range
+file	src/Original/Utility/REVENGE_3968_INTEGER_FORMAT.cpp	src/Original/Utility/IntegerFormat.cpp	3968	integer format
+file	src/Original/Utility/REVENGE_39C4_DECIMAL_PARSE.cpp	src/Original/Utility/DecimalParse.cpp	39C4	decimal parse
+file	src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.cpp	src/Original/Utility/StringUppercase.cpp	3A04	string uppercase

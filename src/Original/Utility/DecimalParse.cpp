@@ -1,3 +1,4 @@
+// 39C4: decimal parse
 // Reconstructed original signed decimal parser (segment 39C4).
 
 #include "REVENGE.h"

@@ -70,7 +70,7 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Audio/DigitalPlayback.cpp
 	src/Original/Audio/PITTimer.cpp
     src/Original/Graphics/VideoTiming.cpp
-    src/Original/Utility/REVENGE_34C6_RANDOM_RANGE.cpp
+    src/Original/Utility/RandomRange.cpp
     src/Original/Input/NavigationKey.cpp
     src/Original/Graphics/TileCapture.cpp
     src/Original/IO/CriticalError.cpp
@@ -90,14 +90,14 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Input/UIRegionHighlight.cpp
     src/Original/Audio/MIDISequence.cpp
 	src/Original/Audio/MIDIDrivers.cpp
-	src/Original/Utility/REVENGE_3968_INTEGER_FORMAT.cpp
-	src/Original/Utility/REVENGE_39C4_DECIMAL_PARSE.cpp
+	src/Original/Utility/IntegerFormat.cpp
+	src/Original/Utility/DecimalParse.cpp
 	src/Original/Campaign/ClockSnapshot.cpp
     src/Original/IO/SystemTime.cpp
 	src/Original/IO/Environment.cpp
 	src/Original/Campaign/EpochTime.cpp
 	src/Original/Campaign/Timezone.cpp
-    src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.cpp
+    src/Original/Utility/StringUppercase.cpp
     src/Original/Input/Cursor.cpp
     src/Original/Text/FontRaster.cpp)
 
