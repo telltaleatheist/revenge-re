@@ -1103,12 +1103,14 @@ if(CHR_BUILD_SDL)
         set_tests_properties(resources.tracked_file_make PROPERTIES SKIP_RETURN_CODE 77
             PASS_REGULAR_EXPRESSION "fault: can't create ABSENT.DAT|skipped")
 
-        foreach(mode first none own words bad parse)
+        foreach(mode first none own words bad extra parse)
             add_test(NAME platform.settings_${mode} COMMAND test_settings ${mode})
             set_tests_properties(platform.settings_${mode} PROPERTIES SKIP_RETURN_CODE 77)
         endforeach()
         set_tests_properties(platform.settings_bad PROPERTIES PASS_REGULAR_EXPRESSION
             "fault: .*settings.txt:3: music can.t be .loud.|skipped")
+        set_tests_properties(platform.settings_extra PROPERTIES PASS_REGULAR_EXPRESSION
+            "fault: .*settings.txt:3: sound samples takes no parameter|skipped")
 
         # The objects the source places in the data segment, as the program
         # starts them, against the player's copy's load image.

@@ -29,10 +29,13 @@
  *            the next start reads settings.txt alone, to the same choices
  *   none     with no MEDIA.CFG, our defaults
  *   own      a settings.txt of the player's own words wins; an old card
- *            word for the music reads as the soundfont, and the file is
+ *            word for the music reads as the soundfont, for the sound (its
+ *            parameter passed over) as the samples, and the file is
  *            written again in the new words
- *   words    the music's words: off and speaker, each its record
+ *   words    the music's words (off, speaker) and the sound's (speaker,
+ *            samples), each its record
  *   bad      a choice it doesn't know is a fault naming the file and line
+ *   extra    so is a parameter after one of the new sound words
  *   parse    the game's own parse applies every line, the last (the input
  *            device) too, as 2C7F:055F tests its count before the decrement
  */
@@ -113,7 +116,7 @@ int main(int argc, char **argv)
 		assert(choices->choice[MEDIA_OPTION_VIDEO] == 0 && choices->choice[MEDIA_OPTION_MUSIC] == 1);
 		assert(choices->choice[MEDIA_OPTION_SOUND] == 0 && choices->choice[MEDIA_OPTION_INPUT] == 1);
 		assert(strcmp(choices->soundParameter, "220") == 0);
-		assert(choices->music == MEDIA_MUSIC_SOUNDFONT);
+		assert(choices->music == MEDIA_MUSIC_SOUNDFONT && choices->sound == MEDIA_SOUND_SAMPLES);
 		assert(SDL_GetPathInfo(settingsPath, NULL));
 	}
 	else if (strcmp(mode, "own") == 0)
@@ -125,30 +128,38 @@ int main(int argc, char **argv)
 		assert(HostSettings_Prepare());
 		choices = HostSettings_MediaChoices();
 		assert(choices->music == MEDIA_MUSIC_SOUNDFONT && choices->choice[MEDIA_OPTION_MUSIC] == 1);
-		assert(choices->choice[MEDIA_OPTION_SOUND] == 2);
-		assert(choices->choice[MEDIA_OPTION_INPUT] == 0 && strcmp(choices->soundParameter, "2C0") == 0);
+		assert(choices->sound == MEDIA_SOUND_SAMPLES && choices->choice[MEDIA_OPTION_SOUND] == 0);
+		assert(choices->choice[MEDIA_OPTION_INPUT] == 0 && strcmp(choices->soundParameter, "220") == 0);
 		written = (char *) SDL_LoadFile(settingsPath, NULL);
 		assert(written != NULL && strstr(written, "\nmusic = soundfont\n") != NULL);
-		assert(strstr(written, "\nsound = ssi-2001 2C0\n") != NULL && strstr(written, "adlib\n") == NULL);
+		assert(strstr(written, "\nsound = samples\n") != NULL && strstr(written, "adlib\n") == NULL);
+		assert(strstr(written, "2C0") == NULL && strstr(written, "ssi-2001") == NULL);
 		SDL_free(written);
 	}
 	else if (strcmp(mode, "words") == 0)
 	{
 		const RevengeMediaChoices *choices;
-		const char *off = "video = vga\nmusic = off\nsound = pc-speaker\ninput = keys\n";
+		const char *off = "video = vga\nmusic = off\nsound = speaker\ninput = keys\n";
 		char *written;
 
 		WriteText(settingsPath, off);
 		assert(HostSettings_Prepare());
 		choices = HostSettings_MediaChoices();
 		assert(choices->music == MEDIA_MUSIC_OFF && choices->choice[MEDIA_OPTION_MUSIC] == 1);
+		assert(choices->sound == MEDIA_SOUND_SPEAKER && choices->choice[MEDIA_OPTION_SOUND] == 8);
 		written = (char *) SDL_LoadFile(settingsPath, NULL);
 		assert(written != NULL && strcmp(written, off) == 0);
 		SDL_free(written);
-		WriteText(settingsPath, "video = vga\nmusic = Speaker\nsound = pc-speaker\ninput = keys\n");
+		WriteText(settingsPath, "video = vga\nmusic = Speaker\nsound = Samples\ninput = keys\n");
 		assert(HostSettings_Prepare());
 		choices = HostSettings_MediaChoices();
 		assert(choices->music == MEDIA_MUSIC_SPEAKER && choices->choice[MEDIA_OPTION_MUSIC] == 6);
+		assert(choices->sound == MEDIA_SOUND_SAMPLES && choices->choice[MEDIA_OPTION_SOUND] == 0);
+	}
+	else if (strcmp(mode, "extra") == 0)
+	{
+		WriteText(settingsPath, "video = vga\nmusic = off\nsound = samples 220\ninput = keys\n");
+		(void) HostSettings_Prepare();
 	}
 	else if (strcmp(mode, "parse") == 0)
 	{

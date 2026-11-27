@@ -503,7 +503,7 @@ void SDLBackend_ServiceTimers(void)
  * the trace copy has, VGA and the speaker. */
 const RevengeMediaChoices *HostSettings_MediaChoices(void)
 {
-	static const RevengeMediaChoices speaker = { { 0x0000, 0x0006, 0x0008, 0x0001 }, "", MEDIA_MUSIC_SPEAKER };
+	static const RevengeMediaChoices speaker = { { 0x0000, 0x0006, 0x0008, 0x0001 }, "", MEDIA_MUSIC_SPEAKER, MEDIA_SOUND_SPEAKER };
 
 	return &speaker;
 }

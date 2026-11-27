@@ -27,14 +27,25 @@ enum
 	MEDIA_MUSIC_OFF = 2
 };
 
+/* Where the effects and the speech go: as digital samples (the game drives
+ * its Sound Blaster path, whose samples the mixer plays), or the speaker
+ * (the effects as the speaker's tone streams). */
+enum
+{
+	MEDIA_SOUND_SAMPLES = 0,
+	MEDIA_SOUND_SPEAKER = 1
+};
+
 /* Each option's choice: an index into that option's records (DS:3AD1,
  * 3B12, 3B87, 3B6D), and the sound card's hexadecimal parameter; and the
- * music's way out (MEDIA_MUSIC_*), which picks the music's record. */
+ * music's and the sound's ways out (MEDIA_MUSIC_*, MEDIA_SOUND_*), which
+ * pick their records. */
 typedef struct RevengeMediaChoices
 {
 	word16 choice[MEDIA_OPTION_COUNT];
 	char soundParameter[MEDIA_SOUND_PARAMETER_CAPACITY];
 	word16 music;
+	word16 sound;
 } RevengeMediaChoices;
 
 /* The names of MEDIA.CFG's options, in the option records at DS:3A91

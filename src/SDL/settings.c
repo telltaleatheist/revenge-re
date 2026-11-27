@@ -19,31 +19,32 @@ enum
 
 /* Our word for each option, and for each of its records in the records'
  * order (DS:3AD1 video, 3B12 music, 3B87 sound, 3B6D input). */
-/* The music's words are the rebuild's own: where it goes (MEDIA_MUSIC_*).
- * The card words, its records' (DS:3B12), are still read as old values,
- * once: the speaker's as the speaker, every card's as the soundfont, and
- * the file is written again in the new words. (The sound's words go the
- * same way in phase 3's effects slice.) */
+/* The music's and the sound's words are the rebuild's own: where each goes
+ * (MEDIA_MUSIC_*, MEDIA_SOUND_*). The card words, their records' (DS:3B12,
+ * 3B87), are still read as old values, once: the speaker's as the speaker,
+ * every card's as the soundfont or the samples, and the file is written
+ * again in the new words. */
 static const char *const OptionWords[MEDIA_OPTION_COUNT] = { "video", "music", "sound", "input" };
 static const char *const VideoWords[] = { "vga", "mcga", "ega", "tandy", "cga" };
 static const char *const MusicWords[] = { "soundfont", "speaker", "off" };
 static const char *const MusicRecordWords[] = {
 	"lapc-1", "mt-32", "sound-blaster", "adlib", "ps-1", "tandy", "pc-speaker"
 };
-static const char *const SoundWords[] = {
+static const char *const SoundWords[] = { "samples", "speaker" };
+static const char *const SoundRecordWords[] = {
 	"sound-blaster", "game-blaster", "ssi-2001", "sound-master", "adlib", "ps-1",
 	"tandy-dac", "tandy", "pc-speaker"
 };
 static const char *const InputWords[] = { "mouse", "keys" };
 
-/* Each option's words; the music's are its records', as the game counts
- * them (the player's words are MusicWords). */
+/* Each option's words; the music's and the sound's are their records', as
+ * the game counts them (the player's words are MusicWords and SoundWords). */
 static const char *const *const ChoiceWords[MEDIA_OPTION_COUNT] = {
-	VideoWords, MusicRecordWords, SoundWords, InputWords
+	VideoWords, MusicRecordWords, SoundRecordWords, InputWords
 };
 static const word16 ChoiceWordCounts[MEDIA_OPTION_COUNT] = {
 	sizeof(VideoWords) / sizeof(VideoWords[0]), sizeof(MusicRecordWords) / sizeof(MusicRecordWords[0]),
-	sizeof(SoundWords) / sizeof(SoundWords[0]), sizeof(InputWords) / sizeof(InputWords[0])
+	sizeof(SoundRecordWords) / sizeof(SoundRecordWords[0]), sizeof(InputWords) / sizeof(InputWords[0])
 };
 
 enum
@@ -52,13 +53,19 @@ enum
 	/* The records the music's ways out drive: the speaker's own driver, and
 	 * the Roland driver for the soundfont and for none. */
 	MUSIC_RECORD_ROLAND = 1,
-	MUSIC_RECORD_SPEAKER = 6
+	MUSIC_RECORD_SPEAKER = 6,
+	SOUND_WORD_COUNT = sizeof(SoundWords) / sizeof(SoundWords[0]),
+	/* The records the sound's ways out drive: the samples through the
+	 * Sound Blaster's (its parameter always 220, the default's), and the
+	 * speaker's. */
+	SOUND_RECORD_SAMPLES = 0,
+	SOUND_RECORD_SPEAKER = 8
 };
 
 /* With no MEDIA.CFG: VGA, the music on the soundfont, the effects as
- * digital samples (a Sound Blaster at 220h), the keyboard. */
+ * digital samples, the keyboard. */
 static const RevengeMediaChoices DefaultChoices = {
-	{ 0, MUSIC_RECORD_ROLAND, 0, 1 }, "220", MEDIA_MUSIC_SOUNDFONT
+	{ 0, MUSIC_RECORD_ROLAND, SOUND_RECORD_SAMPLES, 1 }, "220", MEDIA_MUSIC_SOUNDFONT, MEDIA_SOUND_SAMPLES
 };
 
 static RevengeMediaChoices choices;
@@ -67,6 +74,17 @@ static int prepared;
 static word16 MusicRecord(word16 music)
 {
 	return music == MEDIA_MUSIC_SPEAKER ? MUSIC_RECORD_SPEAKER : MUSIC_RECORD_ROLAND;
+}
+
+static word16 SoundRecord(word16 sound)
+{
+	return sound == MEDIA_SOUND_SPEAKER ? SOUND_RECORD_SPEAKER : SOUND_RECORD_SAMPLES;
+}
+
+/* A card's record read as an old value: the speaker's, or the samples. */
+static word16 SoundFromRecord(word16 record)
+{
+	return record == SOUND_RECORD_SPEAKER ? MEDIA_SOUND_SPEAKER : MEDIA_SOUND_SAMPLES;
 }
 
 /* A card's record read as an old value: the speaker's, or the soundfont. */
@@ -154,8 +172,9 @@ static char *NextLine(char **cursor)
 	return line;
 }
 
-/* Our file: "option = word", the sound's word followed by its parameter
- * when it takes one; '#' starts a comment. 1 if it held an old word. */
+/* Our file: "option = word"; '#' starts a comment. An old card word for the
+ * sound may carry the card's parameter after it, which is passed over. 1 if
+ * it held an old word. */
 static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
 {
 	int old = 0;
@@ -189,25 +208,28 @@ static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
 		seen[option] = 1;
 		if (option == MEDIA_OPTION_MUSIC && (choice = WordIndex(MusicWords, MUSIC_WORD_COUNT, words[1])) >= 0)
 			out->music = (word16) choice;
+		else if (option == MEDIA_OPTION_SOUND && (choice = WordIndex(SoundWords, SOUND_WORD_COUNT, words[1])) >= 0)
+			out->sound = (word16) choice;
 		else if ((choice = WordIndex(ChoiceWords[option], ChoiceWordCounts[option], words[1])) >= 0
-			&& option == MEDIA_OPTION_MUSIC)
+			&& (option == MEDIA_OPTION_MUSIC || option == MEDIA_OPTION_SOUND))
 		{
-			out->music = MusicFromRecord((word16) choice);
+			if (option == MEDIA_OPTION_MUSIC)
+				out->music = MusicFromRecord((word16) choice);
+			else
+			{
+				out->sound = SoundFromRecord((word16) choice);
+				if (count == 3 && MediaSettings_SoundTakesParameter((word16) choice) && IsHexParameter(words[2]))
+					count = 2;
+			}
 			old = 1;
 		}
 		if (choice < 0)
 			RevengeFault("%s:%d: %s can't be \"%s\"", path, lineNumber, OptionWords[option], words[1]);
-		out->choice[option] = option == MEDIA_OPTION_MUSIC ? MusicRecord(out->music) : (word16) choice;
-		if (option == MEDIA_OPTION_SOUND && MediaSettings_SoundTakesParameter((word16) choice))
-		{
-			if (count != 3 || !IsHexParameter(words[2]))
-				RevengeFault("%s:%d: sound %s takes a hexadecimal parameter (such as 220)",
-					path, lineNumber, SoundWords[choice]);
-			snprintf(out->soundParameter, sizeof(out->soundParameter), "%s", words[2]);
-		}
-		else if (count == 3)
+		if (count == 3)
 			RevengeFault("%s:%d: %s %s takes no parameter", path, lineNumber,
 				OptionWords[option], words[1]);
+		out->choice[option] = option == MEDIA_OPTION_MUSIC ? MusicRecord(out->music)
+			: option == MEDIA_OPTION_SOUND ? SoundRecord(out->sound) : (word16) choice;
 	}
 	for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
 		if (!seen[option])
@@ -216,7 +238,8 @@ static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
 }
 
 /* The DOS installer's MEDIA.CFG: "KEY=VALUE[ PARAMETER]" lines. What it
- * names that the game knows is taken; anything else keeps our default. */
+ * names that the game knows is taken (a sound card's parameter is not: the
+ * samples keep theirs); anything else keeps our default. */
 static void ReadMediaConfiguration(char *text, RevengeMediaChoices *out)
 {
 	char *cursor = text;
@@ -238,16 +261,12 @@ static void ReadMediaConfiguration(char *text, RevengeMediaChoices *out)
 		choice = MediaSettings_ChoiceIndex((word16) option, words[1]);
 		if (choice < 0)
 			continue;
-		if (option == MEDIA_OPTION_SOUND && MediaSettings_SoundTakesParameter((word16) choice))
-		{
-			if (count != 3 || !IsHexParameter(words[2]))
-				continue;
-			snprintf(out->soundParameter, sizeof(out->soundParameter), "%s", words[2]);
-		}
 		out->choice[option] = (word16) choice;
 	}
 	out->music = MusicFromRecord(out->choice[MEDIA_OPTION_MUSIC]);
 	out->choice[MEDIA_OPTION_MUSIC] = MusicRecord(out->music);
+	out->sound = SoundFromRecord(out->choice[MEDIA_OPTION_SOUND]);
+	out->choice[MEDIA_OPTION_SOUND] = SoundRecord(out->sound);
 }
 
 static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
@@ -263,33 +282,24 @@ static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
 	{
 		word16 choice;
 
-		const char *const *words = option == MEDIA_OPTION_MUSIC ? MusicWords : ChoiceWords[option];
-		word16 count = option == MEDIA_OPTION_MUSIC ? (word16) MUSIC_WORD_COUNT : ChoiceWordCounts[option];
+		const char *const *words = option == MEDIA_OPTION_MUSIC ? MusicWords
+			: option == MEDIA_OPTION_SOUND ? SoundWords : ChoiceWords[option];
+		word16 count = option == MEDIA_OPTION_MUSIC ? (word16) MUSIC_WORD_COUNT
+			: option == MEDIA_OPTION_SOUND ? (word16) SOUND_WORD_COUNT : ChoiceWordCounts[option];
 
 		length += snprintf(text + length, sizeof(text) - (size_t) length, "#   %s:", OptionWords[option]);
 		for (choice = 0; choice < count; ++choice)
 			length += snprintf(text + length, sizeof(text) - (size_t) length, " %s", words[choice]);
 		length += snprintf(text + length, sizeof(text) - (size_t) length, "\n");
 	}
-	length += snprintf(text + length, sizeof(text) - (size_t) length,
-		"# These sound choices take a hexadecimal number after them (the card's\n"
-		"# setting, such as 220):");
-	{
-		word16 choice;
-
-		for (choice = 0; choice < ChoiceWordCounts[MEDIA_OPTION_SOUND]; ++choice)
-			if (MediaSettings_SoundTakesParameter(choice))
-				length += snprintf(text + length, sizeof(text) - (size_t) length, " %s",
-					SoundWords[choice]);
-	}
-	length += snprintf(text + length, sizeof(text) - (size_t) length, "\n\n");
+	length += snprintf(text + length, sizeof(text) - (size_t) length, "\n");
 	for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
 	{
 		word16 choice = values->choice[option];
 
-		if (option == MEDIA_OPTION_SOUND && MediaSettings_SoundTakesParameter(choice))
-			length += snprintf(text + length, sizeof(text) - (size_t) length, "%s = %s %s\n",
-				OptionWords[option], ChoiceWords[option][choice], values->soundParameter);
+		if (option == MEDIA_OPTION_SOUND)
+			length += snprintf(text + length, sizeof(text) - (size_t) length, "%s = %s\n",
+				OptionWords[option], SoundWords[values->sound]);
 		else if (option == MEDIA_OPTION_MUSIC)
 			length += snprintf(text + length, sizeof(text) - (size_t) length, "%s = %s\n",
 				OptionWords[option], MusicWords[values->music]);

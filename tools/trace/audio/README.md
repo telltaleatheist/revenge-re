@@ -35,9 +35,9 @@ Every script with a golden trace (`../scripts`), and `scripts/music.keys`
 (the title's tune to its end), each on two device settings written to the
 run's `settings.txt`:
 
-- `card`: the music on the soundfont (the game's Roland driver), the effects
-  on the Sound Blaster;
-- `speaker`: both on the speaker.
+- `card`: `music = soundfont`, `sound = samples` (the game's Roland driver
+  and its Sound Blaster path);
+- `speaker`: `music = speaker`, `sound = speaker`.
 
 The log is cut at each snap (what follows the last is the shutdown), and each
 section is stored in `traces/NAME.DEVICE.jsonl` as its line count, its count
