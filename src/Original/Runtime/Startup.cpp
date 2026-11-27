@@ -66,10 +66,18 @@ enum
     VIDEO_MEMORY_SEGMENT_VGA = 0xA000
 };
 
+/* SetVideoModeForAdapter's slots past the adapters': BIOS text mode 07h,
+ * and the mode the game found. A MEDIA.CFG line holds at most 28h
+ * characters, the file at most C8h. */
+constexpr uint16_t VIDEO_MODE_SLOT_TEXT = 0x05;
+constexpr uint16_t VIDEO_MODE_SLOT_RESTORE = 0x06;
+constexpr int MEDIA_CONFIG_LINE_LENGTH = 0x28;
+constexpr int MEDIA_CONFIG_MAX_BYTES = 0xC8;
+
 static const char *const MediaConfigurationErrorText =
     STORY_TEXT(MEDIA_CONFIGURATION_ERROR);
 
-static MediaConfigurationHandler const ConfigOptionHandlers[0x04] = {
+static MediaConfigurationHandler const ConfigOptionHandlers[MEDIA_OPTION_COUNT] = {
     ApplyVideoConfigOption,
     ApplyMusicConfigOption,
     ApplySoundConfigOption,
@@ -113,7 +121,7 @@ void InitializeGame(void)
     // validates MEDIA.CFG and free memory, loads both fonts, allocates the two
     // working screen buffers, selects video memory, and starts music timing.
     SavedBIOSVideoMode = GetCurrentBIOSVideoMode();
-    SetVideoModeForAdapter(0x05);
+    SetVideoModeForAdapter(VIDEO_MODE_SLOT_TEXT);
     StartupInputMode = 0x0201;
     InstallKeyboardHandlers();
 
@@ -163,7 +171,7 @@ void InitializeGame(void)
     SetActiveFontResource(Font8Resource);
     primaryScreenBuffer = (uint8_t *) Heap_Allocate(0x0001FD00, "2C7F:0203");
     PrimaryScreenBuffer = primaryScreenBuffer;
-    secondaryBuffer = primaryScreenBuffer + 0x00010000UL;
+    secondaryBuffer = primaryScreenBuffer + VIDEO_SEGMENT_SIZE;
     SecondaryScreenBuffer = secondaryBuffer;
     PlanarScreenBuffer = secondaryBuffer;
 
@@ -212,7 +220,7 @@ void ShutdownGame(void)
         ShutdownMouseSupport();
     }
     RestoreKeyboardHandlers();
-    SetVideoModeForAdapter(0x06);
+    SetVideoModeForAdapter(VIDEO_MODE_SLOT_RESTORE);
 }
 
 // 2C7F:032B: return the active BIOS video mode from INT 10h/AH=0Fh.
@@ -226,7 +234,7 @@ void SetVideoModeForAdapter(uint16_t adapterOrRestoreSlot)
 {
     uint16_t requestedVideoMode;
 
-    if (adapterOrRestoreSlot < 0x06)
+    if (adapterOrRestoreSlot < VIDEO_MODE_SLOT_RESTORE)
     {
         SetVideoAdapterType(adapterOrRestoreSlot);
         requestedVideoMode =
@@ -291,13 +299,13 @@ uint16_t LoadMediaConfiguration(void)
     // V: Load MEDIA.CFG (maximum C8h bytes), split it into lines, uppercase
     // each key, and dispatch VIDEO, MUSIC, SOUND, and INPUTDEVICE values
     // through the four callbacks in ConfigOptionHandlerTable.
-    char configLine[0x28];
+    char configLine[MEDIA_CONFIG_LINE_LENGTH];
     uint16_t configurationValid = TRUE;
     /* MEDIA.CFG as the DOS installer wrote it, built from the player's
 	 * settings (src/SDL/settings.cpp, revenge/media_settings.h) rather than read
 	 * from the install: the same bytes, at most C8h of them, through the
 	 * same parse. */
-    char configText[0xC8];
+    char configText[MEDIA_CONFIG_MAX_BYTES];
     uint16_t configTextLength = MediaSettings_InstallerText(
         HostSettings_MediaChoices(), configText, sizeof(configText));
     if (configTextLength == 0x00)
@@ -322,7 +330,7 @@ uint16_t LoadMediaConfiguration(void)
             int16_t lineLength = 0x00;
             while (TRUE)
             {
-                if (lineLength >= 0x28 || continueParsing == FALSE)
+                if (lineLength >= MEDIA_CONFIG_LINE_LENGTH || continueParsing == FALSE)
                     break;
                 int16_t character = (int16_t) *readCursor++;
                 /* 2C7F:055F-0567: the count is tested before the decrement,
@@ -334,7 +342,7 @@ uint16_t LoadMediaConfiguration(void)
                 else if (character == '\n')
                 {
                     configLine[lineLength] = '\0';
-                    lineLength = 0x28;
+                    lineLength = MEDIA_CONFIG_LINE_LENGTH;
                 }
                 else
                     configLine[lineLength] = (uint8_t) character;
@@ -347,7 +355,7 @@ uint16_t LoadMediaConfiguration(void)
                 UppercaseStringInPlace(optionName);
                 int16_t handlerIndex = 0x00;
                 uint16_t searchingForHandler = TRUE;
-                while (searchingForHandler != FALSE && handlerIndex < 0x04)
+                while (searchingForHandler != FALSE && handlerIndex < MEDIA_OPTION_COUNT)
                 {
                     const char *tableName =
                         ConfigOptionNames[handlerIndex];
@@ -362,7 +370,7 @@ uint16_t LoadMediaConfiguration(void)
                     else
                         ++handlerIndex;
                 }
-                if (handlerIndex == 0x04)
+                if (handlerIndex == MEDIA_OPTION_COUNT)
                 {
                     DOS_PrintString(MediaConfigurationErrorText); // TEXT DS:3C05
                     configurationValid = FALSE;
@@ -395,7 +403,7 @@ uint16_t ApplyVideoConfigOption(void)
     uint16_t optionAccepted = TRUE;
     uint16_t optionIndex = 0x00;
     uint16_t searchingForMatch = TRUE;
-    while (searchingForMatch != FALSE && optionIndex < 0x05)
+    while (searchingForMatch != FALSE && optionIndex < VIDEO_CONFIGURATION_COUNT)
     {
         if (strcmp(
                 VideoConfigurationRecords[optionIndex].name,
@@ -413,7 +421,7 @@ uint16_t ApplyVideoConfigOption(void)
         else
             ++optionIndex;
     }
-    if (optionIndex == 0x05)
+    if (optionIndex == VIDEO_CONFIGURATION_COUNT)
     {
         DOS_PrintString(MediaConfigurationErrorText); // TEXT DS:3C05
         optionAccepted = FALSE;
@@ -433,7 +441,7 @@ uint16_t ApplyMusicConfigOption(void)
     uint16_t optionAccepted = TRUE;
     uint16_t optionIndex = 0x00;
     uint16_t searchingForMatch = TRUE;
-    while (searchingForMatch != FALSE && optionIndex < 0x07)
+    while (searchingForMatch != FALSE && optionIndex < MUSIC_CONFIGURATION_COUNT)
     {
         if (strcmp(
                 MusicConfigurationRecords[optionIndex].name,
@@ -446,7 +454,7 @@ uint16_t ApplyMusicConfigOption(void)
         else
             ++optionIndex;
     }
-    if (optionIndex == 0x07)
+    if (optionIndex == MUSIC_CONFIGURATION_COUNT)
     {
         DOS_PrintString(MediaConfigurationErrorText); // TEXT DS:3C05
         optionAccepted = FALSE;
@@ -467,7 +475,7 @@ uint16_t ApplySoundConfigOption(void)
     uint16_t optionAccepted = TRUE;
     uint16_t optionIndex = 0x00;
     uint16_t searchingForMatch = TRUE;
-    while (searchingForMatch != FALSE && optionIndex < 0x09)
+    while (searchingForMatch != FALSE && optionIndex < SOUND_CONFIGURATION_COUNT)
     {
         if (strcmp(
                 SoundConfigurationRecords[optionIndex].name,
@@ -490,7 +498,7 @@ uint16_t ApplySoundConfigOption(void)
         else
             ++optionIndex;
     }
-    if (optionIndex == 0x09)
+    if (optionIndex == SOUND_CONFIGURATION_COUNT)
     {
         DOS_PrintString(MediaConfigurationErrorText); // TEXT DS:3C05
         optionAccepted = FALSE;
@@ -510,7 +518,7 @@ uint16_t ApplyInputDeviceConfigOption(void)
     uint16_t optionAccepted = TRUE;
     uint16_t optionIndex = 0x00;
     uint16_t searchingForMatch = TRUE;
-    while (searchingForMatch != FALSE && optionIndex < 0x02)
+    while (searchingForMatch != FALSE && optionIndex < INPUT_CONFIGURATION_COUNT)
     {
         if (strcmp(
                 InputConfigurationRecords[optionIndex].name,
@@ -523,7 +531,7 @@ uint16_t ApplyInputDeviceConfigOption(void)
         else
             ++optionIndex;
     }
-    if (optionIndex == 0x02)
+    if (optionIndex == INPUT_CONFIGURATION_COUNT)
     {
         DOS_PrintString(MediaConfigurationErrorText); // TEXT DS:3C05
         optionAccepted = FALSE;

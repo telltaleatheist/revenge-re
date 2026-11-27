@@ -35,13 +35,13 @@ const char VersionDecimalSeparator[] = ".";
 
 /* MEDIA.CFG's records (DS:3AD1-3C04), filled from the player's copy at start
  * (original_import_pieces.txt). */
-MediaConfigurationChoice VideoConfigurationRecords[0x05];
+MediaConfigurationChoice VideoConfigurationRecords[VIDEO_CONFIGURATION_COUNT];
 
-MediaConfigurationChoice MusicConfigurationRecords[0x07];
+MediaConfigurationChoice MusicConfigurationRecords[MUSIC_CONFIGURATION_COUNT];
 
-MediaConfigurationChoice InputConfigurationRecords[0x02];
+MediaConfigurationChoice InputConfigurationRecords[INPUT_CONFIGURATION_COUNT];
 
-SoundConfigurationChoice SoundConfigurationRecords[0x09];
+SoundConfigurationChoice SoundConfigurationRecords[SOUND_CONFIGURATION_COUNT];
 
 const char VersionTranslationSource[] = " ";
 const char VersionTranslationReplacement[] = "0";
