@@ -26,7 +26,7 @@ uint8_t *BuildPlanarDisplayBackingBuffer(
 
     framebuffer = PrimaryScreenBuffer;
     sourceTileX <<= 0x02;
-    source = framebuffer + sourcePixelY * 0x00A0 + sourceTileX;
+    source = framebuffer + sourcePixelY * PACKED_BYTES_PER_SCANLINE + sourceTileX;
 
     /* The EGA's sparse encoding (2FEA:0024-002D and the block it jumps
 	 * to) went with the EGA; the rebuild is VGA only. */
@@ -38,7 +38,7 @@ uint8_t *BuildPlanarDisplayBackingBuffer(
     backingBuffer[0x02] = (uint8_t) width;
     backingBuffer[0x03] = (uint8_t) height - 0x01;
     width <<= 0x01;
-    sourceRowSkip = 0x00A0 - (width << 0x01);
+    sourceRowSkip = PACKED_BYTES_PER_SCANLINE - (width << 0x01);
     EncodeDisplayBackingRows(
         source,
         backingBuffer + 0x04,

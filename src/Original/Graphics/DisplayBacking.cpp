@@ -50,7 +50,7 @@ uint8_t *BuildVgaDisplayBackingBuffer(
     *output++ = (uint8_t) heightPixels - 0x01;
 
     framebuffer = PrimaryScreenBuffer;
-    sourceRow = framebuffer + sourcePixelY * 0x0140 +
+    sourceRow = framebuffer + sourcePixelY * VGA_BYTES_PER_SCANLINE +
         (sourceTileX << 0x03);
     rowsRemaining = heightPixels;
     while (rowsRemaining-- != 0x0000)
@@ -84,7 +84,7 @@ uint8_t *BuildVgaDisplayBackingBuffer(
                 sourceBytesRemaining -= zeroRunLength;
             }
         }
-        sourceRow += 0x0140;
+        sourceRow += VGA_BYTES_PER_SCANLINE;
     }
 
     allocation = (uint8_t *) Heap_Allocate(encodedByteCount, "0D73:562F");

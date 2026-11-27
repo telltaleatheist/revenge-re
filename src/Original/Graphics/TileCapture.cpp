@@ -24,13 +24,13 @@ void Capture8x8VideoTile(
 	 * VGA only. */
     if (VideoAdapterType == VIDEO_ADAPTER_VGA)
     {
-        source = framebuffer + tileY * 0x0A00 + tileX * 0x08;
-        for (row = 0x00; row < 0x08; ++row)
+        source = framebuffer + tileY * (VGA_BYTES_PER_SCANLINE * TILE_PIXEL_SIZE) + tileX * TILE_PIXEL_SIZE;
+        for (row = 0x00; row < TILE_PIXEL_SIZE; ++row)
         {
-            for (column = 0x00; column < 0x08; ++column)
+            for (column = 0x00; column < TILE_PIXEL_SIZE; ++column)
                 destination[column] = source[column];
-            destination += 0x08;
-            source += 0x0140;
+            destination += TILE_PIXEL_SIZE;
+            source += VGA_BYTES_PER_SCANLINE;
         }
     }
 }

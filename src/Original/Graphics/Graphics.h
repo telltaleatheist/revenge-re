@@ -4,6 +4,18 @@
 
 #include "revenge/types.h"
 
+/* The VGA page's scanline, and the packed page's (two pixels a byte). */
+inline constexpr int VGA_BYTES_PER_SCANLINE = 0x0140;
+inline constexpr int PACKED_BYTES_PER_SCANLINE = 0x00A0;
+/* A text tile is 8 by 8 pixels: 64 bytes on the VGA, 32 on the EGA, whose
+ * size the tile strips still step by. */
+inline constexpr int TILE_PIXEL_SIZE = 0x08;
+inline constexpr uint8_t VGA_TILE_BYTE_SHIFT = 0x06;
+inline constexpr uint8_t EGA_TILE_BYTE_SHIFT = 0x05;
+inline constexpr int EGA_TILE_BYTE_COUNT = 0x20;
+/* The word that ends a frame definition's repeating tile sequence. */
+inline constexpr uint16_t FRAME_DEFINITION_END = 0x00FF;
+
 void SetVideoAdapterType(uint16_t adapterType);
 void RebuildTacticalVideoResources(
     uint16_t adapterType,

@@ -19,7 +19,7 @@ void InstallVgaPaletteBankAnchors(void)
 
     uint8_t *palette = VideoPaletteData;
     uint16_t baseColor;
-    for (baseColor = 0x00; baseColor < 0x10; ++baseColor)
+    for (baseColor = 0x00; baseColor < EGA_LOGICAL_PALETTE_ENTRY_COUNT; ++baseColor)
     {
         uint16_t source = baseColor * 0x03;
         uint16_t destination = baseColor * 0x30;

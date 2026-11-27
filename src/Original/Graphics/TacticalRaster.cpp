@@ -20,7 +20,8 @@ enum
     TACTICAL_TILE_HEIGHT = 0x0010,
     TACTICAL_PACKED_ROW_BYTES = 0x0008,
     TACTICAL_PACKED_TILE_BYTES = 0x0080,
-    TACTICAL_HIGH_SPRITE_BANK_OFFSET = 0x8000
+    TACTICAL_HIGH_SPRITE_BANK_OFFSET = 0x8000,
+    TACTICAL_SPRITES_PER_BANK = 0x0100
 };
 
 /* 0800:0B07-0C05. The DOS routine writes one packed two-by-two overview
@@ -98,8 +99,8 @@ void DrawCompositeTacticalTile(
         (foregroundSpriteId & 0xFF00) != 0x0000 &&
         (backgroundSpriteId & 0xFF00) != 0x0000)
     {
-        foregroundSpriteId -= 0x0100;
-        backgroundSpriteId -= 0x0100;
+        foregroundSpriteId -= TACTICAL_SPRITES_PER_BANK;
+        backgroundSpriteId -= TACTICAL_SPRITES_PER_BANK;
         spritePage += TACTICAL_HIGH_SPRITE_BANK_OFFSET;
     }
 

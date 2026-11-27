@@ -16,7 +16,7 @@ uint16_t DrawRepeatingFrameTileSequence(
     uint16_t tileCount,
     uint16_t horizontal)
 {
-    uint8_t tileShift = VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05;
+    uint8_t tileShift = VideoAdapterType == VIDEO_ADAPTER_VGA ? VGA_TILE_BYTE_SHIFT : EGA_TILE_BYTE_SHIFT;
     uint16_t currentIndex = sequenceIndex;
     uint16_t drawn;
     for (drawn = 0x00; drawn < tileCount; ++drawn)
@@ -32,10 +32,10 @@ uint16_t DrawRepeatingFrameTileSequence(
         else
             ++y;
         ++currentIndex;
-        if (frameDefinition[currentIndex] == 0x00FF)
+        if (frameDefinition[currentIndex] == FRAME_DEFINITION_END)
             currentIndex = sequenceIndex;
     }
-    while (frameDefinition[currentIndex] != 0x00FF)
+    while (frameDefinition[currentIndex] != FRAME_DEFINITION_END)
         ++currentIndex;
     return currentIndex + 0x01;
 }

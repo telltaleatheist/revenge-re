@@ -12,9 +12,9 @@
 //      RunGameOptionsMenu
 void DrawActiveTextWindowFrame(uint16_t frameStyleIndex)
 {
-    uint8_t tileShift = 0x05;
+    uint8_t tileShift = EGA_TILE_BYTE_SHIFT;
     if (VideoAdapterType == VIDEO_ADAPTER_VGA)
-        tileShift = 0x06;
+        tileShift = VGA_TILE_BYTE_SHIFT;
     const uint16_t *frameDefinition =
         TextWindowFrameDefinitionTable[frameStyleIndex];
     const uint8_t *tileAtlas = TacticalTileStrip;

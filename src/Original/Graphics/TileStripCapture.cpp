@@ -27,7 +27,7 @@ uint8_t *CaptureVideoTileStrip(
     uint16_t shiftedTileBytes;
 
     tileX = startTileX;
-    tileSizeShift = VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05;
+    tileSizeShift = VideoAdapterType == VIDEO_ADAPTER_VGA ? VGA_TILE_BYTE_SHIFT : EGA_TILE_BYTE_SHIFT;
     shiftedTileBytes = (uint16_t) ((uint16_t) tileCount << tileSizeShift);
     allocationSize = (int32_t) (int16_t) shiftedTileBytes;
     tileBuffer = (uint8_t *) Heap_Allocate((uint32_t) allocationSize, "34D5:003F");
@@ -37,14 +37,14 @@ uint8_t *CaptureVideoTileStrip(
         Capture8x8VideoTile(
             source, tileDestination, tileX, startTileY);
         ++tileX;
-        if (tileX > 0x27)
+        if (tileX >= VIDEO_SCREEN_8PX_COLUMN_COUNT)
         {
             tileX = 0x0000;
             ++startTileY;
         }
-        tileDestination += 0x20;
+        tileDestination += EGA_TILE_BYTE_COUNT;
         if (VideoAdapterType == VIDEO_ADAPTER_VGA)
-            tileDestination += 0x20;
+            tileDestination += EGA_TILE_BYTE_COUNT;
     }
     return tileBuffer;
 }

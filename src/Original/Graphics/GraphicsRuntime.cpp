@@ -8,6 +8,7 @@
 #include "Data/TacticalGraphicsData.h"
 #include "Graphics/Graphics.h"
 #include "Utility/Utility.h"
+#include "revenge/assets.h"
 #include "revenge/heap.h"
 #include "revenge/platform_backend.h"
 #include "revenge/random.h"
@@ -15,7 +16,13 @@
 
 #include <string.h>
 
-constexpr int VGA_BYTES_PER_SCANLINE = 0x0140;
+/* INT 33h's start: the cursor's backing store, the screen's centre, and the
+ * events the handler takes (motion and both buttons' presses and releases). */
+constexpr uint32_t MOUSE_CURSOR_BACKGROUND_SIZE = 0x0240;
+constexpr uint16_t MOUSE_START_X = VIDEO_SCREEN_WIDTH / 0x02;
+constexpr uint16_t MOUSE_START_Y = VIDEO_SCREEN_HEIGHT / 0x02;
+constexpr uint16_t MOUSE_EVENT_MASK_ALL = 0x001F;
+
 
 // 0800:2B00: copy an adapter-formatted rectangle between far video buffers.
 // Called from:
@@ -190,9 +197,9 @@ void Draw8x8VideoTile(
     uint8_t *videoBase = SDLBackend_GetIndexedFramebuffer();
 
     xByte = x << 0x03;
-    bytesPerSourceRow = 0x08;
+    bytesPerSourceRow = TILE_PIXEL_SIZE;
 
-    for (uint16_t row = 0x00; row < 0x08; ++row)
+    for (uint16_t row = 0x00; row < TILE_PIXEL_SIZE; ++row)
     {
         uint16_t pixelY = firstPixelY + row;
         uint16_t scanlineOffset;
@@ -216,7 +223,7 @@ void DecodeLinearRleScreen(
     const uint8_t *compressedData,
     uint8_t *destination)
 {
-    uint16_t remainingBytes = 0x7D00;
+    uint16_t remainingBytes = REVENGE_PACKED_SCREEN_BYTE_COUNT;
 
     while (remainingBytes != 0x00)
     {
@@ -255,7 +262,7 @@ void DecodeColumnMajorRleScreen(
 {
     uint16_t outputIndex = 0x00;
 
-    while (outputIndex < 0x7D00)
+    while (outputIndex < REVENGE_PACKED_SCREEN_BYTE_COUNT)
     {
         uint8_t control = *compressedData++;
         uint16_t runLength;
@@ -275,12 +282,12 @@ void DecodeColumnMajorRleScreen(
             runLength = control;
         repeatedValue = repeatRun ? *compressedData : 0x00;
 
-        for (runIndex = 0x00; runIndex < runLength && outputIndex < 0x7D00;
+        for (runIndex = 0x00; runIndex < runLength && outputIndex < REVENGE_PACKED_SCREEN_BYTE_COUNT;
             ++runIndex, ++outputIndex)
         {
-            uint16_t column = outputIndex / 0x00C8;
-            uint16_t row = outputIndex % 0x00C8;
-            destination[row * 0x00A0 + column] =
+            uint16_t column = outputIndex / VIDEO_SCREEN_HEIGHT;
+            uint16_t row = outputIndex % VIDEO_SCREEN_HEIGHT;
+            destination[row * PACKED_BYTES_PER_SCANLINE + column] =
                 repeatRun ? repeatedValue : *compressedData++;
         }
 
@@ -449,25 +456,25 @@ void InitializeMouseSupport(void)
 	 * one pixel a unit (the doubling test at 372A-373F), hidden by the
 	 * reset; the handler's installation (AX=0Ch, 375B-3767) routes SDL's
 	 * mouse events to MouseEventCallback (0800:3772). */
-    MouseCursorBackground = (uint8_t *) Heap_Allocate(0x0240, "0800:36C0");
+    MouseCursorBackground = (uint8_t *) Heap_Allocate(MOUSE_CURSOR_BACKGROUND_SIZE, "0800:36C0");
     if (MouseCursorBackground == NULL)
     {
         MouseDriverInstalled = FALSE;
         return;
     }
-    MouseCursorRequestedX = 0x00A0;
-    MouseY = 0x0064;
+    MouseCursorRequestedX = MOUSE_START_X;
+    MouseY = MOUSE_START_Y;
     MouseDriverDoubleX = FALSE;
     MouseCursorHideDepth = 0x01;
     MouseInputDisabled = FALSE;
     MouseCursorMinX = 0x0000;
-    MouseCursorMaxX = 0x013F;
+    MouseCursorMaxX = VIDEO_SCREEN_MAX_X;
     MouseCursorMinY = 0x0000;
-    MouseCursorMaxY = 0x00C7;
+    MouseCursorMaxY = VIDEO_SCREEN_MAX_Y;
     MouseDriverInstalled = TRUE;
-    SDLBackend_SetMousePosition(0x00A0, 0x0064);
+    SDLBackend_SetMousePosition(MOUSE_START_X, MOUSE_START_Y);
     SDLBackend_SetMouseVisible(FALSE);
-    SDLBackend_SetMouseEventHandler(0x001F);
+    SDLBackend_SetMouseEventHandler(MOUSE_EVENT_MASK_ALL);
 }
 
 void CopyBufferToVideoRegion(
@@ -485,7 +492,7 @@ void CopyBufferToVideoRegion(
     uint8_t *framebuffer;
 
     if (xColumn < 0x0000 || xColumn >= VIDEO_SCREEN_8PX_COLUMN_COUNT ||
-        yCharacterRow >= VIDEO_SCREEN_HEIGHT / 0x0008 ||
+        yCharacterRow >= VIDEO_SCREEN_HEIGHT / TILE_PIXEL_SIZE ||
         widthColumns == 0x0000 || heightCharacterRows == 0x0000)
         return;
     pixelWidth = (uint16_t) (widthColumns << 0x03);
@@ -520,7 +527,7 @@ void CopyVideoRegionToBuffer(
     uint8_t *framebuffer;
 
     if (xColumn < 0x0000 || xColumn >= VIDEO_SCREEN_8PX_COLUMN_COUNT ||
-        yCharacterRow >= VIDEO_SCREEN_HEIGHT / 0x0008 ||
+        yCharacterRow >= VIDEO_SCREEN_HEIGHT / TILE_PIXEL_SIZE ||
         widthColumns == 0x0000 || heightCharacterRows == 0x0000)
         return;
     pixelWidth = (uint16_t) (widthColumns << 0x03);
