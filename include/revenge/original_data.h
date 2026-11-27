@@ -345,10 +345,13 @@ extern byte CampaignMenuRequested;
 #define GameOptionsMenuEntryCount \
 	(UiRegionTable[0x05].rowCount)
 extern word16 NarrationFocusRegion;
-extern word16 UnitTemplatePathOffset;
-extern word16 UnitTemplatePathSegment;
-extern word16 TacticalResourcePathOffset;
-extern word16 TacticalResourcePathSegment;
+/* DS:1530 and DS:1566 are cached-file descriptors 40h's and 43h's name
+ * pointers, which the code reads as the unit template and tactical resource
+ * paths: not second objects. */
+#define UnitTemplatePathOffset (CachedFileDescriptors[0x40].fileName.offset)
+#define UnitTemplatePathSegment (CachedFileDescriptors[0x40].fileName.segment)
+#define TacticalResourcePathOffset (CachedFileDescriptors[0x43].fileName.offset)
+#define TacticalResourcePathSegment (CachedFileDescriptors[0x43].fileName.segment)
 extern word16 TacticalOverviewClockNoticeActive;
 extern word16 TacticalRuntimeState;
 extern word16 PreviousMouseCellX;

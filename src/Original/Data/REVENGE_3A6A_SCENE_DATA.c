@@ -7,5 +7,3 @@ SceneFileBuffer LoadedSceneFile;
 SceneUnitRoute SceneUnitRoutes[SCENE_ROUTE_COUNT];
 word16 SceneInstructionBaseOffset;
 DosAddress SceneInstructionCursor;
-/* Relocated initial pointer at REVENGE.EXE DS:1554 -> DS:21D2. */
-DosAddress ScenarioResourcePathPointer = { 0x21D2, 0x3A6A };

@@ -34,11 +34,6 @@ place WeaponPriorityProfileByRangeHeat 3A6A:0FA6 80 run
 place MovementTimingMaskTable 3A6A:1026 12 run
 place HitLocationTable 3A6A:1038 78 table
 place CachedFileDescriptors 3A6A:10B0 654 table
-place UnitTemplatePathOffset 3A6A:1530 2 table
-place UnitTemplatePathSegment 3A6A:1532 2 table
-place ScenarioResourcePathPointer 3A6A:1554 4 table
-place TacticalResourcePathOffset 3A6A:1566 2 table
-place TacticalResourcePathSegment 3A6A:1568 2 table
 place MediaConfigurationFileName 3A6A:21F4 A table
 place ScreenPaletteResourceByScreen 3A6A:1704 25 table
 place WeaponTraceMajorStepX 3A6A:172A 8 run
@@ -786,11 +781,6 @@ place WeaponDefinitions 3A6A:0435 159 table
 # Where there is no note, the two are one byte in the original and the run
 # must keep them equal (check_dump.py's agree lines); a note says why they
 # can differ for now.
-overlap CachedFileDescriptors UnitTemplatePathOffset host pointer: the descriptor's name pointer, set once at start; both are only read after
-overlap CachedFileDescriptors UnitTemplatePathSegment host pointer: the descriptor's name pointer, set once at start; both are only read after
-overlap CachedFileDescriptors ScenarioResourcePathPointer host pointer: the descriptor's name pointer, set once at start; both are only read after
-overlap CachedFileDescriptors TacticalResourcePathOffset host pointer: the descriptor's name pointer, set once at start; both are only read after
-overlap CachedFileDescriptors TacticalResourcePathSegment host pointer: the descriptor's name pointer, set once at start; both are only read after
 overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
 overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable the selector's last byte is the first missile weapon's bonus (the original reads the bonus from DS:3D0D by weapon index, from WEAPON_LRM_5 on)
 overlap AdLibActivateRegisterList AdLibNineVoiceResetList the original's second constant list is the first one's tail

@@ -231,12 +231,6 @@ word16 CampaignScenarioState;
 byte ReplayScenarioRequested;
 byte CampaignMenuRequested;
 word16 NarrationFocusRegion;
-/* Relocated initial far pointers recovered from REVENGE.EXE DS:1530 and
- * DS:1566. */
-word16 UnitTemplatePathOffset = 0x21B8;
-word16 UnitTemplatePathSegment = 0x3A6A;
-word16 TacticalResourcePathOffset = 0x21DD;
-word16 TacticalResourcePathSegment = 0x3A6A;
 word16 TacticalOverviewClockNoticeActive;
 word16 TacticalRuntimeState;
 word16 PreviousMouseCellX;

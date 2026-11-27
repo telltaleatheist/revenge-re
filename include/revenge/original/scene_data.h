@@ -2,6 +2,7 @@
 #define REVENGE_ORIGINAL_SCENE_DATA_H
 
 #include "revenge/far_memory.h"
+#include "revenge/original/resource_data.h"
 #include "revenge/types.h"
 
 #include <stddef.h>
@@ -145,7 +146,9 @@ extern SceneFileBuffer LoadedSceneFile;
 extern SceneUnitRoute SceneUnitRoutes[SCENE_ROUTE_COUNT];
 extern word16 SceneInstructionBaseOffset;
 extern DosAddress SceneInstructionCursor;
-extern DosAddress ScenarioResourcePathPointer;
+/* DS:1554 is cached-file descriptor 42h's name pointer, not a second
+ * object. */
+#define ScenarioResourcePathPointer (CachedFileDescriptors[0x42].fileName)
 extern char ScenarioResourcePathText[0x0B];
 extern const char *const SceneFileTooLargeText;
 extern const char *GameOptionLabelTextTable[GAME_OPTION_LABEL_COUNT];

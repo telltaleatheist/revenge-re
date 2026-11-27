@@ -193,7 +193,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	REGISTER_DATA_OBJECT(SceneUnitRoutes, 0x86C1);
 	REGISTER_DATA_OBJECT(SceneInstructionBaseOffset, 0xA862);
 	REGISTER_DATA_OBJECT(SceneInstructionCursor, 0xA9D9);
-	REGISTER_DATA_OBJECT(ScenarioResourcePathPointer, 0x1554);
 	REGISTER_DATA_OBJECT(RandomPilotPoolCounts, 0x1B8C);
 	REGISTER_DATA_OBJECT(UnitSelectionCards, 0x1BBC);
 	REGISTER_DATA_OBJECT(LanceAssignments, 0x1CCA);
@@ -268,7 +267,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HYDRATE_DATA_OBJECT(SceneUnitRoutes, 0x86C1);
 	HYDRATE_DATA_OBJECT(SceneInstructionBaseOffset, 0xA862);
 	HYDRATE_DATA_OBJECT(SceneInstructionCursor, 0xA9D9);
-	HYDRATE_DATA_OBJECT(ScenarioResourcePathPointer, 0x1554);
 	HYDRATE_DATA_OBJECT(LanceEditorFirstBriefingPending, 0x30C4);
 	HYDRATE_DATA_OBJECT(LanceEditorBriefingPresented, 0x30C6);
 	HYDRATE_DATA_OBJECT(RandomUnitTypeCount, 0x3118);
