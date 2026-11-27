@@ -18,20 +18,20 @@
 /* What a text fills besides its own place. */
 typedef enum StoryTarget
 {
-	STORY_TARGET_NONE,          /* read in place, by STORY_TEXT */
-	STORY_TARGET_TEXT,          /* an entry of a const char * table (or one such pointer) */
-	STORY_TARGET_MUTABLE_TEXT,  /* an entry of a char * table: the game writes in its text */
-	STORY_TARGET_ARRAY          /* a char array the text is copied into, its rest zeroed */
+    STORY_TARGET_NONE,          /* read in place, by STORY_TEXT */
+    STORY_TARGET_TEXT,          /* an entry of a const char * table (or one such pointer) */
+    STORY_TARGET_MUTABLE_TEXT,  /* an entry of a char * table: the game writes in its text */
+    STORY_TARGET_ARRAY          /* a char array the text is copied into, its rest zeroed */
 } StoryTarget;
 
 typedef struct StoryTextSlot
 {
-	const char *id;           /* as the story file names it: "title.3" */
-	uint32_t at;              /* its place in StoryTextBuffer */
-	uint16_t capacity;        /* the text's length and its NUL, the copy's */
-	uint8_t target;           /* a StoryTarget */
-	void *destination;        /* the entry, pointer or array it fills; NULL for none */
-	size_t destinationSize;   /* an array's size */
+    const char *id;           /* as the story file names it: "title.3" */
+    uint32_t at;              /* its place in StoryTextBuffer */
+    uint16_t capacity;        /* the text's length and its NUL, the copy's */
+    uint8_t target;           /* a StoryTarget */
+    void *destination;        /* the entry, pointer or array it fills; NULL for none */
+    size_t destinationSize;   /* an array's size */
 } StoryTextSlot;
 
 extern const StoryTextSlot StoryTextSlots[STORY_TEXT_COUNT];

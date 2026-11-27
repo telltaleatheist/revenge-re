@@ -8,6 +8,6 @@ struct DigitalPlaybackDescriptor;
 /* The two sampled-output descriptors the rebuild keeps (NULL for the
  * original's others, whose cards it has no driver for). */
 struct DigitalPlaybackDescriptor *
-	DigitalBridge_ResolvePlaybackDescriptor(word16 descriptorOffset);
+DigitalBridge_ResolvePlaybackDescriptor(word16 descriptorOffset);
 
 #endif

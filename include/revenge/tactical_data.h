@@ -7,70 +7,70 @@
 
 enum
 {
-	TACTICAL_PROJECTILE_RECORD_COUNT = 0x50,
-	TACTICAL_IMPACT_RECORD_COUNT = 0x50,
-	TERRAIN_IMPACT_ANIMATION_RECORD_COUNT = 0x5A,
-	MAP_EDGE_EFFECT_RECORD_COUNT = 0x03,
-	TERRAIN_DAMAGE_QUEUE_ENTRY_COUNT = 0x19
+    TACTICAL_PROJECTILE_RECORD_COUNT = 0x50,
+    TACTICAL_IMPACT_RECORD_COUNT = 0x50,
+    TERRAIN_IMPACT_ANIMATION_RECORD_COUNT = 0x5A,
+    MAP_EDGE_EFFECT_RECORD_COUNT = 0x03,
+    TERRAIN_DAMAGE_QUEUE_ENTRY_COUNT = 0x19
 };
 
 #pragma pack(push, 1)
 typedef struct RevengeTacticalProjectileRecord
 {
-	byte weaponIndex;
-	RevengeUnitSlot targetUnitIndex;
-	byte shotHit;
-	RevengeUnitSlot attackerUnitIndex;
-	word16 spriteId;
-	int16 currentMapX;
-	int16 currentMapY;
-	int16 destinationMapX;
-	int16 destinationMapY;
+    byte weaponIndex;
+    RevengeUnitSlot targetUnitIndex;
+    byte shotHit;
+    RevengeUnitSlot attackerUnitIndex;
+    word16 spriteId;
+    int16 currentMapX;
+    int16 currentMapY;
+    int16 destinationMapX;
+    int16 destinationMapY;
 } RevengeTacticalProjectileRecord;
 
 typedef struct RevengeTacticalImpactRecord
 {
-	int16 mapX;
-	int16 mapY;
-	word16 spriteId;
-	word16 terminalSpriteId;
+    int16 mapX;
+    int16 mapY;
+    word16 spriteId;
+    word16 terminalSpriteId;
 } RevengeTacticalImpactRecord;
 
 typedef struct RevengeTerrainImpactAnimationRecord
 {
-	int16 mapX;
-	int16 mapY;
-	word16 animationVariant;
+    int16 mapX;
+    int16 mapY;
+    word16 animationVariant;
 } RevengeTerrainImpactAnimationRecord;
 
 typedef struct RevengeMapEdgeEffectRecord
 {
-	int16 mapX;
-	int16 mapY;
-	word16 spriteId;
-	word16 edgeDirection;
+    int16 mapX;
+    int16 mapY;
+    word16 spriteId;
+    word16 edgeDirection;
 } RevengeMapEdgeEffectRecord;
 
 typedef struct RevengeTerrainDamageQueueEntry
 {
-	word16 packedByteIndex;
-	word16 subcellIndex;
+    word16 packedByteIndex;
+    word16 subcellIndex;
 } RevengeTerrainDamageQueueEntry;
 #pragma pack(pop)
 
 static_assert(sizeof(RevengeTacticalProjectileRecord) == 0x0E,
-	"Tactical projectile records must retain their DOS layout");
+    "Tactical projectile records must retain their DOS layout");
 static_assert(offsetof(RevengeTacticalProjectileRecord, spriteId) == 0x04,
-	"Projectile sprite ID must remain at record offset 04h");
+    "Projectile sprite ID must remain at record offset 04h");
 static_assert(sizeof(RevengeTacticalImpactRecord) == 0x08,
-	"Tactical impact records must retain their four-word DOS layout");
+    "Tactical impact records must retain their four-word DOS layout");
 static_assert(offsetof(RevengeTacticalProjectileRecord, destinationMapY) == 0x0C,
-	"Projectile destination Y must remain at record offset 0Ch");
+    "Projectile destination Y must remain at record offset 0Ch");
 static_assert(sizeof(RevengeTerrainImpactAnimationRecord) == 0x06,
-	"Terrain-impact records must retain their DOS layout");
+    "Terrain-impact records must retain their DOS layout");
 static_assert(sizeof(RevengeMapEdgeEffectRecord) == 0x08,
-	"Map-edge effect records must retain their DOS layout");
+    "Map-edge effect records must retain their DOS layout");
 static_assert(sizeof(RevengeTerrainDamageQueueEntry) == 0x04,
-	"Terrain-damage queue entries must retain their DOS layout");
+    "Terrain-damage queue entries must retain their DOS layout");
 
 #endif

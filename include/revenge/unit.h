@@ -177,8 +177,8 @@ enum
 
 enum
 {
-	TACTICAL_TARGET_NONE = -1,
-	TACTICAL_TARGET_MAP_CELL = TACTICAL_UNIT_COUNT
+    TACTICAL_TARGET_NONE = -1,
+    TACTICAL_TARGET_MAP_CELL = TACTICAL_UNIT_COUNT
 };
 
 #pragma pack(push, 1)
@@ -315,20 +315,20 @@ REVENGE_ANONYMOUS_STRUCTS_END
 
 static_assert(sizeof(RevengeUnitRecord) == UNIT_RECORD_SIZE,
     "A Revenge unit record must retain its original 0x96-byte layout.");
-static_assert(sizeof(((RevengeUnitRecord *)0)->headEquipment) ==
-    BATTLEMECH_HEAD_EQUIPMENT_SLOT_COUNT,
+static_assert(sizeof(((RevengeUnitRecord *) 0)->headEquipment) ==
+        BATTLEMECH_HEAD_EQUIPMENT_SLOT_COUNT,
     "The head equipment-slot count must retain its DOS layout.");
-static_assert(sizeof(((RevengeUnitRecord *)0)->leftArmEquipment) ==
-    BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT,
+static_assert(sizeof(((RevengeUnitRecord *) 0)->leftArmEquipment) ==
+        BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT,
     "The arm equipment-slot count must retain its DOS layout.");
-static_assert(sizeof(((RevengeUnitRecord *)0)->leftTorsoEquipment) ==
-    BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT,
+static_assert(sizeof(((RevengeUnitRecord *) 0)->leftTorsoEquipment) ==
+        BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT,
     "The torso equipment-slot count must retain its DOS layout.");
-static_assert(sizeof(((RevengeUnitRecord *)0)->centerTorsoEquipment) ==
-    BATTLEMECH_CENTER_TORSO_EQUIPMENT_SLOT_COUNT,
+static_assert(sizeof(((RevengeUnitRecord *) 0)->centerTorsoEquipment) ==
+        BATTLEMECH_CENTER_TORSO_EQUIPMENT_SLOT_COUNT,
     "The center-torso equipment-slot count must retain its DOS layout.");
-static_assert(sizeof(((RevengeUnitRecord *)0)->leftLegEquipment) ==
-    BATTLEMECH_LEG_EQUIPMENT_SLOT_COUNT,
+static_assert(sizeof(((RevengeUnitRecord *) 0)->leftLegEquipment) ==
+        BATTLEMECH_LEG_EQUIPMENT_SLOT_COUNT,
     "The leg equipment-slot count must retain its DOS layout.");
 static_assert(sizeof(RevengeBattleMechDurabilityView) == 0x13,
     "A BattleMech durability view must cover the original 19 bytes.");

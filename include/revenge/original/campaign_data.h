@@ -8,10 +8,10 @@
 
 enum
 {
-	CAMPAIGN_DATA_SEGMENT = 0x3A6A,
-	CAMPAIGN_PRIMARY_STATE_COUNT = 0x07,
-	CAMPAIGN_EXTENDED_STATE_COUNT = 0x0F,
-	CAMPAIGN_STAGE_COUNT = 0x16
+    CAMPAIGN_DATA_SEGMENT = 0x3A6A,
+    CAMPAIGN_PRIMARY_STATE_COUNT = 0x07,
+    CAMPAIGN_EXTENDED_STATE_COUNT = 0x0F,
+    CAMPAIGN_STAGE_COUNT = 0x16
 };
 
 #pragma pack(push, 1)
@@ -20,41 +20,41 @@ enum
  * tiles. */
 typedef struct CampaignMessageEntry
 {
-	DosAddress text;
-	int8 windowHeight;
+    DosAddress text;
+    int8 windowHeight;
 } CampaignMessageEntry;
 
 REVENGE_ANONYMOUS_STRUCTS_BEGIN
 typedef union CampaignSaveDirectory
 {
-	struct
-	{
-		byte prefix[REVENGE_SAVE_DIRECTORY_PREFIX_SIZE];
-		RevengeSaveSlotDescriptor slots[REVENGE_SAVE_SLOT_COUNT];
-	};
-	byte raw[REVENGE_SAVE_DIRECTORY_PREFIX_SIZE +
-		REVENGE_SAVE_SLOT_COUNT * REVENGE_SAVE_DESCRIPTOR_SIZE];
+    struct
+    {
+        byte prefix[REVENGE_SAVE_DIRECTORY_PREFIX_SIZE];
+        RevengeSaveSlotDescriptor slots[REVENGE_SAVE_SLOT_COUNT];
+    };
+    byte raw[REVENGE_SAVE_DIRECTORY_PREFIX_SIZE +
+        REVENGE_SAVE_SLOT_COUNT * REVENGE_SAVE_DESCRIPTOR_SIZE];
 } CampaignSaveDirectory;
 REVENGE_ANONYMOUS_STRUCTS_END
 #pragma pack(pop)
 
 static_assert(sizeof(CampaignMessageEntry) == 0x05,
-	"Campaign message entries must retain their original five-byte layout");
+    "Campaign message entries must retain their original five-byte layout");
 static_assert(offsetof(CampaignMessageEntry, windowHeight) == 0x04,
-	"Campaign message heights must remain at entry offset 04h");
+    "Campaign message heights must remain at entry offset 04h");
 static_assert(offsetof(CampaignSaveDirectory, slots) ==
-	REVENGE_SAVE_DIRECTORY_PREFIX_SIZE,
-	"Save descriptors must follow the original four-byte directory prefix");
+        REVENGE_SAVE_DIRECTORY_PREFIX_SIZE,
+    "Save descriptors must follow the original four-byte directory prefix");
 
 enum
 {
-	CAMPAIGN_TITLE_TEXT_COUNT = 0x12,
-	CAMPAIGN_MONTH_COUNT = 0x0C,
-	CAMPAIGN_MISSION_DATE_COUNT = 0x0C,
-	CAMPAIGN_SCREEN_PALETTE_COUNT = 0x25,
-	CAMPAIGN_BLINK_RECT_COUNT = 0x07,
-	CAMPAIGN_SPRITE_LAYOUT_COUNT = 0x0C,
-	CAMPAIGN_MESSAGE_COUNT = 0xB2
+    CAMPAIGN_TITLE_TEXT_COUNT = 0x12,
+    CAMPAIGN_MONTH_COUNT = 0x0C,
+    CAMPAIGN_MISSION_DATE_COUNT = 0x0C,
+    CAMPAIGN_SCREEN_PALETTE_COUNT = 0x25,
+    CAMPAIGN_BLINK_RECT_COUNT = 0x07,
+    CAMPAIGN_SPRITE_LAYOUT_COUNT = 0x0C,
+    CAMPAIGN_MESSAGE_COUNT = 0xB2
 };
 
 extern byte TrainingScenarioCompletionFlags[0x06];
@@ -86,7 +86,7 @@ extern const char *CampaignPathMenuTextTable[0x02];
 extern const char *ScenarioVariantMenuTextTable[0x02];
 extern const char *AlternateScenarioMenuTextTable[0x02];
 extern const char *MainMenuTextTable[0x03];
-extern const char * const InGameMenuTextTable[0x0B];
+extern const char *const InGameMenuTextTable[0x0B];
 extern const char *const SaveGameSeparatorText;
 
 extern byte MissionFadeColorTable[0x04];

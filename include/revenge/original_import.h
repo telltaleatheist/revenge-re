@@ -28,7 +28,7 @@
 
 enum
 {
-	ORIGINAL_IMAGE_CAPACITY = 0x40000
+    ORIGINAL_IMAGE_CAPACITY = 0x40000
 };
 
 /* 3A6A:0000 (the data segment) in the load image, which DOS loads at 0800h. */
@@ -44,17 +44,17 @@ int OriginalImport_IsLoaded(void);
 /* The import table, for the loader and the tests. */
 typedef enum OriginalPieceKind
 {
-	ORIGINAL_PIECE_TEXT,                  /* a string at a DS offset */
-	ORIGINAL_PIECE_TEXT_TABLE,            /* far pointers at a DS offset to strings: const char *[] */
-	ORIGINAL_PIECE_EXPANDED_TEXT_TABLE,   /* the same, with the game's digram compression expanded */
-	ORIGINAL_PIECE_MUTABLE_TEXT_TABLE,    /* the same as a text table, each string a writable copy: char *[] */
-	ORIGINAL_PIECE_POINTED_TEXT,          /* the first far pointer of a table, as one const char * */
-	ORIGINAL_PIECE_MUTABLE_POINTED_TEXT,  /* the same, copied into a char array of `length` bytes */
-	ORIGINAL_PIECE_BYTES,                 /* `length` bytes at a DS offset for an object of that size, the
+    ORIGINAL_PIECE_TEXT,                  /* a string at a DS offset */
+    ORIGINAL_PIECE_TEXT_TABLE,            /* far pointers at a DS offset to strings: const char *[] */
+    ORIGINAL_PIECE_EXPANDED_TEXT_TABLE,   /* the same, with the game's digram compression expanded */
+    ORIGINAL_PIECE_MUTABLE_TEXT_TABLE,    /* the same as a text table, each string a writable copy: char *[] */
+    ORIGINAL_PIECE_POINTED_TEXT,          /* the first far pointer of a table, as one const char * */
+    ORIGINAL_PIECE_MUTABLE_POINTED_TEXT,  /* the same, copied into a char array of `length` bytes */
+    ORIGINAL_PIECE_BYTES,                 /* `length` bytes at a DS offset for an object of that size, the
 	                                         story's data: the story file keeps it and places it
 	                                         (revenge/story.h), not the loader */
-	ORIGINAL_PIECE_MEDIA,                 /* the same, the story's media */
-	ORIGINAL_PIECE_RELOCATED_BYTES        /* the same as bytes, with each segment word DOS relocates
+    ORIGINAL_PIECE_MEDIA,                 /* the same, the story's media */
+    ORIGINAL_PIECE_RELOCATED_BYTES        /* the same as bytes, with each segment word DOS relocates
 	                                         moved at import as DOS moved it in the reference run
 	                                         (REFERENCE_LOAD_SEGMENT): the experience
 	                                         mask's and the heat limit's windows */
@@ -79,14 +79,14 @@ inline constexpr int REFERENCE_LOAD_SEGMENT = 0x131E;
 
 typedef struct OriginalPiece
 {
-	const char *name;
-	OriginalPieceKind kind;
-	uint16_t dataOffset;
-	uint16_t count;         /* entries of a table; 0 otherwise */
-	uint8_t stride;         /* bytes between a table's far pointers */
-	uint16_t length;        /* a text's length without its NUL; a byte piece's or array's size */
-	void *target;           /* NULL for ORIGINAL_PIECE_TEXT, which is read in place */
-	const char *keyedHash;  /* the first 16 hex digits of the keyed HMAC-SHA-256 of the piece */
+    const char *name;
+    OriginalPieceKind kind;
+    uint16_t dataOffset;
+    uint16_t count;         /* entries of a table; 0 otherwise */
+    uint8_t stride;         /* bytes between a table's far pointers */
+    uint16_t length;        /* a text's length without its NUL; a byte piece's or array's size */
+    void *target;           /* NULL for ORIGINAL_PIECE_TEXT, which is read in place */
+    const char *keyedHash;  /* the first 16 hex digits of the keyed HMAC-SHA-256 of the piece */
 } OriginalPiece;
 
 /* Where a story text (revenge/story.h) is in an edition's load image: the
@@ -99,33 +99,33 @@ typedef struct OriginalPiece
 
 typedef struct StoryTextSource
 {
-	uint32_t imageOffset;
-	uint16_t segment;
-	uint16_t length;
-	uint8_t expanded;       /* 1: the game's digram compression, expanded */
-	const char *keyedHash;
+    uint32_t imageOffset;
+    uint16_t segment;
+    uint16_t length;
+    uint8_t expanded;       /* 1: the game's digram compression, expanded */
+    const char *keyedHash;
 } StoryTextSource;
 
 /* One known copy of an edition, by the keyed hash of its whole load image. */
 typedef struct OriginalVariant
 {
-	const char *label;            /* "" for the plain copy, else a mark of its own */
-	const char *imageKeyedHash;
+    const char *label;            /* "" for the plain copy, else a mark of its own */
+    const char *imageKeyedHash;
 } OriginalVariant;
 
 /* An edition: how its program is laid out, its pieces and its known variants
  * (src/Support/original_import_editions.cpp, from original_editions.txt). */
 typedef struct OriginalEdition
 {
-	const char *name;             /* as messages name it: "DOS 1.00" */
-	uint32_t fileBytes;
-	uint16_t headerParagraphs;
-	const char *headerKeyedHash;  /* the MZ header with its relocation table */
-	const OriginalPiece *pieces;
-	size_t pieceCount;
-	const StoryTextSource *storyTexts;   /* STORY_TEXT_COUNT of them, by StoryTextId */
-	const OriginalVariant *variants;
-	size_t variantCount;
+    const char *name;             /* as messages name it: "DOS 1.00" */
+    uint32_t fileBytes;
+    uint16_t headerParagraphs;
+    const char *headerKeyedHash;  /* the MZ header with its relocation table */
+    const OriginalPiece *pieces;
+    size_t pieceCount;
+    const StoryTextSource *storyTexts;   /* STORY_TEXT_COUNT of them, by StoryTextId */
+    const OriginalVariant *variants;
+    size_t variantCount;
 } OriginalEdition;
 
 extern const OriginalEdition OriginalEditions[];
@@ -138,7 +138,7 @@ extern const char OriginalImportKey[];
  * nothing; OriginalImport_Load does, for the editions above. Reading replaces
  * the image, so the tests that call it don't load as well. */
 const OriginalEdition *OriginalImport_Identify(const char *executablePath, const OriginalEdition *editions,
-	size_t editionCount);
+    size_t editionCount);
 
 /* After OriginalImport_Load: the edition and variant accepted (NULL before).
  * After it or an OriginalImport_Identify that accepted the copy: the load

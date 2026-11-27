@@ -18,18 +18,18 @@
  */
 typedef enum GameFileAccess
 {
-	GAME_FILE_READ,        /* open 8001h */
-	GAME_FILE_WRITE,       /* open 8002h */
-	GAME_FILE_READ_WRITE,  /* open 8004h */
-	GAME_FILE_CREATE       /* open 8102h: write, the file made empty when
+    GAME_FILE_READ,        /* open 8001h */
+    GAME_FILE_WRITE,       /* open 8002h */
+    GAME_FILE_READ_WRITE,  /* open 8004h */
+    GAME_FILE_CREATE       /* open 8102h: write, the file made empty when
 	                        * missing and left as it is when not */
 } GameFileAccess;
 
 typedef enum GameFileOrigin
 {
-	GAME_FILE_FROM_START,
-	GAME_FILE_FROM_CURRENT,
-	GAME_FILE_FROM_END
+    GAME_FILE_FROM_START,
+    GAME_FILE_FROM_CURRENT,
+    GAME_FILE_FROM_END
 } GameFileOrigin;
 
 int16 GameFile_Open(const char *name, GameFileAccess access);

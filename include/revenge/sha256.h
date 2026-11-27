@@ -6,16 +6,16 @@
 
 enum
 {
-	SHA256_DIGEST_BYTES = 32,
-	SHA256_BLOCK_BYTES = 64
+    SHA256_DIGEST_BYTES = 32,
+    SHA256_BLOCK_BYTES = 64
 };
 
 typedef struct Sha256
 {
-	uint32_t state[8];
-	uint64_t byteCount;
-	uint8_t block[SHA256_BLOCK_BYTES];
-	size_t blockFill;
+    uint32_t state[8];
+    uint64_t byteCount;
+    uint8_t block[SHA256_BLOCK_BYTES];
+    size_t blockFill;
 } Sha256;
 
 void Sha256_Begin(Sha256 *hash);
@@ -25,8 +25,8 @@ void Sha256_End(Sha256 *hash, uint8_t digest[SHA256_DIGEST_BYTES]);
 /* HMAC-SHA-256 (RFC 2104) of data under key. */
 typedef struct HmacSha256
 {
-	Sha256 inner;
-	uint8_t outerKey[SHA256_BLOCK_BYTES];
+    Sha256 inner;
+    uint8_t outerKey[SHA256_BLOCK_BYTES];
 } HmacSha256;
 
 void HmacSha256_Begin(HmacSha256 *mac, const void *key, size_t keyLength);

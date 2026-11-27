@@ -9,12 +9,12 @@
  * once. */
 enum
 {
-	MEDIA_OPTION_VIDEO = 0,
-	MEDIA_OPTION_MUSIC = 1,
-	MEDIA_OPTION_SOUND = 2,
-	MEDIA_OPTION_INPUT = 3,
-	MEDIA_OPTION_COUNT = 4,
-	MEDIA_SOUND_PARAMETER_CAPACITY = 8
+    MEDIA_OPTION_VIDEO = 0,
+    MEDIA_OPTION_MUSIC = 1,
+    MEDIA_OPTION_SOUND = 2,
+    MEDIA_OPTION_INPUT = 3,
+    MEDIA_OPTION_COUNT = 4,
+    MEDIA_SOUND_PARAMETER_CAPACITY = 8
 };
 
 /* Where the music goes: the soundfont (the game drives its Roland driver,
@@ -36,10 +36,10 @@ inline constexpr int MEDIA_SOUND_SPEAKER = 1;
  * pick their records. */
 typedef struct RevengeMediaChoices
 {
-	word16 choice[MEDIA_OPTION_COUNT];
-	char soundParameter[MEDIA_SOUND_PARAMETER_CAPACITY];
-	word16 music;
-	word16 sound;
+    word16 choice[MEDIA_OPTION_COUNT];
+    char soundParameter[MEDIA_SOUND_PARAMETER_CAPACITY];
+    word16 music;
+    word16 sound;
 } RevengeMediaChoices;
 
 /* The names of MEDIA.CFG's options, in the option records at DS:3A91

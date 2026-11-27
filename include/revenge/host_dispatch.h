@@ -8,10 +8,10 @@
  * This bridge contains no game policy; callers supply the identity mapping.
  */
 const void *HostDispatch_Select(
-	const void *identity,
-	const void *const *identities,
-	const void *const *dispatches,
-	word16 count,
-	const void *fallback);
+    const void *identity,
+    const void *const *identities,
+    const void *const *dispatches,
+    word16 count,
+    const void *fallback);
 
 #endif

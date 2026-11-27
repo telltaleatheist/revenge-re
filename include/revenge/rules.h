@@ -18,13 +18,13 @@
 
 typedef struct RulePiece
 {
-	const char *id;           /* file.table, as weapons.definitions */
-	void *object;             /* the table the rules fill */
-	size_t size;              /* its size, the original's */
-	uint16_t segment;         /* its place in the original's memory, */
-	uint16_t offset;          /* the image loaded at 0800h */
-	uint16_t length;
-	const char *keyedHash;    /* 16 hex digits; empty for a tuned table */
+    const char *id;           /* file.table, as weapons.definitions */
+    void *object;             /* the table the rules fill */
+    size_t size;              /* its size, the original's */
+    uint16_t segment;         /* its place in the original's memory, */
+    uint16_t offset;          /* the image loaded at 0800h */
+    uint16_t length;
+    const char *keyedHash;    /* 16 hex digits; empty for a tuned table */
 } RulePiece;
 
 extern const RulePiece RulePieces[];

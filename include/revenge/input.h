@@ -42,7 +42,7 @@ inline constexpr int MOUSE_BUTTON_MIDDLE = 0x04;
 
 static inline int16 TranslatedExtendedKey(byte keyCode)
 {
-    return (int16)(int8_t)keyCode;
+    return (int16) (int8_t) keyCode;
 }
 
 void KeyboardInterruptHandler(byte scanCode);

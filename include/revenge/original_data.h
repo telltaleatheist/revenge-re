@@ -15,7 +15,7 @@
 
 enum
 {
-	ORIGINAL_TEXT_WINDOW_COUNT = 0x17
+    ORIGINAL_TEXT_WINDOW_COUNT = 0x17
 };
 
 
@@ -26,37 +26,37 @@ typedef word16 (*MediaConfigurationHandler)(void);
 #pragma pack(push, 1)
 typedef struct MediaConfigurationChoice
 {
-	char name[0x0C];
-	byte value;
+    char name[0x0C];
+    byte value;
 } MediaConfigurationChoice;
 
 typedef struct SoundConfigurationChoice
 {
-	char name[0x0C];
-	byte driverIndex;
-	byte hasNumericParameter;
+    char name[0x0C];
+    byte driverIndex;
+    byte hasNumericParameter;
 } SoundConfigurationChoice;
 #pragma pack(pop)
 
 static_assert(sizeof(MediaConfigurationChoice) == 0x0D,
-	"MediaConfigurationChoice must retain its DOS layout");
+    "MediaConfigurationChoice must retain its DOS layout");
 static_assert(sizeof(SoundConfigurationChoice) == 0x0E,
-	"SoundConfigurationChoice must retain its DOS layout");
+    "SoundConfigurationChoice must retain its DOS layout");
 
 #pragma pack(push, 1)
 typedef struct PITCalibrationState
 {
-	word16 Channel0Divisor;
-	DosAddress SavedIRQ0Vector;
-	word16 SavedInterruptFlags;
-	word16 LatchedChannel0Count;
+    word16 Channel0Divisor;
+    DosAddress SavedIRQ0Vector;
+    word16 SavedInterruptFlags;
+    word16 LatchedChannel0Count;
 } PITCalibrationState;
 #pragma pack(pop)
 
 static_assert(sizeof(PITCalibrationState) == 0x0A,
-	"PITCalibrationState must retain DS:6FA4-6FAD layout");
+    "PITCalibrationState must retain DS:6FA4-6FAD layout");
 static_assert(offsetof(PITCalibrationState, SavedIRQ0Vector) == 0x02,
-	"saved IRQ0 vector must retain its original offset");
+    "saved IRQ0 vector must retain its original offset");
 
 /* Original primary data segment (3A6A) fields, named by DS offset. */
 extern word16 MapWidth;
@@ -155,13 +155,13 @@ extern SceneUnitRoute SavedTacticalRoute;
 #define TacticalCursorAutoScroll InputDeviceType
 /* These addresses are fields inside the original packed DS tables. */
 #define TacticalMenuFirstRegion \
-	(TextWindowContexts[0x04].topTile)
+    (TextWindowContexts[0x04].topTile)
 #define TacticalMenuLastRegion \
-	(TextWindowContexts[0x04].heightTiles)
+    (TextWindowContexts[0x04].heightTiles)
 #define TacticalMenuOptionCount \
-	(UiRegionTable[0x01].rowCount)
+    (UiRegionTable[0x01].rowCount)
 #define TacticalMenuSelectedOption \
-	(UiRegionTable[0x01].selectedRow)
+    (UiRegionTable[0x01].selectedRow)
 extern byte TacticalInteractionLocked;
 extern word16 TacticalMenuInputState;
 extern const char TacticalPaddingSpace[];
@@ -207,7 +207,7 @@ extern const char *TacticalOverburnTextTable[0x02];
 extern const char *LanceStatusTextTable[0x08];
 extern const char *const DeadText;
 extern RevengeMapEdgeEffectRecord
-	MapEdgeEffectQueue[MAP_EDGE_EFFECT_RECORD_COUNT];
+    MapEdgeEffectQueue[MAP_EDGE_EFFECT_RECORD_COUNT];
 extern word16 MapEdgeEffectCount;
 extern word16 PrimaryStatusRow;
 extern word16 SecondaryStatusRow;
@@ -224,7 +224,7 @@ extern byte TacticalOverviewMarkerY[0x18];
 extern word16 TacticalOverviewViewportY;
 extern word16 TacticalOverviewScreenOriginX;
 #define TacticalContactMarkerPending \
-	TacticalStatusRowInvalidation[0x07]
+    TacticalStatusRowInvalidation[0x07]
 extern word16 DisplayedTacticalStatusRow;
 extern word16 TacticalStatusBlinkCountdown;
 extern byte TacticalStatusBlinkVisible;
@@ -265,7 +265,7 @@ extern RevengePilotRosterRecord PilotRoster[REVENGE_PILOT_ROSTER_COUNT];
  * player's copy (src/Support/original_import_pieces.txt). */
 extern RevengePilotRosterRecord PilotRosterRecordPastEnd;
 extern RevengeUnitLanceAssignment
-	LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];
+    LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];
 /* DS:5928: seven rows; the scenarios use rows 0-4 and 6. */
 extern byte ScenarioLanceAllegianceTable[0x07][0x03];  /* the rules' */
 extern word16 AmmoCapacityMultiplierTable[0x0E];     /* the rules' */
@@ -305,12 +305,12 @@ extern byte FallenPilotListWindowHeight;
  * replay copy is the live count. */
 typedef struct RandomPilotPoolCountCopies
 {
-	byte initial; /* DS:1B8C */
-	byte forward; /* DS:1B8D */
-	byte replay; /* DS:1B8E */
+    byte initial; /* DS:1B8C */
+    byte forward; /* DS:1B8D */
+    byte replay; /* DS:1B8E */
 } RandomPilotPoolCountCopies;
 static_assert(sizeof(RandomPilotPoolCountCopies) == 0x03,
-	"DS:1B8C-1B8E holds the three copies of the count.");
+    "DS:1B8C-1B8E holds the three copies of the count.");
 extern RandomPilotPoolCountCopies RandomPilotPoolCounts;
 extern word16 SaveTransferState;
 extern word16 SavedSaveTransferState;
@@ -327,14 +327,14 @@ extern byte CampaignMenuRequested;
  * globals.  RunGameOptionsMenu changes both records for its six-row
  * standalone and seven-row embedded layouts. */
 #define GameOptionsMenuHeight \
-	(TextWindowContexts[0x0B].heightTiles)
+    (TextWindowContexts[0x0B].heightTiles)
 #define GameOptionsMenuEntryCount \
-	(UiRegionTable[0x05].rowCount)
+    (UiRegionTable[0x05].rowCount)
 extern word16 NarrationFocusRegion;
 /* DS:1530 and DS:1566 are cached-file descriptors 40h's and 43h's name
  * pointers, which the code reads as the unit template and tactical resource
  * paths: not second objects. */
-#define UnitTemplatePath (CachedFileDescriptors[0x40].fileName)
+#define UnitTemplatePath     (CachedFileDescriptors[0x40].fileName)
 #define TacticalResourcePath (CachedFileDescriptors[0x43].fileName)
 extern word16 TacticalOverviewClockNoticeActive;
 extern word16 TacticalRuntimeState;
@@ -358,11 +358,11 @@ extern word16 UnitEditorPilotCardCount;
 extern word16 UnitEditorLanceGroupCount;
 /* DS:1D42 is LanceAssignments[0x0C], not a second object. */
 #define UnitEditorExitButtonLeft \
-	(LanceAssignments[0x0C].left)
+    (LanceAssignments[0x0C].left)
 #define UnitEditorExitButtonTop \
-	(LanceAssignments[0x0C].top)
+    (LanceAssignments[0x0C].top)
 #define UnitEditorExitButtonState \
-	(LanceAssignments[0x0C].style)
+    (LanceAssignments[0x0C].style)
 extern word16 TextOutputMode;
 extern word16 SelectedUnitEquipmentLocation;
 extern RevengeUnitRecord EstimatedUnitRecord;
@@ -370,7 +370,7 @@ extern RevengeUnitRecord EstimatedUnitRecord;
  * 18 tactical-unit rating records. */
 extern RevengeTacticalCombatRatings UnitCombatRatings[0x1A];
 #define DisplayedUnitCombatRatings UnitCombatRatings[0x18]
-#define ComparedUnitCombatRatings UnitCombatRatings[0x19]
+#define ComparedUnitCombatRatings  UnitCombatRatings[0x19]
 extern byte UnitLanceFormationState[0x18];
 extern byte TacticalScenarioLanceEnabled[0x03];
 extern byte SensorDamageProximityRangeTable[0x03];  /* the rules' */
@@ -410,7 +410,7 @@ extern byte UnitWithdrawalState[0x18];
 /* DS:884B, DS:884E and DS:8853: the withdrawal states of the roster's units
  * 0Ch, 0Fh and 14h, which a later scenario's rosters test for withdrawal. */
 #define CampaignUnitThirteenAvailabilityFlag (UnitWithdrawalState[0x0C])
-#define CampaignUnitFifteenOverrideFlag (UnitWithdrawalState[0x0F])
+#define CampaignUnitFifteenOverrideFlag      (UnitWithdrawalState[0x0F])
 #define CampaignUnitFourteenAvailabilityFlag (UnitWithdrawalState[0x14])
 extern RevengeUnitSlot UnitLastNarratedTarget[0x18];
 extern byte UnitPreferredEngagementMode[0x18];
@@ -418,10 +418,8 @@ extern byte UnitTerrainType[0x18];
 /* RecalculateUnitCombatRatings uses slot 18h as the status-panel scratch
  * record in addition to the 18h live tactical unit slots. */
 extern byte UnitBelowHalfDurability[TACTICAL_UNIT_COUNT + 0x01];
-extern byte UnitCachedWeaponCounts[
-	(TACTICAL_UNIT_COUNT + 0x01) * WEAPON_DEFINITION_COUNT];
-extern byte UnitWeaponRecoveryCounters[
-	(TACTICAL_UNIT_COUNT + 0x01) * WEAPON_DEFINITION_COUNT];
+extern byte UnitCachedWeaponCounts[(TACTICAL_UNIT_COUNT + 0x01) * WEAPON_DEFINITION_COUNT];
+extern byte UnitWeaponRecoveryCounters[(TACTICAL_UNIT_COUNT + 0x01) * WEAPON_DEFINITION_COUNT];
 extern byte UnitHeatSinkCount[TACTICAL_UNIT_COUNT + 0x01];
 extern uint32 UnitWeaponAvailabilityMask[TACTICAL_UNIT_COUNT + 0x01];
 extern word16 WeaponCountScratch[0x17];
@@ -443,7 +441,7 @@ extern word16 TerrainLineOfSightBlockingThreshold;
 extern byte TerrainLineOfSightMaximumSteps;
 extern byte TacticalTerrainEffectMode;
 extern RevengeTerrainDamageQueueEntry
-	TerrainDamageQueue[TERRAIN_DAMAGE_QUEUE_ENTRY_COUNT];
+    TerrainDamageQueue[TERRAIN_DAMAGE_QUEUE_ENTRY_COUNT];
 extern byte CampaignUpgradeMarkerX[0x04];
 extern byte CampaignUpgradeMarkerY[0x04];
 extern word16 FriendlyUnitDestroyed;
@@ -489,7 +487,7 @@ extern const byte TerrainDamageQueueOccupiedMask[0x04];
 extern const byte TerrainDamageQueueIncrementMask[0x04];
 extern word16 HitLocationDirectionSelectorTable[0x10];  /* the rules' */
 extern word16 HitLocationTable[HIT_LOCATION_TABLE_COUNT]
-	[HIT_LOCATION_TABLE_WORD_COUNT];  /* the rules' */
+                              [HIT_LOCATION_TABLE_WORD_COUNT];  /* the rules' */
 extern word16 UnitActionMaskByExperience[0x04];  /* the rules' */
 /* What an experience past those four reads: the original's words after the
  * table, through DS:3EF5 (src/Support/original_import_pieces.txt). */
@@ -499,7 +497,7 @@ extern word16 UnitActionMaskByExperiencePastEnd[0xFC];
  * (src/Support/original_import_pieces.txt). */
 extern byte WeaponAIHeatLimitByExperiencePastEnd[0xFC];
 extern RevengeTerrainImpactAnimationRecord
-	TerrainImpactAnimationRecords[TERRAIN_IMPACT_ANIMATION_RECORD_COUNT];
+    TerrainImpactAnimationRecords[TERRAIN_IMPACT_ANIMATION_RECORD_COUNT];
 extern word16 NarrationMessageCategory;
 /* How long a narration stays up, in ms of battle time (the game clock's
  * ticks while the battle loop runs). The original counted it in battle-loop
@@ -530,7 +528,7 @@ extern word16 TacticalBattleResult;
 extern word16 TacticalClockDivider;
 extern word16 TacticalImpactQueueCount;
 extern RevengeTacticalImpactRecord
-	TacticalImpactQueue[TACTICAL_IMPACT_RECORD_COUNT];
+    TacticalImpactQueue[TACTICAL_IMPACT_RECORD_COUNT];
 extern const int16 TacticalCursorSearchOffsetX[0x09];
 extern const int16 TacticalCursorSearchOffsetY[0x09];
 extern const int8 TacticalMouseEdgeInputByMask[0x10];
@@ -541,7 +539,7 @@ extern word16 HeatDissipationBySinkCountQ8_8[0x30];  /* the rules' */
 extern word16 TerrainDamageQueueWordCount;
 extern word16 TacticalProjectileCount;
 extern RevengeTacticalProjectileRecord
-	TacticalProjectileRecords[TACTICAL_PROJECTILE_RECORD_COUNT];
+    TacticalProjectileRecords[TACTICAL_PROJECTILE_RECORD_COUNT];
 extern word16 TacticalOverviewDisplayMode;
 extern word16 LrmShipmentLoaded;
 extern word16 SrmShipmentLoaded;
@@ -647,7 +645,7 @@ extern word16 SuppressCampaignClock;
 extern word16 TacticalCursorOutlineEnabled;
 extern word16 TacticalCursorOutlineState;
 #define TacticalEffectSpriteTable \
-	((const byte * const *)SharedGraphicsBackingBuffers)
+    ((const byte *const *) SharedGraphicsBackingBuffers)
 extern byte *ActiveFontResource;
 extern byte MusicDriverIndex;
 extern int8 ActiveFontGlyphAdvanceX;

@@ -23,18 +23,18 @@ typedef int32_t int32;
  */
 #if defined(_MSC_VER)
 #define REVENGE_ANONYMOUS_STRUCTS_BEGIN \
-	__pragma(warning(push)) __pragma(warning(disable : 4201))
+    __pragma(warning(push)) __pragma(warning(disable : 4201))
 #define REVENGE_ANONYMOUS_STRUCTS_END __pragma(warning(pop))
 #elif defined(__clang__)
 #define REVENGE_ANONYMOUS_STRUCTS_BEGIN \
-	_Pragma("clang diagnostic push") \
-	_Pragma("clang diagnostic ignored \"-Wgnu-anonymous-struct\"") \
-	_Pragma("clang diagnostic ignored \"-Wnested-anon-types\"")
+    _Pragma("clang diagnostic push") \
+        _Pragma("clang diagnostic ignored \"-Wgnu-anonymous-struct\"") \
+            _Pragma("clang diagnostic ignored \"-Wnested-anon-types\"")
 #define REVENGE_ANONYMOUS_STRUCTS_END _Pragma("clang diagnostic pop")
 #elif defined(__GNUC__)
 #define REVENGE_ANONYMOUS_STRUCTS_BEGIN \
-	_Pragma("GCC diagnostic push") \
-	_Pragma("GCC diagnostic ignored \"-Wpedantic\"")
+    _Pragma("GCC diagnostic push") \
+        _Pragma("GCC diagnostic ignored \"-Wpedantic\"")
 #define REVENGE_ANONYMOUS_STRUCTS_END _Pragma("GCC diagnostic pop")
 #else
 #define REVENGE_ANONYMOUS_STRUCTS_BEGIN
@@ -80,14 +80,14 @@ static inline DosAddress DosAddress_FromValue(uint32 value)
 {
     DosAddress pointer;
 
-    pointer.offset = (word16)value;
-    pointer.segment = (word16)(value >> 0x10);
+    pointer.offset = (word16) value;
+    pointer.segment = (word16) (value >> 0x10);
     return pointer;
 }
 
 static inline uint32 DosAddress_ToValue(DosAddress pointer)
 {
-    return ((uint32)pointer.segment << 0x10) | pointer.offset;
+    return ((uint32) pointer.segment << 0x10) | pointer.offset;
 }
 
 static inline int DosAddress_IsNull(DosAddress pointer)
