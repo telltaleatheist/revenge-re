@@ -545,15 +545,21 @@ uint32 CalculateSelectedWeaponRating(
 	return rating;
 }
 
+/* CS:01C9-05C8 in the original, space in its code segment: the damaged-
+ * sprite lookup's 300h bytes, which ICONLIST.DAT fills for the active icon
+ * set, then the scenario classification map's 100h, which
+ * BuildScenarioTerrainDamageCapabilityMap writes whole for each scenario.
+ * Nothing reads either before it is written, so the port's own storage
+ * stands for it, not the program image. */
+static byte TerrainDamageTables[0x0400];
+
 void InstallDamagedTerrainSpriteLookup(void)
 {
-	/* 0800:0959 publishes CS:01C9 through DS:7A73. ICONLIST.DAT replaces these
-	 * 300h bytes for the active icon set, and BuildTacticalTerrainCellMaps
-	 * indexes the same table directly at 0800:0694 using (damageState - 1) in
-	 * AH and terrainType in AL. The scenario classification map starts at the
-	 * following CS:04C9; it is not the damaged-sprite lookup. */
-	TerrainDamageCapabilityTable = (byte *) HostFarPointer_Resolve(
-		0x080001C9UL);
+	/* 0800:0959 publishes CS:01C9 through DS:7A73. BuildTacticalTerrainCellMaps
+	 * indexes the lookup directly at 0800:0694 using (damageState - 1) in AH
+	 * and terrainType in AL. The classification map at CS:04C9 follows it; it
+	 * is not the damaged-sprite lookup. */
+	TerrainDamageCapabilityTable = TerrainDamageTables;
 	DamagedTerrainSpriteLookup = TerrainDamageCapabilityTable;
 }
 
