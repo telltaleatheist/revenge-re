@@ -1,4 +1,5 @@
-// REVENGE_3A6A_RESOURCE_DATA.cpp
+// 3A6A: resource data
+// ResourceData.cpp
 // Typed objects recovered from REVENGE.EXE DS segment 3A6A.
 
 #include "revenge/original_data.h"

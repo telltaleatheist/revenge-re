@@ -1,4 +1,5 @@
-// REVENGE_426A_ENCODED_SPRITE_DATA.cpp
+// 426A: encoded sprite data
+// EncodedSpriteData.cpp
 // Typed continuation of the shared graphics data segment at 4184:0E60.
 
 #include "revenge/original_data.h"

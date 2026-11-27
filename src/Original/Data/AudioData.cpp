@@ -1,4 +1,5 @@
-// REVENGE_3A6A_AUDIO_DATA.cpp
+// 3A6A: audio data
+// AudioData.cpp
 // Typed objects recovered from REVENGE.EXE DS segment 3A6A.
 
 #include "revenge/original_data.h"

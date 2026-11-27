@@ -3,19 +3,19 @@
 # flat sources stay outside the runtime until their Reko type debris has been
 # replaced by executable-backed contracts.
 set(CHR_3A6A_DATA_SOURCES
-	src/Original/Data/REVENGE_3A6A_GRAPHICS_DATA.cpp
-	src/Original/Data/REVENGE_3A6A_RESOURCE_DATA.cpp
-	src/Original/Data/REVENGE_3A6A_AUDIO_DATA.cpp
-	src/Original/Data/REVENGE_3A6A_STARTUP_DATA.cpp
-	src/Original/Data/REVENGE_3A6A_TEXT_IO_DATA.cpp
-	src/Original/Data/REVENGE_3A6A_TACTICAL_DATA.cpp
-	src/Original/Data/REVENGE_3A6A_TACTICAL_TABLES.cpp
-	src/Original/Data/REVENGE_3A6A_HIT_LOCATION_DATA.cpp
-	src/Original/Data/REVENGE_3A6A_CAMPAIGN_DATA.cpp
-	src/Original/Data/REVENGE_3A6A_SCENE_DATA.cpp
-	src/Original/Data/REVENGE_3A6A_LANCE_EDITOR_DATA.cpp
-	src/Original/Data/REVENGE_TEXT_TABLES.cpp
-	src/Original/Data/REVENGE_3A6A_RUNTIME_DATA.cpp
+	src/Original/Data/GraphicsData.cpp
+	src/Original/Data/ResourceData.cpp
+	src/Original/Data/AudioData.cpp
+	src/Original/Data/StartupData.cpp
+	src/Original/Data/TextIOData.cpp
+	src/Original/Data/TacticalData.cpp
+	src/Original/Data/TacticalTables.cpp
+	src/Original/Data/HitLocationData.cpp
+	src/Original/Data/CampaignData.cpp
+	src/Original/Data/SceneData.cpp
+	src/Original/Data/LanceEditorData.cpp
+	src/Original/Data/TextTables.cpp
+	src/Original/Data/RuntimeData.cpp
 	src/Support/original_import.cpp
 	src/Support/original_import_editions.cpp
 	src/Support/original_import_table_dos100.cpp
@@ -144,6 +144,6 @@ list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Text/REVENGE_0D73_SCENARIO_MESSAGES.cpp)
 
 list(APPEND CHR_ORIGINAL_SOURCES
-	src/Original/Data/REVENGE_4184_TACTICAL_GRAPHICS_DATA.cpp
-	src/Original/Data/REVENGE_426A_ENCODED_SPRITE_DATA.cpp
-	src/Original/Data/REVENGE_426B_MUSIC_TIMER_DATA.cpp)
+	src/Original/Data/TacticalGraphicsData.cpp
+	src/Original/Data/EncodedSpriteData.cpp
+	src/Original/Data/MusicTimerData.cpp)

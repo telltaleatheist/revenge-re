@@ -37,7 +37,7 @@ header revenge/original/lance_editor_data.h
 header revenge/original/scene_data.h
 header REVENGE.h
 
-# Text tables (REVENGE_TEXT_TABLES.cpp)
+# Text tables (TextTables.cpp)
 text_table           TitleTextTable                          2411 12
 text_table           MonthNameTextTable                      2459 0C
 text_table           MissionDateLabelTextTable               24A1 0C

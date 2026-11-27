@@ -25,3 +25,19 @@ file	src/Original/Campaign/REVENGE_0D73_SAVE_LOAD.cpp	src/Original/Campaign/Save
 file	src/Original/Campaign/REVENGE_39CC_CLOCK_SNAPSHOT.cpp	src/Original/Campaign/ClockSnapshot.cpp	39CC	clock snapshot
 file	src/Original/Campaign/REVENGE_3A07_EPOCH_TIME.cpp	src/Original/Campaign/EpochTime.cpp	3A07	epoch time
 file	src/Original/Campaign/REVENGE_3A3C_TIMEZONE.cpp	src/Original/Campaign/Timezone.cpp	3A3C	timezone
+file	src/Original/Data/REVENGE_3A6A_AUDIO_DATA.cpp	src/Original/Data/AudioData.cpp	3A6A	audio data
+file	src/Original/Data/REVENGE_3A6A_CAMPAIGN_DATA.cpp	src/Original/Data/CampaignData.cpp	3A6A	campaign data
+file	src/Original/Data/REVENGE_3A6A_GRAPHICS_DATA.cpp	src/Original/Data/GraphicsData.cpp	3A6A	graphics data
+file	src/Original/Data/REVENGE_3A6A_HIT_LOCATION_DATA.cpp	src/Original/Data/HitLocationData.cpp	3A6A	hit location data
+file	src/Original/Data/REVENGE_3A6A_LANCE_EDITOR_DATA.cpp	src/Original/Data/LanceEditorData.cpp	3A6A	lance editor data
+file	src/Original/Data/REVENGE_3A6A_RESOURCE_DATA.cpp	src/Original/Data/ResourceData.cpp	3A6A	resource data
+file	src/Original/Data/REVENGE_3A6A_RUNTIME_DATA.cpp	src/Original/Data/RuntimeData.cpp	3A6A	runtime data
+file	src/Original/Data/REVENGE_3A6A_SCENE_DATA.cpp	src/Original/Data/SceneData.cpp	3A6A	scene data
+file	src/Original/Data/REVENGE_3A6A_STARTUP_DATA.cpp	src/Original/Data/StartupData.cpp	3A6A	startup data
+file	src/Original/Data/REVENGE_3A6A_TACTICAL_DATA.cpp	src/Original/Data/TacticalData.cpp	3A6A	tactical data
+file	src/Original/Data/REVENGE_3A6A_TACTICAL_TABLES.cpp	src/Original/Data/TacticalTables.cpp	3A6A	tactical tables
+file	src/Original/Data/REVENGE_3A6A_TEXT_IO_DATA.cpp	src/Original/Data/TextIOData.cpp	3A6A	text IO data
+file	src/Original/Data/REVENGE_4184_TACTICAL_GRAPHICS_DATA.cpp	src/Original/Data/TacticalGraphicsData.cpp	4184	tactical graphics data
+file	src/Original/Data/REVENGE_426A_ENCODED_SPRITE_DATA.cpp	src/Original/Data/EncodedSpriteData.cpp	426A	encoded sprite data
+file	src/Original/Data/REVENGE_426B_MUSIC_TIMER_DATA.cpp	src/Original/Data/MusicTimerData.cpp	426B	music timer data
+file	src/Original/Data/REVENGE_TEXT_TABLES.cpp	src/Original/Data/TextTables.cpp	3A6A	text tables

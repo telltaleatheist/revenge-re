@@ -1,3 +1,4 @@
+// 3A6A: hit location data
 // BattleTech hit-location tables recovered from REVENGE.EXE DS:1038/3CFE.
 
 #include "revenge/original_data.h"

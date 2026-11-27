@@ -1,4 +1,5 @@
-// REVENGE_3A6A_LANCE_EDITOR_DATA.cpp
+// 3A6A: lance editor data
+// LanceEditorData.cpp
 // Canonical C objects for the unit and pilot editor's DS:3A6A data.
 
 #include "revenge/original/lance_editor_data.h"

@@ -1,4 +1,5 @@
-// REVENGE_3A6A_GRAPHICS_DATA.cpp
+// 3A6A: graphics data
+// GraphicsData.cpp
 // Typed objects recovered from REVENGE.EXE DS segment 3A6A.
 
 #include "revenge/original_data.h"
