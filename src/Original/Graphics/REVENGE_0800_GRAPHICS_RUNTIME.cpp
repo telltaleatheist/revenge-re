@@ -325,8 +325,8 @@ uint32 CalculateSelectedWeaponRating(
 		maskHigh >>= 0x01;
 		if (selected != 0x0000)
 		{
-			rating += (uint32) WeaponCombatRatingByType[weaponIndex]
-				* (byte) weaponCounts[weaponIndex];
+			rating += (uint32) WeaponCombatRatingByType[weaponIndex] *
+				(byte) weaponCounts[weaponIndex];
 		}
 	}
 

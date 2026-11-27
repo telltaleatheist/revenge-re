@@ -17,11 +17,11 @@ static byte WeaponAIHeatLimit(word16 index)
 
 	if (index < TABLE_COUNT)
 		return WeaponAIHeatLimitByExperience[index];
-	if (index >= OVERVIEW_MAP_MODE_AT
-		&& index < OVERVIEW_MAP_MODE_AT + sizeof(TacticalOverviewMapMode))
+	if (index >= OVERVIEW_MAP_MODE_AT &&
+		index < OVERVIEW_MAP_MODE_AT + sizeof(TacticalOverviewMapMode))
 		return (byte) (TacticalOverviewMapMode >> (0x08 * (index - OVERVIEW_MAP_MODE_AT)));
-	if (index >= SCENARIO_LANCES_AT
-		&& index < SCENARIO_LANCES_AT + sizeof(TacticalScenarioLanceEnabled))
+	if (index >= SCENARIO_LANCES_AT &&
+		index < SCENARIO_LANCES_AT + sizeof(TacticalScenarioLanceEnabled))
 		return TacticalScenarioLanceEnabled[index - SCENARIO_LANCES_AT];
 	return WeaponAIHeatLimitByExperiencePastEnd[
 		REVENGE_INDEX(WeaponAIHeatLimitByExperiencePastEnd, index - TABLE_COUNT)];
@@ -38,9 +38,9 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
 	word16 attackOccurred = FALSE;
 
 	if (UnitTacticalOrderMode[unitIndex] ==
-			TACTICAL_ORDER_SEEK_AND_DESTROY
-		|| UnitAttackTarget[unitIndex] != TACTICAL_TARGET_NONE
-		|| UnitTacticalOrderMode[unitIndex] ==
+			TACTICAL_ORDER_SEEK_AND_DESTROY ||
+		UnitAttackTarget[unitIndex] != TACTICAL_TARGET_NONE ||
+		UnitTacticalOrderMode[unitIndex] ==
 			TACTICAL_ORDER_HOLD_POSITION)
 	{
 		mayAttack = TRUE;
@@ -58,8 +58,8 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
 				unitRecord->pilotExperience + 0x01;
 			if (UnitOverburnOrCloseAssaultEnabled[unitIndex] != 0x00)
 				--heatLimitIndex;
-			if (unitRecord->currentHeat
-				> WeaponAIHeatLimit(heatLimitIndex))
+			if (unitRecord->currentHeat >
+				WeaponAIHeatLimit(heatLimitIndex))
 			{
 				mayAttack = FALSE;
 			}
@@ -70,9 +70,9 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
 		return FALSE;
 
 	int16 targetIndex = UnitTacticalTarget[unitIndex];
-	if (targetIndex != TACTICAL_TARGET_MAP_CELL
-		&& (targetIndex < 0x00 || targetIndex >= TACTICAL_TARGET_MAP_CELL
-			|| PersistentUnitRoster[targetIndex].deploymentState == 0x00))
+	if (targetIndex != TACTICAL_TARGET_MAP_CELL &&
+		(targetIndex < 0x00 || targetIndex >= TACTICAL_TARGET_MAP_CELL ||
+			PersistentUnitRoster[targetIndex].deploymentState == 0x00))
 	{
 		return FALSE;
 	}
@@ -119,12 +119,12 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
 	// Preserve the original ground-target quirk: direction classification uses
 	// pseudo-slot 18h at the byte immediately after each 24-entry coordinate
 	// array rather than UnitTargetMapX/Y, although distance used the latter.
-	word16 directionTargetX = targetIndex < TACTICAL_UNIT_COUNT
-		? ScenarioUnitMapX[targetIndex]
-		: DropShipMapX;
-	word16 directionTargetY = targetIndex < TACTICAL_UNIT_COUNT
-		? ScenarioUnitMapY[targetIndex]
-		: DropShipMapY;
+	word16 directionTargetX = targetIndex < TACTICAL_UNIT_COUNT ?
+		ScenarioUnitMapX[targetIndex] :
+		DropShipMapX;
+	word16 directionTargetY = targetIndex < TACTICAL_UNIT_COUNT ?
+		ScenarioUnitMapY[targetIndex] :
+		DropShipMapY;
 	int16 attackDirection = DetermineRelativeAttackDirection(
 		ScenarioUnitMapX[unitIndex],
 		ScenarioUnitMapY[unitIndex],
@@ -172,8 +172,8 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
 	if (selectedWeaponId == 0x00)
 		return FALSE;
 
-	if (unitRecord->damageModel == UNIT_DAMAGE_MODEL_INFANTRY
-		&& UnitOverburnOrCloseAssaultEnabled[unitIndex] != 0x00)
+	if (unitRecord->damageModel == UNIT_DAMAGE_MODEL_INFANTRY &&
+		UnitOverburnOrCloseAssaultEnabled[unitIndex] != 0x00)
 	{
 		// Close assault temporarily supplies one round for weapon index 0Ah and,
 		// if accepted, lets a unit target resolve the reciprocal assault. The

@@ -58,9 +58,9 @@ void DrawTacticalViewportCell(
 	{
 		DrawCompositeTacticalTile(
 			unitSpriteId,
-			terrainEffect != 0x00
-				? (word16) terrainEffect + 0x01F2
-				: terrainSpriteId,
+			terrainEffect != 0x00 ?
+				(word16) terrainEffect + 0x01F2 :
+				terrainSpriteId,
 			spritePage,
 			destinationX,
 			destinationY);

@@ -59,23 +59,23 @@ int16 ResolveWeaponAttack(
 			attackerUnitIndex, targetUnitIndex);
 	}
 
-	if (weaponIndex >= WEAPON_LRM_5
-		&& weaponIndex <= WEAPON_LRM_20
-		&& hasLineOfSight == 0x00)
+	if (weaponIndex >= WEAPON_LRM_5 &&
+		weaponIndex <= WEAPON_LRM_20 &&
+		hasLineOfSight == 0x00)
 	{
 		// P: LRMs may use another active unit on the attacker's side as a
 		// spotter. Record +8Eh gates that capability; Rifleman+ is the only
 		// immutable template that starts with it enabled.
-		int16 sideStart = attackerUnitIndex >= ENEMY_FORCE_FIRST_UNIT
-			? ENEMY_FORCE_FIRST_UNIT : FRIENDLY_FORCE_FIRST_UNIT;
+		int16 sideStart = attackerUnitIndex >= ENEMY_FORCE_FIRST_UNIT ?
+			ENEMY_FORCE_FIRST_UNIT : FRIENDLY_FORCE_FIRST_UNIT;
 		int16 sideUnit;
 		for (sideUnit = 0x00; sideUnit < TACTICAL_FORCE_UNIT_COUNT; ++sideUnit)
 		{
 			int16 spotterIndex = sideStart + sideUnit;
 			RevengeUnitRecord *spotter = &PersistentUnitRoster[spotterIndex];
-			if (spotter->deploymentState != 0x00
-				&& spotter->indirectFireSpotter != 0x00
-				&& HasUnitLineOfSight(
+			if (spotter->deploymentState != 0x00 &&
+				spotter->indirectFireSpotter != 0x00 &&
+				HasUnitLineOfSight(
 					spotterIndex, targetUnitIndex) != 0x00)
 			{
 				hasLineOfSight = 0x01;
@@ -93,8 +93,8 @@ int16 ResolveWeaponAttack(
 		ScenarioUnitMapY[attackerUnitIndex],
 		targetX,
 		targetY);
-	toHitTarget = toHitModifier
-		+ (int16) (byte) attackerUnit->gunneryTargetNumber;
+	toHitTarget = toHitModifier +
+		(int16) (byte) attackerUnit->gunneryTargetNumber;
 
 	if (targetUnitIndex != TACTICAL_TARGET_MAP_CELL)
 	{
@@ -104,9 +104,9 @@ int16 ResolveWeaponAttack(
 			toHitTarget -= 0x04;
 	}
 
-	if (weaponIndex == WEAPON_SMALL_PULSE_LASER
-		|| weaponIndex == WEAPON_MEDIUM_PULSE_LASER
-		|| weaponIndex == WEAPON_LARGE_PULSE_LASER)
+	if (weaponIndex == WEAPON_SMALL_PULSE_LASER ||
+		weaponIndex == WEAPON_MEDIUM_PULSE_LASER ||
+		weaponIndex == WEAPON_LARGE_PULSE_LASER)
 	{
 		// V: the three pulse-laser definitions receive a -2 to-hit bonus.
 		toHitTarget -= 0x02;
@@ -121,8 +121,8 @@ int16 ResolveWeaponAttack(
 		// V: the executable adds distance - minimumRange. This makes close
 		// shots easier, opposite the tabletop minimum-range penalty. Preserve
 		// the shipped behavior rather than silently correcting it.
-		toHitTarget += distance
-			- weaponDefinition->minimumRange;
+		toHitTarget += distance -
+			weaponDefinition->minimumRange;
 	}
 
 	toHitTarget += attackerUnit->currentHeat / BATTLEMECH_HEAT_SCALE;
@@ -139,8 +139,8 @@ int16 ResolveWeaponAttack(
 		toHitTarget = BATTLETECH_MAX_TO_HIT_TARGET;
 	attackWasAccepted = 0x01;
 	ammunitionFamily = weaponDefinition->ammunitionFamilyId;
-	if (ammunitionFamily != AMMUNITION_NONE
-		&& attackerUnit->currentAmmunition[
+	if (ammunitionFamily != AMMUNITION_NONE &&
+		attackerUnit->currentAmmunition[
 			AMMUNITION_INDEX(ammunitionFamily)] == 0x00)
 	{
 		return attackWasAccepted;
@@ -167,10 +167,10 @@ int16 ResolveWeaponAttack(
 			for (unitIndex = 0x00; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
 			{
 				RevengeUnitRecord *unit = &PersistentUnitRoster[unitIndex];
-				if (unit->deploymentState != 0x00
-					&& UnitAttackTarget[unitIndex] == TACTICAL_TARGET_MAP_CELL
-					&& UnitTargetMapX[unitIndex] == targetX
-					&& UnitTargetMapY[unitIndex] == targetY)
+				if (unit->deploymentState != 0x00 &&
+					UnitAttackTarget[unitIndex] == TACTICAL_TARGET_MAP_CELL &&
+					UnitTargetMapX[unitIndex] == targetX &&
+					UnitTargetMapY[unitIndex] == targetY)
 				{
 					UnitAttackTarget[unitIndex] = TACTICAL_TARGET_NONE;
 				}
@@ -191,8 +191,8 @@ int16 ResolveWeaponAttack(
 
 	if (weaponIndex >= WEAPON_LRM_5)
 	{
-		if (attackerUnit->damageModel == UNIT_DAMAGE_MODEL_INFANTRY
-			&& attackerUnit->missileUpgradeState != 0x00)
+		if (attackerUnit->damageModel == UNIT_DAMAGE_MODEL_INFANTRY &&
+			attackerUnit->missileUpgradeState != 0x00)
 		{
 			RevengeUnitRecord *missileTarget =
 				&PersistentUnitRoster[targetUnitIndex];
@@ -211,8 +211,8 @@ int16 ResolveWeaponAttack(
 	if (shotHit != 0x00)
 	{
 		word16 impactScale =
-			weaponDefinition->damage > HEAVY_WEAPON_DAMAGE_THRESHOLD
-				? 0x01 : 0x0A;
+			weaponDefinition->damage > HEAVY_WEAPON_DAMAGE_THRESHOLD ?
+				0x01 : 0x0A;
 		QueueTacticalImpactVisual(targetX, targetY, impactScale);
 		if (targetUnitIndex >= 0x00 && targetUnitIndex < TACTICAL_UNIT_COUNT)
 		{

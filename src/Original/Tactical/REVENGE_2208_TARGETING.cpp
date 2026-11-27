@@ -31,14 +31,14 @@ void SelectTacticalMapCoordinate(word16 unitIndex)
 	cursorMapY = savedViewportY + savedCursorY;
 
 	TacticalViewportMapX += savedCursorX - 0x0A;
-	if ((int16)savedCursorX < 0x0A
-		&& (int16)TacticalViewportMapX >= 0x00)
+	if ((int16)savedCursorX < 0x0A &&
+		(int16)TacticalViewportMapX >= 0x00)
 	{
 		TacticalCursorViewportX = 0x0A;
 	}
-	if ((int16)savedCursorX > 0x0A
-		&& (int16)(MapWidth - 0x13)
-			>= (int16)TacticalViewportMapX)
+	if ((int16)savedCursorX > 0x0A &&
+		(int16)(MapWidth - 0x13) >=
+			(int16)TacticalViewportMapX)
 	{
 		TacticalCursorViewportX = 0x0A;
 	}
@@ -49,14 +49,14 @@ void SelectTacticalMapCoordinate(word16 unitIndex)
 		TacticalViewportMapX = (word16)maximumViewportX;
 
 	TacticalViewportMapY += savedCursorY - 0x06;
-	if ((int16)savedCursorY < 0x06
-		&& (int16)TacticalViewportMapY >= 0x00)
+	if ((int16)savedCursorY < 0x06 &&
+		(int16)TacticalViewportMapY >= 0x00)
 	{
 		TacticalCursorViewportY = 0x06;
 	}
-	if ((int16)savedCursorY > 0x06
-		&& (int16)(MapHeight - 0x0C)
-			>= (int16)TacticalViewportMapY)
+	if ((int16)savedCursorY > 0x06 &&
+		(int16)(MapHeight - 0x0C) >=
+			(int16)TacticalViewportMapY)
 	{
 		TacticalCursorViewportY = 0x06;
 	}
@@ -119,9 +119,9 @@ void SelectTacticalMapCoordinate(word16 unitIndex)
 				CycleTacticalEnemyTarget();
 			break;
 		}
-	} while (inputAction != KEY_ESCAPE
-		&& inputAction != KEY_SPACE
-		&& inputAction != KEY_CARRIAGE_RETURN);
+	} while (inputAction != KEY_ESCAPE &&
+		inputAction != KEY_SPACE &&
+		inputAction != KEY_CARRIAGE_RETURN);
 
 	if (inputAction == KEY_ESCAPE)
 	{
@@ -170,12 +170,12 @@ void RefreshTacticalCoordinateSelection(
 	{
 		TacticalViewportMapX +=
 			TacticalCursorViewportX - 0x0A;
-		if ((int16) TacticalCursorViewportX < 0x0A
-			&& (int16) TacticalViewportMapX >= 0x00)
+		if ((int16) TacticalCursorViewportX < 0x0A &&
+			(int16) TacticalViewportMapX >= 0x00)
 			TacticalCursorViewportX = 0x0A;
-		if ((int16) TacticalCursorViewportX > 0x0A
-			&& (int16) (MapWidth - 0x13)
-				>= (int16) TacticalViewportMapX)
+		if ((int16) TacticalCursorViewportX > 0x0A &&
+			(int16) (MapWidth - 0x13) >=
+				(int16) TacticalViewportMapX)
 			TacticalCursorViewportX = 0x0A;
 		maximumViewportX = (int16) MapWidth - 0x13;
 		if ((int16) TacticalViewportMapX < 0x00)
@@ -185,12 +185,12 @@ void RefreshTacticalCoordinateSelection(
 
 		TacticalViewportMapY +=
 			TacticalCursorViewportY - 0x06;
-		if ((int16) TacticalCursorViewportY < 0x06
-			&& (int16) TacticalViewportMapY >= 0x00)
+		if ((int16) TacticalCursorViewportY < 0x06 &&
+			(int16) TacticalViewportMapY >= 0x00)
 			TacticalCursorViewportY = 0x06;
-		if ((int16) TacticalCursorViewportY > 0x06
-			&& (int16) (MapHeight - 0x0C)
-				>= (int16) TacticalViewportMapY)
+		if ((int16) TacticalCursorViewportY > 0x06 &&
+			(int16) (MapHeight - 0x0C) >=
+				(int16) TacticalViewportMapY)
 			TacticalCursorViewportY = 0x06;
 		maximumViewportY = (int16) MapHeight - 0x0C;
 		if ((int16) TacticalViewportMapY < 0x00)
@@ -214,23 +214,23 @@ void RefreshTacticalCoordinateSelection(
 
 	if (selectionMode != FALSE)
 	{
-		savedCursorMapX = TacticalCursorViewportX
-			+ TacticalViewportMapX;
-		savedCursorMapY = TacticalCursorViewportY
-			+ TacticalViewportMapY;
+		savedCursorMapX = TacticalCursorViewportX +
+			TacticalViewportMapX;
+		savedCursorMapY = TacticalCursorViewportY +
+			TacticalViewportMapY;
 		UnitRouteTargetMapX[unitIndex] = (byte) savedCursorMapX;
 		UnitRouteTargetMapY[unitIndex] = (byte) savedCursorMapY;
 
 		TacticalCursorViewportX =
-			ScenarioUnitMapX[unitIndex]
-			- TacticalViewportMapX;
+			ScenarioUnitMapX[unitIndex] -
+			TacticalViewportMapX;
 		TacticalCursorViewportY =
-			ScenarioUnitMapY[unitIndex]
-			- TacticalViewportMapY;
-		if ((int16) TacticalCursorViewportX >= 0x00
-			&& (int16) TacticalCursorViewportX < 0x13
-			&& (int16) TacticalCursorViewportY >= 0x00
-			&& (int16) TacticalCursorViewportY < 0x0C)
+			ScenarioUnitMapY[unitIndex] -
+			TacticalViewportMapY;
+		if ((int16) TacticalCursorViewportX >= 0x00 &&
+			(int16) TacticalCursorViewportX < 0x13 &&
+			(int16) TacticalCursorViewportY >= 0x00 &&
+			(int16) TacticalCursorViewportY < 0x0C)
 		{
 			DrawTacticalCursorOutline(
 				cursorColorPhase != FALSE ? 0x0F : 0x0C);
@@ -241,15 +241,15 @@ void RefreshTacticalCoordinateSelection(
 			++routeIndex)
 		{
 			TacticalCursorViewportX =
-				route->waypointMapX[routeIndex]
-				- TacticalViewportMapX;
+				route->waypointMapX[routeIndex] -
+				TacticalViewportMapX;
 			TacticalCursorViewportY =
-				route->waypointMapY[routeIndex]
-				- TacticalViewportMapY;
-			if ((int16) TacticalCursorViewportX >= 0x00
-				&& (int16) TacticalCursorViewportX < 0x13
-				&& (int16) TacticalCursorViewportY >= 0x00
-				&& (int16) TacticalCursorViewportY < 0x0C)
+				route->waypointMapY[routeIndex] -
+				TacticalViewportMapY;
+			if ((int16) TacticalCursorViewportX >= 0x00 &&
+				(int16) TacticalCursorViewportX < 0x13 &&
+				(int16) TacticalCursorViewportY >= 0x00 &&
+				(int16) TacticalCursorViewportY < 0x0C)
 			{
 				DrawTacticalCursorOutline(
 					cursorColorPhase != FALSE ? 0x0E : 0x0D);
@@ -263,15 +263,15 @@ void RefreshTacticalCoordinateSelection(
 	else
 	{
 		UnitTargetMapX[unitIndex] = (byte)
-			(TacticalCursorViewportX
-				+ TacticalViewportMapX);
+			(TacticalCursorViewportX +
+				TacticalViewportMapX);
 		UnitTargetMapY[unitIndex] = (byte)
-			(TacticalCursorViewportY
-				+ TacticalViewportMapY);
-		if ((int16) TacticalCursorViewportX >= 0x00
-			&& (int16) TacticalCursorViewportX < 0x13
-			&& (int16) TacticalCursorViewportY >= 0x00
-			&& (int16) TacticalCursorViewportY < 0x0C)
+			(TacticalCursorViewportY +
+				TacticalViewportMapY);
+		if ((int16) TacticalCursorViewportX >= 0x00 &&
+			(int16) TacticalCursorViewportX < 0x13 &&
+			(int16) TacticalCursorViewportY >= 0x00 &&
+			(int16) TacticalCursorViewportY < 0x0C)
 		{
 			DrawTacticalCursorOutline(
 				cursorColorPhase != FALSE ? 0x08 : 0x05);
@@ -284,21 +284,21 @@ void RefreshTacticalCoordinateSelection(
 		targetFound = TRUE;
 		UnitTacticalTarget[unitIndex] = TACTICAL_TARGET_NONE;
 		if (TacticalCellSpriteMap[
-			TacticalCursorViewportY * 0x13
-				+ TacticalCursorViewportX] != 0x0000)
+			TacticalCursorViewportY * 0x13 +
+				TacticalCursorViewportX] != 0x0000)
 		{
 			for (enemyUnitIndex = 0x000C;
 				enemyUnitIndex < 0x0018;
 				++enemyUnitIndex)
 			{
 				unitRecord = &PersistentUnitRoster[enemyUnitIndex];
-				if (unitRecord->deploymentState != FALSE
-					&& ScenarioUnitMapX[enemyUnitIndex]
-						== TacticalViewportMapX
-							+ TacticalCursorViewportX
-					&& ScenarioUnitMapY[enemyUnitIndex]
-						== TacticalViewportMapY
-							+ TacticalCursorViewportY)
+				if (unitRecord->deploymentState != FALSE &&
+					ScenarioUnitMapX[enemyUnitIndex] ==
+						TacticalViewportMapX +
+							TacticalCursorViewportX &&
+					ScenarioUnitMapY[enemyUnitIndex] ==
+						TacticalViewportMapY +
+							TacticalCursorViewportY)
 				{
 					targetFound = FALSE;
 					UnitAttackTarget[unitIndex] =
@@ -350,10 +350,10 @@ void RefreshTacticalCoordinateSelection(
 		ActiveTextCursorColumn = savedCursorColumn;
 		ActiveTextCursorRow = 0x0000;
 		FormatTacticalMapCoordinates(
-			TacticalCursorViewportX
-				+ TacticalViewportMapX,
-			TacticalCursorViewportY
-				+ TacticalViewportMapY);
+			TacticalCursorViewportX +
+				TacticalViewportMapX,
+			TacticalCursorViewportY +
+				TacticalViewportMapY);
 		RenderFormattedText(SharedNumericTextBuffer);
 
 		savedCursorMapX = TacticalCursorViewportX;
@@ -370,8 +370,8 @@ void RefreshTacticalCoordinateSelection(
 			ScenarioUnitMapY[unitIndex] = (byte) previousRouteY;
 			routeX = route->waypointMapX[routeIndex];
 			routeY = route->waypointMapY[routeIndex];
-			if (ScenarioUnitMapX[unitIndex] != routeX
-				|| ScenarioUnitMapY[unitIndex] != routeY)
+			if (ScenarioUnitMapX[unitIndex] != routeX ||
+				ScenarioUnitMapY[unitIndex] != routeY)
 			{
 				DrawWeaponAttackTrace(
 					unitIndex, routeX, routeY, 0x0001, 0x0001, 0x0000);
@@ -410,10 +410,10 @@ void CycleTacticalEnemyTarget(void)
 		firstCandidate = 0x18;
 
 	// The executable uses the cursor-Y word in both comparisons here.
-	cursorMapX = TacticalViewportMapX
-		+ TacticalCursorViewportY;
-	cursorMapY = TacticalViewportMapY
-		+ TacticalCursorViewportY;
+	cursorMapX = TacticalViewportMapX +
+		TacticalCursorViewportY;
+	cursorMapY = TacticalViewportMapY +
+		TacticalCursorViewportY;
 
 	for (candidateOffset = 0x0000;
 		candidateOffset < 0x000C;
@@ -429,8 +429,8 @@ void CycleTacticalEnemyTarget(void)
 
 		(void) UpdateUnitEnemyProximityState(candidateUnit);
 		(void) UpdateUnitEnemyVisibility(candidateUnit);
-		contactKnown = UnitEnemyInProximityRange[candidateUnit]
-			| UnitEnemyVisible[candidateUnit];
+		contactKnown = UnitEnemyInProximityRange[candidateUnit] |
+			UnitEnemyVisible[candidateUnit];
 		if (contactKnown == FALSE)
 			continue;
 
@@ -440,23 +440,23 @@ void CycleTacticalEnemyTarget(void)
 		followsCursor = FALSE;
 		if (ScenarioUnitMapY[candidateUnit] > cursorMapY)
 			followsCursor = TRUE;
-		else if (ScenarioUnitMapY[candidateUnit] == cursorMapY
-			&& ScenarioUnitMapX[candidateUnit] > cursorMapX)
+		else if (ScenarioUnitMapY[candidateUnit] == cursorMapY &&
+			ScenarioUnitMapX[candidateUnit] > cursorMapX)
 		{
 			followsCursor = TRUE;
 		}
 
 		if (followsCursor != FALSE && selectedTarget != -0x01)
 		{
-			if (ScenarioUnitMapY[candidateUnit]
-				< ScenarioUnitMapY[selectedTarget])
+			if (ScenarioUnitMapY[candidateUnit] <
+				ScenarioUnitMapY[selectedTarget])
 			{
 				selectedTarget = (int16) candidateUnit;
 			}
-			else if (ScenarioUnitMapY[candidateUnit]
-				== ScenarioUnitMapY[selectedTarget]
-				&& ScenarioUnitMapX[candidateUnit]
-				< ScenarioUnitMapX[selectedTarget])
+			else if (ScenarioUnitMapY[candidateUnit] ==
+				ScenarioUnitMapY[selectedTarget] &&
+				ScenarioUnitMapX[candidateUnit] <
+				ScenarioUnitMapX[selectedTarget])
 			{
 				selectedTarget = (int16) candidateUnit;
 			}
@@ -502,14 +502,14 @@ word16 SelectTacticalMoveDestinationInput(
 	cursorMapY = savedViewportY + savedCursorY;
 
 	TacticalViewportMapX += savedCursorX - 0x0A;
-	if ((int16)savedCursorX < 0x0A
-		&& (int16)TacticalViewportMapX >= 0x00)
+	if ((int16)savedCursorX < 0x0A &&
+		(int16)TacticalViewportMapX >= 0x00)
 	{
 		TacticalCursorViewportX = 0x0A;
 	}
-	if ((int16)savedCursorX > 0x0A
-		&& (int16)(MapWidth - 0x13)
-			>= (int16)TacticalViewportMapX)
+	if ((int16)savedCursorX > 0x0A &&
+		(int16)(MapWidth - 0x13) >=
+			(int16)TacticalViewportMapX)
 	{
 		TacticalCursorViewportX = 0x0A;
 	}
@@ -520,14 +520,14 @@ word16 SelectTacticalMoveDestinationInput(
 		TacticalViewportMapX = (word16)maximumViewportX;
 
 	TacticalViewportMapY += savedCursorY - 0x06;
-	if ((int16)savedCursorY < 0x06
-		&& (int16)TacticalViewportMapY >= 0x00)
+	if ((int16)savedCursorY < 0x06 &&
+		(int16)TacticalViewportMapY >= 0x00)
 	{
 		TacticalCursorViewportY = 0x06;
 	}
-	if ((int16)savedCursorY > 0x06
-		&& (int16)(MapHeight - 0x0C)
-			>= (int16)TacticalViewportMapY)
+	if ((int16)savedCursorY > 0x06 &&
+		(int16)(MapHeight - 0x0C) >=
+			(int16)TacticalViewportMapY)
 	{
 		TacticalCursorViewportY = 0x06;
 	}
@@ -564,9 +564,9 @@ word16 SelectTacticalMoveDestinationInput(
 
 	while (remainingPoints-- != 0x00)
 	{
-		while (inputAction != KEY_SPACE
-			&& inputAction != KEY_CARRIAGE_RETURN
-			&& inputAction != KEY_ESCAPE)
+		while (inputAction != KEY_SPACE &&
+			inputAction != KEY_CARRIAGE_RETURN &&
+			inputAction != KEY_ESCAPE)
 		{
 			switch (inputAction)
 			{
@@ -586,10 +586,10 @@ word16 SelectTacticalMoveDestinationInput(
 			 * unsigned bounds checks.  Retain those 16-bit intermediates:
 			 * ordinary C integer promotion would interpret cursor -1 as 65535
 			 * and incorrectly snap it to the opposite map edge. */
-			cursorMapX = (word16)(TacticalCursorViewportX
-				+ TacticalViewportMapX);
-			cursorMapY = (word16)(TacticalCursorViewportY
-				+ TacticalViewportMapY);
+			cursorMapX = (word16)(TacticalCursorViewportX +
+				TacticalViewportMapX);
+			cursorMapY = (word16)(TacticalCursorViewportY +
+				TacticalViewportMapY);
 			if ((int16)cursorMapX < 0x00)
 			{
 				TacticalViewportMapX = 0x00;
@@ -600,29 +600,29 @@ word16 SelectTacticalMoveDestinationInput(
 				TacticalViewportMapY = 0x00;
 				TacticalCursorViewportY = 0x00;
 			}
-			cursorMapX = (word16)(TacticalCursorViewportX
-				+ TacticalViewportMapX);
-			cursorMapY = (word16)(TacticalCursorViewportY
-				+ TacticalViewportMapY);
+			cursorMapX = (word16)(TacticalCursorViewportX +
+				TacticalViewportMapX);
+			cursorMapY = (word16)(TacticalCursorViewportY +
+				TacticalViewportMapY);
 			if (cursorMapX >= MapWidth)
 			{
 				TacticalCursorViewportX =
-					MapWidth - 0x01
-					- TacticalViewportMapX;
+					MapWidth - 0x01 -
+					TacticalViewportMapX;
 			}
 			if (cursorMapY >= MapHeight)
 			{
 				TacticalCursorViewportY =
-					MapHeight - 0x01
-					- TacticalViewportMapY;
+					MapHeight - 0x01 -
+					TacticalViewportMapY;
 			}
 
 			route->waypointMapX[route->waypointIndex] = (byte)(
-				TacticalCursorViewportX
-				+ TacticalViewportMapX);
+				TacticalCursorViewportX +
+				TacticalViewportMapX);
 			route->waypointMapY[route->waypointIndex] = (byte)(
-				TacticalCursorViewportY
-				+ TacticalViewportMapY);
+				TacticalCursorViewportY +
+				TacticalViewportMapY);
 			UnitRouteTargetMapX[unitIndex] =
 				route->waypointMapX[route->waypointIndex];
 			UnitRouteTargetMapY[unitIndex] =
@@ -639,26 +639,26 @@ word16 SelectTacticalMoveDestinationInput(
 			}
 			inputAction = NormalizeNavigationKeyCode(
 				TranslateTacticalMouseInput(inputAction));
-			if ((inputAction == KEY_SPACE
-					|| inputAction == KEY_CARRIAGE_RETURN)
-				&& route->waypointIndex == 0x00
-				&& UnitRouteTargetMapX[unitIndex]
-					== ScenarioUnitMapX[unitIndex]
-				&& UnitRouteTargetMapY[unitIndex]
-					== ScenarioUnitMapY[unitIndex])
+			if ((inputAction == KEY_SPACE ||
+					inputAction == KEY_CARRIAGE_RETURN) &&
+				route->waypointIndex == 0x00 &&
+				UnitRouteTargetMapX[unitIndex] ==
+					ScenarioUnitMapX[unitIndex] &&
+				UnitRouteTargetMapY[unitIndex] ==
+					ScenarioUnitMapY[unitIndex])
 			{
 				inputAction = 'A';
 			}
 		}
 
-		if (inputAction != KEY_ESCAPE
-			&& route->waypointIndex > 0x00
-			&& route->waypointIndex < 0x03)
+		if (inputAction != KEY_ESCAPE &&
+			route->waypointIndex > 0x00 &&
+			route->waypointIndex < 0x03)
 		{
 			routeIndex = route->waypointIndex;
 			if (route->waypointMapX[routeIndex - 0x01] ==
-				route->waypointMapX[routeIndex]
-				&& route->waypointMapY[routeIndex - 0x01] ==
+				route->waypointMapX[routeIndex] &&
+				route->waypointMapY[routeIndex - 0x01] ==
 				route->waypointMapY[routeIndex])
 			{
 				while (++routeIndex < 0x04)
@@ -723,11 +723,11 @@ void DisplayDropShipIntelligence(void)
 	DrawActiveTextWindowBorder(0x0E);
 
 	left = ActiveTextWindowLeftTile << 0x03;
-	right = ((ActiveTextWindowLeftTile
-		+ ActiveTextWindowWidthTiles) << 0x03) - 0x01;
+	right = ((ActiveTextWindowLeftTile +
+		ActiveTextWindowWidthTiles) << 0x03) - 0x01;
 	firstLineY = (ActiveTextWindowTopTile << 0x03) + 0x07;
-	secondLineY = ((ActiveTextWindowTopTile + 0x07) << 0x03)
-		+ 0x04;
+	secondLineY = ((ActiveTextWindowTopTile + 0x07) << 0x03) +
+		0x04;
 	DrawClippedAxisAlignedLine(left, firstLineY, right, firstLineY, 0x0D);
 	DrawClippedAxisAlignedLine(left, secondLineY, right, secondLineY, 0x0D);
 	DrawCenteredTextInActiveWindow(
@@ -782,18 +782,18 @@ void RenderLanceIntelligenceSummary(word16 firstUnitIndex)
 	for (memberOffset = 0x0000; memberOffset < 0x0004; ++memberOffset)
 	{
 		selectedUnitIndex = firstUnitIndex + memberOffset;
-		if (UnitEnemyContactEstablished[selectedUnitIndex]
-			!= FALSE)
+		if (UnitEnemyContactEstablished[selectedUnitIndex] !=
+			FALSE)
 		{
 			hasContact = TRUE;
 		}
-		if (UnitEnemyEngagementActive[selectedUnitIndex]
-			!= FALSE)
+		if (UnitEnemyEngagementActive[selectedUnitIndex] !=
+			FALSE)
 		{
 			hasEngagement = TRUE;
 		}
-		if (firstUnitIndex < 0x000C
-			&& ScenarioUnitNeedsUpdate[selectedUnitIndex] != FALSE)
+		if (firstUnitIndex < 0x000C &&
+			ScenarioUnitNeedsUpdate[selectedUnitIndex] != FALSE)
 		{
 			hasContact = TRUE;
 			hasEngagement = TRUE;
@@ -902,8 +902,8 @@ void DrawUnitFacingAndMovementVectors(word16 unitIndex)
 	word16 tableOffset;
 
 	originX = (ActiveTextWindowLeftTile + 0x000F) << 0x03;
-	originY = (ActiveTextWindowTopTile
-		+ ActiveTextCursorRow) << 0x03;
+	originY = (ActiveTextWindowTopTile +
+		ActiveTextCursorRow) << 0x03;
 	facing = ScenarioUnitFacing[unitIndex];
 
 	DrawClippedWeaponTraceLine(
@@ -969,8 +969,8 @@ void DrawLanceFormationMarker(
 				FormationOffsetTable, tableOffset)] << 0x02));
 		memberY = (int16) (originY +
 			(FormationOffsetTable[REVENGE_INDEX(
-				FormationOffsetTable, tableOffset + 0x03)]
-				<< 0x01));
+				FormationOffsetTable, tableOffset + 0x03)] <<
+				0x01));
 		DrawClippedPixel(memberX, memberY, 0x0F);
 		DrawClippedPixel((int16) (memberX + 0x01), memberY, 0x0F);
 	}

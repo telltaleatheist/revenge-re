@@ -63,9 +63,9 @@ void DrawNonEgaTacticalTile(
 			packedPixels = tile[
 				(uint32) y * TACTICAL_PACKED_ROW_BYTES +
 				(x >> 0x01)];
-			color = (x & 0x0001) == 0x0000
-				? packedPixels >> 0x04
-				: packedPixels & 0x0F;
+			color = (x & 0x0001) == 0x0000 ?
+				packedPixels >> 0x04 :
+				packedPixels & 0x0F;
 			DrawClippedPixel(
 				(int16) ((destinationX << 0x03) + x),
 				(int16) (destinationY + y), color);
@@ -122,15 +122,15 @@ void DrawCompositeTacticalTile(
 			byte backgroundPacked = backgroundTile[
 				(uint32) row * TACTICAL_PACKED_ROW_BYTES +
 				(x >> 0x01)];
-			byte foregroundColor = (x & 0x0001) == 0x0000
-				? foregroundPacked >> 0x04
-				: foregroundPacked & 0x0F;
-			byte backgroundColor = (x & 0x0001) == 0x0000
-				? backgroundPacked >> 0x04
-				: backgroundPacked & 0x0F;
-			byte color = foregroundColor != 0x00
-				? foregroundColor
-				: backgroundColor;
+			byte foregroundColor = (x & 0x0001) == 0x0000 ?
+				foregroundPacked >> 0x04 :
+				foregroundPacked & 0x0F;
+			byte backgroundColor = (x & 0x0001) == 0x0000 ?
+				backgroundPacked >> 0x04 :
+				backgroundPacked & 0x0F;
+			byte color = foregroundColor != 0x00 ?
+				foregroundColor :
+				backgroundColor;
 
 			DrawClippedPixel(
 				(int16) ((destinationX << 0x03) + x),

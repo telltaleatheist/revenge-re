@@ -34,13 +34,13 @@ RevengeUnitRecord *GetPersistentUnitRecord(word16 unitIndex)
 	if (unitIndex < TACTICAL_UNIT_COUNT)
 		return &PersistentUnitRoster[unitIndex];
 
-	originalOffset = PERSISTENT_UNIT_ROSTER_ORIGINAL_OFFSET
-		+ (uint32)unitIndex * sizeof(RevengeUnitRecord);
+	originalOffset = PERSISTENT_UNIT_ROSTER_ORIGINAL_OFFSET +
+		(uint32)unitIndex * sizeof(RevengeUnitRecord);
 	if (originalOffset >= LIVE_SCENARIO_UNITS_ORIGINAL_OFFSET)
 	{
 		liveOffset = originalOffset - LIVE_SCENARIO_UNITS_ORIGINAL_OFFSET;
-		if (liveOffset + sizeof(RevengeUnitRecord)
-			<= sizeof(LiveScenarioUnits))
+		if (liveOffset + sizeof(RevengeUnitRecord) <=
+			sizeof(LiveScenarioUnits))
 		{
 			return (RevengeUnitRecord *)
 				((byte *)LiveScenarioUnits + liveOffset);
@@ -251,8 +251,8 @@ void ExecuteSceneInstructions(void)
 			RevengeUnitRecord *unitRecord =
 				GetPersistentUnitRecord(unitIndex);
 			word16 takeBranch =
-				(UnitWithdrawalState[unitIndex] & 0x80) != 0x00
-				|| unitRecord->deploymentState == 0x00;
+				(UnitWithdrawalState[unitIndex] & 0x80) != 0x00 ||
+				unitRecord->deploymentState == 0x00;
 			BranchOrSkipSceneWord(takeBranch);
 			break;
 		}
@@ -269,8 +269,8 @@ void ExecuteSceneInstructions(void)
 			UnitTacticalOrderMode[unitIndex] =
 				TACTICAL_ORDER_SCRIPTED_ROUTE;
 			UnitMovementHeatExponent[unitIndex] = 0x02;
-			if (ScenarioUnitMapX[unitIndex] == mapX
-				&& ScenarioUnitMapY[unitIndex] == mapY)
+			if (ScenarioUnitMapX[unitIndex] == mapX &&
+				ScenarioUnitMapY[unitIndex] == mapY)
 			{
 				if (IsCurrentLanceLeader(unitIndex) != 0x00)
 				{
@@ -330,8 +330,8 @@ void ExecuteSceneInstructions(void)
 			int16 centerX = ReadSceneByte();
 			int16 centerY = ReadSceneByte();
 			word16 chanceDenominator = ReadSceneByte();
-			if (RandomInRangeInclusive(0x01, chanceDenominator)
-				== chanceDenominator)
+			if (RandomInRangeInclusive(0x01, chanceDenominator) ==
+				chanceDenominator)
 			{
 				QueueRandomMapEdgeEffect(centerX, centerY);
 			}
@@ -416,9 +416,9 @@ void ExecuteSceneInstructions(void)
 			 * which a byte never is: every slot is assigned, FF too. */
 			rosterSlot = ReadSceneByte();
 			AssignPilotRosterEntryToUnit(unitIndex, rosterSlot);
-			if (ScenarioFileSuffix == 0x38
-				&& unitType == 0x04
-				&& SrmShipmentLoaded != 0x00)
+			if (ScenarioFileSuffix == 0x38 &&
+				unitType == 0x04 &&
+				SrmShipmentLoaded != 0x00)
 			{
 				GetPersistentUnitRecord(unitIndex)->missileUpgradeState =
 					0x01;
@@ -460,17 +460,17 @@ void ExecuteSceneInstructions(void)
 
 			if (opcode == SCENE_BRANCH_IF_CLOCK_EQUALS)
 			{
-				condition = expectedHour == CampaignClockState[0x00]
-					&& expectedMinute == CampaignClockState[0x01]
-					&& expectedDay == currentDay;
+				condition = expectedHour == CampaignClockState[0x00] &&
+					expectedMinute == CampaignClockState[0x01] &&
+					expectedDay == currentDay;
 			}
 			else
 			{
 				condition =
-					CampaignClockState[0x00] > expectedHour
-					|| (CampaignClockState[0x00] == expectedHour &&
-						CampaignClockState[0x01] > expectedMinute)
-					|| (CampaignClockState[0x00] == expectedHour &&
+					CampaignClockState[0x00] > expectedHour ||
+					(CampaignClockState[0x00] == expectedHour &&
+						CampaignClockState[0x01] > expectedMinute) ||
+					(CampaignClockState[0x00] == expectedHour &&
 						CampaignClockState[0x01] == expectedMinute &&
 						currentDay >= expectedDay);
 			}
@@ -535,8 +535,8 @@ void ExecuteSceneInstructions(void)
 			RevengeUnitRecord *unitRecord =
 				GetPersistentUnitRecord(unitIndex);
 			word16 takeBranch =
-				unitRecord->deploymentState != 0x00
-				&& unitRecord->walkMovement != 0x00;
+				unitRecord->deploymentState != 0x00 &&
+				unitRecord->walkMovement != 0x00;
 			BranchOrSkipSceneWord(takeBranch);
 			break;
 		}
@@ -654,8 +654,8 @@ void ExecuteSceneInstructions(void)
 				word16 followerIndex = unitIndex + 0x01;
 				while ((followerIndex & 0x03) != 0x00)
 				{
-					if (UnitLanceFormationState[followerIndex]
-						!= 0x01)
+					if (UnitLanceFormationState[followerIndex] !=
+						0x01)
 					{
 						SceneUnitRoute *followerRoute =
 							GetUnitRouteRecord(followerIndex);
@@ -763,14 +763,14 @@ void InstallUnitEquipmentInFirstFreeSlot(
 			unitRecord->rightTorsoEquipment[slotIndex] = equipmentId;
 			return;
 		}
-		if (slotIndex < BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT
-			&& unitRecord->leftArmEquipment[slotIndex] == EQUIPMENT_SLOT_EMPTY)
+		if (slotIndex < BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT &&
+			unitRecord->leftArmEquipment[slotIndex] == EQUIPMENT_SLOT_EMPTY)
 		{
 			unitRecord->leftArmEquipment[slotIndex] = equipmentId;
 			return;
 		}
-		if (slotIndex < BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT
-			&& unitRecord->rightArmEquipment[slotIndex] == EQUIPMENT_SLOT_EMPTY)
+		if (slotIndex < BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT &&
+			unitRecord->rightArmEquipment[slotIndex] == EQUIPMENT_SLOT_EMPTY)
 		{
 			unitRecord->rightArmEquipment[slotIndex] = equipmentId;
 			return;
@@ -846,13 +846,13 @@ void RenderPendingNarration(void)
 	else if (messageCategory == 0x12)
 	{
 		messageIndex = 0x00;
-		if ((int16) ScenarioFileSuffix >= 0x4F
-			&& (int16) ScenarioFileSuffix <= 0x53)
+		if ((int16) ScenarioFileSuffix >= 0x4F &&
+			(int16) ScenarioFileSuffix <= 0x53)
 		{
 			messageIndex = 0x03;
 		}
-		messageIndex = (word16) (messageIndex
-			+ GeneratePseudoRandomByte() % 0x03);
+		messageIndex = (word16) (messageIndex +
+			GeneratePseudoRandomByte() % 0x03);
 		message = ScenarioEventNarrationTextTable[messageIndex];
 	}
 	else if (messageCategory < 0x11)
@@ -866,8 +866,8 @@ void RenderPendingNarration(void)
 				speakerBank = 0x05;
 			else if (speakerBank >= 0x04)
 				speakerBank = 0x04;
-			sceneMessageTableIndex = (word16) (sceneMessageTableIndex
-				+ speakerBank * 0x0B);
+			sceneMessageTableIndex = (word16) (sceneMessageTableIndex +
+				speakerBank * 0x0B);
 		}
 		else
 		{
@@ -876,8 +876,8 @@ void RenderPendingNarration(void)
 				(word16) (messageCategory - 0x0B);
 			adjustedMessageCategory = TRUE;
 		}
-		sceneMessageTableIndex = (word16) (sceneMessageTableIndex
-			+ NarrationMessageCategory);
+		sceneMessageTableIndex = (word16) (sceneMessageTableIndex +
+			NarrationMessageCategory);
 		messageOffset = LoadedSceneFile.header
 			.narrationMessageOffsets[sceneMessageTableIndex];
 		message = (char *) &LoadedSceneFile.raw[
@@ -891,8 +891,8 @@ void RenderPendingNarration(void)
 
 	hasUnitNameSubstitution = FALSE;
 	delimiterIndex = 0x00;
-	while (message[delimiterIndex] != 0x00
-		&& message[delimiterIndex] != '%')
+	while (message[delimiterIndex] != 0x00 &&
+		message[delimiterIndex] != '%')
 	{
 		++delimiterIndex;
 	}
@@ -948,10 +948,10 @@ void AdvanceUnitSceneRoute(word16 unitIndex)
 			route->waypointMapX[routeIndex];
 		UnitRouteTargetMapY[unitIndex] =
 			route->waypointMapY[routeIndex];
-		if (ScenarioUnitMapX[unitIndex]
-			== UnitRouteTargetMapX[unitIndex]
-			&& ScenarioUnitMapY[unitIndex]
-			== UnitRouteTargetMapY[unitIndex])
+		if (ScenarioUnitMapX[unitIndex] ==
+			UnitRouteTargetMapX[unitIndex] &&
+			ScenarioUnitMapY[unitIndex] ==
+			UnitRouteTargetMapY[unitIndex])
 		{
 			++route->waypointIndex;
 			if (route->waypointIndex > 0x03)
@@ -1024,8 +1024,8 @@ word16 HasNarrationMessage(
 	if (activeCategory == 0x11 || activeCategory == 0x12)
 		return 0x01;
 
-	if (IsCurrentLanceLeader(narrationSubject) == 0x00
-		&& narrationSubject >= 0x04)
+	if (IsCurrentLanceLeader(narrationSubject) == 0x00 &&
+		narrationSubject >= 0x04)
 	{
 		return 0x00;
 	}
@@ -1054,8 +1054,8 @@ void QueueLinkedUnitStatusNarration(word16 unitIndex)
 	int16 linkedUnitIndex = UnitTacticalTarget[unitIndex];
 	if (linkedUnitIndex == 0x18)
 		linkedUnitIndex = 0x00;
-	if (linkedUnitIndex < 0x00 || linkedUnitIndex >= 0x0C
-		|| HasNarrationMessage(linkedUnitIndex, 0x08) == 0x00)
+	if (linkedUnitIndex < 0x00 || linkedUnitIndex >= 0x0C ||
+		HasNarrationMessage(linkedUnitIndex, 0x08) == 0x00)
 	{
 		return;
 	}

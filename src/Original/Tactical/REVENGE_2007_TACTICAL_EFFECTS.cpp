@@ -187,8 +187,8 @@ void DrawTacticalCellOutline(
 void DrawTacticalCursorOutline(word16 color)
 {
 	DrawTacticalCellOutline(
-		TacticalCursorViewportX * TACTICAL_CELL_PIXEL_SIZE
-			+ TACTICAL_CURSOR_PIXEL_LEFT,
+		TacticalCursorViewportX * TACTICAL_CELL_PIXEL_SIZE +
+			TACTICAL_CURSOR_PIXEL_LEFT,
 		TacticalCursorViewportY * TACTICAL_CELL_PIXEL_SIZE,
 		color);
 	TacticalCursorOutlineState ^= 0x000F;
@@ -205,16 +205,16 @@ void DrawClippedWeaponTraceLine(
 	word16 color,
 	word16 dashedTrace)
 {
-	word16 plotInterval = dashedTrace != FALSE
-		? TACTICAL_TRACE_DASH_INTERVAL : 0x01;
-	word16 stepsUntilPlot = dashedTrace != FALSE
-		? (GeneratePseudoRandomByte() & 0x03) + 0x01 : 0x01;
+	word16 plotInterval = dashedTrace != FALSE ?
+		TACTICAL_TRACE_DASH_INTERVAL : 0x01;
+	word16 stepsUntilPlot = dashedTrace != FALSE ?
+		(GeneratePseudoRandomByte() & 0x03) + 0x01 : 0x01;
 	int16 deltaY = (int16)(word16)((word16)startY - (word16)endY);
 	int16 deltaX = (int16)(word16)((word16)endX - (word16)startX);
-	int16 absoluteY = deltaY < 0x00
-		? (int16)(word16)(0x00 - (word16)deltaY) : deltaY;
-	int16 absoluteX = deltaX < 0x00
-		? (int16)(word16)(0x00 - (word16)deltaX) : deltaX;
+	int16 absoluteY = deltaY < 0x00 ?
+		(int16)(word16)(0x00 - (word16)deltaY) : deltaY;
+	int16 absoluteX = deltaX < 0x00 ?
+		(int16)(word16)(0x00 - (word16)deltaX) : deltaX;
 	int16 majorDistance = absoluteY > absoluteX ? absoluteY : absoluteX;
 	int16 minorDistance = absoluteY > absoluteX ? absoluteX : absoluteY;
 	word16 octant = DetermineOctant(deltaY, deltaX);
@@ -367,8 +367,8 @@ void AdvanceTacticalProjectiles(void)
 					projectile->attackerUnitIndex,
 					weaponIndex,
 					projectile->targetUnitIndex);
-				if (WeaponDefinitions[weaponIndex].damage
-					> HEAVY_WEAPON_DAMAGE_THRESHOLD)
+				if (WeaponDefinitions[weaponIndex].damage >
+					HEAVY_WEAPON_DAMAGE_THRESHOLD)
 				{
 					impactClass = 0x06;
 				}
@@ -443,8 +443,8 @@ void BuildTacticalTerrainEffectOverlay(void)
 
 		viewportX = record->mapX - (int16)TacticalViewportMapX;
 		viewportY = record->mapY - (int16)TacticalViewportMapY;
-		if (viewportX >= 0x00 && viewportX < TACTICAL_VIEWPORT_WIDTH_CELLS
-			&& viewportY >= 0x00 && viewportY < TACTICAL_VIEWPORT_HEIGHT_CELLS)
+		if (viewportX >= 0x00 && viewportX < TACTICAL_VIEWPORT_WIDTH_CELLS &&
+			viewportY >= 0x00 && viewportY < TACTICAL_VIEWPORT_HEIGHT_CELLS)
 		{
 			TacticalEffectOverlayMap[
 				viewportY * TACTICAL_VIEWPORT_WIDTH_CELLS + viewportX] =
@@ -509,8 +509,8 @@ void AdvanceMapEdgeEffects(void)
 
 		if ((GeneratePseudoRandomByte() & 0x01) != 0x00)
 		{
-			word16 weaponIndex = (GeneratePseudoRandomByte() & 0x07)
-				+ WEAPON_SMALL_PULSE_LASER;
+			word16 weaponIndex = (GeneratePseudoRandomByte() & 0x07) +
+				WEAPON_SMALL_PULSE_LASER;
 			word16 visualEffectType = 0x0A;
 
 			if (weaponIndex > WEAPON_SMALL_PULSE_LASER)
@@ -564,12 +564,12 @@ void StampTacticalSpriteRectangle(
 	rectangleRight = (int16) (word16) ((word16) mapX + widthCells);
 	rectangleBottom = (int16) (word16) ((word16) mapY + heightCells);
 
-	if (mapX >= (int16) (word16) ((word16) viewportMapX
-			+ TACTICAL_VIEWPORT_WIDTH_CELLS)
-		|| mapY >= (int16) (word16) ((word16) viewportMapY
-			+ TACTICAL_VIEWPORT_HEIGHT_CELLS)
-		|| rectangleRight <= viewportMapX
-		|| rectangleBottom <= viewportMapY)
+	if (mapX >= (int16) (word16) ((word16) viewportMapX +
+			TACTICAL_VIEWPORT_WIDTH_CELLS) ||
+		mapY >= (int16) (word16) ((word16) viewportMapY +
+			TACTICAL_VIEWPORT_HEIGHT_CELLS) ||
+		rectangleRight <= viewportMapX ||
+		rectangleBottom <= viewportMapY)
 	{
 		// Off the viewport: nothing stamped, the overlay cleared all the same.
 		TacticalOverlayTerrainSpriteId = NO_TACTICAL_OVERLAY_SPRITE_ID;
@@ -581,8 +581,8 @@ void StampTacticalSpriteRectangle(
 	if (viewportY < 0x00)
 	{
 		heightCells = (word16) (heightCells + (word16) viewportY);
-		firstSpriteId = (word16) (firstSpriteId
-			+ (word16) ((word16) -viewportY * sourceRowStride));
+		firstSpriteId = (word16) (firstSpriteId +
+			(word16) ((word16) -viewportY * sourceRowStride));
 		viewportY = 0x00;
 	}
 	if (viewportX < 0x00)
@@ -591,20 +591,20 @@ void StampTacticalSpriteRectangle(
 		firstSpriteId = (word16) (firstSpriteId - (word16) viewportX);
 		viewportX = 0x00;
 	}
-	if ((int16) (word16) ((word16) viewportX + widthCells)
-		> TACTICAL_VIEWPORT_WIDTH_CELLS)
+	if ((int16) (word16) ((word16) viewportX + widthCells) >
+		TACTICAL_VIEWPORT_WIDTH_CELLS)
 		widthCells = TACTICAL_VIEWPORT_WIDTH_CELLS - viewportX;
-	if ((int16) (word16) ((word16) viewportY + heightCells)
-		> TACTICAL_VIEWPORT_HEIGHT_CELLS)
+	if ((int16) (word16) ((word16) viewportY + heightCells) >
+		TACTICAL_VIEWPORT_HEIGHT_CELLS)
 		heightCells = TACTICAL_VIEWPORT_HEIGHT_CELLS - viewportY;
 
-	viewportCellIndex = (word16) ((word16) viewportY
-		* TACTICAL_VIEWPORT_WIDTH_CELLS + (word16) viewportX);
+	viewportCellIndex = (word16) ((word16) viewportY *
+		TACTICAL_VIEWPORT_WIDTH_CELLS + (word16) viewportX);
 	while (heightCells-- != 0x00)
 	{
 		spriteId = firstSpriteId;
-		if (TacticalOverlayTerrainSpriteId
-			!= NO_TACTICAL_OVERLAY_SPRITE_ID)
+		if (TacticalOverlayTerrainSpriteId !=
+			NO_TACTICAL_OVERLAY_SPRITE_ID)
 		{
 			TacticalCellTerrainMap[viewportCellIndex] =
 				TacticalOverlayTerrainSpriteId;
@@ -679,20 +679,20 @@ void ComposeTacticalSpriteMaps(void)
 		}
 		if (drawUnit != FALSE)
 		{
-			if (UnitJumpingState[unitIndex] != 0x00
-				&& UnitJumpMovementRemaining[unitIndex] != 0x00)
+			if (UnitJumpingState[unitIndex] != 0x00 &&
+				UnitJumpMovementRemaining[unitIndex] != 0x00)
 				TacticalOverlayTerrainSpriteId =
-					((ScenarioUnitMapX[unitIndex]
-						^ ScenarioUnitMapY[unitIndex]) & 0x01) + 0x01F1;
+					((ScenarioUnitMapX[unitIndex] ^
+						ScenarioUnitMapY[unitIndex]) & 0x01) + 0x01F1;
 			StampTacticalSpriteRectangle(
 				ScenarioUnitMapX[unitIndex],
 				ScenarioUnitMapY[unitIndex],
 				0x0001, 0x0001,
 				UnitSpriteId[unitIndex]);
 		}
-		else if (unitIndex >= 0x000C
-			&& unitIndex == TacticalSelectedUnitIndex
-			&& drewContactMarker == FALSE)
+		else if (unitIndex >= 0x000C &&
+			unitIndex == TacticalSelectedUnitIndex &&
+			drewContactMarker == FALSE)
 			TacticalSelectedUnitIndex = 0xFFFF;
 	}
 
@@ -742,8 +742,8 @@ void RebuildTacticalViewport(void)
 	{
 		byte runtimeValue = UnitTypeResourceCode[statusSlot];
 		int8 runtimeState = TacticalSlotSpriteState[statusSlot];
-		if (runtimeValue != 0x00
-			&& runtimeState != TacticalStatusRowInvalidation[statusSlot])
+		if (runtimeValue != 0x00 &&
+			runtimeState != TacticalStatusRowInvalidation[statusSlot])
 		{
 			word16 firstSpriteId = 0x0100 + runtimeValue;
 			word16 secondSpriteId = 0x01F6 + runtimeState;
@@ -823,8 +823,8 @@ void UpdatePrimaryUnitStatusRowHighlight(word16 rowIndex)
 	word16 color = PrimaryStatusHighlightColor;
 	int16 topY;
 
-	if (TacticalUiSuppressed != FALSE
-		|| (previousRow == rowIndex && CachedPrimaryStatusHighlightColor == color))
+	if (TacticalUiSuppressed != FALSE ||
+		(previousRow == rowIndex && CachedPrimaryStatusHighlightColor == color))
 		return;
 	topY = rowIndex * 0x14;
 	if (rowIndex >= 0x05)

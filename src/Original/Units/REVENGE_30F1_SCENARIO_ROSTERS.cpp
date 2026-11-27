@@ -94,10 +94,10 @@ void PrepareScenarioUnitRosters(void)
 			LiveScenarioUnits[0x05] =
 				BlankUnitRecord;
 			ScenarioUnitZeroAvailable = 0x00;
-			if ((word16) (PersistentUnitRoster[0x00].deploymentState
-				| ((word16) PersistentUnitRoster[0x00].unitTypeId << 0x08)) != 0x00
-				&& (word16) (PersistentUnitRoster[0x00].walkMovement
-				| ((word16) PersistentUnitRoster[0x00].jumpMovement << 0x08)) != 0x00)
+			if ((word16) (PersistentUnitRoster[0x00].deploymentState |
+				((word16) PersistentUnitRoster[0x00].unitTypeId << 0x08)) != 0x00 &&
+				(word16) (PersistentUnitRoster[0x00].walkMovement |
+				((word16) PersistentUnitRoster[0x00].jumpMovement << 0x08)) != 0x00)
 			{
 				LiveScenarioUnits[0x05] =
 					PersistentUnitRoster[0x00];
@@ -147,8 +147,8 @@ void PrepareScenarioUnitRosters(void)
 			{
 				LiveScenarioUnits[0x02] =
 					PersistentUnitRoster[0x02];
-				if (StoryUnitDeployedFlag == 0x00
-					&& ScenarioUnitZeroAvailable != 0x00)
+				if (StoryUnitDeployedFlag == 0x00 &&
+					ScenarioUnitZeroAvailable != 0x00)
 					LiveScenarioUnits[0x02].deploymentState = 0x01;
 			}
 			LiveScenarioUnits[0x05] =
@@ -436,8 +436,8 @@ void ResetLiveUnitState(uint16 unitIndex)
 		word16 ammunitionCapacity =
 			AmmoCapacityMultiplierTable[fieldIndex];
 		word16 weaponFamilyCount = unitRecord->weaponFamilyCounts[fieldIndex];
-		unitRecord->currentAmmunition[fieldIndex] = (word16)((uint32)ammunitionCapacity
-			* (uint32)weaponFamilyCount);
+		unitRecord->currentAmmunition[fieldIndex] = (word16)((uint32)ammunitionCapacity *
+			(uint32)weaponFamilyCount);
 
 		if (fieldIndex < BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT)
 		{
@@ -501,9 +501,9 @@ void AssignPilotRosterEntryToUnit(
 {
 	RevengeUnitRecord *unitRecord = &PersistentUnitRoster[unitIndex];
 	RevengePilotRosterRecord *pilotRecord =
-		rosterSlot == INVALID_ROSTER_INDEX
-			? &PilotRosterRecordPastEnd
-			: PILOT_ROSTER_RECORD(rosterSlot);
+		rosterSlot == INVALID_ROSTER_INDEX ?
+			&PilotRosterRecordPastEnd :
+			PILOT_ROSTER_RECORD(rosterSlot);
 
 	unitRecord->pilotId = (RevengePilotId)rosterSlot;
 	unitRecord->pilotExperience = pilotRecord->experienceIndex;
@@ -570,8 +570,8 @@ void CompactScenarioLances(void)
 		uint16 sourceSlot = lanceIndex << 0x02;
 		uint16 assignmentIndexOffset = 0x00;
 		word16 mirrorLiveRecords = FALSE;
-		if (ScenarioFileSuffix >= 0x4F
-			&& ScenarioFileSuffix <= 0x50)
+		if (ScenarioFileSuffix >= 0x4F &&
+			ScenarioFileSuffix <= 0x50)
 		{
 			if (lanceIndex == 0x00)
 				mirrorLiveRecords = TRUE;
@@ -677,8 +677,8 @@ void PromoteReserveUnitsForCampaignStage(void)
 	// rows when a unit is empty or its pilot-state byte is zero. A gameplay
 	// trace must confirm the player's terminology for these reserve groups.
 	uint16 reserveIndex;
-	if (CampaignStageIndex >= 0x10
-		&& CampaignStageIndex <= 0x11)
+	if (CampaignStageIndex >= 0x10 &&
+		CampaignStageIndex <= 0x11)
 	{
 		for (reserveIndex = 0x00; reserveIndex < 0x04; ++reserveIndex)
 		{
@@ -692,21 +692,21 @@ void PromoteReserveUnitsForCampaignStage(void)
 				LiveScenarioUnits[reserveIndex + 0x10];
 			firstUnit = &LiveScenarioUnits[firstDestination];
 			assignment = LANCE_ASSIGNMENT_RECORD(firstDestination);
-			if (firstUnit->tonnage == 0x00
-				|| PILOT_STATE_RECORD(firstUnit->pilotId)[0x00] == 0x00)
+			if (firstUnit->tonnage == 0x00 ||
+				PILOT_STATE_RECORD(firstUnit->pilotId)[0x00] == 0x00)
 				assignment->pilotId = REVENGE_PILOT_ID_NONE;
 
 			LiveScenarioUnits[secondDestination] =
 				LiveScenarioUnits[reserveIndex + 0x14];
 			secondUnit = &LiveScenarioUnits[secondDestination];
 			assignment = LANCE_ASSIGNMENT_RECORD(secondDestination);
-			if (secondUnit->tonnage == 0x00
-				|| PILOT_STATE_RECORD(secondUnit->pilotId)[0x00] == 0x00)
+			if (secondUnit->tonnage == 0x00 ||
+				PILOT_STATE_RECORD(secondUnit->pilotId)[0x00] == 0x00)
 				assignment->pilotId = REVENGE_PILOT_ID_NONE;
 		}
 	}
-	else if (CampaignStageIndex >= 0x12
-		&& CampaignStageIndex <= 0x14)
+	else if (CampaignStageIndex >= 0x12 &&
+		CampaignStageIndex <= 0x14)
 	{
 		for (reserveIndex = 0x00; reserveIndex < 0x08; ++reserveIndex)
 		{
@@ -716,8 +716,8 @@ void PromoteReserveUnitsForCampaignStage(void)
 				LiveScenarioUnits[reserveIndex + 0x10];
 			unitRecord = &LiveScenarioUnits[reserveIndex];
 			assignment = LANCE_ASSIGNMENT_RECORD(reserveIndex);
-			if (unitRecord->tonnage == 0x00
-				|| PILOT_STATE_RECORD(unitRecord->pilotId)[0x00] == 0x00)
+			if (unitRecord->tonnage == 0x00 ||
+				PILOT_STATE_RECORD(unitRecord->pilotId)[0x00] == 0x00)
 				assignment->pilotId = REVENGE_PILOT_ID_NONE;
 		}
 	}

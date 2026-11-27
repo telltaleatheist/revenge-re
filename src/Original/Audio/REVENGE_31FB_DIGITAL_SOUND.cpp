@@ -107,8 +107,8 @@ void LoadDigitalWeaponEffectBank(void)
 				effect->ResourceIndex];
 			ReadWholeResourceFile(
 				resource->fileName,
-				DigitalWeaponSampleBuffer
-					+ effect->PackedBufferOffset,
+				DigitalWeaponSampleBuffer +
+					effect->PackedBufferOffset,
 				effect->SampleLength);
 		}
 	}

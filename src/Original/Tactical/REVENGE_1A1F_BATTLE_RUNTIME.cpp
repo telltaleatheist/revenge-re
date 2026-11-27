@@ -82,8 +82,8 @@ void RunTacticalBattle(word16 scenarioCode)
 	REVENGE_PRESERVATION_TRACE("tactical: map=%ux%u unit0 terrain=%u speed=%u delay=%u\n",
 		MapWidth, MapHeight,
 		TerrainTypeMap[
-			ScenarioUnitMapY[0x00] * MapWidth
-			+ ScenarioUnitMapX[0x00]],
+			ScenarioUnitMapY[0x00] * MapWidth +
+			ScenarioUnitMapX[0x00]],
 		TacticalGameSpeedIndex,
 		TacticalUpdateDelayReloadTicks);
 	LoadTacticalIconResource(
@@ -112,11 +112,11 @@ void RunTacticalBattle(word16 scenarioCode)
 		TacticalCursorViewportX, TacticalCursorViewportY);
 	REVENGE_PRESERVATION_TRACE("tactical: selected terrain sprite=%u source=%u\n",
 		TacticalCellTerrainMap[
-			TacticalCursorViewportY * 0x0013
-			+ TacticalCursorViewportX],
+			TacticalCursorViewportY * 0x0013 +
+			TacticalCursorViewportX],
 		TerrainTypeMap[
-			ScenarioUnitMapY[0x00] * MapWidth
-			+ ScenarioUnitMapX[0x00]]);
+			ScenarioUnitMapY[0x00] * MapWidth +
+			ScenarioUnitMapX[0x00]]);
 	TacticalStateInitialized = TRUE;
 	if (MouseDriverInstalled != FALSE)
 	{
@@ -143,9 +143,9 @@ void UpdateTacticalFrame(word16 inputAction, word16 advanceUnits)
 	word16 repeatIndex;
 	word16 unitIndex;
 
-	if (TacticalOverviewActive != 0x00
-		&& TacticalMenuInputState != 0x00
-		&& TacticalOverviewZoomed == 0x00)
+	if (TacticalOverviewActive != 0x00 &&
+		TacticalMenuInputState != 0x00 &&
+		TacticalOverviewZoomed == 0x00)
 	{
 		movementRepeatCount = 0x0A;
 	}
@@ -751,8 +751,8 @@ void CreateRandomAreaImpact(
 	int16 centerY,
 	word16 chanceDenominator)
 {
-	if (RandomInRangeInclusive(0x01, chanceDenominator)
-		!= chanceDenominator)
+	if (RandomInRangeInclusive(0x01, chanceDenominator) !=
+		chanceDenominator)
 	{
 		return;
 	}
@@ -797,8 +797,8 @@ void AdvanceScenarioAreaEffects(void)
 			RollingBarrageStartMapX,
 			RollingBarrageStartMapY,
 			ArtillerySupportAvailable);
-		if (RollingBarrageStartMapX == RollingBarrageEndMapX
-			&& RollingBarrageStartMapY == RollingBarrageEndMapY)
+		if (RollingBarrageStartMapX == RollingBarrageEndMapX &&
+			RollingBarrageStartMapY == RollingBarrageEndMapY)
 		{
 			RollingBarrageStartMapX = ArtilleryTargetMapX;
 			RollingBarrageStartMapY = ArtilleryTargetMapY;
@@ -826,9 +826,9 @@ void AdvanceScenarioAreaEffects(void)
 		}
 	}
 
-	if (StrafingRunActive == 0x00
-		|| MapEdgeEffectCount != 0x00
-		|| RandomInRangeInclusive(0x00, StrafingSupportAvailable) == 0x00)
+	if (StrafingRunActive == 0x00 ||
+		MapEdgeEffectCount != 0x00 ||
+		RandomInRangeInclusive(0x00, StrafingSupportAvailable) == 0x00)
 	{
 		return;
 	}
@@ -837,27 +837,27 @@ void AdvanceScenarioAreaEffects(void)
 	switch (direction)
 	{
 	case 0x00:
-		mapX = (int16)(word16)(RollingBarrageEndMapX
-			+ (GeneratePseudoRandomByte() & 0x03) - 0x02);
+		mapX = (int16)(word16)(RollingBarrageEndMapX +
+			(GeneratePseudoRandomByte() & 0x03) - 0x02);
 		mapY = (int16)(word16)(MapHeight + 0x01);
 		break;
 
 	case 0x01:
 		mapX = -0x01;
-		mapY = (int16)(word16)(RollingBarrageEndMapY
-			+ (GeneratePseudoRandomByte() & 0x03) - 0x02);
+		mapY = (int16)(word16)(RollingBarrageEndMapY +
+			(GeneratePseudoRandomByte() & 0x03) - 0x02);
 		break;
 
 	case 0x02:
-		mapX = (int16)(word16)(RollingBarrageEndMapX
-			+ (GeneratePseudoRandomByte() & 0x03) - 0x02);
+		mapX = (int16)(word16)(RollingBarrageEndMapX +
+			(GeneratePseudoRandomByte() & 0x03) - 0x02);
 		mapY = -0x01;
 		break;
 
 	default:
 		mapX = (int16)(word16)(MapWidth + 0x01);
-		mapY = (int16)(word16)(RollingBarrageEndMapY
-			+ (GeneratePseudoRandomByte() & 0x03) - 0x02);
+		mapY = (int16)(word16)(RollingBarrageEndMapY +
+			(GeneratePseudoRandomByte() & 0x03) - 0x02);
 		break;
 	}
 	QueueMapEdgeEffect(mapX, mapY, 0x01C0, (word16)direction);

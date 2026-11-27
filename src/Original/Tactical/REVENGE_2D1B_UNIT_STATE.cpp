@@ -71,8 +71,8 @@ void RecalculateUnitCombatRatings(
 		{
 			recoveryIndex =
 				unitSlot * WEAPON_DEFINITION_COUNT + weaponIndex;
-			updatedRecovery = weaponRecovery[recoveryIndex]
-				- weaponCounts[weaponIndex];
+			updatedRecovery = weaponRecovery[recoveryIndex] -
+				weaponCounts[weaponIndex];
 			if (updatedRecovery < 0x00)
 				updatedRecovery = 0x00;
 			weaponRecovery[recoveryIndex] = (byte)updatedRecovery;
@@ -101,8 +101,8 @@ void RecalculateUnitCombatRatings(
 	ratings->durabilityDividedBy16 =
 		(int16)CurrentUnitDurabilityTotal >> 0x04;
 	if ((int16) (word16)
-			(CurrentUnitDurabilityTotal << 0x01)
-		< (int16) MaximumUnitDurabilityTotal)
+			(CurrentUnitDurabilityTotal << 0x01) <
+		(int16) MaximumUnitDurabilityTotal)
 		UnitBelowHalfDurability[unitSlot] = TRUE;
 
 	weaponAvailability =
@@ -110,8 +110,8 @@ void RecalculateUnitCombatRatings(
 	ratings->closeFirepower = (int16)CalculateSelectedWeaponRating(
 		weaponAvailability & WEAPON_CLOSE_FIREPOWER_PRIMARY_MASK,
 		weaponCounts);
-	ratings->closeFirepower = (int16)(ratings->closeFirepower
-		+ (int16)CalculateSelectedWeaponRating(
+	ratings->closeFirepower = (int16)(ratings->closeFirepower +
+		(int16)CalculateSelectedWeaponRating(
 			weaponAvailability & WEAPON_CLOSE_FIREPOWER_SECONDARY_MASK,
 			weaponCounts));
 	selectedWeaponRating = CalculateSelectedWeaponRating(
@@ -119,8 +119,8 @@ void RecalculateUnitCombatRatings(
 		weaponCounts);
 	ratings->mediumFirepower = (int16)
 		((int32) selectedWeaponRating >> 0x01);
-	ratings->mediumFirepower = (int16)(ratings->mediumFirepower
-		+ (int16)CalculateSelectedWeaponRating(
+	ratings->mediumFirepower = (int16)(ratings->mediumFirepower +
+		(int16)CalculateSelectedWeaponRating(
 			weaponAvailability & WEAPON_MEDIUM_FIREPOWER_FULL_RATING_MASK,
 			weaponCounts));
 	selectedWeaponRating = CalculateSelectedWeaponRating(
@@ -128,8 +128,8 @@ void RecalculateUnitCombatRatings(
 		weaponCounts);
 	ratings->longFirepower = (int16)
 		((int32) selectedWeaponRating >> 0x01);
-	ratings->longFirepower = (int16)(ratings->longFirepower
-		+ (int16)CalculateSelectedWeaponRating(
+	ratings->longFirepower = (int16)(ratings->longFirepower +
+		(int16)CalculateSelectedWeaponRating(
 			weaponAvailability & WEAPON_LONG_FIREPOWER_FULL_RATING_MASK,
 			weaponCounts));
 }
@@ -154,11 +154,11 @@ void CalculateUnitDurabilityTotals(RevengeUnitRecord *unitRecord)
 		for (locationIndex = 0x0000; locationIndex < 0x000B; ++locationIndex)
 		{
 			CurrentUnitDurabilityTotal = (word16)(
-				CurrentUnitDurabilityTotal
-				+ (int8) unitRecord->currentArmor[locationIndex]);
+				CurrentUnitDurabilityTotal +
+				(int8) unitRecord->currentArmor[locationIndex]);
 			MaximumUnitDurabilityTotal = (word16)(
-				MaximumUnitDurabilityTotal
-				+ (int8) unitRecord->maximumArmor[locationIndex]);
+				MaximumUnitDurabilityTotal +
+				(int8) unitRecord->maximumArmor[locationIndex]);
 		}
 	}
 	else
@@ -168,11 +168,11 @@ void CalculateUnitDurabilityTotals(RevengeUnitRecord *unitRecord)
 		for (locationIndex = 0x0000; locationIndex < 0x000B; ++locationIndex)
 		{
 			CurrentUnitDurabilityTotal = (word16)(
-				CurrentUnitDurabilityTotal
-				+ (int8) unitRecord->currentDurability[locationIndex]);
+				CurrentUnitDurabilityTotal +
+				(int8) unitRecord->currentDurability[locationIndex]);
 			MaximumUnitDurabilityTotal = (word16)(
-				MaximumUnitDurabilityTotal
-				+ (int8) unitRecord->maximumDurability[locationIndex]);
+				MaximumUnitDurabilityTotal +
+				(int8) unitRecord->maximumDurability[locationIndex]);
 		}
 	}
 }
@@ -205,10 +205,10 @@ void MoveUnitTowardMapCell(
 		return;
 
 	word16 advancedRoute = FALSE;
-	if (DirectionDeltaXTable[desiredDirection] + currentX
-			== (int16)destinationX
-		&& DirectionDeltaYTable[desiredDirection] + currentY
-			== (int16)destinationY)
+	if (DirectionDeltaXTable[desiredDirection] + currentX ==
+			(int16)destinationX &&
+		DirectionDeltaYTable[desiredDirection] + currentY ==
+			(int16)destinationY)
 	{
 		preferredDirection = desiredDirection;
 		if (UnitLanceFormationState[unitIndex] == 0x00)
@@ -218,8 +218,8 @@ void MoveUnitTowardMapCell(
 		else if (route->waypointIndex < 0x03)
 		{
 			AdvanceUnitRouteWaypoint(unitIndex);
-			if (UnitRouteTargetMapX[unitIndex] == destinationX
-				&& UnitRouteTargetMapY[unitIndex] == destinationY)
+			if (UnitRouteTargetMapX[unitIndex] == destinationX &&
+				UnitRouteTargetMapY[unitIndex] == destinationY)
 			{
 				if (IsCurrentLanceLeader(unitIndex) != FALSE)
 					SelectLanceFormationMode(unitIndex, FALSE);
@@ -265,8 +265,8 @@ void MoveUnitTowardMapCell(
 		}
 	}
 
-	word16 currentCell = (word16)currentX
-		+ MapWidth * (word16)currentY;
+	word16 currentCell = (word16)currentX +
+		MapWidth * (word16)currentY;
 	word16 directionDifference = desiredDirection - preferredDirection;
 	if (directionDifference != 0x00)
 	{
@@ -283,13 +283,13 @@ void MoveUnitTowardMapCell(
 		int16 directionDelta = DirectionSearchDeltaTable[
 			attempt + DirectionSearchMirror];
 		word16 candidateDirection = (preferredDirection + directionDelta) & 0x07;
-		int16 candidateX = currentX
-			+ DirectionDeltaXTable[candidateDirection];
-		int16 candidateY = currentY
-			+ DirectionDeltaYTable[candidateDirection];
-		if (candidateX >= 0x00 && candidateY >= 0x00
-			&& candidateX < (int16)MapWidth
-			&& candidateY < (int16)MapHeight)
+		int16 candidateX = currentX +
+			DirectionDeltaXTable[candidateDirection];
+		int16 candidateY = currentY +
+			DirectionDeltaYTable[candidateDirection];
+		if (candidateX >= 0x00 && candidateY >= 0x00 &&
+			candidateX < (int16)MapWidth &&
+			candidateY < (int16)MapHeight)
 		{
 			int16 neighborOffset =
 				NeighborMapOffsetTable[candidateDirection];
@@ -303,20 +303,20 @@ void MoveUnitTowardMapCell(
 				if (unitRecord->damageModel != UNIT_DAMAGE_MODEL_BATTLEMECH)
 				{
 					if (unitRecord->damageModel ==
-							UNIT_DAMAGE_MODEL_HOVER_VEHICLE
-						&& candidateTerrain >= TerrainImpactAnimationTypeMinimum
-						&& candidateTerrain <= TerrainImpactAnimationTypeMaximum)
+							UNIT_DAMAGE_MODEL_HOVER_VEHICLE &&
+						candidateTerrain >= TerrainImpactAnimationTypeMinimum &&
+						candidateTerrain <= TerrainImpactAnimationTypeMaximum)
 					{
 						cellResult = 0x00;
 					}
 					else if (unitRecord->damageModel >=
-							UNIT_DAMAGE_MODEL_COMBAT_VEHICLE
-						&& unitRecord->damageModel <=
-							UNIT_DAMAGE_MODEL_MOBILE_HQ
-						&& candidateTerrain
-							>= DestructibleTerrainTypeBase
-						&& candidateTerrain
-							<= DestructibleTerrainTypeBase + 0x02)
+							UNIT_DAMAGE_MODEL_COMBAT_VEHICLE &&
+						unitRecord->damageModel <=
+							UNIT_DAMAGE_MODEL_MOBILE_HQ &&
+						candidateTerrain >=
+							DestructibleTerrainTypeBase &&
+						candidateTerrain <=
+							DestructibleTerrainTypeBase + 0x02)
 					{
 						cellResult = 0x00;
 					}
@@ -330,12 +330,12 @@ void MoveUnitTowardMapCell(
 					{
 						RevengeUnitRecord *otherRecord =
 							&PersistentUnitRoster[otherUnit];
-						if (otherUnit != unitIndex
-							&& otherRecord->deploymentState != 0x00
-							&& ScenarioUnitMapX[otherUnit]
-								== candidateX
-							&& ScenarioUnitMapY[otherUnit]
-								== candidateY)
+						if (otherUnit != unitIndex &&
+							otherRecord->deploymentState != 0x00 &&
+							ScenarioUnitMapX[otherUnit] ==
+								candidateX &&
+							ScenarioUnitMapY[otherUnit] ==
+								candidateY)
 						{
 							cellResult = 0x00;
 						}
@@ -343,13 +343,13 @@ void MoveUnitTowardMapCell(
 				}
 			}
 
-			if (cellResult == 0x00
-				&& candidateX == (int16)destinationX
-				&& candidateY == (int16)destinationY)
+			if (cellResult == 0x00 &&
+				candidateX == (int16)destinationX &&
+				candidateY == (int16)destinationY)
 			{
 				cellResult = 0x02;
-				if (UnitRouteTargetMapX[unitIndex] == destinationX
-					&& UnitRouteTargetMapY[unitIndex] == destinationY)
+				if (UnitRouteTargetMapX[unitIndex] == destinationX &&
+					UnitRouteTargetMapY[unitIndex] == destinationY)
 				{
 					UnitRouteTargetMapX[unitIndex] =
 						ScenarioUnitMapX[unitIndex];
@@ -390,10 +390,10 @@ void MoveUnitTowardMapCell(
 						spriteFacing = 0x01;
 					UpdateUnitSpriteForFacing(unitIndex, spriteFacing);
 
-					if (TerrainDamageCapabilityTable[candidateTerrain]
-							!= 0x00
-						&& unitRecord->damageModel
-							!= UNIT_DAMAGE_MODEL_INFANTRY)
+					if (TerrainDamageCapabilityTable[candidateTerrain] !=
+							0x00 &&
+						unitRecord->damageModel !=
+							UNIT_DAMAGE_MODEL_INFANTRY)
 					{
 						BeginTerrainDamageAtCell(
 							candidateX, candidateY, candidateTerrain);
@@ -403,8 +403,8 @@ void MoveUnitTowardMapCell(
 								&unitRecord->heatAccumulatorQ8_8;
 							if (UnitJumpingState[unitIndex] != FALSE)
 								*heatAccumulator += 0x00E0;
-							else if (UnitMovementHeatExponent[unitIndex]
-								!= 0x00)
+							else if (UnitMovementHeatExponent[unitIndex] !=
+								0x00)
 							{
 								*heatAccumulator += 0x0010
 									<< UnitMovementHeatExponent[unitIndex];
@@ -431,8 +431,8 @@ void UpdateUnitSpriteForFacing(word16 unitIndex, word16 facing)
 		facing = 0x00;
 
 	UnitSpriteId[unitIndex] =
-		UnitSpriteBaseId[unitIndex]
-			+ ((facing & 0x03) << 0x01);
+		UnitSpriteBaseId[unitIndex] +
+			((facing & 0x03) << 0x01);
 	if (TacticalSpriteAnimationPhase != 0x00)
 		++UnitSpriteId[unitIndex];
 }
@@ -469,8 +469,8 @@ void SelectUnitTacticalTargets(void)
 		if (unitRecord->deploymentState == 0x00)
 			continue;
 
-		if (UnitAttackTarget[unitIndex] != TACTICAL_TARGET_NONE
-			&& UnitAttackTarget[unitIndex] < TACTICAL_TARGET_MAP_CELL)
+		if (UnitAttackTarget[unitIndex] != TACTICAL_TARGET_NONE &&
+			UnitAttackTarget[unitIndex] < TACTICAL_TARGET_MAP_CELL)
 		{
 			RevengeUnitRecord *orderedTarget =
 				&PersistentUnitRoster[
@@ -487,9 +487,9 @@ void SelectUnitTacticalTargets(void)
 		// table, which the import keeps.
 		byte experience = unitRecord->pilotExperience;
 		word16 experienceMask =
-			experience < ACTION_MASK_EXPERIENCE_COUNT
-				? UnitActionMaskByExperience[experience]
-				: UnitActionMaskByExperiencePastEnd[
+			experience < ACTION_MASK_EXPERIENCE_COUNT ?
+				UnitActionMaskByExperience[experience] :
+				UnitActionMaskByExperiencePastEnd[
 					experience - ACTION_MASK_EXPERIENCE_COUNT];
 		if ((experienceMask & TacticalClockDivider) == 0x00)
 			continue;
@@ -505,14 +505,14 @@ void SelectUnitTacticalTargets(void)
 				TACTICAL_ORDER_SCRIPTED_ROUTE;
 
 		if (UnitTacticalOrderMode[unitIndex] ==
-			TACTICAL_ORDER_SEEK_AND_DESTROY
-			&& UnitAttackTarget[unitIndex] != TACTICAL_TARGET_NONE
-			&& UnitAttackTarget[unitIndex] < TACTICAL_TARGET_MAP_CELL)
+			TACTICAL_ORDER_SEEK_AND_DESTROY &&
+			UnitAttackTarget[unitIndex] != TACTICAL_TARGET_NONE &&
+			UnitAttackTarget[unitIndex] < TACTICAL_TARGET_MAP_CELL)
 		{
 			searchForTarget = FALSE;
-			if (UnitEnemyVisible[unitIndex] != FALSE
-				|| (UnitEnemyInProximityRange[unitIndex] != FALSE
-					&& UnitEnemyContactEstablished[unitIndex] != FALSE))
+			if (UnitEnemyVisible[unitIndex] != FALSE ||
+				(UnitEnemyInProximityRange[unitIndex] != FALSE &&
+					UnitEnemyContactEstablished[unitIndex] != FALSE))
 			{
 				selectedTarget = UnitAttackTarget[unitIndex];
 			}
@@ -552,16 +552,16 @@ void SelectUnitTacticalTargets(void)
 					unitY,
 					ScenarioUnitMapX[candidateIndex],
 					ScenarioUnitMapY[candidateIndex]);
-				if (candidateIndex
-					== UnitAttackTarget[unitIndex])
+				if (candidateIndex ==
+					UnitAttackTarget[unitIndex])
 				{
 					candidateDistance >>= 0x01;
 				}
 
-				if (candidateDistance < bestDistance
-					&& (UnitEnemyVisible[candidateIndex] != FALSE
-						|| (UnitEnemyContactEstablished[candidateIndex] != FALSE
-							&& UnitEnemyInProximityRange[candidateIndex] != FALSE)))
+				if (candidateDistance < bestDistance &&
+					(UnitEnemyVisible[candidateIndex] != FALSE ||
+						(UnitEnemyContactEstablished[candidateIndex] != FALSE &&
+							UnitEnemyInProximityRange[candidateIndex] != FALSE)))
 				{
 					bestDistance = candidateDistance;
 					selectedTarget = candidateIndex;
@@ -579,8 +579,8 @@ void SelectUnitTacticalTargets(void)
 				TACTICAL_ENGAGEMENT_POSITION;
 		}
 
-		if (selectedTarget != -0x01
-			&& UnitTacticalOrderMode[unitIndex] ==
+		if (selectedTarget != -0x01 &&
+			UnitTacticalOrderMode[unitIndex] ==
 				TACTICAL_ORDER_SEEK_AND_DESTROY)
 		{
 			RevengeTacticalCombatRatings *unitRatings =
@@ -594,8 +594,8 @@ void SelectUnitTacticalTargets(void)
 			if (unitRatings->durabilityDividedBy16 >=
 				targetRatings->durabilityDividedBy16 - 0x01)
 				comparisonMask |= 0x01;
-			if (unitRatings->durabilityDividedBy16 != 0x00
-				&& unitRatings->durabilityDividedBy16 >=
+			if (unitRatings->durabilityDividedBy16 != 0x00 &&
+				unitRatings->durabilityDividedBy16 >=
 					targetRatings->durabilityDividedBy16 * 0x02)
 			{
 				comparisonMask |= 0x10;
@@ -627,33 +627,33 @@ void SelectUnitTacticalTargets(void)
 
 			// ASM 2D1B:0C8C-0CBA adds the three words with 16-bit wrap.
 			longRangeMissileAmmunition = (word16)
-				(unitRecord->lrm5Ammunition
-					+ unitRecord->lrm10Ammunition
-					+ unitRecord->lrm15Ammunition);
-			if (UnitPreferredEngagementMode[unitIndex]
-					== TACTICAL_ENGAGEMENT_LONG
-				&& longRangeMissileAmmunition != 0x00)
+				(unitRecord->lrm5Ammunition +
+					unitRecord->lrm10Ammunition +
+					unitRecord->lrm15Ammunition);
+			if (UnitPreferredEngagementMode[unitIndex] ==
+					TACTICAL_ENGAGEMENT_LONG &&
+				longRangeMissileAmmunition != 0x00)
 			{
 				UnitPreferredEngagementMode[unitIndex] =
 					EngagementModeByComparisonMask[
 						comparisonMask & 0x007F];
-				if (UnitPreferredEngagementMode[unitIndex]
-					== TACTICAL_ENGAGEMENT_WITHDRAW)
+				if (UnitPreferredEngagementMode[unitIndex] ==
+					TACTICAL_ENGAGEMENT_WITHDRAW)
 				{
 					UnitPreferredEngagementMode[unitIndex] =
 						TACTICAL_ENGAGEMENT_LONG;
 				}
 			}
 
-			if (UnitPreferredEngagementMode[unitIndex]
-				== TACTICAL_ENGAGEMENT_WITHDRAW)
+			if (UnitPreferredEngagementMode[unitIndex] ==
+				TACTICAL_ENGAGEMENT_WITHDRAW)
 			{
 				word16 allyIndex;
 				word16 sameSideBase = 0x0C - opposingBase;
 				for (allyIndex = sameSideBase; allyIndex < unitIndex; ++allyIndex)
 				{
-					if (UnitTacticalTarget[allyIndex]
-						!= selectedTarget)
+					if (UnitTacticalTarget[allyIndex] !=
+						selectedTarget)
 					{
 						continue;
 					}
@@ -666,8 +666,8 @@ void SelectUnitTacticalTargets(void)
 					{
 						int16 ownRating =
 							((int16 *)unitRatings)[ratingIndex];
-						int16 combinedRating = (int16)(ownRating
-							+ ((int16 *)allyRatings)[ratingIndex]);
+						int16 combinedRating = (int16)(ownRating +
+							((int16 *)allyRatings)[ratingIndex]);
 						int16 opposingRating =
 							((int16 *)targetRatings)[ratingIndex];
 						if (combinedRating != 0x00)
@@ -685,8 +685,8 @@ void SelectUnitTacticalTargets(void)
 					ratingBit = 0x22;
 					for (ratingIndex = 0x02; ratingIndex <= 0x04; ++ratingIndex)
 					{
-						if ((comparisonMask & ratingBit) != 0x00
-							&& ((int16 *)unitRatings)[ratingIndex] == 0x00)
+						if ((comparisonMask & ratingBit) != 0x00 &&
+							((int16 *)unitRatings)[ratingIndex] == 0x00)
 						{
 							comparisonMask &= 0x00FF - ratingBit;
 						}
@@ -699,11 +699,11 @@ void SelectUnitTacticalTargets(void)
 					break;
 				}
 
-				if (UnitPreferredEngagementMode[unitIndex]
-						== TACTICAL_ENGAGEMENT_WITHDRAW
-					&& unitIndex < ENEMY_FORCE_FIRST_UNIT
-					&& UnitLastNarratedTarget[unitIndex]
-						!= selectedTarget)
+				if (UnitPreferredEngagementMode[unitIndex] ==
+						TACTICAL_ENGAGEMENT_WITHDRAW &&
+					unitIndex < ENEMY_FORCE_FIRST_UNIT &&
+					UnitLastNarratedTarget[unitIndex] !=
+						selectedTarget)
 				{
 					NarrationEmphasis = FALSE;
 					PendingNarrationDelay = NARRATION_DELAY_MS;
@@ -713,8 +713,8 @@ void SelectUnitTacticalTargets(void)
 						(RevengeUnitSlot)selectedTarget;
 				}
 
-				if (UnitPreferredEngagementMode[unitIndex]
-					== TACTICAL_ENGAGEMENT_WITHDRAW)
+				if (UnitPreferredEngagementMode[unitIndex] ==
+					TACTICAL_ENGAGEMENT_WITHDRAW)
 				{
 					if (unitRatings->closeFirepower != 0x00)
 						UnitPreferredEngagementMode[unitIndex] =
@@ -730,15 +730,15 @@ void SelectUnitTacticalTargets(void)
 		}
 
 		if (UnitTacticalOrderMode[unitIndex] ==
-				TACTICAL_ORDER_SCRIPTED_ROUTE
-			&& UnitAttackTarget[unitIndex] == TACTICAL_TARGET_NONE)
+				TACTICAL_ORDER_SCRIPTED_ROUTE &&
+			UnitAttackTarget[unitIndex] == TACTICAL_TARGET_NONE)
 		{
 			UnitPreferredEngagementMode[unitIndex] =
 				TACTICAL_ENGAGEMENT_NONE;
 		}
-		if (unitRecord->damageModel == UNIT_DAMAGE_MODEL_INFANTRY
-			&& UnitOverburnOrCloseAssaultEnabled[unitIndex] != 0x00
-			&& UnitTacticalOrderMode[unitIndex] ==
+		if (unitRecord->damageModel == UNIT_DAMAGE_MODEL_INFANTRY &&
+			UnitOverburnOrCloseAssaultEnabled[unitIndex] != 0x00 &&
+			UnitTacticalOrderMode[unitIndex] ==
 				TACTICAL_ORDER_SEEK_AND_DESTROY)
 		{
 			UnitPreferredEngagementMode[unitIndex] =
@@ -763,27 +763,27 @@ void AdvanceUnitTacticalMovement(word16 unitIndex)
 		movementRate = 0x00;
 
 	word16 terrainType = UnitTerrainType[unitIndex];
-	if (terrainType >= TerrainImpactAnimationTypeMinimum
-		&& terrainType <= TerrainImpactAnimationTypeMaximum)
+	if (terrainType >= TerrainImpactAnimationTypeMinimum &&
+		terrainType <= TerrainImpactAnimationTypeMaximum)
 	{
 		movementRate >>= 0x02;
-		if (UnitJumpingState[unitIndex] == FALSE
-			&& unitRecord->walkMovement != 0x00
-			&& UnitJumpMovementRemaining[unitIndex] != 0x00
-			&& UnitMovementHeatExponent[unitIndex] == 0x02)
+		if (UnitJumpingState[unitIndex] == FALSE &&
+			unitRecord->walkMovement != 0x00 &&
+			UnitJumpMovementRemaining[unitIndex] != 0x00 &&
+			UnitMovementHeatExponent[unitIndex] == 0x02)
 		{
 			UnitJumpingState[unitIndex] = TRUE;
 			jumpStartedThisTick = TRUE;
 		}
 	}
-	if (terrainType >= DestructibleTerrainTypeBase
-		&& terrainType <= DestructibleTerrainTypeBase + 0x02)
+	if (terrainType >= DestructibleTerrainTypeBase &&
+		terrainType <= DestructibleTerrainTypeBase + 0x02)
 	{
 		movementRate >>= 0x01;
-		if (UnitJumpingState[unitIndex] == FALSE
-			&& unitRecord->walkMovement != 0x00
-			&& UnitJumpMovementRemaining[unitIndex] != 0x00
-			&& UnitMovementHeatExponent[unitIndex] == 0x02)
+		if (UnitJumpingState[unitIndex] == FALSE &&
+			unitRecord->walkMovement != 0x00 &&
+			UnitJumpMovementRemaining[unitIndex] != 0x00 &&
+			UnitMovementHeatExponent[unitIndex] == 0x02)
 		{
 			UnitJumpingState[unitIndex] = TRUE;
 			jumpStartedThisTick = TRUE;
@@ -797,8 +797,8 @@ void AdvanceUnitTacticalMovement(word16 unitIndex)
 
 	if (UnitJumpingState[unitIndex] != FALSE)
 	{
-		if (UnitJumpMovementRemaining[unitIndex] != 0x00
-			&& unitRecord->walkMovement != 0x00)
+		if (UnitJumpMovementRemaining[unitIndex] != 0x00 &&
+			unitRecord->walkMovement != 0x00)
 		{
 			--UnitJumpMovementRemaining[unitIndex];
 			movementRate = 0x08;
@@ -809,9 +809,9 @@ void AdvanceUnitTacticalMovement(word16 unitIndex)
 		}
 	}
 
-	if (UnitMovementHeatExponent[unitIndex] == 0x00
-		|| (MovementTimingMaskTable[movementRate - 0x01]
-			& TacticalClockDivider) == 0x00)
+	if (UnitMovementHeatExponent[unitIndex] == 0x00 ||
+		(MovementTimingMaskTable[movementRate - 0x01] &
+			TacticalClockDivider) == 0x00)
 	{
 		return;
 	}
@@ -831,20 +831,20 @@ void AdvanceUnitTacticalMovement(word16 unitIndex)
 	word16 destinationY = 0x00;
 
 	if ((UnitTacticalOrderMode[unitIndex] ==
-			TACTICAL_ORDER_SEEK_AND_DESTROY
-			&& UnitTacticalTarget[unitIndex] != TACTICAL_TARGET_NONE)
-		|| UnitLanceFormationState[unitIndex] != 0x00)
+			TACTICAL_ORDER_SEEK_AND_DESTROY &&
+			UnitTacticalTarget[unitIndex] != TACTICAL_TARGET_NONE) ||
+		UnitLanceFormationState[unitIndex] != 0x00)
 	{
 		useRoute = FALSE;
-		if (UnitAttackTarget[unitIndex] == TACTICAL_TARGET_MAP_CELL
-			&& UnitTacticalOrderMode[unitIndex] ==
+		if (UnitAttackTarget[unitIndex] == TACTICAL_TARGET_MAP_CELL &&
+			UnitTacticalOrderMode[unitIndex] ==
 				TACTICAL_ORDER_SEEK_AND_DESTROY)
 		{
 			destinationX = UnitTargetMapX[unitIndex];
 			destinationY = UnitTargetMapY[unitIndex];
 		}
-		else if (UnitTacticalTarget[unitIndex] >= 0x00
-			&& UnitTacticalTarget[unitIndex] < TACTICAL_TARGET_MAP_CELL)
+		else if (UnitTacticalTarget[unitIndex] >= 0x00 &&
+			UnitTacticalTarget[unitIndex] < TACTICAL_TARGET_MAP_CELL)
 		{
 			word16 targetIndex = UnitTacticalTarget[unitIndex];
 			destinationX = ScenarioUnitMapX[targetIndex];
@@ -855,19 +855,19 @@ void AdvanceUnitTacticalMovement(word16 unitIndex)
 			useRoute = TRUE;
 		}
 
-		if (UnitAttackTarget[unitIndex] == TACTICAL_TARGET_MAP_CELL
-			&& UnitTacticalOrderMode[unitIndex] !=
-				TACTICAL_ORDER_SEEK_AND_DESTROY
-			&& ScenarioUnitMapX[unitIndex]
-				== UnitRouteTargetMapX[unitIndex]
-			&& ScenarioUnitMapY[unitIndex]
-				== UnitRouteTargetMapY[unitIndex]
-			&& UnitTacticalTarget[unitIndex] >= 0x00
-			&& UnitTacticalTarget[unitIndex] < TACTICAL_TARGET_MAP_CELL)
+		if (UnitAttackTarget[unitIndex] == TACTICAL_TARGET_MAP_CELL &&
+			UnitTacticalOrderMode[unitIndex] !=
+				TACTICAL_ORDER_SEEK_AND_DESTROY &&
+			ScenarioUnitMapX[unitIndex] ==
+				UnitRouteTargetMapX[unitIndex] &&
+			ScenarioUnitMapY[unitIndex] ==
+				UnitRouteTargetMapY[unitIndex] &&
+			UnitTacticalTarget[unitIndex] >= 0x00 &&
+			UnitTacticalTarget[unitIndex] < TACTICAL_TARGET_MAP_CELL)
 		{
 			word16 targetIndex = UnitTacticalTarget[unitIndex];
-			if (UnitEnemyVisible[targetIndex] != FALSE
-				|| UnitEnemyInProximityRange[targetIndex] != FALSE)
+			if (UnitEnemyVisible[targetIndex] != FALSE ||
+				UnitEnemyInProximityRange[targetIndex] != FALSE)
 			{
 				word16 facing = DetermineRelativeAttackDirection(
 					ScenarioUnitMapX[unitIndex],
@@ -954,8 +954,8 @@ void AdvanceUnitTacticalMovement(word16 unitIndex)
 		for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
 		{
 			word16 leaderIndex = lanceBase + lanceOffset;
-			if (IsCurrentLanceLeader(leaderIndex) != FALSE
-				&& CalculateApproximateMapDistance(
+			if (IsCurrentLanceLeader(leaderIndex) != FALSE &&
+				CalculateApproximateMapDistance(
 					currentX,
 					currentY,
 					ScenarioUnitMapX[leaderIndex],
@@ -978,9 +978,9 @@ void AdvanceUnitTacticalMovement(word16 unitIndex)
 	if (currentX == destinationX && currentY == destinationY)
 	{
 		movementAction = 0x00;
-		if (suppressTargetFacing == FALSE
-			&& UnitTacticalTarget[unitIndex] >= 0x00
-			&& UnitTacticalTarget[unitIndex] < TACTICAL_TARGET_MAP_CELL)
+		if (suppressTargetFacing == FALSE &&
+			UnitTacticalTarget[unitIndex] >= 0x00 &&
+			UnitTacticalTarget[unitIndex] < TACTICAL_TARGET_MAP_CELL)
 		{
 			word16 targetIndex = UnitTacticalTarget[unitIndex];
 			int16 facing = DetermineRelativeAttackDirection(
@@ -991,10 +991,10 @@ void AdvanceUnitTacticalMovement(word16 unitIndex)
 			if (UnitLanceFormationState[unitIndex] == 0x00)
 			{
 				word16 leader = FindOperationalLanceLeader(unitIndex);
-				if (ScenarioUnitMapX[leader]
-						== UnitRouteTargetMapX[leader]
-					&& ScenarioUnitMapY[leader]
-						== UnitRouteTargetMapY[leader])
+				if (ScenarioUnitMapX[leader] ==
+						UnitRouteTargetMapX[leader] &&
+					ScenarioUnitMapY[leader] ==
+						UnitRouteTargetMapY[leader])
 				{
 					facing = ScenarioUnitFacing[leader];
 				}
@@ -1003,8 +1003,8 @@ void AdvanceUnitTacticalMovement(word16 unitIndex)
 					facing = -0x01;
 				}
 			}
-			else if (UnitEnemyVisible[targetIndex] == FALSE
-				&& UnitEnemyInProximityRange[targetIndex] == FALSE)
+			else if (UnitEnemyVisible[targetIndex] == FALSE &&
+				UnitEnemyInProximityRange[targetIndex] == FALSE)
 			{
 				facing = -0x01;
 			}

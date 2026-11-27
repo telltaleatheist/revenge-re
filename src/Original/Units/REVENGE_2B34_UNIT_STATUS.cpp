@@ -296,8 +296,8 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
 				0x0F, 0x00);
 		}
 
-		textColor = unitRecord->walkMovement == 0x00
-			? 0x0E : 0x0F;
+		textColor = unitRecord->walkMovement == 0x00 ?
+			0x0E : 0x0F;
 		movementDescription = MovementRatingByWalkMP[
 			unitRecord->walkMovement];
 		DrawTileAlignedText(
@@ -373,20 +373,20 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
 				else if (DamagedWeaponRangeFlags[0x00] != 0x00)
 				{
 					assessmentIndex =
-						UnitCombatRatings[unitIndex].longFirepower == 0x00
-							? 0x01 : 0x00;
+						UnitCombatRatings[unitIndex].longFirepower == 0x00 ?
+							0x01 : 0x00;
 				}
 				else if (DamagedWeaponRangeFlags[0x01] != 0x00)
 				{
 					assessmentIndex =
-						UnitCombatRatings[unitIndex].mediumFirepower == 0x00
-							? 0x03 : 0x02;
+						UnitCombatRatings[unitIndex].mediumFirepower == 0x00 ?
+							0x03 : 0x02;
 				}
 				else if (DamagedWeaponRangeFlags[0x02] != 0x00)
 				{
 					assessmentIndex =
-						UnitCombatRatings[unitIndex].closeFirepower == 0x00
-							? 0x05 : 0x04;
+						UnitCombatRatings[unitIndex].closeFirepower == 0x00 ?
+							0x05 : 0x04;
 				}
 
 				if (assessmentIndex == 0x07 &&
@@ -423,13 +423,13 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
 								candidateIndex < AMMUNITION_FAMILY_COUNT;
 								++candidateIndex)
 							{
-								if (unitRecord->weaponFamilyCounts[candidateIndex]
-									!= 0x00)
+								if (unitRecord->weaponFamilyCounts[candidateIndex] !=
+									0x00)
 								{
 									weaponDamageFlags |=
 										WEAPON_STATUS_HAS_AMMUNITION_WEAPON;
-									if (unitRecord->currentAmmunition[candidateIndex]
-										!= 0x00)
+									if (unitRecord->currentAmmunition[candidateIndex] !=
+										0x00)
 									{
 										weaponDamageFlags |=
 											WEAPON_STATUS_HAS_USABLE_AMMUNITION;
@@ -540,9 +540,9 @@ word16 CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord)
 
 	CountUnitWeaponsByType(unitRecord);
 
-	calculatedHeat = unitRecord->jumpMovement == 0x00
-		? 0x02
-		: 0x05;
+	calculatedHeat = unitRecord->jumpMovement == 0x00 ?
+		0x02 :
+		0x05;
 
 	for (weaponIndex = 0x00; weaponIndex < WEAPON_DEFINITION_COUNT; ++weaponIndex)
 	{
@@ -616,8 +616,8 @@ int16 FindUnitWeaponByOrdinal(
 			word16 weaponIndex;
 			byte ammunitionFamily;
 
-			if (equipmentId < WEAPON_EQUIPMENT_ID(WEAPON_SMALL_LASER)
-				|| equipmentId > WEAPON_EQUIPMENT_ID(WEAPON_SRM_6))
+			if (equipmentId < WEAPON_EQUIPMENT_ID(WEAPON_SMALL_LASER) ||
+				equipmentId > WEAPON_EQUIPMENT_ID(WEAPON_SRM_6))
 			{
 				continue;
 			}
@@ -738,8 +738,8 @@ void FlagDamagedWeaponRanges(
 			continue;
 
 		equipmentId &= EQUIPMENT_ID_MASK;
-		if (equipmentId < WEAPON_EQUIPMENT_ID(WEAPON_SMALL_LASER)
-			|| equipmentId > WEAPON_EQUIPMENT_ID(WEAPON_SRM_6))
+		if (equipmentId < WEAPON_EQUIPMENT_ID(WEAPON_SMALL_LASER) ||
+			equipmentId > WEAPON_EQUIPMENT_ID(WEAPON_SRM_6))
 			continue;
 
 		switch (WEAPON_INDEX_FROM_EQUIPMENT_ID(equipmentId))
@@ -955,9 +955,9 @@ word16 PrepareDisplayedUnitCombatRatings(word16 unitIndex)
 		{
 			RevengeUnitRecord *friendlyUnit =
 				&PersistentUnitRoster[friendlyUnitIndex];
-			if (friendlyUnit->deploymentState != 0x00
-				&& friendlyUnit->beagleActiveProbe != 0x00
-				&& HasUnitLineOfSight(
+			if (friendlyUnit->deploymentState != 0x00 &&
+				friendlyUnit->beagleActiveProbe != 0x00 &&
+				HasUnitLineOfSight(
 					friendlyUnitIndex, unitIndex) != FALSE)
 			{
 				concealEnemyDamage = FALSE;

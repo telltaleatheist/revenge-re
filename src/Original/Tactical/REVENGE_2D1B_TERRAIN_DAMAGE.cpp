@@ -12,16 +12,16 @@ void ApplyOrQueueTerrainDamage(
 	word16 subcellIndex,
 	word16 terrainType)
 {
-	if (terrainType < DestructibleTerrainTypeBase
-		|| terrainType > DestructibleTerrainTypeBase + 0x02)
+	if (terrainType < DestructibleTerrainTypeBase ||
+		terrainType > DestructibleTerrainTypeBase + 0x02)
 	{
 		PackedTerrainDamageMap[packedByteIndex] |=
 			TerrainDamageQueueIncrementMask[subcellIndex];
 		return;
 	}
 
-	if (TacticalTerrainEffectMode == 0x06
-		|| TerrainDamageQueueWordCount >= 0x32)
+	if (TacticalTerrainEffectMode == 0x06 ||
+		TerrainDamageQueueWordCount >= 0x32)
 	{
 		return;
 	}
@@ -45,13 +45,13 @@ void BeginTerrainDamageAtCell(
 	word16 terrainType)
 {
 	word16 packedByteIndex =
-		mapY * PackedTerrainDamageRowBytes
-			+ (word16) ((int16) mapX >> 0x02);
+		mapY * PackedTerrainDamageRowBytes +
+			(word16) ((int16) mapX >> 0x02);
 	word16 subcellIndex = mapX & 0x03;
 	byte occupiedMask = TerrainDamageQueueOccupiedMask[subcellIndex];
 
-	if ((PackedTerrainDamageMap[packedByteIndex]
-		& occupiedMask) == 0x00)
+	if ((PackedTerrainDamageMap[packedByteIndex] &
+		occupiedMask) == 0x00)
 	{
 		ApplyOrQueueTerrainDamage(
 			packedByteIndex, subcellIndex, terrainType);

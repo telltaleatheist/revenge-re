@@ -122,16 +122,16 @@ word16 IsDaylightSavingTime(
 		transitionDay = CalendarBoundaryTable[resolvedMonth];
 	if ((((byte)yearsSince1970 + 0xB2) & 0x03) != 0x00)
 		--transitionDay;
-	transitionDay -= (uint16)((uint32)(yearsSince1970 * 0x016D
-		+ transitionDay + ((yearsSince1970 + 0x01) >> 0x02) + 0x04) % 0x07);
+	transitionDay -= (uint16)((uint32)(yearsSince1970 * 0x016D +
+		transitionDay + ((yearsSince1970 + 0x01) >> 0x02) + 0x04) % 0x07);
 	if (resolvedMonth == 0x04)
 	{
-		if (dayOrDayOfYear <= transitionDay
-			&& (dayOrDayOfYear != transitionDay || hour < 0x02))
+		if (dayOrDayOfYear <= transitionDay &&
+			(dayOrDayOfYear != transitionDay || hour < 0x02))
 			return FALSE;
 	}
-	else if (dayOrDayOfYear >= transitionDay
-		&& (dayOrDayOfYear != transitionDay || hour > 0x01))
+	else if (dayOrDayOfYear >= transitionDay &&
+		(dayOrDayOfYear != transitionDay || hour > 0x01))
 		return FALSE;
 	return TRUE;
 }

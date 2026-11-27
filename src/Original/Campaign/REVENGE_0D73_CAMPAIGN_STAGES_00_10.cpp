@@ -323,8 +323,8 @@ int16 RunCampaignStage06(void)
 	{
 		PlayMusicResource(0x0047);
 		PresentScreenAndMessage(0x000C,
-			scenarioVariant == 0x0000
-				? 0x0034 : 0x0037);
+			scenarioVariant == 0x0000 ?
+				0x0034 : 0x0037);
 	}
 	if (CampaignMenuRequested != FALSE ||
 		(CampaignFlags & 0x0002) != 0x0000)
@@ -585,8 +585,8 @@ int16 RunCampaignStage10(void)
 	{
 		PlayMusicResource(0x0047);
 		PresentScreenAndMessage(0x000C,
-			(CampaignFlags & 0x0004) != 0x0000
-				? 0x0051 : 0x0050);
+			(CampaignFlags & 0x0004) != 0x0000 ?
+				0x0051 : 0x0050);
 	}
 	else if ((CampaignFlags & 0x0040) != 0x0000)
 	{

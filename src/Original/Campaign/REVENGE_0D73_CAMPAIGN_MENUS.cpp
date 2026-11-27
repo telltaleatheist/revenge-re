@@ -99,8 +99,8 @@ word16 RunTwoOptionMenuSelection(
 	word16 selection;
 
 	HideMouseCursorOverlay();
-	menuRow = (int16)((ActiveTextWindowHeightTiles << 0x03)
-		/ ActiveFontLineHeight) - 0x0002;
+	menuRow = (int16)((ActiveTextWindowHeightTiles << 0x03) /
+		ActiveFontLineHeight) - 0x0002;
 	glyphWidth = ActiveFontGlyphAdvanceX;
 
 	const char *firstText = menuOptionText[0x00];
@@ -149,8 +149,8 @@ word16 RunMainMenuSelection(const char * const menuOptionText[0x03])
 
 	// Verified against 0D73:25F5-274C.
 	HideMouseCursorOverlay();
-	menuRow = (int16) ((ActiveTextWindowHeightTiles << 0x03)
-		/ ActiveFontLineHeight) - 0x02;
+	menuRow = (int16) ((ActiveTextWindowHeightTiles << 0x03) /
+		ActiveFontLineHeight) - 0x02;
 	glyphWidth = ActiveFontGlyphAdvanceX;
 	const char *firstText = menuOptionText[0x00];
 	const char *secondText = menuOptionText[0x01];
@@ -274,33 +274,33 @@ int16 RunInGameMenu(int16 firstMenuOption)
 	case IN_GAME_MENU_SAVE_CONTINUE:
 	{
 		actionResult = (int16) SaveGame();
-		result = actionResult == 0x0000
-			? -0x0001 : actionResult;
+		result = actionResult == 0x0000 ?
+			-0x0001 : actionResult;
 		if (actionResult < 0x0000)
-			result = ConfirmExitToDos()
-				? 0x0000 : -0x0001;
+			result = ConfirmExitToDos() ?
+				0x0000 : -0x0001;
 		break;
 	}
 	case IN_GAME_MENU_SAVE_QUIT:
 	{
 		actionResult = (int16) SaveGame();
-		result = actionResult == 0x0001
-			? 0x0000
-			: (actionResult == 0x0000
-				? -0x0001 : actionResult);
+		result = actionResult == 0x0001 ?
+			0x0000 :
+			(actionResult == 0x0000 ?
+				-0x0001 : actionResult);
 		if (actionResult < 0x0000)
-			result = ConfirmExitToDos()
-				? 0x0000 : -0x0001;
+			result = ConfirmExitToDos() ?
+				0x0000 : -0x0001;
 		break;
 	}
 	case IN_GAME_MENU_LOAD:
 	{
 		actionResult = (int16) LoadGame();
-		result = actionResult == 0x0000
-			? -0x0001 : actionResult;
+		result = actionResult == 0x0000 ?
+			-0x0001 : actionResult;
 		if (actionResult < 0x0000)
-			result = ConfirmExitToDos()
-				? 0x0000 : -0x0001;
+			result = ConfirmExitToDos() ?
+				0x0000 : -0x0001;
 		break;
 	}
 	case IN_GAME_MENU_REPLAY_SCENARIO:
@@ -350,8 +350,8 @@ int16 RunInGameMenu(int16 firstMenuOption)
 		result = 0x01;
 		break;
 	case IN_GAME_MENU_OPTIONS:
-		result = RunGameOptionsMenu(0x0000) == 0x0004
-			? 0x0000 : -0x0001;
+		result = RunGameOptionsMenu(0x0000) == 0x0004 ?
+			0x0000 : -0x0001;
 		break;
 	}
 

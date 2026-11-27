@@ -306,8 +306,8 @@ void ServiceMIDISequenceTick(void)
 				byte numeratorByte = cursor[0x00];
 				byte exponent = cursor[0x01];
 				byte clocksByte = cursor[0x02];
-				byte denominatorByte = exponent < 0x08
-					? (byte)(0x01 << exponent) : 0x00;
+				byte denominatorByte = exponent < 0x08 ?
+					(byte)(0x01 << exponent) : 0x00;
 				uint16 divisor = (uint16)(
 					denominatorByte * clocksByte);
 				uint16 dividend = (uint16)(0x60 * numeratorByte);
@@ -893,8 +893,8 @@ void DispatchMIDISystemByte(uint16 midiByte)
 			channelState->VoiceClass = buffer[0x01];
 			channelState->AllocationPriority = buffer[0x02];
 			requestedVoiceCount = buffer[0x03];
-			voiceDelta = (int8)(requestedVoiceCount
-				- channelState->ReservedVoiceCount);
+			voiceDelta = (int8)(requestedVoiceCount -
+				channelState->ReservedVoiceCount);
 			if (voiceDelta == 0x00)
 				break;
 			if (voiceDelta < 0x00)
@@ -906,8 +906,8 @@ void DispatchMIDISystemByte(uint16 midiByte)
 			}
 			else if (voiceDelta != 0x00)
 			{
-				while (voiceDelta != 0x00
-					&& channelState->AvailableVoiceCount != 0x00)
+				while (voiceDelta != 0x00 &&
+					channelState->AvailableVoiceCount != 0x00)
 				{
 					++channelState->ReservedVoiceCount;
 					--channelState->AvailableVoiceCount;
@@ -916,8 +916,8 @@ void DispatchMIDISystemByte(uint16 midiByte)
 				channelFlags = channelState->VoiceClass;
 				previousOffset = 0x62BA;
 				voiceOffset = ReadMIDIDataWord(previousOffset);
-				while (voiceDelta != 0x00
-					&& ReadMIDIDataWord(voiceOffset) != 0x0000)
+				while (voiceDelta != 0x00 &&
+					ReadMIDIDataWord(voiceOffset) != 0x0000)
 				{
 					MIDIVoiceRecord *voiceRecord =
 						MIDIVoiceRecordAt(voiceOffset);

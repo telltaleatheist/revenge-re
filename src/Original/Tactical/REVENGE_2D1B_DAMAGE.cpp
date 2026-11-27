@@ -26,8 +26,8 @@ void DestroyScenarioUnit(word16 unitIndex)
 	for (attackerIndex = 0x00; attackerIndex < TACTICAL_UNIT_COUNT;
 		++attackerIndex)
 	{
-		if (UnitAttackTarget[attackerIndex]
-			== (int16) unitIndex)
+		if (UnitAttackTarget[attackerIndex] ==
+			(int16) unitIndex)
 			UnitAttackTarget[attackerIndex] = TACTICAL_TARGET_NONE;
 	}
 
@@ -102,10 +102,10 @@ word16 ShouldDestroyUnitAfterLegLoss(void)
 	// PROPOSED NAME: exact scenario-suffix predicate is verified, but why these
 	// missions remove an immobilized unit immediately needs a scenario trace.
 	int16 scenarioSuffix = (int16)ScenarioFileSuffix;
-	return (scenarioSuffix >= 0x36 && scenarioSuffix <= 0x39)
-		|| (scenarioSuffix >= 0x42 && scenarioSuffix <= 0x43)
-		|| scenarioSuffix == 0x45
-		|| (scenarioSuffix >= 0x4C && scenarioSuffix <= 0x53);
+	return (scenarioSuffix >= 0x36 && scenarioSuffix <= 0x39) ||
+		(scenarioSuffix >= 0x42 && scenarioSuffix <= 0x43) ||
+		scenarioSuffix == 0x45 ||
+		(scenarioSuffix >= 0x4C && scenarioSuffix <= 0x53);
 }
 
 // 2D1B:2604: rebuild arm-mounted weapon counts and the per-unit availability
@@ -128,15 +128,15 @@ void BuildArmWeaponAvailabilityMasks(word16 unitIndex)
 	{
 		byte leftWeapon = unitRecord->leftArmEquipment[slotIndex];
 		byte rightWeapon = unitRecord->rightArmEquipment[slotIndex];
-		if (leftWeapon != EQUIPMENT_SLOT_EMPTY
-			&& (leftWeapon & EQUIPMENT_DAMAGED_FLAG) == 0x00
-			&& leftWeapon <= WEAPON_DEFINITION_COUNT)
+		if (leftWeapon != EQUIPMENT_SLOT_EMPTY &&
+			(leftWeapon & EQUIPMENT_DAMAGED_FLAG) == 0x00 &&
+			leftWeapon <= WEAPON_DEFINITION_COUNT)
 		{
 			++weaponCounts[WEAPON_INDEX_FROM_EQUIPMENT_ID(leftWeapon)];
 		}
-		if (rightWeapon != EQUIPMENT_SLOT_EMPTY
-			&& (rightWeapon & EQUIPMENT_DAMAGED_FLAG) == 0x00
-			&& rightWeapon <= WEAPON_DEFINITION_COUNT)
+		if (rightWeapon != EQUIPMENT_SLOT_EMPTY &&
+			(rightWeapon & EQUIPMENT_DAMAGED_FLAG) == 0x00 &&
+			rightWeapon <= WEAPON_DEFINITION_COUNT)
 		{
 			++weaponCounts[WEAPON_INDEX_FROM_EQUIPMENT_ID(rightWeapon)];
 		}
@@ -151,9 +151,9 @@ void BuildArmWeaponAvailabilityMasks(word16 unitIndex)
 				&WeaponDefinitions[weaponIndex];
 			int16 ammunitionFamily =
 				weaponDefinition->ammunitionFamilyId;
-			word16 ammunitionRemaining = ammunitionFamily == AMMUNITION_NONE
-				? 0x01
-				: unitRecord->currentAmmunition[
+			word16 ammunitionRemaining = ammunitionFamily == AMMUNITION_NONE ?
+				0x01 :
+				unitRecord->currentAmmunition[
 					AMMUNITION_INDEX(ammunitionFamily)];
 
 			if (ammunitionRemaining != 0x00)
@@ -180,8 +180,8 @@ byte UpdateUnitHeatShutdown(word16 unitIndex)
 	else
 	{
 		word16 shutdownTarget =
-			((currentHeat - BATTLEMECH_SHUTDOWN_HEAT_MINIMUM) >> 0x01)
-				+ 0x04;
+			((currentHeat - BATTLEMECH_SHUTDOWN_HEAT_MINIMUM) >> 0x01) +
+				0x04;
 		if ((int16)Roll2D6() >= (int16)shutdownTarget)
 			shutdownTriggered = FALSE;
 		else
@@ -193,10 +193,10 @@ byte UpdateUnitHeatShutdown(word16 unitIndex)
 
 	// This assembly branch is retained exactly even though setting shutdown
 	// state above makes it unreachable for a newly failed check.
-	if (unitIndex < ENEMY_FORCE_FIRST_UNIT
-		&& IsCurrentLanceLeader(unitIndex) != FALSE
-		&& shutdownTriggered != FALSE
-		&& UnitShutdownState[unitIndex] == FALSE)
+	if (unitIndex < ENEMY_FORCE_FIRST_UNIT &&
+		IsCurrentLanceLeader(unitIndex) != FALSE &&
+		shutdownTriggered != FALSE &&
+		UnitShutdownState[unitIndex] == FALSE)
 	{
 		PendingNarrationDelay = NARRATION_DELAY_MS;
 		ActiveNarrationSubject = unitIndex;
@@ -237,9 +237,9 @@ void ApplyTerrainImpact(
 	previousDamageState = (int16) ReadTerrainDamageState(mapX, mapY);
 	impactRecords = TerrainImpactAnimationRecords;
 
-	if (mapX < 0x0000 || mapX >= (int16) MapWidth
-		|| mapY < 0x0000 || mapY >= (int16) MapHeight
-		|| previousDamageState >= 0x0003)
+	if (mapX < 0x0000 || mapX >= (int16) MapWidth ||
+		mapY < 0x0000 || mapY >= (int16) MapHeight ||
+		previousDamageState >= 0x0003)
 	{
 		return;
 	}
@@ -250,8 +250,8 @@ void ApplyTerrainImpact(
 	terrainType = TerrainTypeMap[
 		(word16) mapY * MapWidth + (word16) mapX];
 	shouldRecordImpact = FALSE;
-	if (terrainType >= TerrainImpactAnimationTypeMinimum
-		&& terrainType <= TerrainImpactAnimationTypeMaximum)
+	if (terrainType >= TerrainImpactAnimationTypeMinimum &&
+		terrainType <= TerrainImpactAnimationTypeMaximum)
 	{
 		// Preserve the executable's random draw even when forceAnimationRecord
 		// is already true.
@@ -265,8 +265,8 @@ void ApplyTerrainImpact(
 			recordIndex < TERRAIN_IMPACT_RECORD_COUNT;
 			++recordIndex)
 		{
-			if (impactRecords[recordIndex].mapX == mapX
-				&& impactRecords[recordIndex].mapY == mapY)
+			if (impactRecords[recordIndex].mapX == mapX &&
+				impactRecords[recordIndex].mapY == mapY)
 			{
 				return;
 			}
@@ -378,15 +378,15 @@ void CollapseStructureAtMapCell(
 				++unitIndex)
 			{
 				RevengeUnitRecord *unit = &PersistentUnitRoster[unitIndex];
-				if (unit->deploymentState != 0x00
-					&& (int16)ScenarioUnitMapX[unitIndex]
-						>= minimumUnitX
-					&& (int16)ScenarioUnitMapX[unitIndex]
-						<= maximumUnitX
-					&& (int16)ScenarioUnitMapY[unitIndex]
-						>= minimumUnitY
-					&& (int16)ScenarioUnitMapY[unitIndex]
-						<= maximumUnitY)
+				if (unit->deploymentState != 0x00 &&
+					(int16)ScenarioUnitMapX[unitIndex] >=
+						minimumUnitX &&
+					(int16)ScenarioUnitMapX[unitIndex] <=
+						maximumUnitX &&
+					(int16)ScenarioUnitMapY[unitIndex] >=
+						minimumUnitY &&
+					(int16)ScenarioUnitMapY[unitIndex] <=
+						maximumUnitY)
 				{
 					DestroyScenarioUnit(unitIndex);
 				}
@@ -399,9 +399,9 @@ void CollapseStructureAtMapCell(
 // current tactical order mode is not 02h. The category label remains proposed.
 void QueueLanceOrderNarration(word16 unitIndex)
 {
-	if ((int16)unitIndex >= ENEMY_FORCE_FIRST_UNIT
-		|| IsCurrentLanceLeader(unitIndex) == FALSE
-		|| UnitTacticalOrderMode[unitIndex] ==
+	if ((int16)unitIndex >= ENEMY_FORCE_FIRST_UNIT ||
+		IsCurrentLanceLeader(unitIndex) == FALSE ||
+		UnitTacticalOrderMode[unitIndex] ==
 			TACTICAL_ORDER_SEEK_AND_DESTROY)
 	{
 		return;

@@ -150,8 +150,8 @@ void LoadMusicResource(word16 resourceIndex)
 		descriptor = &CachedFileDescriptors[resourceIndex];
 		resourceLength = (int16) descriptor->fileLength;
 
-		if (resourceLength <= 0x30D4
-			&& CachedMusicResourceIndex != resourceIndex)
+		if (resourceLength <= 0x30D4 &&
+			CachedMusicResourceIndex != resourceIndex)
 		{
 			const char *resourceName;
 

@@ -17,8 +17,8 @@ static void ApplyInternalStructureDamage(
 	word16 removeDestroyedUnit;
 	byte *destroyedLocationEquipment;
 
-	if (internalLocation == BATTLEMECH_LOCATION_HEAD
-		&& Roll2D6() >= BATTLETECH_2D6_CRITICAL_TARGET)
+	if (internalLocation == BATTLEMECH_LOCATION_HEAD &&
+		Roll2D6() >= BATTLETECH_2D6_CRITICAL_TARGET)
 	{
 		// V: head criticals select either one of two sensor hits or a
 		// catastrophic cockpit/location result.
@@ -33,9 +33,9 @@ static void ApplyInternalStructureDamage(
 		}
 	}
 
-	if (internalLocation == BATTLEMECH_LOCATION_CENTER_TORSO
-		&& Roll2D6() >= BATTLETECH_2D6_CRITICAL_TARGET
-		&& Roll2D6() < 0x07)
+	if (internalLocation == BATTLEMECH_LOCATION_CENTER_TORSO &&
+		Roll2D6() >= BATTLETECH_2D6_CRITICAL_TARGET &&
+		Roll2D6() < 0x07)
 	{
 		// V: three center-torso engine criticals destroy the unit.
 		++targetUnit->engineHits;
@@ -43,8 +43,8 @@ static void ApplyInternalStructureDamage(
 			damageRemaining = BATTLETECH_CATASTROPHIC_LOCATION_DAMAGE;
 	}
 
-	if (targetUnit->currentInternal[internalLocation]
-		> damageRemaining)
+	if (targetUnit->currentInternal[internalLocation] >
+		damageRemaining)
 	{
 		targetUnit->currentInternal[internalLocation] -=
 			(byte) damageRemaining;
@@ -170,8 +170,8 @@ void ApplyWeaponDamage(
 	}
 
 	damageRemaining = (int16) (byte)WeaponDefinitions[weaponIndex].damage;
-	if (weaponIndex >= WEAPON_LRM_5
-		&& attackerUnit->missileUpgradeState != 0x00)
+	if (weaponIndex >= WEAPON_LRM_5 &&
+		attackerUnit->missileUpgradeState != 0x00)
 	{
 		// P: the shared upgrade byte means Improved Missiles for normal units;
 		// infantry interpret it as Inferno Rockets in ResolveWeaponAttack.
@@ -190,8 +190,8 @@ void ApplyWeaponDamage(
 		relativeDirection = 0x00;
 
 	hitTableSelector = HitLocationDirectionSelectorTable[
-		BATTLETECH_DIRECTION_COUNT - relativeDirection
-			+ ScenarioUnitFacing[targetUnitIndex]];
+		BATTLETECH_DIRECTION_COUNT - relativeDirection +
+			ScenarioUnitFacing[targetUnitIndex]];
 	if (targetUnit->damageModel == UNIT_DAMAGE_MODEL_INFANTRY)
 		hitTableSelector = HIT_LOCATION_TABLE_INFANTRY;
 
@@ -203,9 +203,9 @@ void ApplyWeaponDamage(
 			HitLocationTable[hitTableSelector];
 		hitLocationCode = hitLocations[
 			Roll2D6() - BATTLETECH_2D6_MINIMUM];
-		internalLocation = hitLocationCode >= BATTLEMECH_LOCATION_COUNT
-			? hitLocationCode - 0x06
-			: hitLocationCode;
+		internalLocation = hitLocationCode >= BATTLEMECH_LOCATION_COUNT ?
+			hitLocationCode - 0x06 :
+			hitLocationCode;
 	} while (targetUnit->currentInternal[internalLocation] == 0x00);
 
 	if (targetUnitIndex == 0x00)
@@ -232,28 +232,28 @@ void ApplyWeaponDamage(
 
 		// V: the original grants a location-destroying result on a natural 12
 		// for the head, arms, and legs, but not torso or rear-facing codes.
-		if (Roll2D6() == BATTLETECH_2D6_NATURAL_TWELVE
-			&& hitLocationCode < BATTLEMECH_LOCATION_COUNT
-			&& (hitLocationCode < 0x02 || hitLocationCode > 0x04))
+		if (Roll2D6() == BATTLETECH_2D6_NATURAL_TWELVE &&
+			hitLocationCode < BATTLEMECH_LOCATION_COUNT &&
+			(hitLocationCode < 0x02 || hitLocationCode > 0x04))
 		{
 			damageRemaining = BATTLETECH_CATASTROPHIC_LOCATION_DAMAGE;
 			penetratedArmor = 0x01;
 		}
 	}
 
-	if (penetratedArmor != 0x00
-		&& targetUnit->currentInternal[internalLocation] != 0x00)
+	if (penetratedArmor != 0x00 &&
+		targetUnit->currentInternal[internalLocation] != 0x00)
 		ApplyInternalStructureDamage(targetUnit, attackerUnitIndex,
 			targetUnitIndex, internalLocation, damageRemaining);
 
-	if (targetUnit->deploymentState != 0x00
-		&& targetUnitIndex < ENEMY_FORCE_FIRST_UNIT
-		&& IsCurrentLanceLeader(targetUnitIndex) != 0x00
-		&& durabilityBeforeHit << 0x01 >= maximumDurabilityBeforeHit)
+	if (targetUnit->deploymentState != 0x00 &&
+		targetUnitIndex < ENEMY_FORCE_FIRST_UNIT &&
+		IsCurrentLanceLeader(targetUnitIndex) != 0x00 &&
+		durabilityBeforeHit << 0x01 >= maximumDurabilityBeforeHit)
 	{
 		CalculateUnitDurabilityTotals(targetUnit);
-		if (CurrentUnitDurabilityTotal << 0x01
-			< MaximumUnitDurabilityTotal)
+		if (CurrentUnitDurabilityTotal << 0x01 <
+			MaximumUnitDurabilityTotal)
 		{
 			// P: queue the first friendly-unit-below-half-durability event.
 			NarrationMessageCategory = 0x00;

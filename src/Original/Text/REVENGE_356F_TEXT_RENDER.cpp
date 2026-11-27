@@ -20,13 +20,13 @@ void RenderTextToActiveWindow(char *text, word16 advanceToNextLine)
 	word16 topY = ActiveTextWindowTopTile << 0x03;
 	word16 widthPixels = ActiveTextWindowWidthTiles << 0x03;
 	word16 heightPixels = ActiveTextWindowHeightTiles << 0x03;
-	word16 lastLineY = (word16) (lineHeight
-		* ((int16) heightPixels / lineHeight - 0x01));
+	word16 lastLineY = (word16) (lineHeight *
+		((int16) heightPixels / lineHeight - 0x01));
 	word16 drawX;
 	word16 drawY;
 	word16 windowScrolled =
-		(int16) (word16) (heightPixels - lineHeight)
-		< (int16) (word16) (ActiveTextCursorRow * lineHeight);
+		(int16) (word16) (heightPixels - lineHeight) <
+		(int16) (word16) (ActiveTextCursorRow * lineHeight);
 
 	REVENGE_PRESERVATION_TRACE(
 		"text: draw '%s' window=%u xy=%u,%u size=%u,%u cursor=%u,%u colors=%u,%u font=%p target=%p\n",
@@ -85,8 +85,8 @@ void RenderTextToActiveWindow(char *text, word16 advanceToNextLine)
 			ActiveTextCursorRow =
 				(word16) ((int16) lastLineY / lineHeight);
 		ActiveTextCursorColumn += (word16) strlen(text);
-		if ((int16) (word16) (widthPixels - glyphWidth)
-			< (int16) (word16)
+		if ((int16) (word16) (widthPixels - glyphWidth) <
+			(int16) (word16)
 				(ActiveTextCursorColumn * glyphWidth))
 		{
 			ActiveTextCursorColumn = 0x00;

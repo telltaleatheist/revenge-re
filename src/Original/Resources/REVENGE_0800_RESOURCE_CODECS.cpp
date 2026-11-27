@@ -233,15 +233,15 @@ uint16 ReadWestwoodLzw12Code(
 	++WestwoodLzwDecoder.CodePhase;
 	if ((WestwoodLzwDecoder.CodePhase & 0x01) != 0x00)
 	{
-		packedCode = ((word16) compressedData[0x00] << 0x08)
-			| compressedData[0x01];
+		packedCode = ((word16) compressedData[0x00] << 0x08) |
+			compressedData[0x01];
 		*nextSourceOffset = sourceOffset + 0x01;
 		return packedCode >> nibbleShift;
 	}
 
 	*nextSourceOffset = sourceOffset + 0x02;
-	return ((word16) (compressedData[0x00] & 0x0F) << 0x08)
-		| compressedData[0x01];
+	return ((word16) (compressedData[0x00] & 0x0F) << 0x08) |
+		compressedData[0x01];
 }
 
 // 0800:0E16: expand the original 14-bit Westwood dictionary stream.
@@ -329,22 +329,22 @@ uint16 ReadWestwoodLzw14Code(
 	{
 	case 0x01:
 		*nextSourceOffset = sourceOffset + 0x01;
-		return ((word16) compressedData[0x00] << 0x06)
-			| (compressedData[0x01] >> 0x02);
+		return ((word16) compressedData[0x00] << 0x06) |
+			(compressedData[0x01] >> 0x02);
 	case 0x02:
 		*nextSourceOffset = sourceOffset + 0x02;
-		return ((word16) (compressedData[0x00] & 0x03) << 0x0C)
-			| ((word16) compressedData[0x01] << 0x04)
-			| (compressedData[0x02] >> 0x04);
+		return ((word16) (compressedData[0x00] & 0x03) << 0x0C) |
+			((word16) compressedData[0x01] << 0x04) |
+			(compressedData[0x02] >> 0x04);
 	case 0x03:
 		*nextSourceOffset = sourceOffset + 0x02;
-		return ((word16) (compressedData[0x00] & 0x0F) << 0x0A)
-			| ((word16) compressedData[0x01] << 0x02)
-			| (compressedData[0x02] >> 0x06);
+		return ((word16) (compressedData[0x00] & 0x0F) << 0x0A) |
+			((word16) compressedData[0x01] << 0x02) |
+			(compressedData[0x02] >> 0x06);
 	default:
 		*nextSourceOffset = sourceOffset + 0x02;
-		return ((word16) (compressedData[0x00] & 0x3F) << 0x08)
-			| compressedData[0x01];
+		return ((word16) (compressedData[0x00] & 0x3F) << 0x08) |
+			compressedData[0x01];
 	}
 }
 

@@ -22,8 +22,8 @@ word16 DrawRepeatingFrameTileSequence(
 	{
 		const byte *tileAtlas = TacticalTileStrip;
 		Draw8x8VideoTile(
-			(const byte *)tileAtlas
-				+ (frameDefinition[currentIndex] << tileShift),
+			(const byte *)tileAtlas +
+				(frameDefinition[currentIndex] << tileShift),
 			x,
 			y);
 		if (horizontal != FALSE)

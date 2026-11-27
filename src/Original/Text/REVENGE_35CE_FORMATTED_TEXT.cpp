@@ -80,9 +80,9 @@ void RenderFormattedText(const char *formattedText)
 			break;
 		case FORMATTED_TEXT_NEWLINE:
 			tokenBuffer[tokenLength] = 0x00;
-			if (ActiveFontGlyphAdvanceX
-				* (tokenLength + lineColumn)
-				<= ActiveTextWindowWidthTiles << 0x03)
+			if (ActiveFontGlyphAdvanceX *
+				(tokenLength + lineColumn) <=
+				ActiveTextWindowWidthTiles << 0x03)
 			{
 				strcat(composedLine, tokenBuffer);
 				RenderTextToActiveWindow(composedLine, 0x01);
@@ -98,9 +98,9 @@ void RenderFormattedText(const char *formattedText)
 			break;
 		case FORMATTED_TEXT_SET_BACKGROUND:
 			tokenBuffer[tokenLength] = 0x00;
-			if (ActiveFontGlyphAdvanceX
-				* (tokenLength + lineColumn)
-				<= ActiveTextWindowWidthTiles << 0x03)
+			if (ActiveFontGlyphAdvanceX *
+				(tokenLength + lineColumn) <=
+				ActiveTextWindowWidthTiles << 0x03)
 			{
 				strcat(composedLine, tokenBuffer);
 				RenderTextToActiveWindow(composedLine, 0x00);
@@ -118,9 +118,9 @@ void RenderFormattedText(const char *formattedText)
 			break;
 		case FORMATTED_TEXT_SET_FOREGROUND:
 			tokenBuffer[tokenLength] = 0x00;
-			if (ActiveFontGlyphAdvanceX
-				* (tokenLength + lineColumn)
-				<= ActiveTextWindowWidthTiles << 0x03)
+			if (ActiveFontGlyphAdvanceX *
+				(tokenLength + lineColumn) <=
+				ActiveTextWindowWidthTiles << 0x03)
 			{
 				strcat(composedLine, tokenBuffer);
 				RenderTextToActiveWindow(composedLine, 0x00);
@@ -138,9 +138,9 @@ void RenderFormattedText(const char *formattedText)
 			break;
 		case FORMATTED_TEXT_SET_COLUMN:
 			tokenBuffer[tokenLength] = 0x00;
-			if (ActiveFontGlyphAdvanceX
-				* (tokenLength + lineColumn)
-				<= ActiveTextWindowWidthTiles << 0x03)
+			if (ActiveFontGlyphAdvanceX *
+				(tokenLength + lineColumn) <=
+				ActiveTextWindowWidthTiles << 0x03)
 			{
 				strcat(composedLine, tokenBuffer);
 				RenderTextToActiveWindow(composedLine, 0x00);
@@ -155,9 +155,9 @@ void RenderFormattedText(const char *formattedText)
 			tokenLength = 0x00;
 			lineColumn = requestedColumn;
 			++textOffset;
-			if (ActiveFontGlyphAdvanceX
-				* (ActiveTextCursorColumn + 0x01)
-				>= ActiveTextWindowWidthTiles << 0x03)
+			if (ActiveFontGlyphAdvanceX *
+				(ActiveTextCursorColumn + 0x01) >=
+				ActiveTextWindowWidthTiles << 0x03)
 			{
 				ActiveTextCursorColumn = 0x00;
 				lineColumn = 0x00;
@@ -170,8 +170,8 @@ void RenderFormattedText(const char *formattedText)
 			if ((int16) ActiveTextCursorColumn < (int16) paddingTargetColumn)
 			{
 				for (;
-					(int16) ActiveTextCursorColumn
-						< (int16) remainingPaddingColumns;
+					(int16) ActiveTextCursorColumn <
+						(int16) remainingPaddingColumns;
 					--remainingPaddingColumns)
 				{
 					tokenBuffer[tokenLength] = 0x20;
@@ -184,14 +184,14 @@ void RenderFormattedText(const char *formattedText)
 			}
 			break;
 		case FORMATTED_TEXT_SPACE:
-			if (ActiveFontGlyphAdvanceX
-				* (tokenLength + lineColumn)
-				<= ActiveTextWindowWidthTiles << 0x03)
+			if (ActiveFontGlyphAdvanceX *
+				(tokenLength + lineColumn) <=
+				ActiveTextWindowWidthTiles << 0x03)
 			{
-				if (ActiveFontGlyphAdvanceX
-					* ((tokenLength + lineColumn) + 0x01)
-					<= ActiveTextWindowWidthTiles << 0x03
-					&& (tokenLength + lineColumn != 0x00 || allowLeadingSpace != 0x00))
+				if (ActiveFontGlyphAdvanceX *
+					((tokenLength + lineColumn) + 0x01) <=
+					ActiveTextWindowWidthTiles << 0x03 &&
+					(tokenLength + lineColumn != 0x00 || allowLeadingSpace != 0x00))
 				{
 					tokenBuffer[tokenLength] = 0x20;
 					tokenLength = (word16) tokenLength + 0x01;
@@ -201,10 +201,10 @@ void RenderFormattedText(const char *formattedText)
 			}
 			else
 			{
-				if (ActiveFontGlyphAdvanceX
-					* ((word16) tokenLength + 0x01)
-					<= ActiveTextWindowWidthTiles << 0x03
-					&& tokenLength != 0x00)
+				if (ActiveFontGlyphAdvanceX *
+					((word16) tokenLength + 0x01) <=
+					ActiveTextWindowWidthTiles << 0x03 &&
+					tokenLength != 0x00)
 				{
 					tokenBuffer[tokenLength] = 0x20;
 					tokenLength = (word16) tokenLength + 0x01;
@@ -219,8 +219,8 @@ void RenderFormattedText(const char *formattedText)
 			allowLeadingSpace = 0x00;
 			break;
 		default:
-			if (tokenLength * ActiveFontGlyphAdvanceX
-				>= ActiveTextWindowWidthTiles << 0x03)
+			if (tokenLength * ActiveFontGlyphAdvanceX >=
+				ActiveTextWindowWidthTiles << 0x03)
 			{
 				if (composedLine[0x00] != 0x00)
 					RenderTextToActiveWindow(composedLine, 0x01);
@@ -242,10 +242,10 @@ void RenderFormattedText(const char *formattedText)
 	if (tokenLength != 0x00 || composedLine[0x00] != 0x00)
 	{
 		tokenBuffer[tokenLength] = 0x00;
-		if ((ActiveTextWindowWidthTiles << 0x03)
-				- ActiveFontGlyphAdvanceX
-			>= ActiveFontGlyphAdvanceX
-				* (tokenLength + lineColumn))
+		if ((ActiveTextWindowWidthTiles << 0x03) -
+				ActiveFontGlyphAdvanceX >=
+			ActiveFontGlyphAdvanceX *
+				(tokenLength + lineColumn))
 		{
 			strcat(composedLine, tokenBuffer);
 			RenderTextToActiveWindow(composedLine, 0x00);

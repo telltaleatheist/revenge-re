@@ -16,8 +16,8 @@ word16 IsCurrentLanceLeader(word16 unitIndex)
 	word16 lanceBaseUnitIndex = unitIndex & 0x00FC;
 	word16 lanceEndUnitIndex = (unitIndex + 0x04) & 0x00FC;
 
-	if (unitIndex < 0x04
-		&& UnitLanceFormationState[unitIndex] == 0x01)
+	if (unitIndex < 0x04 &&
+		UnitLanceFormationState[unitIndex] == 0x01)
 	{
 		isCurrentLeader = 0x01;
 	}
@@ -29,8 +29,8 @@ word16 IsCurrentLanceLeader(word16 unitIndex)
 	{
 		RevengeUnitRecord *candidateUnit =
 			&PersistentUnitRoster[candidateUnitIndex];
-		if (candidateUnit->deploymentState == 0x00
-			|| candidateUnit->walkMovement == 0x00)
+		if (candidateUnit->deploymentState == 0x00 ||
+			candidateUnit->walkMovement == 0x00)
 		{
 			continue;
 		}
@@ -76,8 +76,8 @@ int16 UpdateUnitEnemyVisibility(word16 unitIndex)
 		{
 			candidateIndex = (word16) (opposingBase + opposingOffset);
 			candidateRecord = &PersistentUnitRoster[candidateIndex];
-			if (candidateRecord->deploymentState != 0x00
-				&& HasUnitLineOfSight(unitIndex, candidateIndex) != FALSE)
+			if (candidateRecord->deploymentState != 0x00 &&
+				HasUnitLineOfSight(unitIndex, candidateIndex) != FALSE)
 			{
 				UnitEnemyVisible[unitIndex] = TRUE;
 				UnitEnemyContactEstablished[unitIndex] = TRUE;
@@ -90,9 +90,9 @@ int16 UpdateUnitEnemyVisibility(word16 unitIndex)
 
 	// [V] First enemy contact for an opposing slot queues one of three generic
 	// narration categories according to the contacted unit's order mode.
-	if (hasVisibleEnemy != FALSE
-		&& hadContact == FALSE
-		&& (int16) unitIndex >= TACTICAL_FORCE_UNIT_COUNT)
+	if (hasVisibleEnemy != FALSE &&
+		hadContact == FALSE &&
+		(int16) unitIndex >= TACTICAL_FORCE_UNIT_COUNT)
 	{
 		PendingNarrationDelay = NARRATION_DELAY_MS;
 		NarrationEmphasis = TRUE;
@@ -117,9 +117,9 @@ int16 UpdateUnitEnemyVisibility(word16 unitIndex)
 		NarrationSourceUnit = unitIndex;
 
 		narrationSubject = visibleEnemyIndex;
-		if ((int16) narrationSubject >= NARRATION_LEADER_SUBSTITUTION_FIRST_UNIT
-			&& (int16) narrationSubject < TACTICAL_FORCE_UNIT_COUNT
-			&& IsCurrentLanceLeader(narrationSubject) == FALSE)
+		if ((int16) narrationSubject >= NARRATION_LEADER_SUBSTITUTION_FIRST_UNIT &&
+			(int16) narrationSubject < TACTICAL_FORCE_UNIT_COUNT &&
+			IsCurrentLanceLeader(narrationSubject) == FALSE)
 		{
 			narrationSubject = FindOperationalLanceLeader(narrationSubject);
 		}
@@ -134,8 +134,8 @@ int16 UpdateUnitEnemyVisibility(word16 unitIndex)
 				--narrationSubject)
 			{
 				speakerRecord = &PersistentUnitRoster[narrationSubject];
-				if (speakerRecord->deploymentState != 0x00
-					&& HasNarrationMessage(narrationSubject,
+				if (speakerRecord->deploymentState != 0x00 &&
+					HasNarrationMessage(narrationSubject,
 						NarrationMessageCategory) != FALSE)
 				{
 					ActiveNarrationSubject = narrationSubject;
@@ -228,9 +228,9 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
 	for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
 	{
 		word16 unitIndex = lanceBaseUnitIndex + lanceOffset;
-		if (UnitWasAttackedThisTick[unitIndex] != 0x00
-			&& (int16)UnitConsecutiveAttackTicks[unitIndex]
-				> greatestActiveOrderValue)
+		if (UnitWasAttackedThisTick[unitIndex] != 0x00 &&
+			(int16)UnitConsecutiveAttackTicks[unitIndex] >
+				greatestActiveOrderValue)
 		{
 			greatestActiveOrderValue =
 				(int16)UnitConsecutiveAttackTicks[unitIndex];
@@ -245,8 +245,8 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
 			ScenarioUnitMapY[leaderUnitIndex],
 			ScenarioUnitMapX[linkedUnitIndex],
 			ScenarioUnitMapY[linkedUnitIndex]);
-		if (linkedUnitDistance < 0x06
-			&& UnitTacticalOrderMode[leaderUnitIndex] !=
+		if (linkedUnitDistance < 0x06 &&
+			UnitTacticalOrderMode[leaderUnitIndex] !=
 				TACTICAL_ORDER_SCRIPTED_ROUTE)
 		{
 			for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
@@ -272,8 +272,8 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
 	for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
 	{
 		word16 followerUnitIndex = lanceBaseUnitIndex + lanceOffset;
-		if (followerUnitIndex == leaderUnitIndex
-			|| UnitLanceFormationState[followerUnitIndex] != 0x00)
+		if (followerUnitIndex == leaderUnitIndex ||
+			UnitLanceFormationState[followerUnitIndex] != 0x00)
 		{
 			continue;
 		}
@@ -294,10 +294,10 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
 		UnitOverburnOrCloseAssaultEnabled[followerUnitIndex] =
 			UnitOverburnOrCloseAssaultEnabled[leaderUnitIndex];
 
-		if (ScenarioUnitMapX[leaderUnitIndex]
-				== UnitRouteTargetMapX[leaderUnitIndex]
-			&& ScenarioUnitMapY[leaderUnitIndex]
-				== UnitRouteTargetMapY[leaderUnitIndex])
+		if (ScenarioUnitMapX[leaderUnitIndex] ==
+				UnitRouteTargetMapX[leaderUnitIndex] &&
+			ScenarioUnitMapY[leaderUnitIndex] ==
+				UnitRouteTargetMapY[leaderUnitIndex])
 		{
 			int16 xOffset = FormationOffsetTable[REVENGE_INDEX(
 				FormationOffsetTable,
@@ -383,14 +383,14 @@ void SelectLanceFormationMode(
 	if (randomizeFormation == FALSE)
 	{
 		UnitFormationMode[leaderUnitIndex] = 0x08;
-		if (lanceProfile == 0x01
-			&& leaderRecord->pilotExperience != 0x00)
+		if (lanceProfile == 0x01 &&
+			leaderRecord->pilotExperience != 0x00)
 		{
 			UnitFormationMode[leaderUnitIndex] = 0x02;
 		}
-		if (lanceProfile == 0x00
-			&& leaderRecord->pilotExperience >= 0x02
-			&& CompareLanceCombatRatings(
+		if (lanceProfile == 0x00 &&
+			leaderRecord->pilotExperience >= 0x02 &&
+			CompareLanceCombatRatings(
 				leaderUnitIndex,
 				UnitTacticalTarget[leaderUnitIndex]) > 0x00)
 		{
@@ -400,8 +400,8 @@ void SelectLanceFormationMode(
 	}
 
 	formationCandidate =
-		(GeneratePseudoRandomByte() % 0x03)
-		+ leaderRecord->pilotExperience * 0x03;
+		(GeneratePseudoRandomByte() % 0x03) +
+		leaderRecord->pilotExperience * 0x03;
 	if (formationCandidate > 0x0B)
 		formationCandidate = 0x0B;
 
@@ -477,8 +477,8 @@ int16 CompareLanceCombatRatings(
 			--comparisonScore;
 	}
 
-	return comparisonScore > 0x00 ? 0x01
-		: comparisonScore < 0x00 ? -0x01 : 0x00;
+	return comparisonScore > 0x00 ? 0x01 :
+		comparisonScore < 0x00 ? -0x01 : 0x00;
 }
 
 // 2208:2829: advance the low-seven-bit lance formation mode modulo ten and
@@ -575,8 +575,8 @@ word16 SelectTacticalMoveDestination(
 
 		if (ValidatePrimaryLanceLeader(unitIndex) != FALSE)
 		{
-			word16 propagateFormation = unitIndex == 0x00
-				? FirstLanceOrdersEnabled : 0x01;
+			word16 propagateFormation = unitIndex == 0x00 ?
+				FirstLanceOrdersEnabled : 0x01;
 			if (propagateFormation != FALSE)
 			{
 				word16 followerIndex;
@@ -622,8 +622,8 @@ word16 HasActiveLanceFollowers(word16 unitIndex)
 				hasActiveFollower = TRUE;
 		}
 	}
-	if (unitIndex < 0x04
-		&& FirstLanceOrdersEnabled == FALSE)
+	if (unitIndex < 0x04 &&
+		FirstLanceOrdersEnabled == FALSE)
 	{
 		hasActiveFollower = FALSE;
 	}
@@ -647,8 +647,8 @@ word16 ValidatePrimaryLanceLeader(word16 unitIndex)
 		{
 			RevengeUnitRecord *candidateUnit =
 				&PersistentUnitRoster[candidateUnitIndex];
-			if (candidateUnit->deploymentState != 0x00
-				&& candidateUnit->walkMovement != 0x00)
+			if (candidateUnit->deploymentState != 0x00 &&
+				candidateUnit->walkMovement != 0x00)
 			{
 				if (candidateUnitIndex < unitIndex)
 					isValidLeader = FALSE;
@@ -668,8 +668,8 @@ word16 ValidatePrimaryLanceLeader(word16 unitIndex)
 			{
 				RevengeUnitRecord *candidateUnit =
 					&PersistentUnitRoster[candidateUnitIndex];
-				if (candidateUnit->deploymentState != 0x00
-					&& candidateUnit->walkMovement != 0x00)
+				if (candidateUnit->deploymentState != 0x00 &&
+					candidateUnit->walkMovement != 0x00)
 				{
 					isValidLeader = FALSE;
 				}

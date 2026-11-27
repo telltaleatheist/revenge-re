@@ -277,8 +277,8 @@ void ApplyAreaTerrainAndUnitDamage(
 
 		word16 unitX = ScenarioUnitMapX[unitIndex];
 		word16 unitY = ScenarioUnitMapY[unitIndex];
-		if ((unitX == impactMapX || unitX == adjacentMapX)
-			&& (unitY == impactMapY || unitY == adjacentMapY))
+		if ((unitX == impactMapX || unitX == adjacentMapX) &&
+			(unitY == impactMapY || unitY == adjacentMapY))
 		{
 			ApplyWeaponDamage(0x00, weaponIndex, unitIndex);
 		}
@@ -299,14 +299,14 @@ void FormatUnitDurabilityPercentage(int16 unitIndex)
 	if (unitIndex >= 0x0C)
 	{
 		percentage = (word16)(
-			((uint32)CurrentUnitDurabilityTotal * 0x0A)
-			/ MaximumUnitDurabilityTotal) * 0x0A;
+			((uint32)CurrentUnitDurabilityTotal * 0x0A) /
+			MaximumUnitDurabilityTotal) * 0x0A;
 	}
 	else
 	{
 		percentage = (word16)(
-			((uint32)CurrentUnitDurabilityTotal * 0x64)
-			/ MaximumUnitDurabilityTotal);
+			((uint32)CurrentUnitDurabilityTotal * 0x64) /
+			MaximumUnitDurabilityTotal);
 	}
 
 	IntegerToString(
@@ -321,9 +321,9 @@ void FormatUnitDurabilityPercentage(int16 unitIndex)
 // 2007:1DCC: void DrawCampaignClockSeparator(void)
 void DrawCampaignClockSeparator(void)
 {
-	byte separatorColor = (LOW_WORD(GameAnimationTicks) & 0x10) != 0x00
-		? 0x0F
-		: 0x0C;
+	byte separatorColor = (LOW_WORD(GameAnimationTicks) & 0x10) != 0x00 ?
+		0x0F :
+		0x0C;
 	HideMouseCursorOverlay();
 	DrawTileAlignedText(
 		CampaignClockSeparatorText,
@@ -342,8 +342,8 @@ void DrawCampaignClock(void)
 	int16 clockValue;
 	word16 firstDigitOffset;
 
-	if (SuppressCampaignClock != 0x00
-		|| TacticalOverviewActive != 0x00)
+	if (SuppressCampaignClock != 0x00 ||
+		TacticalOverviewActive != 0x00)
 	{
 		return;
 	}
@@ -394,10 +394,10 @@ void DrawBeveledMenuButton(
 {
 	word16 fontHeight = ActiveFontLineHeight;
 	word16 glyphAdvance = ActiveFontGlyphAdvanceX;
-	word16 leftX = (ActiveTextWindowLeftTile << 0x03)
-		+ textColumn * glyphAdvance;
-	word16 topY = (ActiveTextWindowTopTile << 0x03)
-		+ textRow * fontHeight;
+	word16 leftX = (ActiveTextWindowLeftTile << 0x03) +
+		textColumn * glyphAdvance;
+	word16 topY = (ActiveTextWindowTopTile << 0x03) +
+		textRow * fontHeight;
 
 	// Verified against 2007:132C-14DE.
 	HideMouseCursorOverlay();
@@ -510,8 +510,8 @@ void DrawSelectedUnitStatusPanel(void)
 
 	/* At most one tick a draw: a longer gap is a wait outside the battle
 	 * loop (a message, a menu), when the original drew nothing. */
-	narrationStepMs = GameTimerTicks != narrationClockTick
-		? GAME_CLOCK_TICK_MS : 0x0000;
+	narrationStepMs = GameTimerTicks != narrationClockTick ?
+		GAME_CLOCK_TICK_MS : 0x0000;
 	narrationClockTick = GameTimerTicks;
 
 	narrationStatusRow = 0xFFFF;
@@ -601,9 +601,9 @@ void DrawSelectedUnitStatusPanel(void)
 			if (selectedUnitIndex < 0x0004 ||
 				IsCurrentLanceLeader(selectedUnitIndex) != FALSE)
 			{
-				RenderFormattedText(selectedUnitIndex < 0x000C
-					? FriendlyUnitStatusHeading
-					: EnemyUnitStatusHeading);
+				RenderFormattedText(selectedUnitIndex < 0x000C ?
+					FriendlyUnitStatusHeading :
+					EnemyUnitStatusHeading);
 			}
 			if (selectedUnitIndex >= 0x000C)
 			{
@@ -699,8 +699,8 @@ void DrawSelectedUnitStatusPanel(void)
 		HideMouseCursorOverlay();
 		if (TacticalStatusBlinkVisible != 0x00)
 		{
-			narrationColor = NarrationEmphasis != 0x0000
-				? 0x0008 : 0x000A;
+			narrationColor = NarrationEmphasis != 0x0000 ?
+				0x0008 : 0x000A;
 			DrawTileAlignedText(
 				TacticalNarrationLabel,
 				0x001B, 0x0018, (byte)narrationColor, 0x0C);
@@ -724,8 +724,8 @@ void DrawSelectedUnitStatusPanel(void)
 		}
 		ShowMouseCursorOverlay();
 
-		narrationLastStepMs = narrationStepMs < PendingNarrationDelay
-			? narrationStepMs : PendingNarrationDelay;
+		narrationLastStepMs = narrationStepMs < PendingNarrationDelay ?
+			narrationStepMs : PendingNarrationDelay;
 		PendingNarrationDelay -= narrationLastStepMs;
 		if (PendingNarrationDelay == 0x0000)
 		{

@@ -61,9 +61,9 @@ void EnterTacticalOverview(void)
 
 	showClockNotice = FALSE;
 	TacticalOverviewViewportDirty = FALSE;
-	if (TacticalOverviewClockNoticeActive != FALSE
-		&& CampaignClockState[0x01]
-			== (int16)LastOverviewNoticeHour)
+	if (TacticalOverviewClockNoticeActive != FALSE &&
+		CampaignClockState[0x01] ==
+			(int16)LastOverviewNoticeHour)
 	{
 		showClockNotice = TRUE;
 	}
@@ -71,9 +71,9 @@ void EnterTacticalOverview(void)
 	if (showClockNotice == FALSE)
 	{
 		TacticalOverviewClockNoticeActive = FALSE;
-		if (CampaignClockState[0x01]
-			!= (int16)LastOverviewNoticeHour
-			&& GeneratePseudoRandomByte() >= TacticalOverviewNoticeChance)
+		if (CampaignClockState[0x01] !=
+			(int16)LastOverviewNoticeHour &&
+			GeneratePseudoRandomByte() >= TacticalOverviewNoticeChance)
 		{
 			showClockNotice = TRUE;
 			TacticalOverviewClockNoticeActive = TRUE;
@@ -133,8 +133,8 @@ void RefreshTacticalOverview(void)
 		byte oldX = TacticalOverviewMarkerX[unitIndex];
 		byte oldY = TacticalOverviewMarkerY[unitIndex];
 
-		if (oldX != OVERVIEW_INVALID_COORDINATE
-			|| oldY != OVERVIEW_INVALID_COORDINATE)
+		if (oldX != OVERVIEW_INVALID_COORDINATE ||
+			oldY != OVERVIEW_INVALID_COORDINATE)
 		{
 			byte terrainColor = TACTICAL_OVERVIEW_MAP_BUFFER[
 				(word16)(oldY * rowStride) + oldX];
@@ -150,21 +150,21 @@ void RefreshTacticalOverview(void)
 	}
 
 	// Restore the terrain beneath the previous 19x12 viewport outline.
-	viewportTopRow = TACTICAL_OVERVIEW_MAP_BUFFER
-		+ (word16)(TacticalOverviewViewportY * rowStride)
-		+ TacticalOverviewViewportX;
+	viewportTopRow = TACTICAL_OVERVIEW_MAP_BUFFER +
+		(word16)(TacticalOverviewViewportY * rowStride) +
+		TacticalOverviewViewportX;
 	for (column = 0x00; column < OVERVIEW_VIEWPORT_WIDTH_CELLS; ++column)
 	{
 		PlotPixel(
-			TacticalOverviewScreenOriginX
-				+ TacticalOverviewViewportX + column,
+			TacticalOverviewScreenOriginX +
+				TacticalOverviewViewportX + column,
 			TacticalOverviewViewportY,
 			viewportTopRow[column]);
 		PlotPixel(
-			TacticalOverviewScreenOriginX
-				+ TacticalOverviewViewportX + column,
-			TacticalOverviewViewportY
-				+ OVERVIEW_VIEWPORT_HEIGHT_CELLS - 0x01,
+			TacticalOverviewScreenOriginX +
+				TacticalOverviewViewportX + column,
+			TacticalOverviewViewportY +
+				OVERVIEW_VIEWPORT_HEIGHT_CELLS - 0x01,
 			viewportTopRow[
 				(OVERVIEW_VIEWPORT_HEIGHT_CELLS - 0x01) * rowStride + column]);
 	}
@@ -173,14 +173,14 @@ void RefreshTacticalOverview(void)
 		byte *mapRow = viewportTopRow +
 			(word16) ((word16) row * rowStride);
 		PlotPixel(
-			TacticalOverviewScreenOriginX
-				+ TacticalOverviewViewportX,
+			TacticalOverviewScreenOriginX +
+				TacticalOverviewViewportX,
 			TacticalOverviewViewportY + row,
 			mapRow[0x00]);
 		PlotPixel(
-			TacticalOverviewScreenOriginX
-				+ TacticalOverviewViewportX
-				+ OVERVIEW_VIEWPORT_WIDTH_CELLS - 0x01,
+			TacticalOverviewScreenOriginX +
+				TacticalOverviewViewportX +
+				OVERVIEW_VIEWPORT_WIDTH_CELLS - 0x01,
 			TacticalOverviewViewportY + row,
 			mapRow[OVERVIEW_VIEWPORT_WIDTH_CELLS - 0x01]);
 	}
@@ -206,8 +206,8 @@ void RefreshTacticalOverview(void)
 		TacticalOverviewMarkerY[unitIndex] =
 			ScenarioUnitMapY[unitIndex];
 		PlotPixel(
-			TacticalOverviewScreenOriginX
-				+ TacticalOverviewMarkerX[unitIndex],
+			TacticalOverviewScreenOriginX +
+				TacticalOverviewMarkerX[unitIndex],
 			TacticalOverviewMarkerY[unitIndex],
 			markerColor);
 	}
@@ -227,8 +227,8 @@ void DrawTacticalOverviewViewportFrame(void)
 	TacticalOverviewViewportX = TacticalViewportMapX;
 	TacticalOverviewViewportY = TacticalViewportMapY;
 
-	left = (TacticalOverviewScreenOriginX
-		+ TacticalViewportMapX) << 0x01;
+	left = (TacticalOverviewScreenOriginX +
+		TacticalViewportMapX) << 0x01;
 	top = TacticalViewportMapY << 0x01;
 	right = left + ((OVERVIEW_VIEWPORT_WIDTH_CELLS << 0x01) - 0x01);
 	bottom = top + ((OVERVIEW_VIEWPORT_HEIGHT_CELLS << 0x01) - 0x01);
@@ -254,8 +254,8 @@ void DrawTacticalOverviewMap(void)
 	ClearActiveVideoBuffer();
 	for (mapY = 0x00; mapY < (int16) MapHeight; ++mapY)
 	{
-		byte *mapRow = TACTICAL_OVERVIEW_MAP_BUFFER
-			+ (word16)((word16)mapY * rowStride);
+		byte *mapRow = TACTICAL_OVERVIEW_MAP_BUFFER +
+			(word16)((word16)mapY * rowStride);
 		for (mapX = 0x00; mapX < (int16) rowStride; ++mapX)
 			PlotPixel(
 				TacticalOverviewScreenOriginX + mapX,

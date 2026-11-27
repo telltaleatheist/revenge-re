@@ -62,9 +62,9 @@ byte PrepareSurvivingCommanderList(void)
 	{
 		for (unitSlot = 0x0000; unitSlot < 0x0004; ++unitSlot)
 		{
-			RevengeUnitRecord *unitRecord = firstUnitIndex < 0x0008
-				? &PersistentUnitRoster[firstUnitIndex + unitSlot]
-				: &LiveScenarioUnits[firstUnitIndex + unitSlot];
+			RevengeUnitRecord *unitRecord = firstUnitIndex < 0x0008 ?
+				&PersistentUnitRoster[firstUnitIndex + unitSlot] :
+				&LiveScenarioUnits[firstUnitIndex + unitSlot];
 			if (unitRecord->tonnage != 0x00 &&
 				unitRecord->deploymentState != 0x00)
 			{
@@ -96,9 +96,9 @@ void RenderSurvivingCommanderList(void)
 	{
 		for (unitSlot = 0x0000; unitSlot < 0x0004; ++unitSlot)
 		{
-			RevengeUnitRecord *unitRecord = firstUnitIndex < 0x0008
-				? &PersistentUnitRoster[firstUnitIndex + unitSlot]
-				: &LiveScenarioUnits[firstUnitIndex + unitSlot];
+			RevengeUnitRecord *unitRecord = firstUnitIndex < 0x0008 ?
+				&PersistentUnitRoster[firstUnitIndex + unitSlot] :
+				&LiveScenarioUnits[firstUnitIndex + unitSlot];
 			if (unitRecord->tonnage != 0x00 &&
 				unitRecord->deploymentState != 0x00)
 			{

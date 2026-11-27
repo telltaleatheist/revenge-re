@@ -414,11 +414,11 @@ void BuildTacticalTerrainCellMaps(
 	// The original adds the map's far offset (8) in 16 bits too. Neither sum
 	// can wrap: at most 8 + FFh + FFh * FFh = FF08h for the terrain row, and
 	// 8 + A000h + 3Fh + FFh * 40h = E007h for the damage row.
-	terrainRowOffset = (word16) (viewportX
-		+ (byte) viewportY * (byte) mapWidth);
-	packedDamageRowOffset = (word16) (PACKED_TERRAIN_DAMAGE_MAP_OFFSET
-		+ (viewportX >> 0x02)
-		+ (byte) viewportY * (byte) packedRowStride);
+	terrainRowOffset = (word16) (viewportX +
+		(byte) viewportY * (byte) mapWidth);
+	packedDamageRowOffset = (word16) (PACKED_TERRAIN_DAMAGE_MAP_OFFSET +
+		(viewportX >> 0x02) +
+		(byte) viewportY * (byte) packedRowStride);
 	terrainRow = terrainTypeMap + terrainRowOffset;
 	packedDamageRow = terrainTypeMap + packedDamageRowOffset;
 	terrainCellMap = tacticalCellSpriteMap + TACTICAL_VIEWPORT_CELL_COUNT;
@@ -448,10 +448,10 @@ void BuildTacticalTerrainCellMaps(
 				shift = (byte) (
 					0x06 - (((viewportX + column) & 0x03) << 0x01));
 				damageState = (byte)(damageState >> shift);
-				terrainSprite = DAMAGED_TERRAIN_SPRITE_FLAG
-					| damagedTerrainSpriteLookup[
-						((word16)(damageState - 0x01) << 0x08)
-						+ terrainType];
+				terrainSprite = DAMAGED_TERRAIN_SPRITE_FLAG |
+					damagedTerrainSpriteLookup[
+						((word16)(damageState - 0x01) << 0x08) +
+						terrainType];
 			}
 			terrainCellMap[row * TACTICAL_VIEWPORT_WIDTH_CELLS + column] =
 				terrainSprite;

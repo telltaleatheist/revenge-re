@@ -120,8 +120,8 @@ int16 RunCampaignStage13(void)
 		PresentStoryScreenAndMessage(0x001F, 0x0067);
 		PrepareLanceSelection(
 			0x0002,
-			AlternateLanceSelection == FALSE
-				? 0x0001 : -0x0001);
+			AlternateLanceSelection == FALSE ?
+				0x0001 : -0x0001);
 		AlternateLanceSelection = FALSE;
 		EnableTrainingUnitSelectionSlots();
 		PlayMusicResource(0x0048);
@@ -289,8 +289,8 @@ int16 RunCampaignStage15(void)
 		DeferredStage16Story = TRUE;
 	PresentAnimatedScreenAndMessage(
 		0x001F,
-		ScenarioVariantIndex == 0x0000
-			? 0x0085 : 0x0084);
+		ScenarioVariantIndex == 0x0000 ?
+			0x0085 : 0x0084);
 	ShowStoryMessageAndWait(0x0086);
 	PendingCampaignStageDelta = TRUE;
 	return TRUE;
@@ -372,8 +372,8 @@ int16 RunCampaignStage17(void)
 	PlayMusicResource(0x0047);
 	PresentScreenAndMessage(
 		0x000C,
-		ScenarioVariantIndex == 0x0000
-			? 0x0090 : 0x0093);
+		ScenarioVariantIndex == 0x0000 ?
+			0x0090 : 0x0093);
 	return FALSE;
 }
 

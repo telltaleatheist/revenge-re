@@ -40,8 +40,8 @@ void DrawFontGlyph(uint16 glyphIndex, uint16 x, uint16 y)
 				(uint32) row * rowByteCount + (column >> 0x03)];
 			word16 glyphBitSet =
 				(glyphByte & (0x80 >> (column & 0x0007))) != 0x00;
-			byte color = glyphBitSet != FALSE
-				? DrawColor : BackgroundColor;
+			byte color = glyphBitSet != FALSE ?
+				DrawColor : BackgroundColor;
 
 			if (color != 0x00)
 				DrawClippedPixel(

@@ -38,8 +38,8 @@ void RunUnitAssignmentEditor(word16 configurationIndex)
 		return;
 	}
 
-	useSeparateScenarioGroups = configurationIndex < 0x0003
-		? 0x0003 : 0x0000;
+	useSeparateScenarioGroups = configurationIndex < 0x0003 ?
+		0x0003 : 0x0000;
 	configurationIndex -= 0x0002;
 	while (UnitEditorSectionEnabled[
 		configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
@@ -280,8 +280,8 @@ void RunUnitAssignmentGrid(
 	{
 		allowExitSelection = TRUE;
 	}
-	selectedLanceSlot = UnitEditorLanceSlotCount[scenarioGroupIndex] != 0x0000
-		? 0x0000 : 0x0004;
+	selectedLanceSlot = UnitEditorLanceSlotCount[scenarioGroupIndex] != 0x0000 ?
+		0x0000 : 0x0004;
 	previousLanceSlot = selectedLanceSlot;
 	lanceGroupBase = lanceGroupIndex * 0x0004;
 	selectedAssignmentIndex = lanceGroupBase + selectedLanceSlot;
@@ -416,14 +416,14 @@ void RunUnitAssignmentGrid(
 		if (selectedLanceSlot >=
 			(int16)UnitEditorLanceSlotCount[lanceGroupIndex])
 		{
-			selectedLanceSlot = allowExitSelection != FALSE
-				? 0x0004 : 0x0000;
+			selectedLanceSlot = allowExitSelection != FALSE ?
+				0x0004 : 0x0000;
 		}
 		if (selectedLanceSlot < 0x0000)
 		{
-			selectedLanceSlot = allowExitSelection != FALSE
-				? 0x0004
-				: UnitEditorLanceSlotCount[lanceGroupIndex] - 0x0001;
+			selectedLanceSlot = allowExitSelection != FALSE ?
+				0x0004 :
+				UnitEditorLanceSlotCount[lanceGroupIndex] - 0x0001;
 		}
 		if (selectedUnitCard >= (int16)UnitEditorScenarioCardCount)
 			selectedUnitCard = 0x0000;
@@ -1136,9 +1136,9 @@ void DrawUnitStatusScreen(
 
 	SetActiveRenderTarget(savedRenderTarget);
 	ShowMouseCursorOverlay();
-	panelTextColor = displayMode == 0xFFFF
-		? 0x0D
-		: LanceEditorLayout.UnitCardTextColorByState[panelFlags];
+	panelTextColor = displayMode == 0xFFFF ?
+		0x0D :
+		LanceEditorLayout.UnitCardTextColorByState[panelFlags];
 
 	HideMouseCursorOverlay();
 	unitRecord = &PersistentUnitRoster[
@@ -1378,8 +1378,8 @@ void DrawLanceAssignmentSlot(
 			text,
 			0x0000,
 			(word16) leftX,
-			(word16) (topY + ActiveFontLineHeight
-				+ 0x0004),
+			(word16) (topY + ActiveFontLineHeight +
+				0x0004),
 			width,
 			(byte) textColor,
 			0x00);

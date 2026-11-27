@@ -26,9 +26,9 @@ byte *CaptureVideoTileStrip(
 	word16 shiftedTileBytes;
 
 	tileX = startTileX;
-	tileSizeShift = VideoAdapterType == VIDEO_ADAPTER_VGA
-		? 0x06
-		: 0x05;
+	tileSizeShift = VideoAdapterType == VIDEO_ADAPTER_VGA ?
+		0x06 :
+		0x05;
 	shiftedTileBytes = (word16)((word16)tileCount << tileSizeShift);
 	allocationSize = (int32)(int16)shiftedTileBytes;
 	tileBuffer = (byte *) Heap_Allocate((uint32) allocationSize, "34D5:003F");

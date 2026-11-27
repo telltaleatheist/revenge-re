@@ -78,8 +78,8 @@ void DrawTrainingScenarioOption(
 		(ActiveFontLineHeight + 0x02));
 	width = ActiveTextWindowWidthTiles << 0x02;
 	label = TrainingScenarioLabelTextTable[scenarioIndex];
-	label[0x00] = TrainingScenarioAvailability[scenarioIndex] == 0x01
-		? '*' : ' ';
+	label[0x00] = TrainingScenarioAvailability[scenarioIndex] == 0x01 ?
+		'*' : ' ';
 	DrawCenteredClippedText(label, 0x00, leftX, topY, width,
 		(byte) LanceEditorLayout.TrainingScenarioTextColor[selectedState],
 		(byte) LanceEditorLayout.TrainingScenarioBackgroundColor[selectedState]);
@@ -687,17 +687,17 @@ int16 PrepareTrainingDeployment(void)
 				(int16) inputCode == TranslatedExtendedKey(KEY_RIGHT))
 			{
 				if (row == 0x03)
-					selectedChoice = column < 0x02
-						? (word16) (selectedChoice + 0x02)
-						: (word16) (selectedChoice - 0x02);
+					selectedChoice = column < 0x02 ?
+						(word16) (selectedChoice + 0x02) :
+						(word16) (selectedChoice - 0x02);
 				else if ((int16) inputCode == TranslatedExtendedKey(KEY_LEFT))
-					selectedChoice = row == 0x00
-						? (word16) (selectedChoice + 0x08)
-						: (word16) (selectedChoice - 0x04);
+					selectedChoice = row == 0x00 ?
+						(word16) (selectedChoice + 0x08) :
+						(word16) (selectedChoice - 0x04);
 				else
-					selectedChoice = row == 0x02
-						? (word16) (selectedChoice - 0x08)
-						: (word16) (selectedChoice + 0x04);
+					selectedChoice = row == 0x02 ?
+						(word16) (selectedChoice - 0x08) :
+						(word16) (selectedChoice + 0x04);
 			}
 			else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
 				activated = TRUE;

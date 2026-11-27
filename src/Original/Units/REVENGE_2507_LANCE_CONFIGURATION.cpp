@@ -695,9 +695,9 @@ int16 SelectScenarioVariant(word16 presentationMode)
 				(int16) topY,
 				(int16) (LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant] + width),
 				(int16) (topY + height),
-				highlightPhase == 0x0000
-					? LanceEditorLayout.ScenarioVariantNormalColor
-					: LanceEditorLayout.ScenarioVariantSelectedColor);
+				highlightPhase == 0x0000 ?
+					LanceEditorLayout.ScenarioVariantNormalColor :
+					LanceEditorLayout.ScenarioVariantSelectedColor);
 		}
 		else if (highlightPhase != 0x0000)
 		{

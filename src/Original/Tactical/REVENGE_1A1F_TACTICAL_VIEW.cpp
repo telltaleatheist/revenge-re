@@ -189,8 +189,8 @@ byte *AdvanceFarPointerBy32K(byte *pointer)
 void SelectTacticalTextForegroundColor(void)
 {
 	ActiveTextForegroundColor =
-		VideoAdapterType == VIDEO_ADAPTER_CGA
-			? 0x03 : 0x05;
+		VideoAdapterType == VIDEO_ADAPTER_CGA ?
+			0x03 : 0x05;
 }
 
 // 1A1F:3BF7: display a formatted modal message in tactical text window 6,
@@ -377,12 +377,12 @@ void ApplyScenarioMissileUpgradeAvailability(void)
 // 1A1F:146E: move the 19x12 tactical cursor one cell forward, wrapping rows.
 void AdvanceTacticalCursorCell(void)
 {
-	if (++TacticalCursorViewportX
-		>= TACTICAL_VIEWPORT_WIDTH_CELLS)
+	if (++TacticalCursorViewportX >=
+		TACTICAL_VIEWPORT_WIDTH_CELLS)
 	{
 		TacticalCursorViewportX = 0x00;
-		if (++TacticalCursorViewportY
-			>= TACTICAL_VIEWPORT_HEIGHT_CELLS)
+		if (++TacticalCursorViewportY >=
+			TACTICAL_VIEWPORT_HEIGHT_CELLS)
 		{
 			TacticalCursorViewportY = 0x00;
 		}
@@ -439,8 +439,8 @@ void FocusTacticalViewOnUnit(word16 unitIndex)
 	unitMapY = ScenarioUnitMapY[unitIndex];
 	cursorX = unitMapX - (int16)TacticalViewportMapX;
 	cursorY = unitMapY - (int16)TacticalViewportMapY;
-	if (cursorX < 0x00 || cursorX >= TACTICAL_VIEWPORT_WIDTH_CELLS
-		|| cursorY < 0x00 || cursorY >= TACTICAL_VIEWPORT_HEIGHT_CELLS)
+	if (cursorX < 0x00 || cursorX >= TACTICAL_VIEWPORT_WIDTH_CELLS ||
+		cursorY < 0x00 || cursorY >= TACTICAL_VIEWPORT_HEIGHT_CELLS)
 	{
 		desiredViewportX = unitMapX - 0x09;
 		desiredViewportY = unitMapY - 0x06;
@@ -448,50 +448,50 @@ void FocusTacticalViewOnUnit(word16 unitIndex)
 			desiredViewportX = 0x00;
 		if (desiredViewportY < 0x00)
 			desiredViewportY = 0x00;
-		if (desiredViewportX
-			> (int16)MapWidth - TACTICAL_VIEWPORT_WIDTH_CELLS)
+		if (desiredViewportX >
+			(int16)MapWidth - TACTICAL_VIEWPORT_WIDTH_CELLS)
 		{
-			desiredViewportX = (int16)MapWidth
-				- TACTICAL_VIEWPORT_WIDTH_CELLS;
+			desiredViewportX = (int16)MapWidth -
+				TACTICAL_VIEWPORT_WIDTH_CELLS;
 		}
-		if (desiredViewportY
-			> (int16)MapHeight - TACTICAL_VIEWPORT_HEIGHT_CELLS)
+		if (desiredViewportY >
+			(int16)MapHeight - TACTICAL_VIEWPORT_HEIGHT_CELLS)
 		{
-			desiredViewportY = (int16)MapHeight
-				- TACTICAL_VIEWPORT_HEIGHT_CELLS;
+			desiredViewportY = (int16)MapHeight -
+				TACTICAL_VIEWPORT_HEIGHT_CELLS;
 		}
 
 		TacticalCursorViewportX = 0x09;
 		TacticalCursorViewportY = 0x06;
-		while ((int16)TacticalViewportMapX != desiredViewportX
-			|| (int16)TacticalViewportMapY != desiredViewportY)
+		while ((int16)TacticalViewportMapX != desiredViewportX ||
+			(int16)TacticalViewportMapY != desiredViewportY)
 		{
 			if ((int16)TacticalViewportMapX < desiredViewportX)
 			{
 				++TacticalViewportMapX;
-				if ((int16)TacticalViewportMapX + 0x0A
-					< desiredViewportX)
+				if ((int16)TacticalViewportMapX + 0x0A <
+					desiredViewportX)
 					TacticalViewportMapX += 0x03;
 			}
 			if ((int16)TacticalViewportMapX > desiredViewportX)
 			{
 				--TacticalViewportMapX;
-				if (desiredViewportX + 0x0A
-					< (int16)TacticalViewportMapX)
+				if (desiredViewportX + 0x0A <
+					(int16)TacticalViewportMapX)
 					TacticalViewportMapX -= 0x03;
 			}
 			if ((int16)TacticalViewportMapY < desiredViewportY)
 			{
 				++TacticalViewportMapY;
-				if ((int16)TacticalViewportMapY + 0x0A
-					< desiredViewportY)
+				if ((int16)TacticalViewportMapY + 0x0A <
+					desiredViewportY)
 					TacticalViewportMapY += 0x03;
 			}
 			if ((int16)TacticalViewportMapY > desiredViewportY)
 			{
 				--TacticalViewportMapY;
-				if (desiredViewportY + 0x0F
-					< (int16)TacticalViewportMapY)
+				if (desiredViewportY + 0x0F <
+					(int16)TacticalViewportMapY)
 					TacticalViewportMapY -= 0x03;
 			}
 			RebuildTacticalViewport();
@@ -505,8 +505,8 @@ void FocusTacticalViewOnUnit(word16 unitIndex)
 	TacticalCursorMapY = (word16)cursorY;
 	TacticalCursorViewportY = (word16)cursorY;
 	TacticalSelectedUnitIndex =
-		unitRecord->deploymentState != 0x00
-			? unitIndex : TACTICAL_UNIT_NONE;
+		unitRecord->deploymentState != 0x00 ?
+			unitIndex : TACTICAL_UNIT_NONE;
 
 	if (MouseDriverInstalled != 0x00)
 	{
@@ -540,8 +540,8 @@ word16 SelectNextUnitAtCursor(void)
 		if (selectedUnitIndex != -0x01)
 			break;
 		AdvanceTacticalCursorCell();
-	} while (TacticalCursorViewportX != originalCursorX
-		|| TacticalCursorViewportY != originalCursorY);
+	} while (TacticalCursorViewportX != originalCursorX ||
+		TacticalCursorViewportY != originalCursorY);
 
 	if (selectedUnitIndex == -0x01)
 		selectedUnitIndex = TacticalSelectedUnitIndex;
@@ -562,8 +562,8 @@ word16 SelectPreviousUnitAtCursor(void)
 		if (selectedUnitIndex != -0x01)
 			break;
 		RetreatTacticalCursorCell();
-	} while (TacticalCursorViewportX != originalCursorX
-		|| TacticalCursorViewportY != originalCursorY);
+	} while (TacticalCursorViewportX != originalCursorX ||
+		TacticalCursorViewportY != originalCursorY);
 
 	if (selectedUnitIndex == -0x01)
 		selectedUnitIndex = TacticalSelectedUnitIndex;
@@ -582,10 +582,10 @@ word16 FindUnitAtTacticalCursor(void)
 
 	for (offsetIndex = 0x00; offsetIndex < 0x09; ++offsetIndex)
 	{
-		TacticalCursorViewportX = originalCursorX
-			+ (int16) (word16)TacticalCursorSearchOffsetX[offsetIndex];
-		TacticalCursorViewportY = originalCursorY
-			+ (int16) (word16)TacticalCursorSearchOffsetY[offsetIndex];
+		TacticalCursorViewportX = originalCursorX +
+			(int16) (word16)TacticalCursorSearchOffsetX[offsetIndex];
+		TacticalCursorViewportY = originalCursorY +
+			(int16) (word16)TacticalCursorSearchOffsetY[offsetIndex];
 		selectedUnitIndex = ResolveUnitAtTacticalCursor();
 		if (selectedUnitIndex != -0x01)
 		{
@@ -609,19 +609,19 @@ word16 FindUnitAtTacticalCursor(void)
 // 1A1F:1586: resolve the unit occupying the current tactical cursor cell.
 int16 ResolveUnitAtTacticalCursor(void)
 {
-	int16 cursorMapX = TacticalViewportMapX
-		+ TacticalCursorViewportX;
-	int16 cursorMapY = TacticalViewportMapY
-		+ TacticalCursorViewportY;
+	int16 cursorMapX = TacticalViewportMapX +
+		TacticalCursorViewportX;
+	int16 cursorMapY = TacticalViewportMapY +
+		TacticalCursorViewportY;
 	int16 selectedUnitIndex = -0x01;
 	word16 unitIndex = 0x00;
 
-	while (unitIndex < TACTICAL_ENEMY_FIRST_UNIT
-		&& selectedUnitIndex == -0x01)
+	while (unitIndex < TACTICAL_ENEMY_FIRST_UNIT &&
+		selectedUnitIndex == -0x01)
 	{
-		if (PersistentUnitRoster[unitIndex].deploymentState == 0x01
-			&& ScenarioUnitMapX[unitIndex] == cursorMapX
-			&& ScenarioUnitMapY[unitIndex] == cursorMapY)
+		if (PersistentUnitRoster[unitIndex].deploymentState == 0x01 &&
+			ScenarioUnitMapX[unitIndex] == cursorMapX &&
+			ScenarioUnitMapY[unitIndex] == cursorMapY)
 		{
 			selectedUnitIndex = unitIndex;
 			TacticalSelectedUnitIndex = unitIndex;
@@ -635,23 +635,23 @@ int16 ResolveUnitAtTacticalCursor(void)
 			unitIndex < TACTICAL_UNIT_COUNT;
 			++unitIndex)
 		{
-			if (PersistentUnitRoster[unitIndex].deploymentState != 0x00
-				&& ScenarioUnitMapX[unitIndex] == cursorMapX
-				&& ScenarioUnitMapY[unitIndex] == cursorMapY)
+			if (PersistentUnitRoster[unitIndex].deploymentState != 0x00 &&
+				ScenarioUnitMapX[unitIndex] == cursorMapX &&
+				ScenarioUnitMapY[unitIndex] == cursorMapY)
 			{
 				word16 cellIndex =
-					TacticalCursorViewportY
-						* TACTICAL_VIEWPORT_WIDTH_CELLS
-					+ TacticalCursorViewportX;
+					TacticalCursorViewportY *
+						TACTICAL_VIEWPORT_WIDTH_CELLS +
+					TacticalCursorViewportX;
 				word16 spriteId =
 					TacticalCellSpriteMap[cellIndex];
 
 				if (spriteId != 0x00)
 				{
 					spriteId &= 0x00FF;
-					if (spriteId < TACTICAL_ENEMY_SPRITE_LIMIT
-						&& (spriteId < TACTICAL_ENEMY_SPRITE_EXCLUDED_FIRST
-							|| spriteId >= TACTICAL_ENEMY_SPRITE_EXCLUDED_END))
+					if (spriteId < TACTICAL_ENEMY_SPRITE_LIMIT &&
+						(spriteId < TACTICAL_ENEMY_SPRITE_EXCLUDED_FIRST ||
+							spriteId >= TACTICAL_ENEMY_SPRITE_EXCLUDED_END))
 					{
 						selectedUnitIndex = unitIndex;
 						TacticalSelectedUnitIndex = unitIndex;
@@ -664,11 +664,11 @@ int16 ResolveUnitAtTacticalCursor(void)
 	if (selectedUnitIndex != -0x01)
 	{
 		word16 selectedViewportX =
-			ScenarioUnitMapX[selectedUnitIndex]
-			- TacticalViewportMapX;
+			ScenarioUnitMapX[selectedUnitIndex] -
+			TacticalViewportMapX;
 		word16 selectedViewportY =
-			ScenarioUnitMapY[selectedUnitIndex]
-			- TacticalViewportMapY;
+			ScenarioUnitMapY[selectedUnitIndex] -
+			TacticalViewportMapY;
 
 		TacticalCursorMapX = selectedViewportX;
 		TacticalCursorViewportX = selectedViewportX;
@@ -686,9 +686,9 @@ void OpenTacticalUnitControlPanel(word16 unitIndex)
 	word16 commandsEnabled = FALSE;
 
 	RefreshTacticalDisplay(FALSE);
-	if (unitIndex < TACTICAL_ENEMY_FIRST_UNIT
-		&& IsCurrentLanceLeader(unitIndex) != FALSE
-		&& HasActiveLanceFollowers(unitIndex) != FALSE)
+	if (unitIndex < TACTICAL_ENEMY_FIRST_UNIT &&
+		IsCurrentLanceLeader(unitIndex) != FALSE &&
+		HasActiveLanceFollowers(unitIndex) != FALSE)
 	{
 		HighlightLanceFollowers(unitIndex);
 	}
@@ -700,15 +700,15 @@ void OpenTacticalUnitControlPanel(word16 unitIndex)
 	}
 	else if (unitIndex < 0x08)
 	{
-		if (TacticalScenarioLanceEnabled[0x01] != FALSE
-			&& IsCurrentLanceLeader(unitIndex) != FALSE)
+		if (TacticalScenarioLanceEnabled[0x01] != FALSE &&
+			IsCurrentLanceLeader(unitIndex) != FALSE)
 		{
 			commandsEnabled = TRUE;
 		}
 	}
-	else if (unitIndex < TACTICAL_ENEMY_FIRST_UNIT
-		&& TacticalScenarioLanceEnabled[0x02] != FALSE
-		&& IsCurrentLanceLeader(unitIndex) != FALSE)
+	else if (unitIndex < TACTICAL_ENEMY_FIRST_UNIT &&
+		TacticalScenarioLanceEnabled[0x02] != FALSE &&
+		IsCurrentLanceLeader(unitIndex) != FALSE)
 	{
 		commandsEnabled = TRUE;
 	}
@@ -725,9 +725,9 @@ void OpenTacticalUnitControlPanel(word16 unitIndex)
 // overview viewport. Diagonal keys deliberately pass through two branches.
 void MoveTacticalCursorByInput(int16 inputCode)
 {
-	if (inputCode == TranslatedExtendedKey(KEY_LEFT)
-		|| inputCode == TranslatedExtendedKey(KEY_HOME)
-		|| inputCode == TranslatedExtendedKey(KEY_END))
+	if (inputCode == TranslatedExtendedKey(KEY_LEFT) ||
+		inputCode == TranslatedExtendedKey(KEY_HOME) ||
+		inputCode == TranslatedExtendedKey(KEY_END))
 	{
 		if (TacticalOverviewActive != FALSE)
 		{
@@ -743,17 +743,17 @@ void MoveTacticalCursorByInput(int16 inputCode)
 		TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
 	}
 
-	if (inputCode == TranslatedExtendedKey(KEY_RIGHT)
-		|| inputCode == TranslatedExtendedKey(KEY_PAGE_UP)
-		|| inputCode == TranslatedExtendedKey(KEY_PAGE_DOWN))
+	if (inputCode == TranslatedExtendedKey(KEY_RIGHT) ||
+		inputCode == TranslatedExtendedKey(KEY_PAGE_UP) ||
+		inputCode == TranslatedExtendedKey(KEY_PAGE_DOWN))
 	{
 		if (TacticalOverviewActive != FALSE)
 		{
 			if (TacticalOverviewZoomed != FALSE)
 				++TacticalCursorViewportX;
-			else if ((int16) TacticalViewportMapX
-				+ TACTICAL_VIEWPORT_WIDTH_CELLS
-				< (int16) MapWidth)
+			else if ((int16) TacticalViewportMapX +
+				TACTICAL_VIEWPORT_WIDTH_CELLS <
+				(int16) MapWidth)
 			{
 				++TacticalViewportMapX;
 			}
@@ -765,9 +765,9 @@ void MoveTacticalCursorByInput(int16 inputCode)
 		TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
 	}
 
-	if (inputCode == TranslatedExtendedKey(KEY_UP)
-		|| inputCode == TranslatedExtendedKey(KEY_HOME)
-		|| inputCode == TranslatedExtendedKey(KEY_PAGE_UP))
+	if (inputCode == TranslatedExtendedKey(KEY_UP) ||
+		inputCode == TranslatedExtendedKey(KEY_HOME) ||
+		inputCode == TranslatedExtendedKey(KEY_PAGE_UP))
 	{
 		if (TacticalOverviewActive != FALSE)
 		{
@@ -783,17 +783,17 @@ void MoveTacticalCursorByInput(int16 inputCode)
 		TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
 	}
 
-	if (inputCode == TranslatedExtendedKey(KEY_DOWN)
-		|| inputCode == TranslatedExtendedKey(KEY_END)
-		|| inputCode == TranslatedExtendedKey(KEY_PAGE_DOWN))
+	if (inputCode == TranslatedExtendedKey(KEY_DOWN) ||
+		inputCode == TranslatedExtendedKey(KEY_END) ||
+		inputCode == TranslatedExtendedKey(KEY_PAGE_DOWN))
 	{
 		if (TacticalOverviewActive != FALSE)
 		{
 			if (TacticalOverviewZoomed != FALSE)
 				++TacticalCursorViewportY;
-			else if ((int16) TacticalViewportMapY
-				+ TACTICAL_VIEWPORT_HEIGHT_CELLS
-				< (int16) MapHeight)
+			else if ((int16) TacticalViewportMapY +
+				TACTICAL_VIEWPORT_HEIGHT_CELLS <
+				(int16) MapHeight)
 			{
 				++TacticalViewportMapY;
 			}
@@ -828,37 +828,37 @@ void KeepTacticalCursorOnSelectedUnit(void)
 	}
 
 	TacticalCursorViewportX =
-		ScenarioUnitMapX[selectedUnitIndex]
-		- TacticalViewportMapX;
+		ScenarioUnitMapX[selectedUnitIndex] -
+		TacticalViewportMapX;
 	TacticalCursorViewportY =
-		ScenarioUnitMapY[selectedUnitIndex]
-		- TacticalViewportMapY;
+		ScenarioUnitMapY[selectedUnitIndex] -
+		TacticalViewportMapY;
 	TacticalViewportMapX +=
-		TacticalCursorViewportX
-		- TacticalCursorMapX;
+		TacticalCursorViewportX -
+		TacticalCursorMapX;
 	TacticalViewportMapY +=
-		TacticalCursorViewportY
-		- TacticalCursorMapY;
+		TacticalCursorViewportY -
+		TacticalCursorMapY;
 
 	if ((int16) TacticalViewportMapX < 0x00)
 		TacticalViewportMapX = 0x00;
 	if ((int16) TacticalViewportMapY < 0x00)
 		TacticalViewportMapY = 0x00;
 
-	maximumViewportX = (int16) MapWidth
-		- TACTICAL_VIEWPORT_WIDTH_CELLS;
-	maximumViewportY = (int16) MapHeight
-		- TACTICAL_VIEWPORT_HEIGHT_CELLS;
+	maximumViewportX = (int16) MapWidth -
+		TACTICAL_VIEWPORT_WIDTH_CELLS;
+	maximumViewportY = (int16) MapHeight -
+		TACTICAL_VIEWPORT_HEIGHT_CELLS;
 	if ((int16) TacticalViewportMapX > maximumViewportX)
 		TacticalViewportMapX = maximumViewportX;
 	if ((int16) TacticalViewportMapY > maximumViewportY)
 		TacticalViewportMapY = maximumViewportY;
 
 	TacticalCursorViewportX =
-		ScenarioUnitMapX[selectedUnitIndex]
-		- TacticalViewportMapX;
+		ScenarioUnitMapX[selectedUnitIndex] -
+		TacticalViewportMapX;
 	TacticalCursorViewportY =
-		ScenarioUnitMapY[selectedUnitIndex]
-		- TacticalViewportMapY;
+		ScenarioUnitMapY[selectedUnitIndex] -
+		TacticalViewportMapY;
 }
 

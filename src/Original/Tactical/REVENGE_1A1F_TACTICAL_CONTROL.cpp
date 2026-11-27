@@ -22,15 +22,15 @@ int16 TranslateTacticalMouseInput(int16 inputAction)
 
 	if (MouseInputDisabled != 0x00)
 		return inputAction;
-	if (HIGH_WORD(GameTimerTicks) == 0x00
-		&& LOW_WORD(GameTimerTicks) < 0x02)
+	if (HIGH_WORD(GameTimerTicks) == 0x00 &&
+		LOW_WORD(GameTimerTicks) < 0x02)
 	{
 		return inputAction;
 	}
 	GameTimerTicks = 0x00000000UL;
 
-	if (PendingMouseButtonEvent != 0x00
-		&& MouseButtonState != 0x00)
+	if (PendingMouseButtonEvent != 0x00 &&
+		MouseButtonState != 0x00)
 	{
 		mouseButtonState = MouseButtonState;
 		inputAction = mouseButtonState == 0x01 ? KEY_SPACE : KEY_ESCAPE;
@@ -68,8 +68,8 @@ int16 TranslateTacticalMouseInput(int16 inputAction)
 		PreviousMouseCellX = 0xFFFF;
 		mouseCellX = 0x12;
 	}
-	if (mouseCellX == (int16)PreviousMouseCellX
-		&& mouseCellY == (int16)PreviousMouseCellY)
+	if (mouseCellX == (int16)PreviousMouseCellX &&
+		mouseCellY == (int16)PreviousMouseCellY)
 	{
 		return inputAction;
 	}
@@ -88,17 +88,17 @@ int16 TranslateTacticalMouseInput(int16 inputAction)
 	if (edgeMask != 0x00)
 		inputAction = TacticalMouseEdgeInputByMask[edgeMask];
 
-	if (TacticalOverviewActive != FALSE
-		&& TacticalOverviewZoomed == FALSE)
+	if (TacticalOverviewActive != FALSE &&
+		TacticalOverviewZoomed == FALSE)
 	{
 		TacticalViewportMapX = (word16)(
 			((int32)(int16)MapWidth * mouseX) / 0x0140);
 		if ((int16)TacticalViewportMapX < 0x00)
 			TacticalViewportMapX = 0x00;
-		maximumViewportX = (int16)MapWidth
-			- TACTICAL_VIEWPORT_WIDTH_CELLS;
-		if (maximumViewportX
-			<= (int16)TacticalViewportMapX)
+		maximumViewportX = (int16)MapWidth -
+			TACTICAL_VIEWPORT_WIDTH_CELLS;
+		if (maximumViewportX <=
+			(int16)TacticalViewportMapX)
 		{
 			TacticalViewportMapX = (word16)maximumViewportX;
 		}
@@ -107,10 +107,10 @@ int16 TranslateTacticalMouseInput(int16 inputAction)
 			((int32)(int16)MapHeight * mouseY) / 0x00C8);
 		if ((int16)TacticalViewportMapY < 0x00)
 			TacticalViewportMapY = 0x00;
-		maximumViewportY = (int16)MapHeight
-			- TACTICAL_VIEWPORT_HEIGHT_CELLS;
-		if (maximumViewportY
-			<= (int16)TacticalViewportMapY)
+		maximumViewportY = (int16)MapHeight -
+			TACTICAL_VIEWPORT_HEIGHT_CELLS;
+		if (maximumViewportY <=
+			(int16)TacticalViewportMapY)
 		{
 			TacticalViewportMapY = (word16)maximumViewportY;
 		}
@@ -388,28 +388,28 @@ word16 AdvanceTerrainDamageState(
 
 	// V: each map cell has a two-bit damage state. Invalid coordinates and the
 	// three special destructible terrain IDs return state 3.
-	if (mapX < 0x00 || mapX >= (int16) MapWidth
-		|| mapY < 0x00 || mapY >= (int16) MapHeight)
+	if (mapX < 0x00 || mapX >= (int16) MapWidth ||
+		mapY < 0x00 || mapY >= (int16) MapHeight)
 	{
 		return 0x03;
 	}
 
-	mapCellIndex = (word16) ((word16) mapY
-		* MapWidth + (word16) mapX);
+	mapCellIndex = (word16) ((word16) mapY *
+		MapWidth + (word16) mapX);
 	terrainType = TerrainTypeMap[mapCellIndex];
 	destructibleTerrainTypeMaximum =
 		DestructibleTerrainTypeBase + 0x02;
 	if ((int16) terrainType >=
-			(int16) DestructibleTerrainTypeBase
-		&& (int16) terrainType <= (int16) destructibleTerrainTypeMaximum)
+			(int16) DestructibleTerrainTypeBase &&
+		(int16) terrainType <= (int16) destructibleTerrainTypeMaximum)
 	{
 		BeginTerrainDamageAtCell(mapX, mapY, terrainType);
 		return 0x03;
 	}
 
 	damageState = ReadTerrainDamageState(mapX, mapY);
-	if ((int16) damageState < (int16) maximumDamageState
-		&& TerrainDamageCapabilityTable[terrainType] != 0x00)
+	if ((int16) damageState < (int16) maximumDamageState &&
+		TerrainDamageCapabilityTable[terrainType] != 0x00)
 	{
 		*ActiveTerrainDamageByte +=
 			TerrainDamageCellIncrementMask[mapX & 0x03];
@@ -431,9 +431,9 @@ word16 ReadTerrainDamageState(int16 mapX, int16 mapY)
 
 	byte packedDamageStates = *ActiveTerrainDamageByte;
 	byte columnWithinByte = (byte)(mapX & 0x03);
-	return (packedDamageStates
-		& TerrainDamageExtractMask[columnWithinByte])
-		>> TerrainDamageShift[columnWithinByte];
+	return (packedDamageStates &
+		TerrainDamageExtractMask[columnWithinByte]) >>
+		TerrainDamageShift[columnWithinByte];
 }
 
 // 1A1F:52F2: void AdvanceTacticalCampaignClock(void)
@@ -482,19 +482,19 @@ void UpdateUnitHeatAccumulators(void)
 		if (TacticalClockDivider == 0x0080)
 		{
 			word16 terrainType = UnitTerrainType[unitIndex];
-			if (effectiveHeatSinkCount < 0x1D
-				&& terrainType >= DestructibleTerrainTypeBase
-				&& terrainType <= (word16)
+			if (effectiveHeatSinkCount < 0x1D &&
+				terrainType >= DestructibleTerrainTypeBase &&
+				terrainType <= (word16)
 					(DestructibleTerrainTypeBase + 0x02))
 				effectiveHeatSinkCount += 0x02;
 
 			word16 mapRecordIndex;
 			for (mapRecordIndex = 0x00; mapRecordIndex < 0x5A; ++mapRecordIndex)
 			{
-				if (TerrainImpactAnimationRecords[mapRecordIndex].mapX
-						== ScenarioUnitMapX[unitIndex]
-					&& TerrainImpactAnimationRecords[mapRecordIndex].mapY
-						== ScenarioUnitMapY[unitIndex])
+				if (TerrainImpactAnimationRecords[mapRecordIndex].mapX ==
+						ScenarioUnitMapX[unitIndex] &&
+					TerrainImpactAnimationRecords[mapRecordIndex].mapY ==
+						ScenarioUnitMapY[unitIndex])
 				{
 					unitRecord->currentHeat = (byte)
 						(unitRecord->currentHeat + 0x0A);
@@ -938,8 +938,8 @@ void HandleTacticalFunctionKey(word16 inputAction)
 		for (unitIndex = firstUnit; unitIndex < firstUnit + 0x04; ++unitIndex)
 		{
 			unitRecord = GetPersistentUnitRecord(unitIndex);
-			if (unitRecord->deploymentState == 0x01
-				&& unitRecord->walkMovement != 0x00)
+			if (unitRecord->deploymentState == 0x01 &&
+				unitRecord->walkMovement != 0x00)
 			{
 				TacticalSelectedUnitIndex = unitIndex;
 				FocusTacticalViewOnUnit(unitIndex);
@@ -956,11 +956,11 @@ void HandleTacticalFunctionKey(word16 inputAction)
 		word16 selectedUnit = TacticalSelectedUnitIndex;
 		word16 rememberedUnitSelected = FALSE;
 
-		if (selectedUnit != TACTICAL_UNIT_NONE
-			&& GetPersistentUnitRecord(selectedUnit)->deploymentState == 0x00)
+		if (selectedUnit != TACTICAL_UNIT_NONE &&
+			GetPersistentUnitRecord(selectedUnit)->deploymentState == 0x00)
 			selectedUnit = TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
-		if (rememberedUnit != TACTICAL_UNIT_NONE
-			&& GetPersistentUnitRecord(rememberedUnit)->deploymentState == 0x00)
+		if (rememberedUnit != TACTICAL_UNIT_NONE &&
+			GetPersistentUnitRecord(rememberedUnit)->deploymentState == 0x00)
 			rememberedUnit = EnemyCycleUnitIndex = TACTICAL_UNIT_NONE;
 
 		if (selectedUnit == rememberedUnit && rememberedUnit != TACTICAL_UNIT_NONE)
@@ -979,10 +979,10 @@ void HandleTacticalFunctionKey(word16 inputAction)
 				else
 				{
 					unitRecord = GetPersistentUnitRecord(unitIndex);
-					if (unitRecord->deploymentState != 0x00
-						&& ((UpdateUnitEnemyVisibility(unitIndex)
-							| UpdateUnitEnemyProximityState(unitIndex)) != 0x00
-							|| TacticalOverviewMapMode == 0x00))
+					if (unitRecord->deploymentState != 0x00 &&
+						((UpdateUnitEnemyVisibility(unitIndex) |
+							UpdateUnitEnemyProximityState(unitIndex)) != 0x00 ||
+							TacticalOverviewMapMode == 0x00))
 					{
 						EnemyCycleUnitIndex = unitIndex;
 						TacticalSelectedUnitIndex = unitIndex;
@@ -995,10 +995,10 @@ void HandleTacticalFunctionKey(word16 inputAction)
 		else if (rememberedUnit != TACTICAL_UNIT_NONE)
 		{
 			unitRecord = GetPersistentUnitRecord(rememberedUnit);
-			if (unitRecord->deploymentState != 0x00
-				&& ((UpdateUnitEnemyVisibility(rememberedUnit)
-					| UpdateUnitEnemyProximityState(rememberedUnit)) != 0x00
-					|| TacticalOverviewMapMode == 0x00))
+			if (unitRecord->deploymentState != 0x00 &&
+				((UpdateUnitEnemyVisibility(rememberedUnit) |
+					UpdateUnitEnemyProximityState(rememberedUnit)) != 0x00 ||
+					TacticalOverviewMapMode == 0x00))
 			{
 				TacticalSelectedUnitIndex = rememberedUnit;
 				FocusTacticalViewOnUnit(rememberedUnit);
@@ -1007,18 +1007,18 @@ void HandleTacticalFunctionKey(word16 inputAction)
 		}
 
 		// The remembered unit, selected again, ends the search.
-		if (rememberedUnitSelected == FALSE
-			&& (selectedUnit != rememberedUnit || rememberedUnit == TACTICAL_UNIT_NONE))
+		if (rememberedUnitSelected == FALSE &&
+			(selectedUnit != rememberedUnit || rememberedUnit == TACTICAL_UNIT_NONE))
 		{
 			for (unitIndex = TACTICAL_ENEMY_FIRST_UNIT;
 				unitIndex < TACTICAL_UNIT_COUNT;
 				++unitIndex)
 			{
 				unitRecord = GetPersistentUnitRecord(unitIndex);
-				if (unitRecord->deploymentState != 0x00
-					&& ((UpdateUnitEnemyVisibility(unitIndex)
-						| UpdateUnitEnemyProximityState(unitIndex)) != 0x00
-						|| TacticalOverviewMapMode == 0x00))
+				if (unitRecord->deploymentState != 0x00 &&
+					((UpdateUnitEnemyVisibility(unitIndex) |
+						UpdateUnitEnemyProximityState(unitIndex)) != 0x00 ||
+						TacticalOverviewMapMode == 0x00))
 				{
 					EnemyCycleUnitIndex = unitIndex;
 					TacticalSelectedUnitIndex = unitIndex;
@@ -1028,8 +1028,8 @@ void HandleTacticalFunctionKey(word16 inputAction)
 			}
 		}
 
-		if ((int16)TacticalSelectedUnitIndex
-			>= TACTICAL_ENEMY_FIRST_UNIT)
+		if ((int16)TacticalSelectedUnitIndex >=
+			TACTICAL_ENEMY_FIRST_UNIT)
 			FirstLanceOrdersEnabled = FALSE;
 		return;
 	}
@@ -1070,10 +1070,10 @@ void OpenSelectedTacticalUnitPanel(void)
 	unitMapY = ScenarioUnitMapY[unitIndex];
 	viewportMapX = (int16) TacticalViewportMapX;
 	viewportMapY = (int16) TacticalViewportMapY;
-	if (unitMapX < viewportMapX
-		|| unitMapX >= viewportMapX + 0x13
-		|| unitMapY < viewportMapY
-		|| unitMapY >= viewportMapY + 0x0C)
+	if (unitMapX < viewportMapX ||
+		unitMapX >= viewportMapX + 0x13 ||
+		unitMapY < viewportMapY ||
+		unitMapY >= viewportMapY + 0x0C)
 		FocusTacticalViewOnUnit(unitIndex);
 	OpenTacticalUnitControlPanel(unitIndex);
 }
@@ -1089,9 +1089,9 @@ void HandleTacticalInput(word16 inputAction)
 	if (inputAction == '-' || inputAction == '+')
 	{
 		previousSelection = TacticalSelectedUnitIndex;
-		TacticalSelectedUnitIndex = inputAction == '-'
-			? SelectPreviousUnitAtCursor()
-			: SelectNextUnitAtCursor();
+		TacticalSelectedUnitIndex = inputAction == '-' ?
+			SelectPreviousUnitAtCursor() :
+			SelectNextUnitAtCursor();
 		if (previousSelection != 0x00 || TacticalSelectedUnitIndex != 0x00)
 			FirstLanceOrdersEnabled = FALSE;
 	}
@@ -1105,8 +1105,8 @@ void HandleTacticalInput(word16 inputAction)
 		PendingNarrationDelay = FALSE;
 	if (PendingNarrationDelay != FALSE)
 	{
-		if (GetPersistentUnitRecord(narrationUnit)->deploymentState == 0x00
-			&& NarrationMessageCategory != 0x12)
+		if (GetPersistentUnitRecord(narrationUnit)->deploymentState == 0x00 &&
+			NarrationMessageCategory != 0x12)
 			PendingNarrationDelay = FALSE;
 		if (narrationUnit > 0x04 && NarrationMessageCategory != 0x12)
 		{
@@ -1123,18 +1123,18 @@ void HandleTacticalInput(word16 inputAction)
 			PendingNarrationDelay = FALSE;
 		if (narrationUnit == 0x00 && PendingNarrationDelay != FALSE)
 			NarrationReady = TRUE;
-		if (PendingNarrationDelay != FALSE
-			&& NarrationReady != FALSE)
+		if (PendingNarrationDelay != FALSE &&
+			NarrationReady != FALSE)
 			ShowPendingNarrationPrompt();
 	}
 
-	if (TacticalOverviewActive == FALSE
-		&& (inputAction == 'M' || inputAction == 'm'))
+	if (TacticalOverviewActive == FALSE &&
+		(inputAction == 'M' || inputAction == 'm'))
 		ShowPendingNarrationPrompt();
 	if (inputAction != KEY_SPACE && inputAction != KEY_CARRIAGE_RETURN)
 		return;
-	if (TacticalOverviewActive != FALSE
-		&& TacticalOverviewZoomed == FALSE)
+	if (TacticalOverviewActive != FALSE &&
+		TacticalOverviewZoomed == FALSE)
 	{
 		TacticalOverviewSavedMode = TacticalOverviewMapMode;
 		TacticalOverviewMapMode = 0x00;

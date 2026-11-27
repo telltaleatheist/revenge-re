@@ -48,8 +48,8 @@ uint32 ConvertLocalDateTimeToEpochSeconds(
 		++dayOfYear;
 
 	hourOfYear = dayOfYear * 0x18 + time->hour;
-	if (DaylightSavingEnabled != FALSE
-		&& IsDaylightSavingTime(
+	if (DaylightSavingEnabled != FALSE &&
+		IsDaylightSavingTime(
 			date->year - 0x07B2, 0x00, dayOfYear, time->hour) != FALSE)
 		--hourOfYear;
 

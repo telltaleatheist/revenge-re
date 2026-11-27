@@ -180,15 +180,15 @@ void InitializeTacticalScenario(void)
 
 	scenarioOrdinal =
 		ScenarioOrdinalBaseByCampaignStage[
-			CampaignStageIndex]
-		+ (byte) ScenarioVariantIndex;
+			CampaignStageIndex] +
+		(byte) ScenarioVariantIndex;
 	if (CampaignStageIndex == 0x08)
 		scenarioOrdinal -= (byte) ScenarioVariantIndex;
 
 	// [V] Ordinals 0..8 map to '1'..'9'; 9 and above map to 'A' onward.
-	scenarioSuffix = scenarioOrdinal < 0x09
-		? scenarioOrdinal + '1'
-		: scenarioOrdinal + '8';
+	scenarioSuffix = scenarioOrdinal < 0x09 ?
+		scenarioOrdinal + '1' :
+		scenarioOrdinal + '8';
 	ScenarioFileSuffix = scenarioSuffix;
 
 	StopLoadedMusicTrack();

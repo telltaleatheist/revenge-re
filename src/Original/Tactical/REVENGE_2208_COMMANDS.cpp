@@ -48,9 +48,9 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
 	}
 
 	damageModel = PersistentUnitRoster[unitIndex].damageModel;
-	if (damageModel == UNIT_DAMAGE_MODEL_BATTLEMECH
-		|| damageModel == UNIT_DAMAGE_MODEL_INFANTRY
-		|| damageModel >= UNIT_DAMAGE_MODEL_OVERBURN_CAPABLE_MINIMUM)
+	if (damageModel == UNIT_DAMAGE_MODEL_BATTLEMECH ||
+		damageModel == UNIT_DAMAGE_MODEL_INFANTRY ||
+		damageModel >= UNIT_DAMAGE_MODEL_OVERBURN_CAPABLE_MINIMUM)
 	{
 		--TacticalMenuFirstRegion;
 		++TacticalMenuLastRegion;
@@ -95,9 +95,9 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
 		 * before applying this four-byte far-pointer displacement. */
 		RenderFormattedText(TacticalUnitCommandTextTable[
 			PersistentUnitRoster[unitIndex].damageModel ==
-				UNIT_DAMAGE_MODEL_BATTLEMECH
-					? 0x04 + movementHeatExponent
-					: 0x08 + movementHeatExponent]);
+				UNIT_DAMAGE_MODEL_BATTLEMECH ?
+					0x04 + movementHeatExponent :
+					0x08 + movementHeatExponent]);
 
 		RenderFormattedLineBreak();
 		RenderFormattedText(TacticalUnitCommandTextTable[0x02]);
@@ -129,8 +129,8 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
 		RenderFormattedText(TacticalUnitCommandTextTable[
 				0x0B + UnitTacticalOrderMode[unitIndex]]);
 		TacticalMenuOptionCount = 0x05;
-		if (damageModel == UNIT_DAMAGE_MODEL_BATTLEMECH
-			|| damageModel >= UNIT_DAMAGE_MODEL_OVERBURN_CAPABLE_MINIMUM)
+		if (damageModel == UNIT_DAMAGE_MODEL_BATTLEMECH ||
+			damageModel >= UNIT_DAMAGE_MODEL_OVERBURN_CAPABLE_MINIMUM)
 		{
 			RenderFormattedLineBreak();
 			RenderFormattedText(TacticalOverburnTextTable[
@@ -260,8 +260,8 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
 
 		if (ValidatePrimaryLanceLeader(unitIndex) != FALSE)
 		{
-			word16 preserveFollowers = unitIndex == 0x00
-				? FirstLanceOrdersEnabled : 0x01;
+			word16 preserveFollowers = unitIndex == 0x00 ?
+				FirstLanceOrdersEnabled : 0x01;
 			if (preserveFollowers == FALSE && unitIndex == 0x00)
 			{
 				word16 followerIndex;

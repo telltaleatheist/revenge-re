@@ -244,8 +244,8 @@ word16 AnimateTitleTextLine(const char *text)
 	int16 fontLineHeight = ActiveFontLineHeight;
 	word16 windowHeightPixels =
 		ActiveTextWindowHeightTiles << 0x03;
-	word16 textY = (word16) (((int16) windowHeightPixels / fontLineHeight
-		- 0x01) * fontLineHeight - 0x02);
+	word16 textY = (word16) (((int16) windowHeightPixels / fontLineHeight -
+		0x01) * fontLineHeight - 0x02);
 
 	// Verified against 0D73:2F5F-309B.
 	HideMouseCursorOverlay();
