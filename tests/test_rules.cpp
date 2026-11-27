@@ -97,7 +97,8 @@ std::string read(const fs::path& path) {
 }
 
 // data/rules and data/ui copied to a folder of the test's, with `from` made
-// `to` in rules/`file` (or with no rules/`file` when `from` is null).
+// `to` in `file`, a path under the data folder (or with no `file` when
+// `from` is null).
 std::string broken_data(const char* mode, const char* file, const char* from, const char* to) {
     const fs::path folder = fs::current_path() / (std::string("rules-test-") + mode);
     fs::remove_all(folder);
@@ -106,7 +107,7 @@ std::string broken_data(const char* mode, const char* file, const char* from, co
         for (const fs::directory_entry& entry : fs::directory_iterator(fs::path(CHR_DATA_DIRECTORY) / part))
             fs::copy_file(entry.path(), folder / part / entry.path().filename());
     }
-    const fs::path target = folder / "rules" / file;
+    const fs::path target = folder / file;
     if (from == nullptr) {
         fs::remove(target);
         return folder.string();
@@ -136,22 +137,23 @@ int main(int argc, char** argv) {
         const char* to;
     };
     static const Broken broken[] = {
-        {"stray", "weapons.json", "\"small_laser\": {", "\"small_laser\": {\"rate_of_fire\": 1, "},
-        {"absent", "weapons.json", "\"ppc\": {\"heat\": 10, ", "\"ppc\": {"},
-        {"too_large", "weapons.json", "\"ppc\": {\"heat\": 10,", "\"ppc\": {\"heat\": 300,"},
-        {"length", "weapons.json", "[45, ", "["},
-        {"shared", "weapons.json", "\"improved_missile_damage_bonus\": 0}", "\"improved_missile_damage_bonus\": 1}"},
-        {"location", "combat.json", "[\"center_rear_torso\", ", "[\"tail\", "},
-        {"direction", "combat.json", "\"hit_table_by_direction\": [0,", "\"hit_table_by_direction\": [4,"},
-        {"engagement", "ai.json", "\"engagement_by_comparison_mask\": [\n    \"withdraw\"",
+        {"stray", "rules/weapons.json", "\"small_laser\": {", "\"small_laser\": {\"rate_of_fire\": 1, "},
+        {"absent", "rules/weapons.json", "\"ppc\": {\"heat\": 10, ", "\"ppc\": {"},
+        {"too_large", "rules/weapons.json", "\"ppc\": {\"heat\": 10,", "\"ppc\": {\"heat\": 300,"},
+        {"length", "rules/weapons.json", "[45, ", "["},
+        {"shared", "rules/weapons.json", "\"improved_missile_damage_bonus\": 0}", "\"improved_missile_damage_bonus\": 1}"},
+        {"location", "rules/combat.json", "[\"center_rear_torso\", ", "[\"tail\", "},
+        {"direction", "rules/combat.json", "\"hit_table_by_direction\": [0,", "\"hit_table_by_direction\": [4,"},
+        {"engagement", "rules/ai.json", "\"engagement_by_comparison_mask\": [\n    \"withdraw\"",
          "\"engagement_by_comparison_mask\": [\n    \"retreat\""},
-        {"overfull", "ai.json", "\"weapon_priorities\": [\n    [\n",
+        {"overfull", "rules/ai.json", "\"weapon_priorities\": [\n    [\n",
          "\"weapon_priorities\": [\n    [\n      {\"if_ready\": [\"ppc\"], \"fire\": \"ppc\"},\n"},
-        {"unit_type", "units.json", "\"fixed_unit_types\": [4,", "\"fixed_unit_types\": [89,"},
-        {"class_lists", "units.json", "\"unit_class_types\": [\n    [", "\"unit_class_types\": [\n    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, "},
-        {"experience", "pilots.json", "{\"identity\": 0, \"experience\": ", "{\"identity\": 0, \"experience\": 4"},
-        {"month", "campaign.json", "{\"month\": ", "{\"month\": 1"},
-        {"nofile", "combat.json", nullptr, nullptr},
+        {"unit_type", "rules/units.json", "\"fixed_unit_types\": [4,", "\"fixed_unit_types\": [89,"},
+        {"class_lists", "rules/units.json", "\"unit_class_types\": [\n    [", "\"unit_class_types\": [\n    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, "},
+        {"experience", "rules/pilots.json", "{\"identity\": 0, \"experience\": ", "{\"identity\": 0, \"experience\": 4"},
+        {"month", "rules/campaign.json", "{\"month\": ", "{\"month\": 1"},
+        {"record", "ui/lance_editor.json", "{\"left\": 14, \"top\": 5,", "{\"top\": 5,"},
+        {"nofile", "rules/combat.json", nullptr, nullptr},
     };
     for (const Broken& one : broken)
         if (mode == one.mode) {

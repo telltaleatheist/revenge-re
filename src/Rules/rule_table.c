@@ -54,6 +54,9 @@ const RulePiece RulePieces[] =
 	{ "mission.sprite_pixel_y", &MissionSpriteSourcePixelY, sizeof(MissionSpriteSourcePixelY), 0x3A6A, 0x279B, 0x18, "9654b93a1db1da5c" },
 	{ "mission.sprite_width_tiles", &MissionSpriteWidthTiles, sizeof(MissionSpriteWidthTiles), 0x3A6A, 0x27B3, 0x18, "0648481faaca095c" },
 	{ "mission.sprite_height_pixels", &MissionSpriteHeightPixels, sizeof(MissionSpriteHeightPixels), 0x3A6A, 0x27CB, 0x18, "814bb2f50c9d771d" },
+	{ "lance_editor.unit_sprites", &UnitEditorUnitSpriteIndex, sizeof(UnitEditorUnitSpriteIndex), 0x3A6A, 0x3119, 0x59, "32e2805258a97d7d" },
+	{ "lance_editor.pilot_portraits", &PilotPortraitIndexById, sizeof(PilotPortraitIndexById), 0x3A6A, 0x3248, 0x21, "bc30e707e833bb08" },
+	{ "lance_editor.layout", &LanceEditorLayout, sizeof(LanceEditorLayout), 0x3A6A, 0x3470, 0x1D4, "133bbdf581993fe9" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -101,3 +104,6 @@ _Static_assert(sizeof(MissionSpriteSourceTileX) == 0x18, "mission.sprite_tile_x 
 _Static_assert(sizeof(MissionSpriteSourcePixelY) == 0x18, "mission.sprite_pixel_y is the original's size");
 _Static_assert(sizeof(MissionSpriteWidthTiles) == 0x18, "mission.sprite_width_tiles is the original's size");
 _Static_assert(sizeof(MissionSpriteHeightPixels) == 0x18, "mission.sprite_height_pixels is the original's size");
+_Static_assert(sizeof(UnitEditorUnitSpriteIndex) == 0x59, "lance_editor.unit_sprites is the original's size");
+_Static_assert(sizeof(PilotPortraitIndexById) == 0x21, "lance_editor.pilot_portraits is the original's size");
+_Static_assert(sizeof(LanceEditorLayout) == 0x1D4, "lance_editor.layout is the original's size");

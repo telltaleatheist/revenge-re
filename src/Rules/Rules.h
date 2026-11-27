@@ -97,6 +97,18 @@
 //     "sprites"  12 {"tile_x", "pixel_y", "width_tiles", "height_pixels"}:
 //         where each mission sprite is cut from its picture
 //
+//   lance_editor.json:
+//     "layout"  LanceEditorLayoutData, a key for each field (its name in the
+//         code, lower case): positions and sizes in pixels or tiles, palette
+//         colours, rows. The fields named Left/Top/Width/Height (or
+//         SourceTileX/SourcePixelY/WidthTiles/HeightPixels) together are
+//         one array of records, as "unit_editor_sections": [{"left", "top",
+//         "width", "height"}, ...]
+//     "unit_sprite_by_type"  89, the graphics buffer (0 to 37) each unit
+//         type's card shows
+//     "pilot_portrait_by_pilot"  33, the graphics buffer each pilot's card
+//         shows
+//
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
 // file and the key.

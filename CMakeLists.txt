@@ -699,11 +699,11 @@ if(BUILD_TESTING)
     add_test(NAME rules.rebuild COMMAND test_rules from_data)
     add_test(NAME rules.exe COMMAND test_rules in_copy)
     add_test(NAME rules.range COMMAND test_rules too_large)
-    foreach(mode stray absent length shared location direction engagement overfull unit_type class_lists experience month nofile)
+    foreach(mode stray absent length shared location direction engagement overfull unit_type class_lists experience month record nofile)
         add_test(NAME rules.${mode} COMMAND test_rules ${mode})
     endforeach()
     set_tests_properties(rules.rebuild rules.exe rules.range rules.stray rules.absent
-        rules.length rules.shared rules.location rules.direction rules.engagement rules.overfull rules.unit_type rules.class_lists rules.experience rules.month rules.nofile
+        rules.length rules.shared rules.location rules.direction rules.engagement rules.overfull rules.unit_type rules.class_lists rules.experience rules.month rules.record rules.nofile
         PROPERTIES SKIP_RETURN_CODE 77)
     set_tests_properties(rules.stray PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: weapons.json: weapon_table.small_laser.rate_of_fire is no key of the rules here")
@@ -731,6 +731,8 @@ if(BUILD_TESTING)
         "fault: rules: pilots.json: pilots.0..experience is not a whole number from 0 to 3")
     set_tests_properties(rules.month PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: campaign.json: mission_dates.0..month is not a whole number from 0 to 11")
+    set_tests_properties(rules.record PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: lance_editor.json: layout.unit_editor_sections.0..left is missing")
     set_tests_properties(rules.nofile PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: combat.json can't be read from")
 

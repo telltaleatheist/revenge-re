@@ -7,6 +7,7 @@
 #include <map>
 #include <fstream>
 #include <initializer_list>
+#include <span>
 #include <iterator>
 #include <set>
 #include <string>
@@ -548,6 +549,145 @@ void read_mission(const Json& root, Tables& tables) {
     file.done();
 }
 
+// A struct of the original's, field by field in its order: a field on its
+// own is a key (one number, or an array of `count`); the fields of a record
+// (`member` set) are consecutive in the struct and one array of `count`
+// records in the file, each record holding one number of each.
+struct LayoutField {
+    const char* key;
+    const char* member;
+    std::size_t width;
+    std::size_t count;
+};
+
+std::vector<std::uint8_t> struct_layout(const Json& value, const std::string& where,
+                                        std::span<const LayoutField> fields) {
+    Fields object(value, where);
+    std::vector<std::uint8_t> out;
+    const auto append = [&out](unsigned number, std::size_t width) {
+        out.push_back(std::uint8_t(number & 0xFF));
+        if (width == 2) out.push_back(std::uint8_t(number >> 8));
+    };
+    std::size_t first = 0;
+    while (first < fields.size()) {
+        const LayoutField& field = fields[first];
+        const unsigned maximum = field.width == 2 ? 0xFFFF : 0xFF;
+        if (field.member == nullptr) {
+            const Json& item = object.take(field.key);
+            if (field.count == 1) {
+                append(whole(item, object.at(field.key), maximum), field.width);
+            } else {
+                const std::vector<std::uint8_t> bytes =
+                    numbers(item, object.at(field.key), field.count, maximum, field.width);
+                out.insert(out.end(), bytes.begin(), bytes.end());
+            }
+            ++first;
+            continue;
+        }
+        std::size_t last = first;
+        while (last < fields.size() && fields[last].member != nullptr &&
+               std::string_view(fields[last].key) == field.key)
+            ++last;
+        const Json& list = object.take(field.key);
+        const std::string list_where = object.at(field.key);
+        if (!list.is_array() || list.array().size() != field.count)
+            fail(list_where, "is not an array of " + std::to_string(field.count) + " records");
+        std::vector<std::vector<unsigned>> columns(last - first, std::vector<unsigned>(field.count, 0));
+        for (std::size_t index = 0; index < field.count; ++index) {
+            Fields record(list.array()[index], list_where + "[" + std::to_string(index) + "]");
+            for (std::size_t column = first; column < last; ++column)
+                columns[column - first][index] =
+                    whole(record.take(fields[column].member), record.at(fields[column].member),
+                          fields[column].width == 2 ? 0xFFFF : 0xFF);
+            record.done();
+        }
+        for (std::size_t column = first; column < last; ++column)
+            for (const unsigned number : columns[column - first]) append(number, fields[column].width);
+        first = last;
+    }
+    object.done();
+    return out;
+}
+
+// LanceEditorLayoutData (revenge/original/lance_editor_data.h), field by field.
+constexpr LayoutField kLanceEditorLayout[] = {
+    {"training_unit_choices", "left", 2, 12},
+    {"training_unit_choices", "top", 2, 12},
+    {"training_control_choices", "left", 2, 4},
+    {"training_control_choices", "top", 2, 4},
+    {"training_unit_group_left", nullptr, 2, 3},
+    {"training_unit_group_labels", "left", 2, 3},
+    {"training_unit_group_labels", "width", 2, 3},
+    {"allegiance_header_color", nullptr, 1, 2},
+    {"training_deployment_slot_left", nullptr, 2, 3},
+    {"training_control_choice_column", nullptr, 2, 2},
+    {"training_category_regions", "left", 2, 2},
+    {"training_category_regions", "top", 2, 2},
+    {"training_category_regions", "width", 2, 2},
+    {"training_category_regions", "height", 2, 2},
+    {"training_scenario_regions", "left", 2, 6},
+    {"training_scenario_regions", "top", 2, 6},
+    {"training_scenario_regions", "width", 2, 6},
+    {"training_scenario_regions", "height", 2, 6},
+    {"training_deployment_frame_left", nullptr, 2, 3},
+    {"training_deployment_text_color", nullptr, 2, 2},
+    {"training_deployment_background_color", nullptr, 2, 2},
+    {"training_roster_labels", "left", 2, 3},
+    {"training_roster_labels", "width", 2, 3},
+    {"training_category_text_color", nullptr, 2, 2},
+    {"training_category_background_color", nullptr, 2, 2},
+    {"training_scenario_text_color", nullptr, 2, 2},
+    {"training_scenario_background_color", nullptr, 2, 2},
+    {"unit_editor_sections", "left", 2, 8},
+    {"unit_editor_sections", "top", 2, 8},
+    {"unit_editor_sections", "width", 2, 8},
+    {"unit_editor_sections", "height", 2, 8},
+    {"scenario_variant_texts", "left", 2, 2},
+    {"scenario_variant_texts", "top", 2, 2},
+    {"scenario_variant_normal_color", nullptr, 2, 1},
+    {"scenario_variant_selected_color", nullptr, 2, 1},
+    {"scenario_variant_label_color", nullptr, 2, 4},
+    {"scenario_variant_regions", "left", 2, 2},
+    {"scenario_variant_regions", "top", 2, 2},
+    {"scenario_variant_regions", "width", 2, 2},
+    {"scenario_variant_regions", "height", 2, 2},
+    {"unit_roster_left_column", nullptr, 2, 1},
+    {"unit_roster_right_column", nullptr, 2, 1},
+    {"unit_editor_section_rows", nullptr, 2, 4},
+    {"unit_editor_section_button_rows", nullptr, 2, 4},
+    {"unit_card_background_color_by_state", nullptr, 2, 4},
+    {"unit_card_text_color_by_state", nullptr, 2, 4},
+    {"lance_assignment_text_color", nullptr, 2, 2},
+    {"pilot_editor_section_rows", nullptr, 2, 4},
+    {"pilot_card_text_color", nullptr, 2, 4},
+    {"lance_backings", "source_tile_x", 2, 4},
+    {"lance_backings", "source_pixel_y", 2, 4},
+    {"lance_backings", "width_tiles", 2, 4},
+    {"lance_backings", "height_pixels", 2, 4},
+    {"scenario_backings", "source_tile_x", 2, 2},
+    {"scenario_backings", "source_pixel_y", 2, 2},
+    {"scenario_backings", "width_tiles", 2, 2},
+    {"scenario_backings", "height_pixels", 2, 2},
+    {"editor_backings", "source_tile_x", 2, 8},
+    {"editor_backings", "source_pixel_y", 2, 8},
+    {"editor_backings", "width_tiles", 2, 8},
+    {"editor_backings", "height_pixels", 2, 8},
+};
+
+// The shared graphics buffers the lance editor's sprites and portraits are
+// drawn from (SharedGraphicsBackingBuffers).
+constexpr unsigned kLastGraphicsBuffer = 0x25;
+
+void read_lance_editor(const Json& root, Tables& tables) {
+    Fields file(root, "lance_editor.json:");
+    tables["lance_editor.layout"] = struct_layout(file.take("layout"), file.at("layout"), kLanceEditorLayout);
+    tables["lance_editor.unit_sprites"] =
+        numbers(file.take("unit_sprite_by_type"), file.at("unit_sprite_by_type"), 0x59, kLastGraphicsBuffer, 1);
+    tables["lance_editor.pilot_portraits"] = numbers(file.take("pilot_portrait_by_pilot"),
+                                                     file.at("pilot_portrait_by_pilot"), 0x21, kLastGraphicsBuffer, 1);
+    file.done();
+}
+
 // Bytes two tables share in the original's memory must agree.
 void check_shared(const Tables& tables) {
     // The first missile weapon's bonus is the high byte of the last direction
@@ -585,6 +725,7 @@ void load(const std::filesystem::path& data_dir) {
     read_campaign(read_file(rules / "campaign.json", "campaign.json"), tables);
     const std::filesystem::path ui = data_dir / "ui";
     read_mission(read_file(ui / "mission.json", "mission.json"), tables);
+    read_lance_editor(read_file(ui / "lance_editor.json", "lance_editor.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {
