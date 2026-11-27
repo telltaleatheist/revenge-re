@@ -1,5 +1,5 @@
-{"digest": "8026adea8891de1e", "kinds": {"midi --": 3, "midi 80": 1022, "midi 90": 1029, "midi B0": 7, "midi C0": 32, "midi E0": 11, "midi F7": 1, "midi reset": 2, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71, "tone": 95}, "lines": 2278, "snap": "editor"}
-{"digest": "ad82bd7eb893585e", "kinds": {"midi 80": 11, "midi 90": 9, "snap": 1, "tone": 1}, "lines": 22, "snap": "first_pilot"}
-{"digest": "070c9f12290decdf", "kinds": {"midi 80": 2, "snap": 1}, "lines": 3, "snap": "second_pilot"}
-{"digest": "8b60acbc14a304f1", "kinds": {"midi 80": 23, "midi 90": 27, "snap": 1, "tone": 3}, "lines": 54, "snap": "lance"}
-{"digest": "2fa3c1cd7b049d64", "kinds": {"midi 80": 321, "midi 90": 314, "midi B0": 16, "midi C0": 8, "snap": 1, "tone": 22}, "lines": 682, "snap": "story"}
+{"digest": "2fc6943a60996f55", "kinds": {"midi --": 3, "midi 80": 1022, "midi 90": 1029, "midi B0": 7, "midi C0": 32, "midi E0": 11, "midi F7": 1, "midi reset": 2, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71, "tone": 95}, "lines": 2278, "snap": "editor"}
+{"digest": "5f193f55b2591509", "kinds": {"midi 80": 11, "midi 90": 9, "snap": 1, "tone": 1}, "lines": 22, "snap": "first_pilot"}
+{"digest": "7c1150dd61dfc2e5", "kinds": {"midi 80": 2, "snap": 1}, "lines": 3, "snap": "second_pilot"}
+{"digest": "effbdd78cf7d7e55", "kinds": {"midi 80": 23, "midi 90": 27, "snap": 1, "tone": 3}, "lines": 54, "snap": "lance"}
+{"digest": "77f95e147f46655b", "kinds": {"midi 80": 321, "midi 90": 314, "midi B0": 16, "midi C0": 8, "snap": 1, "tone": 22}, "lines": 682, "snap": "story"}

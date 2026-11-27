@@ -49,9 +49,11 @@ outside the repo, to compare by hand.
 
 - Card: each weapon or damage effect starts its sample (`pcm effect`), and
   speech plays through the card (`pcm speech`), waited for.
-- Speaker: the same effects start speaker streams (`tone-effect`), and speech
-  plays as a speaker bitstream (`pcm speech` then `pcm done` at once: the
-  port doesn't time the bitstream).
+- Speaker: the same effects start speaker streams (`tone-effect`), their
+  notes from `data/sound/speaker.json` (the port had them all as rests), and
+  speech plays clean (`pcm speech`, then `pcm done` its length later): the
+  game and its timers wait it out, as the original's speaker speech ran with
+  interrupts off.
 - The sequencer sends the same notes on both settings. On the speaker the
   game's own set-up (its sysex for the speaker driver) gives the music one
   voice, which goes to the highest-priority channel sounding, so a few notes

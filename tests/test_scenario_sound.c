@@ -26,14 +26,15 @@ int main(void)
 	assert(FindDigitalSoundEntryByCode('?') == -0x01);
 
 	/* Scenario FFh is the one-code "I" sequence at DS:5E6E. Run it
-	 * through the original descriptor builder and PC-speaker boundary. */
+	 * through the original descriptor builder to the speaker's speech,
+	 * which plays the samples clean at 8000 Hz. */
 	DigitalSoundBuffer = informationSample;
 	NarrationMode = 0x01;
 	SoundDriverIndex = 0x00;
-	PCSpeakerSampleConversion.DelayScale = 0x0001;
 	PlayScenarioDigitalSoundSequence(-0x01);
 	assert(fakeBackend.buffer == informationSample);
 	assert(fakeBackend.secondWord == sizeof(informationSample));
+	assert(fakeBackend.firstWord == 0x1F40);
 	assert(ActiveDigitalSampleDescriptor != NULL);
 	assert(ActiveDigitalSampleDescriptor->SampleLength ==
 		sizeof(informationSample));

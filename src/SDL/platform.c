@@ -170,6 +170,14 @@ void SDLBackend_ServiceTimers(void)
     SDLBackend_AdvanceAudio();
 }
 
+void SDLBackend_HoldTimers(uint64_t nanoseconds)
+{
+    nextSpeakerEffectTick += nanoseconds;
+    nextMIDIDriverTick += nanoseconds;
+    nextMIDIServiceTick += nanoseconds;
+    nextGameClockTick += nanoseconds;
+}
+
 static void StoreRgba(uint32_t *pixel, byte red, byte green, byte blue)
 {
     byte *components;

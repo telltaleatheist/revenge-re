@@ -1,4 +1,4 @@
 {"digest": "6ec63cf8c7a5b345", "kinds": {"snap": 1}, "lines": 1, "snap": "intro"}
-{"digest": "c8dc535fea7d92bf", "kinds": {"midi --": 3, "midi 80": 370, "midi 90": 370, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi F7": 1, "midi reset": 2, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71, "tone": 46}, "lines": 908, "snap": "title"}
-{"digest": "0adc3fa5690c53c4", "kinds": {"midi 80": 1009, "midi 90": 1009, "midi B0": 16, "midi C0": 18, "snap": 1, "tone": 74}, "lines": 2127, "snap": "title_music"}
-{"digest": "89841beb5d746813", "kinds": {"snap": 1}, "lines": 1, "snap": "menu"}
+{"digest": "9450c632d7b81cbe", "kinds": {"midi --": 3, "midi 80": 370, "midi 90": 370, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi F7": 1, "midi reset": 2, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71, "tone": 46}, "lines": 908, "snap": "title"}
+{"digest": "6da2eab09fb27619", "kinds": {"midi 80": 1009, "midi 90": 1009, "midi B0": 16, "midi C0": 18, "snap": 1, "tone": 74}, "lines": 2127, "snap": "title_music"}
+{"digest": "23cbfdac32e7a74e", "kinds": {"snap": 1}, "lines": 1, "snap": "menu"}

@@ -103,6 +103,10 @@ void SDLBackend_WritePCSpeakerBitstream(
 	const byte *sampleData,
 	word16 byteCount);
 word16 SDLBackend_EndPCSpeakerTimedOutput(void);
+/* Speech when the sound is the speaker, played clean: unsigned 8-bit samples
+ * at their rate. The game waits until they end, its timers held as long, as
+ * the original's speaker speech ran with interrupts off (373D:0022). */
+void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz);
 void SDLBackend_WriteMIDIByte(byte midiByte);
 void SDLBackend_StartMusicVoice(
 	word16 voiceId,
@@ -119,6 +123,9 @@ void SDLBackend_ResetMusicVoices(void);
  * and at existing platform boundaries.
  */
 void SDLBackend_ServiceTimers(void);
+/* Every timer's next tick put off by `nanoseconds`: what fell due in that
+ * time comes that much later. */
+void SDLBackend_HoldTimers(uint64_t nanoseconds);
 void SDLBackend_DispatchInterrupt(byte interruptNumber);
 word16 SDLBackend_ProbeLegacyAudioDevice(byte deviceId);
 byte SDLBackend_ReadLegacyAudioPort(word16 port);

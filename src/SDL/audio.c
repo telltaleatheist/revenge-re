@@ -27,6 +27,8 @@ enum
 	 * second, in bytes. */
 	AudioQueueLimitBytes = AUDIO_MIX_SAMPLE_RATE / 4 * AUDIO_MIX_CHANNELS * (int) sizeof(float),
 	MusicPathCapacity = 4096,
+	/* The speech's wait renders the sound a millisecond at a time. */
+	SpeechWaitStepNS = 1000000,
 	MusicErrorCapacity = 256
 };
 
@@ -36,6 +38,7 @@ static const char MusicTableName[] = "instruments.json";
 static SDL_AudioStream *audioStream;
 static FILE *pcmFile;
 static int musicLoaded;
+static int speakerSounding;
 static word16 timedDelayScale;
 static word16 timedByteCount;
 
@@ -119,12 +122,14 @@ void SDLBackend_AdvanceAudio(void)
 
 byte SDLBackend_EnablePCSpeaker(void)
 {
+	speakerSounding = 1;
 	AudioMix_SpeakerGate(1);
 	return 0x03;
 }
 
 void SDLBackend_SilencePCSpeaker(void)
 {
+	speakerSounding = 0;
 	AudioMix_SpeakerGate(0);
 }
 
@@ -156,6 +161,34 @@ word16 SDLBackend_EndPCSpeakerTimedOutput(void)
 	 * host has no corresponding busy-loop cost, so report the instruction-
 	 * proportional count used by the recovered scale search. */
 	return (word16) ((uint32) timedByteCount * 0x08 * timedDelayScale);
+}
+
+void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz)
+{
+	const uint64_t start = HostClock_NowNS();
+	uint64_t length;
+	uint64_t now;
+	word16 index;
+
+	if (sampleRateHz == 0x0000)
+		return;
+	length = (uint64_t) sampleCount * UINT64_C(1000000000) / sampleRateHz;
+	/* The original took the speaker from its timer for the speech
+	 * (373D:002E) and gave it back after (373D:020F): a tone sounding
+	 * before is silent meanwhile, and sounds again after. */
+	AudioMix_SpeakerGate(0);
+	AudioMix_SampleRate(sampleRateHz);
+	for (index = 0; index < sampleCount; ++index)
+		AudioMix_QueueUnsigned8(samples[index]);
+	while ((now = HostClock_NowNS()) - start < length)
+	{
+		const uint64_t left = length - (now - start);
+
+		HostClock_DelayNS(left < SpeechWaitStepNS ? left : SpeechWaitStepNS);
+		SDLBackend_AdvanceAudio();
+	}
+	AudioMix_SpeakerGate(speakerSounding);
+	SDLBackend_HoldTimers(HostClock_NowNS() - start);
 }
 
 void SDLBackend_WriteMIDIByte(byte midiByte)

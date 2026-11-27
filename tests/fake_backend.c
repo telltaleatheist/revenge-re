@@ -436,6 +436,18 @@ word16 SDLBackend_EndPCSpeakerTimedOutput(void)
         * fakeBackend.secondWord * 0x08);
 }
 
+void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz)
+{
+    fakeBackend.buffer = (void *)samples;
+    fakeBackend.secondWord = sampleCount;
+    fakeBackend.firstWord = sampleRateHz;
+}
+
+void SDLBackend_HoldTimers(uint64_t nanoseconds)
+{
+    (void)nanoseconds;
+}
+
 void SDLBackend_WriteMIDIByte(byte midiByte)
 {
     fakeBackend.midiBytes[fakeBackend.midiByteCount++] = midiByte;

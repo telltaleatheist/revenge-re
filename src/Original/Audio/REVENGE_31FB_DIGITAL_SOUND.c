@@ -373,9 +373,10 @@ void LoadScenarioDigitalSoundBank(int8 scenarioCode)
 		}
 		++soundIndex;
 	}
-	if (SoundDriverIndex == 0x00)
-		TranslatePCSpeakerSampleBuffer(
-			DigitalSoundBuffer, packedBufferSize);
+	/* 31FB:0559 then turned the bank into speaker bit patterns
+	 * (TranslatePCSpeakerSampleBuffer) when the sound was the speaker. The
+	 * rebuild keeps the samples as they are and plays them clean
+	 * (SDLBackend_PlaySpeech). */
 }
 
 // 31FB:0742: void PlayScenarioDigitalSoundSequence(signed char scenarioCode)
@@ -701,9 +702,14 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 				descriptor->SampleLength);
 			if (SoundDriverIndex == 0x00)
 			{
-				PlayPCSpeakerBitstream(
+				/* The original played the bank's bit patterns on the
+				 * speaker (PlayPCSpeakerBitstream, 31FB:11F1) with
+				 * interrupts off; the rebuild plays the samples clean,
+				 * the game held as long. */
+				SDLBackend_PlaySpeech(
 					FAR_POINTER(byte, descriptor->SampleDataSegment,
-						descriptor->SampleDataOffset), descriptor->SampleLength);
+						descriptor->SampleDataOffset), descriptor->SampleLength,
+					DIGITAL_SOUND_SAMPLE_RATE_HZ);
 				AudioLog_PcmDone();
 			}
 			else
