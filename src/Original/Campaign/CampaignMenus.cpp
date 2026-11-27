@@ -1,7 +1,8 @@
-// REVENGE_0D73_CAMPAIGN_MENUS.cpp
+// 0D73: campaign menus
+// CampaignMenus.cpp
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
-#include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
+#include "CampaignInternal.h"
 #include "revenge/debug.h"
 
 #include <string.h>

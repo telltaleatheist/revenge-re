@@ -1,3 +1,4 @@
+// 39CC: clock snapshot
 // Reconstructed original local-clock snapshot procedure (segment 39CC).
 
 #include "REVENGE.h"

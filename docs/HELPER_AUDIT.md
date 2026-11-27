@@ -31,7 +31,7 @@ the control flow that must remain comparable with the assembly.
 | `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `GetAdapterByteX` | video copy/fill/tile procedures | Invented shared coordinate conversion. |
 | `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `GetAdapterRowByteCount` | video copy/fill/tile procedures | Wrapper around the invented coordinate conversion. |
 | `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `ReadRleRunLength` | `DecodeRLEBlock_33D6` family | Splits original decoder control flow. |
-| `REVENGE_0D73_SAVE_LOAD.cpp` | `GetSaveSlotDescriptor` | save/load menu procedures | Game-specific DS record selection. |
+| `SaveLoad.cpp` | `GetSaveSlotDescriptor` | save/load menu procedures | Game-specific DS record selection. |
 | `REVENGE_1A1F_INTERNAL.h` | `GetPersistentUnitRecord` | scene interpreter `2A4E` | Game-record addressing inside the interpreter. |
 | `REVENGE_1A1F_INTERNAL.h` | `GetUnitRouteRecord` | scene interpreter `2A4E` | Game-record addressing inside the interpreter. |
 | `REVENGE_1A1F_INTERNAL.h` | `ReadSceneByte` | scene interpreter `2A4E` | Hides instruction-pointer mutation repeated by the ASM. |
@@ -48,7 +48,7 @@ the control flow that must remain comparable with the assembly.
 | `MIDISequence.cpp` | `SetMIDIVoiceCountFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
 | `MIDISequence.cpp` | `RebuildMIDIVoiceList` | MIDI allocation/service procedures | Extracted original voice-list loop. |
 | `REVENGE_39F8_STRING_TOKENIZE.c` | `IsFarStringDelimiter` | `FarStringTokenize` | Splits the original delimiter scans. |
-| `REVENGE_3A3C_TIMEZONE.cpp` | `ReadCalendarBoundary` | calendar conversion procedure | Extracted DS table access from the original arithmetic. |
+| `Timezone.cpp` | `ReadCalendarBoundary` | calendar conversion procedure | Extracted DS table access from the original arithmetic. |
 
 Applied on 2026-09-28:
 

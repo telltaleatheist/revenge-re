@@ -1,11 +1,12 @@
-// REVENGE_0D73_SAVE_LOAD.cpp
+// 0D73: save load
+// SaveLoad.cpp
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
+#include "CampaignInternal.h"
 #include "revenge/debug.h"
 #include "revenge/story_text.h"
 

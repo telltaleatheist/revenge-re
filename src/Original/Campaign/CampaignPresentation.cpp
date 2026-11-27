@@ -1,11 +1,12 @@
-// REVENGE_0D73_CAMPAIGN_PRESENTATION.cpp
+// 0D73: campaign presentation
+// CampaignPresentation.cpp
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
+#include "CampaignInternal.h"
 #include "revenge/debug.h"
 
 #include <string.h>
@@ -342,7 +343,7 @@ void LoadAndPresentScreen(word16 resourceIndex)
     ShowMouseCursorOverlay();
 }
 
-/* 0D73:341F is reconstructed in Campaign/REVENGE_0D73_PRESENTATION.cpp. */
+/* 0D73:341F is reconstructed in Campaign/Presentation.cpp. */
 
 // 0D73:347D: present a campaign scene with its optional indexed message.
 // VERIFIED against 0D73:347D-350F.

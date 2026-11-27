@@ -13,3 +13,15 @@ file	src/Original/Audio/REVENGE_3621_MIDI_SEQUENCE.cpp	src/Original/Audio/MIDISe
 file	src/Original/Audio/REVENGE_375F_AUDIO_HARDWARE.cpp	src/Original/Audio/AudioHardware.cpp	375F	audio hardware
 file	src/Original/Audio/REVENGE_375F_DIGITAL_PLAYBACK.cpp	src/Original/Audio/DigitalPlayback.cpp	375F	digital playback
 file	src/Original/Audio/REVENGE_38AE_PIT_TIMER.cpp	src/Original/Audio/PITTimer.cpp	38AE	PIT timer
+file	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_DRIVER.cpp	src/Original/Campaign/CampaignDriver.cpp	0D73	campaign driver
+file	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_INTERNAL.h	src/Original/Campaign/CampaignInternal.h	0D73	campaign declarations
+file	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_MENUS.cpp	src/Original/Campaign/CampaignMenus.cpp	0D73	campaign menus
+file	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_PRESENTATION.cpp	src/Original/Campaign/CampaignPresentation.cpp	0D73	campaign presentation
+file	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_ROSTER.cpp	src/Original/Campaign/CampaignRoster.cpp	0D73	campaign roster
+file	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_STAGES_00_10.cpp	src/Original/Campaign/CampaignStages00To10.cpp	0D73	campaign stages 00 to 10
+file	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_STAGES_11_21.cpp	src/Original/Campaign/CampaignStages11To21.cpp	0D73	campaign stages 11 to 21
+file	src/Original/Campaign/REVENGE_0D73_PRESENTATION.cpp	src/Original/Campaign/Presentation.cpp	0D73	presentation
+file	src/Original/Campaign/REVENGE_0D73_SAVE_LOAD.cpp	src/Original/Campaign/SaveLoad.cpp	0D73	save load
+file	src/Original/Campaign/REVENGE_39CC_CLOCK_SNAPSHOT.cpp	src/Original/Campaign/ClockSnapshot.cpp	39CC	clock snapshot
+file	src/Original/Campaign/REVENGE_3A07_EPOCH_TIME.cpp	src/Original/Campaign/EpochTime.cpp	3A07	epoch time
+file	src/Original/Campaign/REVENGE_3A3C_TIMEZONE.cpp	src/Original/Campaign/Timezone.cpp	3A3C	timezone

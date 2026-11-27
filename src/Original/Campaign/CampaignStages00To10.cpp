@@ -1,7 +1,8 @@
-// REVENGE_0D73_CAMPAIGN_DRIVER.cpp
+// 0D73: campaign stages 00 to 10
+// CampaignDriver.cpp
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
-#include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
+#include "CampaignInternal.h"
 #include "revenge/debug.h"
 
 // 0D73:0448: int16 RunCampaignStage00(void)

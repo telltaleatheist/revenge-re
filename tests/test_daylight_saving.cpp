@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-/* 3A3C:01ED, the C runtime's daylight-saving test (REVENGE_3A3C_TIMEZONE.cpp),
+/* 3A3C:01ED, the C runtime's daylight-saving test (Timezone.cpp),
  * over every input the clock can give it: each year since 1970 to 2097, a day
  * of the year that year has (month 0) or a month and day, and the hours either
  * side of the 2 a.m. change. (A day of the year past the year's end would

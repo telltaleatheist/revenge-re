@@ -1,7 +1,8 @@
-// REVENGE_0D73_CAMPAIGN_ROSTER.cpp
+// 0D73: campaign roster
+// CampaignRoster.cpp
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
-#include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
+#include "CampaignInternal.h"
 
 // 0D73:2101: byte PrepareActivePilotList(void)
 // VERIFIED against 0D73:2101-214A.

@@ -92,11 +92,11 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Audio/MIDIDrivers.cpp
 	src/Original/Utility/REVENGE_3968_INTEGER_FORMAT.cpp
 	src/Original/Utility/REVENGE_39C4_DECIMAL_PARSE.cpp
-	src/Original/Campaign/REVENGE_39CC_CLOCK_SNAPSHOT.cpp
+	src/Original/Campaign/ClockSnapshot.cpp
     src/Original/IO/REVENGE_39D9_SYSTEM_TIME.cpp
 	src/Original/IO/REVENGE_39DC_ENVIRONMENT.cpp
-	src/Original/Campaign/REVENGE_3A07_EPOCH_TIME.cpp
-	src/Original/Campaign/REVENGE_3A3C_TIMEZONE.cpp
+	src/Original/Campaign/EpochTime.cpp
+	src/Original/Campaign/Timezone.cpp
     src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.cpp
     src/Original/Input/REVENGE_0800_CURSOR.cpp
     src/Original/Text/REVENGE_0800_FONT_RASTER.cpp)
@@ -118,13 +118,13 @@ list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Tactical/REVENGE_1A1F_TACTICAL_CONTROL.cpp)
 
 list(APPEND CHR_ORIGINAL_SOURCES
-	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_DRIVER.cpp
-	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_STAGES_00_10.cpp
-	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_STAGES_11_21.cpp
-	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_ROSTER.cpp
-	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_MENUS.cpp
-	src/Original/Campaign/REVENGE_0D73_CAMPAIGN_PRESENTATION.cpp
-	src/Original/Campaign/REVENGE_0D73_SAVE_LOAD.cpp
+	src/Original/Campaign/CampaignDriver.cpp
+	src/Original/Campaign/CampaignStages00To10.cpp
+	src/Original/Campaign/CampaignStages11To21.cpp
+	src/Original/Campaign/CampaignRoster.cpp
+	src/Original/Campaign/CampaignMenus.cpp
+	src/Original/Campaign/CampaignPresentation.cpp
+	src/Original/Campaign/SaveLoad.cpp
 	src/Original/Graphics/REVENGE_0D73_RESOURCE.cpp
 	src/Original/Graphics/REVENGE_0D73_CURSOR_BACKING.cpp
 	src/Original/Graphics/REVENGE_0D73_DISPLAY_BACKING.cpp
@@ -138,7 +138,7 @@ list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/IO/REVENGE_0D73_SAVE_COMPATIBILITY.cpp
 	src/Original/UI/REVENGE_0D73_INVALID_SAVE_DIALOG.cpp
 	src/Original/UI/REVENGE_0D73_CONFIRMATION.cpp
-	src/Original/Campaign/REVENGE_0D73_PRESENTATION.cpp
+	src/Original/Campaign/Presentation.cpp
 	src/Original/Graphics/REVENGE_0D73_MISSION_HEADER.cpp
 	src/Original/Graphics/REVENGE_0D73_TACTICAL_VIDEO.cpp
 	src/Original/Text/REVENGE_0D73_SCENARIO_MESSAGES.cpp)
