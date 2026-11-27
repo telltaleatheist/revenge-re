@@ -1,7 +1,8 @@
 // 0D73: wait
 /* Input-wait procedure from original segment 0D73. */
 
-#include "REVENGE.h"
+#include "Campaign/Campaign.h"
+#include "Input/Input.h"
 
 #include "revenge/input.h"
 

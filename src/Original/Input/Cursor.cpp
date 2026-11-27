@@ -1,8 +1,9 @@
 // 0800: cursor
 /* Software-cursor procedures from original segment 0800. */
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
 #include "revenge/platform_backend.h"
 #include "revenge/video.h"
 

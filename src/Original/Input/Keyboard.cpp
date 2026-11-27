@@ -3,9 +3,12 @@
 // Assembly-led translation of the resident keyboard handler, its ring's
 // consumers and the translator.
 
-#include "REVENGE.h"
+#include "Data/AudioData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Input/Input.h"
+#include "Utility/Utility.h"
 #include "revenge/input.h"
-#include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
 
 #include <stddef.h>
