@@ -667,7 +667,7 @@ unplaced SelectFireTargetPrompt 4 host pointer
 unplaced SelectStrafingAreaPrompt 4 host pointer
 unplaced SharedCompressionDictionaryByteCount 2 zero at every snap
 unplaced SharedCompressionDictionarySegment 2 zero at every snap
-unplaced SharedGraphicsBackingBuffers 80 host pointer
+unplaced SharedGraphicsBackingBuffers 98 host pointer: the table at DS:83EE-8485, 26h far pointers
 unplaced SoundConfigTokenDelimiters 4 zero at every snap
 unplaced SoundDriverIndex 1 zero at every snap
 unplaced SoundEffectsEnabled 2 several places match

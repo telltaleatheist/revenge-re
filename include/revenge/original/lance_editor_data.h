@@ -5,9 +5,11 @@
 #include "revenge/original/campaign_data.h"
 #include "revenge/original_data.h"
 #include "revenge/roster.h"
+#include "revenge/debug.h"
 #include "revenge/types.h"
 
-extern byte *SharedGraphicsBackingBuffers[0x20];
+/* DS:83EE-8485: 26h far pointers; the pilots' portraits fill 17h-25h. */
+extern byte *SharedGraphicsBackingBuffers[0x26];
 
 enum
 {
@@ -160,6 +162,6 @@ extern const char *UnitArmorConditionLabelTextTable[0x06];
 extern const char *const UnitStatusEquipmentSeparator;
 
 #define UnitEditorGraphicsBuffer(index) \
-	SharedGraphicsBackingBuffers[(index)]
+	SharedGraphicsBackingBuffers[REVENGE_INDEX(SharedGraphicsBackingBuffers, (index))]
 
 #endif

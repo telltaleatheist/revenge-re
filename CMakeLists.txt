@@ -856,6 +856,20 @@ if(CHR_BUILD_SDL)
         add_test(NAME import.original_initial_data_image COMMAND test_initial_data_image)
         set_tests_properties(import.original_initial_data_image PROPERTIES SKIP_RETURN_CODE 77)
 
+        # A save the original wrote (REVENGE_ORIGINAL_SAVE): its selection
+        # cards through the lance editor's card preparation.
+        add_executable(test_lance_editor_cards tests/test_lance_editor_cards.c)
+        target_include_directories(test_lance_editor_cards PRIVATE src/Original tests)
+        target_link_libraries(test_lance_editor_cards PRIVATE
+            chr_original_runtime
+            chr_sdl_backend)
+        chr_strict(test_lance_editor_cards)
+        add_test(NAME units.lance_editor_cards COMMAND test_lance_editor_cards)
+        add_test(NAME units.lance_editor_cards_stale COMMAND test_lance_editor_cards stale)
+        set_tests_properties(units.lance_editor_cards PROPERTIES SKIP_RETURN_CODE 77)
+        set_tests_properties(units.lance_editor_cards_stale PROPERTIES SKIP_RETURN_CODE 77
+            PASS_REGULAR_EXPRESSION "fault: a selection card's sprite pointer 7929:0008|skipped")
+
         add_executable(test_sdl_renderer_fallback tests/test_sdl_renderer_fallback.c)
         # The runtime and the host call each other, and this test calls only
         # the host. GNU ld reads each static library once, in order, so it is

@@ -102,7 +102,7 @@ extern word16 MouseCursorBackingSourceTileX;
 extern word16 MouseCursorBackingSourcePixelY;
 extern word16 MouseCursorBackingWidthTiles;
 extern word16 MouseCursorBackingHeightPixels;
-extern byte *SharedGraphicsBackingBuffers[0x20];
+extern byte *SharedGraphicsBackingBuffers[0x26];
 extern byte *VideoFramebuffer;
 extern word16 ResourceRuntimeInitialized;
 extern byte VideoPaletteData[0x0310];

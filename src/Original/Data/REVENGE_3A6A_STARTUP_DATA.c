@@ -79,6 +79,6 @@ word16 MouseCursorBackingSourceTileX = 0x0000;
 word16 MouseCursorBackingSourcePixelY = 0x0008;
 word16 MouseCursorBackingWidthTiles = 0x0002;
 word16 MouseCursorBackingHeightPixels = 0x0010;
-byte *SharedGraphicsBackingBuffers[0x20];
+byte *SharedGraphicsBackingBuffers[0x26];
 byte *VideoFramebuffer;
 word16 ResourceRuntimeInitialized;
