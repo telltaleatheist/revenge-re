@@ -342,11 +342,15 @@ word16 LoadMediaConfiguration(void)
 	}
 	else
 	{
-		byte *configBuffer = AllocateFarMemory((uint32) configTextLength);
+		/* One byte more than the text: the loop below reads a byte past
+		 * the end before it stops (the original reads whatever follows the
+		 * buffer and drops it). */
+		byte *configBuffer = AllocateFarMemory((uint32) configTextLength + 0x01);
 		word16 bytesRemaining = configTextLength;
 		byte *readCursor = configBuffer;
 
 		memcpy(configBuffer, configText, configTextLength);
+		configBuffer[configTextLength] = '\0';
 		/* DOS can address this SS buffer directly. Register its complete
 		 * extent while the preserved far strtok cursor traverses it. */
 		HostFarPointer_Register(configLine, sizeof(configLine));
@@ -359,8 +363,11 @@ word16 LoadMediaConfiguration(void)
 				if (lineLength >= 0x28 || continueParsing == FALSE)
 					break;
 				int16 character = (int16) *readCursor++;
-				--bytesRemaining;
-				if (bytesRemaining == 0x00)
+				/* 2C7F:055F-0567: the count is tested before the decrement,
+				 * so the last line's newline is read and that line applied;
+				 * the parse stops on the read after it. */
+				word16 bytesBefore = bytesRemaining--;
+				if (bytesBefore == 0x00)
 					continueParsing = FALSE;
 				else if (character == '\n')
 				{

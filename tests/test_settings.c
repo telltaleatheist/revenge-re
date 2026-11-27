@@ -7,6 +7,8 @@
 #include "game_paths.h"
 #include "settings.h"
 #include "original_import_for_tests.h"
+#include "REVENGE.h"
+#include "revenge/original_data.h"
 
 #include <SDL3/SDL.h>
 #include <assert.h>
@@ -28,7 +30,12 @@
  *   none     with no MEDIA.CFG, our defaults
  *   own      a settings.txt of the player's own words wins
  *   bad      a choice it doesn't know is a fault naming the file and line
+ *   parse    the game's own parse applies every line, the last (the input
+ *            device) too, as 2C7F:055F tests its count before the decrement
  */
+/* 2C7F's loader; only its own file declares it. */
+word16 LoadMediaConfiguration(void);
+
 static char saves[1024];
 static char settingsPath[1024];
 
@@ -114,6 +121,15 @@ int main(int argc, char **argv)
 		choices = HostSettings_MediaChoices();
 		assert(choices->choice[MEDIA_OPTION_MUSIC] == 3 && choices->choice[MEDIA_OPTION_SOUND] == 2);
 		assert(choices->choice[MEDIA_OPTION_INPUT] == 0 && strcmp(choices->soundParameter, "2C0") == 0);
+	}
+	else if (strcmp(mode, "parse") == 0)
+	{
+		WriteText(settingsPath, "video = vga\nmusic = pc-speaker\nsound = pc-speaker\ninput = mouse\n");
+		assert(HostSettings_Prepare());
+		assert(InputConfigurationRecords[0].value != 0x0000);
+		InputDeviceType = 0x0000;
+		assert(LoadMediaConfiguration() == TRUE);
+		assert(InputDeviceType == InputConfigurationRecords[0].value);
 	}
 	else
 	{

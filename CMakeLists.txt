@@ -857,12 +857,12 @@ if(CHR_BUILD_SDL)
 
         # The player's settings file, made once from the install's MEDIA.CFG.
         add_executable(test_settings tests/test_settings.c)
-        target_include_directories(test_settings PRIVATE src/SDL tests)
+        target_include_directories(test_settings PRIVATE src/Original src/SDL tests)
         target_link_libraries(test_settings PRIVATE
             chr_original_runtime
             chr_sdl_backend)
         chr_strict(test_settings)
-        foreach(mode first none own bad)
+        foreach(mode first none own bad parse)
             add_test(NAME platform.settings_${mode} COMMAND test_settings ${mode})
             set_tests_properties(platform.settings_${mode} PROPERTIES SKIP_RETURN_CODE 77)
         endforeach()
