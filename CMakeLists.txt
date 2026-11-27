@@ -978,24 +978,43 @@ if(CHR_BUILD_SDL)
     target_compile_features(chr_setup PUBLIC cxx_std_20)
     chr_strict(chr_setup)
 
-    if(BUILD_TESTING)
-        # The setup's recipe without a window; its game parts need REVENGE_GAME.
-        add_executable(test_setup tests/setup_test.cpp src/Setup/BuildTag.cpp)
-        target_link_libraries(test_setup PRIVATE chr_setup)
-        chr_strict(test_setup)
-        add_test(NAME setup.recipe COMMAND test_setup ${CMAKE_CURRENT_BINARY_DIR}/setup_work)
-    endif()
-
     # The preserved Original source owns main() and all game flow. SDL only
     # satisfies the DOS/BIOS/hardware boundary calls made by that source.
     # The campaign loop is admitted and this target links end to end. It is a
     # normal build product now that the preservation inventory is complete.
-    add_executable(Revenge src/SDL/entry.c)
+    # The program, as `chr` in a package (tools/build_package.py). The
+    # launcher's asks and the setup come first (src/SDL/setup_host.h).
+    set(CHR_PROGRAM_SOURCES src/SDL/entry.c src/SDL/setup_host.cpp src/Setup/BuildTag.cpp)
+    add_executable(Revenge ${CHR_PROGRAM_SOURCES})
     target_compile_definitions(Revenge PRIVATE
         CHR_VERSION="${PROJECT_VERSION}")
+    if(NOT CHR_RELEASE_TAG STREQUAL "")
+        target_compile_definitions(Revenge PRIVATE CHR_RELEASE_TAG="${CHR_RELEASE_TAG}")
+    endif()
     target_link_libraries(Revenge PRIVATE
-        ${CHR_RUNTIME_WITH_BACKEND})
+        ${CHR_RUNTIME_WITH_BACKEND} chr_setup)
     chr_strict(Revenge)
+    if(BUILD_TESTING)
+        # The setup's recipe without a window, and the launcher contract on the
+        # program; their game parts need REVENGE_GAME. The release stamp is
+        # checked on the same program stamped with a tag no release has.
+        add_executable(revenge_stamped ${CHR_PROGRAM_SOURCES})
+        target_compile_definitions(revenge_stamped PRIVATE
+            CHR_VERSION="0.0.1" CHR_RELEASE_TAG="chr-v0.0.1")
+        target_link_libraries(revenge_stamped PRIVATE
+            ${CHR_RUNTIME_WITH_BACKEND} chr_setup)
+        chr_strict(revenge_stamped)
+        add_executable(test_setup tests/setup_test.cpp src/Setup/BuildTag.cpp)
+        target_link_libraries(test_setup PRIVATE chr_setup)
+        chr_strict(test_setup)
+        add_test(NAME setup.recipe COMMAND test_setup ${CMAKE_CURRENT_BINARY_DIR}/setup_work)
+        if(Python3_Interpreter_FOUND)
+            add_test(NAME setup.status
+                COMMAND ${Python3_EXECUTABLE} -I ${CMAKE_CURRENT_SOURCE_DIR}/tests/status_setup_test.py
+                    --program $<TARGET_FILE:Revenge> --stamped $<TARGET_FILE:revenge_stamped>
+                    --work ${CMAKE_CURRENT_BINARY_DIR}/status_setup_work)
+        endif()
+    endif()
     add_custom_command(TARGET Revenge POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/config/REVENGE.CFG

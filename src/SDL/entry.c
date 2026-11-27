@@ -8,6 +8,7 @@
 #include "game_paths.h"
 #include "harness.h"
 #include "settings.h"
+#include "setup_host.h"
 #include "revenge/rules.h"
 #include "revenge/story.h"
 
@@ -36,16 +37,18 @@ static uint64_t AudioLogClock(void)
  */
 int main(int argc, char **argv)
 {
+	int setupExit;
+
 	if (argc == 0x02 && strcmp(argv[0x01], "--version") == 0x00)
 	{
 		printf("Revenge %s\n", CHR_VERSION);
 		return 0x00;
 	}
-	if (argc != 0x01)
-	{
-		fputs("Usage: Revenge [--version]\n", stderr);
-		return 0x02;
-	}
+	/* The launcher's asks, its start options and the game folder this start
+	 * plays from (setup_host.h). */
+	setupExit = SetupHost_Start(argc, argv);
+	if (setupExit >= 0x00)
+		return setupExit;
 	if (!SDLHost_ConfigureAssetDirectory())
 		return 0x01;
 	/* The game's own text and data: the story file in our write folder,
