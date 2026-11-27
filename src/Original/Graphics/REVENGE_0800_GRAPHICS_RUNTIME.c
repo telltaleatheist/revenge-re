@@ -302,20 +302,30 @@ uint32 CalculateSelectedWeaponRating(
 {
 	uint32 rating;
 	word16 weaponIndex;
+	word16 maskLow = LOW_WORD(weaponMask);
+	word16 maskHigh = HIGH_WORD(weaponMask);
+	word16 selected;
 
 	rating = 0x00000000UL;
 	for (weaponIndex = 0x0000;
-		weaponIndex < WEAPON_DEFINITION_COUNT
-			&& weaponMask != 0x00000000UL;
+		weaponIndex < WEAPON_DEFINITION_COUNT;
 		++weaponIndex)
 	{
-		if ((weaponMask & 0x00000001UL) != 0x00000000UL)
+		/* 0800:075A tests the mask for zero with OR BX,BP, which leaves the
+		 * high word ORed into the low word on every pass. */
+		maskLow |= maskHigh;
+		if (maskLow == 0x0000)
+			break;
+
+		/* SHR BP,1 then RCR BX,1: the 32-bit shift, its low bit the weapon's. */
+		selected = maskLow & 0x0001;
+		maskLow = (word16) ((maskLow >> 0x01) | ((maskHigh & 0x0001) << 0x0F));
+		maskHigh >>= 0x01;
+		if (selected != 0x0000)
 		{
 			rating += (uint32) WeaponCombatRatingByType[weaponIndex]
 				* (byte) weaponCounts[weaponIndex];
 		}
-
-		weaponMask >>= 0x01;
 	}
 
 	return rating;

@@ -28,3 +28,14 @@ page on what the original does.
   gunnery from two letters of a file name: a target number in the seventies,
   where a pilot's is a few. The first is the fourth battle's heavy unit, which
   then almost never hits. Kept; `tools/trace/README.md` (finding 5).
+
+- **A computer unit can misjudge its own firepower.** Before choosing how
+  close to fight, a computer unit rates its close, medium and long firepower
+  by adding up its ready weapons for each range (0800:072C). The adding loop
+  damages its own list as it goes: a weapon from the second half of the
+  weapon table is never counted, and instead it makes the loop count weapons
+  from the first half that the range doesn't use. A unit can so believe it
+  outguns its target at long range and back away from a fight it should
+  close, or the other way round. The first seen is the fourth battle's
+  vehicle, which backs away from the player's 'Mech it was closing on. Kept;
+  `tools/trace/README.md` (finding 6).

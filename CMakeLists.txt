@@ -700,6 +700,14 @@ if(BUILD_TESTING)
     chr_strict(test_deploy_pilot)
     add_test(NAME tactical.original_deploy_pilot COMMAND test_deploy_pilot)
 
+    # A unit's firepower ratings through the weapon-rating sum's mask, as the
+    # original's loop leaves it.
+    add_executable(test_weapon_rating tests/test_weapon_rating.c tests/fake_backend.c)
+    target_include_directories(test_weapon_rating PRIVATE src/SDL tests)
+    target_link_libraries(test_weapon_rating PRIVATE chr_original_runtime)
+    chr_strict(test_weapon_rating)
+    add_test(NAME tactical.original_weapon_rating COMMAND test_weapon_rating)
+
     add_executable(test_scenario_clock_subtick
         tests/test_scenario_clock_subtick.c
         tests/fake_backend.c)

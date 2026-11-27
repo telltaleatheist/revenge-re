@@ -301,3 +301,17 @@ What the comparison found in the port, and how each was fixed:
    and the template's gunnery where the original's has pilot FF. It assigns
    now, from those four bytes imported from the player's copy
    (PilotRosterRecordPastEnd; tactical.original_deploy_pilot).
+6. **The weapon-rating sum leaks its mask's high word.** A unit's close,
+   medium and long firepower (2D1B:0005) are sums of a rating per ready
+   weapon, taken through a 32-bit mask of the weapons each range counts
+   (0800:072C). Its loop tests the mask for zero with `or bx,bp`, which
+   leaves the high word ORed into the low word on every pass, so a weapon in
+   the high half (10h-16h) is never counted itself, and its bit walks down
+   the low half and counts weapons the mask did not select. An original bug,
+   kept. The port summed the mask as written: in stages_02_04, when SCENE4's
+   unit 20 got weapon 10h back from recycling at step 195, the original rated
+   its medium and long firepower at twice the port's, chose long range
+   against unit 1, and at step 197 backed away from it where the port's
+   closed in and fired. The loop is the original's now
+   (tactical.original_weapon_rating). With it, every state line and save
+   block of stages_02_04 matches the original's.
