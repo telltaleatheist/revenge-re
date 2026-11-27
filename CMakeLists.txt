@@ -828,7 +828,6 @@ if(CHR_BUILD_SDL)
     add_library(chr_sdl_backend STATIC
         src/SDL/audio.c
         src/SDL/host_config.c
-        src/SDL/io.c
         src/SDL/game_file.c
         src/SDL/game_paths.c
         src/SDL/settings.c
@@ -1131,6 +1130,14 @@ if(CHR_BUILD_SDL)
         # player's own save folder.
         set_tests_properties(platform.game_file PROPERTIES
             ENVIRONMENT "REVENGE_SAVE_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}/test-saves/")
+
+        add_executable(test_text_screen tests/test_text_screen.c)
+        target_include_directories(test_text_screen PRIVATE src/SDL)
+        target_link_libraries(test_text_screen PRIVATE ${CHR_RUNTIME_WITH_BACKEND})
+        chr_strict(test_text_screen)
+        add_test(NAME platform.text_screen COMMAND test_text_screen)
+        set_tests_properties(platform.text_screen PROPERTIES
+            ENVIRONMENT "SDL_VIDEO_DRIVER=dummy;SDL_AUDIO_DRIVER=dummy;SDL_MAC_BACKGROUND_APP=1")
 
         add_executable(test_sdl_game_paths tests/test_sdl_game_paths.c)
         target_link_libraries(test_sdl_game_paths PRIVATE

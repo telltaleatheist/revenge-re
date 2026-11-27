@@ -81,5 +81,7 @@ uint16 Platform_ScanCodeForKey(int scancode);
 /* The colours the screen can show (16 in the 16-colour mode, else 256) as RGB
  * into out; returns how many. */
 uint16 Platform_PaletteRgb(byte out[0x300]);
+/* A row of the text screen (src/SDL/platform.c), 80 characters, no NUL. */
+const char *Platform_TextRow(uint16 row);
 
 #endif

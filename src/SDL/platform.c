@@ -9,6 +9,7 @@
 
 #include <SDL3/SDL.h>
 #include <ctype.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -31,6 +32,28 @@ static byte indexedFramebuffer[VIDEO_SEGMENT_SIZE];
 static uint32_t scanoutPixels[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
 static uint32_t logicalPalette[VGA_DAC_ENTRY_COUNT];
 static byte currentVideoMode = 0x03;
+
+/*
+ * The text screen. Before its first picture the game sets the BIOS's 80x25
+ * text mode (slot 05, mode 02h) and prints its banner through DOS
+ * (3327:0007); its start-up failures print there too. The window shows that
+ * page while a text mode is set: light grey on black, SDL's own 8x8 font
+ * (SDL_RenderDebugText) drawn twice as tall, 640x400, the screen's shape.
+ * A copy of what is printed goes to stderr, where faults go.
+ */
+enum
+{
+    TextColumns = 80,
+    TextRows = 25,
+    TextGlyphSize = 8,
+    TextScreenWidth = TextColumns * TextGlyphSize,
+    TextScreenHeight = TextRows * TextGlyphSize * 2
+};
+
+static char textPage[TextRows][TextColumns];
+static uint16 textRow;
+static uint16 textColumn;
+static SDL_Texture *textScreen;
 static uint64_t nextVideoPresentTick;
 static void (*gameClockHandler)(void);
 static word16 mouseEventMask;
@@ -816,6 +839,8 @@ void SDLBackend_Close(void)
 {
     RevengeTrace("video: closing SDL window=%p\n", (void *)window);
     SDLBackend_CloseAudio();
+    SDL_DestroyTexture(textScreen);
+    textScreen = 0;
     SDL_DestroyTexture(texture);
     texture = 0;
     SDL_DestroyRenderer(renderer);
@@ -860,9 +885,119 @@ byte SDLBackend_GetVideoMode(void)
     return currentVideoMode;
 }
 
+/* Modes 00h-03h and 07h are the BIOS's text modes. */
+static int IsTextMode(byte videoMode)
+{
+    return videoMode <= 0x03 || videoMode == 0x07;
+}
+
+static void ClearTextPage(void)
+{
+    memset(textPage, ' ', sizeof(textPage));
+    textRow = 0x0000;
+    textColumn = 0x0000;
+}
+
+static void NextTextRow(void)
+{
+    if (++textRow < TextRows)
+        return;
+    memmove(textPage[0x00], textPage[0x01], sizeof(textPage) - TextColumns);
+    memset(textPage[TextRows - 1], ' ', TextColumns);
+    textRow = TextRows - 1;
+}
+
+/* DOS INT 21h/AH=06h, output: the BIOS's teletype rules, CR to the row's
+ * start, LF down a row (the page scrolls up off the bottom), BS back one,
+ * BEL nothing; any other byte its glyph, the row wrapping at 80. */
+uint16 SDLBackend_DirectConsoleIO(byte character)
+{
+    if (character == 0xFF)
+        return 0x0600;
+
+    (void)fputc(character, stderr);
+    if (character == '\n')
+        (void)fflush(stderr);
+    switch (character)
+    {
+    case '\r':
+        textColumn = 0x0000;
+        break;
+    case '\n':
+        NextTextRow();
+        break;
+    case 0x08:
+        if (textColumn != 0x0000)
+            --textColumn;
+        break;
+    case 0x07:
+        break;
+    default:
+        textPage[textRow][textColumn] = (char)character;
+        if (++textColumn == TextColumns)
+        {
+            textColumn = 0x0000;
+            NextTextRow();
+        }
+        break;
+    }
+    return (uint16)(0x0600 | character);
+}
+
+const char *Platform_TextRow(uint16 row)
+{
+    return textPage[row < TextRows ? row : TextRows - 1];
+}
+
+/* The text page into the window's 320x200: drawn at 640x400 on a texture of
+ * its own, then scaled as the screen is. */
+static int RenderTextScreen(void)
+{
+    uint16 row;
+
+    if (textScreen == 0)
+    {
+        textScreen = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
+            SDL_TEXTUREACCESS_TARGET, TextScreenWidth, TextScreenHeight);
+        if (textScreen == 0)
+            return FALSE;
+    }
+    if (!SDL_SetRenderTarget(renderer, textScreen)
+        || !SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF)
+        || !SDL_RenderClear(renderer)
+        || !SDL_SetRenderScale(renderer, 1.0f, 2.0f)
+        || !SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF))
+    {
+        (void)SDL_SetRenderTarget(renderer, 0);
+        return FALSE;
+    }
+    for (row = 0x0000; row < TextRows; ++row)
+    {
+        char line[TextColumns + 1];
+        uint16 column;
+
+        for (column = 0x0000; column < TextColumns; ++column)
+        {
+            unsigned char glyph = (unsigned char)textPage[row][column];
+
+            line[column] = glyph >= 0x20 && glyph < 0x7F ? (char)glyph : ' ';
+        }
+        line[TextColumns] = '\0';
+        (void)SDL_RenderDebugText(renderer, 0.0f,
+            (float)(row * TextGlyphSize), line);
+    }
+    (void)SDL_SetRenderScale(renderer, 1.0f, 1.0f);
+    return SDL_SetRenderTarget(renderer, 0)
+        && SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF)
+        && SDL_RenderClear(renderer)
+        && SDL_RenderTexture(renderer, textScreen, 0, 0);
+}
+
 void SDLBackend_SetVideoMode(byte videoMode)
 {
     currentVideoMode = videoMode;
+    if (IsTextMode(videoMode))
+        ClearTextPage();
     if (videoMode != 0x03 && window == 0)
         (void)SDLBackend_Open();
 }
@@ -969,6 +1104,14 @@ int SDLBackend_PresentIndexedFramebuffer(void)
      * shown. */
     if (texture == 0 || renderer == 0 || Harness_Active())
         return FALSE;
+
+    if (IsTextMode(currentVideoMode))
+    {
+        if (!RenderTextScreen())
+            return FALSE;
+        SaveSmokeShot();
+        return SDL_RenderPresent(renderer);
+    }
 
     for (pixelIndex = 0x00000000;
          pixelIndex < VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT;
