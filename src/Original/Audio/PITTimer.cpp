@@ -5,6 +5,7 @@
 
 #include "Audio/Audio.h"
 #include "Data/TextIOData.h"
+#include "revenge/audio.h"
 
 // 38AE:0010, the IRQ0 vector exchange under CLI, is Replaced: there is no
 // vector table. Its callers (375F:063B, 375F:06A9) start and stop the game
@@ -33,5 +34,5 @@ uint16_t PITFrequencyToDivisor(uint16_t frequencyHz)
 {
     if (frequencyHz <= 0x12)
         return 0x00;
-    return (uint16_t) (0x1234DEUL / frequencyHz);
+    return (uint16_t) (PIT_INPUT_FREQUENCY_HZ / frequencyHz);
 }

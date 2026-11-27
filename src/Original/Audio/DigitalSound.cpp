@@ -18,9 +18,6 @@
 
 #include <string.h>
 
-constexpr int DIGITAL_SOUND_ENTRY_COUNT = 0x16;
-constexpr uint16_t DIGITAL_SOUND_SAMPLE_RATE_HZ = 0x1F40;
-constexpr uint16_t DIGITAL_SOUND_UNITY_PLAYBACK_SCALE = 0x6633;
 constexpr int8_t SOUND_DRIVER_PC_SPEAKER = 0x00;
 
 #define DigitalSoundDriverDescriptorOffsets() \
@@ -52,21 +49,21 @@ void LoadDigitalWeaponEffectBank(void)
         return;
 
     uint16_t effectIndex;
-    for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
+    for (effectIndex = 0x00; effectIndex < DIGITAL_WEAPON_EFFECT_COUNT; ++effectIndex)
     {
         DigitalWeaponEffectRecord *effect =
             &DigitalWeaponEffectTable()[effectIndex];
         if ((int16_t) effect->ResourceIndex >= 0x00)
-            effect->LoadState = 0x00;
+            effect->LoadState = WEAPON_EFFECT_TO_LOAD;
     }
 
     uint16_t packedBytes = 0x00;
-    for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
+    for (effectIndex = 0x00; effectIndex < DIGITAL_WEAPON_EFFECT_COUNT; ++effectIndex)
     {
         DigitalWeaponEffectRecord *effect =
             &DigitalWeaponEffectTable()[effectIndex];
         if ((int16_t) effect->ResourceIndex < 0x00 ||
-            effect->LoadState != 0x00)
+            effect->LoadState != WEAPON_EFFECT_TO_LOAD)
             continue;
 
         uint16_t sampleLength = (uint16_t)
@@ -74,10 +71,10 @@ void LoadDigitalWeaponEffectBank(void)
                                         .fileLength;
         effect->PackedBufferOffset = packedBytes;
         effect->SampleLength = sampleLength;
-        effect->LoadState = 0x01;
+        effect->LoadState = WEAPON_EFFECT_LOADED;
 
         uint16_t aliasIndex;
-        for (aliasIndex = effectIndex + 0x01; aliasIndex < 0x10; ++aliasIndex)
+        for (aliasIndex = effectIndex + 0x01; aliasIndex < DIGITAL_WEAPON_EFFECT_COUNT; ++aliasIndex)
         {
             DigitalWeaponEffectRecord *alias =
                 &DigitalWeaponEffectTable()[aliasIndex];
@@ -85,7 +82,7 @@ void LoadDigitalWeaponEffectBank(void)
             {
                 alias->PackedBufferOffset = packedBytes;
                 alias->SampleLength = sampleLength;
-                alias->LoadState = 0x02;
+                alias->LoadState = WEAPON_EFFECT_SHARED;
             }
         }
         packedBytes += sampleLength;
@@ -96,12 +93,12 @@ void LoadDigitalWeaponEffectBank(void)
         SoundDriverIndex, packedBytes,
         (void *) DigitalWeaponSampleBuffer);
 
-    for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
+    for (effectIndex = 0x00; effectIndex < DIGITAL_WEAPON_EFFECT_COUNT; ++effectIndex)
     {
         DigitalWeaponEffectRecord *effect =
             &DigitalWeaponEffectTable()[effectIndex];
         if ((int16_t) effect->ResourceIndex >= 0x00 &&
-            effect->LoadState == 0x01)
+            effect->LoadState == WEAPON_EFFECT_LOADED)
         {
             const CachedFileDescriptor *resource;
 
@@ -178,8 +175,8 @@ void PlayDigitalWeaponEffect(uint16_t weaponEffectId)
         effect->PlaybackScale);
     InitializeDigitalSampleDescriptor(
         ActiveDigitalSampleDescriptor,
-        DigitalWeaponSampleBuffer + effect->PackedBufferOffset, effect->SampleLength, DIGITAL_SOUND_SAMPLE_RATE_HZ,
-        DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
+        DigitalWeaponSampleBuffer + effect->PackedBufferOffset, effect->SampleLength, DIGITAL_WEAPON_EFFECT_SAMPLE_RATE_HZ,
+        DIGITAL_WEAPON_EFFECT_UNITY_SCALE);
     ConfigureDigitalSampleTiming(
         ActiveDigitalSampleDescriptor,
         effect->PlaybackScale);
@@ -238,7 +235,7 @@ void InitializeDigitalSoundDriver(void)
 		 * at 31FB:0049), kept that rate under 8000 Hz, and at 31FB:0091
 		 * fell back to the speaker below 3000 Hz. The rebuild's mixer runs
 		 * on the host at the samples' own rate. */
-        DigitalPlaybackRateHz = DIGITAL_SOUND_SAMPLE_RATE_HZ;
+        DigitalPlaybackRateHz = SCENARIO_DIGITAL_SOUND_SAMPLE_RATE_HZ;
         InitializeDigitalDriverQueue(&ActiveDigitalDriverQueue);
     }
     /* 31FB:00A9 then built the speaker's bit patterns for 8000 Hz
@@ -255,7 +252,7 @@ int16_t FindDigitalSoundEntryByCode(uint8_t soundCode)
 {
     int16_t foundIndex = -0x01;
     int16_t entryIndex = 0x00;
-    while (entryIndex < DIGITAL_SOUND_ENTRY_COUNT && foundIndex < 0x00)
+    while (entryIndex < SCENARIO_DIGITAL_SOUND_ENTRY_COUNT && foundIndex < 0x00)
     {
         // DigitalSoundEntries +00 is the one-byte lookup code.
         if (DigitalSoundEntries()[entryIndex].SoundCode == soundCode)
@@ -385,14 +382,14 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
             {
                 if (scenarioCode == 0x37)
                 {
-                    if (narrationMode == 0x02)
+                    if (narrationMode == NARRATION_MODE_FULL_VOICE)
                         strcpy(soundCodes, DigitalSoundString(0x5E92));
                     else
                         strcpy(soundCodes, DigitalSoundString(0x5E96));
                     strcat(soundCodes, DigitalSoundString(0x5E98));
                     if (NarrationEmphasis != 0x00)
                         strcat(soundCodes, DigitalSoundString(0x5E9B));
-                    else if (narrationMode == 0x02)
+                    else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                         strcat(soundCodes, DigitalSoundString(0x5E9D));
                 }
                 else if (scenarioCode != 0x38)
@@ -403,7 +400,7 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                         {
                             if ((scenarioCode >= 0x42 && scenarioCode <= 0x45) || scenarioCode == 0x54)
                             {
-                                if (narrationMode == 0x02)
+                                if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                     strcpy(soundCodes, DigitalSoundString(0x5ED5));
                                 else
                                     strcpy(soundCodes, DigitalSoundString(0x5ED9));
@@ -419,7 +416,7 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                                     strcat(soundCodes, DigitalSoundString(0x5EE7));
                                 if (NarrationEmphasis != 0x00)
                                     strcat(soundCodes, DigitalSoundString(0x5EEA));
-                                else if (narrationMode == 0x02)
+                                else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                     strcat(soundCodes, DigitalSoundString(0x5EEC));
                             }
                             else if (scenarioCode < 0x46 || scenarioCode > 0x4E)
@@ -432,7 +429,7 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                                         {
                                             if (scenarioCode == 0x55)
                                             {
-                                                if (narrationMode == 0x02)
+                                                if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                                     strcpy(soundCodes, DigitalSoundString(0x5F52));
                                                 else
                                                     strcpy(soundCodes, DigitalSoundString(0x5F56));
@@ -448,13 +445,13 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                                                     strcat(soundCodes, DigitalSoundString(0x5F64));
                                                 if (NarrationEmphasis != 0x00)
                                                     strcat(soundCodes, DigitalSoundString(0x5F67));
-                                                else if (narrationMode == 0x02)
+                                                else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                                     strcat(soundCodes, DigitalSoundString(0x5F69));
                                             }
                                         }
                                         else
                                         {
-                                            if (narrationMode == 0x02)
+                                            if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                                 strcpy(soundCodes, DigitalSoundString(0x5F39));
                                             else
                                                 strcpy(soundCodes, DigitalSoundString(0x5F3D));
@@ -470,13 +467,13 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                                                 strcat(soundCodes, DigitalSoundString(0x5F4B));
                                             if (NarrationEmphasis != 0x00)
                                                 strcat(soundCodes, DigitalSoundString(0x5F4E));
-                                            else if (narrationMode == 0x02)
+                                            else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                                 strcat(soundCodes, DigitalSoundString(0x5F50));
                                         }
                                     }
                                     else
                                     {
-                                        if (narrationMode == 0x02)
+                                        if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                             strcpy(soundCodes, DigitalSoundString(0x5F20));
                                         else
                                             strcpy(soundCodes, DigitalSoundString(0x5F24));
@@ -492,13 +489,13 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                                             strcat(soundCodes, DigitalSoundString(0x5F32));
                                         if (NarrationEmphasis != 0x00)
                                             strcat(soundCodes, DigitalSoundString(0x5F35));
-                                        else if (narrationMode == 0x02)
+                                        else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                             strcat(soundCodes, DigitalSoundString(0x5F37));
                                     }
                                 }
                                 else
                                 {
-                                    if (narrationMode == 0x02)
+                                    if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                         strcpy(soundCodes, DigitalSoundString(0x5F07));
                                     else
                                         strcpy(soundCodes, DigitalSoundString(0x5F0B));
@@ -514,13 +511,13 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                                         strcat(soundCodes, DigitalSoundString(0x5F19));
                                     if (NarrationEmphasis != 0x00)
                                         strcat(soundCodes, DigitalSoundString(0x5F1C));
-                                    else if (narrationMode == 0x02)
+                                    else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                         strcat(soundCodes, DigitalSoundString(0x5F1E));
                                 }
                             }
                             else
                             {
-                                if (narrationMode == 0x02)
+                                if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                     strcpy(soundCodes, DigitalSoundString(0x5EEE));
                                 else
                                     strcpy(soundCodes, DigitalSoundString(0x5EF2));
@@ -536,13 +533,13 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                                     strcat(soundCodes, DigitalSoundString(0x5F00));
                                 if (NarrationEmphasis != 0x00)
                                     strcat(soundCodes, DigitalSoundString(0x5F03));
-                                else if (narrationMode == 0x02)
+                                else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                     strcat(soundCodes, DigitalSoundString(0x5F05));
                             }
                         }
                         else
                         {
-                            if (narrationMode == 0x02)
+                            if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                 strcpy(soundCodes, DigitalSoundString(0x5EC2));
                             else
                                 strcpy(soundCodes, DigitalSoundString(0x5EC6));
@@ -554,13 +551,13 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                                 strcat(soundCodes, DigitalSoundString(0x5ECE));
                             if (NarrationEmphasis != 0x00)
                                 strcat(soundCodes, DigitalSoundString(0x5ED1));
-                            else if (narrationMode == 0x02)
+                            else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                                 strcat(soundCodes, DigitalSoundString(0x5ED3));
                         }
                     }
                     else
                     {
-                        if (narrationMode == 0x02)
+                        if (narrationMode == NARRATION_MODE_FULL_VOICE)
                             strcpy(soundCodes, DigitalSoundString(0x5EB2));
                         else
                             strcpy(soundCodes, DigitalSoundString(0x5EB6));
@@ -570,13 +567,13 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                             strcat(soundCodes, DigitalSoundString(0x5EBB));
                         if (NarrationEmphasis != 0x00)
                             strcat(soundCodes, DigitalSoundString(0x5EBE));
-                        else if (narrationMode == 0x02)
+                        else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                             strcat(soundCodes, DigitalSoundString(0x5EC0));
                     }
                 }
                 else
                 {
-                    if (narrationMode == 0x02)
+                    if (narrationMode == NARRATION_MODE_FULL_VOICE)
                         strcpy(soundCodes, DigitalSoundString(0x5E9F));
                     else
                         strcpy(soundCodes, DigitalSoundString(0x5EA3));
@@ -588,13 +585,13 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                         strcat(soundCodes, DigitalSoundString(0x5EAB));
                     if (NarrationEmphasis != 0x00)
                         strcat(soundCodes, DigitalSoundString(0x5EAE));
-                    else if (narrationMode == 0x02)
+                    else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                         strcat(soundCodes, DigitalSoundString(0x5EB0));
                 }
             }
             else
             {
-                if (narrationMode == 0x02)
+                if (narrationMode == NARRATION_MODE_FULL_VOICE)
                     strcpy(soundCodes, DigitalSoundString(0x5E7F));
                 else
                     strcpy(soundCodes, DigitalSoundString(0x5E83));
@@ -606,13 +603,13 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                     strcat(soundCodes, DigitalSoundString(0x5E8B));
                 if (NarrationEmphasis != 0x00)
                     strcat(soundCodes, DigitalSoundString(0x5E8E));
-                else if (narrationMode == 0x02)
+                else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                     strcat(soundCodes, DigitalSoundString(0x5E90));
             }
         }
         else
         {
-            if (narrationMode == 0x02)
+            if (narrationMode == NARRATION_MODE_FULL_VOICE)
                 strcpy(soundCodes, DigitalSoundString(0x5E72));
             else
                 strcpy(soundCodes, DigitalSoundString(0x5E75));
@@ -622,7 +619,7 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                 strcat(soundCodes, DigitalSoundString(0x5E79));
             if (NarrationEmphasis != 0x00)
                 strcat(soundCodes, DigitalSoundString(0x5E7B));
-            else if (narrationMode == 0x02)
+            else if (narrationMode == NARRATION_MODE_FULL_VOICE)
                 strcat(soundCodes, DigitalSoundString(0x5E7D));
         }
         break;
@@ -661,8 +658,8 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
                     &DigitalSamplePlaybackDescriptors()[descriptorCount],
                     DigitalSoundBuffer + entry->PackedBufferOffset,
                     entry->SampleLength,
-                    DIGITAL_SOUND_SAMPLE_RATE_HZ,
-                    DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
+                    SCENARIO_DIGITAL_SOUND_SAMPLE_RATE_HZ,
+                    SCENARIO_DIGITAL_SOUND_UNITY_SCALE);
                 descriptorEntries[descriptorCount] = soundEntryIndex;
                 ++descriptorCount;
             }
@@ -684,13 +681,13 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
 				 * the game held as long. */
                 SDLBackend_PlaySpeech(
                     descriptor->SampleData, descriptor->SampleLength,
-                    DIGITAL_SOUND_SAMPLE_RATE_HZ);
+                    SCENARIO_DIGITAL_SOUND_SAMPLE_RATE_HZ);
                 AudioLog_PcmDone();
             }
             else
             {
                 ConfigureDigitalSampleTiming(descriptor,
-                    DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
+                    SCENARIO_DIGITAL_SOUND_UNITY_SCALE);
                 PrepareDigitalSamplePlayback(descriptor);
                 EnqueueDigitalSampleDescriptor(descriptor, &ActiveDigitalDriverQueue);
                 AttachDigitalDriverQueue(

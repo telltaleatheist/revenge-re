@@ -3,6 +3,7 @@
 #define REVENGE_DATA_AUDIO_DATA_H
 
 #include "Audio/Audio.h"
+#include "revenge/audio.h"
 #include "revenge/types.h"
 
 #include <stddef.h>
@@ -26,6 +27,12 @@ typedef struct DigitalSoundEntryRecord
     uint16_t PackedBufferOffset;
 } DigitalSoundEntryRecord;
 
+/* DigitalWeaponEffectRecord.LoadState: to be loaded, loaded into the bank,
+ * or sharing the sample of an earlier effect with the same resource. */
+inline constexpr uint16_t WEAPON_EFFECT_TO_LOAD = 0x00;
+inline constexpr uint16_t WEAPON_EFFECT_LOADED = 0x01;
+inline constexpr uint16_t WEAPON_EFFECT_SHARED = 0x02;
+
 typedef struct DigitalSoundDataLayout
 {
     uint16_t DriverDescriptorOffsets[0x09];
@@ -33,7 +40,7 @@ typedef struct DigitalSoundDataLayout
 	 * port's are DigitalSamplePlaybackDescriptorTable, typed; these bytes
 	 * stay as the story's media gives them. */
     uint8_t SampleDescriptorPlaces[0x0F][0x34];
-    DigitalWeaponEffectRecord WeaponEffects[0x10];
+    DigitalWeaponEffectRecord WeaponEffects[DIGITAL_WEAPON_EFFECT_COUNT];
     DigitalSoundEntryRecord SoundEntries[0x16];
     uint8_t ScenarioCodeStrings[0x017D];
 } DigitalSoundDataLayout;
@@ -78,6 +85,9 @@ extern uint8_t *DigitalWeaponSampleBuffer;
 extern uint8_t *DigitalSoundBuffer;
 extern uint8_t DigitalSoundDriverMutationGuard;
 extern uint16_t NarrationMode;
+/* NarrationMode's three settings; 2, the original data's, is full voice. */
+inline constexpr uint16_t NARRATION_MODE_FULL_VOICE = 0x0002;
+inline constexpr uint16_t NARRATION_MODE_COUNT = 0x0003;
 extern uint16_t ActiveNarrationSubject;
 extern uint16_t NarrationEmphasis;
 

@@ -15,8 +15,8 @@
  * descriptors and the ports, are Replaced in the ledgers. */
 
 /* The two kept DOS sampled-output descriptors (DS:6EB2, DS:6EE2). */
-DigitalPlaybackDescriptor NullDigitalPlayback = { 0x6D28, 0x02EE, 0x02EF, 0x02F0, 0x0000, 0x0000 };
-DigitalPlaybackDescriptor SoundBlasterPlayback = { 0x6DC2, 0x032C, 0x032D, 0x032E, 0x0070, 0x0000 };
+DigitalPlaybackDescriptor NullDigitalPlayback = { 0x6D28, NULL_OUTPUT_INITIALIZE, NULL_OUTPUT_RELEASE, NULL_OUTPUT_WRITE_SAMPLE, 0x0000, 0x0000 };
+DigitalPlaybackDescriptor SoundBlasterPlayback = { 0x6DC2, SOUND_BLASTER_OUTPUT_INITIALIZE, SOUND_BLASTER_OUTPUT_RELEASE, SOUND_BLASTER_OUTPUT_WRITE_SAMPLE, 0x0070, 0x0000 };
 
 // 375F:02EE: the null output's initialize (RET); the host takes the rate.
 void InitializeNullDigitalOutput(uint16_t playbackRateHz)
@@ -60,8 +60,8 @@ void AcquireDigitalPlaybackDriver(uint16_t driverDescriptorOffset,
     {
         switch (driver->AcquireCallbackOffset)
         {
-        case 0x02EE: InitializeNullDigitalOutput(playbackRateHz); break;
-        case 0x032C: InitializeSoundBlasterDigitalOutput(playbackRateHz); break;
+        case NULL_OUTPUT_INITIALIZE: InitializeNullDigitalOutput(playbackRateHz); break;
+        case SOUND_BLASTER_OUTPUT_INITIALIZE: InitializeSoundBlasterDigitalOutput(playbackRateHz); break;
         }
     }
 }
@@ -81,8 +81,8 @@ void ReleaseDigitalPlaybackDriver(uint16_t driverDescriptorOffset)
         {
             switch (driver->ReleaseCallbackOffset)
             {
-            case 0x02EF: ReleaseNullDigitalOutput(); break;
-            case 0x032D: ReleaseSoundBlasterDigitalOutput(); break;
+            case NULL_OUTPUT_RELEASE: ReleaseNullDigitalOutput(); break;
+            case SOUND_BLASTER_OUTPUT_RELEASE: ReleaseSoundBlasterDigitalOutput(); break;
             }
         }
     }

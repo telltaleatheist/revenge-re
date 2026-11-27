@@ -72,17 +72,23 @@ static const MIDIDriverHostDispatch NullMIDIDriverHostDispatch = {
     ServiceNullMIDIDriver
 };
 
+/* The speaker's divisor for a voice at rest: 1,193,182 Hz / 14h is about
+ * 59.7 kHz, above hearing. Notes below 0Eh have no divisor in
+ * SpeakerMIDIFrequencyDivisors and rest too. */
+constexpr uint16_t SPEAKER_SILENT_PIT_DIVISOR = 0x0014;
+constexpr uint8_t SPEAKER_LOWEST_NOTE = 0x0E;
+
 uint16_t SpeakerMIDIDriverProbe(void) { return SOUND_HARDWARE_AVAILABLE; }
 
 void ActivateSpeakerMIDIDriver(uint16_t activationArgument)
 {
     (void) activationArgument;
     /* CLI/STI around this (3621:08BA, 08D1) go. */
-    SpeakerMIDIRuntime.ActivePITDivisor = 0x0014;
+    SpeakerMIDIRuntime.ActivePITDivisor = SPEAKER_SILENT_PIT_DIVISOR;
     AudioLog_SpeakerGate(1);
     SDLBackend_EnablePCSpeaker();
-    AudioLog_SpeakerDivisor(0x0014);
-    SDLBackend_WritePCSpeakerPITDivisor(0x0014);
+    AudioLog_SpeakerDivisor(SPEAKER_SILENT_PIT_DIVISOR);
+    SDLBackend_WritePCSpeakerPITDivisor(SPEAKER_SILENT_PIT_DIVISOR);
 }
 
 void DeactivateSpeakerMIDIDriver(void)
@@ -111,15 +117,15 @@ void SpeakerMIDIVoiceOn(
     (void) velocity;
     voiceRecord = MIDIVoiceRecordAt(voiceRecordOffset);
     note = voiceRecord->PlaybackNote;
-    divisor = 0x0014;
-    if (note >= 0x0E)
-        divisor = SpeakerMIDIFrequencyDivisors[note - 0x0E];
+    divisor = SPEAKER_SILENT_PIT_DIVISOR;
+    if (note >= SPEAKER_LOWEST_NOTE)
+        divisor = SpeakerMIDIFrequencyDivisors[note - SPEAKER_LOWEST_NOTE];
     voiceRecord->Driver.Speaker.PITDivisor = divisor;
 }
 
 void SpeakerMIDIVoiceOff(uint16_t voiceRecordOffset)
 {
-    MIDIVoiceRecordAt(voiceRecordOffset)->Driver.Speaker.PITDivisor = 0x0014;
+    MIDIVoiceRecordAt(voiceRecordOffset)->Driver.Speaker.PITDivisor = SPEAKER_SILENT_PIT_DIVISOR;
 }
 
 void ResetSpeakerMIDIDriver(void)
@@ -138,8 +144,8 @@ void ResetSpeakerMIDIDriver(void)
         MIDIVoiceRecord *voiceRecord = MIDIVoiceRecordAt(voice);
 
         voiceRecord->VoiceClass = 0x01;
-        voiceRecord->Driver.Speaker.PITDivisor = 0x0014;
-        voice += 0x20;
+        voiceRecord->Driver.Speaker.PITDivisor = SPEAKER_SILENT_PIT_DIVISOR;
+        voice += MIDI_VOICE_RECORD_SIZE;
     }
 }
 
@@ -166,7 +172,7 @@ void ServiceSpeakerMIDIDriver(void)
         AudioLog_SpeakerDivisor(divisor);
         SDLBackend_WritePCSpeakerPITDivisor(divisor);
     }
-    voice += 0x20;
+    voice += MIDI_VOICE_RECORD_SIZE;
     if (--SpeakerMIDIRuntime.ServiceVoiceCountdown == 0x00)
     {
         SpeakerMIDIRuntime.ServiceVoiceCountdown =
@@ -251,18 +257,18 @@ uint16_t FilterRolandMIDIByte(uint16_t midiByte)
     uint8_t outputByte;
 
     outputByte = (uint8_t) midiByte;
-    if ((outputByte & 0x80) != 0x00 && outputByte < 0xF0)
+    if ((outputByte & MIDI_STATUS_BIT) != 0x00 && outputByte < MIDI_SYSTEM_EXCLUSIVE)
     {
-        outputByte = (uint8_t) ((outputByte & 0xF0) |
-            MIDIChannelMap[outputByte & 0x0F]);
+        outputByte = (uint8_t) ((outputByte & MIDI_MESSAGE_TYPE_MASK) |
+            MIDIChannelMap[outputByte & MIDI_CHANNEL_MASK]);
     }
-    while (RolandMPU401.ByteCount >= 0x0100)
+    while (RolandMPU401.ByteCount >= MPU401_TRANSMIT_QUEUE_SIZE)
         ServiceRolandMIDIDriver();
     /* CLI/STI around the queue write (3621:0F0F, 0F29) go. */
     writeIndex = RolandMPU401.WriteIndex;
     RolandMPU401.TransmitQueue[writeIndex] = outputByte;
     ++writeIndex;
-    if (writeIndex >= 0x0100)
+    if (writeIndex >= MPU401_TRANSMIT_QUEUE_SIZE)
         writeIndex = 0x0000;
     RolandMPU401.WriteIndex = writeIndex;
     ++RolandMPU401.ByteCount;
@@ -271,7 +277,7 @@ uint16_t FilterRolandMIDIByte(uint16_t midiByte)
 
 void ResetRolandMIDIDriver(void)
 {
-    FilterRolandMIDIByte(0x00FF);
+    FilterRolandMIDIByte(MIDI_SYSTEM_RESET);
 }
 
 // 3621:0F32 is the shared no-op voice-on, voice-off, and instrument-load
@@ -290,7 +296,7 @@ void ServiceRolandMIDIDriver(void)
     SDLBackend_WriteMIDIByte(
         RolandMPU401.TransmitQueue[readIndex]);
     ++readIndex;
-    if (readIndex >= 0x0100)
+    if (readIndex >= MPU401_TRANSMIT_QUEUE_SIZE)
         readIndex = 0x0000;
     RolandMPU401.ReadIndex = readIndex;
     --RolandMPU401.ByteCount;

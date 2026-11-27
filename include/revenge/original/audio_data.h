@@ -76,6 +76,12 @@ typedef struct MIDISequenceState
 
 extern MIDISequenceState MIDISequence;
 
+/* MIDIPlaybackFlags: a sequence is playing, paused (its notes held back), or
+ * counting beats and measures as it plays. */
+inline constexpr uint16_t MIDI_PLAYBACK_ACTIVE = 0x0001;
+inline constexpr uint16_t MIDI_PLAYBACK_PAUSED = 0x0004;
+inline constexpr uint16_t MIDI_PLAYBACK_COUNT_MEASURES = 0x0008;
+
 /* Exact MIDI byte-parser state at DS:62B0-62B9. */
 #pragma pack(push, 1)
 typedef struct MIDIParserState
@@ -182,6 +188,7 @@ static_assert(sizeof(MIDIVoiceRecord) == 0x20,
     "An original MIDI voice allocator record occupies exactly 20h bytes.");
 static_assert(offsetof(MIDIVoiceRecord, ChannelStateOffset) == 0x06,
     "The channel near pointer must remain at voice offset 0006h.");
+inline constexpr uint16_t MIDI_VOICE_RECORD_SIZE = (uint16_t) sizeof(MIDIVoiceRecord);
 static_assert(offsetof(MIDIVoiceRecord, PlaybackNote) == 0x09,
     "The transposed note must remain at voice offset 0009h.");
 static_assert(offsetof(MIDIVoiceRecord, Driver) == 0x0A,
@@ -240,10 +247,12 @@ extern AdLibInstrumentPatch MIDIInstrumentPatches[0x20];
 /* The MPU-401 transmit queue at DS:6C12-6D17. DS:6C0E, the IRQ 2 vector the
  * original saved, has no field: the rebuild never takes the vector
  * (3621:0EDA). */
+inline constexpr uint16_t MPU401_TRANSMIT_QUEUE_SIZE = 0x0100;
+
 #pragma pack(push, 1)
 typedef struct RolandMPU401State
 {
-    uint8_t TransmitQueue[0x0100];
+    uint8_t TransmitQueue[MPU401_TRANSMIT_QUEUE_SIZE];
     uint16_t WriteIndex;
     uint16_t ReadIndex;
     uint16_t ByteCount;

@@ -16,6 +16,55 @@
         MIDIDriverHostDispatches, MIDI_DRIVER_HOST_COUNT - 0x01, \
         MIDIDriverHostDispatches[MIDI_DRIVER_HOST_COUNT - 0x01]))
 
+/* A standard MIDI file as the game takes it: format 0, one track, 60h ticks
+ * to a quarter note. */
+constexpr uint16_t MIDI_FILE_SINGLE_TRACK_FORMAT = 0x0000;
+constexpr uint16_t MIDI_FILE_TRACK_COUNT = 0x0001;
+constexpr uint16_t MIDI_TICKS_PER_QUARTER_NOTE = 0x0060;
+constexpr uint32_t MICROSECONDS_PER_MINUTE = 0x03938700;
+
+/* Meta events (status FFh in a file). The game takes a text event, type 01h,
+ * as its channel map. */
+constexpr uint8_t MIDI_META_EVENT = 0xFF;
+constexpr uint8_t MIDI_META_CHANNEL_MAP = 0x01;
+constexpr uint8_t MIDI_META_END_OF_TRACK = 0x2F;
+constexpr uint8_t MIDI_META_SET_TEMPO = 0x51;
+constexpr uint8_t MIDI_META_TIME_SIGNATURE = 0x58;
+
+/* The MIDI driver's data in the original's data segment: the three driver
+ * descriptors MIDIParser.ActiveDriverOffset names, the voice list's head and
+ * tail links and the voice records after them, the channel states (8 bytes
+ * each, 30h of them, then the one the free voices belong to), the
+ * instruments (0Ch bytes each) and the system-exclusive command buffer. */
+constexpr uint16_t MIDI_NULL_DRIVER_DESCRIPTOR = 0x6766;
+constexpr uint16_t MIDI_SPEAKER_DRIVER_DESCRIPTOR = 0x678E;
+constexpr uint16_t MIDI_ROLAND_DRIVER_DESCRIPTOR = 0x6BD8;
+constexpr uint16_t MIDI_VOICE_LIST_HEAD = 0x62BA;
+constexpr uint16_t MIDI_VOICE_LIST_TAIL = 0x62BC;
+constexpr uint16_t MIDI_VOICE_RECORDS = 0x62C0;
+constexpr uint16_t MIDI_CHANNEL_STATES = 0x6420;
+constexpr uint16_t MIDI_CHANNEL_STATES_SIZE = 0x0180;
+constexpr uint16_t MIDI_FREE_VOICE_CHANNEL_STATE = 0x65A0;
+constexpr uint16_t MIDI_INSTRUMENTS = 0x65A8;
+constexpr uint16_t MIDI_INSTRUMENT_RECORD_SIZE = 0x000C;
+constexpr uint16_t MIDI_SYSEX_BUFFER = 0x6738;
+
+/* A channel state whose flags have 40h maps each note to a channel state of
+ * its own: the 20h notes from its transpose take the states from 10h. */
+constexpr uint8_t MIDI_CHANNEL_KEY_MAP = 0x40;
+constexpr uint8_t MIDI_KEY_MAP_NOTE_COUNT = 0x20;
+constexpr uint8_t MIDI_KEY_MAP_FIRST_STATE = 0x10;
+
+/* MIDISystemExclusive.HandlerOffset: the original's handler for the next
+ * byte of a system-exclusive message. Its manufacturer must be the driver's
+ * (Flags[2]), then one of three commands, a length and that many bytes; any
+ * other is ignored to the message's end. */
+constexpr uint16_t SYSEX_EXPECT_MANUFACTURER = 0x0708;
+constexpr uint16_t SYSEX_EXPECT_COMMAND = 0x0716;
+constexpr uint16_t SYSEX_EXPECT_LENGTH = 0x0724;
+constexpr uint16_t SYSEX_COLLECT = 0x072E;
+constexpr uint16_t SYSEX_IGNORE = 0x0760;
+
 /*
  * DS:62B8 stores a 16-bit near pointer to a driver descriptor. Native C
  * callbacks cannot occupy those DOS words, so this host-only companion holds
@@ -77,10 +126,10 @@ void SendMIDIAllNotesOff(void)
 {
     int16_t channel;
 
-    for (channel = 0x000F; channel >= 0x0000; --channel)
+    for (channel = MIDI_CHANNEL_COUNT - 0x01; channel >= 0x0000; --channel)
     {
-        DispatchMIDIByte((uint16_t) (0x00B0 | channel));
-        DispatchMIDIByte(0x007B);
+        DispatchMIDIByte((uint16_t) (MIDI_CONTROL_CHANGE | channel));
+        DispatchMIDIByte(MIDI_CONTROLLER_ALL_NOTES_OFF);
         DispatchMIDIByte(0x0000);
     }
 }
@@ -111,16 +160,16 @@ uint16_t StartMIDISequence(const uint8_t *midiData, uint16_t playbackFlags)
     const uint8_t *track;
     const uint8_t *cursor;
 
-    if ((playbackFlags & 0x01) == 0x00)
+    if ((playbackFlags & MIDI_PLAYBACK_ACTIVE) == 0x00)
         return FALSE;
     if (midiData[0x00] != 'M' || midiData[0x01] != 'T' ||
         midiData[0x02] != 'h' || midiData[0x03] != 'd')
         return FALSE;
 
     headerLength = ((uint16_t) midiData[0x06] << 0x08) | midiData[0x07];
-    if ((((uint16_t) midiData[0x08] << 0x08) | midiData[0x09]) != 0x0000 ||
-        (((uint16_t) midiData[0x0A] << 0x08) | midiData[0x0B]) != 0x0001 ||
-        (((uint16_t) midiData[0x0C] << 0x08) | midiData[0x0D]) != 0x0060)
+    if ((((uint16_t) midiData[0x08] << 0x08) | midiData[0x09]) != MIDI_FILE_SINGLE_TRACK_FORMAT ||
+        (((uint16_t) midiData[0x0A] << 0x08) | midiData[0x0B]) != MIDI_FILE_TRACK_COUNT ||
+        (((uint16_t) midiData[0x0C] << 0x08) | midiData[0x0D]) != MIDI_TICKS_PER_QUARTER_NOTE)
         return FALSE;
 
     track = midiData + 0x08 + headerLength;
@@ -129,7 +178,7 @@ uint16_t StartMIDISequence(const uint8_t *midiData, uint16_t playbackFlags)
         return FALSE;
 
     MIDISequence.MIDIPlaybackStateBusy = TRUE;
-    if ((MIDISequence.MIDIPlaybackFlags & 0x01) != 0x00)
+    if ((MIDISequence.MIDIPlaybackFlags & MIDI_PLAYBACK_ACTIVE) != 0x00)
         SendMIDIAllNotesOff();
     MIDISequence.MIDIPlaybackFlags = 0x0000;
 
@@ -148,10 +197,10 @@ uint16_t StartMIDISequence(const uint8_t *midiData, uint16_t playbackFlags)
 // 3621:0193: void PauseMIDISequence(void)
 void PauseMIDISequence(void)
 {
-    if ((MIDISequence.MIDIPlaybackFlags & 0x05) == 0x01)
+    if ((MIDISequence.MIDIPlaybackFlags & (MIDI_PLAYBACK_ACTIVE | MIDI_PLAYBACK_PAUSED)) == MIDI_PLAYBACK_ACTIVE)
     {
         MIDISequence.MIDIPlaybackStateBusy = TRUE;
-        MIDISequence.MIDIPlaybackFlags |= 0x04;
+        MIDISequence.MIDIPlaybackFlags |= MIDI_PLAYBACK_PAUSED;
         SendMIDIAllNotesOff();
         MIDISequence.MIDIPlaybackStateBusy = FALSE;
     }
@@ -160,10 +209,10 @@ void PauseMIDISequence(void)
 // 3621:01B1: void ResumeMIDISequence(void)
 void ResumeMIDISequence(void)
 {
-    if ((MIDISequence.MIDIPlaybackFlags & 0x05) == 0x05)
+    if ((MIDISequence.MIDIPlaybackFlags & (MIDI_PLAYBACK_ACTIVE | MIDI_PLAYBACK_PAUSED)) == (MIDI_PLAYBACK_ACTIVE | MIDI_PLAYBACK_PAUSED))
     {
         MIDISequence.MIDIPlaybackStateBusy = TRUE;
-        MIDISequence.MIDIPlaybackFlags &= (uint16_t) ~0x04;
+        MIDISequence.MIDIPlaybackFlags &= (uint16_t) ~MIDI_PLAYBACK_PAUSED;
         MIDISequence.MIDIPlaybackStateBusy = FALSE;
     }
 }
@@ -171,7 +220,7 @@ void ResumeMIDISequence(void)
 // 3621:01CC: void StopMIDISequence(void)
 void StopMIDISequence(void)
 {
-    if ((MIDISequence.MIDIPlaybackFlags & 0x01) != 0x00)
+    if ((MIDISequence.MIDIPlaybackFlags & MIDI_PLAYBACK_ACTIVE) != 0x00)
     {
         MIDISequence.MIDIPlaybackStateBusy = TRUE;
         MIDISequence.MIDIPlaybackFlags = 0x0000;
@@ -198,7 +247,7 @@ void ServiceMIDISequenceTick(void)
             MIDISequence.MIDITimerCallsPerMinute);
     MIDISequence.MIDITicksUntilNextEvent += elapsedTicks;
 
-    if ((MIDISequence.MIDIPlaybackFlags & 0x08) != 0x00)
+    if ((MIDISequence.MIDIPlaybackFlags & MIDI_PLAYBACK_COUNT_MEASURES) != 0x00)
     {
         uint16_t firstAccumulator = (uint16_t) (elapsedTicks + MIDISequence.MIDIBeatTickRemainder);
         uint16_t elapsedBeats =
@@ -230,28 +279,28 @@ void ServiceMIDISequenceTick(void)
                 MIDISequence.MIDIPlaybackFlags);
             ++tracedMIDIEventCount;
         }
-        if (status < 0x80)
+        if (status < MIDI_STATUS_BIT)
         {
             status = MIDISequence.MIDIRunningStatus;
             --cursor;
         }
 
-        if (status < 0xF0)
+        if (status < MIDI_SYSTEM_EXCLUSIVE)
         {
             MIDISequence.MIDIRunningStatus = status;
-            uint8_t messageType = status & 0xF0;
+            uint8_t messageType = status & MIDI_MESSAGE_TYPE_MASK;
             uint8_t dataByteCount =
-                (messageType == 0xC0 || messageType == 0xD0) ? 0x01 : 0x02;
+                (messageType == MIDI_PROGRAM_CHANGE || messageType == MIDI_CHANNEL_PRESSURE) ? 0x01 : 0x02;
 
             // The DS:6266 dispatch table sends Note Off, Note On, and
             // Polyphonic Key Pressure to 034Bh, which suppresses those
             // messages while playback flag 04h is set. Other channel messages
             // continue to reach the driver while paused.
             uint8_t suppressWhilePaused =
-                messageType == 0x00 || messageType == 0x80 ||
-                messageType == 0x90 || messageType == 0xA0;
+                messageType == 0x00 || messageType == MIDI_NOTE_OFF ||
+                messageType == MIDI_NOTE_ON || messageType == MIDI_POLYPHONIC_KEY_PRESSURE;
             if (suppressWhilePaused &&
-                (MIDISequence.MIDIPlaybackFlags & 0x04) != 0x00)
+                (MIDISequence.MIDIPlaybackFlags & MIDI_PLAYBACK_PAUSED) != 0x00)
             {
                 cursor += dataByteCount;
             }
@@ -262,7 +311,7 @@ void ServiceMIDISequenceTick(void)
                     DispatchMIDIByte(*cursor++);
             }
         }
-        else if (status == 0xFF)
+        else if (status == MIDI_META_EVENT)
         {
             MIDISequence.MIDIRunningStatus = 0x00;
             uint8_t metaType = *cursor++;
@@ -271,40 +320,40 @@ void ServiceMIDISequenceTick(void)
 
             switch (metaType)
             {
-            case 0x01:
+            case MIDI_META_CHANNEL_MAP:
                 // This engine repurposes text-event type 01h as a 16-byte
                 // logical-to-physical MIDI channel map.
-                for (uint8_t channel = 0x00; channel < 0x10; ++channel)
+                for (uint8_t channel = 0x00; channel < MIDI_CHANNEL_COUNT; ++channel)
                     MIDIChannelMap[channel] =
-                        *cursor++ & 0x0F;
+                        *cursor++ & MIDI_CHANNEL_MASK;
                 break;
 
-            case 0x2F:
+            case MIDI_META_END_OF_TRACK:
                 StopMIDISequence();
                 MIDISequence.MIDIStreamCursor = cursor;
                 return;
 
-            case 0x51:
+            case MIDI_META_SET_TEMPO:
             {
                 uint32_t microsecondsPerQuarterNote =
                     ((uint32_t) cursor[0x00] << 0x10) |
                     ((uint32_t) cursor[0x01] << 0x08) |
                     cursor[0x02];
                 uint16_t beatsPerMinute = (uint16_t) DivideUnsigned32(
-                    0x03938700UL,
+                    MICROSECONDS_PER_MINUTE,
                     microsecondsPerQuarterNote);
-                ConfigureMIDITempo(0x60, beatsPerMinute);
+                ConfigureMIDITempo(MIDI_TICKS_PER_QUARTER_NOTE, beatsPerMinute);
                 break;
             }
 
-            case 0x58:
+            case MIDI_META_TIME_SIGNATURE:
             {
                 uint8_t numeratorByte = cursor[0x00];
                 uint8_t exponent = cursor[0x01];
                 uint8_t clocksByte = cursor[0x02];
                 uint8_t denominatorByte = exponent < 0x08 ? (uint8_t) (0x01 << exponent) : 0x00;
                 uint16_t divisor = (uint16_t) (denominatorByte * clocksByte);
-                uint16_t dividend = (uint16_t) (0x60 * numeratorByte);
+                uint16_t dividend = (uint16_t) (MIDI_TICKS_PER_QUARTER_NOTE * numeratorByte);
                 uint16_t beatsPerMeasure = dividend / divisor;
                 uint16_t divisionRemainder = dividend % divisor;
                 uint16_t retainedHighByte = divisionRemainder & 0xFF00;
@@ -322,17 +371,17 @@ void ServiceMIDISequenceTick(void)
         {
             // DS:6274 maps system statuses onto the in-function handlers at
             // 0285h, 0290h, 0341h, 0358h, 0369h, and 037Ah.
-            if (status < 0xF8)
+            if (status < MIDI_TIMING_CLOCK)
                 MIDISequence.MIDIRunningStatus = 0x00;
 
             switch (status)
             {
-            case 0xF0:
+            case MIDI_SYSTEM_EXCLUSIVE:
                 // F0h dispatches its status before processing the same
                 // VLQ-length payload form used by F7h continuation events.
                 DispatchMIDIByte(status);
                 /* fall through */
-            case 0xF7:
+            case MIDI_END_OF_EXCLUSIVE:
             {
                 uint16_t payloadLength = ReadMIDIVariableLengthQuantity(&cursor);
                 do
@@ -343,24 +392,24 @@ void ServiceMIDISequenceTick(void)
                 break;
             }
 
-            case 0xF1:
-            case 0xF3:
+            case MIDI_TIME_CODE_QUARTER_FRAME:
+            case MIDI_SONG_SELECT:
                 DispatchMIDIByte(status);
                 DispatchMIDIByte(*cursor++);
                 break;
 
-            case 0xF2:
+            case MIDI_SONG_POSITION:
                 DispatchMIDIByte(status);
                 DispatchMIDIByte(*cursor++);
                 DispatchMIDIByte(*cursor++);
                 break;
 
-            case 0xF6:
-            case 0xF8:
-            case 0xFA:
-            case 0xFB:
-            case 0xFC:
-            case 0xFE:
+            case MIDI_TUNE_REQUEST:
+            case MIDI_TIMING_CLOCK:
+            case MIDI_START:
+            case MIDI_CONTINUE:
+            case MIDI_STOP:
+            case MIDI_ACTIVE_SENSING:
                 DispatchMIDIByte(status);
                 break;
 
@@ -402,7 +451,7 @@ void DispatchMIDIByte(uint16_t midiByte)
     if (MIDIDriverHandlesByte(midiByte) != FALSE)
         return;
 
-    if (value < 0x80)
+    if (value < MIDI_STATUS_BIT)
     {
         parserOffset = MIDIParser.DispatchOffset;
         switch (parserOffset)
@@ -458,7 +507,7 @@ void DispatchMIDIByte(uint16_t midiByte)
                 break;
             }
             midiByte ^= MIDIParser.ControllerValue;
-            midiByte &= 0x007F;
+            midiByte &= MIDI_DATA_MASK;
             midiByte ^= MIDIParser.ControllerValue;
             MIDIParser.ControllerValue = midiByte;
             IgnoreMIDIControllerChange(
@@ -497,26 +546,26 @@ void DispatchMIDIByte(uint16_t midiByte)
         return;
     }
 
-    if (value >= 0xF0)
+    if (value >= MIDI_SYSTEM_EXCLUSIVE)
     {
-        if (value == 0xF0)
+        if (value == MIDI_SYSTEM_EXCLUSIVE)
         {
             DispatchMIDISystemByte(midiByte);
             parserOffset = 0x16;
         }
-        else if (value == 0xF7)
+        else if (value == MIDI_END_OF_EXCLUSIVE)
         {
             DispatchMIDISystemByte(midiByte);
             parserOffset = 0x12;
         }
-        else if (value == 0xFF)
+        else if (value == MIDI_SYSTEM_RESET)
         {
             ResetMIDIPlaybackState();
             parserOffset = 0x12;
         }
         else
         {
-            if (value >= 0xF8)
+            if (value >= MIDI_TIMING_CLOCK)
                 return;
             parserOffset = 0x12;
         }
@@ -549,11 +598,11 @@ void ActivateMIDIDriver(MIDIDriverDescriptorData *driverDescriptor)
     /* The original's Tandy, PS/1 and AdLib descriptors (68A6h, 6974h,
 	 * 6A3Ch) are Replaced with their drivers. */
     if (driverDescriptor == &SpeakerMIDIDriverDescriptor)
-        MIDIParser.ActiveDriverOffset = 0x678E;
+        MIDIParser.ActiveDriverOffset = MIDI_SPEAKER_DRIVER_DESCRIPTOR;
     else if (driverDescriptor == &RolandMIDIDriverDescriptor)
-        MIDIParser.ActiveDriverOffset = 0x6BD8;
+        MIDIParser.ActiveDriverOffset = MIDI_ROLAND_DRIVER_DESCRIPTOR;
     else
-        MIDIParser.ActiveDriverOffset = 0x6766;
+        MIDIParser.ActiveDriverOffset = MIDI_NULL_DRIVER_DESCRIPTOR;
     MIDI_DRIVER_DISPATCH(driverDescriptor)->activate(driverDescriptor->ActivationArgument);
     driverDescriptor->ActiveVoiceCount =
         driverDescriptor->AvailableVoiceCount;
@@ -569,7 +618,7 @@ void DeactivateMIDIDriver(void)
     MIDI_DRIVER_DISPATCH(driverDescriptor)->deactivate();
     ActiveMIDIDriverHost =
         &NullMIDIDriverDescriptor;
-    MIDIParser.ActiveDriverOffset = 0x6766;
+    MIDIParser.ActiveDriverOffset = MIDI_NULL_DRIVER_DESCRIPTOR;
 }
 
 // 3621:0550: uint16 MIDIDriverHandlesByte(uint16 midiByte)
@@ -590,26 +639,26 @@ uint16_t ReleaseMIDINote(uint16_t channel, uint16_t note)
     uint16_t previousVoiceOffset;
     uint8_t channelFlags;
 
-    channelStateOffset = (uint16_t) (0x6420 + (channel << 0x03));
+    channelStateOffset = (uint16_t) (MIDI_CHANNEL_STATES + (channel << 0x03));
     channelState = MIDIChannelStateAt(channelStateOffset);
     channelFlags = channelState->VoiceClass;
     if (channelFlags == 0x00)
         return FALSE;
 
-    if ((channelFlags & 0x40) != 0x00)
+    if ((channelFlags & MIDI_CHANNEL_KEY_MAP) != 0x00)
     {
         uint8_t mappedNote;
 
         mappedNote = (uint8_t) note - channelState->NoteTransposeAndFlags;
-        if (mappedNote >= 0x20)
+        if (mappedNote >= MIDI_KEY_MAP_NOTE_COUNT)
             return FALSE;
-        mappedNote += 0x10;
-        channelStateOffset = (uint16_t) (0x6420 + (mappedNote << 0x03));
+        mappedNote += MIDI_KEY_MAP_FIRST_STATE;
+        channelStateOffset = (uint16_t) (MIDI_CHANNEL_STATES + (mappedNote << 0x03));
         channelState = MIDIChannelStateAt(channelStateOffset);
         note = 0x0000;
     }
 
-    voiceOffset = 0x62BA;
+    voiceOffset = MIDI_VOICE_LIST_HEAD;
     for (;;)
     {
         voiceOffset = ReadMIDIDataWord(voiceOffset);
@@ -630,7 +679,7 @@ uint16_t ReleaseMIDINote(uint16_t channel, uint16_t note)
     WriteMIDIDataWord(previousVoiceOffset, nextVoiceOffset);
     WriteMIDIDataWord(nextVoiceOffset + 0x02, previousVoiceOffset);
 
-    previousVoiceOffset = 0x62BA;
+    previousVoiceOffset = MIDI_VOICE_LIST_HEAD;
     nextVoiceOffset = ReadMIDIDataWord(previousVoiceOffset);
     WriteMIDIDataWord(previousVoiceOffset, voiceOffset);
     voiceRecord->PreviousOffset = previousVoiceOffset;
@@ -660,28 +709,28 @@ uint16_t StartMIDINote(uint16_t channel, uint16_t note, uint16_t velocity)
     uint8_t channelFlags;
     uint8_t allocationPriority;
 
-    channelStateOffset = (uint16_t) (0x6420 + (channel << 0x03));
+    channelStateOffset = (uint16_t) (MIDI_CHANNEL_STATES + (channel << 0x03));
     channelState = MIDIChannelStateAt(channelStateOffset);
     channelFlags = channelState->VoiceClass;
     if (channelFlags == 0x00)
         return FALSE;
 
-    if ((channelFlags & 0x40) != 0x00)
+    if ((channelFlags & MIDI_CHANNEL_KEY_MAP) != 0x00)
     {
         uint8_t mappedNote;
 
         mappedNote = (uint8_t) note - channelState->NoteTransposeAndFlags;
-        if (mappedNote >= 0x20)
+        if (mappedNote >= MIDI_KEY_MAP_NOTE_COUNT)
             return FALSE;
-        mappedNote += 0x10;
-        channelStateOffset = (uint16_t) (0x6420 + (mappedNote << 0x03));
+        mappedNote += MIDI_KEY_MAP_FIRST_STATE;
+        channelStateOffset = (uint16_t) (MIDI_CHANNEL_STATES + (mappedNote << 0x03));
         channelState = MIDIChannelStateAt(channelStateOffset);
         note = 0x0000;
     }
 
     allocationPriority = channelState->AllocationPriority;
     channelFlags = channelState->VoiceClass;
-    voiceOffset = 0x62BA;
+    voiceOffset = MIDI_VOICE_LIST_HEAD;
     for (;;)
     {
         uint16_t assignedChannelOffset;
@@ -764,7 +813,7 @@ void IgnoreMIDIControllerChange(uint16_t channel, uint16_t value)
 // Verified against 3621:069F-06C6.
 void ReleaseAllMIDIVoices(void)
 {
-    uint16_t voiceOffset = 0x62BA;
+    uint16_t voiceOffset = MIDI_VOICE_LIST_HEAD;
 
     for (;;)
     {
@@ -787,12 +836,12 @@ void ReleaseAllMIDIVoices(void)
 // Verified against 3621:06C7-06ED.
 void SetMIDIChannelProgram(uint16_t channel, uint16_t program)
 {
-    uint16_t channelStateOffset = (uint16_t) (0x6420 + (channel << 0x03));
+    uint16_t channelStateOffset = (uint16_t) (MIDI_CHANNEL_STATES + (channel << 0x03));
     MIDIChannelState *channelState = MIDIChannelStateAt(channelStateOffset);
 
     channelState->Program = (uint8_t) program;
     channelState->InstrumentOffset =
-        (uint16_t) (0x65A8 + (program * 0x0C));
+        (uint16_t) (MIDI_INSTRUMENTS + (program * MIDI_INSTRUMENT_RECORD_SIZE));
 }
 
 // 3621:06EF and 3621:06F0 are intentional MIDI-message no-ops.
@@ -817,44 +866,44 @@ void DispatchMIDISystemByte(uint16_t midiByte)
     uint8_t value;
 
     value = (uint8_t) midiByte;
-    if (value == 0xF0)
+    if (value == MIDI_SYSTEM_EXCLUSIVE)
     {
-        MIDISystemExclusive.HandlerOffset = 0x0708;
+        MIDISystemExclusive.HandlerOffset = SYSEX_EXPECT_MANUFACTURER;
         return;
     }
-    if (value == 0xF7)
+    if (value == MIDI_END_OF_EXCLUSIVE)
     {
-        MIDISystemExclusive.HandlerOffset = 0x0760;
+        MIDISystemExclusive.HandlerOffset = SYSEX_IGNORE;
         return;
     }
 
     switch (MIDISystemExclusive.HandlerOffset)
     {
-    case 0x0708:
+    case SYSEX_EXPECT_MANUFACTURER:
         if (value == ActiveMIDIDriverHost->Flags[0x02])
-            MIDISystemExclusive.HandlerOffset = 0x0716;
+            MIDISystemExclusive.HandlerOffset = SYSEX_EXPECT_COMMAND;
         else
-            MIDISystemExclusive.HandlerOffset = 0x0760;
+            MIDISystemExclusive.HandlerOffset = SYSEX_IGNORE;
         break;
-    case 0x0716:
+    case SYSEX_EXPECT_COMMAND:
         if (value < 0x03)
         {
             MIDISystemExclusive.CommandOffset =
                 (uint16_t) (value << 0x01);
-            MIDISystemExclusive.HandlerOffset = 0x0724;
+            MIDISystemExclusive.HandlerOffset = SYSEX_EXPECT_LENGTH;
         }
         else
-            MIDISystemExclusive.HandlerOffset = 0x0760;
+            MIDISystemExclusive.HandlerOffset = SYSEX_IGNORE;
         break;
-    case 0x0724:
+    case SYSEX_EXPECT_LENGTH:
         MIDISystemExclusive.CommandByteCount = value;
         MIDISystemExclusive.RemainingByteCount = value;
-        MIDISystemExclusive.WriteCursorOffset = 0x6738;
-        MIDISystemExclusive.HandlerOffset = 0x072E;
+        MIDISystemExclusive.WriteCursorOffset = MIDI_SYSEX_BUFFER;
+        MIDISystemExclusive.HandlerOffset = SYSEX_COLLECT;
         break;
-    case 0x072E:
+    case SYSEX_COLLECT:
         bufferOffset = MIDISystemExclusive.WriteCursorOffset;
-        MIDISystemExclusive.CommandBuffer[bufferOffset - 0x6738] = value;
+        MIDISystemExclusive.CommandBuffer[bufferOffset - MIDI_SYSEX_BUFFER] = value;
         MIDISystemExclusive.WriteCursorOffset =
             (uint16_t) (bufferOffset + 0x01);
         if (--MIDISystemExclusive.RemainingByteCount != 0x00)
@@ -876,7 +925,7 @@ void DispatchMIDISystemByte(uint16_t midiByte)
             uint8_t channelFlags;
             uint8_t requestedVoiceCount;
 
-            channelStateOffset = (uint16_t) (0x6420 + (buffer[0x00] << 0x03));
+            channelStateOffset = (uint16_t) (MIDI_CHANNEL_STATES + (buffer[0x00] << 0x03));
             channelState = MIDIChannelStateAt(channelStateOffset);
             channelState->VoiceClass = buffer[0x01];
             channelState->AllocationPriority = buffer[0x02];
@@ -900,7 +949,7 @@ void DispatchMIDISystemByte(uint16_t midiByte)
                     --voiceDelta;
                 }
                 channelFlags = channelState->VoiceClass;
-                previousOffset = 0x62BA;
+                previousOffset = MIDI_VOICE_LIST_HEAD;
                 voiceOffset = ReadMIDIDataWord(previousOffset);
                 while (voiceDelta != 0x00 &&
                     ReadMIDIDataWord(voiceOffset) != 0x0000)
@@ -924,7 +973,7 @@ void DispatchMIDISystemByte(uint16_t midiByte)
                             previousOffset = voiceRecord->PreviousOffset;
                             WriteMIDIDataWord(previousOffset, nextOffset);
                             WriteMIDIDataWord(nextOffset + 0x02, previousOffset);
-                            previousOffset = 0x62BA;
+                            previousOffset = MIDI_VOICE_LIST_HEAD;
                             nextOffset = ReadMIDIDataWord(previousOffset);
                             voiceRecord->NextOffset = nextOffset;
                             voiceRecord->PreviousOffset = previousOffset;
@@ -938,10 +987,10 @@ void DispatchMIDISystemByte(uint16_t midiByte)
                 }
             }
             channelState->Program = buffer[0x04];
-            instrumentOffset = (uint16_t) (0x65A8 + (buffer[0x04] * 0x0C));
+            instrumentOffset = (uint16_t) (MIDI_INSTRUMENTS + (buffer[0x04] * MIDI_INSTRUMENT_RECORD_SIZE));
             channelState->InstrumentOffset = instrumentOffset;
             channelFlags = buffer[0x05];
-            if ((channelFlags & 0x40) != 0x00)
+            if ((channelFlags & MIDI_CHANNEL_KEY_MAP) != 0x00)
                 channelFlags |= 0x80;
             channelState->NoteTransposeAndFlags = channelFlags;
             break;
@@ -961,26 +1010,26 @@ void DispatchMIDISystemByte(uint16_t midiByte)
             uint8_t voice;
 
             driverDescriptor->ActiveVoiceCount = buffer[0x00];
-            WriteMIDIDataWord(0x62BA, 0x62BC);
-            WriteMIDIDataWord(0x62BE, 0x62BA);
+            WriteMIDIDataWord(MIDI_VOICE_LIST_HEAD, MIDI_VOICE_LIST_TAIL);
+            WriteMIDIDataWord(MIDI_VOICE_LIST_TAIL + 0x02, MIDI_VOICE_LIST_HEAD);
             voiceCount = driverDescriptor->ActiveVoiceCount;
-            MIDIChannelStateAt(0x65A0)->AvailableVoiceCount = voiceCount;
-            previousNodeOffset = 0x62BC;
-            nodeOffset = 0x62C0;
+            MIDIChannelStateAt(MIDI_FREE_VOICE_CHANNEL_STATE)->AvailableVoiceCount = voiceCount;
+            previousNodeOffset = MIDI_VOICE_LIST_TAIL;
+            nodeOffset = MIDI_VOICE_RECORDS;
             for (voice = 0x00; voice < voiceCount; ++voice)
             {
                 MIDIVoiceRecord *voiceRecord = MIDIVoiceRecordAt(nodeOffset);
 
-                voiceRecord->ChannelStateOffset = 0x65A0;
+                voiceRecord->ChannelStateOffset = MIDI_FREE_VOICE_CHANNEL_STATE;
                 voiceRecord->AllocationPriority = 0x00;
                 voiceRecord->NextOffset = previousNodeOffset;
-                voiceRecord->PreviousOffset = 0x62BA;
-                WriteMIDIDataWord(0x62BA, nodeOffset);
+                voiceRecord->PreviousOffset = MIDI_VOICE_LIST_HEAD;
+                WriteMIDIDataWord(MIDI_VOICE_LIST_HEAD, nodeOffset);
                 WriteMIDIDataWord(previousNodeOffset + 0x02, nodeOffset);
                 previousNodeOffset = nodeOffset;
-                nodeOffset += 0x20;
+                nodeOffset += MIDI_VOICE_RECORD_SIZE;
             }
-            driverDescriptor->VoiceRecordsOffset = 0x62C0;
+            driverDescriptor->VoiceRecordsOffset = MIDI_VOICE_RECORDS;
             AudioLog_MidiReset();
             MIDI_DRIVER_DISPATCH(driverDescriptor)->reset();
             break;
@@ -988,9 +1037,9 @@ void DispatchMIDISystemByte(uint16_t midiByte)
         }
         MIDISystemExclusive.RemainingByteCount =
             MIDISystemExclusive.CommandByteCount;
-        MIDISystemExclusive.WriteCursorOffset = 0x6738;
+        MIDISystemExclusive.WriteCursorOffset = MIDI_SYSEX_BUFFER;
         break;
-    case 0x0760:
+    case SYSEX_IGNORE:
     default:
         break;
     }
@@ -1007,30 +1056,30 @@ void ResetMIDIPlaybackState(void)
     uint8_t voiceCount;
     uint8_t voice;
 
-    MIDISystemExclusive.HandlerOffset = 0x0760;
-    ClearMIDIData(0x6420, 0x0180);
-    for (channel = 0x00; channel < 0x10; ++channel)
+    MIDISystemExclusive.HandlerOffset = SYSEX_IGNORE;
+    ClearMIDIData(MIDI_CHANNEL_STATES, MIDI_CHANNEL_STATES_SIZE);
+    for (channel = 0x00; channel < MIDI_CHANNEL_COUNT; ++channel)
         MIDIChannelMap[channel] = channel;
-    WriteMIDIDataWord(0x62BA, 0x62BC);
-    WriteMIDIDataWord(0x62BE, 0x62BA);
+    WriteMIDIDataWord(MIDI_VOICE_LIST_HEAD, MIDI_VOICE_LIST_TAIL);
+    WriteMIDIDataWord(MIDI_VOICE_LIST_TAIL + 0x02, MIDI_VOICE_LIST_HEAD);
     driverDescriptor = ActiveMIDIDriverHost;
     voiceCount = driverDescriptor->ActiveVoiceCount;
-    MIDIChannelStateAt(0x65A0)->AvailableVoiceCount = voiceCount;
-    previousNodeOffset = 0x62BC;
-    nodeOffset = 0x62C0;
+    MIDIChannelStateAt(MIDI_FREE_VOICE_CHANNEL_STATE)->AvailableVoiceCount = voiceCount;
+    previousNodeOffset = MIDI_VOICE_LIST_TAIL;
+    nodeOffset = MIDI_VOICE_RECORDS;
     for (voice = 0x00; voice < voiceCount; ++voice)
     {
         voiceRecord = MIDIVoiceRecordAt(nodeOffset);
-        voiceRecord->ChannelStateOffset = 0x65A0;
+        voiceRecord->ChannelStateOffset = MIDI_FREE_VOICE_CHANNEL_STATE;
         voiceRecord->AllocationPriority = 0x00;
         voiceRecord->NextOffset = previousNodeOffset;
-        voiceRecord->PreviousOffset = 0x62BA;
-        WriteMIDIDataWord(0x62BA, nodeOffset);
+        voiceRecord->PreviousOffset = MIDI_VOICE_LIST_HEAD;
+        WriteMIDIDataWord(MIDI_VOICE_LIST_HEAD, nodeOffset);
         WriteMIDIDataWord(previousNodeOffset + 0x02, nodeOffset);
         previousNodeOffset = nodeOffset;
-        nodeOffset += 0x20;
+        nodeOffset += MIDI_VOICE_RECORD_SIZE;
     }
-    driverDescriptor->VoiceRecordsOffset = 0x62C0;
+    driverDescriptor->VoiceRecordsOffset = MIDI_VOICE_RECORDS;
     AudioLog_MidiReset();
     MIDI_DRIVER_DISPATCH(driverDescriptor)->reset();
 }

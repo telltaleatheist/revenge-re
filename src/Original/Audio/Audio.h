@@ -109,6 +109,15 @@ extern DigitalPlaybackDescriptor SoundBlasterPlayback;
 extern DigitalPlaybackRuntimeState DigitalPlaybackRuntime;
 extern DigitalPlaybackWorkingSet DigitalPlaybackBuffers;
 
+/* The two kept outputs' callbacks, as their descriptors name them
+ * (375F:02EE-02F0 and 032C-032E). */
+inline constexpr uint16_t NULL_OUTPUT_INITIALIZE = 0x02EE;
+inline constexpr uint16_t NULL_OUTPUT_RELEASE = 0x02EF;
+inline constexpr uint16_t NULL_OUTPUT_WRITE_SAMPLE = 0x02F0;
+inline constexpr uint16_t SOUND_BLASTER_OUTPUT_INITIALIZE = 0x032C;
+inline constexpr uint16_t SOUND_BLASTER_OUTPUT_RELEASE = 0x032D;
+inline constexpr uint16_t SOUND_BLASTER_OUTPUT_WRITE_SAMPLE = 0x032E;
+
 enum
 {
     DIGITAL_SAMPLE_HANDLER_IDLE = 0x0A7C,

@@ -515,8 +515,8 @@ void ServiceDigitalAudioTick(void)
 
     switch (DigitalPlaybackRuntime.WriteSampleCallbackOffset)
     {
-    case 0x02F0: WriteNullDigitalSample(queue->OutputSample); break;
-    case 0x032E: WriteSoundBlasterDigitalSample(queue->OutputSample); break;
+    case NULL_OUTPUT_WRITE_SAMPLE: WriteNullDigitalSample(queue->OutputSample); break;
+    case SOUND_BLASTER_OUTPUT_WRITE_SAMPLE: WriteSoundBlasterDigitalSample(queue->OutputSample); break;
     }
     uint16_t mixTableOffset = queue->MixBias;
     DigitalSampleDescriptor *descriptor =

@@ -13,6 +13,10 @@
 
 #include <string.h>
 
+/* The music driver's buffer, and no music resource cached yet. */
+constexpr uint16_t MUSIC_DRIVER_BUFFER_SIZE = 0x30D4;
+constexpr uint16_t NO_CACHED_MUSIC_RESOURCE = 0xFFFF;
+
 // 3014:000E: void DisableMusicPlayback(void)
 // Called from:
 //      ServiceMusicAndCheckKeyboardInput
@@ -75,9 +79,9 @@ void AllocateMusicStagingBuffer(void)
 {
     uint8_t *musicDriverBuffer;
 
-    musicDriverBuffer = (uint8_t *) Heap_Allocate(0x30D4, "3014:011E");
+    musicDriverBuffer = (uint8_t *) Heap_Allocate(MUSIC_DRIVER_BUFFER_SIZE, "3014:011E");
     MusicStagingBuffer = musicDriverBuffer;
-    CachedMusicResourceIndex = 0xFFFF;
+    CachedMusicResourceIndex = NO_CACHED_MUSIC_RESOURCE;
 }
 
 // 3014:0133: void ReleaseMusicDriverBuffer(void)
@@ -116,7 +120,7 @@ void StartLoadedMusicTrack(void)
 
     if (MusicDriverIndex == 0x00)
         StartPCSpeakerFixedTone();
-    startResult = StartMIDISequence(MusicStagingBuffer, 0x0009);
+    startResult = StartMIDISequence(MusicStagingBuffer, MIDI_PLAYBACK_ACTIVE | MIDI_PLAYBACK_COUNT_MEASURES);
     REVENGE_PRESERVATION_TRACE("music: start cached=%04X result=%04X bytes=%02X%02X%02X%02X\n",
         CachedMusicResourceIndex,
         startResult,
@@ -154,7 +158,7 @@ void LoadMusicResource(uint16_t resourceIndex)
         descriptor = &CachedFileDescriptors[resourceIndex];
         resourceLength = (int16_t) descriptor->fileLength;
 
-        if (resourceLength <= 0x30D4 &&
+        if (resourceLength <= MUSIC_DRIVER_BUFFER_SIZE &&
             CachedMusicResourceIndex != resourceIndex)
         {
             const char *resourceName;
