@@ -52,10 +52,9 @@ def is_pointer(type_text, typedefs):
 FUNCTION_POINTER = re.compile(r"\(\s*\*\s*(\w+)\s*((?:\[[^\]]*\]\s*)*)\)")
 DECLARATOR = re.compile(r"^(.*?)(\w+)\s*((?:\[[^\]]*\]\s*)*)$", re.S)
 # Types with no pointer in them: the game's scalars and the C library's.
-SCALARS = {"byte", "word16", "uint16", "int16", "uint32", "int32", "uint8", "int8", "dword",
-           "segptr32", "char", "short", "int", "long", "unsigned", "signed", "bool", "float",
+SCALARS = {"char", "short", "int", "long", "unsigned", "signed", "bool", "float",
            "double", "size_t", "uint8_t", "uint16_t", "uint32_t", "uint64_t", "int8_t",
-           "int16_t", "int32_t", "int64_t", "BOOL", "DosAddress"}
+           "int16_t", "int32_t", "int64_t", "DosAddress"}
 
 
 SCALAR_TYPEDEF = re.compile(r"\btypedef\s+([\w\s]+?)\s+(\w+)\s*;")

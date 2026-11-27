@@ -366,7 +366,7 @@ void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
     // scenario, narration mode, force index, and alternate-result state.
     // Every character resolves through DigitalSoundEntries.
     char soundCodes[0x10];
-    ui16 narrationMode = NarrationMode;
+    uint16_t narrationMode = NarrationMode;
     soundCodes[0x00] = 0x00;
     switch (scenarioCode)
     {

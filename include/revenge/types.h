@@ -4,14 +4,6 @@
 #include <assert.h> /* static_assert, in C17 */
 #include <stdint.h>
 
-typedef uint8_t byte;
-typedef int8_t int8;
-typedef int16_t int16;
-typedef uint16_t uint16;
-typedef uint16_t word16;
-typedef uint32_t uint32;
-typedef int32_t int32;
-
 /*
  * The one language extension the rebuild allows (docs/CODE_STYLE.md): a
  * struct without a name inside a union, so a record's fields and its raw

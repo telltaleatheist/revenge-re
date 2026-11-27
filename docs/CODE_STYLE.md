@@ -22,6 +22,9 @@ in [`RECONSTRUCTED_C_PLAN.md`](RECONSTRUCTED_C_PLAN.md).
 - Preserve integer widths, signedness, wrap, truncation, random-number order,
   partial writes and call order. Don't rely on signed overflow or on the
   host's pointer size.
+- Spell a fixed width with `<cstdint>`'s names (`uint8_t`, `int16_t`,
+  `uint32_t`), not an alias of the project's own. The provenance comments
+  keep the decompiler's names (`word16`, `uint16`) as it printed them.
 - Let declarations, assignments, returns and prototyped arguments do their
   normal conversions. Keep an explicit conversion only where an intermediate
   width or a signed reading changes a comparison, shift, division or
@@ -64,7 +67,7 @@ them, around those unions.
 
 `.clang-format` sets it: 4 spaces, never tabs; braces on their own lines;
 `*` with the name (`const char *name`); a space after a cast
-(`(word16) value`). There is no column limit: a long line is wrapped where
+(`(uint16_t) value`). There is no column limit: a long line is wrapped where
 its author wrapped it, with the operator at the end of the line, and the
 formatter keeps that wrap. Keep lines near 80 columns, and a table's rows as
 they are laid out.

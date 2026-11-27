@@ -16,19 +16,6 @@
 
 #include <stddef.h>
 
-#if !defined(__near)
-#define __near
-#endif
-
-typedef int8_t int8;
-typedef uint8_t uint8;
-typedef uint32_t word32;
-typedef uint8_t ui8;
-typedef uint16_t ui16;
-typedef const uint8_t cu8;
-typedef const uint16_t cui16;
-typedef const int16_t ci16;
-
 #pragma pack(push, 1)
 typedef struct LocalClockSnapshot
 {
