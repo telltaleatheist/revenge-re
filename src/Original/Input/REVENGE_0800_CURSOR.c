@@ -5,48 +5,38 @@
 #include "revenge/platform_backend.h"
 #include "revenge/video.h"
 
-/* 0800:3772: INT 33h event callback. SDL replaces the asynchronous driver
- * boundary, while this retains the original state-update and cursor-redraw
- * behavior at each serviced input poll. */
-void ServiceMouseInputCallback(void)
+/* 0800:3772-37FD: the handler the game gives the mouse driver (INT 33h
+ * AX=0Ch, every event: 1Fh), called with the buttons in BX and the position
+ * in CX and DX. Host: SDL's mouse events arrive here as the driver called it
+ * (src/SDL/platform.c), from InitializeMouseSupport until
+ * ShutdownMouseSupport. */
+void MouseEventCallback(word16 buttons, word16 x, word16 y)
 {
-	MouseInputState state;
-	word16 changedButtons;
-	int16 requestedX;
-	int16 requestedY;
-
-	/* DOS cannot invoke 0800:3772 until InitializeMouseSupport has
-	 * installed it with INT 33h/AX=000Ch. */
-	if (MouseDriverInstalled == FALSE ||
-		MouseInputDisabled != FALSE)
+	if (MouseInputDisabled != FALSE)
 		return;
-
-	ReadMouseInputState(&state);
-	changedButtons = MouseButtonState ^ state.buttonState;
-	if (changedButtons != 0x0000 || state.buttonEvent != FALSE)
-	{
-		PendingMouseButtonEvent |=
-			changedButtons | state.buttonEvent;
-		MouseButtonState = state.buttonState;
-	}
+	/* 0800:3781-3791 reports the middle button as the word at DS:7FA2
+	 * when that is set; nothing sets it, so the middle button keeps
+	 * bit 2. */
+	if (MouseButtonState != buttons)
+		PendingMouseButtonEvent |= MouseButtonState ^ buttons;
+	MouseButtonState = buttons;
+	/* 0800:37A9-37B3 sets the word at DS:7FA6 while a button is down;
+	 * nothing reads it. */
 
 	if (MouseCursorUpdateLock != 0x0000)
 		return;
-
-	++MouseCursorUpdateLock;
-	requestedX = (int16) state.x;
-	requestedY = (int16) state.y;
-	if (MouseDriverDoubleX != FALSE)
-		requestedX >>= 0x01;
-	MouseCursorRequestedX = requestedX;
-	MouseY = (word16) requestedY;
-	if (requestedX != MouseCursorDisplayedX ||
-		requestedY != MouseCursorDisplayedY)
+	MouseCursorUpdateLock = 0x0001;
+	if (MouseDriverDoubleX == 0x0001)
+		x >>= 0x01;
+	MouseCursorRequestedX = (int16) x;
+	MouseY = y;
+	if (MouseCursorDisplayedX != MouseCursorRequestedX ||
+		MouseCursorDisplayedY != (int16) MouseY)
 	{
 		HideMouseCursorOverlayUnlocked();
 		ShowMouseCursorOverlayUnlocked();
 	}
-	--MouseCursorUpdateLock;
+	MouseCursorUpdateLock = 0x0000;
 }
 
 /* 0800:3665-36A5 */

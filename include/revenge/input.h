@@ -39,16 +39,9 @@ enum
     KEY_F2 = 0xC4,
     KEY_F1 = 0xC5,
     MOUSE_BUTTON_LEFT = 0x01,
-    MOUSE_BUTTON_RIGHT = 0x02
+    MOUSE_BUTTON_RIGHT = 0x02,
+    MOUSE_BUTTON_MIDDLE = 0x04
 };
-
-typedef struct MouseInputState
-{
-    uint16 x;
-    uint16 y;
-    byte buttonState;
-    byte buttonEvent;
-} MouseInputState;
 
 static inline int16 TranslatedExtendedKey(byte keyCode)
 {
@@ -65,7 +58,6 @@ word16 WaitForKeyboardOrMouseInput(void);
 void FlushPendingInput(void);
 void InstallKeyboardHandlers(void);
 void RestoreKeyboardHandlers(void);
-void ReadMouseInputState(MouseInputState *state);
-void ServiceMouseInputCallback(void);
+void MouseEventCallback(word16 buttons, word16 x, word16 y);
 
 #endif

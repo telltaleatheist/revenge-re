@@ -554,8 +554,11 @@ void DisableHardwareInterrupts(void)
 void InitializeMouseSupport(void)
 {
 	/* 0800:36A6 reserves the 0240h-byte cursor backing store, initializes
-	 * the 320x200 bounds, centers the cursor, and installs the INT 33h ISR.
-	 * SDL replaces only the driver probe and ISR boundary. */
+	 * the 320x200 bounds, centers the cursor, and installs the INT 33h
+	 * handler. SDL is the driver: always present (the probe at 36E5-3728),
+	 * one pixel a unit (the doubling test at 372A-373F), hidden by the
+	 * reset; the handler's installation (AX=0Ch, 375B-3767) routes SDL's
+	 * mouse events to MouseEventCallback (0800:3772). */
 	MouseCursorBackground = AllocateFarMemory(0x0240);
 	if (MouseCursorBackground == NULL)
 	{
@@ -574,6 +577,7 @@ void InitializeMouseSupport(void)
 	MouseDriverInstalled = TRUE;
 	SDLBackend_SetMousePosition(0x00A0, 0x0064);
 	SDLBackend_SetMouseVisible(FALSE);
+	SDLBackend_SetMouseEventHandler(0x001F);
 }
 
 void CopyBufferToVideoRegion(
@@ -647,10 +651,12 @@ void CopyVideoRegionToBuffer(
 	}
 }
 
+/* 0800:37FE-3824: the handler removed (INT 33h AX=0Ch, CX=0) when it was
+ * installed. */
 void ShutdownMouseSupport(void)
 {
 	if (MouseDriverInstalled != FALSE)
-		SDLBackend_SetMouseVisible(FALSE);
+		SDLBackend_SetMouseEventHandler(0x0000);
 }
 
 uint16 DOS_PrintCharacter(char character)

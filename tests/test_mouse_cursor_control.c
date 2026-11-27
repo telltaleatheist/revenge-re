@@ -40,11 +40,11 @@ int main(void)
 	MouseCursorHideDepth = 0x0000;
 	MouseCursorBackground = cursorBackground;
 	MouseCursorBitmap = cursorBitmap;
-	fakeBackend.mouse.x = 0x0030;
-	fakeBackend.mouse.y = 0x0040;
-	ServiceMouseInputCallback();
+	MouseInputDisabled = TRUE;
+	MouseEventCallback(0x0000, 0x0030, 0x0040);
 	assert(MouseCursorRequestedX == 0x000A);
 	assert(MouseY == 0x0014);
+	MouseInputDisabled = FALSE;
 	MouseDriverInstalled = TRUE;
 
 	assert(IsMouseCursorInsideRectangle(
@@ -55,8 +55,8 @@ int main(void)
 	SetMouseCursorPosition(-0x0005, 0x00D0);
 	assert(MouseCursorRequestedX == 0x0000);
 	assert(MouseY == 0x00C7);
-	assert(fakeBackend.mouse.x == 0x0000);
-	assert(fakeBackend.mouse.y == 0x00C7);
+	assert(fakeBackend.mouseX == 0x0000);
+	assert(fakeBackend.mouseY == 0x00C7);
 	assert(spriteDrawCalls == 0x0001);
 	assert(fakeBackend.indexedFramebuffer[0x00C7 * 0x0140] == 0x0F);
 
@@ -73,27 +73,49 @@ int main(void)
 
 	MouseButtonState = 0x0000;
 	PendingMouseButtonEvent = 0x0000;
-	fakeBackend.mouse.x = 0x001E;
-	fakeBackend.mouse.y = 0x0028;
-	fakeBackend.mouse.buttonState = MOUSE_BUTTON_LEFT;
-	fakeBackend.mouse.buttonEvent = TRUE;
-	ServiceMouseInputCallback();
+	MouseEventCallback(MOUSE_BUTTON_LEFT, 0x001E, 0x0028);
 	assert(MouseCursorRequestedX == 0x001E);
 	assert(MouseY == 0x0028);
 	assert(MouseButtonState == MOUSE_BUTTON_LEFT);
-	assert(PendingMouseButtonEvent != 0x0000);
+	assert(PendingMouseButtonEvent == MOUSE_BUTTON_LEFT);
+
+	/* The same buttons: nothing new pending. */
+	PendingMouseButtonEvent = 0x0000;
+	MouseEventCallback(MOUSE_BUTTON_LEFT, 0x001E, 0x0028);
+	assert(PendingMouseButtonEvent == 0x0000);
 
 	PendingMouseButtonEvent = 0x0000;
-	fakeBackend.mouse.buttonState = 0x00;
-	fakeBackend.mouse.buttonEvent = FALSE;
-	ServiceMouseInputCallback();
+	MouseEventCallback(0x0000, 0x001E, 0x0028);
 	assert(MouseButtonState == 0x0000);
-	assert(PendingMouseButtonEvent != 0x0000);
+	assert(PendingMouseButtonEvent == MOUSE_BUTTON_LEFT);
+
+	/* The middle button keeps bit 2 (DS:7FA2 is never set). */
+	PendingMouseButtonEvent = 0x0000;
+	MouseEventCallback(MOUSE_BUTTON_MIDDLE, 0x001E, 0x0028);
+	assert(MouseButtonState == MOUSE_BUTTON_MIDDLE);
+	assert(PendingMouseButtonEvent == MOUSE_BUTTON_MIDDLE);
+	MouseEventCallback(0x0000, 0x001E, 0x0028);
+
+	/* While the cursor is being updated, the buttons still count but the
+	 * position waits. */
+	MouseCursorUpdateLock = 0x0001;
+	MouseEventCallback(MOUSE_BUTTON_RIGHT, 0x0040, 0x0050);
+	assert(MouseButtonState == MOUSE_BUTTON_RIGHT);
+	assert(MouseCursorRequestedX == 0x001E);
+	MouseCursorUpdateLock = 0x0000;
+	MouseEventCallback(0x0000, 0x001E, 0x0028);
+
+	/* A driver that doubles X (DS:7FAC). */
+	MouseDriverDoubleX = 0x0001;
+	MouseEventCallback(0x0000, 0x0050, 0x0028);
+	assert(MouseCursorRequestedX == 0x0028);
+	MouseDriverDoubleX = 0x0000;
+	MouseEventCallback(0x0000, 0x001E, 0x0028);
 
 	HideMouseCursorOverlay();
 	ShowMouseCursorOverlay();
 	assert(MouseCursorUpdateLock == 0x0000);
 	assert(MouseCursorHideDepth == 0x0000);
-	assert(spriteDrawCalls == 0x0005);
+	assert(spriteDrawCalls == 0x0007);
 	return 0x00;
 }

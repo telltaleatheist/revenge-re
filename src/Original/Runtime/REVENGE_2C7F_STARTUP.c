@@ -283,7 +283,6 @@ word16 ServiceMusicAndCheckKeyboardInput(void)
 			EnableMusicPlayback();
 		AppliedMusicEnabled = requestedMusicState;
 	}
-	ServiceMouseInputCallback();
 	word16 inputPending = KeyboardInputPending();
 	return inputPending;
 }

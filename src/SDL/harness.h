@@ -25,8 +25,8 @@
  *   never on the host's speed. A battle step is one move of the battle's
  *   clock subtick: steps:N lands a key at the same point of a battle on any
  *   machine, as polls don't, and still:N waits for the battle to stop for a
- *   message or menu. The mouse is where the script or the game last put it (0,0
- *   and no buttons at first). No SDL event reaches the game.
+ *   message or menu. A mouse:X/Y/BUTTONS item calls the game's mouse
+ *   handler when it is due, as REVSNAP does. No SDL event reaches the game.
  * - @snap:NAME writes, at the next wait, NAME.indices (the 320x200 indexed
  *   frame), NAME.palette (the RGB colours it can show: 16 in the 16-colour
  *   mode, else 256), NAME.save (the block a save
@@ -58,12 +58,10 @@ void Harness_ReadKey(int *scancode, byte *modifiers);
 /* A script's key name (Shift+, Ctrl+, Alt+ allowed): 1 when it names a key
  * the keyboard has. */
 int Harness_ParseKey(const char *token, int *scancode, byte *modifiers);
-void Harness_Mouse(uint16 *x, uint16 *y, byte *buttons);
-/* The game placing the mouse (int 33h AX=4): it stays there until the script
- * or the game moves it, as a mouse nobody touches does. */
-void Harness_PlaceMouse(int16 x, int16 y);
 
 /* From the platform layer (platform.c), for the harness. */
+/* A script's mouse item, to the game's mouse handler when it has one. */
+void Platform_SendHarnessMouse(uint16 x, uint16 y, byte buttons);
 /* The set-1 scan code the keyboard gives SDL's scancode, without E0h (as
  * tools/capture/keys.py has it); zero for a key with none. */
 uint16 Platform_ScanCodeForKey(int scancode);

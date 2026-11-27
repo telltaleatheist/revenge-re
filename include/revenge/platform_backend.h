@@ -88,6 +88,9 @@ void SDLBackend_InstallKeyboardHandlers(void);
 void SDLBackend_RestoreKeyboardHandlers(void);
 void SDLBackend_SetMouseVisible(uint16 visible);
 void SDLBackend_SetMousePosition(int16 logicalX, int16 logicalY);
+/* INT 33h AX=0Ch: with a nonzero event mask, SDL's mouse events go to
+ * MouseEventCallback (0800:3772) at the input passes; zero stops them. */
+void SDLBackend_SetMouseEventHandler(word16 eventMask);
 
 int SDLBackend_OpenAudio(void);
 void SDLBackend_CloseAudio(void);

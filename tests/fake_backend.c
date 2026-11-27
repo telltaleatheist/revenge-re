@@ -274,10 +274,9 @@ void SDLBackend_RestoreKeyboardHandlers(void)
     fakeBackend.keyboardHandlerInstalled = FALSE;
 }
 
-void ReadMouseInputState(MouseInputState *state)
+void SDLBackend_SetMouseEventHandler(word16 eventMask)
 {
-    *state = fakeBackend.mouse;
-    fakeBackend.mouse.buttonEvent = FALSE;
+    fakeBackend.mouseEventMask = eventMask;
 }
 
 byte SDLBackend_GetVideoMode(void)
@@ -314,8 +313,8 @@ void SDLBackend_SetMouseVisible(uint16 visible)
 
 void SDLBackend_SetMousePosition(int16 logicalX, int16 logicalY)
 {
-	fakeBackend.mouse.x = logicalX;
-	fakeBackend.mouse.y = logicalY;
+	fakeBackend.mouseX = logicalX;
+	fakeBackend.mouseY = logicalY;
 }
 
 byte *SDLBackend_GetIndexedFramebuffer(void)

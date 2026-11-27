@@ -59,8 +59,6 @@ static uint64_t pollsSinceItem;
 static unsigned stepsSinceItem; /* battle steps seen since the last key or snap */
 static byte lastSubtick;        /* TacticalClockSubtick at the previous poll */
 static uint64_t pollsStill;     /* polls since the last step, key or snap */
-static uint16 mouseX, mouseY;
-static byte mouseButtons;
 
 static void Stop(const char *what, const char *detail)
 {
@@ -527,10 +525,8 @@ int Harness_KeyPending(void)
 			ItemTaken();
 			return 0;
 		}
-		mouseX = item->x;
-		mouseY = item->y;
-		mouseButtons = item->buttons;
 		++itemIndex;
+		Platform_SendHarnessMouse(item->x, item->y, item->buttons);
 	}
 	if (pollsSinceItem >= POLLS_PER_WAIT)
 		Finish();
@@ -551,15 +547,3 @@ void Harness_ReadKey(int *scancode, byte *modifiers)
 	ItemTaken();
 }
 
-void Harness_PlaceMouse(int16 x, int16 y)
-{
-	mouseX = (uint16) (x < 0 ? 0 : x >= VIDEO_SCREEN_WIDTH ? VIDEO_SCREEN_WIDTH - 1 : x);
-	mouseY = (uint16) (y < 0 ? 0 : y >= VIDEO_SCREEN_HEIGHT ? VIDEO_SCREEN_HEIGHT - 1 : y);
-}
-
-void Harness_Mouse(uint16 *x, uint16 *y, byte *buttons)
-{
-	*x = mouseX;
-	*y = mouseY;
-	*buttons = mouseButtons;
-}

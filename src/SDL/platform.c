@@ -32,7 +32,8 @@ static uint64_t nextMIDIDriverTick;
 static uint64_t nextGameClockTick;
 static uint64_t nextDigitalPlaybackTick;
 static uint64_t nextVideoPresentTick;
-static byte previousMouseButtons;
+static word16 mouseEventMask;
+static word16 hostMouseButtons;
 
 enum
 {
@@ -479,7 +480,7 @@ int SDLBackend_Open(void)
     nextMIDIDriverTick = nextSpeakerEffectTick;
     nextGameClockTick = nextSpeakerEffectTick;
     nextDigitalPlaybackTick = 0x0000000000000000ULL;
-    previousMouseButtons = 0x00;
+    hostMouseButtons = 0x0000;
     if (!SDLBackend_OpenAudio())
         goto failed;
     RevengeTrace("video: SDL window ready window=%p renderer=%p\n",
@@ -688,9 +689,45 @@ static void PresentPendingVideoFrame(void)
     nextVideoPresentTick = now + videoPresentPeriod;
 }
 
-/* Every event SDL has queued: keys to the game's keyboard handler, closing
- * the window as Escape (as the port has always taken it), the rest dropped.
+/* Every event SDL has queued: keys to the game's keyboard handler, the
+ * mouse's moves and buttons to its mouse handler, closing the window as
+ * Escape (as the port has always taken it), the rest dropped.
  * Nothing under the harness, whose keys come at the game's polls. */
+/* A mouse event as the driver called the game's handler: the buttons (1
+ * left, 2 right, 4 middle) and the position in the game's 320x200, from the
+ * window's coordinates. */
+static void SendMouseEvent(float windowX, float windowY)
+{
+    float logicalX = windowX;
+    float logicalY = windowY;
+
+    if (mouseEventMask == 0x0000)
+        return;
+    if (renderer != NULL)
+        (void)SDL_RenderCoordinatesFromWindow(
+            renderer, windowX, windowY, &logicalX, &logicalY);
+    if (logicalX < 0.0f)
+        logicalX = 0.0f;
+    if (logicalY < 0.0f)
+        logicalY = 0.0f;
+    if (logicalX >= VIDEO_SCREEN_WIDTH)
+        logicalX = VIDEO_SCREEN_WIDTH - 0x01;
+    if (logicalY >= VIDEO_SCREEN_HEIGHT)
+        logicalY = VIDEO_SCREEN_HEIGHT - 0x01;
+    MouseEventCallback(hostMouseButtons, (word16)logicalX, (word16)logicalY);
+}
+
+static word16 MouseButtonBit(Uint8 button)
+{
+    switch (button)
+    {
+    case SDL_BUTTON_LEFT: return MOUSE_BUTTON_LEFT;
+    case SDL_BUTTON_RIGHT: return MOUSE_BUTTON_RIGHT;
+    case SDL_BUTTON_MIDDLE: return MOUSE_BUTTON_MIDDLE;
+    default: return 0x0000;
+    }
+}
+
 static void DeliverHostEvents(void)
 {
     SDL_Event event;
@@ -713,6 +750,17 @@ static void DeliverHostEvents(void)
             break;
         case SDL_EVENT_KEY_UP:
             SendKeyEvent(event.key.scancode, FALSE);
+            break;
+        case SDL_EVENT_MOUSE_MOTION:
+            SendMouseEvent(event.motion.x, event.motion.y);
+            break;
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            hostMouseButtons |= MouseButtonBit(event.button.button);
+            SendMouseEvent(event.button.x, event.button.y);
+            break;
+        case SDL_EVENT_MOUSE_BUTTON_UP:
+            hostMouseButtons &= (word16)~MouseButtonBit(event.button.button);
+            SendMouseEvent(event.button.x, event.button.y);
             break;
         default:
             break;
@@ -802,53 +850,17 @@ void SDLBackend_RestoreKeyboardHandlers(void)
     keyboardHandlerInstalled = FALSE;
 }
 
-void ReadMouseInputState(MouseInputState *state)
+/* A harness script's mouse item (harness.h), as REVSNAP calls the handler
+ * for one. */
+void Platform_SendHarnessMouse(uint16 x, uint16 y, byte buttons)
 {
-    float windowX;
-    float windowY;
-    float logicalX;
-    float logicalY;
-    SDL_MouseButtonFlags hostButtons;
-    byte buttons;
+    if (mouseEventMask != 0x0000)
+        MouseEventCallback(buttons, x, y);
+}
 
-    if (state == NULL)
-        return;
-    if (Harness_Active())
-    {
-        Harness_Mouse(&state->x, &state->y, &buttons);
-        state->buttonState = buttons;
-        state->buttonEvent = (byte)((buttons & (byte)~previousMouseButtons)
-            != 0x00);
-        previousMouseButtons = buttons;
-        return;
-    }
-    SDL_PumpEvents();
-    hostButtons = SDL_GetMouseState(&windowX, &windowY);
-    logicalX = windowX;
-    logicalY = windowY;
-    if (renderer != NULL)
-        (void)SDL_RenderCoordinatesFromWindow(
-            renderer, windowX, windowY, &logicalX, &logicalY);
-    if (logicalX < 0.0f)
-        logicalX = 0.0f;
-    if (logicalY < 0.0f)
-        logicalY = 0.0f;
-    if (logicalX >= VIDEO_SCREEN_WIDTH)
-        logicalX = VIDEO_SCREEN_WIDTH - 0x01;
-    if (logicalY >= VIDEO_SCREEN_HEIGHT)
-        logicalY = VIDEO_SCREEN_HEIGHT - 0x01;
-
-    buttons = 0x00;
-    if ((hostButtons & SDL_BUTTON_LMASK) != 0x00)
-        buttons |= MOUSE_BUTTON_LEFT;
-    if ((hostButtons & SDL_BUTTON_RMASK) != 0x00)
-        buttons |= MOUSE_BUTTON_RIGHT;
-    state->x = (uint16)logicalX;
-    state->y = (uint16)logicalY;
-    state->buttonState = buttons;
-    state->buttonEvent = (byte)((buttons & (byte)~previousMouseButtons)
-        != 0x00);
-    previousMouseButtons = buttons;
+void SDLBackend_SetMouseEventHandler(word16 eventMask)
+{
+    mouseEventMask = eventMask;
 }
 
 void SDLBackend_SetMouseVisible(uint16 visible)
@@ -864,12 +876,9 @@ void SDLBackend_SetMousePosition(int16 logicalX, int16 logicalY)
     float windowX;
     float windowY;
 
-    if (Harness_Active())
-    {
-        Harness_PlaceMouse(logicalX, logicalY);
-        return;
-    }
-    if (window == NULL)
+    /* Under the harness the mouse moves only by the script's items, each
+     * with its own position. */
+    if (Harness_Active() || window == NULL)
         return;
     windowX = (float)logicalX;
     windowY = (float)logicalY;

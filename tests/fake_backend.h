@@ -28,7 +28,9 @@ typedef struct FakeBackendState
     byte biosKeyboardFlags[0x03];  /* 0040:0017, 0018, 0096 */
     word16 keyboardHandlerInstalled;
     word16 inputPolls;
-    MouseInputState mouse;
+    int16 mouseX;                  /* where the game last put it (AX=4) */
+    int16 mouseY;
+    word16 mouseEventMask;         /* the handler's events (AX=0Ch) */
     byte videoMode;
     byte vgaPalette[0x0300];
     uint16 retraceCount;
