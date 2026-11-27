@@ -3,6 +3,8 @@
 #include "revenge/random.h"
 #include "revenge/unit.h"
 
+#include "rules_for_tests.h"
+
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -210,6 +212,7 @@ static void VerifyLanceFormationPropagation(void)
 
 int main(void)
 {
+	RequireRules();
 	VerifyDiceSequence();
 	VerifyHeatSinkAccounting();
 	VerifyWeaponHeatScale();

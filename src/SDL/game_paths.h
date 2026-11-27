@@ -36,4 +36,9 @@ const char *GamePaths_Executable(void);
 /* The save folder, ending in a separator; NULL when none can be made. */
 const char *GamePaths_WriteDirectory(void);
 
+/* Our own data (data/ in the repository: the rules, revenge/rules.h), beside
+ * the program, or the folder REVENGE_DATA_DIRECTORY names. NULL when there is
+ * none to name. */
+const char *GamePaths_DataDirectory(void);
+
 #endif

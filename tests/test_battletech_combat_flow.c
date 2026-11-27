@@ -3,6 +3,8 @@
 #include "revenge/unit.h"
 #include "../src/Original/REVENGE.h"
 
+#include "rules_for_tests.h"
+
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -123,6 +125,7 @@ static void VerifyImprovedMissileBonus(void)
 
 int main(void)
 {
+	RequireRules();
 	VerifyHitLocationAndArmorDamage();
 	VerifyImprovedMissileBonus();
 	return EXIT_SUCCESS;

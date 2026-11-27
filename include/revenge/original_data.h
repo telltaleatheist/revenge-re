@@ -292,7 +292,7 @@ extern RevengeUnitLanceAssignment
 	LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];
 /* DS:5928: seven rows; the scenarios use rows 0-4 and 6. */
 extern const byte ScenarioLanceAllegianceTable[0x07][0x03];
-extern const word16 AmmoCapacityMultiplierTable[0x0E];
+extern word16 AmmoCapacityMultiplierTable[0x0E];     /* the rules' */
 extern word16 CampaignFlags;
 extern word16 CampaignStageIndex;
 extern word16 ScenarioUnitZeroAvailable;
@@ -511,7 +511,7 @@ extern const int16 DirectionSearchDeltaTable[0x10];
 /* DS:3D1D: the Improved Missiles damage bonus of each missile weapon, from
  * WEAPON_LRM_5 on. Its first byte is HitLocationDirectionSelectorTable's
  * last. */
-extern const byte ImprovedMissileDamageBonusTable[0x07];
+extern byte ImprovedMissileDamageBonusTable[0x07];  /* the rules' */
 extern const byte TerrainDamageQueueOccupiedMask[0x04];
 extern const byte TerrainDamageQueueIncrementMask[0x04];
 extern const word16 HitLocationDirectionSelectorTable[0x10];
@@ -721,7 +721,7 @@ extern word16 SpritePreserveMode;
 extern byte CgaEvenPixelPhaseLookup[0x0100];
 extern byte CgaOddPixelPhaseLookup[0x0100];
 extern byte CgaPackedPixelSeedTable[0x20];
-extern const byte WeaponCombatRatingByType[0x17];
+extern byte WeaponCombatRatingByType[0x17];         /* the rules' */
 extern const byte RelativeAttackDirectionByMask[0x10];
 extern const int16 LinePrimaryYStep[0x08];
 extern const int16 LinePrimaryXStep[0x08];

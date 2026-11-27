@@ -175,8 +175,8 @@ _Static_assert(sizeof(RevengeWeaponPriorityData) ==
 	WEAPON_PRIORITY_DATA_BYTE_COUNT,
 	"Weapon priority data must retain its DOS data layout");
 
-extern const RevengeWeaponDefinition
-	WeaponDefinitions[WEAPON_DEFINITION_COUNT];
+/* The rules' (revenge/rules.h), filled at start. */
+extern RevengeWeaponDefinition WeaponDefinitions[WEAPON_DEFINITION_COUNT];
 /* Each weapon's name, the text its record's far pointer names: a story text
  * (revenge/story.h), filled at start. */
 extern const char *WeaponNameTable[WEAPON_DEFINITION_COUNT];

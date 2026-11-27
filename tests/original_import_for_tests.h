@@ -2,12 +2,17 @@
 #define REVENGE_TESTS_ORIGINAL_IMPORT_FOR_TESTS_H
 
 /* For tests that check the game's own text or data: they import it from the
- * copy REVENGE_GAME names, and skip (77) when none is given. */
+ * copy REVENGE_GAME names, and skip (77) when none is given. A test linking
+ * the runtime takes the rules too (rules_for_tests.h), as the program does at
+ * start, so none runs the game's code over empty rule tables. */
 
 /* A test including this defines _CRT_SECURE_NO_WARNINGS first, for MSVC,
  * which otherwise rejects fopen under /W4 /WX. */
 #include "revenge/original_import.h"
 #include "revenge/story.h"
+#ifdef CHR_DATA_DIRECTORY
+#include "rules_for_tests.h"
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,6 +43,9 @@ static void RequireOriginalImport(void)
 				exit(1);
 			/* Its texts too, in memory: no story file. */
 			StoryHost_Prepare(path, NULL);
+#ifdef CHR_DATA_DIRECTORY
+			RequireRules();
+#endif
 			return;
 		}
 	}

@@ -235,3 +235,24 @@ const char *GamePaths_Executable(void)
 		(void) Join(path, sizeof(path), "", "REVENGE.EXE");
 	return path;
 }
+
+const char *GamePaths_DataDirectory(void)
+{
+	static char path[GAME_PATH_CAPACITY];
+	const char *chosen = SDL_getenv("REVENGE_DATA_DIRECTORY");
+
+	if (chosen != NULL && chosen[0] != '\0')
+	{
+		size_t length = strlen(chosen);
+
+		if (length >= sizeof(path))
+			return NULL;
+		memcpy(path, chosen, length + 1);
+		return path;
+	}
+	chosen = SDL_GetBasePath();
+	/* SDL's base path ends in a separator. */
+	if (chosen == NULL || Join(path, sizeof(path), chosen, "data") != 0)
+		return NULL;
+	return path;
+}

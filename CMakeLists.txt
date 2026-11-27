@@ -51,6 +51,17 @@ set(CHR_STORY_SOURCES
 	src/Support/Json.cpp
 	src/Import/Story.cpp
 	src/Import/StoryHost.cpp)
+# The rules (revenge/rules.h): our numbers, read from data/rules at start.
+set(CHR_RULES_SOURCES
+	src/Rules/rule_table.c
+	src/Rules/Rules.cpp
+	src/Rules/RulesHost.cpp)
+# A test whose code reads the rules' tables loads them from the source tree's
+# data/ (tests/rules_for_tests.h).
+function(chr_uses_rules target)
+	target_compile_definitions(${target} PRIVATE
+		CHR_DATA_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/data")
+endfunction()
 add_library(chr_original_runtime STATIC ${CHR_ORIGINAL_SOURCES})
 target_sources(chr_original_runtime PRIVATE
 	src/Support/debug.c
@@ -65,7 +76,8 @@ target_sources(chr_original_runtime PRIVATE
     src/Support/video_bridge.c
     src/Support/presentation_callback_bridge.c
 	src/Support/tactical_panel_data.c
-	${CHR_STORY_SOURCES})
+	${CHR_STORY_SOURCES}
+	${CHR_RULES_SOURCES})
 target_include_directories(chr_original_runtime
     PUBLIC include
     PRIVATE src/Original src/SDL)
@@ -677,6 +689,33 @@ if(BUILD_TESTING)
     add_test(NAME tactical.original_scenario_clock_subtick
         COMMAND test_scenario_clock_subtick)
 
+    # The rules: data/rules rebuilds the original's tables (rebuild), the
+    # player's copy holds them (exe), and a wrong file is a fault naming it.
+    add_executable(test_rules tests/test_rules.cpp tests/fake_backend.c)
+    target_include_directories(test_rules PRIVATE src/SDL tests)
+    target_link_libraries(test_rules PRIVATE chr_original_runtime)
+    chr_strict(test_rules)
+    add_test(NAME rules.rebuild COMMAND test_rules from_data)
+    add_test(NAME rules.exe COMMAND test_rules in_copy)
+    add_test(NAME rules.range COMMAND test_rules too_large)
+    foreach(mode stray absent length shared nofile)
+        add_test(NAME rules.${mode} COMMAND test_rules ${mode})
+    endforeach()
+    set_tests_properties(rules.rebuild rules.exe rules.range rules.stray rules.absent
+        rules.length rules.shared rules.nofile PROPERTIES SKIP_RETURN_CODE 77)
+    set_tests_properties(rules.stray PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: weapons.json: weapon_table.small_laser.rate_of_fire is no key of the rules here")
+    set_tests_properties(rules.absent PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: weapons.json: weapon_table.ppc.heat is missing")
+    set_tests_properties(rules.range PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: weapons.json: weapon_table.ppc.heat is not a whole number from 0 to 255")
+    set_tests_properties(rules.length PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: weapons.json: ammunition_capacity_multipliers is not an array of 14 numbers")
+    set_tests_properties(rules.shared PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: weapons.json: weapon_table.lrm_5.improved_missile_damage_bonus is one byte with the hit-location selector's last")
+    set_tests_properties(rules.nofile PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: weapons.json can't be read from")
+
     add_executable(test_initial_data_values
         tests/test_initial_data_values.c
         tests/fake_backend.c)
@@ -819,7 +858,10 @@ if(CHR_BUILD_SDL)
     add_custom_command(TARGET Revenge POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/config/REVENGE.CFG
-            $<TARGET_FILE_DIR:Revenge>/REVENGE.CFG)
+            $<TARGET_FILE_DIR:Revenge>/REVENGE.CFG
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_CURRENT_SOURCE_DIR}/data
+            $<TARGET_FILE_DIR:Revenge>/data)
 
     # The golden traces (tools/trace/README.md): every script against its
     # golden, and the battle's script twice, byte for byte. Both run the game
@@ -859,7 +901,10 @@ if(CHR_BUILD_SDL)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/config/REVENGE.CFG
             ${CMAKE_BINARY_DIR}/package/REVENGE.CFG
-        COMMENT "Assembling minimal two-file Revenge runtime")
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_CURRENT_SOURCE_DIR}/data
+            ${CMAKE_BINARY_DIR}/package/data
+        COMMENT "Assembling the Revenge runtime: the program, REVENGE.CFG and data/")
 
     if(BUILD_TESTING)
         add_executable(test_sdl_dos_errors tests/test_sdl_dos_errors.c)
@@ -960,3 +1005,15 @@ if(CHR_BUILD_SDL)
         add_test(NAME platform.sdl_renderer_fallback COMMAND test_sdl_renderer_fallback)
     endif()
 endif()
+
+# Every test linking the runtime gets the source tree's data/
+# (tests/rules_for_tests.h): one that takes the copy takes the rules too.
+get_property(chr_targets DIRECTORY PROPERTY BUILDSYSTEM_TARGETS)
+foreach(chr_target IN LISTS chr_targets)
+	if(chr_target MATCHES "^test_")
+		get_target_property(chr_links ${chr_target} LINK_LIBRARIES)
+		if(chr_links MATCHES "chr_original_runtime")
+			chr_uses_rules(${chr_target})
+		endif()
+	endif()
+endforeach()

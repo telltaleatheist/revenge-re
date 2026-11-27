@@ -6,6 +6,7 @@
 #include "revenge/original_import.h"
 #include "game_paths.h"
 #include "settings.h"
+#include "revenge/rules.h"
 #include "revenge/story.h"
 
 #include <stdio.h>
@@ -43,6 +44,8 @@ int main(int argc, char **argv)
 		return 0x01;
 	/* Its text, from the story file in our write folder. */
 	StoryHost_Prepare(GamePaths_Executable(), GamePaths_WriteDirectory());
+	/* The rules, ours, from the data folder beside the program. */
+	Rules_Load(GamePaths_DataDirectory());
 	RevengeInstallCrashDiagnostics();
 	RevengeTrace("entry: initialize\n");
 	SDLBackend_InitializeDOSMemoryArena();

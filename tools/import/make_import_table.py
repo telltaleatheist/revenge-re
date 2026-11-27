@@ -24,6 +24,11 @@ and each one's place in StoryTextBuffer, sized by the copy's lengths) and
 src/Support/story_text_slots.c (where each text goes once the story file is
 read).
 
+The rule table, src/Rules/rule_table.c, is written from src/Rules/rule_pieces.txt
+and a copy of the reference edition (the editions list's first): each rule's
+place, length and keyed hash over the bytes there as DOS loads the image at
+0800h (its relocated segment words moved), never the bytes.
+
 --check writes nothing: it exits 1 when a file isn't what this would write.
 Without a copy of the game it checks the editions list only and exits 77
 (ctest's skip) when that is current.
@@ -40,6 +45,10 @@ EDITIONS = os.path.join(ROOT, "src", "Support", "original_editions.txt")
 EDITIONS_C = os.path.join(ROOT, "src", "Support", "original_import_editions.c")
 STORY_H = os.path.join(ROOT, "include", "revenge", "story_text.h")
 SLOTS_C = os.path.join(ROOT, "src", "Support", "story_text_slots.c")
+RULE_PIECES = os.path.join(ROOT, "src", "Rules", "rule_pieces.txt")
+RULE_TABLE_C = os.path.join(ROOT, "src", "Rules", "rule_table.c")
+RULE_ID = re.compile(r"^[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$")
+LOAD_SEGMENT = 0x0800
 STORY_ID = re.compile(r"^[a-z][a-z0-9_]*(\.[0-9]+)?$")
 NO_SOURCE = 0xFFFFFFFF
 ID = re.compile(r"^[a-z][a-z0-9]*$")
@@ -425,6 +434,66 @@ def render_slots(img, edition):
     return "\n".join(lines) + "\n"
 
 
+def loaded(file, header, img):
+    """The image as DOS loads it at LOAD_SEGMENT: each relocated word moved."""
+    out = bytearray(img)
+    count = file[6] | file[7] << 8
+    table = file[0x18] | file[0x19] << 8
+    for index in range(count):
+        at = table + index * 4
+        offset = file[at] | file[at + 1] << 8
+        segment = file[at + 2] | file[at + 3] << 8
+        where = segment * 16 + offset
+        if where + 1 < len(out):
+            value = (out[where] | out[where + 1] << 8) + LOAD_SEGMENT
+            out[where], out[where + 1] = value & 0xFF, value >> 8 & 0xFF
+    return bytes(out)
+
+
+def rule_pieces():
+    """(headers, [(id, object, segment, offset, length, tuned)])."""
+    headers, rows, seen = [], [], set()
+    with open(RULE_PIECES, encoding="utf-8") as f:
+        for number, line in enumerate(f, 1):
+            fields = line.split("#", 1)[0].split()
+            if not fields:
+                continue
+            if fields[0] == "header" and len(fields) == 2:
+                headers.append(fields[1])
+                continue
+            if len(fields) not in (4, 5) or (len(fields) == 5 and fields[4] != "tuned"):
+                fail(f"rule_pieces.txt line {number}: ID OBJECT SEG:OFF BYTES [tuned]")
+            ident, name, place, length = fields[:4]
+            if not RULE_ID.match(ident) or ident in seen:
+                fail(f"rule_pieces.txt line {number}: the id {ident} is malformed or twice")
+            seen.add(ident)
+            segment, offset = (int(part, 16) for part in place.split(":"))
+            rows.append((ident, name, segment, offset, int(length, 16), len(fields) == 5))
+    return headers, rows
+
+
+def render_rules(image):
+    headers, rows = rule_pieces()
+    lines = [
+        "/* Written by tools/import/make_import_table.py from src/Rules/rule_pieces.txt",
+        " * and a copy of the reference edition: where each rule's table is in the",
+        " * original's memory, its length and the keyed hash of its bytes there.",
+        " * Don't edit by hand. */",
+        '#include "revenge/rules.h"',
+    ]
+    lines += [f'#include "{h}"' for h in headers]
+    lines += ["", "const RulePiece RulePieces[] =", "{"]
+    for ident, name, segment, offset, length, tuned in rows:
+        where = (segment - LOAD_SEGMENT) * 16 + offset
+        digest = "" if tuned else keyed(image[where:where + length])
+        lines.append(f'\t{{ "{ident}", &{name}, sizeof({name}), 0x{segment:04X}, 0x{offset:04X}, '
+                     f'0x{length:X}, "{digest}" }},')
+    lines += ["};", "const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);", ""]
+    lines += [f'_Static_assert(sizeof({name}) == 0x{length:X}, "{ident} is the original\'s size");'
+              for ident, name, _, _, length, _ in rows]
+    return "\n".join(lines) + "\n"
+
+
 def settle(path, text, check):
     """Writes text to path, or with check compares; True when current."""
     relative = os.path.relpath(path, ROOT).replace(os.sep, "/")
@@ -458,6 +527,8 @@ def main():
     written = [settle(table_path(edition["id"]), text, check),
                settle(STORY_H, render_story_header(img, edition), check),
                settle(SLOTS_C, render_slots(img, edition), check)]
+    if edition["id"] == known[0]["id"]:
+        written.append(settle(RULE_TABLE_C, render_rules(loaded(file, header, img)), check))
     if not all(written):
         return 1
     print(f"make_import_table: {edition['name']}, {text.count('ORIGINAL_PIECE_')} pieces")

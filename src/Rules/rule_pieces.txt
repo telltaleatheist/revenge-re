@@ -1,0 +1,22 @@
+# The rule table: every table of the original's that a file in data/rules
+# stands for, by id, with the object the rules fill, its place in DOS 1.00's
+# memory (the image loaded at 0800h) and its length. make_import_table.py
+# writes src/Rules/rule_table.c from this list and a copy of the game: the
+# keyed hash of each place's bytes as loaded, never the bytes. rules.rebuild
+# checks that data/rules rebuilds each one byte for byte, rules.exe that the
+# player's copy holds them. A table changed on purpose is marked "tuned" (a
+# fifth column): it keeps its row and loses its hash.
+#
+#   header PATH                  included by the generated table
+#   ID OBJECT SEG:OFF BYTES      BYTES in hex, the object's size
+#
+# id                                    object                           SEG:OFF   bytes
+
+header revenge/combat_data.h
+header revenge/original_data.h
+
+# weapons.json
+weapons.definitions                     WeaponDefinitions                3A6A:0435 159
+weapons.ammunition_capacity_multipliers AmmoCapacityMultiplierTable      3A6A:058E 1C
+weapons.improved_missile_damage_bonus   ImprovedMissileDamageBonusTable  3A6A:3D1D 7
+weapons.combat_ratings                  WeaponCombatRatingByType         4184:08BC 17
