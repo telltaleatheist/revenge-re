@@ -23,9 +23,11 @@
 #include <variant>
 #include <vector>
 
-namespace revenge::support {
+namespace revenge::support
+{
 
-struct JsonError : std::runtime_error {
+struct JsonError : std::runtime_error
+{
     using std::runtime_error::runtime_error;
 };
 
@@ -33,7 +35,8 @@ struct JsonError : std::runtime_error {
 // file must not exhaust the stack).
 inline constexpr std::size_t kJsonMaxDepth = 256;
 
-struct Json {
+struct Json
+{
     using Array = std::vector<Json>;
     using Object = std::map<std::string, Json, std::less<>>;
     std::variant<std::nullptr_t, bool, double, std::string, Array, Object> value;
@@ -43,12 +46,12 @@ struct Json {
     bool is_string() const { return std::holds_alternative<std::string>(value); }
     bool is_number() const { return std::holds_alternative<double>(value); }
     // These throw JsonError if the value is another kind.
-    const Object& object() const;
-    const Array& array() const;
-    const std::string& string() const;
+    const Object &object() const;
+    const Array &array() const;
+    const std::string &string() const;
     double number() const;
     // A member of an object, or null if it has none.
-    const Json* find(std::string_view key) const;
+    const Json *find(std::string_view key) const;
 };
 
 // Throws JsonError naming the line and column (from 1, the column in bytes)

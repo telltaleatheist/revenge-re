@@ -6,33 +6,33 @@
 
 byte *Video_GetIndexedFramebuffer(void)
 {
-	return SDLBackend_GetIndexedFramebuffer();
+    return SDLBackend_GetIndexedFramebuffer();
 }
 
 void Video_ClearIndexedFramebuffer(byte color)
 {
-	SDLBackend_ClearIndexedFramebuffer(color);
+    SDLBackend_ClearIndexedFramebuffer(color);
 }
 
 byte *Video_ResolveIndexedRenderTarget(const byte *renderTarget)
 {
-	uintptr_t encodedTarget = (uintptr_t) renderTarget;
+    uintptr_t encodedTarget = (uintptr_t) renderTarget;
 
-	if (renderTarget == VideoFramebuffer || encodedTarget == 0xA0000000UL)
-		return SDLBackend_GetIndexedFramebuffer();
-	if (renderTarget == PrimaryScreenBuffer)
-		return PrimaryScreenBuffer;
-	return (byte *) renderTarget;
+    if (renderTarget == VideoFramebuffer || encodedTarget == 0xA0000000UL)
+        return SDLBackend_GetIndexedFramebuffer();
+    if (renderTarget == PrimaryScreenBuffer)
+        return PrimaryScreenBuffer;
+    return (byte *) renderTarget;
 }
 
 void Video_DrawIndexedPixelToActiveTarget(word16 x, word16 y, byte color)
 {
-	byte *target;
+    byte *target;
 
-	if (x >= VIDEO_SCREEN_WIDTH || y >= VIDEO_SCREEN_HEIGHT)
-		return;
-	target = Video_ResolveIndexedRenderTarget(ActiveRenderTarget);
-	if (target == NULL)
-		target = SDLBackend_GetIndexedFramebuffer();
-	target[(uint32) y * VIDEO_SCREEN_WIDTH + x] = color;
+    if (x >= VIDEO_SCREEN_WIDTH || y >= VIDEO_SCREEN_HEIGHT)
+        return;
+    target = Video_ResolveIndexedRenderTarget(ActiveRenderTarget);
+    if (target == NULL)
+        target = SDLBackend_GetIndexedFramebuffer();
+    target[(uint32) y * VIDEO_SCREEN_WIDTH + x] = color;
 }
