@@ -78,7 +78,7 @@ stopped. (Every item also waits 4 polls, well inside one step.)
 | `first_win` | the first battle won: the leader moved across the enemy's road, the menu after the stage |
 | `second_battle` | on to the second battle: the options menu, a move order, steps 8 and 16, its messages to the end |
 | `save_load` | after the first stage, Save & Continue to slot 1; out of the second battle and Load Game, slot 1 |
-| `stages_02_04` | campaign set; from the 1e save: the second battle, then the third (stage 2) won by answering its messages, the fourth (stage 3) won with the lance moved east at once, the fifth (stage 4) won with the ammunition carrier driven at flank speed to its exit; Save & Continue to slot 1 |
+| `stages_02_04` | campaign set; from the 1e save: the second battle, then the third (stage 2) won by answering its messages, the fourth (stage 3) won with the lance moved east at once, the fifth (stage 4) won with the ammunition carrier driven at flank speed to its exit; its story, then Save & Continue to slot 1 |
 
 ## Trace records (`traces/*.jsonl`)
 

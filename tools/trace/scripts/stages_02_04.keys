@@ -43,6 +43,8 @@ Return idle:300 @snap:stage4_ordered               # Done
 still:2000 @snap:stage4_moving Return
 still:2000 @snap:stage4_arrived Return
 still:2000 @snap:stage4_won Return
-still:2000 @snap:stage4_menu                        # the menu after the stage
-Down idle:50 Down idle:50 Return idle:300 @snap:slots  # Save & Continue
+still:2000 @snap:stage4_after                       # the story after the stage, waiting for a key
+Return idle:300 @snap:stage4_menu                   # the menu after the stage
+Down idle:50 Down idle:50 @snap:stage4_save         # Save & Continue highlighted
+Return idle:300 @snap:slots
 Return idle:300 @snap:save1 Return idle:300 @snap:save2 Return idle:600 @snap:saved
