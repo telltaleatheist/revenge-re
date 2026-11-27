@@ -2,7 +2,7 @@
 #define REVENGE_ORIGINAL_LANCE_EDITOR_DATA_H
 
 #include "revenge/original/campaign_data.h"
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
 #include "revenge/roster.h"
 #include "revenge/debug.h"
 #include "revenge/types.h"
@@ -20,7 +20,6 @@ enum
     LANCE_EDITOR_UNIT_TYPE_COUNT = 0x59,
     LANCE_EDITOR_PILOT_NAME_COUNT = 0x3B
 };
-
 
 /* These aliases are two domain names for the same original DS bytes. */
 #define TrainingScenarioAvailability TrainingScenarioCompletionFlags
