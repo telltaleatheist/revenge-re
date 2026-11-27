@@ -481,9 +481,16 @@ void SelectUnitTacticalTargets(void)
 
 		// The unit's pilot-experience entry selects a scenario-permission mask.
 		// B02Ah also carries the verified 80h environment/heat modifier; the
-		// wider flag meanings remain deliberately unnamed.
-		word16 experienceMask = UnitActionMaskByExperience[
-			unitRecord->pilotExperience];
+		// wider flag meanings remain deliberately unnamed. The original
+		// indexes the four words unchecked: an experience past them (41h, a
+		// deploy's entry past the roster's end) reads the words after the
+		// table, which the import keeps.
+		byte experience = unitRecord->pilotExperience;
+		word16 experienceMask =
+			experience < ACTION_MASK_EXPERIENCE_COUNT
+				? UnitActionMaskByExperience[experience]
+				: UnitActionMaskByExperiencePastEnd[
+					experience - ACTION_MASK_EXPERIENCE_COUNT];
 		if ((experienceMask & TacticalClockDivider) == 0x00)
 			continue;
 

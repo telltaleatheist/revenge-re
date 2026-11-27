@@ -19,6 +19,9 @@
 #define TACTICAL_ORDER_HOLD_POSITION    0x01
 #define TACTICAL_ORDER_SEEK_AND_DESTROY 0x02
 
+/* UnitActionMaskByExperience's entries (DS:3CF6). */
+#define ACTION_MASK_EXPERIENCE_COUNT    0x04
+
 #define UnitRouteFirstX UnitRouteTargetMapX
 #define UnitRouteFirstY UnitRouteTargetMapY
 

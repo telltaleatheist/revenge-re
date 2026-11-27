@@ -76,7 +76,7 @@ void write(const fs::path& path, const std::string& text) {
 }
 
 bool is_text_kind(OriginalPieceKind kind) {
-    return kind != ORIGINAL_PIECE_BYTES && kind != ORIGINAL_PIECE_MEDIA;
+    return kind != ORIGINAL_PIECE_BYTES && kind != ORIGINAL_PIECE_MEDIA && kind != ORIGINAL_PIECE_RELOCATED_BYTES;
 }
 
 // The pieces' texts in order are the story ids in order (make_import_table.py
@@ -133,9 +133,9 @@ std::string sha256_hex(const std::string& bytes) {
     return hex;
 }
 
-// Each media and data piece's object holds the piece's bytes in the copy;
-// with a story folder, its file holds them too and import.json lists the
-// file.
+// Each media and data piece's object holds the piece's bytes in the copy,
+// the relocated piece's as relocated; with a story folder, its file holds
+// them too and import.json lists the file.
 void check_media(const fs::path* folder) {
     const OriginalEdition* edition = OriginalImport_Edition();
     std::vector<std::uint8_t> bytes(0x10000);
@@ -147,6 +147,8 @@ void check_media(const fs::path* folder) {
         ++count;
         const std::size_t length = OriginalImport_PieceBytes(&piece, bytes.data(), bytes.size());
         assert(length == piece.length);
+        if (piece.kind == ORIGINAL_PIECE_RELOCATED_BYTES)
+            OriginalImport_RelocatePiece(&piece, bytes.data(), EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT);
         assert(std::memcmp(piece.target, bytes.data(), length) == 0);
         if (folder == nullptr) continue;
         const std::string id = story::piece_id(piece);
@@ -156,7 +158,7 @@ void check_media(const fs::path* folder) {
                                    std::to_string(length) + ", \"sha256\": \"" + sha256_hex(file) + "\"}";
         assert(manifest.find(listed) != std::string::npos);
     }
-    assert(count == 12);
+    assert(count == 13);
 }
 
 // Clears every media and data piece's object, so a check after proves it was

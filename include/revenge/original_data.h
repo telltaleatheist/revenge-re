@@ -491,6 +491,9 @@ extern word16 HitLocationDirectionSelectorTable[0x10];  /* the rules' */
 extern word16 HitLocationTable[HIT_LOCATION_TABLE_COUNT]
 	[HIT_LOCATION_TABLE_WORD_COUNT];  /* the rules' */
 extern word16 UnitActionMaskByExperience[0x04];  /* the rules' */
+/* What an experience past those four reads: the original's words after the
+ * table, through DS:3EF5 (src/Support/original_import_pieces.txt). */
+extern word16 UnitActionMaskByExperiencePastEnd[0xFC];
 extern RevengeTerrainImpactAnimationRecord
 	TerrainImpactAnimationRecords[TERRAIN_IMPACT_ANIMATION_RECORD_COUNT];
 extern word16 NarrationMessageCategory;

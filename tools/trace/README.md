@@ -329,3 +329,21 @@ What the comparison found in the port, and how each was fixed:
    closed in and fired. The loop is the original's now
    (tactical.original_weapon_rating). With it, every state line and save
    block of stages_02_04 matches the original's.
+7. **An experience past 3 reads its action mask from the unit-name table.**
+   A unit acts on a subtick when its experience's word of the mask table
+   (DS:3CF6, four words) has the subtick's bit (2D1B:08FA), and the index is
+   the experience byte unchecked. In stages_02_04 the original deploys
+   SCENE4's units 11h-14h with experience 41h (its capture's save block at
+   stage4_after), so each reads DS:3D78: the segment word of entry 18 of the
+   unit names' far pointers (DS:3D2E), which DOS relocates at load. The
+   original's timing for those units so depended on where DOS loaded the
+   game. Loaded at 131Eh, as in the captures, the word is 4588h and the units
+   act on subticks 80h and 08h, two of eight, like a green pilot; loaded at
+   0823h (plain DOSBox-X, without the capture program resident) it would be
+   3A8Dh, four of eight. An original bug, kept. The port read past its
+   four-word C array, a word that depended on the host's layout. It reads
+   the original's 504 bytes past the table now, imported from the player's
+   copy with its segment words relocated as the captures loaded it
+   (UnitActionMaskByExperiencePastEnd, EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT;
+   tactical.original_experience_mask). None of those words changes in any
+   capture.

@@ -47,7 +47,8 @@ std::filesystem::path story_dir(const std::filesystem::path& write_dir);
 std::vector<std::string> import_texts(const OriginalEdition& edition);
 
 // A piece the story keeps as its bytes: a media piece (ORIGINAL_PIECE_MEDIA,
-// in story/media) or a data piece (ORIGINAL_PIECE_BYTES, in story/data). Its
+// in story/media) or a data piece (ORIGINAL_PIECE_BYTES, or
+// ORIGINAL_PIECE_RELOCATED_BYTES as relocated, in story/data). Its
 // id is its name in lower case, words split by "_", without "Data" or
 // "Table" at its end: DigitalSoundData is digital_sound.
 struct StoredPiece {

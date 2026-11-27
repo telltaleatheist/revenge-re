@@ -39,3 +39,15 @@ page on what the original does.
   close, or the other way round. The first seen is the fourth battle's
   vehicle, which backs away from the player's 'Mech it was closing on. Kept;
   `tools/trace/README.md` (finding 6).
+
+- **Some enemies take their action timing from the unit-name table.** How
+  often a unit acts in a battle depends on its pilot's experience, 0 to 3,
+  through a table of four timings (2D1B:08FA). The game doesn't check the
+  experience, and a deploy can give a unit 41h: the fourth battle's units
+  11h-14h have it. They read their timing far past the table, from a pointer
+  into the unit names whose value DOS sets when it loads the game, so their
+  timing in the original varied from machine to machine with where DOS put
+  the game. Loaded where the reference runs had it (segment 131Eh), they act
+  two subticks in eight, like a green pilot; under plain DOSBox-X (0823h),
+  four in eight. Kept as the reference runs had it; `tools/trace/README.md`
+  (finding 7).

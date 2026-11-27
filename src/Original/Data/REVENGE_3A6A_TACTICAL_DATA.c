@@ -186,6 +186,8 @@ byte SavedCampaignClockState[0x03];
 RevengePilotRosterRecord PilotRoster[REVENGE_PILOT_ROSTER_COUNT];
 /* DS:2148: what slot FF reads as a roster entry; from the player's copy. */
 RevengePilotRosterRecord PilotRosterRecordPastEnd;
+/* Filled at start from the story (src/Support/original_import_pieces.txt). */
+word16 UnitActionMaskByExperiencePastEnd[0xFC];
 /* Filled at start from data/ui/lance_editor.json (the places) and
  * data/start/lance_editor.json (the starting state); revenge/rules.h. */
 RevengeUnitLanceAssignment

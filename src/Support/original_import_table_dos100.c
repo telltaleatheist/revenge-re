@@ -13,7 +13,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces_dos100[0x13C] =
+const OriginalPiece OriginalPieces_dos100[0x13D] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, NULL, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, NULL, "2de063a6fef0f14a" },
@@ -63,6 +63,7 @@ const OriginalPiece OriginalPieces_dos100[0x13C] =
 	{ "SoundConfigurationRecords", ORIGINAL_PIECE_BYTES, 0x3B87, 0x7E, 4, 126, &SoundConfigurationRecords, "b24d4746a766ad03" },
 	{ "MIDIParser", ORIGINAL_PIECE_BYTES, 0x62B0, 0xA, 4, 10, &MIDIParser, "609f8b66779f2c2b" },
 	{ "PilotRosterRecordPastEnd", ORIGINAL_PIECE_BYTES, 0x2148, 0x4, 4, 4, &PilotRosterRecordPastEnd, "795e741e32ef279a" },
+	{ "UnitActionMaskByExperiencePastEnd", ORIGINAL_PIECE_RELOCATED_BYTES, 0x3CFE, 0x1F8, 4, 504, &UnitActionMaskByExperiencePastEnd, "aeba97b505bbded8" },
 	{ "UnitNameSplitIndex", ORIGINAL_PIECE_BYTES, 0x3172, 0x59, 4, 89, &UnitNameSplitIndex, "863f1491250b4d50" },
 	{ "invalid_save_version", ORIGINAL_PIECE_TEXT, 0x2372, 0, 0, 118, NULL, "2d9a3b9a98bf83a9" },
 	{ "mission_map_header", ORIGINAL_PIECE_TEXT, 0x2489, 0, 0, 23, NULL, "948e611ab3db6a0a" },
@@ -1108,4 +1109,5 @@ static_assert(sizeof(InputConfigurationRecords) == 0x1A, "InputConfigurationReco
 static_assert(sizeof(SoundConfigurationRecords) == 0x7E, "SoundConfigurationRecords is the piece's size");
 static_assert(sizeof(MIDIParser) == 0xA, "MIDIParser is the piece's size");
 static_assert(sizeof(PilotRosterRecordPastEnd) == 0x4, "PilotRosterRecordPastEnd is the piece's size");
+static_assert(sizeof(UnitActionMaskByExperiencePastEnd) == 0x1F8, "UnitActionMaskByExperiencePastEnd is the piece's size");
 static_assert(sizeof(UnitNameSplitIndex) == 0x59, "UnitNameSplitIndex is the piece's size");

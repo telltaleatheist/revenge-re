@@ -13,12 +13,14 @@
 #   text ID DS-OFFSET            a single text, STORY_TEXT(ID)
 #
 # Kinds (include/revenge/original_import.h): text_table, expanded_text_table,
-# mutable_text_table, pointed_text, mutable_pointed_text, bytes, media. The
-# story keeps the bytes and media pieces as it keeps the texts: imported into
-# the story folder once (story/data and story/media), and placed from there.
-# Offsets and counts are hex. A table's COUNT is its array's; STRIDE is 4
-# unless given. A bytes or media piece's COUNT is its length, which must be
-# the size of the object it fills. A mutable pointed text fills its whole char array.
+# mutable_text_table, pointed_text, mutable_pointed_text, bytes,
+# relocated_bytes, media. The story keeps the bytes and media pieces as it
+# keeps the texts: imported into the story folder once (story/data and
+# story/media), and placed from there; a relocated_bytes piece is kept with
+# its relocated segment words moved as in the reference run. Offsets and
+# counts are hex. A table's COUNT is its array's; STRIDE is 4 unless given.
+# A bytes or media piece's COUNT is its length, which must be the size of
+# the object it fills. A mutable pointed text fills its whole char array.
 #
 # A table's texts are the ids NAME.0, NAME.1 and so on, NAME the table's name
 # in lower case with words split by "_" and without "TextTable", "Table" or
@@ -94,6 +96,14 @@ bytes                MIDIParser                              62B0 0A
 # (1A1F:339F, 30F1:0AFC): the entry past the roster's end, in the image four
 # bytes of a table of file names.
 bytes                PilotRosterRecordPastEnd                2148 04
+
+# What SelectUnitTacticalTargets (2D1B:08FA) reads as the action mask of a unit
+# whose experience is past the mask table's four words (DS:3CF6): the words
+# on to DS:3EF5, the most an experience byte reaches. In the image, the hit
+# location and missile tables, the terrain damage masks, then the far
+# pointers of the unit-name and pilot-surname tables, whose segment words
+# are relocated (EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT).
+relocated_bytes      UnitActionMaskByExperiencePastEnd       3CFE 1F8
 
 # Single texts
 text                 invalid_save_version                    2372

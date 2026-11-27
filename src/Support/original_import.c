@@ -119,6 +119,7 @@ size_t OriginalImport_PieceBytes(const OriginalPiece *piece, uint8_t *out, size_
 	}
 	case ORIGINAL_PIECE_BYTES:
 	case ORIGINAL_PIECE_MEDIA:
+	case ORIGINAL_PIECE_RELOCATED_BYTES:
 	{
 		size_t offset = ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + piece->dataOffset;
 
@@ -411,4 +412,24 @@ uint32_t OriginalImport_Relocation(size_t index)
 	size_t at = (size_t) HeaderWord(0x18) + index * 4;
 
 	return (uint32_t) HeaderWord(at + 2) * 16 + HeaderWord(at);
+}
+
+void OriginalImport_RelocatePiece(const OriginalPiece *piece, uint8_t *bytes, uint16_t loadSegment)
+{
+	size_t start = ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + piece->dataOffset;
+	size_t count = OriginalImport_RelocationCount();
+	size_t index;
+
+	for (index = 0; index < count; ++index)
+	{
+		uint32_t at = OriginalImport_Relocation(index);
+		uint16_t word;
+
+		if (at < start || at + 2 > start + piece->length)
+			continue;
+		word = (uint16_t) (bytes[at - start] | bytes[at - start + 1] << 8);
+		word = (uint16_t) (word + loadSegment);
+		bytes[at - start] = (uint8_t) word;
+		bytes[at - start + 1] = (uint8_t) (word >> 8);
+	}
 }

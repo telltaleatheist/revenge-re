@@ -77,7 +77,8 @@ std::string address(const StoryTextSource& source) {
 fs::path story_dir(const fs::path& write_dir) { return write_dir / "story"; }
 
 bool is_stored(const OriginalPiece& piece) {
-    return piece.kind == ORIGINAL_PIECE_MEDIA || piece.kind == ORIGINAL_PIECE_BYTES;
+    return piece.kind == ORIGINAL_PIECE_MEDIA || piece.kind == ORIGINAL_PIECE_BYTES ||
+           piece.kind == ORIGINAL_PIECE_RELOCATED_BYTES;
 }
 
 std::string piece_file(const OriginalPiece& piece) {
@@ -114,6 +115,9 @@ std::vector<StoredPiece> import_pieces(const OriginalEdition& edition) {
             refused.push_back(piece_id(piece));
             continue;
         }
+        // Hashed as the copy holds it, kept as the reference run loaded it.
+        if (piece.kind == ORIGINAL_PIECE_RELOCATED_BYTES)
+            OriginalImport_RelocatePiece(&piece, bytes.data(), EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT);
         pieces.push_back({&piece, piece_id(piece), std::string(reinterpret_cast<const char*>(bytes.data()), length)});
     }
     if (!refused.empty()) {

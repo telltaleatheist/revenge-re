@@ -56,8 +56,25 @@ typedef enum OriginalPieceKind
 	ORIGINAL_PIECE_BYTES,                 /* `length` bytes at a DS offset for an object of that size, the
 	                                         story's data: the story file keeps it and places it
 	                                         (revenge/story.h), not the loader */
-	ORIGINAL_PIECE_MEDIA                  /* the same, the story's media */
+	ORIGINAL_PIECE_MEDIA,                 /* the same, the story's media */
+	ORIGINAL_PIECE_RELOCATED_BYTES        /* the same as bytes, with each segment word DOS relocates
+	                                         moved at import as DOS moved it in the reference run
+	                                         (EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT): the experience
+	                                         mask's window, the one such piece */
 } OriginalPieceKind;
+
+/* The segment DOS loaded the game at in the reference captures (DOSBox-X with
+ * REVSNAP resident, tools/capture), used only to relocate the far-pointer
+ * segment words in the experience mask's window (DS:3CFE-3EF5,
+ * UnitActionMaskByExperiencePastEnd), the one relocated piece; nothing else
+ * takes a segment from it. An enemy whose experience is past the mask
+ * table's four entries takes its action timing from that window, and in
+ * the original the segment words there were wherever DOS had put the game:
+ * the timing varied with the machine's drivers and resident programs. At
+ * 131Eh the experience-41h units of the fourth battle act on two subticks in
+ * eight; plain DOSBox-X, without REVSNAP, loads the game at 0823h, where they
+ * would act on four. */
+enum { EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT = 0x131E };
 
 typedef struct OriginalPiece
 {
@@ -135,6 +152,11 @@ const OriginalVariant *OriginalImport_Variant(void);
 size_t OriginalImport_ImageBytes(void);
 size_t OriginalImport_RelocationCount(void);
 uint32_t OriginalImport_Relocation(size_t index);
+
+/* Adds loadSegment to each segment word in a piece's bytes (from
+ * OriginalImport_PieceBytes) that DOS relocates, as DOS does when it loads
+ * the game there. Needs the copy's image, as OriginalImport_Relocation. */
+void OriginalImport_RelocatePiece(const OriginalPiece *piece, uint8_t *bytes, uint16_t loadSegment);
 
 /* The first 16 hex digits of the keyed HMAC-SHA-256 the tables hold. */
 void OriginalImport_KeyedHash(const uint8_t *bytes, size_t length, char hex[17]);

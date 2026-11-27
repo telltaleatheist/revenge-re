@@ -172,6 +172,7 @@ place DirectionSearchMirror 3A6A:3CD2 2 run
 place DirectionSearchCountdown 3A6A:3CD4 2 run
 place DirectionSearchDeltaTable 3A6A:3CD6 20 run
 place UnitActionMaskByExperience 3A6A:3CF6 8 run
+place UnitActionMaskByExperiencePastEnd 3A6A:3CFE 1F8 import
 place HitLocationDirectionSelectorTable 3A6A:3CFE 20 table
 place ImprovedMissileDamageBonusTable 3A6A:3D1D 7 table
 place TerrainDamageQueueOccupiedMask 3A6A:3D25 4 run
@@ -724,3 +725,8 @@ overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text tab
 overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable the selector's last byte is the first missile weapon's bonus (the original reads the bonus from DS:3D0D by weapon index, from WEAPON_LRM_5 on)
 overlap LinePrimaryYStep LinePrimaryXStep the original lays the two constant tables 4 bytes apart
 overlap LineSecondaryYStep LineSecondaryXStep the original lays the two constant tables 4 bytes apart
+overlap UnitActionMaskByExperiencePastEnd HitLocationDirectionSelectorTable the experience mask's past-end window reads it as action masks (an experience past 3, SelectUnitTacticalTargets)
+overlap UnitActionMaskByExperiencePastEnd ImprovedMissileDamageBonusTable the experience mask's past-end window reads it as action masks (an experience past 3, SelectUnitTacticalTargets)
+overlap UnitActionMaskByExperiencePastEnd TerrainDamageQueueOccupiedMask the experience mask's past-end window reads it as action masks (an experience past 3, SelectUnitTacticalTargets)
+overlap UnitActionMaskByExperiencePastEnd TerrainDamageQueueIncrementMask the experience mask's past-end window reads it as action masks (an experience past 3, SelectUnitTacticalTargets)
+overlap UnitActionMaskByExperiencePastEnd PilotSurnameTextTable the experience mask's past-end window reads it as action masks (an experience past 3, SelectUnitTacticalTargets)
