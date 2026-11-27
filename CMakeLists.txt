@@ -91,7 +91,6 @@ target_sources(chr_original_runtime PRIVATE
 	src/Support/audio_log.c
 	src/Support/debug.c
 	src/Support/media_settings.c
-    src/Support/dos_memory.c
     src/Support/host_dispatch.c
     src/Support/digital_bridge.c
     src/Support/heap.c
@@ -523,14 +522,6 @@ if(BUILD_TESTING)
     add_test(NAME graphics.original_display_backing_encoding
         COMMAND test_display_backing_encoding)
 
-    add_executable(test_dos_memory
-        tests/test_dos_memory.c
-        src/Support/dos_memory.c
-        src/Support/debug.c)
-    target_include_directories(test_dos_memory PRIVATE include)
-    chr_strict(test_dos_memory)
-    add_test(NAME support.dos_memory COMMAND test_dos_memory)
-
     add_executable(test_heap
         tests/test_heap.c
         src/Support/heap.c
@@ -585,8 +576,7 @@ if(BUILD_TESTING)
         src/Original/Resources/REVENGE_3390_RESOURCE_STREAM.c
         src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.c
         ${CHR_3A6A_DATA_SOURCES}
-        src/Support/debug.c
-        src/Support/dos_memory.c)
+        src/Support/debug.c)
     target_include_directories(test_resource_stream PRIVATE
         include src/Original)
     chr_strict(test_resource_stream)

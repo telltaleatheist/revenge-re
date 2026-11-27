@@ -71,16 +71,6 @@ void CopyUncompressedFarBlock(
 	}
 }
 
-// 0800:0C87: normalize DX:AX as a real-mode segment:offset pointer.
-// Called from:
-//      CopyUncompressedFarBlock
-segptr32 NormalizeSegmentOffset(word16 offset, word16 segment)
-{
-	return MAKE_FAR_POINTER(
-		segment + (offset >> 0x04),
-		offset & 0x000F);
-}
-
 // 0800:0C9A: decode signed literal/repeat runs until the header's 32-bit
 // output count is exhausted.
 void DecodeRLEBlock(

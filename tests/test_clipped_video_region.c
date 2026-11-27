@@ -43,6 +43,7 @@ int main(void)
 	byte sourceBuffer[0x01] = { 0x00 };
 	byte destinationBuffer[0x01] = { 0x00 };
 	byte *primaryScreenBuffer;
+	static byte otherScreen[0x10];
 
 	VideoAdapterType = VIDEO_ADAPTER_CGA;
 	CopyClippedVideoRegion(
@@ -78,7 +79,7 @@ int main(void)
 	assert(copyCall.width == 0x0008);
 	assert(copyCall.height == 0x0011);
 
-	primaryScreenBuffer = FAR_POINTER(byte, 0x1234, 0x5678);
+	primaryScreenBuffer = otherScreen;
 	PrimaryScreenBuffer = primaryScreenBuffer;
 	VideoAdapterType = VIDEO_ADAPTER_VGA;
 	CopyClippedVideoRegion(

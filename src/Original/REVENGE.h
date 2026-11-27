@@ -10,7 +10,6 @@
  */
 
 #include "revenge/dos.h"
-#include "revenge/dos_memory.h"
 #include "revenge/heap.h"
 #include "revenge/types.h"
 #include "revenge/unit.h"
@@ -232,13 +231,7 @@ extern word16 NarrationEmphasis;
 #define MAKE_DWORD(highWord, lowWord) \
 	((uint32) (((uint32) (word16) (highWord) << 0x10) | \
 	(word16) (lowWord)))
-/* A pointer's far address and back (revenge/dos_memory.h). */
-#define FAR_SEGMENT(pointer) HIGH_WORD(DOSMemory_FarAddress(pointer))
-#define FAR_OFFSET(pointer) LOW_WORD(DOSMemory_FarAddress(pointer))
 #define MAKE_FAR_POINTER(segment, offset) MAKE_DWORD((segment), (offset))
-#define FAR_POINTER(type, segment, offset) \
-	((type *) DOSMemory_Pointer( \
-		MAKE_FAR_POINTER((segment), (offset))))
 
 enum
 {
