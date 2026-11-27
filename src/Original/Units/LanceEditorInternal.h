@@ -13,7 +13,6 @@
 
 #define KEY_ESC            KEY_ESCAPE
 #define KEY_CARRIAGERETURN KEY_CARRIAGE_RETURN
-#define seg3A6A            0x3A6A
 
 
 enum

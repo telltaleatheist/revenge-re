@@ -15,8 +15,6 @@ void InitializeTacticalScenario(void);
  * segment-local header, which retains the executable's own key constants. */
 void SDLBackend_ServiceTimers(void);
 
-#define seg3A6A 0x3A6A
-
 #define VIDEO_ADAPTER_VGA 0x0003
 
 enum
