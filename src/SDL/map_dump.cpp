@@ -923,8 +923,8 @@ static void HashPlace(Sha256 *hash, uintptr_t word, int *taken)
 	char place[96];
 	int length = 0;
 	size_t index;
-	uint32 number;
-	uint32 offset;
+	uint32_t number;
+	uint32_t offset;
 
 	*taken = 0;
 	if (region != NULL)

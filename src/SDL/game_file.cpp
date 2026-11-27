@@ -13,16 +13,16 @@ enum
 static SDL_IOStream *files[FileHandleCapacity];
 static GameFileAccess fileAccess[FileHandleCapacity];
 
-static SDL_IOStream *GetFile(int16 handle)
+static SDL_IOStream *GetFile(int16_t handle)
 {
     if (handle < FirstGameFileHandle || handle >= FileHandleCapacity)
         return NULL;
     return files[handle];
 }
 
-static int16 StoreFile(SDL_IOStream *file, GameFileAccess access)
+static int16_t StoreFile(SDL_IOStream *file, GameFileAccess access)
 {
-    int16 handle;
+    int16_t handle;
 
     if (file == NULL)
         return -0x01;
@@ -39,7 +39,7 @@ static int16 StoreFile(SDL_IOStream *file, GameFileAccess access)
     return -0x01;
 }
 
-static int16 OpenAt(const char *name, GamePathUse use, const char *mode,
+static int16_t OpenAt(const char *name, GamePathUse use, const char *mode,
     GameFileAccess access)
 {
     char hostPath[HostPathCapacity];
@@ -49,7 +49,7 @@ static int16 OpenAt(const char *name, GamePathUse use, const char *mode,
     return StoreFile(SDL_IOFromFile(hostPath, mode), access);
 }
 
-int16 GameFile_Open(const char *name, GameFileAccess access)
+int16_t GameFile_Open(const char *name, GameFileAccess access)
 {
     if (name == NULL)
         return -0x01;
@@ -74,7 +74,7 @@ int16 GameFile_Open(const char *name, GameFileAccess access)
     return -0x01;
 }
 
-int16 GameFile_Close(int16 handle)
+int16_t GameFile_Close(int16_t handle)
 {
     SDL_IOStream *file = GetFile(handle);
 
@@ -84,7 +84,7 @@ int16 GameFile_Close(int16 handle)
     return SDL_CloseIO(file) ? 0x0000 : -0x01;
 }
 
-int16 GameFile_Read(int16 handle, void *destination, word16 byteCount)
+int16_t GameFile_Read(int16_t handle, void *destination, uint16_t byteCount)
 {
     SDL_IOStream *file = GetFile(handle);
     size_t bytesRead;
@@ -97,10 +97,10 @@ int16 GameFile_Read(int16 handle, void *destination, word16 byteCount)
     bytesRead = SDL_ReadIO(file, destination, byteCount);
     if (SDL_GetIOStatus(file) == SDL_IO_STATUS_ERROR)
         return -0x01;
-    return (int16) (word16) bytesRead;
+    return (int16_t) (uint16_t) bytesRead;
 }
 
-int16 GameFile_Write(int16 handle, const void *source, word16 byteCount)
+int16_t GameFile_Write(int16_t handle, const void *source, uint16_t byteCount)
 {
     SDL_IOStream *file = GetFile(handle);
     size_t bytesWritten;
@@ -112,10 +112,10 @@ int16 GameFile_Write(int16 handle, const void *source, word16 byteCount)
     bytesWritten = SDL_WriteIO(file, source, byteCount);
     if (SDL_GetIOStatus(file) == SDL_IO_STATUS_ERROR)
         return -0x01;
-    return (int16) (word16) bytesWritten;
+    return (int16_t) (uint16_t) bytesWritten;
 }
 
-int32 GameFile_Seek(int16 handle, int32 offset, GameFileOrigin origin)
+int32_t GameFile_Seek(int16_t handle, int32_t offset, GameFileOrigin origin)
 {
     SDL_IOStream *file = GetFile(handle);
     SDL_IOWhence whence;
@@ -133,13 +133,13 @@ int32 GameFile_Seek(int16 handle, int32 offset, GameFileOrigin origin)
     position = SDL_SeekIO(file, (Sint64) offset, whence);
     if (position < 0 || position > INT32_MAX)
         return -0x01;
-    return (int32) position;
+    return (int32_t) position;
 }
 
-int32 GameFile_Length(int16 handle)
+int32_t GameFile_Length(int16_t handle)
 {
-    int32 position = GameFile_Seek(handle, 0x00000000L, GAME_FILE_FROM_CURRENT);
-    int32 length;
+    int32_t position = GameFile_Seek(handle, 0x00000000L, GAME_FILE_FROM_CURRENT);
+    int32_t length;
 
     if (position < 0x00000000L)
         return -0x01;
@@ -150,7 +150,7 @@ int32 GameFile_Length(int16 handle)
     return length;
 }
 
-int16 GameFile_Delete(const char *name)
+int16_t GameFile_Delete(const char *name)
 {
     if (name == NULL || GamePaths_Delete(name) != 0)
         return -0x01;

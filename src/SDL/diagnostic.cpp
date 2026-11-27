@@ -8,8 +8,8 @@
 
 static void DrawDiagnosticPattern(void)
 {
-    uint16 x;
-    uint16 y;
+    uint16_t x;
+    uint16_t y;
 
     SDLBackend_ClearIndexedFramebuffer(0x00);
     for (y = 0x0000; y < VIDEO_SCREEN_HEIGHT; ++y)
@@ -19,16 +19,16 @@ static void DrawDiagnosticPattern(void)
             SDLBackend_DrawIndexedPixel(
                 x,
                 y,
-                (byte) ((x / 0x0014 + y / 0x0019) & 0x0F));
+                (uint8_t) ((x / 0x0014 + y / 0x0019) & 0x0F));
         }
     }
 }
 
-static byte *ReadWholeFile(const char *path, size_t *byteCount)
+static uint8_t *ReadWholeFile(const char *path, size_t *byteCount)
 {
     FILE *file;
     long length;
-    byte *data;
+    uint8_t *data;
 
 #if defined(_MSC_VER)
     if (fopen_s(&file, path, "rb") != 0x00)
@@ -46,7 +46,7 @@ static byte *ReadWholeFile(const char *path, size_t *byteCount)
         (void) fclose(file);
         return NULL;
     }
-    data = (byte *) malloc((size_t) length);
+    data = (uint8_t *) malloc((size_t) length);
     if (data == NULL || fread(data, 0x01, (size_t) length, file) != (size_t) length)
     {
         free(data);
@@ -61,7 +61,7 @@ static byte *ReadWholeFile(const char *path, size_t *byteCount)
 static int DrawCpsFile(const char *path)
 {
     size_t fileByteCount;
-    byte *fileData;
+    uint8_t *fileData;
     RevengeScreenImage *image;
     RevengeAssetResult result;
 
@@ -86,7 +86,7 @@ static int DrawCpsFile(const char *path)
 static int LoadPaletteFile(const char *path)
 {
     size_t fileByteCount;
-    byte *fileData;
+    uint8_t *fileData;
 
     fileData = ReadWholeFile(path, &fileByteCount);
     if (fileData == NULL || fileByteCount != VGA_PALETTE_BYTE_COUNT)
@@ -101,8 +101,8 @@ static int LoadPaletteFile(const char *path)
 
 int main(int argumentCount, char **arguments)
 {
-    uint16 frameCount;
-    uint16 frame;
+    uint16_t frameCount;
+    uint16_t frame;
     const char *cpsPath;
     const char *palettePath;
     int argument;
@@ -118,7 +118,7 @@ int main(int argumentCount, char **arguments)
             return 0x02;
         }
         if (strcmp(arguments[argument], "--frames") == 0)
-            frameCount = (uint16) strtoul(arguments[argument + 0x01], 0, 0x0A);
+            frameCount = (uint16_t) strtoul(arguments[argument + 0x01], 0, 0x0A);
         else if (strcmp(arguments[argument], "--cps") == 0)
             cpsPath = arguments[argument + 0x01];
         else if (strcmp(arguments[argument], "--palette") == 0)

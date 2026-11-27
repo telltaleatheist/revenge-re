@@ -44,12 +44,12 @@ typedef struct HarnessItem
     unsigned steps;             /* battle steps before it, since the last key or snap */
     unsigned still;             /* polls without a step before it (a message or menu up) */
     int scancode;               /* ITEM_KEY: SDL's scancode */
-    byte modifiers;             /* ITEM_KEY: 1 Shift, 2 Ctrl, 4 Alt */
-    uint16 x, y;                /* ITEM_MOUSE */
-    byte buttons;
+    uint8_t modifiers;             /* ITEM_KEY: 1 Shift, 2 Ctrl, 4 Alt */
+    uint16_t x, y;                /* ITEM_MOUSE */
+    uint8_t buttons;
     char name[NAME_CAPACITY];   /* ITEM_SNAP */
     int failure;                /* ITEM_FAIL: HARNESS_FAIL_* */
-    word16 unit;                /* ITEM_DESTROY */
+    uint16_t unit;                /* ITEM_DESTROY */
 } HarnessItem;
 
 static int state;               /* 0 not read, 1 on, -1 off */
@@ -62,12 +62,12 @@ static uint64_t polls;
 static uint64_t reads;
 static uint64_t pollsSinceItem;
 static unsigned stepsSinceItem; /* battle steps seen since the last key or snap */
-static byte lastSubtick;        /* TacticalClockSubtick at the previous poll */
+static uint8_t lastSubtick;        /* TacticalClockSubtick at the previous poll */
 static uint64_t pollsStill;     /* polls since the last step, key or snap */
 
 /* 2D1B:2453 (src/Original/Tactical/REVENGE_2D1B_DAMAGE.c): a unit's end, as
  * the hit that ends it calls it. */
-void DestroyScenarioUnit(word16 unitIndex);
+void DestroyScenarioUnit(uint16_t unitIndex);
 
 static void Stop(const char *what, const char *detail)
 {
@@ -92,7 +92,7 @@ static void WriteFile(const char *name, const char *suffix, const void *bytes, s
         Stop("can't write", path);
 }
 
-int Harness_ParseKey(const char *token, int *scancode, byte *modifiers)
+int Harness_ParseKey(const char *token, int *scancode, uint8_t *modifiers)
 {
     SDL_Scancode key;
 
@@ -225,7 +225,7 @@ static void ReadScript(const char *path)
             if (steps == 0)
                 Stop("destroy:N needs steps:N before it, in a battle", token);
             item.kind = ITEM_DESTROY;
-            item.unit = (word16) unit;
+            item.unit = (uint16_t) unit;
         }
         else if (strncmp(token, "mouse:", 6) == 0)
         {
@@ -235,9 +235,9 @@ static void ReadScript(const char *path)
             if (fields < 2 || x >= VIDEO_SCREEN_WIDTH || y >= VIDEO_SCREEN_HEIGHT || buttons > 3)
                 Stop("a bad mouse position (mouse:X/Y or mouse:X/Y/BUTTONS)", token);
             item.kind = ITEM_MOUSE;
-            item.x = (uint16) x;
-            item.y = (uint16) y;
-            item.buttons = (byte) buttons;
+            item.x = (uint16_t) x;
+            item.y = (uint16_t) y;
+            item.buttons = (uint8_t) buttons;
         }
         else
         {
@@ -375,14 +375,14 @@ int HostClock_CalendarTime(struct tm *out, uint32_t *hundredths)
  * the campaign snapshot filled from the live state, then the live units. The
  * roster preparation SaveGame first runs when it hasn't run is left out, as
  * it changes the game. */
-static void SaveBlock(byte *out)
+static void SaveBlock(uint8_t *out)
 {
     RevengeCampaignSnapshot snapshot;
-    word16 index;
+    uint16_t index;
 
     memset(&snapshot, 0, sizeof(snapshot));
     snapshot.campaignStageIndex = CampaignStageIndex;
-    snapshot.scenarioVariantIndex = (word16) ScenarioVariantIndex;
+    snapshot.scenarioVariantIndex = (uint16_t) ScenarioVariantIndex;
     snapshot.campaignPhase = CampaignPhase;
     snapshot.trainingSequenceFlag = TrainingSequenceFlag;
     snapshot.campaignFlags = CampaignFlags;
@@ -422,7 +422,7 @@ static void WriteState(const char *name)
 {
     char path[PATH_CAPACITY];
     FILE *file;
-    word16 index;
+    uint16_t index;
 
     OutPath(path, name, ".state");
     file = fopen(path, "wb");
@@ -447,7 +447,7 @@ static void WriteState(const char *name)
     {
         const RevengeUnitRecord *unit = &PersistentUnitRoster[index];   /* the battle's units */
         unsigned durability = 0;
-        word16 part;
+        uint16_t part;
 
         if (unit->deploymentState == 0x00 && ScenarioUnitMapX[index] == 0x00 && ScenarioUnitMapY[index] == 0x00)
             continue;
@@ -456,7 +456,7 @@ static void WriteState(const char *name)
         fprintf(file, "state unit %u deploy %u at %u %u durability %u heat %u engine %u pilot %u\n",
             (unsigned) index, (unsigned) unit->deploymentState, (unsigned) ScenarioUnitMapX[index],
             (unsigned) ScenarioUnitMapY[index], durability, (unsigned) unit->currentHeat,
-            (unsigned) unit->engineHits, (unsigned) (byte) unit->pilotId);
+            (unsigned) unit->engineHits, (unsigned) (uint8_t) unit->pilotId);
     }
     if (fclose(file) != 0)
         Stop("can't write", path);
@@ -479,8 +479,8 @@ static void WriteNames(const char *name)
 
 static void Snap(const char *name)
 {
-    byte palette[0x300];
-    byte save[REVENGE_CAMPAIGN_SNAPSHOT_SIZE + sizeof(LiveScenarioUnits)];
+    uint8_t palette[0x300];
+    uint8_t save[REVENGE_CAMPAIGN_SNAPSHOT_SIZE + sizeof(LiveScenarioUnits)];
     char path[PATH_CAPACITY];
     FILE *list;
 
@@ -581,7 +581,7 @@ int Harness_KeyPending(void)
     return 0;
 }
 
-int Harness_DestroyUnit(word16 unitIndex)
+int Harness_DestroyUnit(uint16_t unitIndex)
 {
     if (!Harness_Active() || stepsSinceItem == 0 || TacticalBattleResult != 0x0000 || unitIndex >= TACTICAL_UNIT_COUNT || PersistentUnitRoster[unitIndex].deploymentState == 0x00)
         return 0;
@@ -589,7 +589,7 @@ int Harness_DestroyUnit(word16 unitIndex)
     return 1;
 }
 
-void Harness_ReadKey(int *scancode, byte *modifiers)
+void Harness_ReadKey(int *scancode, uint8_t *modifiers)
 {
     while (itemIndex >= itemCount || items[itemIndex].kind != ITEM_KEY || !ItemDue(&items[itemIndex]))
     {

@@ -116,7 +116,7 @@ void SDLBackend_AdvanceAudio(void)
     AudioMix_Advance(HostClock_NowMS() * UINT64_C(1000000), PutFrames);
 }
 
-byte SDLBackend_EnablePCSpeaker(void)
+uint8_t SDLBackend_EnablePCSpeaker(void)
 {
     speakerSounding = 1;
     AudioMix_SpeakerGate(1);
@@ -129,16 +129,16 @@ void SDLBackend_SilencePCSpeaker(void)
     AudioMix_SpeakerGate(0);
 }
 
-void SDLBackend_WritePCSpeakerPITDivisor(uint16 divisor)
+void SDLBackend_WritePCSpeakerPITDivisor(uint16_t divisor)
 {
     AudioMix_SpeakerDivisor(divisor);
 }
 
-void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz)
+void SDLBackend_PlaySpeech(const uint8_t *samples, uint16_t sampleCount, uint16_t sampleRateHz)
 {
     const uint64_t start = HostClock_NowMS();
     uint64_t lengthNS;
-    word16 index;
+    uint16_t index;
 
     if (sampleRateHz == 0x0000)
         return;
@@ -160,17 +160,17 @@ void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampl
     SDLBackend_HoldTimers(HostClock_NowMS() - start);
 }
 
-void SDLBackend_WriteMIDIByte(byte midiByte)
+void SDLBackend_WriteMIDIByte(uint8_t midiByte)
 {
     AudioMix_MidiByte(midiByte);
 }
 
-void SDLBackend_SetDigitalOutputRate(word16 sampleRateHz)
+void SDLBackend_SetDigitalOutputRate(uint16_t sampleRateHz)
 {
     AudioMix_SampleRate(sampleRateHz);
 }
 
-void SDLBackend_WriteUnsigned8Sample(byte sample)
+void SDLBackend_WriteUnsigned8Sample(uint8_t sample)
 {
     AudioMix_QueueUnsigned8(sample);
 }

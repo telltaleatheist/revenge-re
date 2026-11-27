@@ -28,10 +28,10 @@ static SDL_Renderer *renderer;
 static SDL_Texture *texture;
 /* The whole VGA segment (revenge/video.h): the first 64000 bytes are the
  * screen, shown and hashed; the rest is off the screen. */
-static byte indexedFramebuffer[VIDEO_SEGMENT_SIZE];
+static uint8_t indexedFramebuffer[VIDEO_SEGMENT_SIZE];
 static uint32_t scanoutPixels[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
 static uint32_t logicalPalette[VGA_DAC_ENTRY_COUNT];
-static byte currentVideoMode = 0x03;
+static uint8_t currentVideoMode = 0x03;
 
 /*
  * The text screen. Before its first picture the game sets the BIOS's 80x25
@@ -51,17 +51,17 @@ enum
 };
 
 static char textPage[TextRows][TextColumns];
-static uint16 textRow;
-static uint16 textColumn;
+static uint16_t textRow;
+static uint16_t textColumn;
 static SDL_Texture *textScreen;
 static uint64_t nextVideoPresentTick;
 static void (*gameClockHandler)(void);
-static word16 mouseEventMask;
-static word16 hostMouseButtons;
-static byte pointerOutside;
-static byte lastInsideMouseSeen;
-static word16 lastInsideMouseX;
-static word16 lastInsideMouseY;
+static uint16_t mouseEventMask;
+static uint16_t hostMouseButtons;
+static uint8_t pointerOutside;
+static uint8_t lastInsideMouseSeen;
+static uint16_t lastInsideMouseX;
+static uint16_t lastInsideMouseY;
 
 enum
 {
@@ -81,23 +81,23 @@ typedef struct SmokeInputEvent
     uint32_t delayMilliseconds;
     SmokeInputKind kind;
     int scancode;
-    byte modifiers;
-    word16 mouseX;
-    word16 mouseY;
-    word16 mouseButtons;
+    uint8_t modifiers;
+    uint16_t mouseX;
+    uint16_t mouseY;
+    uint16_t mouseButtons;
     char shotName[SmokeShotNameLength];
 } SmokeInputEvent;
 
 static SmokeInputEvent smokeInputEvents[SmokeInputCapacity];
-static uint16 smokeInputEventCount;
-static uint16 smokeInputEventIndex;
+static uint16_t smokeInputEventCount;
+static uint16_t smokeInputEventIndex;
 static uint64_t smokeInputDueTime;
-static byte smokeInputInitialized;
-static word16 smokeMouseButtons;
+static uint8_t smokeInputInitialized;
+static uint16_t smokeMouseButtons;
 static char smokeShotPending[SmokeShotNameLength];
-static byte keyboardHandlerInstalled;
-static byte deliveringHostEvents;
-static byte quitRequested;
+static uint8_t keyboardHandlerInstalled;
+static uint8_t deliveringHostEvents;
+static uint8_t quitRequested;
 
 /* One smoke item after its delay: a key name as the harness's scripts write
  * them (Shift+, Ctrl+, Alt+ allowed), mouse:X/Y[/B] (the game's 320x200 and
@@ -115,9 +115,9 @@ static int ParseSmokeItem(const char *item, SmokeInputEvent *event)
             y >= VIDEO_SCREEN_HEIGHT || buttons > 0x07)
             return FALSE;
         event->kind = SmokeMouse;
-        event->mouseX = (word16) x;
-        event->mouseY = (word16) y;
-        event->mouseButtons = (word16) buttons;
+        event->mouseX = (uint16_t) x;
+        event->mouseY = (uint16_t) y;
+        event->mouseButtons = (uint16_t) buttons;
         return TRUE;
     }
     if (strncmp(item, "shot:", 0x05) == 0x00)
@@ -199,7 +199,7 @@ static void PushSmokeKey(SDL_Scancode scancode, int down)
     (void) SDL_PushEvent(&event);
 }
 
-static void PushSmokeKeystroke(SDL_Scancode scancode, byte modifiers)
+static void PushSmokeKeystroke(SDL_Scancode scancode, uint8_t modifiers)
 {
     if ((modifiers & 0x01) != 0x00)
         PushSmokeKey(SDL_SCANCODE_LSHIFT, TRUE);
@@ -219,7 +219,7 @@ static void PushSmokeKeystroke(SDL_Scancode scancode, byte modifiers)
 
 /* The mouse moved to the game's X,Y, as the window's coordinates, then each
  * button whose state changed pressed or released there. */
-static void PushSmokeMouse(word16 x, word16 y, word16 buttons)
+static void PushSmokeMouse(uint16_t x, uint16_t y, uint16_t buttons)
 {
     static const Uint8 sdlButtons[0x03] = { SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_BUTTON_MIDDLE };
     SDL_Event event;
@@ -240,7 +240,7 @@ static void PushSmokeMouse(word16 x, word16 y, word16 buttons)
     (void) SDL_PushEvent(&event);
     for (i = 0x00; i < 0x03; ++i)
     {
-        word16 bit = (word16) (0x01 << i);
+        uint16_t bit = (uint16_t) (0x01 << i);
 
         if (((buttons ^ smokeMouseButtons) & bit) == 0x00)
             continue;
@@ -403,8 +403,8 @@ static void DeliverHostEvents(void);
 /* 3390:0024: the game's shutdown (2C7F:02E3) and the C library's exit, as
  * they end the game after its own quit (the title's, the in-game menu's).
  * 3390:0244, for the harness's fail item. */
-void ShutdownAndExit(word16 exitCode);
-void CloseTrackedFile(int16 handleSlot);
+void ShutdownAndExit(uint16_t exitCode);
+void CloseTrackedFile(int16_t handleSlot);
 
 /* A quit the player asked of the host ends the program between the game's
  * timer services, as an interrupt would have come, the way the game's own
@@ -417,7 +417,7 @@ void CloseTrackedFile(int16 handleSlot);
  * waits service the clock. */
 static void QuitIfAsked(void)
 {
-    static byte quitting;
+    static uint8_t quitting;
 
     if (quitRequested == FALSE || quitting != FALSE)
         return;
@@ -447,7 +447,7 @@ static void FailIfAsked(void)
         Heap_FailNextAllocation();
         return;
     }
-    for (int16 slot = 0x0000; slot < ORIGINAL_TRACKED_FILE_COUNT; ++slot)
+    for (int16_t slot = 0x0000; slot < ORIGINAL_TRACKED_FILE_COUNT; ++slot)
     {
         if (ResourceFiles.trackedHandles[slot] == ORIGINAL_TRACKED_FILE_UNUSED)
         {
@@ -513,7 +513,7 @@ void SDLBackend_SetGameClockHandler(void (*handler)(void))
 }
 
 /* 30B2:02D9 programmed the PIT to 1193182 / pitDivisor Hz for its handler. */
-void SDLBackend_StartMusicClock(word16 pitDivisor)
+void SDLBackend_StartMusicClock(uint16_t pitDivisor)
 {
     StartClockTimer(SpeakerEffectTimer, SpeakerEffectDivisor);
     StartClockTimer(MIDIDriverTimer, pitDivisor);
@@ -528,7 +528,7 @@ void SDLBackend_StopMusicClock(void)
     clockTimers[MIDISequenceTimer].divisor = 0;
 }
 
-void SDLBackend_StartDigitalPlaybackClock(word16 pitDivisor)
+void SDLBackend_StartDigitalPlaybackClock(uint16_t pitDivisor)
 {
     StartClockTimer(DigitalPlaybackTimer, pitDivisor);
 }
@@ -546,31 +546,31 @@ void SDLBackend_HoldTimers(uint64_t milliseconds)
         clockTimers[id].startMS += milliseconds;
 }
 
-static void StoreRgba(uint32_t *pixel, byte red, byte green, byte blue)
+static void StoreRgba(uint32_t *pixel, uint8_t red, uint8_t green, uint8_t blue)
 {
-    byte *components;
+    uint8_t *components;
 
-    components = (byte *) pixel;
+    components = (uint8_t *) pixel;
     components[0x00] = red;
     components[0x01] = green;
     components[0x02] = blue;
     components[0x03] = 0xFF;
 }
 
-static void SetEgaColor(byte logicalColor, byte egaColor)
+static void SetEgaColor(uint8_t logicalColor, uint8_t egaColor)
 {
-    byte red;
-    byte green;
-    byte blue;
-    byte intensity;
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+    uint8_t intensity;
 
     /* The palette a mode set leaves: the first 16 DAC entries hold the
        EGA's default colours, as on an RGBI monitor (bit 4 the shared
        intensity), the rest black. */
     intensity = (egaColor & 0x10) != 0 ? 0x55 : 0x00;
-    red = (byte) (((egaColor & 0x04) != 0 ? 0xAA : 0x00) + intensity);
-    green = (byte) (((egaColor & 0x02) != 0 ? 0xAA : 0x00) + intensity);
-    blue = (byte) (((egaColor & 0x01) != 0 ? 0xAA : 0x00) + intensity);
+    red = (uint8_t) (((egaColor & 0x04) != 0 ? 0xAA : 0x00) + intensity);
+    green = (uint8_t) (((egaColor & 0x02) != 0 ? 0xAA : 0x00) + intensity);
+    blue = (uint8_t) (((egaColor & 0x01) != 0 ? 0xAA : 0x00) + intensity);
     if ((egaColor & 0x17) == 0x06)
         green = 0x55;
     StoreRgba(&logicalPalette[logicalColor & 0x0F], red, green, blue);
@@ -578,20 +578,20 @@ static void SetEgaColor(byte logicalColor, byte egaColor)
 
 static void ResetEgaPalette(void)
 {
-    static const byte defaultEgaColors[EGA_LOGICAL_PALETTE_ENTRY_COUNT] = {
+    static const uint8_t defaultEgaColors[EGA_LOGICAL_PALETTE_ENTRY_COUNT] = {
         0x00, 0x01, 0x02, 0x03,
         0x04, 0x05, 0x14, 0x07,
         0x38, 0x39, 0x3A, 0x3B,
         0x3C, 0x3D, 0x3E, 0x3F
     };
-    uint16 color;
+    uint16_t color;
 
     for (color = 0x0000; color < VGA_DAC_ENTRY_COUNT; ++color)
         StoreRgba(&logicalPalette[color], 0x00, 0x00, 0x00);
     for (color = 0x0000;
         color < EGA_LOGICAL_PALETTE_ENTRY_COUNT;
         ++color)
-        SetEgaColor((byte) color, defaultEgaColors[color]);
+        SetEgaColor((uint8_t) color, defaultEgaColors[color]);
 }
 
 enum
@@ -603,7 +603,7 @@ enum
  * ScanCodeExtended marks the codes that follow E0h (the grey keys, the right
  * Ctrl and Alt, the keypad's Enter and slash). Zero for a key with none, and
  * none above 58h (KeyboardInterruptHandler indexes its table by it). */
-static uint16 GetSet1ScanCode(SDL_Scancode scanCode)
+static uint16_t GetSet1ScanCode(SDL_Scancode scanCode)
 {
     switch (scanCode)
     {
@@ -710,7 +710,7 @@ static uint16 GetSet1ScanCode(SDL_Scancode scanCode)
     }
 }
 
-static void SendScanCode(byte scanCode)
+static void SendScanCode(uint8_t scanCode)
 {
     if (keyboardHandlerInstalled != FALSE)
         KeyboardInterruptHandler(scanCode);
@@ -718,17 +718,17 @@ static void SendScanCode(byte scanCode)
 
 static void SendKeyEvent(SDL_Scancode scancode, int down)
 {
-    uint16 scanCode = GetSet1ScanCode(scancode);
+    uint16_t scanCode = GetSet1ScanCode(scancode);
 
     if (scanCode == 0x0000)
         return;
     RevengeTrace("input: key scancode=%03X down=%u\n", scanCode, down ? 1 : 0);
     if ((scanCode & ScanCodeExtended) != 0x0000)
         SendScanCode(0xE0);
-    SendScanCode((byte) ((scanCode & 0x00FF) | (down ? 0x00 : 0x80)));
+    SendScanCode((uint8_t) ((scanCode & 0x00FF) | (down ? 0x00 : 0x80)));
 }
 
-uint16 Platform_ScanCodeForKey(int scancode)
+uint16_t Platform_ScanCodeForKey(int scancode)
 {
     return GetSet1ScanCode((SDL_Scancode) scancode) & 0x00FF;
 }
@@ -737,9 +737,9 @@ uint16 Platform_ScanCodeForKey(int scancode)
  * it to the original (tools/capture/revsnap.asm): Shift, Ctrl, Alt pressed
  * as asked, the key pressed and released, the modifiers released; the key's
  * code without E0h, as tools/capture/keys.py has it. */
-static void SendScriptedKey(int scancode, byte modifiers)
+static void SendScriptedKey(int scancode, uint8_t modifiers)
 {
-    byte scanCode = (byte) Platform_ScanCodeForKey(scancode);
+    uint8_t scanCode = (uint8_t) Platform_ScanCodeForKey(scancode);
 
     if ((modifiers & 0x01) != 0x00)
         SendScanCode(0x2A);
@@ -748,7 +748,7 @@ static void SendScriptedKey(int scancode, byte modifiers)
     if ((modifiers & 0x04) != 0x00)
         SendScanCode(0x38);
     SendScanCode(scanCode);
-    SendScanCode((byte) (scanCode | 0x80));
+    SendScanCode((uint8_t) (scanCode | 0x80));
     if ((modifiers & 0x04) != 0x00)
         SendScanCode(0xB8);
     if ((modifiers & 0x02) != 0x00)
@@ -879,13 +879,13 @@ void SDLBackend_Delay(uint32_t milliseconds)
     HostClock_DelayMS(milliseconds);
 }
 
-byte SDLBackend_GetVideoMode(void)
+uint8_t SDLBackend_GetVideoMode(void)
 {
     return currentVideoMode;
 }
 
 /* Modes 00h-03h and 07h are the BIOS's text modes. */
-static int IsTextMode(byte videoMode)
+static int IsTextMode(uint8_t videoMode)
 {
     return videoMode <= 0x03 || videoMode == 0x07;
 }
@@ -909,7 +909,7 @@ static void NextTextRow(void)
 /* DOS INT 21h/AH=06h, output: the BIOS's teletype rules, CR to the row's
  * start, LF down a row (the page scrolls up off the bottom), BS back one,
  * BEL nothing; any other byte its glyph, the row wrapping at 80. */
-uint16 SDLBackend_DirectConsoleIO(byte character)
+uint16_t SDLBackend_DirectConsoleIO(uint8_t character)
 {
     if (character == 0xFF)
         return 0x0600;
@@ -940,10 +940,10 @@ uint16 SDLBackend_DirectConsoleIO(byte character)
         }
         break;
     }
-    return (uint16) (0x0600 | character);
+    return (uint16_t) (0x0600 | character);
 }
 
-const char *Platform_TextRow(uint16 row)
+const char *Platform_TextRow(uint16_t row)
 {
     return textPage[row < TextRows ? row : TextRows - 1];
 }
@@ -952,7 +952,7 @@ const char *Platform_TextRow(uint16 row)
  * its own, then scaled as the screen is. */
 static int RenderTextScreen(void)
 {
-    uint16 row;
+    uint16_t row;
 
     if (textScreen == 0)
     {
@@ -969,7 +969,7 @@ static int RenderTextScreen(void)
     for (row = 0x0000; row < TextRows; ++row)
     {
         char line[TextColumns + 1];
-        uint16 column;
+        uint16_t column;
 
         for (column = 0x0000; column < TextColumns; ++column)
         {
@@ -985,7 +985,7 @@ static int RenderTextScreen(void)
     return SDL_SetRenderTarget(renderer, 0) && SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF) && SDL_RenderClear(renderer) && SDL_RenderTexture(renderer, textScreen, 0, 0);
 }
 
-void SDLBackend_SetVideoMode(byte videoMode)
+void SDLBackend_SetVideoMode(uint8_t videoMode)
 {
     currentVideoMode = videoMode;
     if (IsTextMode(videoMode))
@@ -994,9 +994,9 @@ void SDLBackend_SetVideoMode(byte videoMode)
         (void) SDLBackend_Open();
 }
 
-void SDLBackend_LoadVgaPalette(const byte *paletteRgbTriplets)
+void SDLBackend_LoadVgaPalette(const uint8_t *paletteRgbTriplets)
 {
-    uint16 paletteIndex;
+    uint16_t paletteIndex;
 
     if (paletteRgbTriplets == 0)
         return;
@@ -1004,15 +1004,15 @@ void SDLBackend_LoadVgaPalette(const byte *paletteRgbTriplets)
         paletteIndex < VGA_DAC_ENTRY_COUNT;
         ++paletteIndex)
     {
-        const byte *source;
-        byte red;
-        byte green;
-        byte blue;
+        const uint8_t *source;
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
 
         source = paletteRgbTriplets + paletteIndex * 0x03;
-        red = (byte) ((source[0x00] << 0x02) | (source[0x00] >> 0x04));
-        green = (byte) ((source[0x01] << 0x02) | (source[0x01] >> 0x04));
-        blue = (byte) ((source[0x02] << 0x02) | (source[0x02] >> 0x04));
+        red = (uint8_t) ((source[0x00] << 0x02) | (source[0x00] >> 0x04));
+        green = (uint8_t) ((source[0x01] << 0x02) | (source[0x01] >> 0x04));
+        blue = (uint8_t) ((source[0x02] << 0x02) | (source[0x02] >> 0x04));
         StoreRgba(&logicalPalette[paletteIndex], red, green, blue);
     }
 }
@@ -1036,7 +1036,7 @@ static uint64_t NextFrameMS(uint64_t now)
     return CeilingMS((FramePosition(now) / 1000 + 1) * 1000);
 }
 
-void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart)
+void SDLBackend_WaitVerticalRetrace(uint8_t waitForRetraceStart)
 {
     uint64_t now;
     uint64_t frame;
@@ -1063,26 +1063,26 @@ void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart)
     (void) SDLBackend_PresentIndexedFramebuffer();
 }
 
-uint16 Platform_PaletteRgb(byte out[0x300])
+uint16_t Platform_PaletteRgb(uint8_t out[0x300])
 {
-    uint16 color;
+    uint16_t color;
 
     for (color = 0x0000; color < VGA_DAC_ENTRY_COUNT; ++color)
         memcpy(&out[color * 0x03], &logicalPalette[color], 0x03);
     return VGA_DAC_ENTRY_COUNT;
 }
 
-byte *SDLBackend_GetIndexedFramebuffer(void)
+uint8_t *SDLBackend_GetIndexedFramebuffer(void)
 {
     return indexedFramebuffer;
 }
 
-void SDLBackend_ClearIndexedFramebuffer(byte color)
+void SDLBackend_ClearIndexedFramebuffer(uint8_t color)
 {
     memset(indexedFramebuffer, color, VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT);
 }
 
-void SDLBackend_DrawIndexedPixel(uint16 x, uint16 y, byte color)
+void SDLBackend_DrawIndexedPixel(uint16_t x, uint16_t y, uint8_t color)
 {
     if (x < VIDEO_SCREEN_WIDTH && y < VIDEO_SCREEN_HEIGHT)
         indexedFramebuffer[(uint32_t) y * VIDEO_SCREEN_WIDTH + x] = color;
@@ -1177,8 +1177,8 @@ static void SendMouseEvent(float windowX, float windowY, int moved)
         logicalX >= 0.0f && logicalX < VIDEO_SCREEN_WIDTH &&
         logicalY >= 0.0f && logicalY < VIDEO_SCREEN_HEIGHT)
     {
-        lastInsideMouseX = (word16) logicalX;
-        lastInsideMouseY = (word16) logicalY;
+        lastInsideMouseX = (uint16_t) logicalX;
+        lastInsideMouseY = (uint16_t) logicalY;
         lastInsideMouseSeen = TRUE;
     }
     else if (moved != FALSE || lastInsideMouseSeen == FALSE)
@@ -1189,7 +1189,7 @@ static void SendMouseEvent(float windowX, float windowY, int moved)
     MouseEventCallback(hostMouseButtons, lastInsideMouseX, lastInsideMouseY);
 }
 
-static word16 MouseButtonBit(Uint8 button)
+static uint16_t MouseButtonBit(Uint8 button)
 {
     switch (button)
     {
@@ -1235,7 +1235,7 @@ static void DeliverHostEvents(void)
             SendMouseEvent(event.button.x, event.button.y, FALSE);
             break;
         case SDL_EVENT_MOUSE_BUTTON_UP:
-            hostMouseButtons &= (word16) ~MouseButtonBit(event.button.button);
+            hostMouseButtons &= (uint16_t) ~MouseButtonBit(event.button.button);
             SendMouseEvent(event.button.x, event.button.y, FALSE);
             break;
         default:
@@ -1257,7 +1257,7 @@ void SDLBackend_PollInput(void)
         if (Harness_KeyPending())
         {
             int scancode;
-            byte modifiers;
+            uint8_t modifiers;
 
             Harness_ReadKey(&scancode, &modifiers);
             SendScriptedKey(scancode, modifiers);
@@ -1274,10 +1274,10 @@ void SDLBackend_WaitInput(void)
     SDLBackend_PollInput();
 }
 
-byte SDLBackend_ReadBiosKeyboardFlags(word16 offset)
+uint8_t SDLBackend_ReadBiosKeyboardFlags(uint16_t offset)
 {
     SDL_Keymod modifiers;
-    byte flags = 0x00;
+    uint8_t flags = 0x00;
 
     if (Harness_Active())
         return 0x00;
@@ -1328,18 +1328,18 @@ void SDLBackend_RestoreKeyboardHandlers(void)
 
 /* A harness script's mouse item (harness.h), as REVSNAP calls the handler
  * for one. */
-void Platform_SendHarnessMouse(uint16 x, uint16 y, byte buttons)
+void Platform_SendHarnessMouse(uint16_t x, uint16_t y, uint8_t buttons)
 {
     if (mouseEventMask != 0x0000)
         MouseEventCallback(buttons, x, y);
 }
 
-void SDLBackend_SetMouseEventHandler(word16 eventMask)
+void SDLBackend_SetMouseEventHandler(uint16_t eventMask)
 {
     mouseEventMask = eventMask;
 }
 
-void SDLBackend_SetMouseVisible(uint16 visible)
+void SDLBackend_SetMouseVisible(uint16_t visible)
 {
     if (visible != FALSE)
         (void) SDL_ShowCursor();
@@ -1347,7 +1347,7 @@ void SDLBackend_SetMouseVisible(uint16 visible)
         (void) SDL_HideCursor();
 }
 
-void SDLBackend_SetMousePosition(int16 logicalX, int16 logicalY)
+void SDLBackend_SetMousePosition(int16_t logicalX, int16_t logicalY)
 {
     float windowX;
     float windowY;

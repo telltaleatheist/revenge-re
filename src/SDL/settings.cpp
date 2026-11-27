@@ -48,7 +48,7 @@ static const char *const InputWords[] = { "mouse", "keys" };
 static const char *const *const ChoiceWords[MEDIA_OPTION_COUNT] = {
     VideoRecordWords, MusicRecordWords, SoundRecordWords, InputWords
 };
-static const word16 ChoiceWordCounts[MEDIA_OPTION_COUNT] = {
+static const uint16_t ChoiceWordCounts[MEDIA_OPTION_COUNT] = {
     sizeof(VideoRecordWords) / sizeof(VideoRecordWords[0]), sizeof(MusicRecordWords) / sizeof(MusicRecordWords[0]),
     sizeof(SoundRecordWords) / sizeof(SoundRecordWords[0]), sizeof(InputWords) / sizeof(InputWords[0])
 };
@@ -84,24 +84,24 @@ static const RevengeMediaChoices DefaultChoices = {
 static RevengeMediaChoices choices;
 static int prepared;
 
-static word16 MusicRecord(word16 music)
+static uint16_t MusicRecord(uint16_t music)
 {
     return music == MEDIA_MUSIC_SPEAKER ? MUSIC_RECORD_SPEAKER : MUSIC_RECORD_ROLAND;
 }
 
-static word16 SoundRecord(word16 sound)
+static uint16_t SoundRecord(uint16_t sound)
 {
     return sound == MEDIA_SOUND_SPEAKER ? SOUND_RECORD_SPEAKER : SOUND_RECORD_SAMPLES;
 }
 
 /* A card's record read as an old value: the speaker's, or the samples. */
-static word16 SoundFromRecord(word16 record)
+static uint16_t SoundFromRecord(uint16_t record)
 {
     return record == SOUND_RECORD_SPEAKER ? MEDIA_SOUND_SPEAKER : MEDIA_SOUND_SAMPLES;
 }
 
 /* A card's record read as an old value: the speaker's, or the soundfont. */
-static word16 MusicFromRecord(word16 record)
+static uint16_t MusicFromRecord(uint16_t record)
 {
     return record == MUSIC_RECORD_SPEAKER ? MEDIA_MUSIC_SPEAKER : MEDIA_MUSIC_SOUNDFONT;
 }
@@ -121,9 +121,9 @@ static int SameWord(const char *first, const char *second)
     return *first == '\0' && *second == '\0';
 }
 
-static int WordIndex(const char *const *words, word16 count, const char *word)
+static int WordIndex(const char *const *words, uint16_t count, const char *word)
 {
-    word16 index;
+    uint16_t index;
 
     for (index = 0; index < count; ++index)
         if (SameWord(words[index], word))
@@ -224,17 +224,17 @@ static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
             /* vga: the record is set below. */
         }
         else if (option == MEDIA_OPTION_MUSIC && (choice = WordIndex(MusicWords, MUSIC_WORD_COUNT, words[1])) >= 0)
-            out->music = (word16) choice;
+            out->music = (uint16_t) choice;
         else if (option == MEDIA_OPTION_SOUND && (choice = WordIndex(SoundWords, SOUND_WORD_COUNT, words[1])) >= 0)
-            out->sound = (word16) choice;
+            out->sound = (uint16_t) choice;
         else if ((choice = WordIndex(ChoiceWords[option], ChoiceWordCounts[option], words[1])) >= 0 && option != MEDIA_OPTION_INPUT)
         {
             if (option == MEDIA_OPTION_MUSIC)
-                out->music = MusicFromRecord((word16) choice);
+                out->music = MusicFromRecord((uint16_t) choice);
             else if (option == MEDIA_OPTION_SOUND)
             {
-                out->sound = SoundFromRecord((word16) choice);
-                if (count == 3 && MediaSettings_SoundTakesParameter((word16) choice) && IsHexParameter(words[2]))
+                out->sound = SoundFromRecord((uint16_t) choice);
+                if (count == 3 && MediaSettings_SoundTakesParameter((uint16_t) choice) && IsHexParameter(words[2]))
                     count = 2;
             }
             old = 1;
@@ -244,10 +244,10 @@ static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
         if (count == 3)
             RevengeFault("%s:%d: %s %s takes no parameter", path, lineNumber,
                 OptionWords[option], words[1]);
-        out->choice[option] = option == MEDIA_OPTION_VIDEO ? (word16) VIDEO_RECORD_VGA
+        out->choice[option] = option == MEDIA_OPTION_VIDEO ? (uint16_t) VIDEO_RECORD_VGA
             : option == MEDIA_OPTION_MUSIC                 ? MusicRecord(out->music)
             : option == MEDIA_OPTION_SOUND                 ? SoundRecord(out->sound)
-                                                           : (word16) choice;
+                                                           : (uint16_t) choice;
     }
     for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
         if (!seen[option])
@@ -278,10 +278,10 @@ static void ReadMediaConfiguration(char *text, RevengeMediaChoices *out)
         option = MediaSettings_OptionIndex(words[0]);
         if (option < 0)
             continue;
-        choice = MediaSettings_ChoiceIndex((word16) option, words[1]);
+        choice = MediaSettings_ChoiceIndex((uint16_t) option, words[1]);
         if (choice < 0 || option == MEDIA_OPTION_INPUT)
             continue;
-        out->choice[option] = (word16) choice;
+        out->choice[option] = (uint16_t) choice;
     }
     out->choice[MEDIA_OPTION_VIDEO] = VIDEO_RECORD_VGA;
     out->music = MusicFromRecord(out->choice[MEDIA_OPTION_MUSIC]);
@@ -301,16 +301,16 @@ static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
         "# \"option = choice\"; the choices are:\n");
     for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
     {
-        word16 choice;
+        uint16_t choice;
 
         const char *const *words = option == MEDIA_OPTION_VIDEO ? VideoWords
             : option == MEDIA_OPTION_MUSIC                      ? MusicWords
             : option == MEDIA_OPTION_SOUND                      ? SoundWords
                                                                 : ChoiceWords[option];
-        word16 count = option == MEDIA_OPTION_VIDEO ? (word16) 1
-            : option == MEDIA_OPTION_MUSIC          ? (word16) MUSIC_WORD_COUNT
-            : option == MEDIA_OPTION_SOUND          ? (word16) SOUND_WORD_COUNT
-                                                    : ChoiceWordCounts[option];
+        uint16_t count = option == MEDIA_OPTION_VIDEO ? (uint16_t) 1
+            : option == MEDIA_OPTION_MUSIC            ? (uint16_t) MUSIC_WORD_COUNT
+            : option == MEDIA_OPTION_SOUND            ? (uint16_t) SOUND_WORD_COUNT
+                                                      : ChoiceWordCounts[option];
 
         length += snprintf(text + length, sizeof(text) - (size_t) length, "#   %s:", OptionWords[option]);
         for (choice = 0; choice < count; ++choice)
@@ -320,7 +320,7 @@ static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
     length += snprintf(text + length, sizeof(text) - (size_t) length, "\n");
     for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
     {
-        word16 choice = values->choice[option];
+        uint16_t choice = values->choice[option];
 
         if (option == MEDIA_OPTION_VIDEO)
             length += snprintf(text + length, sizeof(text) - (size_t) length, "%s = %s\n",
@@ -361,9 +361,9 @@ int HostSettings_Prepare(void)
     int option;
 
     for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
-        if (ChoiceWordCounts[option] != MediaSettings_ChoiceCount((word16) option))
+        if (ChoiceWordCounts[option] != MediaSettings_ChoiceCount((uint16_t) option))
             RevengeFault("the %s option has %u records, and settings.cpp names %u",
-                OptionWords[option], (unsigned) MediaSettings_ChoiceCount((word16) option),
+                OptionWords[option], (unsigned) MediaSettings_ChoiceCount((uint16_t) option),
                 (unsigned) ChoiceWordCounts[option]);
 
     path[0] = '\0';

@@ -57,21 +57,21 @@ int HostClock_CalendarTime(struct tm *out, uint32_t *hundredths);
  * can't reach it. 1 when done; 0, nothing changed, unless the harness is on,
  * the battle has stepped since the script's previous item and has no result,
  * and the unit is deployed. */
-int Harness_DestroyUnit(word16 unitIndex);
+int Harness_DestroyUnit(uint16_t unitIndex);
 
 /* One keyboard poll: 1 when the script's next key is due now. */
 int Harness_KeyPending(void);
 /* The due key: SDL's scancode and the modifiers (1 Shift, 2 Ctrl, 4 Alt) the
  * script gives it; polls until one is due. The platform sends it to the
  * game's keyboard handler as REVSNAP does (src/SDL/platform.cpp). */
-void Harness_ReadKey(int *scancode, byte *modifiers);
+void Harness_ReadKey(int *scancode, uint8_t *modifiers);
 /* A script's key name (Shift+, Ctrl+, Alt+ allowed): 1 when it names a key
  * the keyboard has. */
-int Harness_ParseKey(const char *token, int *scancode, byte *modifiers);
+int Harness_ParseKey(const char *token, int *scancode, uint8_t *modifiers);
 
 /* From the platform layer (platform.cpp), for the harness. */
 /* A script's mouse item, to the game's mouse handler when it has one. */
-void Platform_SendHarnessMouse(uint16 x, uint16 y, byte buttons);
+void Platform_SendHarnessMouse(uint16_t x, uint16_t y, uint8_t buttons);
 /* A script's quit item: the host's quit, as the window's close button asks it. */
 void Platform_RequestHarnessQuit(void);
 /* A script's fail item: fail:allocation, the heap's next request failing,
@@ -86,11 +86,11 @@ enum
 void Platform_RequestHarnessFailure(int failure);
 /* The set-1 scan code the keyboard gives SDL's scancode, without E0h (as
  * tools/capture/keys.py has it); zero for a key with none. */
-uint16 Platform_ScanCodeForKey(int scancode);
+uint16_t Platform_ScanCodeForKey(int scancode);
 /* The colours the screen can show (16 in the 16-colour mode, else 256) as RGB
  * into out; returns how many. */
-uint16 Platform_PaletteRgb(byte out[0x300]);
+uint16_t Platform_PaletteRgb(uint8_t out[0x300]);
 /* A row of the text screen (src/SDL/platform.cpp), 80 characters, no NUL. */
-const char *Platform_TextRow(uint16 row);
+const char *Platform_TextRow(uint16_t row);
 
 #endif

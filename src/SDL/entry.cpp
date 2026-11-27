@@ -23,7 +23,7 @@
 void InitializeGame(void);
 void RunCampaignLoop(void);
 void ShutdownGame(void);
-void RunExitHandlersAndTerminate(uint16 exitCode);
+void RunExitHandlersAndTerminate(uint16_t exitCode);
 
 /* The audio log's times: the game's clock, in nanoseconds. */
 static uint64_t AudioLogClock(void)
