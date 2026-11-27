@@ -531,7 +531,7 @@ if(BUILD_TESTING)
 
     add_executable(test_resource_stream
         tests/test_resource_stream.cpp
-        src/Original/Resources/REVENGE_3390_RESOURCE_STREAM.cpp
+        src/Original/Resources/ResourceStream.cpp
         src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.cpp
         ${CHR_3A6A_DATA_SOURCES}
         src/Support/debug.cpp)

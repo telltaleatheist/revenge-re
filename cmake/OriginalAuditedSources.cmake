@@ -24,12 +24,12 @@ set(CHR_3A6A_DATA_SOURCES
 
 set(CHR_ORIGINAL_SOURCES
 	src/Original/Graphics/GraphicsRuntime.cpp
-	src/Original/Resources/REVENGE_0800_RESOURCE_CODECS.cpp
+	src/Original/Resources/ResourceCodecs.cpp
 	src/Original/Tactical/REVENGE_0800_TACTICAL_GEOMETRY.cpp
     src/Original/Graphics/EncodedSprites.cpp
     src/Original/Graphics/TacticalRaster.cpp
 	${CHR_3A6A_DATA_SOURCES}
-    src/Original/Resources/REVENGE_21E7_PACKED_RESOURCES.cpp
+    src/Original/Resources/PackedResources.cpp
 	src/Original/Graphics/AdapterPalette.cpp
 	src/Original/Tactical/REVENGE_2D1B_UNIT_STATE.cpp
 	src/Original/Tactical/REVENGE_2D1B_WEAPONS.cpp
@@ -62,7 +62,7 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Graphics/ClippedPrimitives.cpp
     src/Original/Graphics/RectangleOutline.cpp
     src/Original/Graphics/FrameTiles.cpp
-    src/Original/Resources/REVENGE_3390_RESOURCE_STREAM.cpp
+    src/Original/Resources/ResourceStream.cpp
     src/Original/UI/REVENGE_3390_RESOURCE_ERROR_MESSAGE.cpp
     src/Original/Graphics/RectangleFill.cpp
     src/Original/Text/REVENGE_3477_FONT.cpp
@@ -74,7 +74,7 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Input/NavigationKey.cpp
     src/Original/Graphics/TileCapture.cpp
     src/Original/IO/CriticalError.cpp
-    src/Original/Resources/REVENGE_34B3_PACKED_ICON_RESOURCE.cpp
+    src/Original/Resources/PackedIconResource.cpp
     src/Original/Graphics/TileStripCapture.cpp
     src/Original/Graphics/PackedIcons.cpp
     src/Original/Input/UIRegionPoll.cpp

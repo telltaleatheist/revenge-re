@@ -1,4 +1,5 @@
-// REVENGE_21E7_PACKED_RESOURCES.cpp
+// 21E7: packed resources
+// PackedResources.cpp
 // Maintained annotation of the packed-resource loading leaf routines.
 
 #include "REVENGE.h"

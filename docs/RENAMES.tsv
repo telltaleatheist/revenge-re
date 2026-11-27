@@ -82,3 +82,7 @@ file	src/Original/Input/REVENGE_3568_UI_REGION_LOOP.cpp	src/Original/Input/UIReg
 file	src/Original/Input/REVENGE_358E_SINGLE_UI_REGION.cpp	src/Original/Input/SingleUIRegion.cpp	358E	single UI region
 file	src/Original/Input/REVENGE_3599_UI_REGION_HIGHLIGHT.cpp	src/Original/Input/UIRegionHighlight.cpp	3599	UI region highlight
 file	src/Original/Input/REVENGE_35AB_UI_REGION_SETUP.cpp	src/Original/Input/UIRegionSetup.cpp	35AB	UI region setup
+file	src/Original/Resources/REVENGE_0800_RESOURCE_CODECS.cpp	src/Original/Resources/ResourceCodecs.cpp	0800	resource codecs
+file	src/Original/Resources/REVENGE_21E7_PACKED_RESOURCES.cpp	src/Original/Resources/PackedResources.cpp	21E7	packed resources
+file	src/Original/Resources/REVENGE_3390_RESOURCE_STREAM.cpp	src/Original/Resources/ResourceStream.cpp	3390	resource stream
+file	src/Original/Resources/REVENGE_34B3_PACKED_ICON_RESOURCE.cpp	src/Original/Resources/PackedIconResource.cpp	34B3	packed icon resource
