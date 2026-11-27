@@ -1,4 +1,4 @@
-// REVENGE_2507_TRAINING.c
+// REVENGE_2507_TRAINING.cpp
 // Reconstructed from the original procedures in segment 2507.
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)

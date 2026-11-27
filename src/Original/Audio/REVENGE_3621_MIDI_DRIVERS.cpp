@@ -1,4 +1,4 @@
-// REVENGE_3621_MIDI_DRIVERS.c
+// REVENGE_3621_MIDI_DRIVERS.cpp
 // The music drivers the sequencer dispatches to: null, speaker and Roland.
 
 #include "REVENGE.h"

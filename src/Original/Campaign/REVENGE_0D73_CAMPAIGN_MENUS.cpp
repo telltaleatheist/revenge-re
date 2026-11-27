@@ -1,4 +1,4 @@
-// REVENGE_0D73_CAMPAIGN_MENUS.c
+// REVENGE_0D73_CAMPAIGN_MENUS.cpp
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
 #include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
@@ -17,7 +17,7 @@ word16 ConfirmExitToDos(void)
 	return ShowConfirmationDialog(ExitToDosPrompt) == 0x00;
 }
 
-/* 0D73:242E is reconstructed in UI/REVENGE_0D73_CONFIRMATION.c. */
+/* 0D73:242E is reconstructed in UI/REVENGE_0D73_CONFIRMATION.cpp. */
 
 // 0D73:2448: word16 ShowConfirmationDialog(const char far *message)
 // Called from:

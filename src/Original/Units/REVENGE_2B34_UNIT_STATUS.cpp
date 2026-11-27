@@ -1,4 +1,4 @@
-// REVENGE_2B34_UNIT_STATUS.c
+// REVENGE_2B34_UNIT_STATUS.cpp
 // Reconstructed from REVENGE.EXE and its annotated instruction listing.
 // using Reko decompiler version 0.11.4.0.
 

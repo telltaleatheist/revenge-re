@@ -1,4 +1,4 @@
-// REVENGE_2007_TACTICAL_EFFECTS.c - tactical display, projectile, and effect procedures.
+// REVENGE_2007_TACTICAL_EFFECTS.cpp - tactical display, projectile, and effect procedures.
 // Reconstructed from REVENGE.EXE and its verified annotation project.
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
@@ -83,7 +83,7 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode);
 void DispatchWeaponEffect(int16 weaponEffectId);
 void RefreshTacticalOverview(void);
 
-/* 2007:0328 is reconstructed in Tactical/REVENGE_2007_DISPLAY.c. */
+/* 2007:0328 is reconstructed in Tactical/REVENGE_2007_DISPLAY.cpp. */
 
 // 2007:042A: void AdvanceTerrainEffects(word16 advanceEffects)
 //
@@ -285,7 +285,7 @@ void ApplyAreaTerrainAndUnitDamage(
 	}
 }
 
-/* 2007:1D06 is reconstructed in Tactical/REVENGE_2007_DISPLAY.c. */
+/* 2007:1D06 is reconstructed in Tactical/REVENGE_2007_DISPLAY.cpp. */
 
 // 2007:1D61: format the selected unit's remaining durability percentage in
 // the shared text buffer. Opposing units deliberately expose only 10% steps.

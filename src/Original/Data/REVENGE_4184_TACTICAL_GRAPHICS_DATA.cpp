@@ -1,4 +1,4 @@
-// REVENGE_4184_TACTICAL_GRAPHICS_DATA.c
+// REVENGE_4184_TACTICAL_GRAPHICS_DATA.cpp
 // Typed definitions recovered from the shared graphics data segment.
 
 #include "revenge/original_data.h"

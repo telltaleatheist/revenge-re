@@ -1,4 +1,4 @@
-// REVENGE_3621_MIDI_SEQUENCE.c
+// REVENGE_3621_MIDI_SEQUENCE.cpp
 // Standard MIDI sequence parser and selectable music-driver dispatch layer.
 
 #include "REVENGE.h"

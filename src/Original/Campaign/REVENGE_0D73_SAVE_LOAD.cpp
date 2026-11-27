@@ -1,4 +1,4 @@
-// REVENGE_0D73_SAVE_LOAD.c
+// REVENGE_0D73_SAVE_LOAD.cpp
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)

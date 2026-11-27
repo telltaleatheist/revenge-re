@@ -1,4 +1,4 @@
-// REVENGE_3037_KEYBOARD.c
+// REVENGE_3037_KEYBOARD.cpp
 // Assembly-led translation of the resident keyboard handler, its ring's
 // consumers and the translator.
 
@@ -150,7 +150,7 @@ static const byte ExtendedQueuedKeyIds[KEYBOARD_EXTENDED_KEY_COUNT - 0x01] =
 };
 
 /* CS:0104: a scan code's key id, for codes 00h-58h. The host's keyboard
- * sends no other code (src/SDL/platform.c); the handler indexes it without
+ * sends no other code (src/SDL/platform.cpp); the handler indexes it without
  * a bound. */
 static const byte ScanCodeKeyIds[0x59] =
 {
@@ -186,7 +186,7 @@ static byte PausePrefixRemaining; /* CS:018E */
 
 // 3037:0510: the keyboard's interrupt handler, for one byte from the
 // keyboard controller (port 60h). Host: SDL's key events arrive here a byte
-// at a time (src/SDL/platform.c), as IRQ1 brought them. Where the handler
+// at a time (src/SDL/platform.cpp), as IRQ1 brought them. Where the handler
 // ends by passing the byte on to the BIOS's handler (the saved INT 09h at
 // CS:018F) or by acknowledging it (port 61h, the BIOS status byte 0040:0096
 // and the end of interrupt), the host just returns: the BIOS's handler is
@@ -321,7 +321,7 @@ void KeyboardInterruptHandler(byte scanCode)
 
 // 3037:01A0. Host: SDLBackend_PollInput first delivers what the keyboard
 // and the mouse sent since the last pass, as their interrupts would have
-// (src/SDL/platform.c).
+// (src/SDL/platform.cpp).
 word16 KeyboardInputPending(void)
 {
 	SDLBackend_PollInput();

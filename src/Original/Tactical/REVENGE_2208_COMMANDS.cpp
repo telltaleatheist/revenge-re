@@ -1,4 +1,4 @@
-// REVENGE_2208_COMMANDS.c
+// REVENGE_2208_COMMANDS.cpp
 // Procedures preserved from REVENGE_2208_TACTICAL_INTERACTION.c.
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)

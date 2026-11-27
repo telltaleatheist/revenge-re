@@ -1,4 +1,4 @@
-// REVENGE_2507_PILOT_ASSIGNMENT.c
+// REVENGE_2507_PILOT_ASSIGNMENT.cpp
 // Reconstructed from the original procedures in segment 2507.
 
 #include "REVENGE_2507_LANCE_EDITOR_INTERNAL.h"

@@ -1,4 +1,4 @@
-// REVENGE_30F1_SCENARIO_ROSTERS.c
+// REVENGE_30F1_SCENARIO_ROSTERS.cpp
 // Reconstructed from REVENGE.EXE and its annotated instruction listing.
 // using Reko decompiler version 0.11.4.0.
 

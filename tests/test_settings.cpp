@@ -22,7 +22,7 @@
 #define CHANGE_DIRECTORY chdir
 #endif
 
-/* The player's settings file stands for MEDIA.CFG (src/SDL/settings.c).
+/* The player's settings file stands for MEDIA.CFG (src/SDL/settings.cpp).
  *
  *   first    the first start takes the install's MEDIA.CFG: the text the game
  *            then parses is that file's bytes but the video's, which is

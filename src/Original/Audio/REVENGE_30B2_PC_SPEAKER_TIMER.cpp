@@ -1,4 +1,4 @@
-// REVENGE_30B2_PC_SPEAKER_TIMER.c
+// REVENGE_30B2_PC_SPEAKER_TIMER.cpp
 // Shared music timer and PC-speaker effect driver reconstructed from REVENGE.EXE.
 
 #include "REVENGE.h"
@@ -118,7 +118,7 @@ void SetPCSpeakerEffectStopRequest(void)
 }
 
 // 30B2:0010, the IRQ0 handler InstallMusicTimer installed, is Replaced: the
-// game's clock calls its services itself (src/SDL/platform.c), at the rates
+// game's clock calls its services itself (src/SDL/platform.cpp), at the rates
 // its countdowns gave them. Every MusicServiceReload + 1 interrupts (one
 // without a music driver, four with one: 1193182 / 1000h Hz either way) it
 // ran DecodePCSpeakerEffectTick and counted SystemTickCountdown, chaining the

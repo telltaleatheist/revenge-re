@@ -1,4 +1,4 @@
-// REVENGE_39DC_ENVIRONMENT.c
+// REVENGE_39DC_ENVIRONMENT.cpp
 // Reconstructed DOS environment lookup with an SDL host boundary (segment 39DC).
 
 #include "REVENGE.h"

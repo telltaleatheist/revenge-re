@@ -8,7 +8,7 @@
 void InitializeMouseSupport(void);
 
 /* The pointer leaving the window: SDL's mouse events reach the game's mouse
- * handler (src/SDL/platform.c) only while the pointer is over the game's
+ * handler (src/SDL/platform.cpp) only while the pointer is over the game's
  * picture. A move past the window's edge, or any move after SDL's
  * mouse-leave, is not passed on, so the game's cursor keeps the last
  * position seen inside and is never parked on an edge, where a battle

@@ -1,4 +1,4 @@
-// REVENGE_0D73_CAMPAIGN_DRIVER.c
+// REVENGE_0D73_CAMPAIGN_DRIVER.cpp
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
 #include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"

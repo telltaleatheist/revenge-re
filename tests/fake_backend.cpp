@@ -286,7 +286,7 @@ void SDLBackend_ServiceTimers(void)
 {
 }
 
-/* The host's settings (src/SDL/settings.c): the install's MEDIA.CFG choices
+/* The host's settings (src/SDL/settings.cpp): the install's MEDIA.CFG choices
  * the trace copy has, VGA and the speaker. */
 const RevengeMediaChoices *HostSettings_MediaChoices(void)
 {

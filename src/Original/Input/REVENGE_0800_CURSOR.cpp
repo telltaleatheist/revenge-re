@@ -8,7 +8,7 @@
 /* 0800:3772-37FD: the handler the game gives the mouse driver (INT 33h
  * AX=0Ch, every event: 1Fh), called with the buttons in BX and the position
  * in CX and DX. Host: SDL's mouse events arrive here as the driver called it
- * (src/SDL/platform.c), from InitializeMouseSupport until
+ * (src/SDL/platform.cpp), from InitializeMouseSupport until
  * ShutdownMouseSupport. */
 void MouseEventCallback(word16 buttons, word16 x, word16 y)
 {

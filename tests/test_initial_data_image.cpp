@@ -208,7 +208,7 @@ static void EncodePlaybackBuffers(byte *bytes)
 
 static const ImageRow rows[] =
 {
-	/* Registered at their DS addresses (src/SDL/system.c). */
+	/* Registered at their DS addresses (src/SDL/system.cpp). */
 	DS(PresentationDismissTimeout, 0x240F),
 	DS(SceneTransitionAbortFlag, 0xA864),
 	DS(TextWindowContexts, 0x063A),

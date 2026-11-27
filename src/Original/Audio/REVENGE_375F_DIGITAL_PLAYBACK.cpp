@@ -1,4 +1,4 @@
-/* REVENGE_375F_DIGITAL_PLAYBACK.c -- digital sample queues, timer service and software mixer. */
+/* REVENGE_375F_DIGITAL_PLAYBACK.cpp -- digital sample queues, timer service and software mixer. */
 
 #include "REVENGE.h"
 #include "revenge/digital_bridge.h"

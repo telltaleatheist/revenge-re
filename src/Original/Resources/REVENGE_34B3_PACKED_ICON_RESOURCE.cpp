@@ -1,4 +1,4 @@
-// REVENGE_34B3_PACKED_ICON_RESOURCE.c
+// REVENGE_34B3_PACKED_ICON_RESOURCE.cpp
 // Length-prefixed tactical graphics resource loader.
 
 #include "REVENGE.h"

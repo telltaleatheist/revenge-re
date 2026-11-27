@@ -1,4 +1,4 @@
-/* REVENGE_2FEA_DISPLAY_BACKING.c -- packed display-backing builder. */
+/* REVENGE_2FEA_DISPLAY_BACKING.cpp -- packed display-backing builder. */
 
 #include "REVENGE.h"
 

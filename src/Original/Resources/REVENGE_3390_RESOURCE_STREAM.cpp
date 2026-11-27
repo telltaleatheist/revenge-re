@@ -1,4 +1,4 @@
-// REVENGE_3390_RESOURCE_STREAM.c
+// REVENGE_3390_RESOURCE_STREAM.cpp
 // Assembly-led transcription of the tracked-file and resident-resource layer.
 
 #include "REVENGE.h"

@@ -1,4 +1,4 @@
-// REVENGE_2007_TACTICAL_EFFECTS.c - tactical display, projectile, and effect procedures.
+// REVENGE_2007_TACTICAL_EFFECTS.cpp - tactical display, projectile, and effect procedures.
 // Reconstructed from REVENGE.EXE and its verified annotation project.
 
 #include "REVENGE.h"
@@ -77,7 +77,7 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode);
 void DispatchWeaponEffect(int16 weaponEffectId);
 void RefreshTacticalOverview(void);
 
-/* 2007:0328 is reconstructed in Tactical/REVENGE_2007_DISPLAY.c. */
+/* 2007:0328 is reconstructed in Tactical/REVENGE_2007_DISPLAY.cpp. */
 
 // 2007:0AA4: queue one 0Eh-byte animated missile/projectile record.
 // Verified against ASM 2007:0AA4-0C6E.
@@ -251,7 +251,7 @@ void DrawClippedWeaponTraceLine(
 	ShowMouseCursorOverlay();
 }
 
-/* 2007:0DDB is reconstructed in Tactical/REVENGE_2007_DISPLAY.c. */
+/* 2007:0DDB is reconstructed in Tactical/REVENGE_2007_DISPLAY.cpp. */
 
 // 2007:16E8: void AdvanceImpactSpriteAnimations(void)
 // Verified against 2007:16E8-17DD.
@@ -809,7 +809,7 @@ void DrawActiveTextWindowBorder(word16 color)
 	DrawClippedAxisAlignedLine(leftX, bottomY, rightX, bottomY, color);
 }
 
-/* 2007:1CBD is reconstructed in Tactical/REVENGE_2007_DISPLAY.c. */
+/* 2007:1CBD is reconstructed in Tactical/REVENGE_2007_DISPLAY.cpp. */
 
 // 2007:14DF: update the outline around one primary unit-status row only when
 // its row or blink color changed. A row change marks the previous row for

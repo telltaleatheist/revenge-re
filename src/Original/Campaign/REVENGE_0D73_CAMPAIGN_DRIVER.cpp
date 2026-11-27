@@ -1,4 +1,4 @@
-// REVENGE_0D73_CAMPAIGN_DRIVER.c
+// REVENGE_0D73_CAMPAIGN_DRIVER.cpp
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
 #include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
@@ -201,7 +201,7 @@ void InitializeTacticalScenario(void)
 	HideMouseCursorOverlay();
 	/* The VGA record's switch to the EGA for the battle (0D73:0296-02B0)
 	 * went with the EGA: the rebuild hands the game its MCGA record, which
-	 * leaves DS:83DC clear (src/SDL/settings.c). */
+	 * leaves DS:83DC clear (src/SDL/settings.cpp). */
 
 	// [V] MECHSET1 is used by scenarios 1..E and T. Scenarios F..S use
 	// MECHSET2. This is the exact branch at 0D73:02B4-02CC.
@@ -242,5 +242,5 @@ void InitializeTacticalScenario(void)
 		SDLBackend_ServiceTimers();
 }
 
-/* 0D73:0387 is reconstructed in Graphics/REVENGE_0D73_TACTICAL_VIDEO.c. */
+/* 0D73:0387 is reconstructed in Graphics/REVENGE_0D73_TACTICAL_VIDEO.cpp. */
 

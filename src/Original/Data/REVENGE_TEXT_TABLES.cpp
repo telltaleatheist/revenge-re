@@ -1,4 +1,4 @@
-// REVENGE_TEXT_TABLES.c
+// REVENGE_TEXT_TABLES.cpp
 // The text tables of REVENGE.EXE's data segment. The player's copy fills them
 // at start (OriginalImport_Load, src/Support/original_import_pieces.txt); this file
 // holds only their declarations and the DS offsets of the single strings.

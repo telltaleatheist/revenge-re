@@ -363,7 +363,7 @@ int HostSettings_Prepare(void)
 
 	for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
 		if (ChoiceWordCounts[option] != MediaSettings_ChoiceCount((word16) option))
-			RevengeFault("the %s option has %u records, and settings.c names %u",
+			RevengeFault("the %s option has %u records, and settings.cpp names %u",
 				OptionWords[option], (unsigned) MediaSettings_ChoiceCount((word16) option),
 				(unsigned) ChoiceWordCounts[option]);
 

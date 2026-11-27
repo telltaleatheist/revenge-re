@@ -442,7 +442,7 @@ static void WriteState(const char *name)
 		Stop("can't write", path);
 }
 
-/* Every data object by name and the hash of its bytes (map_dump.c). */
+/* Every data object by name and the hash of its bytes (map_dump.cpp). */
 static void WriteNames(const char *name)
 {
 	char path[PATH_CAPACITY];

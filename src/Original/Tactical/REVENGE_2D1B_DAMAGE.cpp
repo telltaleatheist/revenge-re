@@ -1,4 +1,4 @@
-// REVENGE_2D1B_DAMAGE.c
+// REVENGE_2D1B_DAMAGE.cpp
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
 #include "REVENGE_2D1B_INTERNAL.h"

@@ -1,4 +1,4 @@
-// REVENGE_35C2_ICON_PAGE_DECODE.c - icon-page decoding and adapter conversion
+// REVENGE_35C2_ICON_PAGE_DECODE.cpp - icon-page decoding and adapter conversion
 // Tactical icon-page decompression and adapter conversion.
 
 #include "REVENGE.h"

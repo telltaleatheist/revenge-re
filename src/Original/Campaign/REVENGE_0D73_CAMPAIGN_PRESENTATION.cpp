@@ -1,4 +1,4 @@
-// REVENGE_0D73_CAMPAIGN_PRESENTATION.c
+// REVENGE_0D73_CAMPAIGN_PRESENTATION.cpp
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
@@ -201,7 +201,7 @@ void ShowStoryMessage(word16 messageIndex)
 	WaitForDismissInput();
 }
 
-/* 0D73:2E7C is reconstructed in Text/REVENGE_0D73_SCENARIO_MESSAGES.c. */
+/* 0D73:2E7C is reconstructed in Text/REVENGE_0D73_SCENARIO_MESSAGES.cpp. */
 
 // 0D73:2F16: Register word16 PlayTitleTextSequence()
 // Called from:
@@ -305,7 +305,7 @@ void LoadScreenPalette(word16 screenResourceIndex)
 	 * VGA only. */
 }
 
-/* 0D73:329E is reconstructed in Graphics/REVENGE_0D73_PALETTE.c. */
+/* 0D73:329E is reconstructed in Graphics/REVENGE_0D73_PALETTE.cpp. */
 
 // 0D73:32F4: void LoadScreenAssetToWorkBuffer(word16 resourceIndex)
 // Called from:
@@ -340,7 +340,7 @@ void LoadAndPresentScreen(word16 resourceIndex)
 	ShowMouseCursorOverlay();
 }
 
-/* 0D73:341F is reconstructed in Campaign/REVENGE_0D73_PRESENTATION.c. */
+/* 0D73:341F is reconstructed in Campaign/REVENGE_0D73_PRESENTATION.cpp. */
 
 // 0D73:347D: present a campaign scene with its optional indexed message.
 // VERIFIED against 0D73:347D-350F.
@@ -446,7 +446,7 @@ void PrepareMissionDateScreen(int16 presentationMode)
 }
 
 
-/* 0D73:365C is reconstructed in Graphics/REVENGE_0D73_MISSION_HEADER.c. */
+/* 0D73:365C is reconstructed in Graphics/REVENGE_0D73_MISSION_HEADER.cpp. */
 
 // 0D73:376C: animate the indexed campaign date and optional map highlight.
 void DisplayMissionDate(
@@ -590,7 +590,7 @@ void DisplayMissionDate(
 }
 
 
-/* 0D73:3AE4 is reconstructed in Text/REVENGE_0D73_SCENARIO_MESSAGES.c. */
+/* 0D73:3AE4 is reconstructed in Text/REVENGE_0D73_SCENARIO_MESSAGES.cpp. */
 
 // 0D73:3B7E: present a framed mission briefing and its indexed message.
 // VERIFIED against 0D73:3B7E-3C7B.
@@ -627,7 +627,7 @@ void PresentMissionBriefing(
 		ShowCampaignMessageAndWait(messageIndex);
 }
 
-/* 0D73:3C7C is reconstructed in Input/REVENGE_0D73_WAIT.c. */
+/* 0D73:3C7C is reconstructed in Input/REVENGE_0D73_WAIT.cpp. */
 
 // 0D73:3C97: Register byte * WaitForDismissInputOrTimeout(Stack word16 wArg04)
 // Called from:
@@ -723,7 +723,7 @@ word16 WaitForKeyboardOrMouseInput(void)
 	return keypress;
 }
 
-/* 0D73:3DA9 is reconstructed in Text/REVENGE_0D73_ENTRY_BLINK.c. */
+/* 0D73:3DA9 is reconstructed in Text/REVENGE_0D73_ENTRY_BLINK.cpp. */
 
 // 0D73:3E1E: void FlushPendingInput()
 // Called from:
@@ -873,23 +873,23 @@ void DrawRightAlignedClippedText(
 //      RunCampaignLoop
 /* 0D73:4099-4154 are reconstructed in Graphics/REVENGE_0D73_VIDEO.c. */
 
-/* 0D73:418E is reconstructed in Text/REVENGE_0D73_STARTUP_TEXT.c. */
+/* 0D73:418E is reconstructed in Text/REVENGE_0D73_STARTUP_TEXT.cpp. */
 
-/* 0D73:41E8 is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.c. */
+/* 0D73:41E8 is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.cpp. */
 
-/* 0D73:4238 is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.c. */
+/* 0D73:4238 is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.cpp. */
 
-/* 0D73:4288 is reconstructed in Text/REVENGE_0D73_STARTUP_TEXT.c. */
+/* 0D73:4288 is reconstructed in Text/REVENGE_0D73_STARTUP_TEXT.cpp. */
 
-/* 0D73:42E4 is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.c. */
+/* 0D73:42E4 is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.cpp. */
 
-/* 0D73:4317 is reconstructed in Text/REVENGE_0D73_TEXT_EDITOR.c. */
+/* 0D73:4317 is reconstructed in Text/REVENGE_0D73_TEXT_EDITOR.cpp. */
 
-/* 0D73:454A is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.c. */
+/* 0D73:454A is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.cpp. */
 
-/* 0D73:4572 is reconstructed in IO/REVENGE_0D73_SAVE_COMPATIBILITY.c. */
+/* 0D73:4572 is reconstructed in IO/REVENGE_0D73_SAVE_COMPATIBILITY.cpp. */
 
-/* 0D73:4611 is reconstructed in UI/REVENGE_0D73_INVALID_SAVE_DIALOG.c. */
+/* 0D73:4611 is reconstructed in UI/REVENGE_0D73_INVALID_SAVE_DIALOG.cpp. */
 
 // 0D73:4155: capture one indexed rectangle from graphics resource 18h.
 // Called from:

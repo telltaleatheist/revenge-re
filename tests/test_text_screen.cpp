@@ -1,4 +1,4 @@
-/* The text screen (src/SDL/platform.c): the BIOS's 80x25 text mode clears
+/* The text screen (src/SDL/platform.cpp): the BIOS's 80x25 text mode clears
  * the page; DOS's console output puts each byte's glyph at the cursor, CR
  * to the row's start, LF down a row, BS back one, BEL nothing; a row wraps
  * at 80, and the page scrolls up off the bottom. */
