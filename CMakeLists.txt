@@ -996,6 +996,11 @@ if(CHR_BUILD_SDL)
     target_include_directories(chr_setup PUBLIC src)
     target_link_libraries(chr_setup PUBLIC rekit rekit_sdl)
     target_compile_features(chr_setup PUBLIC cxx_std_20)
+    # The setup and the programs it is linked into use the standard getenv,
+    # fopen and sscanf, which MSVC would otherwise warn about (and /WX stop).
+    if(MSVC)
+        target_compile_definitions(chr_setup PUBLIC _CRT_SECURE_NO_WARNINGS)
+    endif()
     chr_strict(chr_setup)
 
     # The preserved Original source owns main() and all game flow. SDL only
