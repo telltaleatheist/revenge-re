@@ -110,6 +110,7 @@ static const ImageRow rows[] =
 	DS(UnitEditorPilotCardCountByFamily, 0x3291),
 	DS(FixedPilotIds, 0x3354),
 	DS(FixedUnitTypeIds, 0x3356),
+	DS(UnitClassTypeListBytes, 0x3298),
 	DS(LanceEditorLayout, 0x3470),
 
 	/* The save block's fields (SaveGame, 0D73:4866; tools/trace/state.py). */

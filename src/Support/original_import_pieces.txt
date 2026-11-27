@@ -52,7 +52,6 @@ mutable_text_table   DestroyedUnitNarrationTextTable         4709 03
 mutable_text_table   ScenarioEventNarrationTextTable         4715 1E
 text_table           UnitAllegianceLabelTextTable            30CB 02
 text_table           UnitStatHeaderTextTable                 30F2 06
-byte_lists           UnitClassTypeLists                      32DC 07
 text_table           UnitClassLabelTextTable                 32F8 07
 text_table           TrainingDeploymentLabelTextTable        3314 04
 text_table           TrainingControlLabelTextTable           3324 04

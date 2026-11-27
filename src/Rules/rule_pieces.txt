@@ -14,6 +14,7 @@
 
 header revenge/combat_data.h
 header revenge/original_data.h
+header revenge/original/lance_editor_data.h
 
 # weapons.json
 weapons.definitions                     WeaponDefinitions                3A6A:0435 159
@@ -41,3 +42,11 @@ ai.formation_offsets                    FormationOffsetTable              3A6A:1
 ai.formation_choices_aggressive         FormationSelectionAggressive      3A6A:2F72 C
 ai.formation_choices_defensive          FormationSelectionDefensive       3A6A:2F7E C
 ai.formation_choices_balanced           FormationSelectionBalanced        3A6A:2F8A C
+
+# units.json
+units.predefined_lances                 PredefinedUnitTypeTable           3A6A:31CB 1E
+units.random_unit_count_by_roster       RandomUnitTypeCountByFamily       3A6A:320D A
+units.random_unit_pools                 RandomUnitTypePoolByFamily        3A6A:3217 31
+units.unit_class_types                  UnitClassTypeListBytes            3A6A:3298 44
+units.fixed_unit_types                  FixedUnitTypeIds                  3A6A:3356 2
+units.lance_allegiances                 ScenarioLanceAllegianceTable      3A6A:5928 15

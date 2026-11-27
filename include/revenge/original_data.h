@@ -291,7 +291,7 @@ extern RevengePilotRosterRecord PilotRoster[REVENGE_PILOT_ROSTER_COUNT];
 extern RevengeUnitLanceAssignment
 	LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];
 /* DS:5928: seven rows; the scenarios use rows 0-4 and 6. */
-extern const byte ScenarioLanceAllegianceTable[0x07][0x03];
+extern byte ScenarioLanceAllegianceTable[0x07][0x03];  /* the rules' */
 extern word16 AmmoCapacityMultiplierTable[0x0E];     /* the rules' */
 extern word16 CampaignFlags;
 extern word16 CampaignStageIndex;

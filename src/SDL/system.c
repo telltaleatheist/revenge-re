@@ -301,16 +301,12 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HYDRATE_DATA_OBJECT(RandomUnitTypeCount, 0x3118);
 	HYDRATE_DATA_OBJECT(UnitEditorUnitSpriteIndex, 0x3119);
 	HYDRATE_DATA_OBJECT(UnitMovementClassByType, 0x3172);
-	HYDRATE_DATA_OBJECT(PredefinedUnitTypeTable, 0x31CB);
 	HYDRATE_DATA_OBJECT(UnitEditorSectionEnabled, 0x31E9);
 	HYDRATE_DATA_OBJECT(UnitEditorScenarioCardCountByFamily, 0x3206);
-	HYDRATE_DATA_OBJECT(RandomUnitTypeCountByFamily, 0x320D);
-	HYDRATE_DATA_OBJECT(RandomUnitTypePoolByFamily, 0x3217);
 	HYDRATE_DATA_OBJECT(PilotPortraitIndexById, 0x3248);
 	HYDRATE_DATA_OBJECT(DefaultPilotIdsByScenario, 0x3269);
 	HYDRATE_DATA_OBJECT(UnitEditorPilotCardCountByFamily, 0x3291);
 	HYDRATE_DATA_OBJECT(FixedPilotIds, 0x3354);
-	HYDRATE_DATA_OBJECT(FixedUnitTypeIds, 0x3356);
 	HYDRATE_DATA_OBJECT(LanceEditorLayout, 0x3470);
 #undef HYDRATE_DATA_OBJECT
 }

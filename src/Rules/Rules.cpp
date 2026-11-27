@@ -21,6 +21,10 @@ extern "C" {
 
 extern "C" {
 #include "revenge/rules.h"
+// The training's unit lists (revenge/original/lance_editor_data.h is C
+// only): host pointers into UnitClassTypeListBytes, set from units.json.
+extern const std::uint8_t* UnitClassTypeLists[0x07];
+extern std::uint8_t UnitClassTypeListBytes[0x44];
 }
 
 namespace revenge::rules {
@@ -66,6 +70,14 @@ constexpr unsigned kPriorityBankOffset = 0x09C6;   // the bank's DS offset, whic
 constexpr unsigned kDataSegment = 0x3A6A;          // DS, as the image loaded at 0800h names it
 constexpr std::size_t kFacingBands = 0x04;         // FormationOffsetTable: bands of ten modes
 constexpr std::size_t kFormationModes = 0x0A;
+constexpr unsigned kUnitTypes = 0x59;               // LANCE_EDITOR_UNIT_TYPE_COUNT
+constexpr std::uint8_t kNoUnitType = 0xFF;          // REVENGE_UNIT_TYPE_NONE as a byte
+constexpr std::size_t kUnitClasses = 0x07;
+constexpr std::size_t kUnitClassListBytes = 0x44;   // UnitClassTypeListBytes
+
+// Where each class's list starts in UnitClassTypeListBytes, or -1 for none:
+// units.json sets it, and load() points UnitClassTypeLists there.
+std::array<long, kUnitClasses> g_class_list_starts{};
 
 // "weapons.json: weapons.ppc.heat is missing".
 [[noreturn]] void fail(const std::string& where, const std::string& why) {
@@ -351,6 +363,79 @@ void read_ai(const Json& root, Tables& tables) {
     file.done();
 }
 
+// A unit type number (0 to 58h), or null for none.
+std::uint8_t unit_type(const Json& value, const std::string& where) {
+    if (std::holds_alternative<std::nullptr_t>(value.value)) return kNoUnitType;
+    return std::uint8_t(whole(value, where, kUnitTypes - 1));
+}
+
+// `rows` arrays of `columns` unit types (or nulls), one after another.
+std::vector<std::uint8_t> unit_rows(const Json& value, const std::string& where, std::size_t rows,
+                                    std::size_t columns) {
+    if (!value.is_array() || value.array().size() != rows)
+        fail(where, "is not an array of " + std::to_string(rows) + " rows");
+    std::vector<std::uint8_t> out;
+    for (std::size_t row = 0; row < rows; ++row) {
+        const Json& types = value.array()[row];
+        const std::string at = where + "[" + std::to_string(row) + "]";
+        if (!types.is_array() || types.array().size() != columns)
+            fail(at, "is not an array of " + std::to_string(columns) + " unit types or nulls");
+        for (std::size_t column = 0; column < columns; ++column)
+            out.push_back(unit_type(types.array()[column], at + "[" + std::to_string(column) + "]"));
+    }
+    return out;
+}
+
+void read_units(const Json& root, Tables& tables) {
+    Fields file(root, "units.json:");
+    tables["units.predefined_lances"] = unit_rows(file.take("predefined_lances"), file.at("predefined_lances"), 5, 6);
+    tables["units.random_unit_count_by_roster"] = numbers(
+        file.take("random_unit_count_by_roster"), file.at("random_unit_count_by_roster"), 0x0A, 0x07, 1);
+    tables["units.random_unit_pools"] = unit_rows(file.take("random_unit_pools"), file.at("random_unit_pools"), 7, 7);
+    tables["units.fixed_unit_types"] = numbers(
+        file.take("fixed_unit_types"), file.at("fixed_unit_types"), 0x02, kUnitTypes - 1, 1);
+
+    const Json& allegiances = file.take("lance_allegiances_by_scenario");
+    const std::string allegiance_where = file.at("lance_allegiances_by_scenario");
+    if (!allegiances.is_array() || allegiances.array().size() != 7)
+        fail(allegiance_where, "is not an array of 7 scenarios");
+    std::vector<std::uint8_t>& allegiance_out = tables["units.lance_allegiances"];
+    allegiance_out.clear();
+    for (std::size_t scenario = 0; scenario < 7; ++scenario) {
+        const std::vector<std::uint8_t> three = numbers(
+            allegiances.array()[scenario], allegiance_where + "[" + std::to_string(scenario) + "]", 3, 0xFF, 1);
+        allegiance_out.insert(allegiance_out.end(), three.begin(), three.end());
+    }
+
+    // The training's lists of unit types by class, each ended by FFh, one
+    // after another as the original's; a null list has no bytes.
+    const Json& lists = file.take("unit_class_types");
+    const std::string lists_where = file.at("unit_class_types");
+    if (!lists.is_array() || lists.array().size() != kUnitClasses)
+        fail(lists_where, "is not an array of " + std::to_string(kUnitClasses) + " lists or nulls");
+    std::vector<std::uint8_t>& bytes = tables["units.unit_class_types"];
+    bytes.clear();
+    for (std::size_t unit_class = 0; unit_class < kUnitClasses; ++unit_class) {
+        const Json& list = lists.array()[unit_class];
+        const std::string where = lists_where + "[" + std::to_string(unit_class) + "]";
+        if (std::holds_alternative<std::nullptr_t>(list.value)) {
+            g_class_list_starts[unit_class] = -1;
+            continue;
+        }
+        if (!list.is_array()) fail(where, "is not an array of unit types or null");
+        g_class_list_starts[unit_class] = long(bytes.size());
+        for (std::size_t index = 0; index < list.array().size(); ++index)
+            bytes.push_back(std::uint8_t(
+                whole(list.array()[index], where + "[" + std::to_string(index) + "]", kUnitTypes - 1)));
+        bytes.push_back(kNoUnitType);
+        if (bytes.size() > kUnitClassListBytes)
+            fail(where, "doesn't fit: the lists hold " + std::to_string(kUnitClassListBytes) +
+                            " bytes in all, one more than its types for each list");
+    }
+    bytes.resize(kUnitClassListBytes, 0);
+    file.done();
+}
+
 // Bytes two tables share in the original's memory must agree.
 void check_shared(const Tables& tables) {
     // The first missile weapon's bonus is the high byte of the last direction
@@ -383,6 +468,7 @@ void load(const std::filesystem::path& data_dir) {
     read_weapons(read_file(rules / "weapons.json", "weapons.json"), tables);
     read_combat(read_file(rules / "combat.json", "combat.json"), tables);
     read_ai(read_file(rules / "ai.json", "ai.json"), tables);
+    read_units(read_file(rules / "units.json", "units.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {
@@ -395,6 +481,9 @@ void load(const std::filesystem::path& data_dir) {
     }
     if (!tables.empty())
         throw RulesError(tables.begin()->first + ": the rule table has no row for it");
+    for (std::size_t unit_class = 0; unit_class < kUnitClasses; ++unit_class)
+        UnitClassTypeLists[unit_class] =
+            g_class_list_starts[unit_class] < 0 ? nullptr : &UnitClassTypeListBytes[g_class_list_starts[unit_class]];
 }
 
 }  // namespace revenge::rules

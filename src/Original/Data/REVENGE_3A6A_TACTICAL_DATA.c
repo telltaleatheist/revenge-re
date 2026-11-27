@@ -184,12 +184,8 @@ byte SavedCampaignClockState[0x03];
 RevengePilotRosterRecord PilotRoster[REVENGE_PILOT_ROSTER_COUNT];
 RevengeUnitLanceAssignment
 	LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];
-const byte ScenarioLanceAllegianceTable[0x07][0x03] = {
-	{ 0x01, 0x01, 0x01 }, { 0x00, 0x00, 0x00 },
-	{ 0x00, 0x01, 0x01 }, { 0x01, 0x00, 0x01 },
-	{ 0x00, 0x02, 0x02 }, { 0x00, 0x03, 0x03 },
-	{ 0x00, 0x00, 0x03 }
-};
+/* Filled at start from data/rules/units.json (revenge/rules.h). */
+byte ScenarioLanceAllegianceTable[0x07][0x03];
 /* Filled at start from data/rules/weapons.json (revenge/rules.h). */
 word16 AmmoCapacityMultiplierTable[0x0E];
 word16 CampaignFlags;

@@ -2,7 +2,6 @@
 // Reconstructed from the original procedures in segment 2507.
 
 #include "REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
-#include "revenge/original_import.h"
 #include "revenge/story_text.h"
 
 // 2507:0008: enable the pilots used by the three training-selection rows.
@@ -884,13 +883,12 @@ int16 SelectUnitClass(void)
 	return -0x01;
 }
 
-// 2507:0647-065E: the list is the Omni one when its far address is DS:32D7.
-// The lists are the player's copy's (UnitClassTypeLists), so DS:32D7 is that
-// place in the imported image; a host pointer has no 3A6A segment to compare.
+// 2507:0647-065E: the list is the Omni one when its far address is DS:32D7,
+// the sixth class's list. The lists are the rules' (UnitClassTypeLists), so
+// that is the sixth list wherever the rules put it.
 bool IsOmniUnitTypeList(const byte *unitTypeIdList)
 {
-	return unitTypeIdList ==
-		(const byte *) &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + OMNI_UNIT_TYPE_LIST_OFFSET];
+	return unitTypeIdList == UnitClassTypeLists[UNIT_CLASS_OMNI_INDEX];
 }
 
 // 2507:0625: int16 SelectUnitTypeFromList(const byte far *unitTypeIdList)

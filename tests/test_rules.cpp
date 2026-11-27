@@ -145,6 +145,8 @@ int main(int argc, char** argv) {
          "\"engagement_by_comparison_mask\": [\n    \"retreat\""},
         {"overfull", "ai.json", "\"weapon_priorities\": [\n    [\n",
          "\"weapon_priorities\": [\n    [\n      {\"if_ready\": [\"ppc\"], \"fire\": \"ppc\"},\n"},
+        {"unit_type", "units.json", "\"fixed_unit_types\": [4,", "\"fixed_unit_types\": [89,"},
+        {"class_lists", "units.json", "\"unit_class_types\": [\n    [", "\"unit_class_types\": [\n    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, "},
         {"nofile", "combat.json", nullptr, nullptr},
     };
     for (const Broken& one : broken)

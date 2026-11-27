@@ -54,6 +54,18 @@
 //         formations each (0 to 9), by pilot experience times three plus a
 //         random 0 to 2
 //
+//   units.json, unit types as numbers (0 to 58h, the code names none but
+//   REVENGE_UNIT_TYPE_NONE, which is null):
+//     "predefined_lances"  5 rows of 6 unit types, by roster plus lance
+//     "random_unit_count_by_roster"  10, how many of a roster's pool to draw
+//         from (0 to 7)
+//     "random_unit_pools"  7 pools of 7 unit types, rosters 3 on
+//     "fixed_unit_types"  2
+//     "lance_allegiances_by_scenario"  7 scenarios of 3 allegiances, one for
+//         each four-unit group
+//     "unit_class_types"  the training's 7 lists of unit types by class (or
+//         null); laid out one after another, each ended by FFh, in 44h bytes
+//
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
 // file and the key.

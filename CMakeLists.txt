@@ -698,11 +698,11 @@ if(BUILD_TESTING)
     add_test(NAME rules.rebuild COMMAND test_rules from_data)
     add_test(NAME rules.exe COMMAND test_rules in_copy)
     add_test(NAME rules.range COMMAND test_rules too_large)
-    foreach(mode stray absent length shared location direction engagement overfull nofile)
+    foreach(mode stray absent length shared location direction engagement overfull unit_type class_lists nofile)
         add_test(NAME rules.${mode} COMMAND test_rules ${mode})
     endforeach()
     set_tests_properties(rules.rebuild rules.exe rules.range rules.stray rules.absent
-        rules.length rules.shared rules.location rules.direction rules.engagement rules.overfull rules.nofile
+        rules.length rules.shared rules.location rules.direction rules.engagement rules.overfull rules.unit_type rules.class_lists rules.nofile
         PROPERTIES SKIP_RETURN_CODE 77)
     set_tests_properties(rules.stray PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: weapons.json: weapon_table.small_laser.rate_of_fire is no key of the rules here")
@@ -722,6 +722,10 @@ if(BUILD_TESTING)
         "fault: rules: ai.json: engagement_by_comparison_mask.0. is not an engagement mode the code names")
     set_tests_properties(rules.overfull PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: ai.json: weapon_priorities.15. doesn't fit: the bank holds 176 entries in all")
+    set_tests_properties(rules.unit_type PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: units.json: fixed_unit_types.0. is not a whole number from 0 to 88")
+    set_tests_properties(rules.class_lists PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: units.json: unit_class_types.4. doesn't fit: the lists hold 68 bytes in all")
     set_tests_properties(rules.nofile PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: combat.json can't be read from")
 

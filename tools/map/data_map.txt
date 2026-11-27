@@ -153,7 +153,7 @@ place RandomUnitTypePoolByFamily 3A6A:3217 31 table
 place PilotPortraitIndexById 3A6A:3248 21 table
 place DefaultPilotIdsByScenario 3A6A:3269 28 table
 place UnitEditorPilotCardCountByFamily 3A6A:3291 7 table
-place UnitClassTypeLists 3A6A:32DC 1C import
+place UnitClassTypeListBytes 3A6A:3298 44 table
 place UnitClassLabelTextTable 3A6A:32F8 1C import
 place TrainingDeploymentLabelTextTable 3A6A:3314 10 import
 place TrainingControlLabelTextTable 3A6A:3324 10 import
@@ -444,6 +444,7 @@ host RulePieceCount 0 the rules' own state
 host RulePieces 0 the rules' own state: where each rule's table is in the original, for the tests
 host StoryTextBuffer 0 the story's own state: the texts, each the original's, at places of our own
 host StoryTextSlots 0 the story's own state
+host UnitClassTypeLists 1C representation: the original's far pointers at DS:32DC; the port's are host pointers into UnitClassTypeListBytes, set by the rules
 host ResourceFileLengths 168 representation: the image holds the lengths in the cached-file descriptors (DS:10B4, 12h apart); the port keeps them apart and copies them in when the cache starts
 unplaced AccuracyEquipmentText 4 host pointer
 unplaced ActiveDigitalDriverQueue 12 zero at every snap

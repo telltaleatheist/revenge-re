@@ -5,6 +5,7 @@
 #include "revenge/rules.h"
 #include "revenge/combat_data.h"
 #include "revenge/original_data.h"
+#include "revenge/original/lance_editor_data.h"
 
 const RulePiece RulePieces[] =
 {
@@ -29,6 +30,12 @@ const RulePiece RulePieces[] =
 	{ "ai.formation_choices_aggressive", &FormationSelectionAggressive, sizeof(FormationSelectionAggressive), 0x3A6A, 0x2F72, 0xC, "72f6c97993e592dd" },
 	{ "ai.formation_choices_defensive", &FormationSelectionDefensive, sizeof(FormationSelectionDefensive), 0x3A6A, 0x2F7E, 0xC, "58d91cd8eeebf566" },
 	{ "ai.formation_choices_balanced", &FormationSelectionBalanced, sizeof(FormationSelectionBalanced), 0x3A6A, 0x2F8A, 0xC, "97f471c7b807f850" },
+	{ "units.predefined_lances", &PredefinedUnitTypeTable, sizeof(PredefinedUnitTypeTable), 0x3A6A, 0x31CB, 0x1E, "0f462f048b246b8d" },
+	{ "units.random_unit_count_by_roster", &RandomUnitTypeCountByFamily, sizeof(RandomUnitTypeCountByFamily), 0x3A6A, 0x320D, 0xA, "21aaa4a42b85cbf7" },
+	{ "units.random_unit_pools", &RandomUnitTypePoolByFamily, sizeof(RandomUnitTypePoolByFamily), 0x3A6A, 0x3217, 0x31, "e85ec1ac355b2369" },
+	{ "units.unit_class_types", &UnitClassTypeListBytes, sizeof(UnitClassTypeListBytes), 0x3A6A, 0x3298, 0x44, "afa9e735f900a409" },
+	{ "units.fixed_unit_types", &FixedUnitTypeIds, sizeof(FixedUnitTypeIds), 0x3A6A, 0x3356, 0x2, "a82eaa24a41fddaa" },
+	{ "units.lance_allegiances", &ScenarioLanceAllegianceTable, sizeof(ScenarioLanceAllegianceTable), 0x3A6A, 0x5928, 0x15, "8a2a2d51ed8066f4" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -53,3 +60,9 @@ _Static_assert(sizeof(FormationOffsetTable) == 0xF0, "ai.formation_offsets is th
 _Static_assert(sizeof(FormationSelectionAggressive) == 0xC, "ai.formation_choices_aggressive is the original's size");
 _Static_assert(sizeof(FormationSelectionDefensive) == 0xC, "ai.formation_choices_defensive is the original's size");
 _Static_assert(sizeof(FormationSelectionBalanced) == 0xC, "ai.formation_choices_balanced is the original's size");
+_Static_assert(sizeof(PredefinedUnitTypeTable) == 0x1E, "units.predefined_lances is the original's size");
+_Static_assert(sizeof(RandomUnitTypeCountByFamily) == 0xA, "units.random_unit_count_by_roster is the original's size");
+_Static_assert(sizeof(RandomUnitTypePoolByFamily) == 0x31, "units.random_unit_pools is the original's size");
+_Static_assert(sizeof(UnitClassTypeListBytes) == 0x44, "units.unit_class_types is the original's size");
+_Static_assert(sizeof(FixedUnitTypeIds) == 0x2, "units.fixed_unit_types is the original's size");
+_Static_assert(sizeof(ScenarioLanceAllegianceTable) == 0x15, "units.lance_allegiances is the original's size");

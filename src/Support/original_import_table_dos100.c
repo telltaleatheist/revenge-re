@@ -13,7 +13,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces_dos100[0x144] =
+const OriginalPiece OriginalPieces_dos100[0x143] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, NULL, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, NULL, "2de063a6fef0f14a" },
@@ -33,7 +33,6 @@ const OriginalPiece OriginalPieces_dos100[0x144] =
 	{ "ScenarioEventNarrationTextTable", ORIGINAL_PIECE_MUTABLE_TEXT_TABLE, 0x4715, 0x1E, 4, 0, NULL, "6cd2142a131c1a78" },
 	{ "UnitAllegianceLabelTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x30CB, 0x2, 4, 0, NULL, "8e49cbb1e53f19e3" },
 	{ "UnitStatHeaderTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x30F2, 0x6, 4, 0, NULL, "a7e71e9d059d44f3" },
-	{ "UnitClassTypeLists", ORIGINAL_PIECE_BYTE_LISTS, 0x32DC, 0x7, 4, 0, (void *) UnitClassTypeLists, "afa9e735f900a409" },
 	{ "UnitClassLabelTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x32F8, 0x7, 4, 0, NULL, "3653ca7d375ade51" },
 	{ "TrainingDeploymentLabelTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x3314, 0x4, 4, 0, NULL, "ebcf8bb11e854a9c" },
 	{ "TrainingControlLabelTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x3324, 0x4, 4, 0, NULL, "025c09be4e77c477" },
@@ -1112,7 +1111,6 @@ const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
 	{ 0x0003883FUL, 0x3A6A, 0x22, 0, "8fef925ad36b9b3e" }, /* resource_open_files_at_exit_error */
 };
 
-_Static_assert(sizeof(UnitClassTypeLists) / sizeof(UnitClassTypeLists[0]) == 0x7, "UnitClassTypeLists has the piece's entries");
 _Static_assert(sizeof(CompressedTextFirstByteTable) == 0x10, "CompressedTextFirstByteTable is the piece's size");
 _Static_assert(sizeof(CompressedTextSecondByteTable) == 0x80, "CompressedTextSecondByteTable is the piece's size");
 _Static_assert(sizeof(PCSpeakerEffectStreamData) == 0x299, "PCSpeakerEffectStreamData is the piece's size");

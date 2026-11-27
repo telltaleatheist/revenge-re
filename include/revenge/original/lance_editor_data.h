@@ -59,6 +59,7 @@ extern byte PilotPortraitIndexById[0x21];
 extern word16 DefaultPilotIdsByScenario[0x14];
 extern byte UnitEditorPilotCardCountByFamily[0x07];
 
+/* Host pointers into UnitClassTypeListBytes, or NULL, set by the rules. */
 extern const byte *UnitClassTypeLists[0x07];
 extern const char *UnitClassLabelTextTable[0x07];
 extern const char *TrainingDeploymentLabelTextTable[0x04];
@@ -67,6 +68,7 @@ extern const char *ScenarioVariantDescriptionTextTable[0x04];
 extern const char *UnitEditorSectionLabelTextTable[0x04];
 extern byte FixedPilotIds[0x02];
 extern byte FixedUnitTypeIds[0x02];
+extern byte UnitClassTypeListBytes[0x44];
 extern const char *ScenarioRouteLabelTextTable[0x04];
 extern const char *UnitEditorSectionButtonLabelTextTable[0x04];
 extern const char *TrainingDeploymentRosterLabelTextTable[0x02];

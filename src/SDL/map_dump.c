@@ -147,6 +147,7 @@ static const MapDumpObject objects[] =
 	{ "UnitEditorSectionLabelTextTable", &UnitEditorSectionLabelTextTable, sizeof(UnitEditorSectionLabelTextTable) },
 	{ "FixedPilotIds", &FixedPilotIds, sizeof(FixedPilotIds) },
 	{ "FixedUnitTypeIds", &FixedUnitTypeIds, sizeof(FixedUnitTypeIds) },
+	{ "UnitClassTypeListBytes", &UnitClassTypeListBytes, sizeof(UnitClassTypeListBytes) },
 	{ "ScenarioRouteLabelTextTable", &ScenarioRouteLabelTextTable, sizeof(ScenarioRouteLabelTextTable) },
 	{ "UnitEditorSectionButtonLabelTextTable", &UnitEditorSectionButtonLabelTextTable, sizeof(UnitEditorSectionButtonLabelTextTable) },
 	{ "TrainingDeploymentRosterLabelTextTable", &TrainingDeploymentRosterLabelTextTable, sizeof(TrainingDeploymentRosterLabelTextTable) },
