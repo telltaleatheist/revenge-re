@@ -15,8 +15,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import map_objects  # noqa: E402
 
 OUT = os.path.join(map_objects.ROOT, "src", "SDL", "map_dump.c")
-# The import's own state: not the game's data.
-LEFT_OUT = {"include/revenge/original_import.h"}
+# The import's and the rules' own state: not the game's data (the rule
+# table's length is the generated file's).
+LEFT_OUT = {"include/revenge/original_import.h", "include/revenge/rules.h"}
 
 
 def include_name(header):

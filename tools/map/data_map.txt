@@ -440,6 +440,8 @@ host OriginalEditionCount 0 the import's own state
 host OriginalEditions 0 the import's own state
 host OriginalImage 0 the import's own state
 host OriginalImportKey 0 the import's own state
+host RulePieceCount 0 the rules' own state
+host RulePieces 0 the rules' own state: where each rule's table is in the original, for the tests
 host StoryTextBuffer 0 the story's own state: the texts, each the original's, at places of our own
 host StoryTextSlots 0 the story's own state
 host ResourceFileLengths 168 representation: the image holds the lengths in the cached-file descriptors (DS:10B4, 12h apart); the port keeps them apart and copies them in when the cache starts
