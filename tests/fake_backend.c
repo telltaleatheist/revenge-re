@@ -412,50 +412,6 @@ void SDLBackend_WriteMIDIByte(byte midiByte)
         fakeBackend.midiBytes[fakeBackend.midiByteCount++] = midiByte;
 }
 
-void SDLBackend_StartMusicVoice(
-	word16 voiceId,
-	byte note,
-	byte velocity,
-	byte program,
-	byte voiceClass)
-{
-	fakeBackend.musicVoiceId = voiceId;
-	fakeBackend.musicNote = note;
-	fakeBackend.musicVelocity = velocity;
-	fakeBackend.musicProgram = program;
-	fakeBackend.musicVoiceClass = voiceClass;
-	++fakeBackend.musicVoiceStartCount;
-}
-
-void SDLBackend_StopMusicVoice(word16 voiceId)
-{
-	fakeBackend.musicVoiceId = voiceId;
-	++fakeBackend.musicVoiceStopCount;
-}
-
-void SDLBackend_ResetMusicVoices(void)
-{
-	++fakeBackend.musicVoiceResetCount;
-}
-
-word16 SDLBackend_ProbeLegacyAudioDevice(byte deviceId)
-{
-	(void) deviceId;
-	return TRUE;
-}
-
-byte SDLBackend_ReadLegacyAudioPort(word16 port)
-{
-	fakeBackend.firstWord = port;
-	return fakeBackend.firstByte;
-}
-
-void SDLBackend_WriteLegacyAudioPort(word16 port, byte value)
-{
-	fakeBackend.firstWord = port;
-	fakeBackend.firstByte = value;
-}
-
 void SDLBackend_SetDigitalOutputRate(word16 sampleRateHz)
 {
 	fakeBackend.firstWord = sampleRateHz;

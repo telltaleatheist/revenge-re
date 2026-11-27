@@ -169,7 +169,6 @@ static const ImageRow rows[] =
 	{ "TacticalStatusPadding", TacticalStatusPadding, 2, 0x3A6A, 0x30C2, 0, 0, 0 },
 	DS(MIDISystemExclusive, 0x6738),
 	DS(SpeakerMIDIRuntime, 0x67BC),
-	DS(AdLibMIDIRuntime, 0x6A6E),
 	DS(RolandMPU401, 0x6C0E),
 	DS(DigitalPlaybackBuffers, 0x6F4C),
 	DS(PITCalibration, 0x6FA4),

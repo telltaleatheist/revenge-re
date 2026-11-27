@@ -14,112 +14,40 @@ static void TestVariableLengthQuantity(void)
     assert(cursor == encoded + sizeof(encoded));
 }
 
-static void TestAdLibInstrumentExpansion(void)
-{
-	const byte packed[0x0B] =
-	{
-		0x01, 0x02, 0x63, 0x74, 0x45, 0x26,
-		0x07, 0x08, 0x69, 0x7A, 0x4B
-	};
-	AdLibInstrumentPatch decoded;
-
-	decoded.ReservedInstrumentByte = 0xA5;
-	LoadAdLibMIDIInstrument(packed, (byte *) &decoded);
-	assert(decoded.Modulator.Characteristics == 0x81);
-	assert(decoded.Modulator.ScaleAndOutputLevel == 0xE6);
-	assert(decoded.Modulator.WaveformSelect == 0x02);
-	assert(decoded.FeedbackAndConnection == 0x08);
-	assert(decoded.Carrier.Characteristics == 0x87);
-	assert(decoded.Carrier.WaveformSelect == 0x00);
-	assert(decoded.ReservedInstrumentByte == 0xA5);
-}
-
-static void TestAdLibInstrumentSystemCommand(void)
-{
-	const byte packed[0x0B] =
-	{
-		0x01, 0x02, 0x63, 0x74, 0x45, 0x26,
-		0x07, 0x08, 0x69, 0x7A, 0x4B
-	};
-	byte index;
-
-	FakeBackend_Reset();
-	ActivateMIDIDriver(&AdLibMIDIDriverDescriptor);
-	DispatchMIDISystemByte(0xF0);
-	DispatchMIDISystemByte(0x7A);
-	DispatchMIDISystemByte(0x01);
-	DispatchMIDISystemByte(0x0C);
-	DispatchMIDISystemByte(0x03);
-	for (index = 0x00; index < sizeof(packed); ++index)
-		DispatchMIDISystemByte(packed[index]);
-	assert(MIDIInstrumentPatches[0x03].
-		Modulator.Characteristics == 0x81);
-	assert(MIDIInstrumentPatches[0x03].
-		Carrier.Characteristics == 0x87);
-	DeactivateMIDIDriver();
-}
-
-static void TestHostedAdLibVoiceInterception(void)
+/* The sequencer's voice allocation on a driver with voices of its own: the
+ * speaker's four (3621:08DF gives the voice the note's divisor). */
+static void TestSpeakerUnreservedVoiceAllocation(void)
 {
 	MIDIChannelState *channelState;
 	MIDIVoiceRecord *voiceRecord;
+	byte voice;
 
 	FakeBackend_Reset();
+	ActivateMIDIDriver(&SpeakerMIDIDriverDescriptor);
 	channelState = MIDIChannelStateAt(0x6420);
-	voiceRecord = MIDIVoiceRecordAt(0x62C0);
-	channelState->Program = 0x16;
-	voiceRecord->PlaybackNote = 0x3C;
-	voiceRecord->VoiceClass = 0x20;
-	AdLibMIDIVoiceOn(0x62C0, 0x6420, 0x005A);
-	assert(fakeBackend.musicVoiceStartCount == 0x0001);
-	assert(fakeBackend.musicVoiceId == 0x62C0);
-	assert(fakeBackend.musicNote == 0x3C);
-	assert(fakeBackend.musicVelocity == 0x5A);
-	assert(fakeBackend.musicProgram == 0x16);
-	assert(fakeBackend.musicVoiceClass == 0x20);
-	AdLibMIDIVoiceOff(0x62C0);
-	assert(fakeBackend.musicVoiceStopCount == 0x0001);
-	assert(fakeBackend.musicVoiceId == 0x62C0);
-	ResetAdLibMIDIDriver();
-	assert(fakeBackend.musicVoiceResetCount == 0x0001);
-}
-
-static void TestAdLibVoiceAllocation(void)
-{
-	static const byte channelSetup[] =
-	{
-		0xF0, 0x7A, 0x00, 0x06,
-		0x00, 0x20, 0x01, 0x01, 0x00, 0x00,
-		0xF7
-	};
-	byte index;
-
-	FakeBackend_Reset();
-	ActivateMIDIDriver(&AdLibMIDIDriverDescriptor);
-	for (index = 0x00; index < sizeof(channelSetup); ++index)
-		DispatchMIDISystemByte(channelSetup[index]);
-	assert(MIDIChannelStateAt(0x6420)->ReservedVoiceCount == 0x01);
-	assert(MIDIVoiceRecordAt(0x62C0)->VoiceClass == 0x20);
-	assert(StartMIDINote(0x0000, 0x003C, 0x005A) == TRUE);
-	assert(fakeBackend.musicVoiceStartCount == 0x0001);
-	DeactivateMIDIDriver();
-}
-
-static void TestAdLibUnreservedVoiceAllocation(void)
-{
-	MIDIChannelState *channelState;
-
-	FakeBackend_Reset();
-	ActivateMIDIDriver(&AdLibMIDIDriverDescriptor);
-	channelState = MIDIChannelStateAt(0x6420);
-	channelState->VoiceClass = 0x20;
+	channelState->VoiceClass = 0x01;
 	channelState->AllocationPriority = 0x64;
 	assert(channelState->ReservedVoiceCount == 0x00);
-	assert(MIDIChannelStateAt(0x65A0)->AvailableVoiceCount == 0x0B);
+	assert(MIDIChannelStateAt(0x65A0)->AvailableVoiceCount == 0x04);
 	assert(StartMIDINote(0x0000, 0x003C, 0x005A) == TRUE);
-	assert(fakeBackend.musicVoiceStartCount == 0x0001);
 	assert(channelState->AvailableVoiceCount == 0x01);
-	assert(MIDIChannelStateAt(0x65A0)->AvailableVoiceCount == 0x0A);
+	assert(MIDIChannelStateAt(0x65A0)->AvailableVoiceCount == 0x03);
+	/* The voice the channel was given (the list's order picks it). */
+	voiceRecord = NULL;
+	for (voice = 0x00; voice < 0x04; ++voice)
+	{
+		MIDIVoiceRecord *candidate = MIDIVoiceRecordAt((word16) (
+			SpeakerMIDIDriverDescriptor.VoiceRecordsOffset + voice * 0x20));
+		if (candidate->ChannelStateOffset == 0x6420)
+		{
+			assert(voiceRecord == NULL);
+			voiceRecord = candidate;
+		}
+	}
+	assert(voiceRecord != NULL);
+	assert(voiceRecord->PlaybackNote == 0x3C);
+	assert(voiceRecord->Driver.Speaker.PITDivisor ==
+		SpeakerMIDIFrequencyDivisors[0x3C - 0x0E]);
 	DeactivateMIDIDriver();
 }
 
@@ -141,25 +69,10 @@ static void TestSingleTrackSequence(void)
 	assert(sizeof(MIDIDriverDescriptorData) == 0x1B);
 	assert(sizeof(MIDISystemExclusiveState) == 0x28);
 	assert(sizeof(SpeakerMIDIRuntimeState) == 0x06);
-	assert(sizeof(LegacyPSGMIDIRuntimeState) == 0x04);
-	assert(sizeof(AdLibMIDIRuntimeState) == 0x06);
-	assert(AdLibMIDIRuntime.RegisterSelectDelay == 0x000A);
-	assert(AdLibMIDIRuntime.RegisterDataDelay == 0x0050);
-	assert(AdLibMIDIFrequencyWords[0x00] == 0x00AB);
-	assert(AdLibMIDIFrequencyWords[0x72] == 0x1FCA);
-	assert(AdLibElevenVoiceLayout[0x0A].VoiceClass == 0x01);
-	assert(AdLibNineVoiceLayout[0x08].OperatorRegister == 0x12);
-	assert(AdLibActivateRegisterList[0x03] == 0x0000);
-	assert(AdLibDeactivateRegisterList[0x12] == 0x0000);
 	assert(sizeof(RolandMPU401State) == 0x010A);
 	assert(SpeakerMIDIFrequencyDivisors[0x00] == 0xFDF1);
 	assert(SpeakerMIDIFrequencyDivisors[0x71] == 0x005F);
-	assert(TandyMIDIFrequencyWords[0x00] == 0x3F89);
-	assert(TandyMIDIFrequencyWords[0x4B] == 0x008D);
-	assert(IBMPS1MIDIFrequencyWords[0x00] == 0x3F84);
-	assert(IBMPS1MIDIFrequencyWords[0x49] == 0x008E);
 	assert(SpeakerMIDIDriverDescriptor.ProbeOffset == 0x08B6);
-	assert(AdLibMIDIDriverDescriptor.StartVoiceOffset == 0x0C96);
 	assert(RolandMIDIDriverDescriptor.ServiceOffset == 0x0F33);
     ActivateMIDIDriver(&RolandMIDIDriverDescriptor);
 	assert(MIDIParser.ActiveDriverOffset == 0x6BD8);
@@ -195,11 +108,7 @@ int main(void)
 	assert(MIDISequence.MIDITicksPerBeat == 0x0060);
 	assert(MIDISequence.MIDIBeatsPerMeasure == 0x0004);
     TestVariableLengthQuantity();
-	TestAdLibInstrumentExpansion();
-	TestAdLibInstrumentSystemCommand();
-	TestHostedAdLibVoiceInterception();
-	TestAdLibVoiceAllocation();
-	TestAdLibUnreservedVoiceAllocation();
+	TestSpeakerUnreservedVoiceAllocation();
     TestSingleTrackSequence();
     return 0x00;
 }

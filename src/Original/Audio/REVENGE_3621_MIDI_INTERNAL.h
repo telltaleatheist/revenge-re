@@ -18,7 +18,9 @@ typedef struct MIDIDriverHostDispatch
 	void (*service)(void);
 } MIDIDriverHostDispatch;
 
-extern const void *MIDIDriverDescriptorIdentities[0x06];
-extern const void *MIDIDriverHostDispatches[0x06];
+/* The speaker's and the Roland's, then the null driver's. */
+enum { MIDI_DRIVER_HOST_COUNT = 0x03 };
+extern const void *MIDIDriverDescriptorIdentities[MIDI_DRIVER_HOST_COUNT];
+extern const void *MIDIDriverHostDispatches[MIDI_DRIVER_HOST_COUNT];
 
 #endif

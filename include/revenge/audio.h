@@ -9,9 +9,6 @@ struct RevengeGameRuntime;
 enum
 {
 	MIDI_DRIVER_INTERNAL_SPEAKER = 0x00,
-	MIDI_DRIVER_TANDY = 0x01,
-	MIDI_DRIVER_IBM_PS1 = 0x02,
-	MIDI_DRIVER_ADLIB = 0x03,
 	MIDI_DRIVER_ROLAND = 0x04,
 	MIDI_TIMER_CALLS_PER_MINUTE = 0x1110,
 	SOUND_HARDWARE_AVAILABLE = 0x0001,
@@ -31,9 +28,6 @@ enum
 
 extern MIDIDriverDescriptorData NullMIDIDriverDescriptor;
 extern MIDIDriverDescriptorData SpeakerMIDIDriverDescriptor;
-extern MIDIDriverDescriptorData TandyMIDIDriverDescriptor;
-extern MIDIDriverDescriptorData IBMPS1MIDIDriverDescriptor;
-extern MIDIDriverDescriptorData AdLibMIDIDriverDescriptor;
 extern MIDIDriverDescriptorData RolandMIDIDriverDescriptor;
 
 enum
@@ -158,17 +152,6 @@ void IgnoreMIDIPitchBend(uint16 channel, uint16 bend);
 void DispatchMIDISystemByte(uint16 midiByte);
 void ResetMIDIPlaybackState(void);
 void ServiceActiveMIDIDriver(void);
-void MPU401IRQHandler(void);
-void WriteAdLibMIDIRegisterList(const word16 *registerList);
-void AdLibMIDIVoiceOn(
-	word16 voiceRecordOffset,
-	word16 instrumentStateOffset,
-	word16 velocity);
-void AdLibMIDIVoiceOff(word16 voiceRecordOffset);
-void ResetAdLibMIDIDriver(void);
-void LoadAdLibMIDIInstrument(
-	const byte *packedInstrument,
-	byte *decodedInstrument);
 
 void DisableMusicPlayback(void);
 void EnableMusicPlayback(void);

@@ -99,14 +99,6 @@ void SDLBackend_WritePCSpeakerPITDivisor(uint16 divisor);
  * the original's speaker speech ran with interrupts off (373D:0022). */
 void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz);
 void SDLBackend_WriteMIDIByte(byte midiByte);
-void SDLBackend_StartMusicVoice(
-	word16 voiceId,
-	byte note,
-	byte velocity,
-	byte program,
-	byte voiceClass);
-void SDLBackend_StopMusicVoice(word16 voiceId);
-void SDLBackend_ResetMusicVoices(void);
 /*
  * Deliver every PIT/BIOS interrupt whose host-time deadline has elapsed.
  * DOS hardware interrupted otherwise empty busy-waits asynchronously; the
@@ -118,9 +110,6 @@ void SDLBackend_ServiceTimers(void);
  * time comes that much later. */
 void SDLBackend_HoldTimers(uint64_t nanoseconds);
 void SDLBackend_DispatchInterrupt(byte interruptNumber);
-word16 SDLBackend_ProbeLegacyAudioDevice(byte deviceId);
-byte SDLBackend_ReadLegacyAudioPort(word16 port);
-void SDLBackend_WriteLegacyAudioPort(word16 port, byte value);
 void SDLBackend_SetDigitalOutputRate(word16 sampleRateHz);
 void SDLBackend_WriteUnsigned8Sample(byte sample);
 

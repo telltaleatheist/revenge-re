@@ -169,47 +169,6 @@ void SDLBackend_WriteMIDIByte(byte midiByte)
 	AudioMix_MidiByte(midiByte);
 }
 
-/* The AdLib driver's voices. The settings no longer choose it (its word
- * reads as the soundfont), so nothing plays them; the card drivers go in
- * phase 3's next slice. */
-void SDLBackend_StartMusicVoice(word16 voiceId, byte note, byte velocity, byte program, byte voiceClass)
-{
-	(void) voiceId;
-	(void) note;
-	(void) velocity;
-	(void) program;
-	(void) voiceClass;
-}
-
-void SDLBackend_StopMusicVoice(word16 voiceId)
-{
-	(void) voiceId;
-}
-
-void SDLBackend_ResetMusicVoices(void)
-{
-}
-
-word16 SDLBackend_ProbeLegacyAudioDevice(byte deviceId)
-{
-	/* Device 03h is the original AdLib selection. Hosted builds intercept its
-	 * semantic voice operations before they become OPL register writes. Device
-	 * 04h remains the byte-oriented MPU-401 path. */
-	return deviceId == 0x03 || deviceId == 0x04 ? TRUE : FALSE;
-}
-
-byte SDLBackend_ReadLegacyAudioPort(word16 port)
-{
-	(void) port;
-	return 0x00;
-}
-
-void SDLBackend_WriteLegacyAudioPort(word16 port, byte value)
-{
-	(void) port;
-	(void) value;
-}
-
 void SDLBackend_SetDigitalOutputRate(word16 sampleRateHz)
 {
 	AudioMix_SampleRate(sampleRateHz);

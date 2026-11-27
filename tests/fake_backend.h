@@ -40,14 +40,6 @@ typedef struct FakeBackendState
     byte midiBytes[0x0100];
     uint16 midiByteCount;     /* stops at the buffer's end */
     void (*midiSink)(byte);   /* when set, every byte goes to it instead */
-	word16 musicVoiceId;
-	byte musicNote;
-	byte musicVelocity;
-	byte musicProgram;
-	byte musicVoiceClass;
-	uint16 musicVoiceStartCount;
-	uint16 musicVoiceStopCount;
-	uint16 musicVoiceResetCount;
 } FakeBackendState;
 
 extern FakeBackendState fakeBackend;

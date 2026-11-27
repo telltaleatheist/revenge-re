@@ -225,61 +225,8 @@ typedef struct SpeakerMIDIRuntimeState
 _Static_assert(sizeof(SpeakerMIDIRuntimeState) == 0x06,
 	"The speaker MIDI scheduler state occupies exactly 6 bytes.");
 
-/* Tandy and IBM PS/1 use identical four-byte round-robin state records. */
-#pragma pack(push, 1)
-typedef struct LegacyPSGMIDIRuntimeState
-{
-	word16 ServiceVoiceOffset;
-	byte ServiceVoiceCountdown;
-	byte HardwareVoiceCount;
-} LegacyPSGMIDIRuntimeState;
-#pragma pack(pop)
-
-_Static_assert(sizeof(LegacyPSGMIDIRuntimeState) == 0x04,
-	"A legacy PSG scheduler state occupies exactly 4 bytes.");
-
 extern SpeakerMIDIRuntimeState SpeakerMIDIRuntime;
-extern LegacyPSGMIDIRuntimeState TandyMIDIRuntime;
-extern LegacyPSGMIDIRuntimeState IBMPS1MIDIRuntime;
 extern const word16 SpeakerMIDIFrequencyDivisors[0x72];
-extern const word16 TandyMIDIFrequencyWords[0x4C];
-extern const word16 IBMPS1MIDIFrequencyWords[0x4A];
-
-/* Exact OPL timing and rhythm state at DS:6A6E-6A73. */
-#pragma pack(push, 1)
-typedef struct AdLibMIDIRuntimeState
-{
-	word16 RegisterSelectDelay;
-	word16 RegisterDataDelay;
-	byte RhythmMask;
-	byte ReservedRhythmByte;
-} AdLibMIDIRuntimeState;
-#pragma pack(pop)
-
-_Static_assert(sizeof(AdLibMIDIRuntimeState) == 0x06,
-	"The original AdLib timing/rhythm state occupies exactly 6 bytes.");
-
-extern AdLibMIDIRuntimeState AdLibMIDIRuntime;
-extern const word16 AdLibMIDIFrequencyWords[0x73];
-
-#pragma pack(push, 1)
-typedef struct AdLibVoiceLayout
-{
-	byte Channel;
-	byte OperatorRegister;
-	byte VoiceClass;
-} AdLibVoiceLayout;
-#pragma pack(pop)
-
-_Static_assert(sizeof(AdLibVoiceLayout) == 0x03,
-	"An original AdLib voice-layout entry occupies exactly 3 bytes.");
-
-extern const AdLibVoiceLayout AdLibElevenVoiceLayout[0x0B];
-extern const AdLibVoiceLayout AdLibNineVoiceLayout[0x09];
-extern const word16 AdLibActivateRegisterList[0x04];
-extern const word16 AdLibNineVoiceResetList[0x02];
-extern const word16 AdLibElevenVoiceResetList[0x0A];
-extern const word16 AdLibDeactivateRegisterList[0x13];
 
 #pragma pack(push, 1)
 typedef struct PackedAdLibInstrument

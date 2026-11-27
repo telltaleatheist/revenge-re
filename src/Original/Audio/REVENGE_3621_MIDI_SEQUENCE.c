@@ -14,7 +14,8 @@
 #define MIDI_DRIVER_DISPATCH(driverDescriptor) \
 	((const MIDIDriverHostDispatch *)HostDispatch_Select( \
 		(driverDescriptor), MIDIDriverDescriptorIdentities, \
-		MIDIDriverHostDispatches, 0x0005, MIDIDriverHostDispatches[0x05]))
+		MIDIDriverHostDispatches, MIDI_DRIVER_HOST_COUNT - 0x01, \
+		MIDIDriverHostDispatches[MIDI_DRIVER_HOST_COUNT - 0x01]))
 
 
 /*
@@ -559,14 +560,10 @@ void ActivateMIDIDriver(MIDIDriverDescriptorData *driverDescriptor)
 	previousDriver = ActiveMIDIDriverHost;
 	MIDI_DRIVER_DISPATCH(previousDriver)->deactivate();
 	ActiveMIDIDriverHost = driverDescriptor;
+	/* The original's Tandy, PS/1 and AdLib descriptors (68A6h, 6974h,
+	 * 6A3Ch) are Replaced with their drivers. */
 	if (driverDescriptor == &SpeakerMIDIDriverDescriptor)
 		MIDIParser.ActiveDriverOffset = 0x678E;
-	else if (driverDescriptor == &TandyMIDIDriverDescriptor)
-		MIDIParser.ActiveDriverOffset = 0x68A6;
-	else if (driverDescriptor == &IBMPS1MIDIDriverDescriptor)
-		MIDIParser.ActiveDriverOffset = 0x6974;
-	else if (driverDescriptor == &AdLibMIDIDriverDescriptor)
-		MIDIParser.ActiveDriverOffset = 0x6A3C;
 	else if (driverDescriptor == &RolandMIDIDriverDescriptor)
 		MIDIParser.ActiveDriverOffset = 0x6BD8;
 	else

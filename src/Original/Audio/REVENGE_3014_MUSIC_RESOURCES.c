@@ -49,24 +49,9 @@ void InitializeMusicDriver(void)
 			ActivateMIDIDriver(&SpeakerMIDIDriverDescriptor);
 			Seg426B.MusicDriverMode = 0x01;
 			break;
-	case MIDI_DRIVER_TANDY:
-			PrepareMIDIDriver(&TandyMIDIDriverDescriptor);
-			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
-			ActivateMIDIDriver(&TandyMIDIDriverDescriptor);
-			Seg426B.MusicDriverMode = 0x01;
-			break;
-	case MIDI_DRIVER_IBM_PS1:
-			PrepareMIDIDriver(&IBMPS1MIDIDriverDescriptor);
-			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
-			ActivateMIDIDriver(&IBMPS1MIDIDriverDescriptor);
-			Seg426B.MusicDriverMode = 0x01;
-			break;
-	case MIDI_DRIVER_ADLIB:
-			PrepareMIDIDriver(&AdLibMIDIDriverDescriptor);
-			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
-			ActivateMIDIDriver(&AdLibMIDIDriverDescriptor);
-			Seg426B.MusicDriverMode = 0x01;
-			break;
+	/* Drivers 1-3 (Tandy, PS/1, AdLib) set up the same way on their own
+	 * descriptors; the music setting reaches only 0 and 4, and the rebuild
+	 * has no driver for those cards. */
 	case MIDI_DRIVER_ROLAND:
 			PrepareMIDIDriver(&RolandMIDIDriverDescriptor);
 			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
@@ -186,9 +171,9 @@ void PlayMusicResource(word16 resourceIndex)
 	if (SceneTransitionAbortFlag == 0x00)
 	{
 		StopLoadedMusicTrack();
-		if (MusicDriverIndex == 0x00 ||
-			MusicDriverIndex == 0x01 ||
-			MusicDriverIndex == 0x02)
+		/* 3014:0207-021A swapped two songs for drivers 0-2 (the speaker, Tandy
+		 * and PS/1); of those the rebuild has the speaker. */
+		if (MusicDriverIndex == MIDI_DRIVER_INTERNAL_SPEAKER)
 		{
 			if (resourceIndex == 0x49)
 				compatibleResourceIndex = 0x48;

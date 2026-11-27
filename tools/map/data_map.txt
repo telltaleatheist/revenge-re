@@ -235,16 +235,6 @@ place MIDIChannelMap 3A6A:6728 10 table
 place MIDISystemExclusive 3A6A:6738 28 table
 place SpeakerMIDIRuntime 3A6A:67BC 6 table
 place SpeakerMIDIFrequencyDivisors 3A6A:67C2 E4 run
-place TandyMIDIFrequencyWords 3A6A:68DC 98 run
-place IBMPS1MIDIFrequencyWords 3A6A:69A8 94 run
-place AdLibMIDIRuntime 3A6A:6A6E 6 table
-place AdLibMIDIFrequencyWords 3A6A:6A74 E6 run
-place AdLibElevenVoiceLayout 3A6A:6B5A 21 run
-place AdLibNineVoiceLayout 3A6A:6B7B 1B run
-place AdLibActivateRegisterList 3A6A:6B96 8 run
-place AdLibNineVoiceResetList 3A6A:6B9A 4 run
-place AdLibElevenVoiceResetList 3A6A:6B9E 14 run
-place AdLibDeactivateRegisterList 3A6A:6BB2 26 run
 place RolandMPU401 3A6A:6C0E 10A table
 place NullDigitalPlayback 3A6A:6EB2 C table
 place SoundBlasterPlayback 3A6A:6EE2 C table
@@ -428,7 +418,6 @@ unplaced ActiveRenderTarget 4 host pointer
 unplaced ActiveTextForegroundColor 2 several places match
 unplaced ActiveTextWindowHeightTiles 2 its bytes match nowhere (pointers or values differ)
 unplaced ActiveTextWindowWidthTiles 2 its bytes match nowhere (pointers or values differ)
-unplaced AdLibMIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
 unplaced AppliedMusicEnabled 2 several places match
 unplaced ArrowTagEquipmentText 4 host pointer
 unplaced ArtilleryShellingActive 1 zero at every snap
@@ -520,8 +509,6 @@ unplaced FriendlyUnitStatusHeading 4 host pointer
 unplaced GameInitialized 2 several places match
 unplaced GroundTargetWasAttacked 1 several places match
 unplaced HeatScaleDescriptionTable 1C host pointer
-unplaced IBMPS1MIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
-unplaced IBMPS1MIDIRuntime 4 zero at every snap
 unplaced InGameMenuTextTable 2C host pointer
 unplaced InputConfigTokenDelimiters 4 zero at every snap
 unplaced IntelligenceHeading 4 host pointer
@@ -696,8 +683,6 @@ unplaced TacticalStateInitialized 1 several places match
 unplaced TacticalStatusSeparator 2 zero at every snap
 unplaced TacticalSupportCommandTextTable 20 host pointer
 unplaced TacticalUnitCommandTextTable 38 host pointer
-unplaced TandyMIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
-unplaced TandyMIDIRuntime 4 zero at every snap
 unplaced TerrainDamageCapabilityTable 4 host pointer
 unplaced TerrainDamageCellIncrementMask 4 its bytes match nowhere (pointers or values differ)
 unplaced TerrainDamageExtractMask 4 its bytes match nowhere (pointers or values differ)
@@ -759,6 +744,5 @@ place WeaponDefinitions 3A6A:0435 159 table
 # can differ for now.
 overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
 overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable the selector's last byte is the first missile weapon's bonus (the original reads the bonus from DS:3D0D by weapon index, from WEAPON_LRM_5 on)
-overlap AdLibActivateRegisterList AdLibNineVoiceResetList the original's second constant list is the first one's tail
 overlap LinePrimaryYStep LinePrimaryXStep the original lays the two constant tables 4 bytes apart
 overlap LineSecondaryYStep LineSecondaryXStep the original lays the two constant tables 4 bytes apart
