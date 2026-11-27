@@ -28,7 +28,6 @@ BUILT = {
     "src/Original/Data/CampaignData.cpp": "#include <stdint.h>\n\nuint16_t CampaignDay;\n",
     "src/Original/Units/Units.h": "void ResetUnits(void);\n",
     "src/Original/Units/Reset.cpp": '#include "Units/Units.h"\n\nvoid ResetUnits(void)\n{\n}\n',
-    "src/Original/Audio/MIDIInternal.h": '#include "REVENGE.h"\n',
 }
 
 
@@ -72,9 +71,6 @@ def main():
         ("a header that includes an umbrella by a relative path",
          {"src/Original/Units/Units.h": '#include "../REVENGE.h"\n\nvoid ResetUnits(void);\n'},
          1, 'src/Original/Units/Units.h: includes "../REVENGE.h"'),
-        ("a header still listed that no longer includes one",
-         {"src/Original/Audio/MIDIInternal.h": '#include "Audio/Audio.h"\n'},
-         1, "MIDIInternal.h: no longer includes an umbrella"),
     ]
     for what, changes, code, expected in cases:
         returncode, output = run(changes)

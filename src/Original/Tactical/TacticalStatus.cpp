@@ -487,7 +487,7 @@ uint16_t CalculateApproximateMapDistance(
 }
 
 /* Host: the game clock's tick at the previous draw, and the ms the
- * narration countdown lost then (NARRATION_DELAY_MS in original_data.h). */
+ * narration countdown lost then (NARRATION_DELAY_MS in Tactical/Tactical.h). */
 static uint32_t narrationClockTick;
 static uint16_t narrationLastStepMs;
 
@@ -495,7 +495,7 @@ static uint16_t narrationLastStepMs;
 // text window 6, maintain both status-row highlights, and service the pending
 // narration countdown.
 // Verified against 2007:0E19-1218.
-// Host: the countdown is battle time in ms, not draws (original_data.h).
+// Host: the countdown is battle time in ms, not draws (Tactical/Tactical.h).
 void DrawSelectedUnitStatusPanel(void)
 {
     uint16_t narrationStatusRow;

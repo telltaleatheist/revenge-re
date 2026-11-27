@@ -116,7 +116,7 @@ static void EncodeRolandMPU401(uint8_t *bytes)
     PutWord(bytes, 0x108, RolandMPU401.ByteCount);
 }
 
-/* A queue's 12h bytes and a descriptor's 34h (REVENGE.h). Before the game
+/* A queue's 12h bytes and a descriptor's 34h (Audio/Audio.h). Before the game
  * starts, none holds a reference. */
 static void EncodeQueue(uint8_t *bytes, const DigitalDriverQueue *queue)
 {

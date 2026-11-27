@@ -7,7 +7,7 @@
 
 #include <assert.h>
 
-/* DS:800E, declared in src/Original/REVENGE.h. */
+/* DS:800E, declared in Data/AudioData.h. */
 extern uint16_t NarrationMode;
 
 /* Scan codes as the keyboard controller hands them to IRQ1 (set 1). */

@@ -10,7 +10,7 @@
 void DrawSelectedUnitStatusPanel(void);
 
 /* The narration countdown (PendingNarrationDelay) is battle time in ms by
- * the game clock, not draws of the status panel (original_data.h,
+ * the game clock, not draws of the status panel (Tactical/Tactical.h,
  * NARRATION_DELAY_MS): the same on a fast machine as on the reference one. */
 
 static void Setup(void)

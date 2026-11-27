@@ -4,7 +4,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE.h"
 #include "revenge/audio.h"
 #include "revenge/combat_data.h"
 #include "revenge/media_settings.h"
@@ -38,6 +37,7 @@
 #include "Resources/Resources.h"
 #include "UI/UI.h"
 #include "map_dump.h"
+#include "revenge/heap.h"
 #include "revenge/platform_backend.h"
 #include "revenge/sha256.h"
 

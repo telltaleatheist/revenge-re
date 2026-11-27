@@ -25,10 +25,6 @@ import re
 import sys
 
 UMBRELLAS = ("REVENGE.h", "original_data.h")
-# The headers that still include an umbrella. Each commit of the split
-# takes its folder's out; the list goes with the umbrellas.
-NOT_YET = {
-}
 ORIGINAL = "src/Original"
 INCLUDE = re.compile(r'^\s*#\s*include\s+"([^"]+)"', re.M)
 
@@ -163,11 +159,8 @@ def check(root):
         for included in INCLUDE.findall(text):
             if included in covered:
                 problems.append(f'{relative}: includes "{included}"; spell it "{covered[included]}"')
-            if relative.endswith(".h") and umbrella(included) and relative not in NOT_YET:
+            if relative.endswith(".h") and umbrella(included):
                 problems.append(f'{relative}: includes "{included}"; include the headers it needs')
-    for relative in sorted(NOT_YET):
-        if relative in files and not any(umbrella(i) for i in INCLUDE.findall(files[relative])):
-            problems.append(f"{relative}: no longer includes an umbrella; take it out of NOT_YET")
     return problems, len(owners), len({h for h in owners.values()})
 
 

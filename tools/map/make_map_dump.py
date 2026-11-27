@@ -191,11 +191,11 @@ def source():
         "#define _CRT_SECURE_NO_WARNINGS",
         "#endif",
         "",
-        '#include "REVENGE.h"',
     ]
-    lines += [f'#include "{include_name(h)}"' for h in headers if include_name(h) != "REVENGE.h"]
+    lines += [f'#include "{include_name(h)}"' for h in headers]
     lines += [
         '#include "map_dump.h"',
+        '#include "revenge/heap.h"',
         '#include "revenge/platform_backend.h"',
         '#include "revenge/sha256.h"',
         "",
