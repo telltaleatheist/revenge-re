@@ -1,5 +1,7 @@
 #ifndef REVENGE_SDL_SETUP_HOST_H
 #define REVENGE_SDL_SETUP_HOST_H
+#include <rekit/sdl/setup_screen.h>
+#include <string>
 
 /*
  * The program's side of the setup (src/Setup/Setup.h is the recipe): the
@@ -28,6 +30,9 @@
  * picked on the setup screen, which then becomes REVENGE_ASSET_DIRECTORY.
  */
 int SetupHost_Start(int argc, char **argv);
+/* The recipe for the kit's setup screen, for a fresh setup of the player's folder `user`
+ * (tests/setup_download_test.cpp). */
+rekit::sdl::Game SetupHost_KitGame(const std::string &user);
 
 
 #endif

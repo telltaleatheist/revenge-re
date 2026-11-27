@@ -25,6 +25,13 @@ inline constexpr const char *kId = "chr";  // the launcher contract's game id, a
 inline constexpr const char *kTitle = "BattleTech: The Crescent Hawks' Revenge";
 inline constexpr const char *kFolderName = "Revenge Rebuild";  // a game folder made inside a picked one
 inline constexpr const char *kFolderKey = "chr";  // its mark's game=<key> (the kit's game_folder.h)
+// The original files from the launcher's catalog (the kit's Game::original_catalogs): its addresses, asked in order,
+// and the public key its signature must check against. The game's entry in it is kId.
+inline constexpr const char *kOriginalCatalogs[] = {
+    "https://reverse-engineered.com/launcher/catalog.json",
+    "https://raw.githubusercontent.com/telltaleatheist/mw3-re/main/catalog/games.json"
+};
+inline constexpr const char *kCatalogKey = "4e2d26a76ab9f92876ca86aa915b9d61de1ed93b854610be07c70179136bfced";
 // The player's folder (saves, settings.txt, story/): SDL's per-user folder for these names
 // (src/SDL/game_paths.cpp spells the same two), under the family's folder.
 inline constexpr const char *kOrganisation = rekit::kFamilyOrg;

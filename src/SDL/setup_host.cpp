@@ -21,6 +21,7 @@
 #include <exception>
 #include <filesystem>
 #include <fstream>
+#include <iterator>
 #include <string>
 #include <vector>
 
@@ -233,6 +234,10 @@ rekit::sdl::Game kit_game(const std::string &user, const std::string &in_use, bo
     g.id = setup::kId, g.title = setup::kTitle, g.folder_key = setup::kFolderKey, g.folder_name = setup::kFolderName;
     g.program = "REVENGE.EXE";
     g.rules = setup::rules(), g.hints = setup::hints();
+    // A fresh setup searches this computer first and offers the catalog's download only when it finds no copy.
+    g.original_catalogs.assign(std::begin(setup::kOriginalCatalogs), std::end(setup::kOriginalCatalogs));
+    g.catalog_keys = { setup::kCatalogKey }, g.original_key = setup::kId;
+    g.version = setup::build_tag();
     const std::string pdir = program_dir();
     g.search = [user, pdir, in_use, served]
     {
@@ -486,6 +491,11 @@ bool folder_configured()
 }
 
 }  // namespace
+
+rekit::sdl::Game SetupHost_KitGame(const std::string &user)
+{
+    return kit_game(user, "", false);
+}
 
 int SetupHost_Start(int argc, char **argv)
 try

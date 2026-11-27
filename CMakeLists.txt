@@ -1021,6 +1021,18 @@ if(CHR_BUILD_SDL)
                     --program $<TARGET_FILE:Revenge> --stamped $<TARGET_FILE:revenge_stamped>
                     --work ${CMAKE_CURRENT_BINARY_DIR}/status_setup_work)
         endif()
+        # The catalog's download on the kit's screen, from a local catalog
+        # signed by the kit's test key (no network); its install needs
+        # REVENGE_GAME.
+        add_executable(test_setup_download tests/setup_download_test.cpp
+            src/SDL/setup_host.cpp src/Setup/BuildTag.cpp)
+        target_link_libraries(test_setup_download PRIVATE
+            ${CHR_RUNTIME_WITH_BACKEND} chr_setup)
+        target_include_directories(test_setup_download PRIVATE
+            extern/re-setup-kit/tests extern/re-setup-kit/third_party)
+        chr_strict(test_setup_download)
+        add_test(NAME setup.download COMMAND test_setup_download
+            ${CMAKE_CURRENT_BINARY_DIR}/setup_download_work)
     endif()
     add_custom_command(TARGET Revenge POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
