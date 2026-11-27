@@ -113,7 +113,7 @@ catalog; they change only with the launcher's.
 | Platform | Made on | Files |
 |---|---|---|
 | Windows x64 | Windows, MSVC | `CHR-Rebuild-<label>-win64.zip`, and with `--installer` `CHR-Rebuild-<label>-Setup.exe` |
-| macOS | a Mac | `CHR-Rebuild-<label>-mac.dmg` (`Revenge Rebuild.app`), universal (x86_64 and arm64), macOS 12 and later |
+| macOS | a Mac | `CHR-Rebuild-<label>-mac.dmg` (`Revenge Rebuild.app`; a release's signed with a Developer ID and notarized, a test build's ad hoc), universal (x86_64 and arm64), macOS 12 and later |
 | Linux x86-64 | Linux or WSL | `CHR-Rebuild-<label>-x86_64.AppImage` |
 
 Each file gets a `.sha256` beside it. A release's assets are the four files
@@ -130,14 +130,25 @@ and one `SHA256SUMS` over them all (`tools/package/sums.py`).
   version, so a new Setup upgrades in place.
 - **macOS**: the program goes to `Contents/MacOS`, `data/`, the read-me and
   the notices to `Contents/Resources`. Signing is re-setup-kit's
-  `tools/macos/sign_notarize.sh`: `check` before anything is built, then
-  `app` (with `tools/package/chr.entitlements`) and `dmg`. With a developer
-  identity and a notary profile in the environment (`RE_SIGN_IDENTITY`,
-  `RE_NOTARY_PROFILE`; never in the repo) the app is signed with the hardened
-  runtime and the dmg notarized and stapled. Without them the kit refuses,
-  unless `RE_ALLOW_UNSIGNED=1` says the build is not for release; then it is
-  signed ad hoc and the read-me says how to open it the first time. The dmg
-  is made from a folder with `hdiutil create`; nothing is mounted.
+  `tools/macos/sign_notarize.sh`:
+  - `check` runs before anything is built, so a build that couldn't be
+    notarized stops there;
+  - `app` (`sign_app`, with `tools/package/chr.entitlements`: no exceptions
+    to the hardened runtime) signs before the smoke test, so what is started
+    is what ships;
+  - `dmg` (`notarize_dmg`) signs the dmg, notarizes it and staples the ticket
+    to the dmg and the app. The `.sha256` is written after that, since
+    stapling changes the dmg.
+
+  With a developer identity and a notary profile, the app is signed with a
+  Developer ID, the hardened runtime and a timestamp, and the dmg is
+  notarized. Who signs comes only from the environment, set on the command
+  itself and never written down: `RE_SIGN_IDENTITY` (the keychain's
+  Developer ID Application identity, by its SHA-1) and `RE_NOTARY_PROFILE` (a
+  `notarytool` keychain profile). Without them the kit refuses, unless
+  `RE_ALLOW_UNSIGNED=1` says the build is not for release; then it is signed
+  ad hoc and the read-me says how to open it the first time. The dmg is made
+  from a folder with `hdiutil create`; nothing is mounted.
 - **Linux**: `--appimage-tools DIR` names the folder the tools script
   filled. The AppImage holds `usr/bin/chr` with `data/` beside it and the
   notices in `usr/share/doc/chr`, the AppImage runtime's
@@ -147,7 +158,16 @@ and one `SHA256SUMS` over them all (`tools/package/sums.py`).
 
 Every package's contents pass `tools/package/check_paths.py`: no local path
 or user name in any file (`CHR_TRIM_PATHS` names the sources relative to the
-tree), and no file of the game, by name.
+tree), and no file of the game, by name. The one allowed use of the name is
+in a public GitHub address: `github.com/<user>`, `api.github.com/repos/<user>`
+and `raw.githubusercontent.com/<user>`, where the setup's catalog has its
+copy.
+
+The packaging's own parts have unit tests that need no build
+(`tools/test_build_package.py`, ctest `package.build_package`): the signing's
+commands with a made-up identity, the background copy, and `check_paths`.
+
+    python3 -I -m unittest discover -s tools -p test_build_package.py -v
 
 ## The smoke test
 
@@ -174,7 +194,11 @@ is a temporary one (never the real one), and on a Mac the runs start a
 temporary copy of the app whose Info.plist says `LSBackgroundOnly`
 (`tools/package/background_app.py`): a program inside an app comes up in the
 foreground, whatever the hidden run's settings say. The app's own signature
-is checked first, and the app is only read.
+is checked first, and the app is only read. The copy is signed ad hoc again
+without the hardened runtime, which an ad hoc program can't keep. So the
+app's own program, as signed, is started once first, with `--status`
+(`check_own_signature`, under `arch` for one half): `--status` prints one
+line and opens no window, so it is no foreground app.
 
 To run the same checks on a package already made:
 
@@ -197,7 +221,7 @@ step stops the release.
    submodules (`git submodule update --init`), with the game given, so the
    smoke test does its first run:
 
-       # macOS (with the signing environment set)
+       # macOS, RE_SIGN_IDENTITY and RE_NOTARY_PROFILE set on this command alone
        tools/deps/build_archive.sh mac
        python3 -I tools/build_package.py --label chr-vX.Y.Z --game GAME
        # Linux (or WSL)
@@ -209,7 +233,8 @@ step stops the release.
        python -I tools\build_package.py --label chr-vX.Y.Z --game GAME --installer
 
    Each run must end with its smoke test passed, the first run and the served
-   setup included, none skipped.
+   setup included, none skipped. The dmg must also pass
+   `spctl -a -vv -t install` and `xcrun stapler validate`.
 4. Put the four packages in one empty folder, check each against its
    `.sha256`, then write the one list:
 
