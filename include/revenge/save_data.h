@@ -79,27 +79,27 @@ typedef struct RevengeSaveGame
 } RevengeSaveGame;
 #pragma pack(pop)
 
-_Static_assert(sizeof(RevengeSaveSlotDescriptor) ==
+static_assert(sizeof(RevengeSaveSlotDescriptor) ==
 	REVENGE_SAVE_DESCRIPTOR_SIZE,
 	"Save-slot descriptors must retain their DOS file layout");
-_Static_assert(offsetof(RevengeSaveSlotDescriptor, name) == 0x01,
+static_assert(offsetof(RevengeSaveSlotDescriptor, name) == 0x01,
 	"Save-slot names must remain at descriptor offset 01h");
-_Static_assert(sizeof(RevengeCampaignSnapshot) ==
+static_assert(sizeof(RevengeCampaignSnapshot) ==
 	REVENGE_CAMPAIGN_SNAPSHOT_SIZE,
 	"Campaign snapshots must retain their DOS file layout");
-_Static_assert(sizeof(RevengeSavedSelectionCard) == REVENGE_SAVE_SCENARIO_RECORD_SIZE,
+static_assert(sizeof(RevengeSavedSelectionCard) == REVENGE_SAVE_SCENARIO_RECORD_SIZE,
 	"Scenario cards must retain their save-file record size");
-_Static_assert(offsetof(RevengeCampaignSnapshot, scenarioClock) == 0x1C,
+static_assert(offsetof(RevengeCampaignSnapshot, scenarioClock) == 0x1C,
 	"Campaign clock must remain at snapshot offset 1Ch");
-_Static_assert(offsetof(RevengeCampaignSnapshot, scenarioUnitMapX) == 0x25,
+static_assert(offsetof(RevengeCampaignSnapshot, scenarioUnitMapX) == 0x25,
 	"Scenario unit X coordinates must remain at snapshot offset 25h");
-_Static_assert(offsetof(RevengeCampaignSnapshot, scenarioRecords) == 0x6C,
+static_assert(offsetof(RevengeCampaignSnapshot, scenarioRecords) == 0x6C,
 	"Scenario records must remain at snapshot offset 6Ch");
-_Static_assert(offsetof(RevengeCampaignSnapshot, lanceAssignments) == 0x17A,
+static_assert(offsetof(RevengeCampaignSnapshot, lanceAssignments) == 0x17A,
 	"Lance assignments must remain at snapshot offset 17Ah");
-_Static_assert(offsetof(RevengeCampaignSnapshot, pilotAvailability) == 0x1FC,
+static_assert(offsetof(RevengeCampaignSnapshot, pilotAvailability) == 0x1FC,
 	"Pilot availability must remain at snapshot offset 1FCh");
-_Static_assert(sizeof(RevengeSaveSlot) ==
+static_assert(sizeof(RevengeSaveSlot) ==
 	REVENGE_SAVE_DESCRIPTOR_SIZE + REVENGE_SAVE_PAYLOAD_SIZE,
 	"Save slots must remain one descriptor plus one original payload");
 

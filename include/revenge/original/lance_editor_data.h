@@ -150,7 +150,7 @@ typedef struct LanceEditorLayoutData
 } LanceEditorLayoutData;
 #pragma pack(pop)
 
-_Static_assert(sizeof(LanceEditorLayoutData) == 0x01D4,
+static_assert(sizeof(LanceEditorLayoutData) == 0x01D4,
 	"Lance editor layout must retain DS:3470-3643 byte layout");
 
 extern LanceEditorLayoutData LanceEditorLayout;

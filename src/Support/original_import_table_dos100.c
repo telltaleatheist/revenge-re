@@ -1097,15 +1097,15 @@ const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
 	{ 0x0003888CUL, 0x3A6A, 0x37, 0, "1a997f34e5defdd4" }, /* resource_fatal_disk_error */
 };
 
-_Static_assert(sizeof(VideoPaletteData) == 0x310, "VideoPaletteData is the piece's size");
-_Static_assert(sizeof(CompressedTextFirstByteTable) == 0x10, "CompressedTextFirstByteTable is the piece's size");
-_Static_assert(sizeof(CompressedTextSecondByteTable) == 0x80, "CompressedTextSecondByteTable is the piece's size");
-_Static_assert(sizeof(PCSpeakerEffectStreamData) == 0x299, "PCSpeakerEffectStreamData is the piece's size");
-_Static_assert(sizeof(DigitalSoundData) == 0x62D, "DigitalSoundData is the piece's size");
-_Static_assert(sizeof(VideoConfigurationRecords) == 0x41, "VideoConfigurationRecords is the piece's size");
-_Static_assert(sizeof(MusicConfigurationRecords) == 0x5B, "MusicConfigurationRecords is the piece's size");
-_Static_assert(sizeof(InputConfigurationRecords) == 0x1A, "InputConfigurationRecords is the piece's size");
-_Static_assert(sizeof(SoundConfigurationRecords) == 0x7E, "SoundConfigurationRecords is the piece's size");
-_Static_assert(sizeof(MIDIParser) == 0xA, "MIDIParser is the piece's size");
-_Static_assert(sizeof(PilotRosterRecordPastEnd) == 0x4, "PilotRosterRecordPastEnd is the piece's size");
-_Static_assert(sizeof(UnitNameSplitIndex) == 0x59, "UnitNameSplitIndex is the piece's size");
+static_assert(sizeof(VideoPaletteData) == 0x310, "VideoPaletteData is the piece's size");
+static_assert(sizeof(CompressedTextFirstByteTable) == 0x10, "CompressedTextFirstByteTable is the piece's size");
+static_assert(sizeof(CompressedTextSecondByteTable) == 0x80, "CompressedTextSecondByteTable is the piece's size");
+static_assert(sizeof(PCSpeakerEffectStreamData) == 0x299, "PCSpeakerEffectStreamData is the piece's size");
+static_assert(sizeof(DigitalSoundData) == 0x62D, "DigitalSoundData is the piece's size");
+static_assert(sizeof(VideoConfigurationRecords) == 0x41, "VideoConfigurationRecords is the piece's size");
+static_assert(sizeof(MusicConfigurationRecords) == 0x5B, "MusicConfigurationRecords is the piece's size");
+static_assert(sizeof(InputConfigurationRecords) == 0x1A, "InputConfigurationRecords is the piece's size");
+static_assert(sizeof(SoundConfigurationRecords) == 0x7E, "SoundConfigurationRecords is the piece's size");
+static_assert(sizeof(MIDIParser) == 0xA, "MIDIParser is the piece's size");
+static_assert(sizeof(PilotRosterRecordPastEnd) == 0x4, "PilotRosterRecordPastEnd is the piece's size");
+static_assert(sizeof(UnitNameSplitIndex) == 0x59, "UnitNameSplitIndex is the piece's size");

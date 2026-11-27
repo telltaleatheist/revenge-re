@@ -90,9 +90,9 @@ typedef struct MIDIParserState
 } MIDIParserState;
 #pragma pack(pop)
 
-_Static_assert(sizeof(MIDIParserState) == 0x0A,
+static_assert(sizeof(MIDIParserState) == 0x0A,
 	"The reconstructed DS:62B0-62B9 MIDI parser state must be exact.");
-_Static_assert(offsetof(MIDIParserState, ActiveDriverOffset) == 0x08,
+static_assert(offsetof(MIDIParserState, ActiveDriverOffset) == 0x08,
 	"The active MIDI driver offset must remain at DS:62B8.");
 
 extern MIDIParserState MIDIParser;
@@ -113,11 +113,11 @@ typedef struct MIDISystemExclusiveState
 } MIDISystemExclusiveState;
 #pragma pack(pop)
 
-_Static_assert(sizeof(MIDISystemExclusiveState) == 0x28,
+static_assert(sizeof(MIDISystemExclusiveState) == 0x28,
 	"The original MIDI SysEx parser record occupies exactly 28h bytes.");
-_Static_assert(offsetof(MIDISystemExclusiveState, HandlerOffset) == 0x20,
+static_assert(offsetof(MIDISystemExclusiveState, HandlerOffset) == 0x20,
 	"The SysEx handler offset must remain at DS:6758.");
-_Static_assert(offsetof(MIDISystemExclusiveState,
+static_assert(offsetof(MIDISystemExclusiveState,
 	WriteCursorOffset) == 0x26,
 	"The SysEx write cursor must remain at DS:675E.");
 
@@ -137,9 +137,9 @@ typedef struct MIDIChannelState
 } MIDIChannelState;
 #pragma pack(pop)
 
-_Static_assert(sizeof(MIDIChannelState) == 0x08,
+static_assert(sizeof(MIDIChannelState) == 0x08,
 	"An original MIDI channel record occupies exactly 8 bytes.");
-_Static_assert(offsetof(MIDIChannelState, InstrumentOffset) == 0x06,
+static_assert(offsetof(MIDIChannelState, InstrumentOffset) == 0x06,
 	"The instrument near pointer must remain at channel offset 0006h.");
 
 /* Exact 20h-byte voice allocator record at DS:62C0. */
@@ -180,13 +180,13 @@ typedef struct MIDIVoiceRecord
 } MIDIVoiceRecord;
 #pragma pack(pop)
 
-_Static_assert(sizeof(MIDIVoiceRecord) == 0x20,
+static_assert(sizeof(MIDIVoiceRecord) == 0x20,
 	"An original MIDI voice allocator record occupies exactly 20h bytes.");
-_Static_assert(offsetof(MIDIVoiceRecord, ChannelStateOffset) == 0x06,
+static_assert(offsetof(MIDIVoiceRecord, ChannelStateOffset) == 0x06,
 	"The channel near pointer must remain at voice offset 0006h.");
-_Static_assert(offsetof(MIDIVoiceRecord, PlaybackNote) == 0x09,
+static_assert(offsetof(MIDIVoiceRecord, PlaybackNote) == 0x09,
 	"The transposed note must remain at voice offset 0009h.");
-_Static_assert(offsetof(MIDIVoiceRecord, Driver) == 0x0A,
+static_assert(offsetof(MIDIVoiceRecord, Driver) == 0x0A,
 	"Driver-private voice state must remain at voice offset 000Ah.");
 
 /* Exact speaker MIDI scheduler state at DS:67BC-67C1. */
@@ -200,7 +200,7 @@ typedef struct SpeakerMIDIRuntimeState
 } SpeakerMIDIRuntimeState;
 #pragma pack(pop)
 
-_Static_assert(sizeof(SpeakerMIDIRuntimeState) == 0x06,
+static_assert(sizeof(SpeakerMIDIRuntimeState) == 0x06,
 	"The speaker MIDI scheduler state occupies exactly 6 bytes.");
 
 extern SpeakerMIDIRuntimeState SpeakerMIDIRuntime;
@@ -230,11 +230,11 @@ typedef struct AdLibInstrumentPatch
 } AdLibInstrumentPatch;
 #pragma pack(pop)
 
-_Static_assert(sizeof(PackedAdLibInstrument) == 0x0B,
+static_assert(sizeof(PackedAdLibInstrument) == 0x0B,
 	"A packed AdLib instrument occupies exactly 0Bh bytes.");
-_Static_assert(sizeof(AdLibInstrumentPatch) == 0x0C,
+static_assert(sizeof(AdLibInstrumentPatch) == 0x0C,
 	"A decoded AdLib instrument occupies exactly 0Ch bytes.");
-_Static_assert(offsetof(AdLibInstrumentPatch, Carrier) == 0x06,
+static_assert(offsetof(AdLibInstrumentPatch, Carrier) == 0x06,
 	"The carrier patch must remain at decoded instrument offset 0006h.");
 
 extern AdLibInstrumentPatch MIDIInstrumentPatches[0x20];
@@ -252,7 +252,7 @@ typedef struct RolandMPU401State
 } RolandMPU401State;
 #pragma pack(pop)
 
-_Static_assert(offsetof(RolandMPU401State, WriteIndex) == 0x0100,
+static_assert(offsetof(RolandMPU401State, WriteIndex) == 0x0100,
 	"The MPU-401 write index follows its queue (DS:6D12).");
 
 extern RolandMPU401State RolandMPU401;
@@ -278,11 +278,11 @@ typedef struct MIDIDriverDescriptorData
 } MIDIDriverDescriptorData;
 #pragma pack(pop)
 
-_Static_assert(sizeof(MIDIDriverDescriptorData) == 0x1B,
+static_assert(sizeof(MIDIDriverDescriptorData) == 0x1B,
 	"An original MIDI driver descriptor occupies exactly 1Bh bytes.");
-_Static_assert(offsetof(MIDIDriverDescriptorData, ProbeOffset) == 0x04,
+static_assert(offsetof(MIDIDriverDescriptorData, ProbeOffset) == 0x04,
 	"The MIDI probe near pointer must remain at descriptor offset 0004h.");
-_Static_assert(offsetof(MIDIDriverDescriptorData,
+static_assert(offsetof(MIDIDriverDescriptorData,
 	ActiveVoiceCount) == 0x1A,
 	"The active voice count must remain at descriptor offset 001Ah.");
 

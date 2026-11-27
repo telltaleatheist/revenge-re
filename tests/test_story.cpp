@@ -40,7 +40,7 @@ extern "C" {
 #include "revenge/sha256.h"
 }
 
-// revenge/combat_data.h is C only (_Static_assert): its one table here.
+// revenge/combat_data.h is C only (static_assert): its one table here.
 extern "C" const char* WeaponNameTable[0x17];
 
 namespace fs = std::filesystem;

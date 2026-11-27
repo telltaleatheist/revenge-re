@@ -452,7 +452,7 @@ void InitializeMouseSupport(void)
 	 * one pixel a unit (the doubling test at 372A-373F), hidden by the
 	 * reset; the handler's installation (AX=0Ch, 375B-3767) routes SDL's
 	 * mouse events to MouseEventCallback (0800:3772). */
-	MouseCursorBackground = Heap_Allocate(0x0240, "0800:36C0");
+	MouseCursorBackground = (byte *) Heap_Allocate(0x0240, "0800:36C0");
 	if (MouseCursorBackground == NULL)
 	{
 		MouseDriverInstalled = FALSE;

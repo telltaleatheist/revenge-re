@@ -15,7 +15,7 @@
 #include <string.h>
 #include <time.h>
 
-_Noreturn void SDLBackend_TerminateProcess(byte exitCode)
+REVENGE_NORETURN void SDLBackend_TerminateProcess(byte exitCode)
 {
 	SDLBackend_Close();
 	exit((int) exitCode);

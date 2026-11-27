@@ -25,11 +25,11 @@ typedef struct OriginalUiRegionRecord
 } OriginalUiRegionRecord;
 #pragma pack(pop)
 
-_Static_assert(offsetof(OriginalUiRegionRecord, selectedRow) == 0x08,
+static_assert(offsetof(OriginalUiRegionRecord, selectedRow) == 0x08,
 	"The selected UI row must remain at record offset 08h.");
-_Static_assert(offsetof(OriginalUiRegionRecord, xorColor) == 0x0C,
+static_assert(offsetof(OriginalUiRegionRecord, xorColor) == 0x0C,
 	"The UI highlight color must remain at record offset 0Ch.");
-_Static_assert(sizeof(OriginalUiRegionRecord) == 0x10,
+static_assert(sizeof(OriginalUiRegionRecord) == 0x10,
 	"OriginalUiRegionRecord must retain its DOS layout.");
 
 extern OriginalUiRegionRecord UiRegionTable[ORIGINAL_UI_REGION_COUNT];

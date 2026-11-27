@@ -71,7 +71,7 @@ void AllocateMusicStagingBuffer(void)
 {
 	byte *musicDriverBuffer;
 
-	musicDriverBuffer = Heap_Allocate(0x30D4, "3014:011E");
+	musicDriverBuffer = (byte *) Heap_Allocate(0x30D4, "3014:011E");
 	MusicStagingBuffer = musicDriverBuffer;
 	CachedMusicResourceIndex = 0xFFFF;
 }

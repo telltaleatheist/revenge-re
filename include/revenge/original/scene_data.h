@@ -128,17 +128,17 @@ typedef union SceneUnitRoute
 } SceneUnitRoute;
 #pragma pack(pop)
 
-_Static_assert(sizeof(SceneFileHeader) == SCENE_HEADER_SIZE,
+static_assert(sizeof(SceneFileHeader) == SCENE_HEADER_SIZE,
 	"SCENE header must end where its instruction stream begins");
-_Static_assert(offsetof(SceneFileHeader, narrationMessageOffsets) == 0x04,
+static_assert(offsetof(SceneFileHeader, narrationMessageOffsets) == 0x04,
 	"SCENE narration offsets must remain at file offset 04h");
-_Static_assert(offsetof(SceneFileHeader, lanceEnabled) == 0x94,
+static_assert(offsetof(SceneFileHeader, lanceEnabled) == 0x94,
 	"SCENE tactical configuration must remain at file offset 94h");
-_Static_assert(offsetof(SceneFileHeader, unitType) == 0xAC,
+static_assert(offsetof(SceneFileHeader, unitType) == 0xAC,
 	"SCENE unit types must remain at file offset ACh");
-_Static_assert(offsetof(SceneFileHeader, unitFacing) == 0xF4,
+static_assert(offsetof(SceneFileHeader, unitFacing) == 0xF4,
 	"SCENE unit facings must remain at file offset F4h");
-_Static_assert(sizeof(SceneUnitRoute) == 0x0B,
+static_assert(sizeof(SceneUnitRoute) == 0x0B,
 	"SCENE unit routes must retain their original 0Bh layout");
 
 extern SceneFileBuffer LoadedSceneFile;

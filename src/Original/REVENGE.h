@@ -39,7 +39,7 @@ typedef struct LocalClockSnapshot
 } LocalClockSnapshot;
 #pragma pack(pop)
 
-_Static_assert(sizeof(LocalClockSnapshot) == 0x0A,
+static_assert(sizeof(LocalClockSnapshot) == 0x0A,
 	"LocalClockSnapshot must retain its DOS layout");
 
 typedef struct DigitalSampleDescriptor DigitalSampleDescriptor;
@@ -170,21 +170,21 @@ typedef struct DigitalSoundDataLayout
 } DigitalSoundDataLayout;
 #pragma pack(pop)
 
-_Static_assert(sizeof(DigitalPlaybackDescriptor) == 0x0C,
+static_assert(sizeof(DigitalPlaybackDescriptor) == 0x0C,
 	"DigitalPlaybackDescriptor must retain its DOS layout");
-_Static_assert(sizeof(DigitalWeaponEffectRecord) == 0x0A,
+static_assert(sizeof(DigitalWeaponEffectRecord) == 0x0A,
 	"DigitalWeaponEffectRecord must retain its DOS layout");
-_Static_assert(sizeof(DigitalSoundEntryRecord) == 0x0B,
+static_assert(sizeof(DigitalSoundEntryRecord) == 0x0B,
 	"DigitalSoundEntryRecord must retain its DOS layout");
-_Static_assert(offsetof(DigitalSoundDataLayout, SampleDescriptorPlaces) == 0x0012,
+static_assert(offsetof(DigitalSoundDataLayout, SampleDescriptorPlaces) == 0x0012,
 	"digital sample descriptors must begin at DS:5950");
-_Static_assert(offsetof(DigitalSoundDataLayout, WeaponEffects) == 0x031E,
+static_assert(offsetof(DigitalSoundDataLayout, WeaponEffects) == 0x031E,
 	"weapon effects must begin at DS:5C5C");
-_Static_assert(offsetof(DigitalSoundDataLayout, SoundEntries) == 0x03BE,
+static_assert(offsetof(DigitalSoundDataLayout, SoundEntries) == 0x03BE,
 	"digital sound entries must begin at DS:5CFC");
-_Static_assert(offsetof(DigitalSoundDataLayout, ScenarioCodeStrings) == 0x04B0,
+static_assert(offsetof(DigitalSoundDataLayout, ScenarioCodeStrings) == 0x04B0,
 	"scenario sound strings must begin at DS:5DEE");
-_Static_assert(sizeof(DigitalSoundDataLayout) == 0x062D,
+static_assert(sizeof(DigitalSoundDataLayout) == 0x062D,
 	"digital sound data must retain DS:593E-5F6A layout");
 
 typedef union DigitalSoundDataImage

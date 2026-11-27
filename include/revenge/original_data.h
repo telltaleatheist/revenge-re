@@ -38,9 +38,9 @@ typedef struct SoundConfigurationChoice
 } SoundConfigurationChoice;
 #pragma pack(pop)
 
-_Static_assert(sizeof(MediaConfigurationChoice) == 0x0D,
+static_assert(sizeof(MediaConfigurationChoice) == 0x0D,
 	"MediaConfigurationChoice must retain its DOS layout");
-_Static_assert(sizeof(SoundConfigurationChoice) == 0x0E,
+static_assert(sizeof(SoundConfigurationChoice) == 0x0E,
 	"SoundConfigurationChoice must retain its DOS layout");
 
 #pragma pack(push, 1)
@@ -53,9 +53,9 @@ typedef struct PITCalibrationState
 } PITCalibrationState;
 #pragma pack(pop)
 
-_Static_assert(sizeof(PITCalibrationState) == 0x0A,
+static_assert(sizeof(PITCalibrationState) == 0x0A,
 	"PITCalibrationState must retain DS:6FA4-6FAD layout");
-_Static_assert(offsetof(PITCalibrationState, SavedIRQ0Vector) == 0x02,
+static_assert(offsetof(PITCalibrationState, SavedIRQ0Vector) == 0x02,
 	"saved IRQ0 vector must retain its original offset");
 
 /* Original primary data segment (3A6A) fields, named by DS offset. */
@@ -309,7 +309,7 @@ typedef struct RandomPilotPoolCountCopies
 	byte forward; /* DS:1B8D */
 	byte replay; /* DS:1B8E */
 } RandomPilotPoolCountCopies;
-_Static_assert(sizeof(RandomPilotPoolCountCopies) == 0x03,
+static_assert(sizeof(RandomPilotPoolCountCopies) == 0x03,
 	"DS:1B8C-1B8E holds the three copies of the count.");
 extern RandomPilotPoolCountCopies RandomPilotPoolCounts;
 extern word16 SaveTransferState;

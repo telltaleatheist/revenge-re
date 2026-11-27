@@ -36,11 +36,11 @@ typedef union CampaignSaveDirectory
 } CampaignSaveDirectory;
 #pragma pack(pop)
 
-_Static_assert(sizeof(CampaignMessageEntry) == 0x05,
+static_assert(sizeof(CampaignMessageEntry) == 0x05,
 	"Campaign message entries must retain their original five-byte layout");
-_Static_assert(offsetof(CampaignMessageEntry, windowHeight) == 0x04,
+static_assert(offsetof(CampaignMessageEntry, windowHeight) == 0x04,
 	"Campaign message heights must remain at entry offset 04h");
-_Static_assert(offsetof(CampaignSaveDirectory, slots) ==
+static_assert(offsetof(CampaignSaveDirectory, slots) ==
 	REVENGE_SAVE_DIRECTORY_PREFIX_SIZE,
 	"Save descriptors must follow the original four-byte directory prefix");
 

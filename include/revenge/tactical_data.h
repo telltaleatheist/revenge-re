@@ -58,19 +58,19 @@ typedef struct RevengeTerrainDamageQueueEntry
 } RevengeTerrainDamageQueueEntry;
 #pragma pack(pop)
 
-_Static_assert(sizeof(RevengeTacticalProjectileRecord) == 0x0E,
+static_assert(sizeof(RevengeTacticalProjectileRecord) == 0x0E,
 	"Tactical projectile records must retain their DOS layout");
-_Static_assert(offsetof(RevengeTacticalProjectileRecord, spriteId) == 0x04,
+static_assert(offsetof(RevengeTacticalProjectileRecord, spriteId) == 0x04,
 	"Projectile sprite ID must remain at record offset 04h");
-_Static_assert(sizeof(RevengeTacticalImpactRecord) == 0x08,
+static_assert(sizeof(RevengeTacticalImpactRecord) == 0x08,
 	"Tactical impact records must retain their four-word DOS layout");
-_Static_assert(offsetof(RevengeTacticalProjectileRecord, destinationMapY) == 0x0C,
+static_assert(offsetof(RevengeTacticalProjectileRecord, destinationMapY) == 0x0C,
 	"Projectile destination Y must remain at record offset 0Ch");
-_Static_assert(sizeof(RevengeTerrainImpactAnimationRecord) == 0x06,
+static_assert(sizeof(RevengeTerrainImpactAnimationRecord) == 0x06,
 	"Terrain-impact records must retain their DOS layout");
-_Static_assert(sizeof(RevengeMapEdgeEffectRecord) == 0x08,
+static_assert(sizeof(RevengeMapEdgeEffectRecord) == 0x08,
 	"Map-edge effect records must retain their DOS layout");
-_Static_assert(sizeof(RevengeTerrainDamageQueueEntry) == 0x04,
+static_assert(sizeof(RevengeTerrainDamageQueueEntry) == 0x04,
 	"Terrain-damage queue entries must retain their DOS layout");
 
 #endif

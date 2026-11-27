@@ -308,29 +308,29 @@ typedef union RevengeUnitRecord
 #pragma pack(pop)
 
 #define REVENGE_UNIT_OFFSET_ASSERT(field, offset) \
-    _Static_assert(offsetof(RevengeUnitRecord, field) == (offset), \
+    static_assert(offsetof(RevengeUnitRecord, field) == (offset), \
         "RevengeUnitRecord field offset changed: " #field)
 
-_Static_assert(sizeof(RevengeUnitRecord) == UNIT_RECORD_SIZE,
+static_assert(sizeof(RevengeUnitRecord) == UNIT_RECORD_SIZE,
     "A Revenge unit record must retain its original 0x96-byte layout.");
-_Static_assert(sizeof(((RevengeUnitRecord *)0)->headEquipment) ==
+static_assert(sizeof(((RevengeUnitRecord *)0)->headEquipment) ==
     BATTLEMECH_HEAD_EQUIPMENT_SLOT_COUNT,
     "The head equipment-slot count must retain its DOS layout.");
-_Static_assert(sizeof(((RevengeUnitRecord *)0)->leftArmEquipment) ==
+static_assert(sizeof(((RevengeUnitRecord *)0)->leftArmEquipment) ==
     BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT,
     "The arm equipment-slot count must retain its DOS layout.");
-_Static_assert(sizeof(((RevengeUnitRecord *)0)->leftTorsoEquipment) ==
+static_assert(sizeof(((RevengeUnitRecord *)0)->leftTorsoEquipment) ==
     BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT,
     "The torso equipment-slot count must retain its DOS layout.");
-_Static_assert(sizeof(((RevengeUnitRecord *)0)->centerTorsoEquipment) ==
+static_assert(sizeof(((RevengeUnitRecord *)0)->centerTorsoEquipment) ==
     BATTLEMECH_CENTER_TORSO_EQUIPMENT_SLOT_COUNT,
     "The center-torso equipment-slot count must retain its DOS layout.");
-_Static_assert(sizeof(((RevengeUnitRecord *)0)->leftLegEquipment) ==
+static_assert(sizeof(((RevengeUnitRecord *)0)->leftLegEquipment) ==
     BATTLEMECH_LEG_EQUIPMENT_SLOT_COUNT,
     "The leg equipment-slot count must retain its DOS layout.");
-_Static_assert(sizeof(RevengeBattleMechDurabilityView) == 0x13,
+static_assert(sizeof(RevengeBattleMechDurabilityView) == 0x13,
     "A BattleMech durability view must cover the original 19 bytes.");
-_Static_assert(sizeof(RevengeVehicleDurabilityView) == 0x13,
+static_assert(sizeof(RevengeVehicleDurabilityView) == 0x13,
     "A vehicle durability view must cover the original 19 bytes.");
 REVENGE_UNIT_OFFSET_ASSERT(deploymentState, 0x00);
 REVENGE_UNIT_OFFSET_ASSERT(unitTypeId, 0x01);

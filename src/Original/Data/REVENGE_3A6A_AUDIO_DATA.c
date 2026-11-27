@@ -81,8 +81,8 @@ const byte *const PCSpeakerEffectStreamPointerTable[
 	PCSpeakerEffectStreamData + 0x250, PCSpeakerEffectStreamData + 0x25B
 };
 
-_Static_assert(sizeof(PCSpeakerEffectStreamData) == 0x0299,
+static_assert(sizeof(PCSpeakerEffectStreamData) == 0x0299,
 	"The reconstructed DS:5642-58DA speaker stream data must be exact.");
-_Static_assert(sizeof(PCSpeakerEffectStreamPointerTable) /
+static_assert(sizeof(PCSpeakerEffectStreamPointerTable) /
 	sizeof(PCSpeakerEffectStreamPointerTable[0]) == 0x10,
 	"DS:58DB-591A holds a far pointer for each of the 10h effects.");

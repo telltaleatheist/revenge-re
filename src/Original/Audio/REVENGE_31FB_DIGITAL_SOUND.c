@@ -89,7 +89,7 @@ void LoadDigitalWeaponEffectBank(void)
 		packedBytes += sampleLength;
 	}
 
-	DigitalWeaponSampleBuffer = Heap_Allocate(packedBytes, "31FB:01D5");
+	DigitalWeaponSampleBuffer = (byte *) Heap_Allocate(packedBytes, "31FB:01D5");
 	REVENGE_PRESERVATION_TRACE("audio: weapon bank driver=%u bytes=%u buffer=%p\n",
 		SoundDriverIndex, packedBytes,
 		(void *) DigitalWeaponSampleBuffer);
@@ -332,7 +332,7 @@ void LoadScenarioDigitalSoundBank(int8 scenarioCode)
 		}
 		++soundIndex;
 	}
-	DigitalSoundBuffer = Heap_Allocate(packedBufferSize, "31FB:049D");
+	DigitalSoundBuffer = (byte *) Heap_Allocate(packedBufferSize, "31FB:049D");
 	soundIndex = 0x00;
 	while (soundIndex < 0x0F && soundCodes[soundIndex] != 0x00)
 	{

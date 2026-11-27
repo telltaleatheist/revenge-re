@@ -80,31 +80,31 @@ void UnitSelectionCard_Store(RevengeSavedSelectionCard *saved,
 /* The cards from the rules' starting records (UnitSelectionCardStart). */
 void UnitSelectionCards_LoadStart(void);
 
-_Static_assert(sizeof(RevengePilotRosterRecord) == 0x04,
+static_assert(sizeof(RevengePilotRosterRecord) == 0x04,
     "Pilot roster records must retain their original four-byte layout.");
-_Static_assert(offsetof(RevengePilotRosterRecord, availability) == 0x03,
+static_assert(offsetof(RevengePilotRosterRecord, availability) == 0x03,
     "Pilot availability must remain at record offset +03.");
-_Static_assert(sizeof(RevengeUnitLanceAssignment) == 0x0A,
+static_assert(sizeof(RevengeUnitLanceAssignment) == 0x0A,
     "Lance assignments must retain their original ten-byte layout.");
-_Static_assert(offsetof(RevengeUnitLanceAssignment, style) == 0x06,
+static_assert(offsetof(RevengeUnitLanceAssignment, style) == 0x06,
     "Lance assignment style must remain at record offset +06.");
-_Static_assert(offsetof(RevengeUnitLanceAssignment, persistentUnitSlot) == 0x07,
+static_assert(offsetof(RevengeUnitLanceAssignment, persistentUnitSlot) == 0x07,
     "Persistent unit slot must remain at record offset +07.");
-_Static_assert(offsetof(RevengeUnitLanceAssignment, liveUnitSlot) == 0x08,
+static_assert(offsetof(RevengeUnitLanceAssignment, liveUnitSlot) == 0x08,
     "Live unit slot must remain at record offset +08.");
-_Static_assert(offsetof(RevengeUnitLanceAssignment, pilotId) == 0x09,
+static_assert(offsetof(RevengeUnitLanceAssignment, pilotId) == 0x09,
     "Pilot ID must remain at record offset +09.");
-_Static_assert(sizeof(RevengeSavedSelectionCard) == 0x0F,
+static_assert(sizeof(RevengeSavedSelectionCard) == 0x0F,
     "A saved selection card keeps its 0Fh-byte layout");
-_Static_assert(offsetof(RevengeSavedSelectionCard, state) == 0x06,
+static_assert(offsetof(RevengeSavedSelectionCard, state) == 0x06,
     "A saved selection card's state is at offset 06h");
-_Static_assert(offsetof(RevengeSavedSelectionCard, persistentUnitSlot) == 0x07,
+static_assert(offsetof(RevengeSavedSelectionCard, persistentUnitSlot) == 0x07,
     "A saved selection card's persistent slot is at offset 07h");
-_Static_assert(offsetof(RevengeSavedSelectionCard, assignmentSlot) == 0x08,
+static_assert(offsetof(RevengeSavedSelectionCard, assignmentSlot) == 0x08,
     "A saved selection card's assignment slot is at offset 08h");
-_Static_assert(offsetof(RevengeSavedSelectionCard, selectionId) == 0x09,
+static_assert(offsetof(RevengeSavedSelectionCard, selectionId) == 0x09,
     "A saved selection card's selection ID is at offset 09h");
-_Static_assert(offsetof(RevengeSavedSelectionCard, spriteBuffer) == 0x0B,
+static_assert(offsetof(RevengeSavedSelectionCard, spriteBuffer) == 0x0B,
     "A saved selection card's sprite pointer is at offset 0Bh");
 
 #endif

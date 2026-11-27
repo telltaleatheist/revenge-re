@@ -141,37 +141,37 @@ typedef union RevengeWeaponPriorityData
 } RevengeWeaponPriorityData;
 #pragma pack(pop)
 
-_Static_assert(sizeof(RevengeWeaponDefinition) ==
+static_assert(sizeof(RevengeWeaponDefinition) ==
 	WEAPON_DEFINITION_RECORD_SIZE,
 	"RevengeWeaponDefinition must retain its DOS data layout");
-_Static_assert(offsetof(RevengeWeaponDefinition, heat) == 0x04,
+static_assert(offsetof(RevengeWeaponDefinition, heat) == 0x04,
 	"Weapon heat must remain at record offset 04h");
-_Static_assert(offsetof(RevengeWeaponDefinition, damage) == 0x05,
+static_assert(offsetof(RevengeWeaponDefinition, damage) == 0x05,
 	"Weapon damage must remain at record offset 05h");
-_Static_assert(offsetof(RevengeWeaponDefinition, minimumRange) == 0x06,
+static_assert(offsetof(RevengeWeaponDefinition, minimumRange) == 0x06,
 	"Weapon minimum range must remain at record offset 06h");
-_Static_assert(offsetof(RevengeWeaponDefinition, maximumRangeUnits) == 0x07,
+static_assert(offsetof(RevengeWeaponDefinition, maximumRangeUnits) == 0x07,
 	"Weapon maximum range must remain at record offset 07h");
-_Static_assert(offsetof(RevengeWeaponDefinition, weightHalfTons) == 0x08,
+static_assert(offsetof(RevengeWeaponDefinition, weightHalfTons) == 0x08,
 	"Weapon weight must remain at record offset 08h");
-_Static_assert(offsetof(RevengeWeaponDefinition, missileRackSize) == 0x0A,
+static_assert(offsetof(RevengeWeaponDefinition, missileRackSize) == 0x0A,
 	"Weapon rack size must remain at record offset 0Ah");
-_Static_assert(offsetof(RevengeWeaponDefinition, ammunitionFamilyId) == 0x0B,
+static_assert(offsetof(RevengeWeaponDefinition, ammunitionFamilyId) == 0x0B,
 	"Weapon ammunition family must remain at record offset 0Bh");
-_Static_assert(offsetof(RevengeWeaponDefinition, criticalSlotCount) == 0x0C,
+static_assert(offsetof(RevengeWeaponDefinition, criticalSlotCount) == 0x0C,
 	"Weapon critical-slot count must remain at record offset 0Ch");
-_Static_assert(offsetof(RevengeWeaponDefinition, recoveryDelayTicks) == 0x0D,
+static_assert(offsetof(RevengeWeaponDefinition, recoveryDelayTicks) == 0x0D,
 	"Weapon recovery delay must remain at record offset 0Dh");
-_Static_assert(offsetof(RevengeWeaponDefinition, effectId) == 0x0E,
+static_assert(offsetof(RevengeWeaponDefinition, effectId) == 0x0E,
 	"Weapon effect must remain at record offset 0Eh");
 
-_Static_assert(sizeof(RevengeTacticalCombatRatings) == 0x0C,
+static_assert(sizeof(RevengeTacticalCombatRatings) == 0x0C,
 	"RevengeTacticalCombatRatings must retain its DOS data layout");
-_Static_assert(offsetof(RevengeTacticalCombatRatings, closeFirepower) == 0x04,
+static_assert(offsetof(RevengeTacticalCombatRatings, closeFirepower) == 0x04,
 	"Close firepower must remain at record offset 04h");
-_Static_assert(offsetof(RevengeTacticalCombatRatings, sensorHits) == 0x0A,
+static_assert(offsetof(RevengeTacticalCombatRatings, sensorHits) == 0x0A,
 	"Sensor hits must remain at record offset 0Ah");
-_Static_assert(sizeof(RevengeWeaponPriorityData) ==
+static_assert(sizeof(RevengeWeaponPriorityData) ==
 	WEAPON_PRIORITY_DATA_BYTE_COUNT,
 	"Weapon priority data must retain its DOS data layout");
 

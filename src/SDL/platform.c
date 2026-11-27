@@ -353,8 +353,11 @@ typedef struct ClockTimer
 } ClockTimer;
 
 static ClockTimer clockTimers[ClockTimerCount] = {
-    [BiosTickTimer] = { 0, 0, BiosTickDivisor }
+    { 0, 0, 0 },              /* SpeakerEffectTimer */
+    { 0, 0, BiosTickDivisor } /* BiosTickTimer */
 };
+static_assert(SpeakerEffectTimer == 0 && BiosTickTimer == 1,
+    "the clock timers' initialiser lists them in this order");
 
 static void StartClockTimer(ClockTimerId id, uint32_t divisor)
 {

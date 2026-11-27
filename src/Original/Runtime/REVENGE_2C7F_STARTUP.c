@@ -150,7 +150,7 @@ void InitializeGame(void)
 
 	SetVideoModeForAdapter(VideoAdapterType);
 	SetActiveFontResource(Font8Resource);
-	primaryScreenBuffer = Heap_Allocate(0x0001FD00, "2C7F:0203");
+	primaryScreenBuffer = (byte *) Heap_Allocate(0x0001FD00, "2C7F:0203");
 	PrimaryScreenBuffer = primaryScreenBuffer;
 	secondaryBuffer = primaryScreenBuffer + 0x00010000UL;
 	SecondaryScreenBuffer = secondaryBuffer;
@@ -299,7 +299,7 @@ word16 LoadMediaConfiguration(void)
 		/* One byte more than the text: the loop below reads a byte past
 		 * the end before it stops (the original reads whatever follows the
 		 * buffer and drops it). */
-		byte *configBuffer = Heap_Allocate((uint32) configTextLength + 0x01, "2C7F:04F1");
+		byte *configBuffer = (byte *) Heap_Allocate((uint32) configTextLength + 0x01, "2C7F:04F1");
 		word16 bytesRemaining = configTextLength;
 		byte *readCursor = configBuffer;
 

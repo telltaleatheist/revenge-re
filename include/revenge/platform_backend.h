@@ -1,6 +1,7 @@
 #ifndef REVENGE_PLATFORM_BACKEND_H
 #define REVENGE_PLATFORM_BACKEND_H
 
+#include "revenge/debug.h"
 #include "revenge/dos.h"
 #include "revenge/input.h"
 
@@ -14,7 +15,7 @@ uint16 SDLBackend_DirectConsoleIO(byte character);
 void SDLBackend_GetSystemDate(DOS_Date *date);
 void SDLBackend_GetSystemTime(DOS_Time *time);
 const char *SDLBackend_GetEnvironmentVariable(const char *name);
-_Noreturn void SDLBackend_TerminateProcess(byte exitCode);
+REVENGE_NORETURN void SDLBackend_TerminateProcess(byte exitCode);
 
 int SDLBackend_Open(void);
 void SDLBackend_Close(void);

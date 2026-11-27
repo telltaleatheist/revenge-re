@@ -109,11 +109,11 @@ typedef struct KeyboardRuntime
 } KeyboardRuntime;
 #pragma pack(pop)
 
-_Static_assert(sizeof(KeyboardRuntime) == 0x88,
+static_assert(sizeof(KeyboardRuntime) == 0x88,
 	"The reconstructed CS:007C-0103 keyboard runtime block must be exact.");
-_Static_assert(offsetof(KeyboardRuntime, readOffset) == 0x80,
+static_assert(offsetof(KeyboardRuntime, readOffset) == 0x80,
 	"The keyboard read offset must remain at CS:00FC.");
-_Static_assert(offsetof(KeyboardRuntime, translationMode) == 0x84,
+static_assert(offsetof(KeyboardRuntime, translationMode) == 0x84,
 	"The translation mode must remain at CS:0100.");
 
 static KeyboardRuntime Keyboard =

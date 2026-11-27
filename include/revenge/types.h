@@ -1,6 +1,7 @@
 #ifndef REVENGE_TYPES_H
 #define REVENGE_TYPES_H
 
+#include <assert.h> /* static_assert, in C17 */
 #include <stdint.h>
 
 typedef uint8_t byte;
@@ -43,7 +44,7 @@ typedef struct DosAddress
 } DosAddress;
 #pragma pack(pop)
 
-_Static_assert(sizeof(DosAddress) == 0x04,
+static_assert(sizeof(DosAddress) == 0x04,
     "A DOS offset:segment address occupies four bytes.");
 
 static inline DosAddress DosAddress_FromValue(uint32 value)

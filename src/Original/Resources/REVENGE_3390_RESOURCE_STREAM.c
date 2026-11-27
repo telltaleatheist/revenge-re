@@ -352,7 +352,7 @@ void InitializeResourceCache(void)
 		allocationKB = (word16)(resource->fileLength / 0x00000400UL) + 0x0001;
 		cachedData = NULL;
 		if (remainingConventionalMemoryKB >= (int16)allocationKB)
-			cachedData = Heap_Allocate(resource->fileLength, "3390:0AF1");
+			cachedData = (byte *) Heap_Allocate(resource->fileLength, "3390:0AF1");
 		if (cachedData == NULL)
 		{
 			++resourceIndex;

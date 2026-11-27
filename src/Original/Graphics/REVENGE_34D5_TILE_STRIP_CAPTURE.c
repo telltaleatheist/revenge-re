@@ -31,7 +31,7 @@ byte *CaptureVideoTileStrip(
 		: 0x05;
 	shiftedTileBytes = (word16)((word16)tileCount << tileSizeShift);
 	allocationSize = (int32)(int16)shiftedTileBytes;
-	tileBuffer = Heap_Allocate((uint32) allocationSize, "34D5:003F");
+	tileBuffer = (byte *) Heap_Allocate((uint32) allocationSize, "34D5:003F");
 	tileDestination = tileBuffer;
 	for (tileIndex = 0x0000; tileIndex < tileCount; ++tileIndex)
 	{

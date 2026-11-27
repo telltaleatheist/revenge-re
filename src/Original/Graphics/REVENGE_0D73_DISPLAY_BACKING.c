@@ -84,7 +84,7 @@ byte *BuildVgaDisplayBackingBuffer(
 		sourceRow += 0x0140;
 	}
 
-	allocation = Heap_Allocate(encodedByteCount, "0D73:562F");
+	allocation = (byte *) Heap_Allocate(encodedByteCount, "0D73:562F");
 	if (allocation != NULL)
 	{
 		memcpy(allocation, encodedBuffer, encodedByteCount);

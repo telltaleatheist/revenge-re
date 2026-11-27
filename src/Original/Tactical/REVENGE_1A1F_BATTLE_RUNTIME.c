@@ -19,7 +19,7 @@ void RunTacticalBattle(word16 scenarioCode)
 	ScenarioFileSuffix = scenarioCode;
 
 	byte *runtimeMemory =
-		Heap_Allocate(TACTICAL_RUNTIME_ALLOCATION_SIZE, "1A1F:0016");
+		(byte *) Heap_Allocate(TACTICAL_RUNTIME_ALLOCATION_SIZE, "1A1F:0016");
 	TerrainTypeMap = runtimeMemory;
 	TacticalOverviewMapBuffer = runtimeMemory + TACTICAL_OVERVIEW_MAP_OFFSET;
 	PackedTerrainDamageMap = runtimeMemory + PACKED_TERRAIN_DAMAGE_MAP_OFFSET;

@@ -35,7 +35,7 @@ void ShowResourceErrorMessage(void)
 		backingSize = (uint32) (int32) (int16) (word16)
 			(ActiveTextWindowWidthTiles * ActiveTextWindowHeightTiles);
 		backingSize <<= VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05;
-		InvalidSaveDialogBacking = Heap_Allocate(backingSize, "3390:077F");
+		InvalidSaveDialogBacking = (byte *) Heap_Allocate(backingSize, "3390:077F");
 		allocatedHere = TRUE;
 	}
 	backingBuffer = InvalidSaveDialogBacking;

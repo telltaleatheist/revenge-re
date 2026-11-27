@@ -14,7 +14,7 @@ typedef struct WestwoodCompressionHeader
 } WestwoodCompressionHeader;
 #pragma pack(pop)
 
-_Static_assert(sizeof(WestwoodCompressionHeader) == 0x08,
+static_assert(sizeof(WestwoodCompressionHeader) == 0x08,
 	"WestwoodCompressionHeader must retain its DOS layout");
 
 void CopyUncompressedFarBlock(
@@ -121,22 +121,24 @@ void DecodeWestwoodPackedResource(
 
 	case 0x01:
 	{
-		byte *dictionary = Heap_Allocate(0x3C00, "21E7:0163");
-		DecodeWestwoodLzw12(compressedBlock, destination, dictionary);
+		byte *dictionary = (byte *) Heap_Allocate(0x3C00, "21E7:0163");
+		DecodeWestwoodLzw12((const byte *) compressedBlock, (byte *) destination,
+			dictionary);
 		Heap_Free(dictionary);
 		break;
 	}
 
 	case 0x02:
 	{
-		byte *dictionary = Heap_Allocate(0xBD00, "21E7:01B8");
-		DecodeWestwoodLzw14(compressedBlock, destination, dictionary);
+		byte *dictionary = (byte *) Heap_Allocate(0xBD00, "21E7:01B8");
+		DecodeWestwoodLzw14((const byte *) compressedBlock, (byte *) destination,
+			dictionary);
 		Heap_Free(dictionary);
 		break;
 	}
 
 	case 0x03:
-		DecodeRLEBlock(compressedBlock, destination);
+		DecodeRLEBlock((const byte *) compressedBlock, (byte *) destination);
 		break;
 	}
 }
