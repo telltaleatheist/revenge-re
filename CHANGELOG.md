@@ -13,7 +13,7 @@ do not identify an original DOS release.
   asks, and the start options (`--windowed`, `--window`, `--nosound`,
   `--hidden`, `--write-dir`, `--ready-file`).
 - Packages for Windows (zip and installer), macOS (universal dmg) and Linux
-  (AppImage) from `tools/build_package.py`, with `SHA256SUMS`; the program is
+  (AppImage and tarball) from `tools/build_package.py`, with `SHA256SUMS`; the program is
   named `chr` in them. Replaces the minimal Windows runtime package
   (`Build.ps1 -Package`).
 

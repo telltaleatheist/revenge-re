@@ -111,9 +111,9 @@ diagnostics.
 
 `tools/build_package.py` builds the packages the BattleTech launcher installs:
 `CHR-Rebuild-<tag>-win64.zip` (and an installer, `-Setup.exe`),
-`CHR-Rebuild-<tag>-mac.dmg` (universal, macOS 12 or later) and
-`CHR-Rebuild-<tag>-x86_64.AppImage`, released as `chr-vX.Y.Z` with one
-`SHA256SUMS` over them. Each holds the program, `chr`, our `data/` and the
+`CHR-Rebuild-<tag>-mac.dmg` (universal, macOS 12 or later),
+`CHR-Rebuild-<tag>-x86_64.AppImage` and `CHR-Rebuild-<tag>-linux-x86_64.tar.gz`,
+released as `chr-vX.Y.Z` with one `SHA256SUMS` over them. Each holds the program, `chr`, our `data/` and the
 notices, and none of the game; its smoke test starts the packaged program,
 headless, and checks the setup and a first run.
 [docs/RELEASING.md](docs/RELEASING.md) has the recipe.

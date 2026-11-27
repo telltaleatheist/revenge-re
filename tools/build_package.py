@@ -7,9 +7,9 @@ LABEL is a release's tag (chr-vX.Y.Z, made only from that tag, whose X.Y.Z is VE
 test build. On Windows it makes CHR-Rebuild-LABEL-win64.zip (and with --installer the Inno Setup installer,
 CHR-Rebuild-LABEL-Setup.exe); on a Mac the universal app and CHR-Rebuild-LABEL-mac.dmg (macOS 12 and later), signed
 and notarized through re-setup-kit's tools/macos/sign_notarize.sh, or signed ad hoc with RE_ALLOW_UNSIGNED=1 for a
-build not for release; on Linux CHR-Rebuild-LABEL-x86_64.AppImage (with --appimage-tools, the folder
-tools/deps/get_appimage_tools.sh fills). Each gets a .sha256 beside it; tools/package/sums.py writes the release's
-SHA256SUMS over them all.
+build not for release; on Linux CHR-Rebuild-LABEL-linux-x86_64.tar.gz and CHR-Rebuild-LABEL-x86_64.AppImage (with
+--appimage-tools, the folder tools/deps/get_appimage_tools.sh fills). Each gets a .sha256 beside it;
+tools/package/sums.py writes the release's SHA256SUMS over them all.
 
 A package holds the program (chr), our data/ (rules, layout, the new campaign, the speaker's notes, the music and its
 soundfont, which the build cuts), the read-me and the notices; never a file of the original game. The smoke test runs
@@ -17,7 +17,8 @@ the packaged program: --help prints its usage, it answers the launcher's asks ab
 (tools/package/served_setup.py), and with a game folder (--game, or REVENGE_GAME) a first run from an empty save
 folder imports the story and reaches the game's first input wait (the trace harness's first snap). Nothing is shown:
 no window, no sound, and on a Mac the app runs as a background copy (tools/package/background_app.py). --smoke runs
-the same checks on a package already made (a folder, an extracted zip, an app, an extracted AppImage's usr/bin).
+the same checks on a package already made (a folder, an extracted zip or tarball, an app, an extracted AppImage's
+usr/bin).
 """
 import argparse
 import hashlib
@@ -28,6 +29,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tarfile
 import tempfile
 import time
 import zipfile
@@ -561,26 +563,82 @@ def check_appimage_tools(tools):
             raise RuntimeError(f"AppImage tool {file} hashes {found}, wanted {wanted}")
 
 
+# A Linux program built here needs only these (SDL, libarchive, zlib and liblzma are linked in; SDL opens the
+# display's and the sound's libraries itself when it starts). Anything else would be missing on a player's system.
+LINUX_SYSTEM_LIBRARIES = {"libc.so.6", "libm.so.6", "libstdc++.so.6", "libgcc_s.so.1", "libdl.so.2", "libpthread.so.0",
+                          "librt.so.1", "ld-linux-x86-64.so.2"}
+
+
+def needed_libraries(readelf_dynamic):
+    """The NEEDED entries of `readelf -d`'s output."""
+    return re.findall(r"\(NEEDED\)\s+Shared library: \[([^\]]+)\]", readelf_dynamic)
+
+
+def check_linux_libraries(program, readelf="readelf"):
+    """The program loads only the system's libraries: the tarball has none beside it."""
+    shown = subprocess.run([readelf, "-d", str(program)], capture_output=True, text=True, check=True).stdout
+    outside = sorted(set(needed_libraries(shown)) - LINUX_SYSTEM_LIBRARIES)
+    if outside:
+        raise RuntimeError("The program loads libraries a player's system may not have: " + ", ".join(outside))
+
+
+def make_tarball(stage, archive):
+    """`archive` (.tar.gz) holding the folder `stage` under its own name, as the zip holds the Windows one."""
+    with tarfile.open(archive, "w:gz") as target:
+        target.add(stage, arcname=stage.name)
+
+
+def unpack_tarball(archive, into):
+    """`archive` unpacked into `into` as a player would, refusing a member outside it (tarfile's data filter)."""
+    with tarfile.open(archive) as source:
+        source.extractall(into, filter="data")
+
+
 def package_linux(root, build, output, label, game, tools):
-    """CHR-Rebuild-<label>-x86_64.AppImage: usr/bin/chr with data/ beside it (SDL_GetBasePath), the notices in
-    usr/share/doc (the runtime's in licenses/appimage-runtime), any library by linuxdeploy."""
+    """CHR-Rebuild-<label>-linux-x86_64.tar.gz: chr with data/, the read-me and the notices beside it (the zip's
+    layout), smoke-tested from the unpacked archive; then CHR-Rebuild-<label>-x86_64.AppImage from the same folder:
+    usr/bin/chr with data/ beside it (SDL_GetBasePath), the notices in usr/share/doc (the runtime's in
+    licenses/appimage-runtime), any library by linuxdeploy."""
     if not tools:
         raise RuntimeError("--appimage-tools DIR (linuxdeploy, appimagetool and the runtime) is needed for the AppImage")
     tools = Path(tools).resolve()
     check_appimage_tools(tools)
     binary = configure_and_build(root, build, label)
     check_stamp(binary, label)
+    name = f"{STEM}-{label}-linux-x86_64"
+    stage = output / name
+    if stage.exists():
+        shutil.rmtree(stage)
+    stage.mkdir(parents=True)
+    shutil.copy2(binary, stage / PROGRAM)
+    check_linux_libraries(stage / PROGRAM)
+    stage_common(root, build, stage)
+    check_paths(root, stage, root, build)
+    archive = output / f"{name}.tar.gz"
+    make_tarball(stage, archive)
+    # The archive's own layout is what is checked, not the build's.
+    extracted = output / "smoke"
+    if extracted.exists():
+        shutil.rmtree(extracted)
+    extracted.mkdir()
+    unpack_tarball(archive, extracted)
+    check_stamp(extracted / name / PROGRAM, label)
+    check_notices(extracted / name / "licenses")
+    smoke(extracted / name / PROGRAM, game)
+    write_digest(archive)
+    print(f"Packaged and smoke-tested {archive}")
+
     appdir = output / "AppDir"
     if appdir.exists():
         shutil.rmtree(appdir)
     bin_dir, doc = appdir / "usr/bin", appdir / f"usr/share/doc/{PROGRAM}"
     bin_dir.mkdir(parents=True)
     doc.mkdir(parents=True)
-    shutil.copy2(binary, bin_dir / PROGRAM)
-    stage_common(root, build, bin_dir)
-    for name in ("LICENSE", "README.txt"):
-        shutil.move(str(bin_dir / name), str(doc / name))
-    shutil.move(str(bin_dir / "licenses"), str(doc / "licenses"))
+    shutil.copy2(stage / PROGRAM, bin_dir / PROGRAM)
+    shutil.copytree(stage / "data", bin_dir / "data")
+    for item in ("LICENSE", "README.txt"):
+        shutil.copy2(stage / item, doc / item)
+    shutil.copytree(stage / "licenses", doc / "licenses")
     shutil.copytree(root / "tools/package/appimage-runtime", doc / "licenses/appimage-runtime")
     smoke(bin_dir / PROGRAM, game)
     env = dict(os.environ, APPIMAGE_EXTRACT_AND_RUN="1", ARCH="x86_64")

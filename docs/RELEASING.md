@@ -10,10 +10,10 @@ hand on each platform, as below, and a person publishes them.
 `tools/build_package.py` builds the program in `build-package/` and stages:
 
 - the program, `chr` (`chr.exe`; `Contents/MacOS/chr` in the Mac app;
-  `usr/bin/chr` in the AppImage). The build's target stays `Revenge`, which
-  the tools and the trace harness run; the package names it. SDL 3 (the
-  pinned release CMake fetches) and the archive libraries are linked in, so
-  the Mac and Linux programs load only system libraries, and the Windows one
+  `usr/bin/chr` in the AppImage; at the top of the Linux tarball's folder).
+  The build's target stays `Revenge`, which the tools and the trace harness
+  run; the package names it. SDL 3 (the pinned release CMake fetches) and the
+  archive libraries are linked in, so the Mac and Linux programs load only system libraries, and the Windows one
   only those and the MSVC runtime beside it;
 - `data/`: our rules, layout, starting state, the speaker's notes and the
   music's instrument table, beside the program (SDL's base path; a Mac app's
@@ -114,9 +114,9 @@ catalog; they change only with the launcher's.
 |---|---|---|
 | Windows x64 | Windows, MSVC | `CHR-Rebuild-<label>-win64.zip`, and with `--installer` `CHR-Rebuild-<label>-Setup.exe` |
 | macOS | a Mac | `CHR-Rebuild-<label>-mac.dmg` (`Revenge Rebuild.app`; a release's signed with a Developer ID and notarized, a test build's ad hoc), universal (x86_64 and arm64), macOS 12 and later |
-| Linux x86-64 | Linux or WSL | `CHR-Rebuild-<label>-x86_64.AppImage` |
+| Linux x86-64 | Linux or WSL | `CHR-Rebuild-<label>-linux-x86_64.tar.gz` and `CHR-Rebuild-<label>-x86_64.AppImage` (the launcher's) |
 
-Each file gets a `.sha256` beside it. A release's assets are the four files
+Each file gets a `.sha256` beside it. A release's assets are the five files
 and one `SHA256SUMS` over them all (`tools/package/sums.py`).
 
     python3 -I tools/build_package.py --label LABEL [--game GAME] [--installer] [--appimage-tools DIR]
@@ -149,9 +149,15 @@ and one `SHA256SUMS` over them all (`tools/package/sums.py`).
   `RE_ALLOW_UNSIGNED=1` says the build is not for release; then it is signed
   ad hoc and the read-me says how to open it the first time. The dmg is made
   from a folder with `hdiutil create`; nothing is mounted.
-- **Linux**: `--appimage-tools DIR` names the folder the tools script
-  filled. The AppImage holds `usr/bin/chr` with `data/` beside it and the
-  notices in `usr/share/doc/chr`, the AppImage runtime's
+- **Linux**: the tarball holds one folder, `CHR-Rebuild-<label>-linux-x86_64`,
+  laid out as the Windows zip: `chr` with `data/`, the read-me and the
+  notices beside it. The program must load only the system's libraries
+  (`readelf -d`: the C and C++ runtimes, nothing of ours), since none ship
+  beside it. Packaging unpacks the tarball (refusing a member outside its
+  folder) and smoke-tests the unpacked program. The AppImage, the launcher's
+  package, is made from the same folder: `--appimage-tools DIR` names the
+  folder the tools script filled. It holds `usr/bin/chr` with `data/` beside
+  it and the notices in `usr/share/doc/chr`, the AppImage runtime's
   (`tools/package/appimage-runtime`) among them. Packaging unpacks it with
   `--appimage-extract` and starts the program from the unpacked folder, as the
   launcher does.
@@ -165,14 +171,16 @@ copy.
 
 The packaging's own parts have unit tests that need no build
 (`tools/test_build_package.py`, ctest `package.build_package`): the signing's
-commands with a made-up identity, the background copy, and `check_paths`.
+commands with a made-up identity, the background copy, `check_paths`, and the
+Linux tarball's layout, its refusal of a member outside its folder and the
+program's libraries.
 
     python3 -I -m unittest discover -s tools -p test_build_package.py -v
 
 ## The smoke test
 
 Each package is checked from its own layout (the extracted zip, the app, the
-AppImage's `usr/bin` and its unpacked copy):
+unpacked tarball, the AppImage's `usr/bin` and its unpacked copy):
 
 - `--help` prints the usage;
 - the served setup answers as the launcher asks it (`served_setup.py`);
@@ -204,9 +212,9 @@ To run the same checks on a package already made:
 
     python3 -I tools/build_package.py --smoke DIR --game "$GAME"
 
-DIR is the folder holding `chr` or `chr.exe`, the app, or an unpacked
-AppImage's `squashfs-root`. With an app, `--arch x86_64` runs the Intel half
-alone, which Rosetta runs on an Apple silicon Mac.
+DIR is the folder holding `chr` or `chr.exe` (an unpacked zip or tarball), the
+app, or an unpacked AppImage's `squashfs-root`. With an app, `--arch x86_64`
+runs the Intel half alone, which Rosetta runs on an Apple silicon Mac.
 
 ## Making a release
 
@@ -235,7 +243,7 @@ step stops the release.
    Each run must end with its smoke test passed, the first run and the served
    setup included, none skipped. The dmg must also pass
    `spctl -a -vv -t install` and `xcrun stapler validate`.
-4. Put the four packages in one empty folder, check each against its
+4. Put the five packages in one empty folder, check each against its
    `.sha256`, then write the one list:
 
        python3 -I tools/package/sums.py FOLDER
@@ -249,7 +257,7 @@ step stops the release.
 7. Publish, with the release notes as the text:
 
        gh release create chr-vX.Y.Z --verify-tag --title "Revenge Rebuild X.Y.Z" \
-         --notes-file NOTES <the four packages> SHA256SUMS
+         --notes-file NOTES <the five packages> SHA256SUMS
 
    Not a draft and not a prerelease: the launcher takes only a published, full
    release, and installs nothing without the package's line in `SHA256SUMS`.

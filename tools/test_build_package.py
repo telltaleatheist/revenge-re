@@ -108,6 +108,68 @@ class CheckPaths(unittest.TestCase):
                 self.assertEqual(found.returncode, code, text)
 
 
+class LinuxTarball(unittest.TestCase):
+    """The tarball's own parts: its layout as unpacked, and the program's libraries."""
+
+    def test_a_program_without_the_appimage_tools_is_refused_before_anything_is_built(self):
+        with patch.object(build_package, "configure_and_build") as build:
+            with self.assertRaisesRegex(RuntimeError, "--appimage-tools"):
+                build_package.package_linux(ROOT, Path("build"), Path("dist"), "x", None, None)
+            build.assert_not_called()
+
+    def test_the_tarball_unpacks_to_its_folder_with_the_program_runnable(self):
+        with tempfile.TemporaryDirectory() as directory:
+            stage = Path(directory) / "CHR-Rebuild-x-linux-x86_64"
+            for name, data in (("chr", b"#!/bin/sh\n"), ("data/rules/x.json", b"{}"), ("licenses/project/a", b"a"),
+                               ("README.txt", b"r")):
+                (stage / name).parent.mkdir(parents=True, exist_ok=True)
+                (stage / name).write_bytes(data)
+            (stage / "chr").chmod(0o755)
+            archive = Path(directory) / "x.tar.gz"
+            build_package.make_tarball(stage, archive)
+            out = Path(directory) / "out"
+            out.mkdir()
+            build_package.unpack_tarball(archive, out)
+            self.assertEqual([p.name for p in out.iterdir()], [stage.name])
+            files = sorted(f.relative_to(out / stage.name).as_posix() for f in (out / stage.name).rglob("*") if f.is_file())
+            self.assertEqual(files, ["README.txt", "chr", "data/rules/x.json", "licenses/project/a"])
+            if os.name != "nt":
+                self.assertTrue(os.access(out / stage.name / "chr", os.X_OK))
+
+    def test_a_member_outside_the_folder_is_refused(self):
+        import io
+        import tarfile
+        with tempfile.TemporaryDirectory() as directory:
+            archive = Path(directory) / "bad.tar.gz"
+            with tarfile.open(archive, "w:gz") as target:
+                member = tarfile.TarInfo("../outside.txt")
+                member.size = 1
+                target.addfile(member, io.BytesIO(b"x"))
+            out = Path(directory) / "out"
+            out.mkdir()
+            with self.assertRaises(tarfile.TarError):
+                build_package.unpack_tarball(archive, out)
+            self.assertFalse((Path(directory) / "outside.txt").exists())
+
+    def test_only_the_systems_libraries_are_needed(self):
+        shown = """
+Dynamic section at offset 0x1 contains 30 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libstdc++.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+ 0x000000000000000e (SONAME)             Library soname: [libnot.so.1]
+"""
+        self.assertEqual(build_package.needed_libraries(shown), ["libstdc++.so.6", "libm.so.6", "libc.so.6"])
+        done = subprocess.CompletedProcess([], 0, stdout=shown, stderr="")
+        with patch.object(build_package.subprocess, "run", return_value=done):
+            build_package.check_linux_libraries(Path("chr"))
+        extra = subprocess.CompletedProcess([], 0, stdout=shown.replace("libm.so.6", "libSDL3.so.0"), stderr="")
+        with patch.object(build_package.subprocess, "run", return_value=extra):
+            with self.assertRaisesRegex(RuntimeError, "libSDL3.so.0"):
+                build_package.check_linux_libraries(Path("chr"))
+
+
 def smoke_checks():
     return patch.multiple(build_package, check_usage=DEFAULT, check_served_setup=DEFAULT, check_first_run=DEFAULT)
 
