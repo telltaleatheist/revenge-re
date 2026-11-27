@@ -5,15 +5,9 @@
 #include "revenge/original_data.h"
 #include "revenge/video.h"
 
-void ReadEGAPlanarTile(
-	byte *destination,
-	int16 sourceByteColumn,
-	uint16 sourceTileRow);
-
 // 3495:000B
 // Capture one 8x8 tile from a framebuffer into the adapter-native backing-store
-// layout. VGA stores 64 bytes, Tandy/PCjr stores 32, and CGA stores 16. EGA
-// plane selection and latching are handled by ReadEGAPlanarTile.
+// layout: the VGA's 64 bytes.
 void Capture8x8VideoTile(
 	byte *framebuffer,
 	byte *destination,
@@ -24,13 +18,11 @@ void Capture8x8VideoTile(
 	word16 row;
 	byte *source;
 
-	switch (VideoAdapterType)
+	/* The EGA's planar read (3495:0010-0017, 0800:4DFD) and the CGA's and
+	 * the Tandy's layouts (3495:00A0-010B) went with them; the rebuild is
+	 * VGA only. */
+	if (VideoAdapterType == VIDEO_ADAPTER_VGA)
 	{
-	case VIDEO_ADAPTER_EGA:
-		ReadEGAPlanarTile(destination, tileX, tileY);
-		break;
-
-	case VIDEO_ADAPTER_VGA:
 		source = framebuffer + tileY * 0x0A00 + tileX * 0x08;
 		for (row = 0x00; row < 0x08; ++row)
 		{
@@ -39,28 +31,5 @@ void Capture8x8VideoTile(
 			destination += 0x08;
 			source += 0x0140;
 		}
-		break;
-
-	case VIDEO_ADAPTER_CGA:
-		source = framebuffer + tileY * 0x0280 + tileX * 0x02;
-		for (row = 0x00; row < 0x08; ++row)
-		{
-			destination[0x00] = source[0x00];
-			destination[0x01] = source[0x01];
-			destination += 0x02;
-			source += 0x50;
-		}
-		break;
-
-	default: // Tandy/PCjr packed four-bit pixels.
-		source = framebuffer + tileY * 0x0500 + tileX * 0x04;
-		for (row = 0x00; row < 0x08; ++row)
-		{
-			for (column = 0x00; column < 0x04; ++column)
-				destination[column] = source[column];
-			destination += 0x04;
-			source += 0xA0;
-		}
-		break;
 	}
 }

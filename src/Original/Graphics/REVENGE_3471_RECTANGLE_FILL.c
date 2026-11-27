@@ -21,21 +21,9 @@ void FillVideoRectangle(
 {
 	int16 y;
 
-	if ((leftX & 0x01) == 0x00 &&
-		(rightX & 0x01) != 0x00 &&
-		VideoAdapterType == VIDEO_ADAPTER_TANDY)
-	{
-		FillTandyPackedRectangle(
-			leftX,
-			topY,
-			((rightX - leftX) >> 0x01) + 0x01,
-			bottomY - topY,
-			(byte) color);
-	}
-	else
-	{
-		for (y = topY; y <= bottomY; ++y)
-			DrawHorizontalSpan(y, leftX, rightX, color);
-	}
+	/* The Tandy's packed fill (3471:0026-002B, 004B-0066, 0800:3327)
+	 * went with the Tandy; the rebuild is VGA only. */
+	for (y = topY; y <= bottomY; ++y)
+		DrawHorizontalSpan(y, leftX, rightX, color);
 }
 

@@ -15,28 +15,21 @@ int main(void)
 {
     static byte primaryScreen[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
     byte vgaPalette[VGA_PALETTE_BYTE_COUNT];
-    byte planarTile[0x20];
+    byte tile[0x40];
     word16 pixel;
+    word16 row;
 
     FakeBackend_Reset();
     fakeBackend.videoMode = 0x03;
 
     assert(GetCurrentBIOSVideoMode() == 0x03);
     SavedBIOSVideoMode = GetCurrentBIOSVideoMode();
-    SetVideoModeForAdapter(VIDEO_ADAPTER_CGA);
-    assert(ActiveVideoAdapterType == VIDEO_ADAPTER_CGA);
-    assert(fakeBackend.videoMode == 0x04);
-
-    SetVideoModeForAdapter(VIDEO_ADAPTER_EGA);
-    assert(ActiveVideoAdapterType == VIDEO_ADAPTER_EGA);
-    assert(fakeBackend.videoMode == 0x0D);
-
-    SetVideoModeForAdapter(0x0004);
-    assert(fakeBackend.videoMode == 0x07);
-    SetVideoModeForAdapter(0x0005);
-    assert(fakeBackend.videoMode == 0x02);
+    SetVideoModeForAdapter(VIDEO_ADAPTER_VGA);
+    assert(ActiveVideoAdapterType == VIDEO_ADAPTER_VGA);
+    assert(fakeBackend.videoMode == 0x13);
     SetVideoModeForAdapter(0x0006);
     assert(fakeBackend.videoMode == 0x03);
+    assert(ActiveVideoAdapterType == VIDEO_ADAPTER_VGA);
 
     memset(vgaPalette, 0x2A, sizeof(vgaPalette));
     VGA_LoadPalette(vgaPalette);
@@ -47,33 +40,30 @@ int main(void)
     DrawClippedPixel(0x0001, 0x0001, 0x00C7);
     assert(fakeBackend.indexedFramebuffer[0x0141] == 0xC7);
 
-    ActiveVideoAdapterType = VIDEO_ADAPTER_TANDY;
-    FillTandyPackedRectangle(0x0002, 0x0003, 0x0001, 0x0001, 0x0D);
-    assert(fakeBackend.indexedFramebuffer[0x0003 * 0x0140 + 0x0002] == 0x0D);
-    assert(fakeBackend.indexedFramebuffer[0x0004 * 0x0140 + 0x0005] == 0x0D);
-
-    ActiveVideoAdapterType = VIDEO_ADAPTER_CGA;
-    DrawVerticalSpan(0x0007, 0x0005, 0x0007, 0x0006);
-    assert(fakeBackend.indexedFramebuffer[0x0005 * 0x0140 + 0x0007] == 0x02);
-    assert(fakeBackend.indexedFramebuffer[0x0007 * 0x0140 + 0x0007] == 0x02);
-    DrawHorizontalVideoRun(0x0008, 0x0009, 0x0002, 0x0007);
-    assert(fakeBackend.indexedFramebuffer[0x0009 * 0x0140 + 0x0008] == 0x03);
-    assert(fakeBackend.indexedFramebuffer[0x0009 * 0x0140 + 0x000F] == 0x03);
-    assert(fakeBackend.indexedFramebuffer[0x0009 * 0x0140 + 0x0010] == 0xA5);
+    /* The VGA's colours are whole bytes and its runs one pixel a byte. */
+    DrawVerticalSpan(0x0007, 0x0005, 0x0007, 0x00C6);
+    assert(fakeBackend.indexedFramebuffer[0x0005 * 0x0140 + 0x0007] == 0xC6);
+    assert(fakeBackend.indexedFramebuffer[0x0007 * 0x0140 + 0x0007] == 0xC6);
+    assert(fakeBackend.indexedFramebuffer[0x0008 * 0x0140 + 0x0007] == 0xA5);
+    DrawHorizontalVideoRun(0x0008, 0x0009, 0x0002, 0x00B7);
+    assert(fakeBackend.indexedFramebuffer[0x0009 * 0x0140 + 0x0008] == 0xB7);
+    assert(fakeBackend.indexedFramebuffer[0x0009 * 0x0140 + 0x0009] == 0xB7);
+    assert(fakeBackend.indexedFramebuffer[0x0009 * 0x0140 + 0x000A] == 0xA5);
 
     Video_ClearIndexedFramebuffer(0x05);
-    ActiveVideoAdapterType = VIDEO_ADAPTER_EGA;
-    FillVideoTileRectangle(0x0002, 0x0003, 0x0004, 0x0002, 0x00);
-    assert(fakeBackend.indexedFramebuffer[0x0018 * 0x0140 + 0x0010] == 0x00);
-    assert(fakeBackend.indexedFramebuffer[0x0027 * 0x0140 + 0x002F] == 0x00);
+    FillVideoTileRectangle(0x0002, 0x0003, 0x0004, 0x0002, 0xE1);
+    assert(fakeBackend.indexedFramebuffer[0x0018 * 0x0140 + 0x0010] == 0xE1);
+    assert(fakeBackend.indexedFramebuffer[0x0027 * 0x0140 + 0x002F] == 0xE1);
     assert(fakeBackend.indexedFramebuffer[0x0017 * 0x0140 + 0x0010] == 0x05);
     assert(fakeBackend.indexedFramebuffer[0x0018 * 0x0140 + 0x0030] == 0x05);
 
-    /* EGA's original A200 work page is a separate indexed host buffer. */
+    /* The primary buffer as the render target takes the drawing; the
+     * screen keeps its pixels. */
     memset(primaryScreen, 0x05, sizeof(primaryScreen));
     PrimaryScreenBuffer = primaryScreen;
     VideoFramebuffer = (byte *)(uintptr_t)0xA0000000UL;
     SetActiveRenderTarget(primaryScreen);
+    assert(ActiveRenderTarget == primaryScreen);
     DrawClippedPixel(0x000A, 0x000B, 0x000C);
     FillVideoTileRectangle(0x0002, 0x0003, 0x0001, 0x0001, 0x00);
     assert(primaryScreen[0x000B * VIDEO_SCREEN_WIDTH + 0x000A] == 0x0C);
@@ -84,45 +74,23 @@ int main(void)
     ActiveRenderTarget = NULL;
 
     Video_ClearIndexedFramebuffer(0x05);
-    ActiveVideoAdapterType = VIDEO_ADAPTER_EGA;
-    XorVideoRectangle(0x0003, 0x0004, 0x0001, 0x0002, 0x0F);
-    assert(fakeBackend.indexedFramebuffer[0x0002 * 0x0140 + 0x0001] == 0x0A);
-    assert(fakeBackend.indexedFramebuffer[0x0004 * 0x0140 + 0x0003] == 0x0A);
+    XorVideoRectangle(0x0003, 0x0004, 0x0001, 0x0002, 0xFF);
+    assert(fakeBackend.indexedFramebuffer[0x0002 * 0x0140 + 0x0001] == 0xFA);
+    assert(fakeBackend.indexedFramebuffer[0x0004 * 0x0140 + 0x0003] == 0xFA);
     assert(fakeBackend.indexedFramebuffer[0x0001 * 0x0140 + 0x0001] == 0x05);
 
-    memset(fakeBackend.indexedFramebuffer, 0x00,
-        sizeof(fakeBackend.indexedFramebuffer));
-    for (pixel = 0x0000; pixel < 0x0008; ++pixel)
-        fakeBackend.indexedFramebuffer[0x0008 * 0x0140 + 0x0008 + pixel] =
-            (byte) pixel;
-    memset(planarTile, 0x00, sizeof(planarTile));
-    ReadEGAPlanarTile(planarTile, 0x0001, 0x0001);
-    assert(planarTile[0x00] == 0x55);
-    assert(planarTile[0x01] == 0x33);
-    assert(planarTile[0x02] == 0x0F);
-    assert(planarTile[0x03] == 0x00);
-
-    /* The DOS routine writes four EGA planes through a 40-byte hardware
-       scanline.  The SDL boundary must expand those bytes into the linear
-       320-byte indexed framebuffer instead of folding the tile toward the
-       top-left corner. */
-    for (pixel = 0x0000; pixel < 0x0008; ++pixel)
-    {
-        planarTile[pixel * 0x04 + 0x00] = 0xAA;
-        planarTile[pixel * 0x04 + 0x01] = 0xCC;
-        planarTile[pixel * 0x04 + 0x02] = 0xF0;
-        planarTile[pixel * 0x04 + 0x03] = 0x00;
-    }
+    /* An 8x8 tile is 64 bytes, eight to a row. */
+    for (pixel = 0x0000; pixel < 0x0040; ++pixel)
+        tile[pixel] = (byte) (0x40 + pixel);
     Video_ClearIndexedFramebuffer(0xA5);
-    Draw8x8VideoTile(planarTile, 0x0005, 0x0003);
-    for (pixel = 0x0000; pixel < 0x0008; ++pixel)
-    {
-        assert(fakeBackend.indexedFramebuffer[
-            0x0018 * VIDEO_SCREEN_WIDTH + 0x0028 + pixel] ==
-            (byte)(0x07 - pixel));
-    }
+    Draw8x8VideoTile(tile, 0x0005, 0x0003);
+    for (row = 0x0000; row < 0x0008; ++row)
+        for (pixel = 0x0000; pixel < 0x0008; ++pixel)
+            assert(fakeBackend.indexedFramebuffer[
+                (0x0018 + row) * VIDEO_SCREEN_WIDTH + 0x0028 + pixel] ==
+                (byte)(0x40 + row * 0x08 + pixel));
     assert(fakeBackend.indexedFramebuffer[
-        0x0003 * VIDEO_SCREEN_WIDTH + 0x0005] == 0xA5);
+        0x0018 * VIDEO_SCREEN_WIDTH + 0x0030] == 0xA5);
 
     Video_ClearIndexedFramebuffer(0xA5);
     ClearActiveVideoBuffer();

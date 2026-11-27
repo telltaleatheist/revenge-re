@@ -112,16 +112,6 @@ void CopyClippedVideoRegion(
     const byte *source,
     byte *destination);
 void ClearActiveVideoBuffer(void);
-void FillTandyPackedRectangle(
-    int16 leftX,
-    int16 topY,
-    uint16 packedWidthMinusOne,
-    int16 heightMinusOne,
-    byte color);
-void ReadEGAPlanarTile(
-    byte *destination,
-    int16 sourceByteColumn,
-    uint16 sourceTileRow);
 void DrawVerticalSpan(
     uint16 x,
     uint16 yStart,

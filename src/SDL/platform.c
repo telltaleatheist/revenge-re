@@ -462,22 +462,6 @@ void SDLBackend_SetVideoMode(byte videoMode)
         (void)SDLBackend_Open();
 }
 
-void SDLBackend_SetEgaGraphicsControllerRegister(byte registerIndex, byte value)
-{
-    /* The indexed host framebuffer does not expose EGA latches or planes.
-       Keep the original controller write at this lowest hardware boundary. */
-    (void)registerIndex;
-    (void)value;
-}
-
-void SDLBackend_SetEgaSequencerRegister(byte registerIndex, byte value)
-{
-	/* As with the graphics controller, planar write selection terminates at
-	   this hardware boundary when the host uses an indexed framebuffer. */
-	(void)registerIndex;
-	(void)value;
-}
-
 void SDLBackend_LoadVgaPalette(const byte *paletteRgbTriplets)
 {
     uint16 paletteIndex;

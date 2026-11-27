@@ -64,10 +64,6 @@ void SDLBackend_Delay(uint32_t milliseconds);
 
 byte SDLBackend_GetVideoMode(void);
 void SDLBackend_SetVideoMode(byte videoMode);
-void SDLBackend_SetEgaGraphicsControllerRegister(
-	byte registerIndex, byte value);
-void SDLBackend_SetEgaSequencerRegister(
-	byte registerIndex, byte value);
 void SDLBackend_LoadVgaPalette(const byte *paletteRgbTriplets);
 uint16 SDLBackend_IsVerticalRetraceActive(void);
 void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart);

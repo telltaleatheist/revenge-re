@@ -12,24 +12,7 @@
 
 #include <string.h>
 
-#define CGA_BYTES_PER_SCANLINE         0x0050
-#define TANDY_BYTES_PER_SCANLINE_GROUP 0x00A0
-#define EGA_BYTES_PER_SCANLINE         0x0028
 #define VGA_BYTES_PER_SCANLINE         0x0140
-#define CGA_TANDY_BANK_SIZE            0x2000
-
-enum
-{
-	EGA_GC_ENABLE_SET_RESET_REGISTER = 0x01,
-	EGA_GC_MODE_REGISTER = 0x05,
-	EGA_GC_BIT_MASK_REGISTER = 0x08,
-	EGA_GC_WRITE_MODE_0 = 0x00,
-	EGA_GC_WRITE_MODE_1 = 0x01,
-	EGA_GC_WRITE_MODE_2 = 0x02,
-	EGA_SEQ_MAP_MASK_REGISTER = 0x02,
-	EGA_ALL_PLANES = 0x0F,
-	EGA_ALL_WRITABLE_PIXEL_BITS = 0xFF
-};
 
 // 0800:2B00: copy an adapter-formatted rectangle between far video buffers.
 // Called from:
@@ -53,29 +36,20 @@ void CopyVideoRegion(
 	word16 destinationXByte;
 	word16 rowByteCount;
 
-	/* The original EGA path names the visible and shadow pages as A000:0000
-	 * and A200:0000. At the hardware boundary those pages are represented by
-	 * the SDL indexed framebuffer and the decoded primary work buffer. */
-	if (adapterType == VIDEO_ADAPTER_EGA || adapterType == VIDEO_ADAPTER_VGA)
+	/* The VGA's page is A000:0000; at the hardware boundary it is the SDL
+	 * indexed framebuffer. The EGA's A200 shadow page and the CGA's, the
+	 * Tandy's and the EGA's layouts (in 0800:2B00-2D36) went with those
+	 * adapters; the rebuild is VGA only. */
+	if (adapterType == VIDEO_ADAPTER_VGA)
 	{
 		if ((uintptr_t)sourceBase == 0xA0000000UL)
 		{
 			sourceBase = SDLBackend_GetIndexedFramebuffer();
 			hostIndexedCopy = TRUE;
 		}
-		else if ((uintptr_t)sourceBase == 0xA2000000UL)
-		{
-			sourceBase = PrimaryScreenBuffer;
-			hostIndexedCopy = TRUE;
-		}
 		if ((uintptr_t)destinationBase == 0xA0000000UL)
 		{
 			destinationBase = SDLBackend_GetIndexedFramebuffer();
-			hostIndexedCopy = TRUE;
-		}
-		else if ((uintptr_t)destinationBase == 0xA2000000UL)
-		{
-			destinationBase = PrimaryScreenBuffer;
 			hostIndexedCopy = TRUE;
 		}
 	}
@@ -104,36 +78,9 @@ void CopyVideoRegion(
 		return;
 	}
 
-	switch (adapterType)
-	{
-	case VIDEO_ADAPTER_CGA:
-		sourceXByte = sourceX << 0x01;
-		destinationXByte = destinationX << 0x01;
-		rowByteCount = width << 0x01;
-		break;
-	case VIDEO_ADAPTER_TANDY:
-		sourceXByte = sourceX << 0x02;
-		destinationXByte = destinationX << 0x02;
-		rowByteCount = width << 0x02;
-		break;
-	case VIDEO_ADAPTER_EGA:
-		sourceXByte = sourceX;
-		destinationXByte = destinationX;
-		rowByteCount = width;
-		break;
-	default:
-		sourceXByte = sourceX << 0x03;
-		destinationXByte = destinationX << 0x03;
-		rowByteCount = width << 0x03;
-		break;
-	}
-
-	if (adapterType == VIDEO_ADAPTER_EGA)
-	{
-		DisableHardwareInterrupts();
-		SDLBackend_SetEgaGraphicsControllerRegister(
-			EGA_GC_MODE_REGISTER, EGA_GC_WRITE_MODE_1);
-	}
+	sourceXByte = sourceX << 0x03;
+	destinationXByte = destinationX << 0x03;
+	rowByteCount = width << 0x03;
 
 	for (word16 row = 0x00; row < height; ++row)
 	{
@@ -142,29 +89,8 @@ void CopyVideoRegion(
 		word16 sourceScanlineOffset;
 		word16 destinationScanlineOffset;
 
-		switch (adapterType)
-		{
-		case VIDEO_ADAPTER_CGA:
-			sourceScanlineOffset = (sourcePixelY >> 0x01) * CGA_BYTES_PER_SCANLINE
-				+ (sourcePixelY & 0x01) * CGA_TANDY_BANK_SIZE + sourceXByte;
-			destinationScanlineOffset = (destinationPixelY >> 0x01) * CGA_BYTES_PER_SCANLINE
-				+ (destinationPixelY & 0x01) * CGA_TANDY_BANK_SIZE + destinationXByte;
-			break;
-		case VIDEO_ADAPTER_TANDY:
-			sourceScanlineOffset = (sourcePixelY >> 0x02) * TANDY_BYTES_PER_SCANLINE_GROUP
-				+ (sourcePixelY & 0x03) * CGA_TANDY_BANK_SIZE + sourceXByte;
-			destinationScanlineOffset = (destinationPixelY >> 0x02) * TANDY_BYTES_PER_SCANLINE_GROUP
-				+ (destinationPixelY & 0x03) * CGA_TANDY_BANK_SIZE + destinationXByte;
-			break;
-		case VIDEO_ADAPTER_EGA:
-			sourceScanlineOffset = sourcePixelY * EGA_BYTES_PER_SCANLINE + sourceXByte;
-			destinationScanlineOffset = destinationPixelY * EGA_BYTES_PER_SCANLINE + destinationXByte;
-			break;
-		default:
-			sourceScanlineOffset = sourcePixelY * VGA_BYTES_PER_SCANLINE + sourceXByte;
-			destinationScanlineOffset = destinationPixelY * VGA_BYTES_PER_SCANLINE + destinationXByte;
-			break;
-		}
+		sourceScanlineOffset = sourcePixelY * VGA_BYTES_PER_SCANLINE + sourceXByte;
+		destinationScanlineOffset = destinationPixelY * VGA_BYTES_PER_SCANLINE + destinationXByte;
 
 		const byte *sourceRow = sourceBase + sourceScanlineOffset;
 		byte *destinationRow = destinationBase + destinationScanlineOffset;
@@ -175,9 +101,6 @@ void CopyVideoRegion(
 			destinationRow[columnByte] = sourceRow[columnByte];
 		}
 	}
-
-	if (adapterType == VIDEO_ADAPTER_EGA)
-		EnableHardwareInterrupts();
 	return;
 
 }
@@ -192,8 +115,8 @@ void FillVideoTileRectangle(
 {
 	// Verified against 0800:2DB0-2EC7.
 	// Fill the rectangle (X, Y, width, height) with the supplied logical
-	// color, converting that color and row stride for the active adapter.
-	byte adapterType = (byte) ActiveVideoAdapterType;
+	// color. The CGA's, the Tandy's and the EGA's colour packing and layouts
+	// (in 0800:2DB0-2EC7) went with them; the rebuild is VGA only.
 	word16 xByte;
 	word16 rowByteCount;
 	word16 firstPixelY = y << 0x03;
@@ -211,11 +134,6 @@ void FillVideoTileRectangle(
 	{
 		pixelX = (word16)x << 0x03;
 		pixelWidth = width << 0x03;
-		if (adapterType == VIDEO_ADAPTER_CGA)
-			packedColor &= 0x03;
-		else if (adapterType == VIDEO_ADAPTER_TANDY ||
-			adapterType == VIDEO_ADAPTER_EGA)
-			packedColor &= 0x0F;
 
 		for (word16 row = 0x00; row < scanlineCount; ++row)
 		{
@@ -234,68 +152,15 @@ void FillVideoTileRectangle(
 		return;
 	}
 
-	switch (adapterType)
-	{
-	case VIDEO_ADAPTER_CGA:
-		xByte = x << 0x01;
-		rowByteCount = width << 0x01;
-		break;
-	case VIDEO_ADAPTER_TANDY:
-		xByte = x << 0x02;
-		rowByteCount = width << 0x02;
-		break;
-	case VIDEO_ADAPTER_EGA:
-		xByte = x;
-		rowByteCount = width;
-		break;
-	default:
-		xByte = x << 0x03;
-		rowByteCount = width << 0x03;
-		break;
-	}
-
-	if (adapterType == VIDEO_ADAPTER_EGA)
-	{
-		DisableHardwareInterrupts();
-		SDLBackend_SetEgaGraphicsControllerRegister(
-			EGA_GC_MODE_REGISTER, EGA_GC_WRITE_MODE_2);
-		SDLBackend_SetEgaGraphicsControllerRegister(
-			EGA_GC_BIT_MASK_REGISTER, EGA_ALL_WRITABLE_PIXEL_BITS);
-	}
-	else if (adapterType == VIDEO_ADAPTER_TANDY)
-	{
-		packedColor &= 0x0F;
-		packedColor |= packedColor << 0x04;
-	}
-	else if (adapterType == VIDEO_ADAPTER_CGA)
-	{
-		packedColor &= 0x03;
-		packedColor |= packedColor << 0x02;
-		packedColor |= packedColor << 0x04;
-	}
+	xByte = x << 0x03;
+	rowByteCount = width << 0x03;
 
 	for (word16 row = 0x00; row < scanlineCount; ++row)
 	{
 		word16 pixelY = firstPixelY + row;
 		word16 scanlineOffset;
 
-		switch (adapterType)
-		{
-		case VIDEO_ADAPTER_CGA:
-			scanlineOffset = (pixelY >> 0x01) * CGA_BYTES_PER_SCANLINE
-				+ (pixelY & 0x01) * CGA_TANDY_BANK_SIZE + xByte;
-			break;
-		case VIDEO_ADAPTER_TANDY:
-			scanlineOffset = (pixelY >> 0x02) * TANDY_BYTES_PER_SCANLINE_GROUP
-				+ (pixelY & 0x03) * CGA_TANDY_BANK_SIZE + xByte;
-			break;
-		case VIDEO_ADAPTER_EGA:
-			scanlineOffset = pixelY * EGA_BYTES_PER_SCANLINE + xByte;
-			break;
-		default:
-			scanlineOffset = pixelY * VGA_BYTES_PER_SCANLINE + xByte;
-			break;
-		}
+		scanlineOffset = pixelY * VGA_BYTES_PER_SCANLINE + xByte;
 
 		byte *videoRow = videoBase + scanlineOffset;
 		for (word16 columnByte = 0x00;
@@ -305,9 +170,6 @@ void FillVideoTileRectangle(
 			videoRow[columnByte] = packedColor;
 		}
 	}
-
-	if (adapterType == VIDEO_ADAPTER_EGA)
-		EnableHardwareInterrupts();
 	return;
 
 }
@@ -323,107 +185,22 @@ void Draw8x8VideoTile(
 	word16 y)
 {
 	// V: Draw one adapter-formatted 8x8 tile from the FAR source at (X,Y).
-	// The EGA path writes eight rows and selects each of the four planes.
-	byte adapterType = (byte) ActiveVideoAdapterType;
+	// The CGA's, the Tandy's and the EGA's tile layouts and the EGA's plane
+	// writes (in 0800:2F05-3037) went with them; the rebuild is VGA only.
 	word16 xByte;
 	word16 firstPixelY = y << 0x03;
 	word16 bytesPerSourceRow;
 	byte *videoBase = SDLBackend_GetIndexedFramebuffer();
 
-	switch (adapterType)
-	{
-	case VIDEO_ADAPTER_CGA:
-		xByte = x << 0x01;
-		bytesPerSourceRow = 0x02;
-		break;
-	case VIDEO_ADAPTER_TANDY:
-		xByte = x << 0x02;
-		bytesPerSourceRow = 0x04;
-		break;
-	case VIDEO_ADAPTER_EGA:
-		xByte = x;
-		bytesPerSourceRow = 0x01;
-		break;
-	default:
-		xByte = x << 0x03;
-		bytesPerSourceRow = 0x08;
-		break;
-	}
-
-	if (adapterType == VIDEO_ADAPTER_EGA)
-	{
-		word16 row;
-
-		/* DOS writes one byte to each EGA plane at a 40-byte scanline.
-		 * SDL exposes the same page as 320 indexed pixels per scanline, so
-		 * expand the four plane bytes at this hardware boundary. */
-		DisableHardwareInterrupts();
-		SDLBackend_SetEgaGraphicsControllerRegister(
-			EGA_GC_MODE_REGISTER, EGA_GC_WRITE_MODE_0);
-		SDLBackend_SetEgaGraphicsControllerRegister(
-			EGA_GC_BIT_MASK_REGISTER, EGA_ALL_WRITABLE_PIXEL_BITS);
-		SDLBackend_SetEgaGraphicsControllerRegister(
-			EGA_GC_ENABLE_SET_RESET_REGISTER, 0x00);
-
-		for (row = 0x00; row < 0x08; ++row)
-		{
-			int16 pixelY;
-			word16 pixel;
-
-			pixelY = (int16) (firstPixelY + row);
-			for (pixel = 0x00; pixel < 0x08; ++pixel)
-			{
-				int16 pixelX;
-				byte pixelMask;
-				byte color;
-				byte plane;
-
-				pixelX = (int16) (x * 0x08 + pixel);
-				pixelMask = (byte) (0x80 >> pixel);
-				color = 0x00;
-				for (plane = 0x00; plane < 0x04; ++plane)
-				{
-					SDLBackend_SetEgaSequencerRegister(
-						EGA_SEQ_MAP_MASK_REGISTER,
-						(byte) (0x01 << plane));
-					if ((tilePixels[row * 0x04 + plane] & pixelMask) != 0x00)
-						color |= (byte) (0x01 << plane);
-				}
-				if (pixelX >= VIDEO_SCREEN_MIN_X &&
-					pixelX <= VIDEO_SCREEN_MAX_X &&
-					pixelY >= VIDEO_SCREEN_MIN_Y &&
-					pixelY <= VIDEO_SCREEN_MAX_Y)
-				{
-					videoBase[(uint32) pixelY * VIDEO_SCREEN_WIDTH +
-						(word16) pixelX] = color;
-				}
-			}
-		}
-		SDLBackend_SetEgaSequencerRegister(
-			EGA_SEQ_MAP_MASK_REGISTER, EGA_ALL_PLANES);
-		EnableHardwareInterrupts();
-		return;
-	}
+	xByte = x << 0x03;
+	bytesPerSourceRow = 0x08;
 
 	for (word16 row = 0x00; row < 0x08; ++row)
 	{
 		word16 pixelY = firstPixelY + row;
 		word16 scanlineOffset;
 
-		if (adapterType == VIDEO_ADAPTER_CGA)
-		{
-			scanlineOffset = (pixelY >> 0x01) * CGA_BYTES_PER_SCANLINE
-				+ (pixelY & 0x01) * CGA_TANDY_BANK_SIZE + xByte;
-		}
-		else if (adapterType == VIDEO_ADAPTER_TANDY)
-		{
-			scanlineOffset = (pixelY >> 0x02) * TANDY_BYTES_PER_SCANLINE_GROUP
-				+ (pixelY & 0x03) * CGA_TANDY_BANK_SIZE + xByte;
-		}
-		else
-		{
-			scanlineOffset = pixelY * VGA_BYTES_PER_SCANLINE + xByte;
-		}
+		scanlineOffset = pixelY * VGA_BYTES_PER_SCANLINE + xByte;
 
 		byte *videoRow = videoBase + scanlineOffset;
 		for (word16 columnByte = 0x00;
@@ -973,79 +750,10 @@ void WaitForVerticalRetraceEdge(byte waitForRetraceStart)
 
 void ClearActiveVideoBuffer(void)
 {
-	/* 0800:2D59 clears the entire adapter framebuffer. The original selects
-	 * 2000h/4000h/0FA0h/8000h hardware byte counts; the host boundary stores
-	 * the equivalent 320x200 indexed image. */
+	/* 0800:2D59 clears the entire adapter framebuffer: the VGA's 8000h
+	 * words, the host's 320x200 indexed image. */
 	DisableHardwareInterrupts();
 	SDLBackend_ClearIndexedFramebuffer(0x00);
-	EnableHardwareInterrupts();
-}
-
-void FillTandyPackedRectangle(
-	int16 leftX,
-	int16 topY,
-	word16 packedWidthMinusOne,
-	int16 heightMinusOne,
-	byte color)
-{
-	word16 packedByteCount = (word16) (packedWidthMinusOne + 0x01);
-	int16 row;
-	word16 packedByte;
-	byte pixelColor = color & 0x0F;
-	int16 evenLeftX = (int16) (leftX & ~0x01);
-
-	/* 0800:3327 uses REP STOSB for packed bytes and advances through the four
-	 * Tandy scanline banks. SDL replaces only that physical layout. */
-	for (row = 0x00; row <= heightMinusOne; ++row)
-	{
-		for (packedByte = 0x0000;
-			packedByte < packedByteCount;
-			++packedByte)
-		{
-			int16 x = (int16) (evenLeftX + packedByte * 0x02);
-
-			SDLBackend_DrawIndexedPixel(
-				(word16) x, (word16) (topY + row), pixelColor);
-			SDLBackend_DrawIndexedPixel(
-				(word16) (x + 0x01), (word16) (topY + row), pixelColor);
-		}
-	}
-}
-
-void ReadEGAPlanarTile(
-	byte *destination,
-	int16 sourceByteColumn,
-	word16 sourceTileRow)
-{
-	byte *framebuffer = SDLBackend_GetIndexedFramebuffer();
-	word16 row;
-	word16 xStart = (word16) sourceByteColumn << 0x03;
-	word16 yStart = sourceTileRow << 0x03;
-
-	DisableHardwareInterrupts();
-	for (row = 0x0000; row < 0x0008; ++row)
-	{
-		byte plane[0x04] = { 0x00, 0x00, 0x00, 0x00 };
-		word16 pixel;
-
-		for (pixel = 0x0000; pixel < 0x0008; ++pixel)
-		{
-			byte color = framebuffer[
-				(uint32) (yStart + row) * 0x0140 + xStart + pixel];
-			byte bit = (byte) (0x80 >> pixel);
-			byte planeIndex;
-
-			for (planeIndex = 0x00; planeIndex < 0x04; ++planeIndex)
-			{
-				if ((color & (0x01 << planeIndex)) != 0x00)
-					plane[planeIndex] |= bit;
-			}
-		}
-		*destination++ = plane[0x00];
-		*destination++ = plane[0x01];
-		*destination++ = plane[0x02];
-		*destination++ = plane[0x03];
-	}
 	EnableHardwareInterrupts();
 }
 
@@ -1058,12 +766,8 @@ void DrawVerticalSpan(
 	word16 y;
 	byte pixelColor = (byte) color;
 
-	if (ActiveVideoAdapterType == VIDEO_ADAPTER_CGA)
-		pixelColor &= 0x03;
-	else if (ActiveVideoAdapterType == VIDEO_ADAPTER_TANDY ||
-		ActiveVideoAdapterType == VIDEO_ADAPTER_EGA)
-		pixelColor &= 0x0F;
-
+	/* The CGA's, the Tandy's and the EGA's colour masks (in 0800:4EF3)
+	 * went with them; the rebuild is VGA only. */
 	for (y = yStart; y <= yEnd; ++y)
 		Video_DrawIndexedPixelToActiveTarget(x, y, pixelColor);
 }
@@ -1079,24 +783,9 @@ void DrawHorizontalVideoRun(
 	word16 pixel;
 	byte pixelColor = (byte) color;
 
-	switch (ActiveVideoAdapterType)
-	{
-	case VIDEO_ADAPTER_CGA:
-		pixelsPerNativeByte = 0x04;
-		pixelColor &= 0x03;
-		break;
-	case VIDEO_ADAPTER_TANDY:
-		pixelsPerNativeByte = 0x02;
-		pixelColor &= 0x0F;
-		break;
-	case VIDEO_ADAPTER_EGA:
-		pixelsPerNativeByte = 0x08;
-		pixelColor &= 0x0F;
-		break;
-	default:
-		pixelsPerNativeByte = 0x01;
-		break;
-	}
+	/* The VGA's run is one pixel a byte. The CGA's, the Tandy's and the
+	 * EGA's packing (in 0800:29D5-2AFF) went with them. */
+	pixelsPerNativeByte = 0x01;
 
 	pixelCount = nativeRunLength * pixelsPerNativeByte;
 	for (pixel = 0x00; pixel < pixelCount; ++pixel)
@@ -1145,12 +834,8 @@ void XorVideoRectangle(
 		bottomY = swap;
 	}
 
-	if (ActiveVideoAdapterType == VIDEO_ADAPTER_CGA)
-		pixelColor &= 0x03;
-	else if (ActiveVideoAdapterType == VIDEO_ADAPTER_TANDY ||
-		ActiveVideoAdapterType == VIDEO_ADAPTER_EGA)
-		pixelColor &= 0x0F;
-
+	/* The CGA's, the Tandy's and the EGA's colour masks (in 0800:484E)
+	 * went with them; the rebuild is VGA only. */
 	for (y = topY; y <= bottomY; ++y)
 	{
 		for (x = leftX; x <= rightX; ++x)

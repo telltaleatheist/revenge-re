@@ -18,8 +18,6 @@ static void Check(int condition, const char *message)
 
 static byte primaryBuffer[0x10];
 static byte ordinaryBuffer[0x10];
-static byte nonPrimaryBuffer[0x10];
-static byte egaOffscreenBuffer[0x10];
 
 static void TestOrdinaryTarget(void)
 {
@@ -31,34 +29,19 @@ static void TestOrdinaryTarget(void)
 		"ordinary targets retain the selected buffer");
 }
 
-static void TestNonPrimaryEgaTarget(void)
+static void TestPrimaryTarget(void)
 {
-	VideoAdapterType = VIDEO_ADAPTER_EGA;
-	PrimaryScreenBuffer = primaryBuffer;
-	SetActiveRenderTarget(nonPrimaryBuffer);
-
-	Check(ActiveRenderTarget == nonPrimaryBuffer,
-		"EGA leaves a non-primary render target unchanged");
-}
-
-static void TestPrimaryEgaTarget(void)
-{
-	VideoAdapterType = VIDEO_ADAPTER_EGA;
-	HostFarPointer_Reset();
-	HostFarPointer_RegisterAt(egaOffscreenBuffer, sizeof(egaOffscreenBuffer),
-		MAKE_DWORD(EGA_OFFSCREEN_FRAMEBUFFER_SEGMENT,
-			EGA_OFFSCREEN_FRAMEBUFFER_OFFSET));
+	VideoAdapterType = VIDEO_ADAPTER_VGA;
 	PrimaryScreenBuffer = primaryBuffer;
 	SetActiveRenderTarget(primaryBuffer);
 
-	Check(ActiveRenderTarget == egaOffscreenBuffer,
-		"EGA maps the primary backing buffer to A200:0000");
+	Check(ActiveRenderTarget == primaryBuffer,
+		"the primary buffer is a target as it is");
 }
 
 int main(void)
 {
 	TestOrdinaryTarget();
-	TestNonPrimaryEgaTarget();
-	TestPrimaryEgaTarget();
+	TestPrimaryTarget();
 	return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

@@ -374,16 +374,6 @@ void BuildTacticalOverviewMapBuffer(
 void InstallDamagedTerrainSpriteLookup(void);
 void ClearTacticalEffectOverlayMap(void);
 void ClearActiveVideoBuffer(void);
-void FillTandyPackedRectangle(
-	int16 leftX,
-	int16 topY,
-	word16 packedWidthMinusOne,
-	int16 heightMinusOne,
-	byte color);
-void ReadEGAPlanarTile(
-	byte *destination,
-	int16 sourceByteColumn,
-	word16 sourceTileRow);
 void DrawVerticalSpan(
 	word16 x,
 	word16 yStart,

@@ -284,18 +284,6 @@ void SDLBackend_SetVideoMode(byte videoMode)
     fakeBackend.videoMode = videoMode;
 }
 
-void SDLBackend_SetEgaGraphicsControllerRegister(byte registerIndex, byte value)
-{
-    fakeBackend.paletteRegister = registerIndex;
-    fakeBackend.paletteValue = value;
-}
-
-void SDLBackend_SetEgaSequencerRegister(byte registerIndex, byte value)
-{
-	(void) registerIndex;
-	(void) value;
-}
-
 void SDLBackend_LoadVgaPalette(const byte *paletteRgbTriplets)
 {
     memcpy(fakeBackend.vgaPalette, paletteRgbTriplets,

@@ -16,8 +16,7 @@ void CopyVideoRegion(
 	byte *destinationBase);
 
 // 3329:000E
-// Clip a region copy to 40 eight-pixel columns by 200 scanlines, then route
-// EGA primary-buffer references through the game's A200:0000 shadow page.
+// Clip a region copy to 40 eight-pixel columns by 200 scanlines.
 // Verified against 3329:000E-00F5.
 void CopyClippedVideoRegion(
 	short sourceX,
@@ -59,18 +58,9 @@ void CopyClippedVideoRegion(
 		destinationY = VIDEO_SCREEN_MIN_Y;
 	}
 
-	if (VideoAdapterType == VIDEO_ADAPTER_EGA)
-	{
-		byte *activeFramebuffer;
-
-		activeFramebuffer = PrimaryScreenBuffer;
-
-		if (source == activeFramebuffer)
-			source = EGA_OFFSCREEN_FRAMEBUFFER;
-		if (destination == activeFramebuffer)
-			destination = EGA_OFFSCREEN_FRAMEBUFFER;
-	}
-
+	/* The EGA's routing of the primary buffer to its A200 page
+	 * (3329:0070-0075, 009B-00F4) went with the EGA; the rebuild is VGA
+	 * only. */
 	CopyVideoRegion(
 		sourceX,
 		sourceY,

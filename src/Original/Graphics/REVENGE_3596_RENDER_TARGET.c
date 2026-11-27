@@ -11,10 +11,6 @@
 void SetActiveRenderTarget(byte *renderTarget)
 {
 	ActiveRenderTarget = renderTarget;
-
-	// EGA drawing targets the planar A200h conversion buffer whenever callers
-	// select the conventional-memory primary screen buffer.
-	if (VideoAdapterType == VIDEO_ADAPTER_EGA &&
-		renderTarget == PrimaryScreenBuffer)
-		ActiveRenderTarget = EGA_OFFSCREEN_FRAMEBUFFER;
+	/* The EGA's routing of the primary buffer to its A200 page
+	 * (3596:0012-0036) went with the EGA; the rebuild is VGA only. */
 }

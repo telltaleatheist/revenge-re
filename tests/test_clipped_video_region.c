@@ -43,7 +43,6 @@ int main(void)
 	byte sourceBuffer[0x01] = { 0x00 };
 	byte destinationBuffer[0x01] = { 0x00 };
 	byte *primaryScreenBuffer;
-	byte *egaShadowBuffer;
 
 	VideoAdapterType = VIDEO_ADAPTER_CGA;
 	CopyClippedVideoRegion(
@@ -81,11 +80,7 @@ int main(void)
 
 	primaryScreenBuffer = FAR_POINTER(byte, 0x1234, 0x5678);
 	PrimaryScreenBuffer = primaryScreenBuffer;
-	egaShadowBuffer = FAR_POINTER(
-		byte,
-		EGA_OFFSCREEN_FRAMEBUFFER_SEGMENT,
-		EGA_OFFSCREEN_FRAMEBUFFER_OFFSET);
-	VideoAdapterType = VIDEO_ADAPTER_EGA;
+	VideoAdapterType = VIDEO_ADAPTER_VGA;
 	CopyClippedVideoRegion(
 		0x0001,
 		0x0002,
@@ -95,7 +90,7 @@ int main(void)
 		0x0006,
 		primaryScreenBuffer,
 		primaryScreenBuffer);
-	assert(copyCall.source == egaShadowBuffer);
-	assert(copyCall.destination == egaShadowBuffer);
+	assert(copyCall.source == primaryScreenBuffer);
+	assert(copyCall.destination == primaryScreenBuffer);
 	return 0x00;
 }

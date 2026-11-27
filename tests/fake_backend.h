@@ -31,8 +31,6 @@ typedef struct FakeBackendState
     word16 queuedInputPending;
     MouseInputState mouse;
     byte videoMode;
-    byte paletteRegister;
-    byte paletteValue;
     byte vgaPalette[0x0300];
     uint16 retraceCount;
     byte indexedFramebuffer[VIDEO_SEGMENT_SIZE];
