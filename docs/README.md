@@ -24,6 +24,8 @@ look like a current instruction.
   compatibility changes.
 - [`DISCOVERIES.md`](DISCOVERIES.md) — what the rebuild found in the
   original's data and kept as it is.
+- [`UNNAMED_VALUES.md`](UNNAMED_VALUES.md) — numbers in the code whose
+  meaning isn't established yet, one line each, retired as findings name them.
 - [`../CONTRIBUTING.md`](../CONTRIBUTING.md) — preservation contribution and
   validation requirements.
 
