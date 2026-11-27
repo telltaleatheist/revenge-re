@@ -1010,9 +1010,8 @@ void PrepareLanceSelectionRecords(
 				unitTypeId =
 					PersistentUnitRoster[persistentUnitSlot].unitTypeId;
 				graphicsBufferIndex = UnitEditorUnitSpriteIndex[unitTypeId];
-				scenarioRecord->spriteBuffer = DosAddress_FromValue(
-					HostFarPointer_Encode(
-						UnitEditorGraphicsBuffer(graphicsBufferIndex)));
+				scenarioRecord->spriteBuffer =
+					UnitEditorGraphicsBuffer(graphicsBufferIndex);
 			}
 			else
 			{

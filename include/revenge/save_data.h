@@ -59,7 +59,7 @@ typedef struct RevengeCampaignSnapshot
 	byte state1B85[0x07];
 	byte state1B8E;
 	byte state1BAD[0x0F];
-	UnitSelectionCard scenarioRecords[REVENGE_SAVE_SCENARIO_RECORD_COUNT];
+	RevengeSavedSelectionCard scenarioRecords[REVENGE_SAVE_SCENARIO_RECORD_COUNT];
 	RevengeUnitLanceAssignment
 		lanceAssignments[REVENGE_SAVE_LANCE_ASSIGNMENT_COUNT];
 	byte pilotAvailability[REVENGE_SAVE_PILOT_COUNT];
@@ -87,7 +87,7 @@ _Static_assert(offsetof(RevengeSaveSlotDescriptor, name) == 0x01,
 _Static_assert(sizeof(RevengeCampaignSnapshot) ==
 	REVENGE_CAMPAIGN_SNAPSHOT_SIZE,
 	"Campaign snapshots must retain their DOS file layout");
-_Static_assert(sizeof(UnitSelectionCard) == REVENGE_SAVE_SCENARIO_RECORD_SIZE,
+_Static_assert(sizeof(RevengeSavedSelectionCard) == REVENGE_SAVE_SCENARIO_RECORD_SIZE,
 	"Scenario cards must retain their save-file record size");
 _Static_assert(offsetof(RevengeCampaignSnapshot, scenarioClock) == 0x1C,
 	"Campaign clock must remain at snapshot offset 1Ch");

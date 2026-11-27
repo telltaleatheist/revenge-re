@@ -98,12 +98,9 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	REGISTER_DATA_OBJECT(MissionSpriteWidthTiles, 0x27B3);
 	REGISTER_DATA_OBJECT(MissionSpriteHeightPixels, 0x27CB);
 	REGISTER_DATA_OBJECT(CampaignMessageTable, 0x2B54);
-	REGISTER_DATA_OBJECT(LoadedSceneFile, 0x71A8);
 	REGISTER_DATA_OBJECT(SceneUnitRoutes, 0x86C1);
 	REGISTER_DATA_OBJECT(SceneInstructionBaseOffset, 0xA862);
-	REGISTER_DATA_OBJECT(SceneInstructionCursor, 0xA9D9);
 	REGISTER_DATA_OBJECT(RandomPilotPoolCounts, 0x1B8C);
-	REGISTER_DATA_OBJECT(UnitSelectionCards, 0x1BBC);
 	REGISTER_DATA_OBJECT(LanceAssignments, 0x1CCA);
 	REGISTER_DATA_OBJECT(TacticalUpdateDelayReloadTicks, 0x17DA);
 	REGISTER_DATA_OBJECT(TacticalGameSpeedIndex, 0x17DC);

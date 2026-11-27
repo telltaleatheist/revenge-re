@@ -80,7 +80,7 @@ mission.sprite_height_pixels            MissionSpriteHeightPixels           3A6A
 lance_editor.unit_sprites               UnitEditorUnitSpriteIndex           3A6A:3119 59
 lance_editor.pilot_portraits            PilotPortraitIndexById              3A6A:3248 21
 lance_editor.layout                     LanceEditorLayout                   3A6A:3470 1D4
-lance_editor.selection_cards            UnitSelectionCards                  3A6A:1BBC 10E
+lance_editor.selection_cards            UnitSelectionCardStart              3A6A:1BBC 10E
 lance_editor.lance_slots                LanceAssignments                    3A6A:1CCA 82
 
 # data/ui/screens.json

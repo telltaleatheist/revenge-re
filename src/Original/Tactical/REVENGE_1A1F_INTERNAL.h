@@ -75,9 +75,6 @@ void EnableMusicPlayback(void);
 #define TacticalOverviewSavedMode TacticalOverviewDisplayMode
 #define NarrationReady FriendlyUnitDestroyed
 
-#undef MAKE_FAR_POINTER
-#define MAKE_FAR_POINTER(segment, offset) \
-	HostFarPointer_Resolve(MAKE_DWORD((segment), (offset)))
 
 #define TACTICAL_RUNTIME_ALLOCATION_SIZE     0xCB90
 #define TACTICAL_VIEWPORT_WIDTH_CELLS        0x0013
@@ -180,17 +177,14 @@ void CreateRandomAreaImpact(
 #define PERSISTENT_UNIT_RECORD(unitIndex) \
 	(&PersistentUnitRoster[(unitIndex)])
 /* The next byte of the loaded scene's instructions. The cursor stays inside
- * the scene buffer (DS:71A8, SCENE_FILE_BUFFER_SIZE bytes; its segment and
- * offset may be any pair naming those bytes); past it is a fault. */
+ * the scene buffer (DS:71A8, SCENE_FILE_BUFFER_SIZE bytes); past it is a
+ * fault. */
 static inline byte NextSceneByte(void)
 {
-	word16 segment = SceneInstructionCursor.segment;
-	word16 offset = SceneInstructionCursor.offset++;
-	uint32 linear = ((uint32) segment << 0x04) + offset;
+	byte *cursor = SceneInstructionCursor++;
 
-	(void) REVENGE_INDEX(LoadedSceneFile.raw,
-		linear - (((uint32) SCENE_DATA_SEGMENT << 0x04) + 0x71A8));
-	return *(byte *)MAKE_FAR_POINTER(segment, offset);
+	return LoadedSceneFile.raw[REVENGE_INDEX(LoadedSceneFile.raw,
+		(size_t) (cursor - LoadedSceneFile.raw))];
 }
 #define NEXT_SCENE_BYTE() NextSceneByte()
 RevengeUnitRecord *GetPersistentUnitRecord(word16 unitIndex);
@@ -207,17 +201,15 @@ static inline word16 ReadSceneWordLowFirst(void)
 }
 #define ReadSceneWord() ReadSceneWordLowFirst()
 /* The target is taken before the cursor moves: an operand read through the
- * cursor (SCENE_JUMP's) comes from where the cursor is, which at a battle's
- * start is the buffer's own segment, not DS (1A1F:1C48). */
+ * cursor (SCENE_JUMP's) comes from where the cursor is (1A1F:1C48). The
+ * original sets DS:(71A8h + base + target); a target past the buffer faults
+ * at the next read. */
 #define JumpToSceneOffset(sceneOffset) \
 	do \
 	{ \
 		word16 jumpTarget = (word16) (sceneOffset); \
-		SceneInstructionCursor.segment = SCENE_DATA_SEGMENT; \
-		SceneInstructionCursor.offset = \
-			0x71A8 \
-			+ SceneInstructionBaseOffset \
-			+ jumpTarget; \
+		SceneInstructionCursor = LoadedSceneFile.raw \
+			+ SceneInstructionBaseOffset + jumpTarget; \
 	} while (0)
 #define BranchOrSkipSceneWord(takeBranch) \
 	do \

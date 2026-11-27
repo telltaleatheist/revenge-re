@@ -58,7 +58,7 @@ const RulePiece RulePieces[] =
 	{ "lance_editor.unit_sprites", &UnitEditorUnitSpriteIndex, sizeof(UnitEditorUnitSpriteIndex), 0x3A6A, 0x3119, 0x59, "32e2805258a97d7d" },
 	{ "lance_editor.pilot_portraits", &PilotPortraitIndexById, sizeof(PilotPortraitIndexById), 0x3A6A, 0x3248, 0x21, "bc30e707e833bb08" },
 	{ "lance_editor.layout", &LanceEditorLayout, sizeof(LanceEditorLayout), 0x3A6A, 0x3470, 0x1D4, "133bbdf581993fe9" },
-	{ "lance_editor.selection_cards", &UnitSelectionCards, sizeof(UnitSelectionCards), 0x3A6A, 0x1BBC, 0x10E, "d51147e7cfebca65" },
+	{ "lance_editor.selection_cards", &UnitSelectionCardStart, sizeof(UnitSelectionCardStart), 0x3A6A, 0x1BBC, 0x10E, "d51147e7cfebca65" },
 	{ "lance_editor.lance_slots", &LanceAssignments, sizeof(LanceAssignments), 0x3A6A, 0x1CCA, 0x82, "ed9b671d2f37f653" },
 	{ "screens.text_window_frame", &TextWindowFrameDefinition, sizeof(TextWindowFrameDefinition), 0x3A6A, 0x08AA, 0x18, "784fdaba56e12fbc" },
 	{ "screens.campaign_messages", &CampaignMessageTable, sizeof(CampaignMessageTable), 0x3A6A, 0x2B54, 0x37A, "8a6e56333800019e" },
@@ -144,7 +144,7 @@ _Static_assert(sizeof(MissionSpriteHeightPixels) == 0x18, "mission.sprite_height
 _Static_assert(sizeof(UnitEditorUnitSpriteIndex) == 0x59, "lance_editor.unit_sprites is the original's size");
 _Static_assert(sizeof(PilotPortraitIndexById) == 0x21, "lance_editor.pilot_portraits is the original's size");
 _Static_assert(sizeof(LanceEditorLayout) == 0x1D4, "lance_editor.layout is the original's size");
-_Static_assert(sizeof(UnitSelectionCards) == 0x10E, "lance_editor.selection_cards is the original's size");
+_Static_assert(sizeof(UnitSelectionCardStart) == 0x10E, "lance_editor.selection_cards is the original's size");
 _Static_assert(sizeof(LanceAssignments) == 0x82, "lance_editor.lance_slots is the original's size");
 _Static_assert(sizeof(TextWindowFrameDefinition) == 0x18, "screens.text_window_frame is the original's size");
 _Static_assert(sizeof(CampaignMessageTable) == 0x37A, "screens.campaign_messages is the original's size");

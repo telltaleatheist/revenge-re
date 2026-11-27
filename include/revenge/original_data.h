@@ -368,8 +368,6 @@ extern word16 LastOverviewNoticeHour;
 extern word16 TacticalOverviewRuntimeState;
 extern byte PrimaryLanceResourceCode;
 #define SceneInstructionBase SceneInstructionBaseOffset
-#define SceneInstructionCursorOffset (SceneInstructionCursor.offset)
-#define SceneInstructionCursorSegment (SceneInstructionCursor.segment)
 extern byte UnitEditorAllegiance;
 extern word16 UnitEditorScenarioGroupCount;
 extern word16 UnitEditorScenarioCardCount;

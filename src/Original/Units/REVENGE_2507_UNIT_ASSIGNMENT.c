@@ -587,9 +587,8 @@ void RunUnitAssignmentGrid(
 				liveUnit->deploymentState = 0x01;
 				unitType = persistentUnit->unitTypeId;
 				graphicsBufferIndex = UnitEditorUnitSpriteIndex[unitType];
-				unitCardRecord->spriteBuffer = DosAddress_FromValue(
-					HostFarPointer_Encode(
-						UnitEditorGraphicsBuffer(graphicsBufferIndex)));
+				unitCardRecord->spriteBuffer =
+					UnitEditorGraphicsBuffer(graphicsBufferIndex);
 				unitCardRecord->state |= 0x01;
 				unitCardRecord->persistentUnitSlot =
 					(byte)selectedUnitCardIndex;
@@ -1087,7 +1086,7 @@ void DrawUnitStatusScreen(
 			LanceEditorLayout.UnitCardBackgroundColorByState[panelFlags]);
 		DrawClippedSprite(
 			ActiveRenderTarget,
-			LanceEditorCardSprite(statusPanel->spriteBuffer),
+			LanceEditorCardSprite(statusPanel),
 			leftX, topY, 0x00);
 	}
 

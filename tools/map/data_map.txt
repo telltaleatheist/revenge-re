@@ -56,6 +56,7 @@ place InitialExtendedCampaignState 3A6A:1B8F F table
 place ForwardExtendedCampaignState 3A6A:1B9E F table
 place ReplayExtendedCampaignState 3A6A:1BAD F table
 place UnitSelectionCards 3A6A:1BBC 10E table
+place UnitSelectionCardStart 3A6A:1BBC 10E table
 place LanceAssignments 3A6A:1CCA 82 table
 place PilotRoster 3A6A:1D4C EC table
 place PilotRosterRecordPastEnd 3A6A:2148 4 import
@@ -740,6 +741,7 @@ place WeaponDefinitions 3A6A:0435 159 table
 # Where there is no note, the two are one byte in the original and the run
 # must keep them equal (check_dump.py's agree lines); a note says why they
 # can differ for now.
+overlap UnitSelectionCards UnitSelectionCardStart host pointer: the cards as the game holds them, typed; the rules' starting records keep the original's bytes at DS:1BBC
 overlap DigitalSoundData DigitalSamplePlaybackDescriptorTable host pointer: the port's sample descriptors, typed; the media keeps the original's bytes at DS:5950
 overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
 overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable the selector's last byte is the first missile weapon's bonus (the original reads the bonus from DS:3D0D by weapon index, from WEAPON_LRM_5 on)

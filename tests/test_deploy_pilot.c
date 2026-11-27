@@ -4,7 +4,6 @@
 // entry past the roster's end, the four bytes at DS:2148. The unit gets pilot
 // FF and that entry's experience and gunnery. Synthetic values only.
 
-#include "revenge/far_memory.h"
 #include "revenge/original_data.h"
 #include "revenge/representation.h"
 #include "revenge/original/scene_data.h"
@@ -25,8 +24,7 @@ enum
 	UNIT_TYPE = 0x00,
 	TEMPLATE_GUNNERY = 0x04,
 	PAST_END_EXPERIENCE = 0x23,
-	PAST_END_GUNNERY = 0x37,
-	SCENE_BUFFER_OFFSET = 0x71A8
+	PAST_END_GUNNERY = 0x37
 };
 
 static int failures;
@@ -46,10 +44,6 @@ int main(void)
 	byte *block;
 	const RevengeUnitRecord *unit = &PersistentUnitRoster[UNIT];
 
-	HostFarPointer_Reset();
-	/* The scene buffer where the game keeps it, DS:71A8. */
-	HostFarPointer_RegisterAt(&LoadedSceneFile, sizeof(LoadedSceneFile),
-		((uint32) SCENE_DATA_SEGMENT << 0x10) + SCENE_BUFFER_OFFSET);
 	OriginalData_InitializeResourceDescriptorPointers();
 	InitializeResourceCache();
 
@@ -65,8 +59,7 @@ int main(void)
 	SceneInstructionBaseOffset = INSTRUCTION_BASE;
 	block = LoadedSceneFile.raw + INSTRUCTION_BASE;
 	memcpy(block, deploy, sizeof(deploy));
-	SceneInstructionCursor.segment = SCENE_DATA_SEGMENT;
-	SceneInstructionCursor.offset = SCENE_BUFFER_OFFSET + INSTRUCTION_BASE;
+	SceneInstructionCursor = block;
 
 	ExecuteSceneInstructions();
 

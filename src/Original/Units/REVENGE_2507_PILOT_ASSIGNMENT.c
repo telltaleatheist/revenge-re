@@ -50,8 +50,8 @@ void PreparePilotSelectionRecords(
 		pilotRecord->state = 0x01;
 		pilotId = pilotRecord->selectionId;
 		portraitBufferIndex = PilotPortraitIndexById[pilotId];
-		pilotRecord->spriteBuffer = DosAddress_FromValue(HostFarPointer_Encode(
-			UnitEditorGraphicsBuffer(portraitBufferIndex)));
+		pilotRecord->spriteBuffer =
+			UnitEditorGraphicsBuffer(portraitBufferIndex);
 	}
 
 	if (selectionMode != 0x0000)
@@ -707,7 +707,7 @@ void DrawPilotSelectionSlot(
 	{
 		DrawClippedSprite(
 			ActiveRenderTarget,
-			LanceEditorCardSprite(pilotRecord->spriteBuffer),
+			LanceEditorCardSprite(pilotRecord),
 			leftX,
 			topY,
 			0x00);

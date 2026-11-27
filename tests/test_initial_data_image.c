@@ -125,6 +125,25 @@ static void EncodeQueue(byte *bytes, const DigitalDriverQueue *queue)
 	bytes[0x11] = queue->ReservedOutputByte;
 }
 
+static void EncodeSceneCursor(byte *bytes)
+{
+	PutNull(bytes, 0x00, SceneInstructionCursor);
+}
+
+/* As a save writes them (UnitSelectionCard_Store). */
+static void EncodeSelectionCards(byte *bytes)
+{
+	size_t index;
+
+	for (index = 0; index < UNIT_SELECTION_CARD_COUNT; ++index)
+	{
+		RevengeSavedSelectionCard saved;
+
+		UnitSelectionCard_Store(&saved, &UnitSelectionCards[index]);
+		memcpy(bytes + index * sizeof(saved), &saved, sizeof(saved));
+	}
+}
+
 static void EncodeResourceFiles(byte *bytes)
 {
 	size_t index;
@@ -229,8 +248,9 @@ static const ImageRow rows[] =
 	DS(LoadedSceneFile, 0x71A8),
 	DS(SceneUnitRoutes, 0x86C1),
 	DS(SceneInstructionBaseOffset, 0xA862),
-	DS(SceneInstructionCursor, 0xA9D9),
-	DS(UnitSelectionCards, 0x1BBC),
+	ENCODED(SceneInstructionCursor, 0xA9D9, 0x04, EncodeSceneCursor),
+	ENCODED(UnitSelectionCards, 0x1BBC, 0x10E, EncodeSelectionCards),
+	DS(UnitSelectionCardStart, 0x1BBC),
 	DS(LanceAssignments, 0x1CCA),
 	DS(TacticalUpdateDelayReloadTicks, 0x17DA),
 	DS(TacticalGameSpeedIndex, 0x17DC),

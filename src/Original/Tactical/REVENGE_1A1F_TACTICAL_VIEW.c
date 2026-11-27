@@ -177,12 +177,11 @@ void ExitTacticalOverview(void);
 void OpenSelectedTacticalUnitPanel(void);
 void RunTacticalGameOptionsMenu(void);
 
-// 0800:29BB: add 0800h paragraphs (32 KiB) while preserving the offset.
+// 0800:29BB: add 0800h paragraphs (32 KiB) while preserving the offset:
+// the byte 8000h on.
 byte *AdvanceFarPointerBy32K(byte *pointer)
 {
-	return (byte *)MAKE_FAR_POINTER(
-		FAR_SEGMENT(pointer) + 0x0800,
-		FAR_OFFSET(pointer));
+	return pointer + 0x8000;
 }
 
 // 1A1F:0C33: select the tactical text foreground palette entry used by the

@@ -388,7 +388,7 @@ static void SaveBlock(byte *out)
 	snapshot.state1B8E = RandomPilotPoolCounts.replay;
 	memcpy(snapshot.state1BAD, ReplayExtendedCampaignState, sizeof(snapshot.state1BAD));
 	for (index = 0; index < REVENGE_SAVE_SCENARIO_RECORD_COUNT; ++index)
-		snapshot.scenarioRecords[index] = UnitSelectionCards[index];
+		UnitSelectionCard_Store(&snapshot.scenarioRecords[index], &UnitSelectionCards[index]);
 	for (index = 0; index < REVENGE_SAVE_LANCE_ASSIGNMENT_COUNT; ++index)
 		snapshot.lanceAssignments[index] = LanceAssignments[index];
 	for (index = 0; index < REVENGE_SAVE_PILOT_COUNT; ++index)

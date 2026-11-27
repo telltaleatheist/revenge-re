@@ -22,10 +22,6 @@ enum
 	LANCE_EDITOR_PILOT_NAME_COUNT = 0x3B
 };
 
-/* This bridge remains only for genuine 16:16 addresses stored in original
- * records, such as the spriteBuffer member of UnitSelectionCard. */
-#define LANCE_EDITOR_FAR(type, pointer) \
-	((type *)HostFarPointer_Resolve(DosAddress_ToValue(pointer)))
 
 /* These aliases are two domain names for the same original DS bytes. */
 #define TrainingScenarioAvailability TrainingScenarioCompletionFlags
@@ -35,6 +31,9 @@ enum
 #define RandomSelectionPoolCount RandomPilotPoolCounts.replay
 
 extern UnitSelectionCard UnitSelectionCards[UNIT_SELECTION_CARD_COUNT];
+/* The cards as the image holds them at DS:1BBC (the rules' starting state),
+ * read into UnitSelectionCards when the rules are loaded. */
+extern RevengeSavedSelectionCard UnitSelectionCardStart[UNIT_SELECTION_CARD_COUNT];
 extern word16 LanceEditorFirstBriefingPending;
 extern word16 LanceEditorBriefingPresented;
 extern word16 LanceEditorReloadGraphics;

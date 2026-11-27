@@ -6,6 +6,7 @@
 /* Filled at start from data/ui/lance_editor.json (the places) and
  * data/start/lance_editor.json (the starting state); revenge/rules.h. */
 UnitSelectionCard UnitSelectionCards[UNIT_SELECTION_CARD_COUNT];
+RevengeSavedSelectionCard UnitSelectionCardStart[UNIT_SELECTION_CARD_COUNT];
 word16 LanceEditorFirstBriefingPending;
 word16 LanceEditorBriefingPresented;
 /* Filled at start from data/start/lance_editor.json (revenge/rules.h). */
@@ -45,3 +46,27 @@ byte UnitClassTypeListBytes[0x44];
 
 /* Filled at start from data/ui/lance_editor.json (revenge/rules.h). */
 LanceEditorLayoutData LanceEditorLayout;
+
+void UnitSelectionCard_Load(UnitSelectionCard *card,
+	const RevengeSavedSelectionCard *saved)
+{
+	card->left = saved->left;
+	card->top = saved->top;
+	card->width = saved->width;
+	card->state = saved->state;
+	card->persistentUnitSlot = saved->persistentUnitSlot;
+	card->assignmentSlot = saved->assignmentSlot;
+	card->selectionId = saved->selectionId;
+	card->alternateId = saved->alternateId;
+	card->spriteBuffer = NULL;
+	card->loadedSpriteBuffer = saved->spriteBuffer;
+}
+
+void UnitSelectionCards_LoadStart(void)
+{
+	word16 index;
+
+	for (index = 0x0000; index < UNIT_SELECTION_CARD_COUNT; ++index)
+		UnitSelectionCard_Load(&UnitSelectionCards[index],
+			&UnitSelectionCardStart[index]);
+}

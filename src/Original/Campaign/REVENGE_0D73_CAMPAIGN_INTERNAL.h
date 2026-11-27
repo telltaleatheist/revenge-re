@@ -16,9 +16,6 @@ void InitializeTacticalScenario(void);
 void SDLBackend_ServiceTimers(void);
 
 #define seg3A6A 0x3A6A
-#undef MAKE_FAR_POINTER
-#define MAKE_FAR_POINTER(segment, offset) \
-	HostFarPointer_Resolve(MAKE_DWORD((segment), (offset)))
 
 #define VIDEO_ADAPTER_VGA                0x0003
 

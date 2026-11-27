@@ -52,7 +52,7 @@ static void LoadOriginalSaveCards(void)
 	slotStart = (word16) (file[0x04] | (file[0x05] << 0x08));
 	memcpy(&snapshot, &file[slotStart], sizeof(snapshot));
 	for (index = 0; index < REVENGE_SAVE_SCENARIO_RECORD_COUNT; ++index)
-		UnitSelectionCards[index] = snapshot.scenarioRecords[index];
+		UnitSelectionCard_Load(&UnitSelectionCards[index], &snapshot.scenarioRecords[index]);
 }
 
 static void BuildEditorBuffers(void)
@@ -80,18 +80,40 @@ int main(int argc, char **argv)
 
 	if (argc > 1 && strcmp(argv[1], "stale") == 0)
 	{
-		(void) LanceEditorCardSprite(UnitSelectionCards[0x00].spriteBuffer);
+		(void) LanceEditorCardSprite(&UnitSelectionCards[0x00]);
 		return 0;
+	}
+
+	/* A card as loaded saves the far pointer it was loaded with. */
+	{
+		RevengeSavedSelectionCard saved;
+
+		UnitSelectionCard_Store(&saved, &UnitSelectionCards[0x00]);
+		assert(saved.spriteBuffer.segment == 0x7929 && saved.spriteBuffer.offset == 0x0008);
 	}
 
 	/* The units: the first lance's six cards, as the campaign's start has them. */
 	PrepareLanceSelectionRecords(0x0000, 0x0000, FALSE);
+	/* A built card saves its sprite's far address in the DOS memory block. */
+	{
+		RevengeSavedSelectionCard saved;
+		uint32 capacity;
+		word16 segment;
+		const byte *block = SDLBackend_DOSMemoryBlock(&capacity, &segment);
+		uint32 linear;
+
+		UnitSelectionCard_Store(&saved, &UnitSelectionCards[0x00]);
+		linear = ((uint32) segment << 0x04) +
+			(uint32) (UnitSelectionCards[0x00].spriteBuffer - block);
+		assert(saved.spriteBuffer.segment == (word16) (linear >> 0x04) &&
+			saved.spriteBuffer.offset == (word16) (linear & 0x0F));
+	}
 	for (slot = 0x0000; slot < UnitEditorScenarioCardCount; ++slot)
 	{
 		const UnitSelectionCard *card = &UnitSelectionCards[slot];
 		word16 unitType = PersistentUnitRoster[card->persistentUnitSlot].unitTypeId;
 
-		assert(LanceEditorCardSprite(card->spriteBuffer) ==
+		assert(LanceEditorCardSprite(card) ==
 			UnitEditorGraphicsBuffer(UnitEditorUnitSpriteIndex[unitType]));
 	}
 
@@ -106,7 +128,7 @@ int main(int argc, char **argv)
 	{
 		const UnitSelectionCard *card = &UnitSelectionCards[slot];
 
-		assert(LanceEditorCardSprite(card->spriteBuffer) ==
+		assert(LanceEditorCardSprite(card) ==
 			UnitEditorGraphicsBuffer(PilotPortraitIndexById[card->selectionId]));
 	}
 	return 0;

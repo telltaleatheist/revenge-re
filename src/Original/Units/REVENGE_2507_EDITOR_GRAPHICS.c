@@ -111,10 +111,9 @@ void FreeGraphicsBufferRange(int16 firstBufferIndex, int16 lastBufferIndex)
 	}
 }
 
-const byte *LanceEditorCardSprite(DosAddress spriteBuffer)
+const byte *LanceEditorCardSprite(const UnitSelectionCard *card)
 {
-	uint32 value = DosAddress_ToValue(spriteBuffer);
-	const byte *sprite = (const byte *) HostFarPointer_Resolve(value);
+	const byte *sprite = card->spriteBuffer;
 	word16 bufferIndex;
 
 	for (bufferIndex = 0x0000;
@@ -126,5 +125,6 @@ const byte *LanceEditorCardSprite(DosAddress spriteBuffer)
 	}
 	RevengeFault("a selection card's sprite pointer %04X:%04X is none of the "
 		"editor's graphics buffers (the card was drawn before it was built)",
-		(unsigned) HIGH_WORD(value), (unsigned) LOW_WORD(value));
+		(unsigned) card->loadedSpriteBuffer.segment,
+		(unsigned) card->loadedSpriteBuffer.offset);
 }

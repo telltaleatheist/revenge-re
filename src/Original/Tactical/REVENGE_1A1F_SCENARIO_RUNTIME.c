@@ -428,8 +428,7 @@ void LoadTacticalScenarioResources(byte scenarioCode)
 
 	LoadTacticalMap(TacticalTerrainEffectMode);
 	LoadTacticalIconSetResources(terrainEffectMode);
-	SceneInstructionCursor.segment = FAR_SEGMENT(cursor);
-	SceneInstructionCursor.offset = FAR_OFFSET(cursor);
+	SceneInstructionCursor = cursor;
 	ExecuteSceneInstructions();
 	TacticalSelectedUnitIndex = 0x0000;
 	if (TacticalSelectedUnitIndex != 0xFFFF)

@@ -3,6 +3,10 @@
 
 #include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
 #include "revenge/debug.h"
+
+/* Narrow, as the segment's header keeps its own key constants
+ * (revenge/platform_backend.h). */
+const byte *SDLBackend_DOSMemoryBlock(uint32 *capacity, word16 *segment);
 #include "revenge/story_text.h"
 
 // 0D73:4866: word16 SaveGame(void)
@@ -82,8 +86,9 @@ word16 SaveGame(void)
 				scenarioRecordIndex < 0x0012;
 				++scenarioRecordIndex)
 			{
-				snapshot->scenarioRecords[scenarioRecordIndex] =
-					UnitSelectionCards[scenarioRecordIndex];
+				UnitSelectionCard_Store(
+					&snapshot->scenarioRecords[scenarioRecordIndex],
+					&UnitSelectionCards[scenarioRecordIndex]);
 			}
 			for (lanceIndex = 0x0000; lanceIndex < 0x000D; ++lanceIndex)
 			{
@@ -269,8 +274,9 @@ word16 LoadGame(void)
 					scenarioRecordIndex < 0x0012;
 					++scenarioRecordIndex)
 				{
-					UnitSelectionCards[scenarioRecordIndex] =
-						snapshot->scenarioRecords[scenarioRecordIndex];
+					UnitSelectionCard_Load(
+						&UnitSelectionCards[scenarioRecordIndex],
+						&snapshot->scenarioRecords[scenarioRecordIndex]);
 				}
 				for (lanceIndex = 0x0000; lanceIndex < 0x000D; ++lanceIndex)
 				{
@@ -650,4 +656,40 @@ int16 PromptYesNo(word16 initialSelection)
 	ShowMouseCursorOverlay();
 	FlushPendingInput();
 	return RunSingleUiRegionSelection(0x0D);
+}
+
+/* A pointer into the DOS memory block (the far heap's arena) as the far
+ * address the original holds for it: its linear address normalized, the
+ * offset 0-Fh. NULL is 0:0. */
+static uint32 DOSMemoryFarAddress(const void *pointer)
+{
+	uint32 capacity;
+	word16 segment;
+	const byte *block = SDLBackend_DOSMemoryBlock(&capacity, &segment);
+	uint32 linear;
+
+	if (pointer == NULL)
+		return 0x00000000UL;
+	if (block == NULL || (const byte *) pointer < block ||
+		(const byte *) pointer >= block + capacity)
+		RevengeFault("a selection card's sprite isn't in the DOS memory block");
+	linear = ((uint32) segment << 0x04) +
+		(uint32) ((const byte *) pointer - block);
+	return ((linear >> 0x04) << 0x10) | (linear & 0x0F);
+}
+
+void UnitSelectionCard_Store(RevengeSavedSelectionCard *saved,
+	const UnitSelectionCard *card)
+{
+	saved->left = card->left;
+	saved->top = card->top;
+	saved->width = card->width;
+	saved->state = card->state;
+	saved->persistentUnitSlot = card->persistentUnitSlot;
+	saved->assignmentSlot = card->assignmentSlot;
+	saved->selectionId = card->selectionId;
+	saved->alternateId = card->alternateId;
+	saved->spriteBuffer = card->spriteBuffer != NULL
+		? DosAddress_FromValue(DOSMemoryFarAddress(card->spriteBuffer))
+		: card->loadedSpriteBuffer;
 }

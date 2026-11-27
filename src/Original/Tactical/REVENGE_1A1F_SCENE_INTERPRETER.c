@@ -64,15 +64,14 @@ void ExecuteSceneInstructions(void)
 	word16 stopInterpreter = 0x00;
 
 	while (stopInterpreter == 0x00 &&
-		*(byte *)MAKE_FAR_POINTER(
-			SceneInstructionCursor.segment,
-			SceneInstructionCursor.offset) != SCENE_END)
+		*SceneInstructionCursor != SCENE_END)
 	{
 		byte opcode = ReadSceneByte();
 		if (tracedSceneOpcodeCount < 0x60)
 		{
 			REVENGE_PRESERVATION_TRACE("scene: offset=%04X opcode=%02X\n",
-				(word16)(SceneInstructionCursor.offset - 0x01), opcode);
+				(word16)(0x71A8 + (SceneInstructionCursor - 0x01 - LoadedSceneFile.raw)),
+				opcode);
 			++tracedSceneOpcodeCount;
 		}
 
@@ -881,8 +880,8 @@ void RenderPendingNarration(void)
 			+ NarrationMessageCategory);
 		messageOffset = LoadedSceneFile.header
 			.narrationMessageOffsets[sceneMessageTableIndex];
-		message = (char *) MAKE_FAR_POINTER(SCENE_DATA_SEGMENT,
-			0x71A8 + REVENGE_INDEX(LoadedSceneFile.raw, messageOffset));
+		message = (char *) &LoadedSceneFile.raw[
+			REVENGE_INDEX(LoadedSceneFile.raw, messageOffset)];
 		if (adjustedMessageCategory != FALSE)
 		{
 			NarrationMessageCategory =
@@ -1041,9 +1040,8 @@ word16 HasNarrationMessage(
 
 	word16 messageOffset = LoadedSceneFile.header.narrationMessageOffsets[
 		speakerBank * 0x0B + messageCategory];
-	char *message = (char *)MAKE_FAR_POINTER(
-		SCENE_DATA_SEGMENT,
-		0x71A8 + REVENGE_INDEX(LoadedSceneFile.raw, messageOffset));
+	char *message = (char *) &LoadedSceneFile.raw[
+		REVENGE_INDEX(LoadedSceneFile.raw, messageOffset)];
 	return (byte)message[0x00];
 }
 

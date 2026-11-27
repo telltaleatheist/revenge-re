@@ -30,6 +30,12 @@ extern const std::uint8_t* UnitClassTypeLists[0x07];
 extern std::uint8_t UnitClassTypeListBytes[0x44];
 }
 
+extern "C" {
+// The lance editor's selection cards from their starting records
+// (revenge/roster.h, C only).
+void UnitSelectionCards_LoadStart(void);
+}
+
 namespace revenge::rules {
 
 namespace {
@@ -1044,6 +1050,8 @@ void load(const std::filesystem::path& data_dir) {
     for (std::size_t unit_class = 0; unit_class < kUnitClasses; ++unit_class)
         UnitClassTypeLists[unit_class] =
             g_class_list_starts[unit_class] < 0 ? nullptr : &UnitClassTypeListBytes[g_class_list_starts[unit_class]];
+    // The selection cards from their records, as a load reads them.
+    UnitSelectionCards_LoadStart();
 }
 
 }  // namespace revenge::rules

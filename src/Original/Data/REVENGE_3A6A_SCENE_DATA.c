@@ -6,4 +6,4 @@
 SceneFileBuffer LoadedSceneFile;
 SceneUnitRoute SceneUnitRoutes[SCENE_ROUTE_COUNT];
 word16 SceneInstructionBaseOffset;
-DosAddress SceneInstructionCursor;
+byte *SceneInstructionCursor;

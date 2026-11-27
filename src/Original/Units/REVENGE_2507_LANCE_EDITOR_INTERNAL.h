@@ -14,10 +14,6 @@
 #define KEY_CARRIAGERETURN KEY_CARRIAGE_RETURN
 #define seg3A6A 0x3A6A
 
-/* Resolve preserved 16:16 values through the host bridge in this unit. */
-#undef MAKE_FAR_POINTER
-#define MAKE_FAR_POINTER(segment, offset) \
-	HostFarPointer_Resolve(MAKE_DWORD((segment), (offset)))
 
 enum
 {
@@ -160,6 +156,6 @@ void DrawTrainingChoiceButton(
  * pointer the saving program had, unchanged by the load, so a card drawn
  * before the editor rebuilds it would point at nothing of ours: that is a
  * fault naming the card's pointer. */
-const byte *LanceEditorCardSprite(DosAddress spriteBuffer);
+const byte *LanceEditorCardSprite(const UnitSelectionCard *card);
 
 #endif

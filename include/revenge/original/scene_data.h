@@ -145,7 +145,10 @@ _Static_assert(sizeof(SceneUnitRoute) == 0x0B,
 extern SceneFileBuffer LoadedSceneFile;
 extern SceneUnitRoute SceneUnitRoutes[SCENE_ROUTE_COUNT];
 extern word16 SceneInstructionBaseOffset;
-extern DosAddress SceneInstructionCursor;
+/* DS:A9D9, the next instruction's byte in LoadedSceneFile. The original's
+ * far pointer names the same byte through the buffer's own segment at a
+ * battle's start and through DS after a jump; either way it is that byte. */
+extern byte *SceneInstructionCursor;
 /* DS:1554 is cached-file descriptor 42h's name pointer, not a second
  * object. */
 #define ScenarioResourcePathPointer (CachedFileDescriptors[0x42].fileName)
