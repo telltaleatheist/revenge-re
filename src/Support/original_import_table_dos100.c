@@ -13,7 +13,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces_dos100[0x142] =
+const OriginalPiece OriginalPieces_dos100[0x144] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, NULL, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, NULL, "2de063a6fef0f14a" },
@@ -68,6 +68,7 @@ const OriginalPiece OriginalPieces_dos100[0x142] =
 	{ "print_allocation_error_and_exit.2", ORIGINAL_PIECE_TEXT, 0x2349, 0, 0, 5, NULL, "4163f3dbaeeedbde" },
 	{ "print_allocation_error_and_exit.3", ORIGINAL_PIECE_TEXT, 0x234F, 0, 0, 14, NULL, "d65c37a26346320d" },
 	{ "allocate_far_memory.0", ORIGINAL_PIECE_TEXT, 0x235E, 0, 0, 19, NULL, "ca7c1506cb9b7d35" },
+	{ "allocate_far_memory.1", ORIGINAL_PIECE_TEXT, 0x22DC, 0, 0, 78, NULL, "e76688a3b0959feb" },
 	{ "invalid_save_version", ORIGINAL_PIECE_TEXT, 0x2372, 0, 0, 118, NULL, "2d9a3b9a98bf83a9" },
 	{ "mission_map_header", ORIGINAL_PIECE_TEXT, 0x2489, 0, 0, 23, NULL, "948e611ab3db6a0a" },
 	{ "exit_to_dos_prompt", ORIGINAL_PIECE_TEXT, 0x2562, 0, 0, 52, NULL, "9180455f67232bea" },
@@ -337,6 +338,7 @@ const OriginalPiece OriginalPieces_dos100[0x142] =
 	{ "resource_unknown_drive_error", ORIGINAL_PIECE_TEXT, 0x6139, 0, 0, 49, NULL, "95ca6af353538433" },
 	{ "resource_unknown_cache_index_error", ORIGINAL_PIECE_TEXT, 0x616B, 0, 0, 51, NULL, "cf4ccff228d737a6" },
 	{ "resource_open_files_at_exit_error", ORIGINAL_PIECE_TEXT, 0x619F, 0, 0, 34, NULL, "8fef925ad36b9b3e" },
+	{ "resource_fatal_disk_error", ORIGINAL_PIECE_TEXT, 0x61EC, 0, 0, 55, NULL, "1a997f34e5defdd4" },
 };
 
 const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
@@ -839,6 +841,7 @@ const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
 	{ 0x000349E9UL, 0x3A6A, 0x5, 0, "4163f3dbaeeedbde" }, /* print_allocation_error_and_exit.2 */
 	{ 0x000349EFUL, 0x3A6A, 0xE, 0, "d65c37a26346320d" }, /* print_allocation_error_and_exit.3 */
 	{ 0x000349FEUL, 0x3A6A, 0x13, 0, "ca7c1506cb9b7d35" }, /* allocate_far_memory.0 */
+	{ 0x0003497CUL, 0x3A6A, 0x4E, 0, "e76688a3b0959feb" }, /* allocate_far_memory.1 */
 	{ 0x00034A12UL, 0x3A6A, 0x76, 0, "2d9a3b9a98bf83a9" }, /* invalid_save_version */
 	{ 0x00034B29UL, 0x3A6A, 0x17, 0, "948e611ab3db6a0a" }, /* mission_map_header */
 	{ 0x00034C02UL, 0x3A6A, 0x34, 0, "9180455f67232bea" }, /* exit_to_dos_prompt */
@@ -1108,6 +1111,7 @@ const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
 	{ 0x000387D9UL, 0x3A6A, 0x31, 0, "95ca6af353538433" }, /* resource_unknown_drive_error */
 	{ 0x0003880BUL, 0x3A6A, 0x33, 0, "cf4ccff228d737a6" }, /* resource_unknown_cache_index_error */
 	{ 0x0003883FUL, 0x3A6A, 0x22, 0, "8fef925ad36b9b3e" }, /* resource_open_files_at_exit_error */
+	{ 0x0003888CUL, 0x3A6A, 0x37, 0, "1a997f34e5defdd4" }, /* resource_fatal_disk_error */
 };
 
 _Static_assert(sizeof(VideoPaletteData) == 0x310, "VideoPaletteData is the piece's size");

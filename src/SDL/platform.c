@@ -375,19 +375,22 @@ static void RunClockTimer(ClockTimerId id)
 
 static void DeliverHostEvents(void);
 
-/* 2C7F:02E3: the game's shutdown, as main makes it when the game's own quit
- * (the title's, the in-game menu's) returns. */
-void ShutdownGame(void);
+/* 3390:0024: the game's shutdown (2C7F:02E3) and the C library's exit, as
+ * they end the game after its own quit (the title's, the in-game menu's).
+ * 0D56:00B5 and 3390:0244, for the harness's fail items. */
+void ShutdownAndExit(word16 exitCode);
+byte *AllocateFarMemory(int32_t byteCount);
+void CloseTrackedFile(int16 handleSlot);
 
 /* A quit the player asked of the host ends the program between the game's
- * timer services, as an interrupt would have come, the way main ends it
- * after the game's own quit: ShutdownGame (the music stopped, the timers
- * and handlers given back, the screen reset), then the host's end (audio
- * and window closed, files closed by the C runtime's exit), code 0.
- * Nothing is saved: the game saves only when the player asks it to. Not
- * through ShutdownAndExit (3390:0024): its exit hooks (38C6:002C-0034)
- * are never set in the rebuild. Once: the shutdown's own waits service the
- * clock. */
+ * timer services, as an interrupt would have come, the way the game's own
+ * quit ends it: main returns 0 after ShutdownGame (the music stopped, the
+ * timers and handlers given back, the screen reset), and the C library's
+ * start-up passes that to its exit (0800:0102-0108, 38C6:0010), which is
+ * ShutdownAndExit(0) (3390:0024). Then the host's end (audio and window
+ * closed, files closed by the C runtime's exit). Nothing is saved: the
+ * game saves only when the player asks it to. Once: the shutdown's own
+ * waits service the clock. */
 static void QuitIfAsked(void)
 {
     static byte quitting;
@@ -396,8 +399,44 @@ static void QuitIfAsked(void)
         return;
     quitting = TRUE;
     RevengeTrace("quit: asked; the game's shutdown\n");
-    ShutdownGame();
-    SDLBackend_TerminateProcess(0x00);
+    ShutdownAndExit(0x0000);
+}
+
+/* A harness script's fail item (harness.h): one of the game's fatal paths,
+ * taken where a quit would be. The allocation error: the far heap asked for
+ * 65520 bytes until it has none (0D56:00B5's failure, 0D56:0007's message).
+ * The abort: a tracked file's slot closed though it isn't open (3390:0244,
+ * then 3390:0002's two messages). Each ends the program with exit code 1
+ * after its keys; neither returns. */
+static int failureRequested;
+
+static void FailIfAsked(void)
+{
+    int failure = failureRequested;
+
+    if (failure == HARNESS_FAIL_NONE)
+        return;
+    failureRequested = HARNESS_FAIL_NONE;
+    RevengeTrace("fail: %s\n", failure == HARNESS_FAIL_ALLOCATION ? "allocation" : "abort");
+    if (failure == HARNESS_FAIL_ALLOCATION)
+    {
+        for (;;)
+            (void) AllocateFarMemory(0xFFF0L);
+    }
+    for (int16 slot = 0x0000; slot < ORIGINAL_TRACKED_FILE_COUNT; ++slot)
+    {
+        if (ResourceFiles.trackedHandles[slot] == ORIGINAL_TRACKED_FILE_UNUSED)
+        {
+            CloseTrackedFile(slot);
+            break;
+        }
+    }
+    RevengeFault("fail: the abort returned");
+}
+
+void Platform_RequestHarnessFailure(int failure)
+{
+    failureRequested = failure;
 }
 
 /* A harness script's quit item (harness.h), as the host's quit comes. */
@@ -441,6 +480,7 @@ void SDLBackend_ServiceTimers(void)
      * passes as the timer's. */
     DeliverHostEvents();
     QuitIfAsked();
+    FailIfAsked();
 }
 
 void SDLBackend_SetGameClockHandler(void (*handler)(void))

@@ -27,6 +27,7 @@ enum
 	ITEM_SNAP,
 	ITEM_MOUSE,
 	ITEM_QUIT,
+	ITEM_FAIL,
 	POLLS_PER_WAIT = 4,
 	NAME_CAPACITY = 48,
 	PATH_CAPACITY = 1024,
@@ -45,6 +46,7 @@ typedef struct HarnessItem
 	uint16 x, y;                /* ITEM_MOUSE */
 	byte buttons;
 	char name[NAME_CAPACITY];   /* ITEM_SNAP */
+	int failure;                /* ITEM_FAIL: HARNESS_FAIL_* */
 } HarnessItem;
 
 static int state;               /* 0 not read, 1 on, -1 off */
@@ -200,6 +202,11 @@ static void ReadScript(const char *path)
 		}
 		else if (strcmp(token, "quit") == 0)
 			item.kind = ITEM_QUIT;
+		else if (strcmp(token, "fail:allocation") == 0 || strcmp(token, "fail:abort") == 0)
+		{
+			item.kind = ITEM_FAIL;
+			item.failure = strcmp(token, "fail:allocation") == 0 ? HARNESS_FAIL_ALLOCATION : HARNESS_FAIL_ABORT;
+		}
 		else if (strncmp(token, "mouse:", 6) == 0)
 		{
 			unsigned x, y, buttons = 0;
@@ -517,6 +524,12 @@ int Harness_KeyPending(void)
 		{
 			ItemTaken();
 			Platform_RequestHarnessQuit();
+			return 0;
+		}
+		if (item->kind == ITEM_FAIL)
+		{
+			ItemTaken();
+			Platform_RequestHarnessFailure(item->failure);
 			return 0;
 		}
 		Platform_SendHarnessMouse(item->x, item->y, item->buttons);

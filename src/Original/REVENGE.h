@@ -557,12 +557,16 @@ void LoadAndDecodePackedResource(
 void DecodeWestwoodPackedResource(
 	const void *compressedBlock,
 	void *destination);
+void RuntimeExitStepStub(void);
 void RunExitHandlersAndTerminate(word16 exitCode);
+void RuntimeTerminationStub(void);
 void DOS_TerminateProcess(word16 exitCode);
 
 /* Verified resource-stream contracts from segment 3390. */
 void AbortRuntimeWithMessage(const char *errorText);
 void ShutdownAndExit(word16 exitCode);
+void ShowResourceErrorMessage(void);
+void ShowFatalDiskErrorMessage(void);
 int16 OpenTrackedFile(char *path, word16 openMode);
 void CloseTrackedFile(int16 handleSlot);
 uint32 ReadTrackedFile(

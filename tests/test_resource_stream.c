@@ -36,7 +36,24 @@ short FarStringCompare(const char *left, const char *right)
 	return (short)strcmp(left, right);
 }
 
-void ShutdownGame(void) { }
+static byte errorCalls[0x04];
+static word16 errorCallCount;
+static word16 shutdownCalls;
+
+static void RecordErrorCall(byte callId)
+{
+	if (errorCallCount < sizeof(errorCalls))
+		errorCalls[errorCallCount] = callId;
+	++errorCallCount;
+}
+
+/* 3390:071E and 3390:097B, here only the order they're called in. */
+static void DisplayError(void) { RecordErrorCall(0x01); }
+static void DismissError(void) { RecordErrorCall(0x02); }
+ResourceErrorCallback ResourceErrorDisplayCallback = DisplayError;
+ResourceErrorCallback ResourceErrorDismissCallback = DismissError;
+
+void ShutdownGame(void) { ++shutdownCalls; }
 void RunExitHandlersAndTerminate(word16 exitCode) { (void)exitCode; }
 void SelectResourceDrive(int16 resourceDriveIndex)
 {
@@ -242,6 +259,22 @@ static void TestOpenCloseAndWindowMargin(void)
 		"text-window margin expands all four edges");
 }
 
+/* 3390:0002: closing a slot that isn't open is a fatal error. The error's
+ * text goes to ResourceFiles.errorText, then the display callback shows it,
+ * the dismiss callback (the fatal disk error) follows, and the game shuts
+ * down: both are called, in that order, as 3390:0010-0014 calls them. */
+static void TestAbortCallsBothMessages(void)
+{
+	errorCallCount = 0x0000;
+	shutdownCalls = 0x0000;
+	CloseTrackedFile(0x0000);
+	Check(errorCallCount == 0x0002 && errorCalls[0x00] == 0x01 &&
+		errorCalls[0x01] == 0x02, "abort shows the error, then the fatal error");
+	Check(shutdownCalls == 0x0001, "abort shuts the game down");
+	Check(HostFarPointer_Resolve(DosAddress_ToValue(ResourceFiles.errorText)) ==
+		(const void *)ResourceCloseUnopenedErrorText, "abort's text is the close error");
+}
+
 int main(void)
 {
 	HostFarPointer_Reset();
@@ -252,6 +285,8 @@ int main(void)
 	TestChunkedStreams();
 	ResetStreamState();
 	TestOpenCloseAndWindowMargin();
+	ResetStreamState();
+	TestAbortCallsBothMessages();
 	HostFarPointer_Reset();
 
 	if (failures != 0)

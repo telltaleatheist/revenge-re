@@ -44,7 +44,8 @@ Tokens, separated by spaces, commas or new lines; `#` starts a comment.
 | `still:N` | the next item waits for N polls in a row without a battle step |
 | `mouse:X/Y[/B]` | moves the mouse to X,Y (320×200) with buttons B |
 | `@snap:NAME` | takes a snap at the next wait; names are unique in a script |
-| `quit` | the host's quit (the window's close button), at the next timer service: the game's shutdown, as after its own quit, code 0 |
+| `quit` | the host's quit (the window's close button), at the next timer service: the game's shutdown and exit (3390:0024), as after its own quit, code 0 |
+| `fail:allocation`, `fail:abort` | at the next timer service, a fatal path forced: the far heap asked for 65520 bytes until it fails (the allocation error), or a tracked file's slot closed though it isn't open (the resource abort and its two messages); each waits for its keys, then exits with code 1 |
 
 The game polls the keyboard on every pass while a screen animates, so a few
 polls after a key the screen is often still the old one; `idle:` lets it
@@ -130,6 +131,10 @@ tools/trace/exe_free.py --exe BUILD/Revenge --game GAME_DIR
 
 # What the game asks to be heard, on the card and the speaker (audio/README.md)
 tools/trace/audio.py check --exe BUILD/Revenge --game GAME_DIR
+
+# The host's quit at the title, in a menu and mid-battle; the game's fatal exits
+tools/trace/quit.py --exe BUILD/Revenge --game GAME_DIR
+tools/trace/fatal_exit.py --exe BUILD/Revenge --game GAME_DIR
 
 # A run's snaps as PNGs, outside the repo
 tools/trace/frames.py RUN_DIR OUT_DIR [--scale N]

@@ -65,6 +65,15 @@ int Harness_ParseKey(const char *token, int *scancode, byte *modifiers);
 void Platform_SendHarnessMouse(uint16 x, uint16 y, byte buttons);
 /* A script's quit item: the host's quit, as the window's close button asks it. */
 void Platform_RequestHarnessQuit(void);
+/* A script's fail item: fail:allocation or fail:abort, a fatal path the
+ * game has, forced (platform.c, FailIfAsked). */
+enum
+{
+	HARNESS_FAIL_NONE,
+	HARNESS_FAIL_ALLOCATION,
+	HARNESS_FAIL_ABORT
+};
+void Platform_RequestHarnessFailure(int failure);
 /* The set-1 scan code the keyboard gives SDL's scancode, without E0h (as
  * tools/capture/keys.py has it); zero for a key with none. */
 uint16 Platform_ScanCodeForKey(int scancode);

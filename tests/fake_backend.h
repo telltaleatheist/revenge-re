@@ -33,6 +33,7 @@ typedef struct FakeBackendState
     byte midiBytes[0x0100];
     uint16 midiByteCount;     /* stops at the buffer's end */
     void (*midiSink)(byte);   /* when set, every byte goes to it instead */
+    byte exitCode;            /* SDLBackend_TerminateProcess's, set before exit */
 } FakeBackendState;
 
 extern FakeBackendState fakeBackend;

@@ -715,6 +715,7 @@ static const MapDumpObject objects[] =
 	{ "ResourceUnknownDriveErrorText", &ResourceUnknownDriveErrorText, sizeof(ResourceUnknownDriveErrorText) },
 	{ "ResourceUnknownCacheIndexErrorText", &ResourceUnknownCacheIndexErrorText, sizeof(ResourceUnknownCacheIndexErrorText) },
 	{ "ResourceOpenFilesAtExitErrorText", &ResourceOpenFilesAtExitErrorText, sizeof(ResourceOpenFilesAtExitErrorText) },
+	{ "ResourceFatalDiskErrorText", &ResourceFatalDiskErrorText, sizeof(ResourceFatalDiskErrorText) },
 	{ "ActiveVideoAdapterType", &ActiveVideoAdapterType, sizeof(ActiveVideoAdapterType) },
 	{ "EncodedSpriteClipLeftTile", &EncodedSpriteClipLeftTile, sizeof(EncodedSpriteClipLeftTile) },
 	{ "SpriteClipRightTile", &SpriteClipRightTile, sizeof(SpriteClipRightTile) },

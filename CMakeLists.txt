@@ -240,7 +240,11 @@ if(BUILD_TESTING)
 	chr_strict(test_game_clock)
 	add_test(NAME runtime.original_game_clock COMMAND test_game_clock)
 
-	add_executable(test_exit_handlers tests/test_exit_handlers.c)
+	add_executable(test_exit_handlers
+		tests/test_exit_handlers.c
+		tests/fake_backend.c)
+	target_include_directories(test_exit_handlers PRIVATE
+		src/Original tests)
 	target_link_libraries(test_exit_handlers PRIVATE chr_original_runtime)
 	chr_strict(test_exit_handlers)
 	add_test(NAME runtime.original_exit_handler_order
@@ -1097,8 +1101,14 @@ if(CHR_BUILD_SDL)
             COMMAND ${Python3_EXECUTABLE} -I
                 ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/quit.py
                 --exe $<TARGET_FILE:Revenge>)
+        # The game's fatal exits (an old save's dialog, the allocation error,
+        # the resource abort): each message, exit code 1, no crash.
+        add_test(NAME trace.fatal_exit
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/fatal_exit.py
+                --exe $<TARGET_FILE:Revenge>)
         set_tests_properties(trace.goldens trace.repeat trace.exe_free audio.check trace.quit
-            PROPERTIES SKIP_RETURN_CODE 77)
+            trace.fatal_exit PROPERTIES SKIP_RETURN_CODE 77)
         # Bytes a run must hold, by the map's places, against the image.
         add_test(NAME map.dump_checks
             COMMAND ${Python3_EXECUTABLE} -I

@@ -510,6 +510,7 @@ const StoryTextSlot StoryTextSlots[STORY_TEXT_COUNT] =
 	{ "print_allocation_error_and_exit.2", STORY_AT_PRINT_ALLOCATION_ERROR_AND_EXIT_2, 0x6, STORY_TARGET_NONE, NULL, 0 },
 	{ "print_allocation_error_and_exit.3", STORY_AT_PRINT_ALLOCATION_ERROR_AND_EXIT_3, 0xF, STORY_TARGET_NONE, NULL, 0 },
 	{ "allocate_far_memory.0", STORY_AT_ALLOCATE_FAR_MEMORY_0, 0x14, STORY_TARGET_NONE, NULL, 0 },
+	{ "allocate_far_memory.1", STORY_AT_ALLOCATE_FAR_MEMORY_1, 0x4F, STORY_TARGET_NONE, NULL, 0 },
 	{ "invalid_save_version", STORY_AT_INVALID_SAVE_VERSION, 0x77, STORY_TARGET_NONE, NULL, 0 },
 	{ "mission_map_header", STORY_AT_MISSION_MAP_HEADER, 0x18, STORY_TARGET_NONE, NULL, 0 },
 	{ "exit_to_dos_prompt", STORY_AT_EXIT_TO_DOS_PROMPT, 0x35, STORY_TARGET_NONE, NULL, 0 },
@@ -779,6 +780,7 @@ const StoryTextSlot StoryTextSlots[STORY_TEXT_COUNT] =
 	{ "resource_unknown_drive_error", STORY_AT_RESOURCE_UNKNOWN_DRIVE_ERROR, 0x32, STORY_TARGET_NONE, NULL, 0 },
 	{ "resource_unknown_cache_index_error", STORY_AT_RESOURCE_UNKNOWN_CACHE_INDEX_ERROR, 0x34, STORY_TARGET_NONE, NULL, 0 },
 	{ "resource_open_files_at_exit_error", STORY_AT_RESOURCE_OPEN_FILES_AT_EXIT_ERROR, 0x23, STORY_TARGET_NONE, NULL, 0 },
+	{ "resource_fatal_disk_error", STORY_AT_RESOURCE_FATAL_DISK_ERROR, 0x38, STORY_TARGET_NONE, NULL, 0 },
 };
 
 _Static_assert(sizeof(TitleTextTable) / sizeof(TitleTextTable[0]) == 0x12, "TitleTextTable has the piece's entries");

@@ -24,6 +24,18 @@ enum
 	EGA_ALL_WRITABLE_PIXEL_BITS = 0xFF
 };
 
+// 0800:019F: void RuntimeTerminationStub(void)
+// The near hook DOS_TerminateProcess calls through DS:71A4 (with CS pushed,
+// so it ends in retf): mov word ptr [0081h],0000h; retf. The image holds
+// 019Fh there and no instruction writes it, nor names DS:0081, which no
+// object of the rebuild's stands for: nothing is left to do.
+void RuntimeTerminationStub(void)
+{
+}
+
+/* DS:71A4, a near pointer: 0800:019F in the image, never written. */
+OriginalExitHandler RuntimeTerminationHook = RuntimeTerminationStub;
+
 // 0800:010D: void DOS_TerminateProcess(word16 exitCode)
 // Called from:
 //      RunExitHandlersAndTerminate

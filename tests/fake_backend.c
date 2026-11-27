@@ -9,6 +9,7 @@ FakeBackendState fakeBackend;
 
 _Noreturn void SDLBackend_TerminateProcess(byte exitCode)
 {
+	fakeBackend.exitCode = exitCode;
 	exit((int) exitCode);
 }
 

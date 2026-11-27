@@ -212,6 +212,9 @@ place ResourceWriteCachedErrorText 3A6A:5FA6 4 annotation
 place ResourceUnknownDriveErrorText 3A6A:5FAA 4 annotation
 place ResourceUnknownCacheIndexErrorText 3A6A:5FAE 4 annotation
 place ResourceOpenFilesAtExitErrorText 3A6A:5FB2 4 annotation
+place ResourceFatalDiskErrorText 3A6A:5FBA 4 procedure
+place ResourceErrorDisplayCallback 3A6A:5FBE 4 procedure
+place ResourceErrorDismissCallback 3A6A:5FC2 4 procedure
 place ResourceRetryCount 3A6A:5FC6 2 annotation
 place ReservedConventionalMemoryKB 3A6A:5FC8 2 annotation
 place InvalidSaveDialogBacking 3A6A:5FCA 4 annotation
@@ -241,6 +244,9 @@ place SoundBlasterPlayback 3A6A:6EE2 C table
 place DigitalPlaybackBuffers 3A6A:6F4C 58 table
 place PITCalibration 3A6A:6FA4 A table
 place DOSErrorToErrnoTable 3A6A:6FB0 59 run
+place RuntimeExitHook1 3A6A:700A 4 procedure
+place RuntimeExitHook2 3A6A:700E 4 procedure
+place RuntimeExitHook3 3A6A:7012 4 procedure
 place ExitHandlerCount 3A6A:7018 2 annotation
 place ProgramBreakKilobytes 3A6A:7026 2 annotation
 place CharacterClassTable 3A6A:7029 100 run
@@ -252,6 +258,7 @@ place DaylightSavingEnabled 3A6A:7194 2 procedure
 place TimezoneEnvironmentName 3A6A:7196 3 run
 place DefaultStandardTimezoneName 3A6A:7199 4 run
 place DefaultDaylightTimezoneName 3A6A:719D 4 run
+place RuntimeTerminationHook 3A6A:71A4 2 procedure
 place LoadedSceneFile 3A6A:71A8 800 table
 place WeaponCombatRatingByType 4184:08BC 17 run
 place RelativeAttackDirectionByMask 4184:08D7 10 run
@@ -395,7 +402,7 @@ place SharedNumericTextBuffer 3A6A:B67E 20 run
 place VideoAdapterType 3A6A:B6CE 2 run
 place ActiveUiRegionIndex 3A6A:B6D0 2 run
 place ExpandFirstUiRowHighlight 3A6A:B6D2 2 annotation
-place RuntimeExitHook1 3A6A:B808 8 procedure
+place ExitHandlerTable 3A6A:B808 80 procedure
 place CriticalErrorCallback 3A6A:B888 4 table
 place StandardTimezoneName 3A6A:B892 4 run
 place DaylightTimezoneName 3A6A:B896 4 run
@@ -481,7 +488,6 @@ unplaced EnemyAndFriendlyLancesText 4 host pointer
 unplaced EnemyAssessmentTextTable 48 host pointer
 unplaced EnemyCycleUnitIndex 2 several places match
 unplaced EnemyUnitStatusHeading 4 zero at every snap
-unplaced ExitHandlerTable 100 zero at every snap
 unplaced ExitToDosPrompt 4 host pointer
 unplaced FailedAllocationSizeHigh 2 zero at every snap
 unplaced FailedAllocationSizeLow 2 zero at every snap
@@ -584,8 +590,6 @@ unplaced PrimaryLanceResourceCode 1 zero at every snap
 unplaced PrimaryStatusRow 2 its bytes match nowhere (pointers or values differ)
 unplaced RadarSensorText 4 host pointer
 unplaced RangeText 4 host pointer
-unplaced ResourceErrorDismissCallback 8 zero at every snap
-unplaced ResourceErrorDisplayCallback 8 zero at every snap
 unplaced ResourceFileNames 5A0 its bytes match nowhere (pointers or values differ)
 unplaced RestartConfirmationText 4 host pointer
 unplaced RolandMIDIDriverDescriptor 1B its bytes match nowhere (pointers or values differ)
@@ -596,9 +600,6 @@ unplaced RollingBarrageStartMapX 1 zero at every snap
 unplaced RollingBarrageStartMapY 1 zero at every snap
 unplaced RuntimeDOSError 2 zero at every snap
 unplaced RuntimeErrno 2 zero at every snap
-unplaced RuntimeExitHook2 8 zero at every snap
-unplaced RuntimeExitHook3 8 zero at every snap
-unplaced RuntimeTerminationHook 8 zero at every snap
 unplaced SatelliteZoomText 4 host pointer
 unplaced SaveGameSeparatorText 4 host pointer
 unplaced SaveLoadMenuDefaultSelection 1 zero at every snap

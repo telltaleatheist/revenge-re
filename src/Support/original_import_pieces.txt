@@ -97,6 +97,7 @@ text                 print_allocation_error_and_exit.1       233F
 text                 print_allocation_error_and_exit.2       2349
 text                 print_allocation_error_and_exit.3       234F
 text                 allocate_far_memory.0                   235E
+text                 allocate_far_memory.1                   22DC
 text                 invalid_save_version                    2372
 text                 mission_map_header                      2489
 text                 exit_to_dos_prompt                      2562
@@ -368,3 +369,4 @@ text                 resource_write_cached_error             6112
 text                 resource_unknown_drive_error            6139
 text                 resource_unknown_cache_index_error      616B
 text                 resource_open_files_at_exit_error       619F
+text                 resource_fatal_disk_error               61EC

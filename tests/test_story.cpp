@@ -233,7 +233,8 @@ int main(int argc, char** argv) {
         const fs::path manifest = story::story_dir(folder) / "import.json";
         const std::string written = read(manifest);
         std::string other = written;
-        other.replace(other.find("\"import_version\": 3"), 19, "\"import_version\": 0");
+        const std::string version = "\"import_version\": " + std::to_string(story::kImportVersion);
+        other.replace(other.find(version), version.size(), "\"import_version\": 0");
         write(manifest, other);
         assert(story::story_state(folder, edition) == story::StoryState::Outdated);
         other = written;

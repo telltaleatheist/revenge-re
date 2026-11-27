@@ -698,6 +698,7 @@ extern const char *const ResourceWriteCachedErrorText;
 extern const char *const ResourceUnknownDriveErrorText;
 extern const char *const ResourceUnknownCacheIndexErrorText;
 extern const char *const ResourceOpenFilesAtExitErrorText;
+extern const char *const ResourceFatalDiskErrorText;
 
 
 /* Original shared graphics data segment (4184) fields. */

@@ -14,10 +14,8 @@ void AbortRuntimeWithMessage(const char *errorText)
 
 	ResourceFiles.errorText.segment = HIGH_WORD(errorTextPointer);
 	ResourceFiles.errorText.offset = LOW_WORD(errorTextPointer);
-	if (ResourceErrorDisplayCallback != NULL)
-		ResourceErrorDisplayCallback();
-	if (ResourceErrorDismissCallback != NULL)
-		ResourceErrorDismissCallback();
+	ResourceErrorDisplayCallback();
+	ResourceErrorDismissCallback();
 	ShutdownAndExit(0x0001);
 }
 
@@ -69,10 +67,8 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 
 		ResourceFiles.errorText.segment = HIGH_WORD(errorTextPointer);
 		ResourceFiles.errorText.offset = LOW_WORD(errorTextPointer);
-		if (ResourceErrorDisplayCallback != NULL)
-			ResourceErrorDisplayCallback();
-		if (ResourceErrorDismissCallback != NULL)
-			ResourceErrorDismissCallback();
+		ResourceErrorDisplayCallback();
+		ResourceErrorDismissCallback();
 		ShutdownAndExit(0x0001);
 		openFlags = 0x0000;
 	}
@@ -111,10 +107,8 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 
 		ResourceFiles.errorText.segment = HIGH_WORD(errorTextPointer);
 		ResourceFiles.errorText.offset = LOW_WORD(errorTextPointer);
-		if (ResourceErrorDisplayCallback != NULL)
-			ResourceErrorDisplayCallback();
-		if (ResourceErrorDismissCallback != NULL)
-			ResourceErrorDismissCallback();
+		ResourceErrorDisplayCallback();
+		ResourceErrorDismissCallback();
 		/* DS:B64E immediately follows the ten-entry table in the executable. */
 		ResourceFiles.preloadFiles = (word16)trackedHandle;
 	}

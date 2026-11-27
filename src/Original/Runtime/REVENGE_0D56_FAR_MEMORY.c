@@ -63,7 +63,7 @@ byte *AllocateFarMemory(int32 byteCount)
 
 	FailedAllocationSizeLow = LOW_WORD(byteCount);
 	FailedAllocationSizeHigh = 0x00;
-	PrintAllocationErrorAndExit("allocation/resident-program error"); // TEXT DS:22DC
+	PrintAllocationErrorAndExit(STORY_TEXT(ALLOCATE_FAR_MEMORY_1)); // TEXT DS:22DC
 	return 0x00; // Unreachable.
 }
 
@@ -86,7 +86,7 @@ byte *AllocateParagraphAlignedMemory(uint32 byteCount)
 	{
 		FailedAllocationSizeLow = LOW_WORD(allocationSize);
 		FailedAllocationSizeHigh = HIGH_WORD(allocationSize);
-		PrintAllocationErrorAndExit("allocation/resident-program error"); // TEXT DS:22DC
+		PrintAllocationErrorAndExit(STORY_TEXT(ALLOCATE_FAR_MEMORY_1)); // TEXT DS:22DC
 		return 0x00; // Unreachable.
 	}
 

@@ -75,16 +75,10 @@ word16 FailedAllocationSizeHigh;
 ResourceFileRuntime ResourceFiles;
 word16 ExitHandlerCount;
 OriginalExitHandler ExitHandlerTable[0x20];
-OriginalExitHandler RuntimeExitHook1;
-OriginalExitHandler RuntimeExitHook2;
-OriginalExitHandler RuntimeExitHook3;
-OriginalExitHandler RuntimeTerminationHook;
 DOS_InterruptHandler SavedDivideErrorHandler;
 DOS_InterruptHandler SavedOverflowHandler;
 DOS_InterruptHandler SavedBoundsHandler;
 DOS_InterruptHandler SavedInvalidOpcodeHandler;
-ResourceErrorCallback ResourceErrorDisplayCallback;
-ResourceErrorCallback ResourceErrorDismissCallback;
 const char *const ResourceCreateFileErrorText =
 	STORY_TEXT(RESOURCE_CREATE_FILE_ERROR);
 const char *const ResourceIllegalOpenModeErrorText =
@@ -111,4 +105,7 @@ const char *const ResourceUnknownCacheIndexErrorText =
 	STORY_TEXT(RESOURCE_UNKNOWN_CACHE_INDEX_ERROR);
 const char *const ResourceOpenFilesAtExitErrorText =
 	STORY_TEXT(RESOURCE_OPEN_FILES_AT_EXIT_ERROR);
+/* DS:5FBA, the text 3390:097B shows. */
+const char *const ResourceFatalDiskErrorText =
+	STORY_TEXT(RESOURCE_FATAL_DISK_ERROR);
 
