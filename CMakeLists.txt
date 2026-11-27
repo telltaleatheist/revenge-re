@@ -964,7 +964,7 @@ if(CHR_BUILD_SDL)
         target_include_directories(test_story PRIVATE src/Import tests)
         target_link_libraries(test_story PRIVATE ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_story)
-        foreach(mode match state refuse twice stray absent long)
+        foreach(mode match state refuse twice stray absent long media_length)
             add_test(NAME import.story_${mode} COMMAND test_story ${mode})
             set_tests_properties(import.story_${mode} PROPERTIES SKIP_RETURN_CODE 77)
         endforeach()
@@ -976,6 +976,8 @@ if(CHR_BUILD_SDL)
             "fault: .*text.json has no text .title.0.|skipped")
         set_tests_properties(import.story_long PROPERTIES PASS_REGULAR_EXPRESSION
             "fault: the story text title.0 is [0-9]+ bytes, and its place holds|skipped")
+        set_tests_properties(import.story_media_length PROPERTIES PASS_REGULAR_EXPRESSION
+            "fault: the story: .*digital_sound.bin is 1580 bytes, and the game's digital_sound is 1581|skipped")
 
         # A file the game can't open is a fault naming it, not a disk prompt.
         add_executable(test_tracked_file_fault tests/test_tracked_file_fault.c)

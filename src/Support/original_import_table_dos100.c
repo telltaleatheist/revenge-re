@@ -13,7 +13,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces_dos100[0x143] =
+const OriginalPiece OriginalPieces_dos100[0x144] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, NULL, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, NULL, "2de063a6fef0f14a" },
@@ -52,10 +52,11 @@ const OriginalPiece OriginalPieces_dos100[0x143] =
 	{ "UnitMovementClassLabelTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x412D, 0x5, 4, 0, NULL, "9f85ccad72a41399" },
 	{ "UnitArmorConditionLabelTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x4141, 0x6, 4, 0, NULL, "7b47d6e36af60ef5" },
 	{ "WeaponNameTable", ORIGINAL_PIECE_TEXT_TABLE, 0x0435, 0x17, 15, 0, NULL, "a5c6d3eca97f509c" },
-	{ "CompressedTextFirstByteTable", ORIGINAL_PIECE_BYTES, 0x05AA, 0x10, 4, 16, &CompressedTextFirstByteTable, "f941df0158d610f0" },
-	{ "CompressedTextSecondByteTable", ORIGINAL_PIECE_BYTES, 0x05BA, 0x80, 4, 128, &CompressedTextSecondByteTable, "42798dce093c693b" },
-	{ "PCSpeakerEffectStreamData", ORIGINAL_PIECE_BYTES, 0x5642, 0x299, 4, 665, &PCSpeakerEffectStreamData, "e2d4ad0d77e7fe45" },
-	{ "DigitalSoundData", ORIGINAL_PIECE_BYTES, 0x593E, 0x62D, 4, 1581, &DigitalSoundData, "249fc30ed25f8c5f" },
+	{ "VideoPaletteData", ORIGINAL_PIECE_MEDIA, 0x00AC, 0x310, 4, 784, &VideoPaletteData, "f4814b26b2fc06df" },
+	{ "CompressedTextFirstByteTable", ORIGINAL_PIECE_MEDIA, 0x05AA, 0x10, 4, 16, &CompressedTextFirstByteTable, "f941df0158d610f0" },
+	{ "CompressedTextSecondByteTable", ORIGINAL_PIECE_MEDIA, 0x05BA, 0x80, 4, 128, &CompressedTextSecondByteTable, "42798dce093c693b" },
+	{ "PCSpeakerEffectStreamData", ORIGINAL_PIECE_MEDIA, 0x5642, 0x299, 4, 665, &PCSpeakerEffectStreamData, "e2d4ad0d77e7fe45" },
+	{ "DigitalSoundData", ORIGINAL_PIECE_MEDIA, 0x593E, 0x62D, 4, 1581, &DigitalSoundData, "249fc30ed25f8c5f" },
 	{ "VideoConfigurationRecords", ORIGINAL_PIECE_BYTES, 0x3AD1, 0x41, 4, 65, &VideoConfigurationRecords, "fee24652c3e4fe4b" },
 	{ "MusicConfigurationRecords", ORIGINAL_PIECE_BYTES, 0x3B12, 0x5B, 4, 91, &MusicConfigurationRecords, "d83877fc321af9c6" },
 	{ "InputConfigurationRecords", ORIGINAL_PIECE_BYTES, 0x3B6D, 0x1A, 4, 26, &InputConfigurationRecords, "9f15663163ffce23" },
@@ -1111,6 +1112,7 @@ const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
 	{ 0x0003883FUL, 0x3A6A, 0x22, 0, "8fef925ad36b9b3e" }, /* resource_open_files_at_exit_error */
 };
 
+_Static_assert(sizeof(VideoPaletteData) == 0x310, "VideoPaletteData is the piece's size");
 _Static_assert(sizeof(CompressedTextFirstByteTable) == 0x10, "CompressedTextFirstByteTable is the piece's size");
 _Static_assert(sizeof(CompressedTextSecondByteTable) == 0x80, "CompressedTextSecondByteTable is the piece's size");
 _Static_assert(sizeof(PCSpeakerEffectStreamData) == 0x299, "PCSpeakerEffectStreamData is the piece's size");

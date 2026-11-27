@@ -7,7 +7,7 @@
 #include "revenge/video.h"
 #include "REVENGE.h"
 
-/* DS:05AA and DS:05BA, filled from the player's copy at start
+/* DS:05AA and DS:05BA, the story's media, placed at start
  * (original_import_pieces.txt). */
 byte CompressedTextFirstByteTable[0x10];
 byte CompressedTextSecondByteTable[0x80];

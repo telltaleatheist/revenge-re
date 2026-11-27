@@ -134,8 +134,8 @@ const word16 IBMPS1MIDIFrequencyWords[0x4A] =
 	0x008F, 0x008E
 };
 
-/* Exact, typed REVENGE.EXE DS:593E-5F6A digital-audio data image. */
-/* DS:593E-5F6A, filled from the player's copy at start (original_import_pieces.txt). */
+/* DS:593E-5F6A, the digital sound data typed; the story's media, placed at
+ * start (original_import_pieces.txt). */
 DigitalSoundDataImage DigitalSoundData;
 
 DigitalSampleDescriptor *ActiveDigitalSampleDescriptor;
@@ -150,7 +150,7 @@ word16 NarrationMode = 0x0002; /* Original data image: full voice. */
 word16 ActiveNarrationSubject;
 word16 NarrationEmphasis;
 
-/* DS:5642, filled from the player's copy at start (original_import_pieces.txt). */
+/* DS:5642, the story's media, placed at start (original_import_pieces.txt). */
 byte PCSpeakerEffectStreamData[
 	PC_SPEAKER_EFFECT_STREAM_BYTE_COUNT];
 

@@ -65,6 +65,7 @@ KINDS = {
     "mutable_pointed_text": "ORIGINAL_PIECE_MUTABLE_POINTED_TEXT",
     "byte_lists": "ORIGINAL_PIECE_BYTE_LISTS",
     "bytes": "ORIGINAL_PIECE_BYTES",
+    "media": "ORIGINAL_PIECE_MEDIA",
 }
 TEXT_KINDS = ("text_table", "expanded_text_table", "mutable_text_table", "pointed_text", "mutable_pointed_text")
 
@@ -275,7 +276,7 @@ def piece_bytes(img, kind, offset, count, stride):
     if kind == "text":
         return string_at(img, DATA_SEGMENT + offset) + b"\0"
 
-    if kind == "bytes":
+    if kind in ("bytes", "media"):
         return img[DATA_SEGMENT + offset:DATA_SEGMENT + offset + count]
     out = bytearray()
     for index in range(count or 1):
@@ -313,7 +314,7 @@ def render(img, edition):
     checks = []
     for kind, name, offset, count, stride in rows:
         data = piece_bytes(img, kind, offset, count, stride)
-        if kind == "bytes":
+        if kind in ("bytes", "media"):
             length, target = str(count), f"&{name}"
             checks.append(f"_Static_assert(sizeof({name}) == 0x{count:X}, \"{name} is the piece's size\");")
         elif kind == "byte_lists":

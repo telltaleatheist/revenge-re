@@ -132,11 +132,17 @@ graphics driver; `SDL_RENDER_DRIVER=software` chooses it from the start.
 
 ## Preservation model
 
-This tree carries none of the original game's text, art or data: the program
+This tree carries none of the original game's text, art or sound: the program
 reads them from the player's own `REVENGE.EXE` and game files at start. The
-text is taken from the copy once, into `story/` in the player's folder
-(`text.json`, and `import.json` saying what it was taken from), and read from
-there; it is taken again when that folder is missing or from an older version. The
+text, and the media the program keeps with it (the sounds, the palette and the
+text's digram tables), are taken from the copy once, into `story/` in the
+player's folder (`text.json`, `media/<id>.bin`, and `import.json` saying what
+they were taken from, with each media file's length and SHA-256), and read from
+there; they are taken again when that folder is missing or from an older
+version. The rules and the screens' layout are the program's own numbers,
+the original's to begin with: `data/rules` and `data/ui`, read at start
+(`src/Rules/Rules.h` has the files' shapes), and checked by the tests against
+the original's bytes by keyed hash, never holding them. The
 title artwork and screenshots of the upstream port (`docs/images`, which
 `NOTICE.md` and `LICENSES/README.md` still mention) are left out.
 

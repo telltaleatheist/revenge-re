@@ -13,10 +13,12 @@
 #   text ID DS-OFFSET            a single text, STORY_TEXT(ID)
 #
 # Kinds (include/revenge/original_import.h): text_table, expanded_text_table,
-# mutable_text_table, pointed_text, mutable_pointed_text, byte_lists, bytes.
+# mutable_text_table, pointed_text, mutable_pointed_text, byte_lists, bytes,
+# media. A media piece is a bytes piece the story keeps: imported into the
+# story folder with the texts, and placed from there.
 # Offsets and counts are hex. A table's COUNT is its array's; STRIDE is 4
-# unless given. A bytes piece's COUNT is its length, which must be the size of
-# the object it fills. A mutable pointed text fills its whole char array.
+# unless given. A bytes or media piece's COUNT is its length, which must be
+# the size of the object it fills. A mutable pointed text fills its whole char array.
 #
 # A table's texts are the ids NAME.0, NAME.1 and so on, NAME the table's name
 # in lower case with words split by "_" and without "TextTable", "Table" or
@@ -73,11 +75,14 @@ text_table           UnitArmorConditionLabelTextTable        4141 06
 # The weapon names: each WeaponDefinitions record (0Fh bytes) starts with its far pointer.
 text_table           WeaponNameTable                         0435 17 0F
 
-# Data the game's text and sound read in place
-bytes                CompressedTextFirstByteTable            05AA 10
-bytes                CompressedTextSecondByteTable           05BA 80
-bytes                PCSpeakerEffectStreamData               5642 299
-bytes                DigitalSoundData                        593E 62D
+# The media: the story keeps each as story/media/<id>.bin (src/Import)
+media                VideoPaletteData                        00AC 310
+media                CompressedTextFirstByteTable            05AA 10
+media                CompressedTextSecondByteTable           05BA 80
+media                PCSpeakerEffectStreamData               5642 299
+media                DigitalSoundData                        593E 62D
+
+# Data the game reads in place
 bytes                VideoConfigurationRecords               3AD1 41
 bytes                MusicConfigurationRecords               3B12 5B
 bytes                InputConfigurationRecords               3B6D 1A

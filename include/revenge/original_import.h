@@ -55,7 +55,9 @@ typedef enum OriginalPieceKind
 	ORIGINAL_PIECE_MUTABLE_POINTED_TEXT,  /* the same, copied into a char array of `length` bytes */
 	ORIGINAL_PIECE_BYTE_LISTS,            /* far pointers at a DS offset to FFh-terminated lists: const byte *[];
 	                                         a null pointer stays NULL */
-	ORIGINAL_PIECE_BYTES                  /* `length` bytes at a DS offset, copied into an object of that size */
+	ORIGINAL_PIECE_BYTES,                 /* `length` bytes at a DS offset, copied into an object of that size */
+	ORIGINAL_PIECE_MEDIA                  /* the same, the story's media: the story file keeps it and places it
+	                                         (revenge/story.h), not the loader */
 } OriginalPieceKind;
 
 typedef struct OriginalPiece

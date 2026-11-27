@@ -15,7 +15,7 @@ place SaveTransferState 3A6A:0094 2 annotation
 place VideoPathUnavailable 3A6A:0096 1 annotation
 place MovementRatingByWalkMP 3A6A:0097 9 run
 place TrainingScenarioCompletionFlags 3A6A:00A0 6 table
-place VideoPaletteData 3A6A:00AC 310 run
+place VideoPaletteData 3A6A:00AC 310 import
 place TacticalSelectedUnitIndex 3A6A:03DC 2 table
 place WeaponAIHeatLimitByExperience 3A6A:03E0 5 run
 place SensorDamageProximityRangeTable 3A6A:03E7 3 run

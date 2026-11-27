@@ -128,6 +128,7 @@ size_t OriginalImport_PieceBytes(const OriginalPiece *piece, uint8_t *out, size_
 		return Append(out, capacity, at, &terminator, 1);
 	}
 	case ORIGINAL_PIECE_BYTES:
+	case ORIGINAL_PIECE_MEDIA:
 	{
 		size_t offset = ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + piece->dataOffset;
 
@@ -257,7 +258,8 @@ static int ReadImage(const char *executablePath)
 	return 1;
 }
 
-/* The data pieces go in place; the texts are the story's (revenge/story.h). */
+/* The data pieces go in place; the texts and the media are the story's
+ * (revenge/story.h). */
 static void PlacePiece(const OriginalPiece *piece)
 {
 	uint16_t index;
