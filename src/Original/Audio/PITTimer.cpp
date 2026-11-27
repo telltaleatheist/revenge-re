@@ -1,3 +1,4 @@
+// 38AE: PIT timer
 // Reconstructed original PIT and interrupt-vector utilities (segment 38AE).
 // The original's playback-rate calibration here (38AE:005C-0109) is gone with
 // the digital calibration that used it (375F:05D6): Replaced in the ledgers.

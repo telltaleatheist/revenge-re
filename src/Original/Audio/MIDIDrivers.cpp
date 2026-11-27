@@ -1,4 +1,5 @@
-// REVENGE_3621_MIDI_DRIVERS.cpp
+// 3621: MIDI drivers
+// MIDIDrivers.cpp
 // The music drivers the sequencer dispatches to: null, speaker and Roland.
 
 #include "REVENGE.h"
@@ -7,7 +8,7 @@
 #include "revenge/host_dispatch.h"
 #include "revenge/midi_data.h"
 #include "revenge/platform_backend.h"
-#include "REVENGE_3621_MIDI_INTERNAL.h"
+#include "MIDIInternal.h"
 
 word16 NullMIDIDriverProbe(void) { return SOUND_HARDWARE_AVAILABLE; }
 void ActivateNullMIDIDriver(word16 activationArgument)

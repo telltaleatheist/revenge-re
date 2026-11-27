@@ -46,11 +46,11 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Graphics/REVENGE_3005_TACTICAL_SPRITE.cpp
     src/Original/Graphics/REVENGE_2FEA_DISPLAY_BACKING.cpp
     src/Original/Runtime/REVENGE_2C7F_STARTUP.cpp
-	src/Original/Audio/REVENGE_30AF_PC_SPEAKER_EFFECTS.cpp
+	src/Original/Audio/PCSpeakerEffects.cpp
 	src/Original/Units/REVENGE_30F1_SCENARIO_ROSTERS.cpp
-	src/Original/Audio/REVENGE_3014_MUSIC_RESOURCES.cpp
-	src/Original/Audio/REVENGE_30B2_PC_SPEAKER_TIMER.cpp
-    src/Original/Audio/REVENGE_31FB_DIGITAL_SOUND.cpp
+	src/Original/Audio/MusicResources.cpp
+	src/Original/Audio/PCSpeakerTimer.cpp
+    src/Original/Audio/DigitalSound.cpp
     src/Original/IO/REVENGE_38C6_PROCESS_EXIT.cpp
     src/Original/Input/REVENGE_3037_KEYBOARD.cpp
     src/Original/IO/REVENGE_3327_DOS_CONSOLE.cpp
@@ -66,9 +66,9 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/UI/REVENGE_3390_RESOURCE_ERROR_MESSAGE.cpp
     src/Original/Graphics/REVENGE_3471_RECTANGLE_FILL.cpp
     src/Original/Text/REVENGE_3477_FONT.cpp
-	src/Original/Audio/REVENGE_375F_AUDIO_HARDWARE.cpp
-	src/Original/Audio/REVENGE_375F_DIGITAL_PLAYBACK.cpp
-	src/Original/Audio/REVENGE_38AE_PIT_TIMER.cpp
+	src/Original/Audio/AudioHardware.cpp
+	src/Original/Audio/DigitalPlayback.cpp
+	src/Original/Audio/PITTimer.cpp
     src/Original/Graphics/REVENGE_34B8_VIDEO_TIMING.cpp
     src/Original/Utility/REVENGE_34C6_RANDOM_RANGE.cpp
     src/Original/Input/REVENGE_34C8_NAVIGATION_KEY.cpp
@@ -88,8 +88,8 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Input/REVENGE_358E_SINGLE_UI_REGION.cpp
     src/Original/Graphics/REVENGE_3596_RENDER_TARGET.cpp
     src/Original/Input/REVENGE_3599_UI_REGION_HIGHLIGHT.cpp
-    src/Original/Audio/REVENGE_3621_MIDI_SEQUENCE.cpp
-	src/Original/Audio/REVENGE_3621_MIDI_DRIVERS.cpp
+    src/Original/Audio/MIDISequence.cpp
+	src/Original/Audio/MIDIDrivers.cpp
 	src/Original/Utility/REVENGE_3968_INTEGER_FORMAT.cpp
 	src/Original/Utility/REVENGE_39C4_DECIMAL_PARSE.cpp
 	src/Original/Campaign/REVENGE_39CC_CLOCK_SNAPSHOT.cpp

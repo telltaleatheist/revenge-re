@@ -19,7 +19,7 @@
 #include "revenge/random.h"
 #include "revenge/story.h"
 #include "revenge/story_text.h"
-#include "Audio/REVENGE_3621_MIDI_INTERNAL.h"
+#include "Audio/MIDIInternal.h"
 #include "map_dump.h"
 #include "revenge/platform_backend.h"
 #include "revenge/sha256.h"

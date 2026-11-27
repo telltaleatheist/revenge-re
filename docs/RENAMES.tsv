@@ -3,3 +3,13 @@
 # tools/rename_files.py applies them; kind file or name, the original's
 # segments a file holds, and what it is (its first line).
 kind	old	new	segments	note
+file	src/Original/Audio/REVENGE_3014_MUSIC_RESOURCES.cpp	src/Original/Audio/MusicResources.cpp	3014	music resources
+file	src/Original/Audio/REVENGE_30AF_PC_SPEAKER_EFFECTS.cpp	src/Original/Audio/PCSpeakerEffects.cpp	3037 30AF	PC speaker effects
+file	src/Original/Audio/REVENGE_30B2_PC_SPEAKER_TIMER.cpp	src/Original/Audio/PCSpeakerTimer.cpp	30B2	PC speaker timer
+file	src/Original/Audio/REVENGE_31FB_DIGITAL_SOUND.cpp	src/Original/Audio/DigitalSound.cpp	31FB	digital sound
+file	src/Original/Audio/REVENGE_3621_MIDI_DRIVERS.cpp	src/Original/Audio/MIDIDrivers.cpp	3621	MIDI drivers
+file	src/Original/Audio/REVENGE_3621_MIDI_INTERNAL.h	src/Original/Audio/MIDIInternal.h	3621	MIDI declarations
+file	src/Original/Audio/REVENGE_3621_MIDI_SEQUENCE.cpp	src/Original/Audio/MIDISequence.cpp	3621	MIDI sequence
+file	src/Original/Audio/REVENGE_375F_AUDIO_HARDWARE.cpp	src/Original/Audio/AudioHardware.cpp	375F	audio hardware
+file	src/Original/Audio/REVENGE_375F_DIGITAL_PLAYBACK.cpp	src/Original/Audio/DigitalPlayback.cpp	375F	digital playback
+file	src/Original/Audio/REVENGE_38AE_PIT_TIMER.cpp	src/Original/Audio/PITTimer.cpp	38AE	PIT timer

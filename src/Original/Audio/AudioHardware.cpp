@@ -1,4 +1,5 @@
-/* REVENGE_375F_AUDIO_HARDWARE.cpp -- the sampled-sound output the mixer writes to. */
+// 375F: audio hardware
+/* AudioHardware.cpp -- the sampled-sound output the mixer writes to. */
 
 #include "REVENGE.h"
 #include "revenge/digital_bridge.h"

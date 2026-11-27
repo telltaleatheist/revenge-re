@@ -1,4 +1,5 @@
-// REVENGE_30B2_PC_SPEAKER_TIMER.cpp
+// 30B2: PC speaker timer
+// PCSpeakerTimer.cpp
 // Shared music timer and PC-speaker effect driver reconstructed from REVENGE.EXE.
 
 #include "REVENGE.h"

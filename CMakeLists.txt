@@ -112,7 +112,7 @@ endif()
 chr_strict(chr_original_runtime)
 
 add_library(chr_original_audio STATIC
-    src/Original/Audio/REVENGE_3621_MIDI_SEQUENCE.cpp
+    src/Original/Audio/MIDISequence.cpp
     src/Support/midi_data.cpp)
 target_include_directories(chr_original_audio
     PUBLIC include
@@ -342,7 +342,7 @@ if(BUILD_TESTING)
     add_executable(test_timer_edges
         tests/test_timer_edges.cpp
         tests/fake_backend.cpp
-        src/Original/Audio/REVENGE_38AE_PIT_TIMER.cpp)
+        src/Original/Audio/PITTimer.cpp)
     target_include_directories(test_timer_edges PRIVATE
         src/Original src/SDL tests)
     target_link_libraries(test_timer_edges PRIVATE chr_original_runtime)

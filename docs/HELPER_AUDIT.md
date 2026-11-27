@@ -43,10 +43,10 @@ the control flow that must remain comparable with the assembly.
 | `REVENGE_2507_LANCE_CONFIGURATION.cpp` | `DrawRosterPilotUnitLabel` | lance/roster presentation | Extracted game presentation logic. |
 | `REVENGE_2507_LANCE_CONFIGURATION.cpp` | `GetLiveScenarioUnitTypeId` | lance/roster presentation | Game-record lookup. |
 | `REVENGE_2D1B_UNIT_STATE.cpp` | `LookupTacticalEngagementMode` | tactical engagement procedure | Extracted game decision table. |
-| `REVENGE_3621_MIDI_SEQUENCE.cpp` | `ConfigureMIDIChannelFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
-| `REVENGE_3621_MIDI_SEQUENCE.cpp` | `LoadMIDIInstrumentFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
-| `REVENGE_3621_MIDI_SEQUENCE.cpp` | `SetMIDIVoiceCountFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
-| `REVENGE_3621_MIDI_SEQUENCE.cpp` | `RebuildMIDIVoiceList` | MIDI allocation/service procedures | Extracted original voice-list loop. |
+| `MIDISequence.cpp` | `ConfigureMIDIChannelFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
+| `MIDISequence.cpp` | `LoadMIDIInstrumentFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
+| `MIDISequence.cpp` | `SetMIDIVoiceCountFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
+| `MIDISequence.cpp` | `RebuildMIDIVoiceList` | MIDI allocation/service procedures | Extracted original voice-list loop. |
 | `REVENGE_39F8_STRING_TOKENIZE.c` | `IsFarStringDelimiter` | `FarStringTokenize` | Splits the original delimiter scans. |
 | `REVENGE_3A3C_TIMEZONE.cpp` | `ReadCalendarBoundary` | calendar conversion procedure | Extracted DS table access from the original arithmetic. |
 
@@ -85,8 +85,8 @@ No game/data-flow helper function definitions remain in `src/Original`.
 | --- | --- | ---: | --- |
 | `REVENGE_1A1F_INTERNAL.h` | `GetTacticalBackingBuffer`, `SetTacticalBackingBuffer` | 2 | Replace with explicit DS far-pointer loads/stores or a Support-level 16:16 bridge. |
 | `REVENGE_3037_KEYBOARD.cpp` | `PumpHostKeyboardEvent` | 1 | SDL input boundary. |
-| `REVENGE_31FB_DIGITAL_SOUND.cpp` | `DigitalSoundDataAt`, `DigitalSoundDriverDescriptorOffsets`, `DigitalSamplePlaybackDescriptors`, `DigitalWeaponEffectTable`, `DigitalSoundEntries`, `DigitalSoundString` | 6 | Typed views/macros over the recovered DS image in Support; no playback decisions. |
-| `REVENGE_375F_AUDIO_HARDWARE.cpp` | `ResolveDigitalHardwareDescriptor`, `ResolveDigitalPlaybackDescriptor`, `ResolveProbeCandidateList`, `DispatchDigitalHardwareProbe`, `DispatchDigitalHardwareAcquire`, `DispatchDigitalHardwareRelease`, `InvokeDigitalSampleCompletion` | 7 | Host callback/far-pointer dispatch bridge in Support/SDL. Original wrapper calls remain in `REVENGE_375F_AUDIO_HARDWARE.cpp`. |
+| `DigitalSound.cpp` | `DigitalSoundDataAt`, `DigitalSoundDriverDescriptorOffsets`, `DigitalSamplePlaybackDescriptors`, `DigitalWeaponEffectTable`, `DigitalSoundEntries`, `DigitalSoundString` | 6 | Typed views/macros over the recovered DS image in Support; no playback decisions. |
+| `AudioHardware.cpp` | `ResolveDigitalHardwareDescriptor`, `ResolveDigitalPlaybackDescriptor`, `ResolveProbeCandidateList`, `DispatchDigitalHardwareProbe`, `DispatchDigitalHardwareAcquire`, `DispatchDigitalHardwareRelease`, `InvokeDigitalSampleCompletion` | 7 | Host callback/far-pointer dispatch bridge in Support/SDL. Original wrapper calls remain in `AudioHardware.cpp`. |
 | `REVENGE_38CD_FAR_HEAP_UNLINK.c` | `ResolveBlock`, `EncodeBlock`, `GetFarHeapArenaBase`, `SetFarHeapArenaBase`, `GetFarHeapTailBlock`, `SetFarHeapTailBlock`, `GetFarHeapFreeListHead`, `SetFarHeapFreeListHead`, `FarHeapPayload` | 9 | Shared far-heap representation macros or Support primitives. Preserve allocator branches in the original procedures. |
 | `REVENGE_38FE_PROGRAM_BREAK.c` | `GetMinimumProgramBreak`, `GetCurrentProgramBreak`, `SetCurrentProgramBreak`, `GetMaximumProgramBreak`, `SetMaximumProgramBreak` | 5 | Explicit far-pointer state expressions or Support primitives. |
 | `REVENGE_398D_FAR_HEAP.c` | `ResolveBlock`, `EncodeBlock`, `GetFarHeapArenaBase`, `SetFarHeapArenaBase`, `GetFarHeapTailBlock`, `SetFarHeapTailBlock`, `GetFarHeapFreeListHead`, `SetFarHeapFreeListHead` | 8 | Share the same far-heap representation layer as `REVENGE_38CD_FAR_HEAP_UNLINK.c`. |

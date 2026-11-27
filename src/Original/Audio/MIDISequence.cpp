@@ -1,4 +1,5 @@
-// REVENGE_3621_MIDI_SEQUENCE.cpp
+// 3621: MIDI sequence
+// MIDISequence.cpp
 // Standard MIDI sequence parser and selectable music-driver dispatch layer.
 
 #include "REVENGE.h"
@@ -8,7 +9,7 @@
 #include "revenge/host_dispatch.h"
 #include "revenge/midi_data.h"
 #include "revenge/platform_backend.h"
-#include "REVENGE_3621_MIDI_INTERNAL.h"
+#include "MIDIInternal.h"
 
 #define MIDI_DRIVER_DISPATCH(driverDescriptor) \
     ((const MIDIDriverHostDispatch *) HostDispatch_Select( \
