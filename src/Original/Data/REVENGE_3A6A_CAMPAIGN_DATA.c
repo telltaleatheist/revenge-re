@@ -4,7 +4,6 @@
 #include "revenge/original_data.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/audio.h"
-#include "revenge/far_memory.h"
 #include "revenge/video.h"
 #include "REVENGE.h"
 #include "revenge/story_text.h"

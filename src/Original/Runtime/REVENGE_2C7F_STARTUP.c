@@ -174,8 +174,10 @@ void InitializeGame(void)
 
 	/* 2C7F:023B-0260: B800 for the CGA and the Tandy, A000 for the EGA and
 	 * the VGA; the rebuild is VGA only. */
-	VideoFramebuffer = HostFarPointer_Resolve(
-		MAKE_DWORD(VIDEO_MEMORY_SEGMENT_VGA, 0x00));
+	/* The page's far address as the pointer: the hardware boundary draws it
+	 * to the SDL framebuffer (Video_ResolveIndexedRenderTarget). */
+	VideoFramebuffer = (byte *) (uintptr_t)
+		MAKE_DWORD(VIDEO_MEMORY_SEGMENT_VGA, 0x00);
 	ActiveRenderTarget = VideoFramebuffer;
 
 	LoadVideoPalette(VideoPaletteData);
@@ -254,9 +256,8 @@ byte *AddBytesToFarPointer(byte *base, uint32 byteCount)
 {
 	// V: Convert segment:offset to a linear address, add byteCount, then
 	// normalize back to segment:offset with an offset in the range 0..0Fh.
-	uint32 linearAddress = ((uint32) FAR_SEGMENT(base) << 0x04) +
-		FAR_OFFSET(base) + byteCount;
-	return (byte *) HostFarPointer_Resolve(MAKE_FAR_POINTER(
+	uint32 linearAddress = DOSMemory_Linear(base) + byteCount;
+	return (byte *) DOSMemory_Pointer(MAKE_FAR_POINTER(
 		(word16) (linearAddress >> 0x04),
 		(word16) (linearAddress & 0x000F)));
 }

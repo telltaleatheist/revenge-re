@@ -1,5 +1,4 @@
 #include "fake_backend.h"
-#include "revenge/far_memory.h"
 #include "revenge/original_data.h"
 #include "revenge/text.h"
 #include "revenge/video.h"
@@ -19,7 +18,6 @@ static void PrepareFont(void)
 {
 	memset(fontResource, 0x00, sizeof(fontResource));
 	FakeBackend_Reset();
-	HostFarPointer_Reset();
 	ActiveVideoAdapterType = VIDEO_ADAPTER_VGA;
 	fontResource[0x0102] = 0x02;
 	fontResource[0x0103] = 0x06;

@@ -44,4 +44,6 @@ extern char ResourceFileNames[
 extern const uint32 ResourceFileLengths[
 	ORIGINAL_RESOURCE_DESCRIPTOR_COUNT];
 
+void OriginalData_InitializeResourceDescriptorPointers(void);
+
 #endif

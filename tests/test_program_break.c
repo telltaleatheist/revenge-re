@@ -19,22 +19,15 @@ word16 DOS_ResizeMemoryBlock(word16 memorySegment, word16 paragraphCount)
 void *AddSignedOffsetToFarPointer(
 	const void *pointer, int32 displacement)
 {
-	uint32 address = HostFarPointer_Encode(pointer);
-	uint32 linear = ((uint32) HIGH_WORD(address) << 0x04) + LOW_WORD(address);
-
-	linear = (uint32) ((int32) linear + displacement);
+	uint32 linear = (uint32) ((int32) DOSMemory_Linear(pointer) + displacement);
 	return FAR_POINTER(void, (word16) (linear >> 0x04), (word16) (linear & 0x0F));
 }
 
 int16 CompareNormalizedFarPointers(
 	const void *left, const void *right)
 {
-	uint32 leftAddress = HostFarPointer_Encode(left);
-	uint32 rightAddress = HostFarPointer_Encode(right);
-	uint32 leftLinear = ((uint32) HIGH_WORD(leftAddress) << 0x04) +
-		LOW_WORD(leftAddress);
-	uint32 rightLinear = ((uint32) HIGH_WORD(rightAddress) << 0x04) +
-		LOW_WORD(rightAddress);
+	uint32 leftLinear = DOSMemory_Linear(left);
+	uint32 rightLinear = DOSMemory_Linear(right);
 
 	return leftLinear < rightLinear ? -0x01 : leftLinear > rightLinear;
 }

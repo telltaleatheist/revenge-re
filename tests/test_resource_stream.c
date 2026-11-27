@@ -1,6 +1,5 @@
 #include "REVENGE.h"
 #include "revenge/original_data.h"
-#include "revenge/representation.h"
 
 #include <stdio.h>
 #include <stdlib.h>

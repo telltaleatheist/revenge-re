@@ -59,7 +59,6 @@ int main(void)
 	static const byte trailingCarriageReturn[] = { 'A', 0x0D, 0x0A };
 	static const byte outputText[] = { 'A', 0x0A, 'B' };
 	byte buffer[0x10];
-	uint32 bufferAddress;
 	word16 handle;
 
 	/* The runtime's handle states as the original starts them (DS:712A):
@@ -74,11 +73,9 @@ int main(void)
 	for (handle = 0x05; handle < ORIGINAL_FILE_HANDLE_COUNT; ++handle)
 		assert(FileRuntime.handleState[handle] == CRT_FILE_STATE_UNUSED);
 
-	bufferAddress = HostFarPointer_RegisterAt(
-		buffer, sizeof(buffer), MAKE_DWORD(0x5100, 0x0004));
 	SetInput(translatedInput, sizeof(translatedInput));
 	assert(ReadFileWithTextTranslation(0x0003,
-		HostFarPointer_Resolve(bufferAddress), sizeof(translatedInput)) == 0x0003);
+		buffer, sizeof(translatedInput)) == 0x0003);
 	assert(memcmp(buffer, "A\nB", 0x0003) == 0x00);
 	assert(filePosition == 0x00000004L);
 	assert((FileRuntime.handleState[0x0003] &
@@ -106,6 +103,5 @@ int main(void)
 	assert(GetFileLength(0x0003) == sizeof(translatedInput));
 	assert(filePosition == 0x00000002L);
 
-	HostFarPointer_Reset();
 	return 0x00;
 }

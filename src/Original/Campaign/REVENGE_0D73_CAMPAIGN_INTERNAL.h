@@ -7,7 +7,6 @@ void InitializeTacticalScenario(void);
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
 #include "revenge/original_data.h"
-#include "revenge/representation.h"
 #include "revenge/save_data.h"
 #include "revenge/video.h"
 

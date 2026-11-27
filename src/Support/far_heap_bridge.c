@@ -4,12 +4,12 @@
 
 struct FarHeapBlockHeader *FarHeapBridge_ResolveBlock(uint32 address)
 {
-	return (FarHeapBlockHeader *) HostFarPointer_Resolve(address);
+	return (FarHeapBlockHeader *) DOSMemory_Pointer(address);
 }
 
 uint32 FarHeapBridge_EncodeBlock(const struct FarHeapBlockHeader *block)
 {
-	return block == NULL ? 0x00000000UL : HostFarPointer_Encode(block);
+	return block == NULL ? 0x00000000UL : DOSMemory_FarAddress(block);
 }
 
 struct FarHeapBlockHeader *FarHeapBridge_GetArenaBase(void)

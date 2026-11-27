@@ -5,7 +5,6 @@
 #include "REVENGE.h"
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
-#include "revenge/representation.h"
 #include "original_import_for_tests.h"
 
 #include <SDL3/SDL.h>

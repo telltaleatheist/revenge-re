@@ -3,19 +3,7 @@
 
 #include "revenge/types.h"
 
-struct DigitalSampleDescriptor;
-struct DigitalWeaponEffectRecord;
-struct DigitalSoundEntryRecord;
 struct FarHeapBlockHeader;
-
-byte *OriginalData_DigitalSoundDataAt(word16 dataSegmentOffset);
-word16 *OriginalData_DigitalSoundDriverDescriptorOffsets(void);
-struct DigitalSampleDescriptor *
-	OriginalData_DigitalSamplePlaybackDescriptors(void);
-struct DigitalWeaponEffectRecord *OriginalData_DigitalWeaponEffectTable(void);
-struct DigitalSoundEntryRecord *OriginalData_DigitalSoundEntries(void);
-const char *OriginalData_DigitalSoundString(word16 dataSegmentOffset);
-void OriginalData_InitializeResourceDescriptorPointers(void);
 
 struct FarHeapBlockHeader *FarHeapBridge_ResolveBlock(uint32 address);
 uint32 FarHeapBridge_EncodeBlock(const struct FarHeapBlockHeader *block);

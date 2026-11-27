@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS   /* original_import_for_tests.h uses fopen */
 #include "fake_backend.h"
 #include "revenge/audio.h"
-#include "revenge/far_memory.h"
 #include "revenge/original_data.h"
 #include "../src/Original/REVENGE.h"
 
@@ -36,7 +35,6 @@ int main(void)
 	RequireOriginalImport();
 
 	FakeBackend_Reset();
-	HostFarPointer_Reset();
 	SoundEffectsEnabled = TRUE;
 	SoundDriverIndex = 0x00;
 	DispatchWeaponEffect(0x03);

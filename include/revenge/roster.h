@@ -1,7 +1,6 @@
 #ifndef REVENGE_ROSTER_H
 #define REVENGE_ROSTER_H
 
-#include "revenge/far_memory.h"
 #include "revenge/types.h"
 
 #include <stddef.h>
@@ -68,7 +67,8 @@ typedef struct UnitSelectionCard
 } UnitSelectionCard;
 
 /* The save boundary: a card from its saved record, and back. A sprite the
- * editor set is stored as its far address in the DOS memory block. */
+ * editor set is stored as its far address in the DOS memory block
+ * (revenge/dos_memory.h). */
 void UnitSelectionCard_Load(UnitSelectionCard *card,
     const RevengeSavedSelectionCard *saved);
 void UnitSelectionCard_Store(RevengeSavedSelectionCard *saved,

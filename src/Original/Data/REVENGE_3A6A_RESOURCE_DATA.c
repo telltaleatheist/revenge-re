@@ -3,7 +3,6 @@
 
 #include "revenge/original_data.h"
 #include "revenge/audio.h"
-#include "revenge/far_memory.h"
 #include "revenge/video.h"
 #include "REVENGE.h"
 #include "revenge/story_text.h"
@@ -66,6 +65,24 @@ const uint32 ResourceFileLengths[
 
 CachedFileDescriptor CachedFileDescriptors[
 	ORIGINAL_RESOURCE_DESCRIPTOR_COUNT];
+
+/* Each descriptor's name and length, as the original's DS image holds them
+ * before the game starts. */
+void OriginalData_InitializeResourceDescriptorPointers(void)
+{
+	word16 resourceIndex;
+
+	for (resourceIndex = 0x0000;
+		resourceIndex < ORIGINAL_RESOURCE_DESCRIPTOR_COUNT;
+		++resourceIndex)
+	{
+		CachedFileDescriptors[resourceIndex].fileName =
+			ResourceFileNames[resourceIndex];
+		CachedFileDescriptors[resourceIndex].fileLength =
+			ResourceFileLengths[resourceIndex];
+	}
+}
+
 word16 ResourceRetryCount = 0x0003;
 word16 ReservedConventionalMemoryKB = 0x00C8;
 word16 SharedCompressionDictionarySegment;

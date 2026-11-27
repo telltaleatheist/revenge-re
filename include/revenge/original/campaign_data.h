@@ -1,7 +1,6 @@
 #ifndef REVENGE_ORIGINAL_CAMPAIGN_DATA_H
 #define REVENGE_ORIGINAL_CAMPAIGN_DATA_H
 
-#include "revenge/far_memory.h"
 #include "revenge/save_data.h"
 #include "revenge/types.h"
 

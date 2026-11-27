@@ -13,7 +13,6 @@
 #include "revenge/original/scene_data.h"
 #include "revenge/platform_backend.h"
 #include "revenge/random.h"
-#include "revenge/representation.h"
 #include "original_import_for_tests.h"
 
 #include <stddef.h>

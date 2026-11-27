@@ -376,16 +376,16 @@ uint32 NormalizeFarPointer(word16 offset, word16 segment)
 
 void *AddSignedOffsetToFarPointer(const void *pointer, int32_t displacement)
 {
-	uint32 linearAddress = HostFarPointer_ToLinear(pointer) + displacement;
+	uint32 linearAddress = DOSMemory_Linear(pointer) + displacement;
 	uint32 normalized = ((linearAddress >> 0x04) << 0x10) |
 		(linearAddress & 0x0F);
-	return HostFarPointer_Resolve(normalized);
+	return DOSMemory_Pointer(normalized);
 }
 
 int16 CompareNormalizedFarPointers(const void *left, const void *right)
 {
-	uint32 leftLinear = HostFarPointer_ToLinear(left);
-	uint32 rightLinear = HostFarPointer_ToLinear(right);
+	uint32 leftLinear = DOSMemory_Linear(left);
+	uint32 rightLinear = DOSMemory_Linear(right);
 
 	if (leftLinear < rightLinear)
 		return -0x01;

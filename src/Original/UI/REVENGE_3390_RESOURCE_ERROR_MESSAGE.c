@@ -5,7 +5,6 @@
 #include "REVENGE.h"
 #include "revenge/input.h"
 #include "revenge/original_data.h"
-#include "revenge/representation.h"
 #include "revenge/text.h"
 #include "revenge/video.h"
 

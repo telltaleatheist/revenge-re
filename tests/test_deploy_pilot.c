@@ -5,7 +5,6 @@
 // FF and that entry's experience and gunnery. Synthetic values only.
 
 #include "revenge/original_data.h"
-#include "revenge/representation.h"
 #include "revenge/original/scene_data.h"
 #include "../src/Original/REVENGE.h"
 

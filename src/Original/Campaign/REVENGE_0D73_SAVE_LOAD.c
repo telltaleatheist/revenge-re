@@ -3,10 +3,6 @@
 
 #include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
 #include "revenge/debug.h"
-
-/* Narrow, as the segment's header keeps its own key constants
- * (revenge/platform_backend.h). */
-const byte *SDLBackend_DOSMemoryBlock(uint32 *capacity, word16 *segment);
 #include "revenge/story_text.h"
 
 // 0D73:4866: word16 SaveGame(void)
@@ -658,26 +654,6 @@ int16 PromptYesNo(word16 initialSelection)
 	return RunSingleUiRegionSelection(0x0D);
 }
 
-/* A pointer into the DOS memory block (the far heap's arena) as the far
- * address the original holds for it: its linear address normalized, the
- * offset 0-Fh. NULL is 0:0. */
-static uint32 DOSMemoryFarAddress(const void *pointer)
-{
-	uint32 capacity;
-	word16 segment;
-	const byte *block = SDLBackend_DOSMemoryBlock(&capacity, &segment);
-	uint32 linear;
-
-	if (pointer == NULL)
-		return 0x00000000UL;
-	if (block == NULL || (const byte *) pointer < block ||
-		(const byte *) pointer >= block + capacity)
-		RevengeFault("a selection card's sprite isn't in the DOS memory block");
-	linear = ((uint32) segment << 0x04) +
-		(uint32) ((const byte *) pointer - block);
-	return ((linear >> 0x04) << 0x10) | (linear & 0x0F);
-}
-
 void UnitSelectionCard_Store(RevengeSavedSelectionCard *saved,
 	const UnitSelectionCard *card)
 {
@@ -690,6 +666,6 @@ void UnitSelectionCard_Store(RevengeSavedSelectionCard *saved,
 	saved->selectionId = card->selectionId;
 	saved->alternateId = card->alternateId;
 	saved->spriteBuffer = card->spriteBuffer != NULL
-		? DosAddress_FromValue(DOSMemoryFarAddress(card->spriteBuffer))
+		? DosAddress_FromValue(DOSMemory_FarAddress(card->spriteBuffer))
 		: card->loadedSpriteBuffer;
 }

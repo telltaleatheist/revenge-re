@@ -2,7 +2,6 @@
 #define REVENGE_VIDEO_H
 
 #include "revenge/types.h"
-#include "revenge/far_memory.h"
 
 /* The VGA segment A000 is 64K: the screen's 64000 bytes, then video memory
  * off the screen (A000:FA00-FFFF). The host keeps all of it, because the

@@ -1,6 +1,5 @@
-#include "revenge/far_memory.h"
+#include "revenge/dos_memory.h"
 #include "revenge/original_data.h"
-#include "revenge/representation.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -42,8 +41,7 @@ int main(void)
 	/* The map as the game allocates it: one block a far pointer addresses. */
 	TerrainTypeMap = (byte *) calloc(0x8000, 1);
 	assert(TerrainTypeMap != NULL);
-	HostFarPointer_Reset();
-	HostFarPointer_Register(TerrainTypeMap, 0x8000);
+	DOSMemory_SetBlock(TerrainTypeMap, 0x8000, 0x2000);
 	/* As the game's start-up does (2C7F): every tracked file's slot free, no
 	 * file cached. */
 	InitializeResourceCache();

@@ -20,12 +20,9 @@ byte *AllocateFarMemory(int32 byteCount)
 
 static void ResetState(void)
 {
-	HostFarPointer_Reset();
 	memset(framebuffer, 0x00, sizeof(framebuffer));
 	memset(encodingBuffer, 0xCC, sizeof(encodingBuffer));
 	requestedAllocationSize = -0x01;
-	HostFarPointer_Register(framebuffer, sizeof(framebuffer));
-	HostFarPointer_Register(encodingBuffer, sizeof(encodingBuffer));
 	PrimaryScreenBuffer = framebuffer;
 	PlanarScreenBuffer = encodingBuffer;
 }
@@ -91,6 +88,5 @@ int main(void)
 	TestVgaZeroRunEncoding();
 	TestAdapterDispatcher();
 	TestPlanarBackingFormat();
-	HostFarPointer_Reset();
 	return 0;
 }

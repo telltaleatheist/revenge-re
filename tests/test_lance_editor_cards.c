@@ -58,8 +58,6 @@ static void LoadOriginalSaveCards(void)
 static void BuildEditorBuffers(void)
 {
 	memset(framebuffer, 0x00, sizeof(framebuffer));
-	HostFarPointer_Register(framebuffer, sizeof(framebuffer));
-	HostFarPointer_Register(encodingBuffer, sizeof(encodingBuffer));
 	PrimaryScreenBuffer = framebuffer;
 	PlanarScreenBuffer = encodingBuffer;
 	VideoAdapterType = 0x03; /* VGA */

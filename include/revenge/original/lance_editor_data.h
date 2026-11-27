@@ -1,7 +1,6 @@
 #ifndef REVENGE_ORIGINAL_LANCE_EDITOR_DATA_H
 #define REVENGE_ORIGINAL_LANCE_EDITOR_DATA_H
 
-#include "revenge/far_memory.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/original_data.h"
 #include "revenge/roster.h"

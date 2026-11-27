@@ -119,14 +119,6 @@ word16 SDLBackend_ResizeMemoryBlock(
     return 0xFFFF;
 }
 
-/* No DOS memory block: the tests that use one link the SDL backend's. */
-const byte *SDLBackend_DOSMemoryBlock(uint32 *capacity, word16 *segment)
-{
-	*capacity = 0x00000000UL;
-	*segment = 0x0000;
-	return 0;
-}
-
 word16 SDLBackend_GetLargestFreeConventionalMemoryParagraphs(
 	word16 requestedParagraphs)
 {

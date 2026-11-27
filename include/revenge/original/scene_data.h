@@ -1,7 +1,6 @@
 #ifndef REVENGE_ORIGINAL_SCENE_DATA_H
 #define REVENGE_ORIGINAL_SCENE_DATA_H
 
-#include "revenge/far_memory.h"
 #include "revenge/original/resource_data.h"
 #include "revenge/types.h"
 

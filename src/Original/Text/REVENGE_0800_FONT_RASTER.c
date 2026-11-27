@@ -1,6 +1,5 @@
 /* Font raster procedures from REVENGE_0800. */
 
-#include "revenge/far_memory.h"
 #include "revenge/original_data.h"
 #include "revenge/text.h"
 #include "revenge/video.h"

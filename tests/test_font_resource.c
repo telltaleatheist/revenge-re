@@ -85,17 +85,13 @@ byte *AllocateFarHeapBytes16(word16 byteCount)
 {
 	byte *allocation = (byte *) malloc(byteCount);
 	if (allocation != NULL)
-	{
 		++allocationCount;
-		HostFarPointer_Register(allocation, byteCount);
-	}
 	return allocation;
 }
 
 void FreeHeapBlock(byte *allocation)
 {
 	++freeCount;
-	HostFarPointer_Unregister(allocation);
 	free(allocation);
 }
 
@@ -111,7 +107,6 @@ static void PrepareValidFont(void)
 	closeCount = 0x00;
 	allocationCount = 0x00;
 	freeCount = 0x00;
-	HostFarPointer_Reset();
 }
 
 static void TestValidFontLoad(void)

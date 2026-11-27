@@ -39,9 +39,6 @@ int main(void)
 	InputDeviceType = 0x0001;
 	assert(TacticalCursorAutoScroll == 0x0001);
 
-	HostFarPointer_Reset();
-	HostFarPointer_Register(oldBacking, sizeof(oldBacking));
-	HostFarPointer_Register(replacementBacking, sizeof(replacementBacking));
 	SharedGraphicsBackingBuffers[0x00] = oldBacking;
 	MouseCursorBackingSourceTileX = 0x0011;
 	MouseCursorBackingSourcePixelY = 0x0022;
@@ -56,6 +53,5 @@ int main(void)
 	assert(capturedHeightPixels == 0x0044);
 	assert(SharedGraphicsBackingBuffers[0x00] == replacementBacking);
 
-	HostFarPointer_Reset();
 	return 0;
 }

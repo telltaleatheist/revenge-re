@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS   /* original_import_for_tests.h uses fopen */
 #include "fake_backend.h"
 #include "revenge/audio.h"
-#include "revenge/far_memory.h"
 #include "revenge/original_data.h"
 #include "../src/Original/REVENGE.h"
 
@@ -14,7 +13,6 @@ int main(void)
 	RequireOriginalImport();
 
 	FakeBackend_Reset();
-	HostFarPointer_Reset();
 
 	/* The assertions read the exact DS:5CFC catalog embedded in Original. */
 	assert(FindDigitalSoundEntryByCode('I') == 0x00);

@@ -91,13 +91,12 @@ target_sources(chr_original_runtime PRIVATE
 	src/Support/audio_log.c
 	src/Support/debug.c
 	src/Support/media_settings.c
-    src/Support/far_memory.c
+    src/Support/dos_memory.c
     src/Support/host_dispatch.c
     src/Support/digital_bridge.c
     src/Support/far_heap_bridge.c
     src/Support/midi_data.c
     src/Support/program_break_bridge.c
-    src/Support/representation.c
     src/Support/video_bridge.c
     src/Support/presentation_callback_bridge.c
 	src/Support/tactical_panel_data.c
@@ -540,18 +539,20 @@ if(BUILD_TESTING)
     add_test(NAME graphics.original_display_backing_encoding
         COMMAND test_display_backing_encoding)
 
-    add_executable(test_far_pointer_bridge
-        tests/test_far_pointer_bridge.c
-        src/Support/far_memory.c)
-    target_include_directories(test_far_pointer_bridge PRIVATE include)
-    chr_strict(test_far_pointer_bridge)
-    add_test(NAME support.far_pointer_bridge COMMAND test_far_pointer_bridge)
+    add_executable(test_dos_memory
+        tests/test_dos_memory.c
+        src/Support/dos_memory.c
+        src/Support/debug.c)
+    target_include_directories(test_dos_memory PRIVATE include)
+    chr_strict(test_dos_memory)
+    add_test(NAME support.dos_memory COMMAND test_dos_memory)
 
     add_executable(test_program_break
         tests/test_program_break.c
         src/Original/Runtime/REVENGE_38FE_PROGRAM_BREAK.c
         ${CHR_3A6A_DATA_SOURCES}
-        src/Support/far_memory.c
+        src/Support/debug.c
+        src/Support/dos_memory.c
         src/Support/program_break_bridge.c)
     target_include_directories(test_program_break PRIVATE
         include src/Original)
@@ -564,7 +565,8 @@ if(BUILD_TESTING)
         src/Original/Runtime/REVENGE_38CD_FAR_HEAP_UNLINK.c
         src/Original/Runtime/REVENGE_398D_FAR_HEAP.c
         ${CHR_3A6A_DATA_SOURCES}
-        src/Support/far_memory.c
+        src/Support/debug.c
+        src/Support/dos_memory.c
         src/Support/far_heap_bridge.c)
     target_include_directories(test_far_heap PRIVATE include src/Original)
     chr_strict(test_far_heap)
@@ -596,8 +598,7 @@ if(BUILD_TESTING)
         src/Original/IO/REVENGE_393C_TEXT_FILE_READ.c
         src/Original/IO/REVENGE_394A_TEXT_FILE_WRITE.c
         src/Original/IO/REVENGE_39C0_FILE_LENGTH.c
-        ${CHR_3A6A_DATA_SOURCES}
-        src/Support/far_memory.c)
+        ${CHR_3A6A_DATA_SOURCES})
     target_include_directories(test_file_translation PRIVATE include src/Original)
     chr_strict(test_file_translation)
     add_test(NAME platform.original_file_translation COMMAND test_file_translation)
@@ -608,8 +609,7 @@ if(BUILD_TESTING)
         src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.c
         ${CHR_3A6A_DATA_SOURCES}
         src/Support/debug.c
-        src/Support/far_memory.c
-        src/Support/representation.c)
+        src/Support/dos_memory.c)
     target_include_directories(test_resource_stream PRIVATE
         include src/Original)
     chr_strict(test_resource_stream)

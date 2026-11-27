@@ -50,8 +50,7 @@ void RunExitHandlersAndTerminate(word16 exitCode)
 
 static uint32 LinearAddress(const void *pointer)
 {
-	uint32 address = HostFarPointer_Encode(pointer);
-	return ((uint32) HIGH_WORD(address) << 0x04) + LOW_WORD(address);
+	return DOSMemory_Linear(pointer);
 }
 
 void *AddSignedOffsetToFarPointer(
@@ -73,21 +72,21 @@ void *AdjustProgramBreak(int32 increment)
 {
 	uint32 oldBreak = breakAddress;
 	uint32 newLinear = LinearAddress(
-		AddSignedOffsetToFarPointer(HostFarPointer_Resolve(breakAddress), increment));
-	uint32 baseLinear = LinearAddress(HostFarPointer_Resolve(arenaBase));
+		AddSignedOffsetToFarPointer(DOSMemory_Pointer(breakAddress), increment));
+	uint32 baseLinear = LinearAddress(DOSMemory_Pointer(arenaBase));
 
 	if (newLinear < baseLinear || newLinear > baseLinear + sizeof(arena))
 		return FAR_POINTER(void, 0xFFFF, 0xFFFF);
 
-	breakAddress = HostFarPointer_Encode(
-		AddSignedOffsetToFarPointer(HostFarPointer_Resolve(arenaBase),
+	breakAddress = DOSMemory_FarAddress(
+		AddSignedOffsetToFarPointer(DOSMemory_Pointer(arenaBase),
 			(int32) (newLinear - baseLinear)));
-	return HostFarPointer_Resolve(oldBreak);
+	return DOSMemory_Pointer(oldBreak);
 }
 
 int16 SetProgramBreak(void *newBreak)
 {
-	breakAddress = HostFarPointer_Encode(newBreak);
+	breakAddress = DOSMemory_FarAddress(newBreak);
 	return 0x0000;
 }
 
@@ -99,8 +98,8 @@ int main(void)
 	byte *aligned;
 
 	memset(arena, 0x00, sizeof(arena));
-	arenaBase = HostFarPointer_RegisterAt(arena, sizeof(arena),
-		MAKE_FAR_POINTER(0x2000, 0x0000));
+	DOSMemory_SetBlock(arena, sizeof(arena), 0x2000);
+	arenaBase = MAKE_FAR_POINTER(0x2000, 0x0000);
 	breakAddress = arenaBase;
 
 	first = AllocateFarHeapBytes(0x000A);
@@ -141,6 +140,6 @@ int main(void)
 	FreeFarMemory(first);
 	assert(FarHeapArenaBaseSegment == 0x0000);
 
-	HostFarPointer_Reset();
+	DOSMemory_SetBlock(NULL, 0x00000000UL, 0x0000);
 	return 0;
 }

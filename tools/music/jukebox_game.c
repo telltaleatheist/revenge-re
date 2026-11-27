@@ -4,14 +4,11 @@
  * MIDI bytes go to the jukebox. No game data but the song's bytes. */
 #include "fake_backend.h"
 #include "revenge/audio.h"
-#include "revenge/far_memory.h"
 
 #include <string.h>
 
 /* The game's staging buffer for a song and its bound (3014:0117,
- * LoadMusicResource 3014:0197). The game takes it from far memory; here it
- * is registered whole with the far pointers, as that allocation is, so the
- * sequencer's stream pointers into it resolve. */
+ * LoadMusicResource 3014:0197). The game takes it from far memory. */
 enum { JUKEBOX_SONG_CAPACITY = 0x30D4 };
 
 static byte song[JUKEBOX_SONG_CAPACITY];
@@ -20,7 +17,6 @@ void JukeboxGame_Begin(void (*sink)(unsigned char))
 {
 	FakeBackend_Reset();
 	fakeBackend.midiSink = sink;
-	(void) HostFarPointer_Register(song, JUKEBOX_SONG_CAPACITY);
 	PrepareMIDIDriver(&RolandMIDIDriverDescriptor);
 	SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
 	ActivateMIDIDriver(&RolandMIDIDriverDescriptor);
@@ -65,6 +61,5 @@ void JukeboxGame_End(void)
 {
 	StopMIDISequence();
 	DeactivateMIDIDriver();
-	HostFarPointer_Unregister(song);
 	fakeBackend.midiSink = NULL;
 }
