@@ -1,0 +1,17 @@
+{
+  "initial": {
+    "random_unit_pool": [null, null, null, null, null, null, null],
+    "random_pilot_pool": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "random_pilot_count": 15
+  },
+  "forward": {
+    "random_unit_pool": [null, null, null, null, null, null, null],
+    "random_pilot_pool": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    "random_pilot_count": 15
+  },
+  "replay": {
+    "random_unit_pool": [null, null, null, null, null, null, null],
+    "random_pilot_pool": [18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
+    "random_pilot_count": 15
+  }
+}

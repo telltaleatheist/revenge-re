@@ -265,12 +265,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HYDRATE_DATA_OBJECT(TrainingScenarioCompletionFlags, 0x00A0);
 	HYDRATE_DATA_OBJECT(SaveDirectory, 0x18CE);
 	HYDRATE_DATA_OBJECT(SaveCampaignSnapshot, 0x1956);
-	HYDRATE_DATA_OBJECT(InitialCampaignState, 0x1B77);
-	HYDRATE_DATA_OBJECT(ForwardCampaignState, 0x1B7E);
-	HYDRATE_DATA_OBJECT(ReplayCampaignState, 0x1B85);
-	HYDRATE_DATA_OBJECT(InitialExtendedCampaignState, 0x1B8F);
-	HYDRATE_DATA_OBJECT(ForwardExtendedCampaignState, 0x1B9E);
-	HYDRATE_DATA_OBJECT(ReplayExtendedCampaignState, 0x1BAD);
 	HYDRATE_DATA_OBJECT(CampaignMessageTable, 0x2B54);
 	HYDRATE_DATA_OBJECT(LoadedSceneFile, 0x71A8);
 	HYDRATE_DATA_OBJECT(SceneUnitRoutes, 0x86C1);

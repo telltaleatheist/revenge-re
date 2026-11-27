@@ -39,6 +39,7 @@ int8 ScreenPaletteResourceByScreen[CAMPAIGN_SCREEN_PALETTE_COUNT];
 CampaignSaveDirectory SaveDirectory;
 RevengeCampaignSnapshot SaveCampaignSnapshot;
 
+/* Filled at start from data/start/new_campaign.json (revenge/rules.h). */
 byte InitialCampaignState[CAMPAIGN_PRIMARY_STATE_COUNT];
 byte ForwardCampaignState[CAMPAIGN_PRIMARY_STATE_COUNT];
 byte ReplayCampaignState[CAMPAIGN_PRIMARY_STATE_COUNT];

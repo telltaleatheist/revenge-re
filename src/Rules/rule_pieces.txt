@@ -93,3 +93,12 @@ tactical_panel.facing_end_x             FacingVectorEndX                    3A6A
 tactical_panel.facing_end_y             FacingVectorEndY                    3A6A:301E 20
 tactical_panel.movement_x               MovementVectorX                     3A6A:303E 40
 tactical_panel.movement_y               MovementVectorY                     3A6A:307E 40
+
+# data/start/new_campaign.json
+new_campaign.initial_unit_pool          InitialCampaignState                3A6A:1B77 7
+new_campaign.forward_unit_pool          ForwardCampaignState                3A6A:1B7E 7
+new_campaign.replay_unit_pool           ReplayCampaignState                 3A6A:1B85 7
+new_campaign.random_pilot_counts        RandomPilotPoolCounts               3A6A:1B8C 3
+new_campaign.initial_pilot_pool         InitialExtendedCampaignState        3A6A:1B8F F
+new_campaign.forward_pilot_pool         ForwardExtendedCampaignState        3A6A:1B9E F
+new_campaign.replay_pilot_pool          ReplayExtendedCampaignState         3A6A:1BAD F

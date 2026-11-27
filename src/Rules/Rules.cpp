@@ -780,6 +780,45 @@ void read_tactical_panel(const Json& root, Tables& tables) {
     file.done();
 }
 
+// data/start: the state a new campaign begins with, ours as the rules are.
+// The three copies of the campaign's random pools (initial, forward,
+// replay), each the unit pool (RandomUnitTypePool's 7 unit types), the pilot
+// pool (RandomPilotPool's 15 pilots) and the pilot pool's count, which
+// RandomPilotPoolCounts holds for all three.
+void read_new_campaign(const Json& root, Tables& tables) {
+    Fields file(root, "new_campaign.json:");
+    std::vector<std::uint8_t>& counts = tables["new_campaign.random_pilot_counts"];
+    counts.assign(3, 0);
+    static const char* const kCopies[3] = {"initial", "forward", "replay"};
+    for (std::size_t copy = 0; copy < 3; ++copy) {
+        const std::string name = kCopies[copy];
+        Fields state(file.take(name), file.at(name));
+        const Json& units = state.take("random_unit_pool");
+        const std::string units_where = state.at("random_unit_pool");
+        if (!units.is_array() || units.array().size() != 7)
+            fail(units_where, "is not an array of 7 unit types or nulls");
+        std::vector<std::uint8_t>& unit_pool = tables["new_campaign." + name + "_unit_pool"];
+        unit_pool.assign(7, 0);
+        for (std::size_t index = 0; index < 7; ++index)
+            unit_pool[index] = unit_type(units.array()[index], units_where + "[" + std::to_string(index) + "]");
+        const Json& pilots = state.take("random_pilot_pool");
+        const std::string pilots_where = state.at("random_pilot_pool");
+        if (!pilots.is_array() || pilots.array().size() != 15) fail(pilots_where, "is not an array of 15 pilots");
+        std::vector<std::uint8_t>& pool = tables["new_campaign." + name + "_pilot_pool"];
+        pool.assign(15, 0);
+        for (std::size_t index = 0; index < 15; ++index) {
+            const Json& pilot = pilots.array()[index];
+            pool[index] = std::holds_alternative<std::nullptr_t>(pilot.value)
+                              ? std::uint8_t(0xFF)  // REVENGE_PILOT_ID_NONE
+                              : std::uint8_t(whole(pilot, pilots_where + "[" + std::to_string(index) + "]",
+                                                   unsigned(kPilots - 1)));
+        }
+        counts[copy] = std::uint8_t(whole(state.take("random_pilot_count"), state.at("random_pilot_count"), 15));
+        state.done();
+    }
+    file.done();
+}
+
 // Bytes two tables share in the original's memory must agree.
 void check_shared(const Tables& tables) {
     // The first missile weapon's bonus is the high byte of the last direction
@@ -820,6 +859,8 @@ void load(const std::filesystem::path& data_dir) {
     read_lance_editor(read_file(ui / "lance_editor.json", "lance_editor.json"), tables);
     read_screens(read_file(ui / "screens.json", "screens.json"), tables);
     read_tactical_panel(read_file(ui / "tactical_panel.json", "tactical_panel.json"), tables);
+    const std::filesystem::path start = data_dir / "start";
+    read_new_campaign(read_file(start / "new_campaign.json", "new_campaign.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {

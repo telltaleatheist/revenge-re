@@ -67,6 +67,13 @@ const RulePiece RulePieces[] =
 	{ "tactical_panel.facing_end_y", &FacingVectorEndY, sizeof(FacingVectorEndY), 0x3A6A, 0x301E, 0x20, "276d404218862052" },
 	{ "tactical_panel.movement_x", &MovementVectorX, sizeof(MovementVectorX), 0x3A6A, 0x303E, 0x40, "2e470f455aec0344" },
 	{ "tactical_panel.movement_y", &MovementVectorY, sizeof(MovementVectorY), 0x3A6A, 0x307E, 0x40, "86d4436c3808c49b" },
+	{ "new_campaign.initial_unit_pool", &InitialCampaignState, sizeof(InitialCampaignState), 0x3A6A, 0x1B77, 0x7, "3e02b73bac989cf9" },
+	{ "new_campaign.forward_unit_pool", &ForwardCampaignState, sizeof(ForwardCampaignState), 0x3A6A, 0x1B7E, 0x7, "3e02b73bac989cf9" },
+	{ "new_campaign.replay_unit_pool", &ReplayCampaignState, sizeof(ReplayCampaignState), 0x3A6A, 0x1B85, 0x7, "3e02b73bac989cf9" },
+	{ "new_campaign.random_pilot_counts", &RandomPilotPoolCounts, sizeof(RandomPilotPoolCounts), 0x3A6A, 0x1B8C, 0x3, "9aa5762952aa130c" },
+	{ "new_campaign.initial_pilot_pool", &InitialExtendedCampaignState, sizeof(InitialExtendedCampaignState), 0x3A6A, 0x1B8F, 0xF, "5ed3771e99a6af78" },
+	{ "new_campaign.forward_pilot_pool", &ForwardExtendedCampaignState, sizeof(ForwardExtendedCampaignState), 0x3A6A, 0x1B9E, 0xF, "5ed3771e99a6af78" },
+	{ "new_campaign.replay_pilot_pool", &ReplayExtendedCampaignState, sizeof(ReplayExtendedCampaignState), 0x3A6A, 0x1BAD, 0xF, "2111c357b439a9b8" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -127,3 +134,10 @@ _Static_assert(sizeof(FacingVectorEndX) == 0x20, "tactical_panel.facing_end_x is
 _Static_assert(sizeof(FacingVectorEndY) == 0x20, "tactical_panel.facing_end_y is the original's size");
 _Static_assert(sizeof(MovementVectorX) == 0x40, "tactical_panel.movement_x is the original's size");
 _Static_assert(sizeof(MovementVectorY) == 0x40, "tactical_panel.movement_y is the original's size");
+_Static_assert(sizeof(InitialCampaignState) == 0x7, "new_campaign.initial_unit_pool is the original's size");
+_Static_assert(sizeof(ForwardCampaignState) == 0x7, "new_campaign.forward_unit_pool is the original's size");
+_Static_assert(sizeof(ReplayCampaignState) == 0x7, "new_campaign.replay_unit_pool is the original's size");
+_Static_assert(sizeof(RandomPilotPoolCounts) == 0x3, "new_campaign.random_pilot_counts is the original's size");
+_Static_assert(sizeof(InitialExtendedCampaignState) == 0xF, "new_campaign.initial_pilot_pool is the original's size");
+_Static_assert(sizeof(ForwardExtendedCampaignState) == 0xF, "new_campaign.forward_pilot_pool is the original's size");
+_Static_assert(sizeof(ReplayExtendedCampaignState) == 0xF, "new_campaign.replay_pilot_pool is the original's size");

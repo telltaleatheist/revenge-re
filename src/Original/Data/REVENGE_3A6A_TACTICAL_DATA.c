@@ -220,7 +220,8 @@ word16 ModalBackingHeight;
 byte ActivePilotListWindowHeight;
 byte CommanderListWindowHeight;
 byte FallenPilotListWindowHeight;
-/* DS:1B8C-1B8E: from the player's copy (original_import_pieces.txt). */
+/* DS:1B8C-1B8E: filled at start from data/start/new_campaign.json
+ * (revenge/rules.h). */
 RandomPilotPoolCountCopies RandomPilotPoolCounts;
 word16 SaveTransferState;
 word16 SavedSaveTransferState;

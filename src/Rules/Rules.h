@@ -1,6 +1,6 @@
 // The rules (include/revenge/rules.h): numbers we own, the original's to
-// begin with, read from <data dir>/rules/*.json and <data dir>/ui/*.json at
-// start into the tables the game reads. Never the game's text: a rule that names a text uses its story
+// begin with, read from <data dir>/rules/*.json, <data dir>/ui/*.json and
+// <data dir>/start/*.json at start into the tables the game reads. Never the game's text: a rule that names a text uses its story
 // id, and a name in a file is the name the code gives the thing.
 //
 //   weapons.json
@@ -124,6 +124,21 @@
 //         facings, the line that shows the unit moving
 //     "formation_marker_origins"  10 {"x", "y"}, by formation
 //
+// data/start holds the state a new campaign begins with, ours too:
+//
+//   new_campaign.json:
+//     "initial", "forward", "replay"  the three copies of the campaign's
+//         random pools, as the original starts them: each
+//         {"random_unit_pool" (7 unit types or null),
+//          "random_pilot_pool" (15 pilots, 0 to 58, or null),
+//          "random_pilot_count" (0 to 15)}.
+//         The game draws from the replay copy. A new campaign round copies
+//         replay to forward (or forward back to replay, to play a stage
+//         again), and Restart copies initial to replay. The initial copy's
+//         pilot pool is 15 zeros while the replay copy's is pilots 18 to 32,
+//         as the original's are; the forward copy is overwritten from the
+//         replay copy before it is read.
+//
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
 // file and the key.
@@ -138,7 +153,7 @@ struct RulesError : std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
-// Reads every file under data_dir/rules and data_dir/ui into its tables, or throws
+// Reads every file under data_dir/rules, /ui and /start into its tables, or throws
 // RulesError naming the file and the key.
 void load(const std::filesystem::path& data_dir);
 
