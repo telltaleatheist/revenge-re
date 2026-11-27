@@ -38,7 +38,7 @@ void ShowInvalidSaveVersionDialog(void)
     {
         backingSize = (uint32_t) ActiveTextWindowWidthTiles *
             ActiveTextWindowHeightTiles;
-        backingSize <<= VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05;
+        backingSize <<= VideoAdapterType == VIDEO_ADAPTER_VGA ? VGA_TILE_BYTE_SHIFT : EGA_TILE_BYTE_SHIFT;
         backingBuffer = (uint8_t *) Heap_Allocate(backingSize, "0D73:466E");
         InvalidSaveDialogBacking = backingBuffer;
         allocatedHere = TRUE;
