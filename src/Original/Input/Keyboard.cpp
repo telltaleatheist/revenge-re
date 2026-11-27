@@ -1,4 +1,5 @@
-// REVENGE_3037_KEYBOARD.cpp
+// 3037: keyboard
+// Keyboard.cpp
 // Assembly-led translation of the resident keyboard handler, its ring's
 // consumers and the translator.
 

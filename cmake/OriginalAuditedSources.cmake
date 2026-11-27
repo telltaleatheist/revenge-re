@@ -52,7 +52,7 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Audio/PCSpeakerTimer.cpp
     src/Original/Audio/DigitalSound.cpp
     src/Original/IO/ProcessExit.cpp
-    src/Original/Input/REVENGE_3037_KEYBOARD.cpp
+    src/Original/Input/Keyboard.cpp
     src/Original/IO/DOSConsole.cpp
     src/Original/Graphics/VideoRegionCopy.cpp
     src/Original/Text/REVENGE_3338_TEXT_WINDOW_SELECT.cpp
@@ -71,23 +71,23 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Audio/PITTimer.cpp
     src/Original/Graphics/VideoTiming.cpp
     src/Original/Utility/REVENGE_34C6_RANDOM_RANGE.cpp
-    src/Original/Input/REVENGE_34C8_NAVIGATION_KEY.cpp
+    src/Original/Input/NavigationKey.cpp
     src/Original/Graphics/TileCapture.cpp
     src/Original/IO/CriticalError.cpp
     src/Original/Resources/REVENGE_34B3_PACKED_ICON_RESOURCE.cpp
     src/Original/Graphics/TileStripCapture.cpp
     src/Original/Graphics/PackedIcons.cpp
-    src/Original/Input/REVENGE_34E6_UI_REGION_POLL.cpp
+    src/Original/Input/UIRegionPoll.cpp
     src/Original/Graphics/IconPageDecode.cpp
-    src/Original/Input/REVENGE_35AB_UI_REGION_SETUP.cpp
+    src/Original/Input/UIRegionSetup.cpp
     src/Original/UI/REVENGE_35CA_UI_REGION_HIGHLIGHT.cpp
     src/Original/Text/REVENGE_35CE_FORMATTED_TEXT.cpp
-    src/Original/Input/REVENGE_3568_UI_REGION_LOOP.cpp
+    src/Original/Input/UIRegionLoop.cpp
     src/Original/Text/REVENGE_356D_TEXT_WINDOW_CLEAR.cpp
     src/Original/Text/REVENGE_356F_TEXT_RENDER.cpp
-    src/Original/Input/REVENGE_358E_SINGLE_UI_REGION.cpp
+    src/Original/Input/SingleUIRegion.cpp
     src/Original/Graphics/RenderTarget.cpp
-    src/Original/Input/REVENGE_3599_UI_REGION_HIGHLIGHT.cpp
+    src/Original/Input/UIRegionHighlight.cpp
     src/Original/Audio/MIDISequence.cpp
 	src/Original/Audio/MIDIDrivers.cpp
 	src/Original/Utility/REVENGE_3968_INTEGER_FORMAT.cpp
@@ -98,7 +98,7 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Campaign/EpochTime.cpp
 	src/Original/Campaign/Timezone.cpp
     src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.cpp
-    src/Original/Input/REVENGE_0800_CURSOR.cpp
+    src/Original/Input/Cursor.cpp
     src/Original/Text/REVENGE_0800_FONT_RASTER.cpp)
 
 list(APPEND CHR_ORIGINAL_SOURCES
@@ -130,7 +130,7 @@ list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Graphics/DisplayBacking.cpp
 	src/Original/Graphics/Sprite.cpp
 	src/Original/Graphics/PaletteBankAnchors.cpp
-	src/Original/Input/REVENGE_0D73_WAIT.cpp
+	src/Original/Input/Wait.cpp
 	src/Original/Text/REVENGE_0D73_STARTUP_TEXT.cpp
 	src/Original/Text/REVENGE_0D73_STRING_FIELDS.cpp
 	src/Original/Text/REVENGE_0D73_ENTRY_BLINK.cpp

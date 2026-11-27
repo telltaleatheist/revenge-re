@@ -630,7 +630,7 @@ void PresentMissionBriefing(
         ShowCampaignMessageAndWait(messageIndex);
 }
 
-/* 0D73:3C7C is reconstructed in Input/REVENGE_0D73_WAIT.cpp. */
+/* 0D73:3C7C is reconstructed in Input/Wait.cpp. */
 
 // 0D73:3C97: Register byte * WaitForDismissInputOrTimeout(Stack word16 wArg04)
 // Called from:

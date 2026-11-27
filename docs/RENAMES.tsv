@@ -73,3 +73,12 @@ file	src/Original/IO/REVENGE_34A7_CRITICAL_ERROR.cpp	src/Original/IO/CriticalErr
 file	src/Original/IO/REVENGE_38C6_PROCESS_EXIT.cpp	src/Original/IO/ProcessExit.cpp	38C6	process exit
 file	src/Original/IO/REVENGE_39D9_SYSTEM_TIME.cpp	src/Original/IO/SystemTime.cpp	39D9	system time
 file	src/Original/IO/REVENGE_39DC_ENVIRONMENT.cpp	src/Original/IO/Environment.cpp	39DC	environment
+file	src/Original/Input/REVENGE_0800_CURSOR.cpp	src/Original/Input/Cursor.cpp	0800	cursor
+file	src/Original/Input/REVENGE_0D73_WAIT.cpp	src/Original/Input/Wait.cpp	0D73	wait
+file	src/Original/Input/REVENGE_3037_KEYBOARD.cpp	src/Original/Input/Keyboard.cpp	3037	keyboard
+file	src/Original/Input/REVENGE_34C8_NAVIGATION_KEY.cpp	src/Original/Input/NavigationKey.cpp	34C8	navigation key
+file	src/Original/Input/REVENGE_34E6_UI_REGION_POLL.cpp	src/Original/Input/UIRegionPoll.cpp	34E6	UI region poll
+file	src/Original/Input/REVENGE_3568_UI_REGION_LOOP.cpp	src/Original/Input/UIRegionLoop.cpp	3568	UI region loop
+file	src/Original/Input/REVENGE_358E_SINGLE_UI_REGION.cpp	src/Original/Input/SingleUIRegion.cpp	358E	single UI region
+file	src/Original/Input/REVENGE_3599_UI_REGION_HIGHLIGHT.cpp	src/Original/Input/UIRegionHighlight.cpp	3599	UI region highlight
+file	src/Original/Input/REVENGE_35AB_UI_REGION_SETUP.cpp	src/Original/Input/UIRegionSetup.cpp	35AB	UI region setup

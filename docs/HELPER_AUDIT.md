@@ -84,7 +84,7 @@ No game/data-flow helper function definitions remain in `src/Original`.
 | File | Helpers | Count | Required destination |
 | --- | --- | ---: | --- |
 | `REVENGE_1A1F_INTERNAL.h` | `GetTacticalBackingBuffer`, `SetTacticalBackingBuffer` | 2 | Replace with explicit DS far-pointer loads/stores or a Support-level 16:16 bridge. |
-| `REVENGE_3037_KEYBOARD.cpp` | `PumpHostKeyboardEvent` | 1 | SDL input boundary. |
+| `Keyboard.cpp` | `PumpHostKeyboardEvent` | 1 | SDL input boundary. |
 | `DigitalSound.cpp` | `DigitalSoundDataAt`, `DigitalSoundDriverDescriptorOffsets`, `DigitalSamplePlaybackDescriptors`, `DigitalWeaponEffectTable`, `DigitalSoundEntries`, `DigitalSoundString` | 6 | Typed views/macros over the recovered DS image in Support; no playback decisions. |
 | `AudioHardware.cpp` | `ResolveDigitalHardwareDescriptor`, `ResolveDigitalPlaybackDescriptor`, `ResolveProbeCandidateList`, `DispatchDigitalHardwareProbe`, `DispatchDigitalHardwareAcquire`, `DispatchDigitalHardwareRelease`, `InvokeDigitalSampleCompletion` | 7 | Host callback/far-pointer dispatch bridge in Support/SDL. Original wrapper calls remain in `AudioHardware.cpp`. |
 | `REVENGE_38CD_FAR_HEAP_UNLINK.c` | `ResolveBlock`, `EncodeBlock`, `GetFarHeapArenaBase`, `SetFarHeapArenaBase`, `GetFarHeapTailBlock`, `SetFarHeapTailBlock`, `GetFarHeapFreeListHead`, `SetFarHeapFreeListHead`, `FarHeapPayload` | 9 | Shared far-heap representation macros or Support primitives. Preserve allocator branches in the original procedures. |
