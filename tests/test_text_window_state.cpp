@@ -4,22 +4,22 @@
 #include <assert.h>
 #include <string.h>
 
-static word16 fillCallCount;
-static word16 fillLeft;
-static word16 fillTop;
-static word16 fillWidth;
-static word16 fillHeight;
-static byte fillColor;
+static uint16_t fillCallCount;
+static uint16_t fillLeft;
+static uint16_t fillTop;
+static uint16_t fillWidth;
+static uint16_t fillHeight;
+static uint8_t fillColor;
 
 void FillVideoTileRectangle(
-    int16 tileX,
-    uint16 tileY,
-    uint16 widthTiles,
-    uint16 heightTiles,
-    byte color)
+    int16_t tileX,
+    uint16_t tileY,
+    uint16_t widthTiles,
+    uint16_t heightTiles,
+    uint8_t color)
 {
     ++fillCallCount;
-    fillLeft = (word16) tileX;
+    fillLeft = (uint16_t) tileX;
     fillTop = tileY;
     fillWidth = widthTiles;
     fillHeight = heightTiles;

@@ -6,8 +6,8 @@
 #include <assert.h>
 
 static char resourceName[] = "TEST.CPS";
-static byte decodeBuffer[0x10];
-static byte displayBuffer[0x10];
+static uint8_t decodeBuffer[0x10];
+static uint8_t displayBuffer[0x10];
 static const char *capturedName;
 static void *capturedCompressed;
 static void *capturedDestination;

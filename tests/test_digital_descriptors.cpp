@@ -45,7 +45,7 @@ int main(void)
 	 * link the queue's first; unlinking (375F:08C9) mends the list either
 	 * way round. */
     {
-        static const byte samples[0x04] = { 0x80, 0x80, 0x80, 0x80 };
+        static const uint8_t samples[0x04] = { 0x80, 0x80, 0x80, 0x80 };
         DigitalDriverQueue queue;
         DigitalSampleDescriptor first;
         DigitalSampleDescriptor second;

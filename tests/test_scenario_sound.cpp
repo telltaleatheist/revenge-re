@@ -9,7 +9,7 @@
 
 int main(void)
 {
-    static byte informationSample[0x3442];
+    static uint8_t informationSample[0x3442];
     RequireOriginalImport();
 
     FakeBackend_Reset();

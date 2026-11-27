@@ -14,7 +14,7 @@ int main(void)
     assert(strcmp(text, "-12345") == 0x00);
     IntegerToString(-0x0001, text, 0x0010);
     assert(strcmp(text, "ffff") == 0x00);
-    LongToString((int32) 0x80000000UL, text, 0x000A);
+    LongToString((int32_t) 0x80000000UL, text, 0x000A);
     assert(strcmp(text, "-2147483648") == 0x00);
     FormatLongInteger('A', FALSE, 0x0010, text, 0xDEADBEEFUL);
     assert(strcmp(text, "DEADBEEF") == 0x00);

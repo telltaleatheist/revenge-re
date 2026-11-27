@@ -7,15 +7,15 @@
 
 typedef struct SpanCall
 {
-    int16 y;
-    int16 leftX;
-    int16 rightX;
-    word16 color;
+    int16_t y;
+    int16_t leftX;
+    int16_t rightX;
+    uint16_t color;
 } SpanCall;
 
 static int failures;
 static SpanCall spanCalls[0x08];
-static word16 spanCallCount;
+static uint16_t spanCallCount;
 
 static void Check(int condition, const char *message)
 {
@@ -27,7 +27,7 @@ static void Check(int condition, const char *message)
 }
 
 void DrawHorizontalSpan(
-    int16 y, int16 leftX, int16 rightX, word16 color)
+    int16_t y, int16_t leftX, int16_t rightX, uint16_t color)
 {
     SpanCall *call = &spanCalls[spanCallCount++];
     call->y = y;

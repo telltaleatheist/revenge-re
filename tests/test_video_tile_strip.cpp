@@ -6,18 +6,18 @@
 
 typedef struct CaptureCall
 {
-    byte *framebuffer;
-    byte *destination;
-    int16 tileX;
-    word16 tileY;
+    uint8_t *framebuffer;
+    uint8_t *destination;
+    int16_t tileX;
+    uint16_t tileY;
 } CaptureCall;
 
-static byte allocation[0x0200];
-static int32 requestedAllocationSize;
+static uint8_t allocation[0x0200];
+static int32_t requestedAllocationSize;
 static CaptureCall captureCalls[0x08];
-static word16 captureCallCount;
+static uint16_t captureCallCount;
 
-void *Heap_Allocate(uint32 byteCount, const char *caller)
+void *Heap_Allocate(uint32_t byteCount, const char *caller)
 {
     (void) caller;
     requestedAllocationSize = byteCount;
@@ -25,10 +25,10 @@ void *Heap_Allocate(uint32 byteCount, const char *caller)
 }
 
 void Capture8x8VideoTile(
-    byte *framebuffer,
-    byte *destination,
-    int16 tileX,
-    word16 tileY)
+    uint8_t *framebuffer,
+    uint8_t *destination,
+    int16_t tileX,
+    uint16_t tileY)
 {
     CaptureCall *call;
 
@@ -39,11 +39,11 @@ void Capture8x8VideoTile(
     call->tileY = tileY;
 }
 
-static void TestStrip(word16 adapterType, int32 expectedAllocation,
-    word16 expectedTileStride)
+static void TestStrip(uint16_t adapterType, int32_t expectedAllocation,
+    uint16_t expectedTileStride)
 {
-    byte framebuffer[0x10];
-    byte *result;
+    uint8_t framebuffer[0x10];
+    uint8_t *result;
 
     captureCallCount = 0x0000;
     requestedAllocationSize = 0x00000000;

@@ -5,19 +5,19 @@
 #include <assert.h>
 #include <string.h>
 
-void SetActiveRenderTarget(byte *renderTarget);
+void SetActiveRenderTarget(uint8_t *renderTarget);
 void Draw8x8VideoTile(
-    const byte *tilePixels,
-    int16 x,
-    word16 y);
+    const uint8_t *tilePixels,
+    int16_t x,
+    uint16_t y);
 
 int main(void)
 {
-    static byte primaryScreen[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
-    byte vgaPalette[VGA_PALETTE_BYTE_COUNT];
-    byte tile[0x40];
-    word16 pixel;
-    word16 row;
+    static uint8_t primaryScreen[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
+    uint8_t vgaPalette[VGA_PALETTE_BYTE_COUNT];
+    uint8_t tile[0x40];
+    uint16_t pixel;
+    uint16_t row;
 
     FakeBackend_Reset();
     fakeBackend.videoMode = 0x03;
@@ -61,7 +61,7 @@ int main(void)
      * screen keeps its pixels. */
     memset(primaryScreen, 0x05, sizeof(primaryScreen));
     PrimaryScreenBuffer = primaryScreen;
-    VideoFramebuffer = (byte *) (uintptr_t) 0xA0000000UL;
+    VideoFramebuffer = (uint8_t *) (uintptr_t) 0xA0000000UL;
     SetActiveRenderTarget(primaryScreen);
     assert(ActiveRenderTarget == primaryScreen);
     DrawClippedPixel(0x000A, 0x000B, 0x000C);
@@ -81,13 +81,13 @@ int main(void)
 
     /* An 8x8 tile is 64 bytes, eight to a row. */
     for (pixel = 0x0000; pixel < 0x0040; ++pixel)
-        tile[pixel] = (byte) (0x40 + pixel);
+        tile[pixel] = (uint8_t) (0x40 + pixel);
     Video_ClearIndexedFramebuffer(0xA5);
     Draw8x8VideoTile(tile, 0x0005, 0x0003);
     for (row = 0x0000; row < 0x0008; ++row)
         for (pixel = 0x0000; pixel < 0x0008; ++pixel)
             assert(fakeBackend.indexedFramebuffer[(0x0018 + row) * VIDEO_SCREEN_WIDTH + 0x0028 + pixel] ==
-                (byte) (0x40 + row * 0x08 + pixel));
+                (uint8_t) (0x40 + row * 0x08 + pixel));
     assert(fakeBackend.indexedFramebuffer[0x0018 * VIDEO_SCREEN_WIDTH + 0x0030] == 0xA5);
 
     Video_ClearIndexedFramebuffer(0xA5);

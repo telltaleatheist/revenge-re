@@ -3,18 +3,18 @@
 #include <assert.h>
 #include <string.h>
 
-static void WriteDword(byte *destination, uint32 value)
+static void WriteDword(uint8_t *destination, uint32_t value)
 {
-    destination[0x00] = (byte) value;
-    destination[0x01] = (byte) (value >> 0x08);
-    destination[0x02] = (byte) (value >> 0x10);
-    destination[0x03] = (byte) (value >> 0x18);
+    destination[0x00] = (uint8_t) value;
+    destination[0x01] = (uint8_t) (value >> 0x08);
+    destination[0x02] = (uint8_t) (value >> 0x10);
+    destination[0x03] = (uint8_t) (value >> 0x18);
 }
 
 static void TestRawBlock(void)
 {
-    byte block[0x0C] = { 0x00 };
-    byte output[0x04] = { 0x00 };
+    uint8_t block[0x0C] = { 0x00 };
+    uint8_t output[0x04] = { 0x00 };
 
     WriteDword(block + 0x02, sizeof(output));
     block[0x08] = 0x10;
@@ -27,13 +27,13 @@ static void TestRawBlock(void)
 
 static void TestRleBlock(void)
 {
-    byte block[0x12] = { 0x03 };
-    const byte expected[] = {
+    uint8_t block[0x12] = { 0x03 };
+    const uint8_t expected[] = {
         0x10, 0x20, 0x30,
         0x44, 0x44, 0x44,
         0x55, 0x55, 0x55, 0x55
     };
-    byte output[sizeof(expected)] = { 0x00 };
+    uint8_t output[sizeof(expected)] = { 0x00 };
 
     WriteDword(block + 0x02, sizeof(output));
     block[0x08] = 0x03;
@@ -52,9 +52,9 @@ static void TestRleBlock(void)
 
 static void TestLzw12Literals(void)
 {
-    byte block[0x0E] = { 0x01 };
-    byte dictionary[0x3C00] = { 0x00 };
-    byte output[0x03] = { 0x00 };
+    uint8_t block[0x0E] = { 0x01 };
+    uint8_t dictionary[0x3C00] = { 0x00 };
+    uint8_t output[0x03] = { 0x00 };
 
     WriteDword(block + 0x02, sizeof(output));
     block[0x08] = 0x04;
@@ -69,29 +69,29 @@ static void TestLzw12Literals(void)
     assert(output[0x02] == 0x43);
 }
 
-static void PackFourLzw14Codes(byte *destination, const uint16 *codes)
+static void PackFourLzw14Codes(uint8_t *destination, const uint16_t *codes)
 {
-    uint16 bitIndex;
+    uint16_t bitIndex;
 
     memset(destination, 0x00, 0x07);
     for (bitIndex = 0x0000; bitIndex < 0x0038; ++bitIndex)
     {
-        uint16 codeIndex;
-        uint16 codeBit;
+        uint16_t codeIndex;
+        uint16_t codeBit;
 
         codeIndex = bitIndex / 0x000E;
         codeBit = 0x000D - (bitIndex % 0x000E);
-        destination[bitIndex / 0x0008] |= (byte) (((codes[codeIndex] >> codeBit) & 0x01)
+        destination[bitIndex / 0x0008] |= (uint8_t) (((codes[codeIndex] >> codeBit) & 0x01)
             << (0x07 - bitIndex % 0x0008));
     }
 }
 
 static void TestLzw14Literals(void)
 {
-    byte block[0x0F] = { 0x02 };
-    byte dictionary[0xBD00] = { 0x00 };
-    byte output[0x03] = { 0x00 };
-    const uint16 codes[] = { 0x0041, 0x0042, 0x0043, 0x3FFF };
+    uint8_t block[0x0F] = { 0x02 };
+    uint8_t dictionary[0xBD00] = { 0x00 };
+    uint8_t output[0x03] = { 0x00 };
+    const uint16_t codes[] = { 0x0041, 0x0042, 0x0043, 0x3FFF };
 
     WriteDword(block + 0x02, sizeof(output));
     PackFourLzw14Codes(block + 0x08, codes);

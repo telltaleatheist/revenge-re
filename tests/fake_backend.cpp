@@ -9,7 +9,7 @@
 
 FakeBackendState fakeBackend;
 
-REVENGE_NORETURN void SDLBackend_TerminateProcess(byte exitCode)
+REVENGE_NORETURN void SDLBackend_TerminateProcess(uint8_t exitCode)
 {
     fakeBackend.exitCode = exitCode;
     exit((int) exitCode);
@@ -20,43 +20,43 @@ void FakeBackend_Reset(void)
     memset(&fakeBackend, 0, sizeof(fakeBackend));
 }
 
-uint16 SDLBackend_DirectConsoleIO(byte character)
+uint16_t SDLBackend_DirectConsoleIO(uint8_t character)
 {
     fakeBackend.consoleCharacters[fakeBackend.consoleCharacterCount++] = character;
-    return (uint16) (0x0600 | character);
+    return (uint16_t) (0x0600 | character);
 }
 
 /* Game files as the DOS fakes had them: every open succeeds, a read or a
  * write reports all its bytes moved and leaves the buffer as it was, and a
  * seek lands at 12345678h. */
-int16 GameFile_Open(const char *name, GameFileAccess access)
+int16_t GameFile_Open(const char *name, GameFileAccess access)
 {
     (void) name;
     (void) access;
     return 0x0006;
 }
 
-int16 GameFile_Close(int16 handle)
+int16_t GameFile_Close(int16_t handle)
 {
     (void) handle;
     return 0x0000;
 }
 
-int16 GameFile_Read(int16 handle, void *destination, word16 byteCount)
+int16_t GameFile_Read(int16_t handle, void *destination, uint16_t byteCount)
 {
     (void) handle;
     (void) destination;
-    return (int16) byteCount;
+    return (int16_t) byteCount;
 }
 
-int16 GameFile_Write(int16 handle, const void *source, word16 byteCount)
+int16_t GameFile_Write(int16_t handle, const void *source, uint16_t byteCount)
 {
     (void) handle;
     (void) source;
-    return (int16) byteCount;
+    return (int16_t) byteCount;
 }
 
-int32 GameFile_Seek(int16 handle, int32 offset, GameFileOrigin origin)
+int32_t GameFile_Seek(int16_t handle, int32_t offset, GameFileOrigin origin)
 {
     (void) handle;
     (void) offset;
@@ -64,13 +64,13 @@ int32 GameFile_Seek(int16 handle, int32 offset, GameFileOrigin origin)
     return 0x12345678L;
 }
 
-int32 GameFile_Length(int16 handle)
+int32_t GameFile_Length(int16_t handle)
 {
     (void) handle;
     return 0x12345678L;
 }
 
-int16 GameFile_Delete(const char *name)
+int16_t GameFile_Delete(const char *name)
 {
     (void) name;
     return 0x0000;
@@ -102,7 +102,7 @@ void SDLBackend_SetGameClockHandler(void (*handler)(void))
     fakeBackend.gameClockHandler = handler;
 }
 
-void SDLBackend_StartMusicClock(word16 pitDivisor)
+void SDLBackend_StartMusicClock(uint16_t pitDivisor)
 {
     fakeBackend.musicClockDivisor = pitDivisor;
 }
@@ -112,7 +112,7 @@ void SDLBackend_StopMusicClock(void)
     fakeBackend.musicClockDivisor = 0x0000;
 }
 
-void SDLBackend_StartDigitalPlaybackClock(word16 pitDivisor)
+void SDLBackend_StartDigitalPlaybackClock(uint16_t pitDivisor)
 {
     fakeBackend.digitalPlaybackClockDivisor = pitDivisor;
 }
@@ -138,7 +138,7 @@ void SDLBackend_WaitInput(void)
     abort();
 }
 
-byte SDLBackend_ReadBiosKeyboardFlags(word16 offset)
+uint8_t SDLBackend_ReadBiosKeyboardFlags(uint16_t offset)
 {
     switch (offset)
     {
@@ -174,58 +174,58 @@ void SDLBackend_RestoreKeyboardHandlers(void)
     fakeBackend.keyboardHandlerInstalled = FALSE;
 }
 
-void SDLBackend_SetMouseEventHandler(word16 eventMask)
+void SDLBackend_SetMouseEventHandler(uint16_t eventMask)
 {
     fakeBackend.mouseEventMask = eventMask;
 }
 
-byte SDLBackend_GetVideoMode(void)
+uint8_t SDLBackend_GetVideoMode(void)
 {
     return fakeBackend.videoMode;
 }
 
-void SDLBackend_SetVideoMode(byte videoMode)
+void SDLBackend_SetVideoMode(uint8_t videoMode)
 {
     fakeBackend.videoMode = videoMode;
 }
 
-void SDLBackend_LoadVgaPalette(const byte *paletteRgbTriplets)
+void SDLBackend_LoadVgaPalette(const uint8_t *paletteRgbTriplets)
 {
     memcpy(fakeBackend.vgaPalette, paletteRgbTriplets,
         sizeof(fakeBackend.vgaPalette));
 }
 
-void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart)
+void SDLBackend_WaitVerticalRetrace(uint8_t waitForRetraceStart)
 {
     fakeBackend.firstByte = waitForRetraceStart;
     ++fakeBackend.retraceCount;
 }
 
-void SDLBackend_SetMouseVisible(uint16 visible)
+void SDLBackend_SetMouseVisible(uint16_t visible)
 {
     (void) visible;
 }
 
-void SDLBackend_SetMousePosition(int16 logicalX, int16 logicalY)
+void SDLBackend_SetMousePosition(int16_t logicalX, int16_t logicalY)
 {
     fakeBackend.mouseX = logicalX;
     fakeBackend.mouseY = logicalY;
 }
 
-byte *SDLBackend_GetIndexedFramebuffer(void)
+uint8_t *SDLBackend_GetIndexedFramebuffer(void)
 {
     return fakeBackend.indexedFramebuffer;
 }
 
-void SDLBackend_ClearIndexedFramebuffer(byte color)
+void SDLBackend_ClearIndexedFramebuffer(uint8_t color)
 {
     memset(fakeBackend.indexedFramebuffer, color, 0x0140 * 0x00C8);
 }
 
-void SDLBackend_DrawIndexedPixel(uint16 x, uint16 y, byte color)
+void SDLBackend_DrawIndexedPixel(uint16_t x, uint16_t y, uint8_t color)
 {
     if (x < 0x0140 && y < 0x00C8)
-        fakeBackend.indexedFramebuffer[(uint32) y * 0x0140 + x] = color;
+        fakeBackend.indexedFramebuffer[(uint32_t) y * 0x0140 + x] = color;
 }
 
 int SDLBackend_PresentIndexedFramebuffer(void)
@@ -246,7 +246,7 @@ void SDLBackend_CloseAudio(void)
 {
 }
 
-byte SDLBackend_EnablePCSpeaker(void)
+uint8_t SDLBackend_EnablePCSpeaker(void)
 {
     return 0x03;
 }
@@ -255,7 +255,7 @@ void SDLBackend_SilencePCSpeaker(void)
 {
 }
 
-void SDLBackend_WritePCSpeakerPITDivisor(uint16 divisor)
+void SDLBackend_WritePCSpeakerPITDivisor(uint16_t divisor)
 {
     fakeBackend.firstWord = divisor;
 }
@@ -264,7 +264,7 @@ void SDLBackend_AdvanceAudio(void)
 {
 }
 
-void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz)
+void SDLBackend_PlaySpeech(const uint8_t *samples, uint16_t sampleCount, uint16_t sampleRateHz)
 {
     fakeBackend.buffer = (void *) samples;
     fakeBackend.secondWord = sampleCount;
@@ -276,7 +276,7 @@ void SDLBackend_HoldTimers(uint64_t nanoseconds)
     (void) nanoseconds;
 }
 
-void SDLBackend_WriteMIDIByte(byte midiByte)
+void SDLBackend_WriteMIDIByte(uint8_t midiByte)
 {
     if (fakeBackend.midiSink != NULL)
         fakeBackend.midiSink(midiByte);
@@ -284,12 +284,12 @@ void SDLBackend_WriteMIDIByte(byte midiByte)
         fakeBackend.midiBytes[fakeBackend.midiByteCount++] = midiByte;
 }
 
-void SDLBackend_SetDigitalOutputRate(word16 sampleRateHz)
+void SDLBackend_SetDigitalOutputRate(uint16_t sampleRateHz)
 {
     fakeBackend.firstWord = sampleRateHz;
 }
 
-void SDLBackend_WriteUnsigned8Sample(byte sample)
+void SDLBackend_WriteUnsigned8Sample(uint8_t sample)
 {
     fakeBackend.firstByte = sample;
 }

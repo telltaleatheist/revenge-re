@@ -33,8 +33,8 @@ typedef struct ImageRow
     const char *name;
     const void *object;
     size_t size;
-    word16 segment;
-    word16 offset;
+    uint16_t segment;
+    uint16_t offset;
     /* A field of each record that holds a host pointer, left out: its place
 	 * in a record of `stride` bytes and its size (0 for none). */
     size_t stride;
@@ -43,7 +43,7 @@ typedef struct ImageRow
     /* An object whose far pointers are references: it writes the object as
 	 * the original lays it out (size bytes), each reference as the far
 	 * pointer the original holds there. */
-    void (*encode)(byte *originalBytes);
+    void (*encode)(uint8_t *originalBytes);
 } ImageRow;
 
 #define ROW(object, segment, offset)           { #object, &(object), sizeof(object), (segment), (offset), 0, 0, 0, NULL }
@@ -53,34 +53,34 @@ typedef struct ImageRow
 /* A reference written as the original's far pointer. NULL is 0:0; a
  * reference to anything else gets FFFF:FFFF, which no image holds where the
  * original starts with a far pointer of its own. */
-static void PutWord(byte *bytes, size_t at, word16 value)
+static void PutWord(uint8_t *bytes, size_t at, uint16_t value)
 {
-    bytes[at] = (byte) value;
-    bytes[at + 1] = (byte) (value >> 8);
+    bytes[at] = (uint8_t) value;
+    bytes[at + 1] = (uint8_t) (value >> 8);
 }
 
-static void PutFar(byte *bytes, size_t at, word16 segment, word16 offset)
+static void PutFar(uint8_t *bytes, size_t at, uint16_t segment, uint16_t offset)
 {
     PutWord(bytes, at, offset);
     PutWord(bytes, at + 2, segment);
 }
 
-static void PutNull(byte *bytes, size_t at, const void *reference)
+static void PutNull(uint8_t *bytes, size_t at, const void *reference)
 {
     PutFar(bytes, at, reference == NULL ? 0x0000 : 0xFFFF, reference == NULL ? 0x0000 : 0xFFFF);
 }
 
 /* DS:58DB: each into DS:5642. */
-static void EncodeSpeakerEffectStreams(byte *bytes)
+static void EncodeSpeakerEffectStreams(uint8_t *bytes)
 {
     size_t index;
 
     for (index = 0; index < PC_SPEAKER_EFFECT_COUNT; ++index)
-        PutFar(bytes, index * 4, 0x3A6A, (word16) (0x5642 + (PCSpeakerEffectStreamPointerTable[index] - PCSpeakerEffectStreamData)));
+        PutFar(bytes, index * 4, 0x3A6A, (uint16_t) (0x5642 + (PCSpeakerEffectStreamPointerTable[index] - PCSpeakerEffectStreamData)));
 }
 
 /* DS:624A: six words, the stream cursor, five words, two bytes. */
-static void EncodeMIDISequence(byte *bytes)
+static void EncodeMIDISequence(uint8_t *bytes)
 {
     const MIDISequenceState *state = &MIDISequence;
 
@@ -101,7 +101,7 @@ static void EncodeMIDISequence(byte *bytes)
 }
 
 /* DS:6C0E: the IRQ 2 vector the rebuild never takes (0:0), then the queue. */
-static void EncodeRolandMPU401(byte *bytes)
+static void EncodeRolandMPU401(uint8_t *bytes)
 {
     PutFar(bytes, 0x00, 0x0000, 0x0000);
     memcpy(bytes + 0x04, RolandMPU401.TransmitQueue, sizeof(RolandMPU401.TransmitQueue));
@@ -112,7 +112,7 @@ static void EncodeRolandMPU401(byte *bytes)
 
 /* A queue's 12h bytes and a descriptor's 34h (REVENGE.h). Before the game
  * starts, none holds a reference. */
-static void EncodeQueue(byte *bytes, const DigitalDriverQueue *queue)
+static void EncodeQueue(uint8_t *bytes, const DigitalDriverQueue *queue)
 {
     PutNull(bytes, 0x00, queue->First);
     PutNull(bytes, 0x04, queue->End.Next);
@@ -123,13 +123,13 @@ static void EncodeQueue(byte *bytes, const DigitalDriverQueue *queue)
     bytes[0x11] = queue->ReservedOutputByte;
 }
 
-static void EncodeSceneCursor(byte *bytes)
+static void EncodeSceneCursor(uint8_t *bytes)
 {
     PutNull(bytes, 0x00, SceneInstructionCursor);
 }
 
 /* As a save writes them (UnitSelectionCard_Store). */
-static void EncodeSelectionCards(byte *bytes)
+static void EncodeSelectionCards(uint8_t *bytes)
 {
     size_t index;
 
@@ -142,7 +142,7 @@ static void EncodeSelectionCards(byte *bytes)
     }
 }
 
-static void EncodeResourceFiles(byte *bytes)
+static void EncodeResourceFiles(uint8_t *bytes)
 {
     size_t index;
 
@@ -154,14 +154,14 @@ static void EncodeResourceFiles(byte *bytes)
     PutWord(bytes, 0x1C, ResourceFiles.preloadFiles);
 }
 
-static void EncodeCachedFiles(byte *bytes)
+static void EncodeCachedFiles(uint8_t *bytes)
 {
     size_t index;
 
     for (index = 0; index < ORIGINAL_RESOURCE_DESCRIPTOR_COUNT; ++index)
     {
         const CachedFileDescriptor *file = &CachedFileDescriptors[index];
-        byte *record = bytes + index * 0x12;
+        uint8_t *record = bytes + index * 0x12;
 
         PutNull(record, 0x00, file->fileName);
         PutWord(record, 0x04, LOW_WORD(file->fileLength));
@@ -173,7 +173,7 @@ static void EncodeCachedFiles(byte *bytes)
     }
 }
 
-static void EncodeDescriptor(byte *bytes, const DigitalSampleDescriptor *descriptor)
+static void EncodeDescriptor(uint8_t *bytes, const DigitalSampleDescriptor *descriptor)
 {
     PutNull(bytes, 0x00, descriptor->Link.Next);
     PutNull(bytes, 0x04, descriptor->Link.PreviousLink);
@@ -198,7 +198,7 @@ static void EncodeDescriptor(byte *bytes, const DigitalSampleDescriptor *descrip
 }
 
 /* DS:6F4C: two queues, then the calibration descriptor. */
-static void EncodePlaybackBuffers(byte *bytes)
+static void EncodePlaybackBuffers(uint8_t *bytes)
 {
     EncodeQueue(bytes + 0x00, &DigitalPlaybackBuffers.PlaybackTimerQueue);
     EncodeQueue(bytes + 0x12, &DigitalPlaybackBuffers.CalibrationQueue);
@@ -362,7 +362,7 @@ static const ImageRow rows[] = {
     { "MediaConfigurationFileName", MediaConfigurationFileName, 0x0A, 0x3A6A, 0x21F4, 0, 0, 0, NULL },
 };
 
-static byte image[ORIGINAL_IMAGE_CAPACITY];
+static uint8_t image[ORIGINAL_IMAGE_CAPACITY];
 
 /* The image as DOS loads it at 0800h: each relocated segment word moved by
  * the load segment. */
@@ -375,14 +375,14 @@ static void LoadImage(void)
     for (index = 0; index < count; ++index)
     {
         size_t at = OriginalImport_Relocation(index);
-        word16 value;
+        uint16_t value;
 
         if (at + 1 >= sizeof(image))
             continue;
-        value = (word16) (image[at] | image[at + 1] << 8);
-        value = (word16) (value + 0x0800);
-        image[at] = (byte) value;
-        image[at + 1] = (byte) (value >> 8);
+        value = (uint16_t) (image[at] | image[at + 1] << 8);
+        value = (uint16_t) (value + 0x0800);
+        image[at] = (uint8_t) value;
+        image[at + 1] = (uint8_t) (value >> 8);
     }
 }
 
@@ -398,8 +398,8 @@ int main(void)
     {
         const ImageRow *row = &rows[index];
         size_t at = (size_t) (row->segment - 0x0800) * 16 + row->offset;
-        static byte encoded[0x1000];
-        const byte *port = (const byte *) row->object;
+        static uint8_t encoded[0x1000];
+        const uint8_t *port = (const uint8_t *) row->object;
         size_t first = row->size;
         size_t count = 0;
         size_t byteIndex;
@@ -412,7 +412,7 @@ int main(void)
         }
         for (byteIndex = 0; byteIndex < row->size; ++byteIndex)
         {
-            byte original = at + byteIndex < sizeof(image) ? image[at + byteIndex] : 0;
+            uint8_t original = at + byteIndex < sizeof(image) ? image[at + byteIndex] : 0;
             if (row->skipSize != 0 && byteIndex % row->stride >= row->skipAt &&
                 byteIndex % row->stride < row->skipAt + row->skipSize)
                 continue;

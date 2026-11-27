@@ -4,17 +4,17 @@
 
 #include <assert.h>
 
-static word16 callOrder;
-static word16 loadOrder;
-static word16 copyOrder;
+static uint16_t callOrder;
+static uint16_t loadOrder;
+static uint16_t copyOrder;
 static const char *loadedPath;
-static byte *loadedPackedBuffer;
-static byte *copiedPackedBuffer;
-static byte *copiedDestination;
+static uint8_t *loadedPackedBuffer;
+static uint8_t *copiedPackedBuffer;
+static uint8_t *copiedDestination;
 
 void LoadPackedIconResource(
     const char *resourcePath,
-    byte *packedDisplayBuffer)
+    uint8_t *packedDisplayBuffer)
 {
     loadOrder = ++callOrder;
     loadedPath = resourcePath;
@@ -22,11 +22,11 @@ void LoadPackedIconResource(
 }
 
 void CopyDecodedIconPage(
-    const byte *packedDisplayBuffer,
-    byte *iconPageDestination)
+    const uint8_t *packedDisplayBuffer,
+    uint8_t *iconPageDestination)
 {
     copyOrder = ++callOrder;
-    copiedPackedBuffer = (byte *) packedDisplayBuffer;
+    copiedPackedBuffer = (uint8_t *) packedDisplayBuffer;
     copiedDestination = iconPageDestination;
 }
 
@@ -44,8 +44,8 @@ static void ResetObservations(void)
 int main(void)
 {
     static const char path[] = "ICONS.PAK";
-    byte packedBuffer[0x10];
-    byte pageBuffer[0x10];
+    uint8_t packedBuffer[0x10];
+    uint8_t pageBuffer[0x10];
 
     ResetObservations();
     VideoAdapterType = VIDEO_ADAPTER_VGA;

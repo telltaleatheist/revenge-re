@@ -2,9 +2,9 @@
 
 #include <assert.h>
 
-static word16 nextRandomValue;
+static uint16_t nextRandomValue;
 
-word16 GeneratePseudoRandomByte(void)
+uint16_t GeneratePseudoRandomByte(void)
 {
     return nextRandomValue;
 }

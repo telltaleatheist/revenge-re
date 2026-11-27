@@ -4,16 +4,16 @@
 #include <assert.h>
 #include <string.h>
 
-static word16 hideCallCount;
-static word16 showCallCount;
-static word16 pollCallCount;
-static int16 expectedPollFirstRegion;
-static uint16 expectedPollRegionCount;
-static int16 xorLeft;
-static int16 xorTop;
-static int16 xorRight;
-static int16 xorBottom;
-static byte xorColor;
+static uint16_t hideCallCount;
+static uint16_t showCallCount;
+static uint16_t pollCallCount;
+static int16_t expectedPollFirstRegion;
+static uint16_t expectedPollRegionCount;
+static int16_t xorLeft;
+static int16_t xorTop;
+static int16_t xorRight;
+static int16_t xorBottom;
+static uint8_t xorColor;
 
 void HideMouseCursorOverlay(void)
 {
@@ -25,8 +25,8 @@ void ShowMouseCursorOverlay(void)
     ++showCallCount;
 }
 
-int16 PollUiRegionSelection(
-    int16 firstRegionIndex, uint16 regionCount)
+int16_t PollUiRegionSelection(
+    int16_t firstRegionIndex, uint16_t regionCount)
 {
     assert(firstRegionIndex == expectedPollFirstRegion);
     assert(regionCount == expectedPollRegionCount);
@@ -35,11 +35,11 @@ int16 PollUiRegionSelection(
 }
 
 void XorVideoRectangle(
-    int16 leftX,
-    int16 topY,
-    int16 rightX,
-    int16 bottomY,
-    byte color)
+    int16_t leftX,
+    int16_t topY,
+    int16_t rightX,
+    int16_t bottomY,
+    uint8_t color)
 {
     xorLeft = leftX;
     xorTop = topY;
@@ -207,7 +207,7 @@ static void TestToggleCachedHighlight(void)
 
 static void TestGroupedSelectionLoop(void)
 {
-    int16 result;
+    int16_t result;
 
     ResetTestState();
     UiRegionTable[0x03].widthColumns = 0x0001;

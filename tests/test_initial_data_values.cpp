@@ -18,9 +18,9 @@
  * screens' dismiss timeout (DS:240F) and the MIDI byte parser's state
  * (DS:62B0-62B9, its first state the one for data before any status) come
  * from the player's copy too. */
-static const byte *Image(word16 dataOffset)
+static const uint8_t *Image(uint16_t dataOffset)
 {
-    return (const byte *) &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + dataOffset];
+    return (const uint8_t *) &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + dataOffset];
 }
 
 int main(void)
@@ -30,11 +30,11 @@ int main(void)
     assert(memcmp(PilotRoster, Image(0x1D4C), sizeof(PilotRoster)) == 0);
     assert(memcmp(&RandomPilotPoolCounts, Image(0x1B8C), sizeof(RandomPilotPoolCounts)) == 0);
     assert(TacticalSelectedUnitIndex == 0xFFFF);
-    assert(TacticalSelectedUnitIndex == (word16) (Image(0x03DC)[0] | Image(0x03DC)[1] << 8));
+    assert(TacticalSelectedUnitIndex == (uint16_t) (Image(0x03DC)[0] | Image(0x03DC)[1] << 8));
     assert(TacticalOverviewMapMode == 0x0001);
-    assert(TacticalOverviewMapMode == (word16) (Image(0x03E5)[0] | Image(0x03E5)[1] << 8));
+    assert(TacticalOverviewMapMode == (uint16_t) (Image(0x03E5)[0] | Image(0x03E5)[1] << 8));
     assert(memcmp(TacticalScenarioLanceEnabled, Image(0x03EA), sizeof(TacticalScenarioLanceEnabled)) == 0);
-    assert(PresentationDismissTimeout == (word16) (Image(0x240F)[0] | Image(0x240F)[1] << 8));
+    assert(PresentationDismissTimeout == (uint16_t) (Image(0x240F)[0] | Image(0x240F)[1] << 8));
     assert(sizeof(MIDIParser) == 0x0A);
     assert(memcmp(&MIDIParser, Image(0x62B0), sizeof(MIDIParser)) == 0);
     return 0;

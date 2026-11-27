@@ -8,28 +8,28 @@
 #include <assert.h>
 #include <stdlib.h>
 
-static DigitalWeaponEffectRecord *WeaponEffectRecord(word16 effectId)
+static DigitalWeaponEffectRecord *WeaponEffectRecord(uint16_t effectId)
 {
     return &DigitalSoundData.Layout.WeaponEffects[effectId];
 }
 
-static const byte *PendingSpeakerEffectStream(void)
+static const uint8_t *PendingSpeakerEffectStream(void)
 {
     return MusicTimer.PendingSpeakerEffectStream;
 }
 
 int main(void)
 {
-    static const uint16 expectedOffsets[0x10] = {
+    static const uint16_t expectedOffsets[0x10] = {
         0x0000, 0x0027, 0x0046, 0x0063,
         0x00A2, 0x0118, 0x015B, 0x016D,
         0x017C, 0x0187, 0x019C, 0x01B5,
         0x0208, 0x0221, 0x0250, 0x025B
     };
-    byte sampleData[0x08] = { 0x00, 0x40, 0x80, 0xFF, 0x80, 0x80, 0x80, 0x80 };
-    const byte *speakerEffectBase;
+    uint8_t sampleData[0x08] = { 0x00, 0x40, 0x80, 0xFF, 0x80, 0x80, 0x80, 0x80 };
+    const uint8_t *speakerEffectBase;
     DigitalWeaponEffectRecord *effect;
-    word16 effectIndex;
+    uint16_t effectIndex;
     RequireOriginalImport();
 
     FakeBackend_Reset();

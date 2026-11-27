@@ -6,7 +6,7 @@
  * compare (jge) wraps column 0 to 12h on the row before, and row 0 to 0Bh. */
 void RetreatTacticalCursorCell(void);
 
-static void Check(word16 x, word16 y, word16 expectedX, word16 expectedY)
+static void Check(uint16_t x, uint16_t y, uint16_t expectedX, uint16_t expectedY)
 {
     TacticalCursorViewportX = x;
     TacticalCursorViewportY = y;

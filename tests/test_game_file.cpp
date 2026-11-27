@@ -25,8 +25,8 @@ int main(void)
 {
     static const char name[] = "GAMEFILE.TMP";
     char buffer[0x10];
-    int16 handles[0x10];
-    int16 handle;
+    int16_t handles[0x10];
+    int16_t handle;
     int count;
 
     (void) GameFile_Delete(name);
@@ -50,7 +50,7 @@ int main(void)
     Check(GameFile_Seek(handle, 0x0000L, GAME_FILE_FROM_CURRENT) == 0x0004L,
         "the length leaves the position");
     memset(buffer, 0, sizeof(buffer));
-    Check(GameFile_Read(handle, buffer, (word16) sizeof(buffer)) == 0x0004 &&
+    Check(GameFile_Read(handle, buffer, (uint16_t) sizeof(buffer)) == 0x0004 &&
             memcmp(buffer, "ERN!", 0x0004) == 0,
         "a read stops at the end");
     Check(GameFile_Read(handle, buffer, 0x0000) == 0x0000, "a read of 0 bytes");

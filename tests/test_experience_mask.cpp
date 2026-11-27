@@ -33,9 +33,9 @@ static void Check(int condition, const char *what)
     }
 }
 
-static void Prepare(word16 divider)
+static void Prepare(uint16_t divider)
 {
-    word16 unitIndex;
+    uint16_t unitIndex;
 
     for (unitIndex = 0x00; unitIndex < 0x18; ++unitIndex)
     {

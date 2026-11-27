@@ -23,7 +23,7 @@ constexpr int SEEK_AND_DESTROY_ORDER = 0x02;
 constexpr int ACTING_UNIT = 0x11;
 constexpr int TARGET_UNIT = 0x01;
 constexpr int WINDOW_START = 0x05;  // DS:03E5 is the table's index 5
-constexpr uint32 UNTOUCHED = 0xA5A5A5A5UL;
+constexpr uint32_t UNTOUCHED = 0xA5A5A5A5UL;
 
 static int failures;
 
@@ -38,9 +38,9 @@ static void Check(int condition, const char *what)
 
 // Whether the acting unit, with this experience, overburn and heat, gets past
 // the heat check.
-static int PassesHeatCheck(byte experience, byte overburn, byte heat)
+static int PassesHeatCheck(uint8_t experience, uint8_t overburn, uint8_t heat)
 {
-    word16 unitIndex;
+    uint16_t unitIndex;
 
     memset(PersistentUnitRoster, 0x00, sizeof(PersistentUnitRoster));
     for (unitIndex = 0x00; unitIndex < 0x18; ++unitIndex)
@@ -65,10 +65,10 @@ static int PassesHeatCheck(byte experience, byte overburn, byte heat)
     ScenarioUnitMapY[TARGET_UNIT] = 0x10;
 
     // The target in the rear arc: the arc's first direction is facing + 3.
-    ScenarioUnitFacing[ACTING_UNIT] = (word16) ((DetermineRelativeAttackDirection(
-                                                     ScenarioUnitMapX[ACTING_UNIT], ScenarioUnitMapY[ACTING_UNIT],
-                                                     ScenarioUnitMapX[TARGET_UNIT], ScenarioUnitMapY[TARGET_UNIT]) -
-                                                    0x03) &
+    ScenarioUnitFacing[ACTING_UNIT] = (uint16_t) ((DetermineRelativeAttackDirection(
+                                                       ScenarioUnitMapX[ACTING_UNIT], ScenarioUnitMapY[ACTING_UNIT],
+                                                       ScenarioUnitMapX[TARGET_UNIT], ScenarioUnitMapY[TARGET_UNIT]) -
+                                                      0x03) &
         0x07);
 
     UnitWeaponAvailabilityMask[ACTING_UNIT] = UNTOUCHED;
@@ -104,7 +104,7 @@ int main(void)
     // Within the table, the rules' limits.
     Check(PassesHeatCheck(0x00, 0x00, WeaponAIHeatLimitByExperience[0x01]),
         "experience 0 at its limit: past");
-    Check(!PassesHeatCheck(0x00, 0x00, (byte) (WeaponAIHeatLimitByExperience[0x01] + 0x01)),
+    Check(!PassesHeatCheck(0x00, 0x00, (uint8_t) (WeaponAIHeatLimitByExperience[0x01] + 0x01)),
         "experience 0 over its limit: held");
 
     if (failures == 0)

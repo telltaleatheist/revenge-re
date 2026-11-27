@@ -5,7 +5,7 @@
 #include <assert.h>
 
 /* DS:800E, declared in src/Original/REVENGE.h. */
-extern word16 NarrationMode;
+extern uint16_t NarrationMode;
 
 /* Scan codes as the keyboard controller hands them to IRQ1 (set 1). */
 enum
@@ -24,35 +24,35 @@ enum
     SCAN_BREAK = 0x80
 };
 
-static void Send(byte scanCode)
+static void Send(uint8_t scanCode)
 {
     KeyboardInterruptHandler(scanCode);
 }
 
-static void Tap(byte scanCode)
+static void Tap(uint8_t scanCode)
 {
     Send(scanCode);
-    Send((byte) (scanCode | SCAN_BREAK));
+    Send((uint8_t) (scanCode | SCAN_BREAK));
 }
 
-static void TapExtended(byte scanCode)
+static void TapExtended(uint8_t scanCode)
 {
     Send(0xE0);
     Send(scanCode);
     Send(0xE0);
-    Send((byte) (scanCode | SCAN_BREAK));
+    Send((uint8_t) (scanCode | SCAN_BREAK));
 }
 
 /* KeyboardInputPending is the ring's two offsets XORed: nonzero when an
  * event is waiting. */
-static word16 ReadOne(void)
+static uint16_t ReadOne(void)
 {
     assert(KeyboardInputPending() != 0x0000);
     return ReadRawKeypress();
 }
 
 /* A modifier pressed: the handler queues it too (its id translates to 0). */
-static void Hold(byte scanCode, word16 queued)
+static void Hold(uint8_t scanCode, uint16_t queued)
 {
     Send(scanCode);
     assert(ReadOne() == queued);
@@ -86,10 +86,10 @@ static void TestModifiersFromHeldKeys(void)
     ExpectEmpty();
 }
 
-static void ExpectTranslation(byte scanCode, int16 translated)
+static void ExpectTranslation(uint8_t scanCode, int16_t translated)
 {
     Tap(scanCode);
-    assert((int16) (int8_t) TranslateKeyCode() == translated);
+    assert((int16_t) (int8_t) TranslateKeyCode() == translated);
 }
 
 static void TestTranslation(void)
@@ -126,7 +126,7 @@ static void TestGreyKeys(void)
     TapExtended(SCAN_KEYPAD_4);
     assert(ReadOne() == 0x004F);
     TapExtended(SCAN_KEYPAD_4);
-    assert((int16) (int8_t) TranslateKeyCode() == -0x004B);
+    assert((int16_t) (int8_t) TranslateKeyCode() == -0x004B);
     StartupInputMode = 0x0201;
     ExpectEmpty();
 }

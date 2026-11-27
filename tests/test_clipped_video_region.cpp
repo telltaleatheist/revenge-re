@@ -6,27 +6,27 @@
 
 typedef struct CopyCall
 {
-    int16 sourceX;
-    int16 sourceY;
-    int16 destinationX;
-    int16 destinationY;
-    word16 width;
-    word16 height;
-    const byte *source;
-    byte *destination;
+    int16_t sourceX;
+    int16_t sourceY;
+    int16_t destinationX;
+    int16_t destinationY;
+    uint16_t width;
+    uint16_t height;
+    const uint8_t *source;
+    uint8_t *destination;
 } CopyCall;
 
 static CopyCall copyCall;
 
 void CopyVideoRegion(
-    int16 sourceX,
-    int16 sourceY,
-    int16 destinationX,
-    int16 destinationY,
-    word16 width,
-    word16 height,
-    const byte *source,
-    byte *destination)
+    int16_t sourceX,
+    int16_t sourceY,
+    int16_t destinationX,
+    int16_t destinationY,
+    uint16_t width,
+    uint16_t height,
+    const uint8_t *source,
+    uint8_t *destination)
 {
     copyCall.sourceX = sourceX;
     copyCall.sourceY = sourceY;
@@ -40,10 +40,10 @@ void CopyVideoRegion(
 
 int main(void)
 {
-    byte sourceBuffer[0x01] = { 0x00 };
-    byte destinationBuffer[0x01] = { 0x00 };
-    byte *primaryScreenBuffer;
-    static byte otherScreen[0x10];
+    uint8_t sourceBuffer[0x01] = { 0x00 };
+    uint8_t destinationBuffer[0x01] = { 0x00 };
+    uint8_t *primaryScreenBuffer;
+    static uint8_t otherScreen[0x10];
 
     VideoAdapterType = VIDEO_ADAPTER_CGA;
     CopyClippedVideoRegion(

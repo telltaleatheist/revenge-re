@@ -39,8 +39,8 @@ static void Check(int condition, const char *what)
 
 int main(void)
 {
-    static const byte deploy[] = { SCENE_DEPLOY_UNIT, UNIT, UNIT_TYPE, 0x04, 0x00, 0xFF, SCENE_YIELD };
-    byte *block;
+    static const uint8_t deploy[] = { SCENE_DEPLOY_UNIT, UNIT, UNIT_TYPE, 0x04, 0x00, 0xFF, SCENE_YIELD };
+    uint8_t *block;
     const RevengeUnitRecord *unit = &PersistentUnitRoster[UNIT];
 
     OriginalData_InitializeResourceDescriptorPointers();
@@ -63,7 +63,7 @@ int main(void)
     ExecuteSceneInstructions();
 
     Check(unit->deploymentState == 0x01, "the unit is deployed");
-    Check((byte) unit->pilotId == 0xFF, "slot FF is assigned: the unit's pilot is FF");
+    Check((uint8_t) unit->pilotId == 0xFF, "slot FF is assigned: the unit's pilot is FF");
     Check(unit->pilotExperience == PAST_END_EXPERIENCE,
         "its experience is the entry past the roster's end");
     Check(unit->gunneryTargetNumber == PAST_END_GUNNERY,

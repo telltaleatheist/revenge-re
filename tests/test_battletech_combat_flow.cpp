@@ -10,11 +10,11 @@
 #include <string.h>
 
 void ApplyWeaponDamage(
-    int16 attackerUnitIndex, int16 weaponIndex, int16 targetUnitIndex);
-static word16 SumArmor(const RevengeUnitRecord *unitRecord)
+    int16_t attackerUnitIndex, int16_t weaponIndex, int16_t targetUnitIndex);
+static uint16_t SumArmor(const RevengeUnitRecord *unitRecord)
 {
-    word16 total = 0x00;
-    word16 locationIndex;
+    uint16_t total = 0x00;
+    uint16_t locationIndex;
 
     for (locationIndex = 0x00;
         locationIndex < BATTLEMECH_ARMOR_LOCATION_COUNT;
@@ -27,7 +27,7 @@ static word16 SumArmor(const RevengeUnitRecord *unitRecord)
 
 static void PrepareCombatants(void)
 {
-    word16 locationIndex;
+    uint16_t locationIndex;
     RevengeUnitRecord *attacker = &PersistentUnitRoster[0x00];
     RevengeUnitRecord *target =
         &PersistentUnitRoster[ENEMY_FORCE_FIRST_UNIT];
@@ -62,9 +62,9 @@ static void PrepareCombatants(void)
 static void VerifyHitLocationAndArmorDamage(void)
 {
     RevengeUnitRecord *target;
-    word16 armorBefore;
-    word16 internalBefore;
-    word16 locationIndex;
+    uint16_t armorBefore;
+    uint16_t internalBefore;
+    uint16_t locationIndex;
 
     PrepareCombatants();
     target = &PersistentUnitRoster[ENEMY_FORCE_FIRST_UNIT];
@@ -97,11 +97,11 @@ static void VerifyHitLocationAndArmorDamage(void)
  * the bonuses the original reads from DS:3D0D at weapon indexes 10h-16h. */
 static void VerifyImprovedMissileBonus(void)
 {
-    static const byte expectedBonus[0x07] = { 0x00, 0x02, 0x03, 0x04, 0x05, 0x01, 0x02 };
+    static const uint8_t expectedBonus[0x07] = { 0x00, 0x02, 0x03, 0x04, 0x05, 0x01, 0x02 };
     RevengeUnitRecord *target;
-    word16 armorBefore;
-    word16 locationIndex;
-    int16 weaponIndex;
+    uint16_t armorBefore;
+    uint16_t locationIndex;
+    int16_t weaponIndex;
 
     for (weaponIndex = WEAPON_LRM_5; weaponIndex <= WEAPON_SRM_6; ++weaponIndex)
     {

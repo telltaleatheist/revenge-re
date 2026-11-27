@@ -32,12 +32,12 @@ static void Check(int condition, const char *message)
 
 int main(int argc, char **argv)
 {
-    byte *first;
-    byte *second;
-    byte *third;
-    uint32 number;
-    uint32 offset;
-    uint32 index;
+    uint8_t *first;
+    uint8_t *second;
+    uint8_t *third;
+    uint32_t number;
+    uint32_t offset;
+    uint32_t index;
     int zeroed = 1;
 
     if (argc > 1 && strcmp(argv[1], "fail") == 0)
@@ -53,16 +53,16 @@ int main(int argc, char **argv)
     }
     if (argc > 1 && strcmp(argv[1], "twice") == 0)
     {
-        first = (byte *) Heap_Allocate(0x30D4, "3014:011E");
+        first = (uint8_t *) Heap_Allocate(0x30D4, "3014:011E");
         Heap_Free(first);
         Heap_Free(first);
         return 1;
     }
     if (argc > 1 && strcmp(argv[1], "reused") == 0)
     {
-        first = (byte *) Heap_Allocate(0x30D4, "3014:011E");
+        first = (uint8_t *) Heap_Allocate(0x30D4, "3014:011E");
         Heap_FreeFrom(first, "3014:011E", "3014:0133");
-        second = (byte *) Heap_Allocate(0x30D4, "0D73:562F");
+        second = (uint8_t *) Heap_Allocate(0x30D4, "0D73:562F");
         if (second != first || Heap_Caller(second) == NULL ||
             strcmp(Heap_Caller(second), "0D73:562F") != 0)
             return 1;
@@ -70,8 +70,8 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    first = (byte *) Heap_Allocate(0x0240, "0800:36C0");
-    second = (byte *) Heap_Allocate(0x0001FD00UL, "2C7F:0203");
+    first = (uint8_t *) Heap_Allocate(0x0240, "0800:36C0");
+    second = (uint8_t *) Heap_Allocate(0x0001FD00UL, "2C7F:0203");
     for (index = 0; index < 0x0001FD00UL; ++index)
         zeroed &= second[index] == 0x00;
     Check(zeroed, "a block starts zeroed");
@@ -90,29 +90,29 @@ int main(int argc, char **argv)
     Heap_FreeFrom(first, "0800:36C0", "0800:3700");
     Check(!Heap_Find((uintptr_t) first, &number, &offset), "a freed block is not found");
     Check(Heap_Caller(first) == NULL, "no caller for a freed block");
-    third = (byte *) Heap_Allocate(0x0010, "3014:011E");
+    third = (uint8_t *) Heap_Allocate(0x0010, "3014:011E");
     Check(Heap_Find((uintptr_t) third, &number, &offset) && number == 3,
         "a new block takes the next number, not a freed one's");
     Check(Heap_Find((uintptr_t) second, &number, &offset) && number == 2,
         "a block keeps its number when another is freed");
     {
-        byte *a = (byte *) Heap_Allocate(0x0100, "0D73:562F");
-        byte *b = (byte *) Heap_Allocate(0x0100, "0D73:562F");
-        byte *c;
-        byte *d;
+        uint8_t *a = (uint8_t *) Heap_Allocate(0x0100, "0D73:562F");
+        uint8_t *b = (uint8_t *) Heap_Allocate(0x0100, "0D73:562F");
+        uint8_t *c;
+        uint8_t *d;
 
         memset(a, 0xAA, 0x0100);
         memset(b, 0xBB, 0x0100);
         Heap_Free(a);
         Heap_Free(b);
-        c = (byte *) Heap_Allocate(0x0101, "0D73:562F");
+        c = (uint8_t *) Heap_Allocate(0x0101, "0D73:562F");
         Check(c != a && c != b, "a request of another size takes no freed block");
-        d = (byte *) Heap_Allocate(0x0100, "0D73:562F");
+        d = (uint8_t *) Heap_Allocate(0x0100, "0D73:562F");
         Check(d == b, "a request takes the block of its size freed last");
         Check(d[0x00] == 0x00 && d[0xFF] == 0x00, "a block given back is zeroed");
         Check(Heap_Find((uintptr_t) d, &number, &offset) && number == 7,
             "a block given back takes a new number");
-        Check((byte *) Heap_Allocate(0x0100, "0D73:562F") == a,
+        Check((uint8_t *) Heap_Allocate(0x0100, "0D73:562F") == a,
             "then the one freed before it");
     }
     Heap_Free(NULL);

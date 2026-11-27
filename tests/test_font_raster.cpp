@@ -6,12 +6,12 @@
 #include <assert.h>
 #include <string.h>
 
-static byte fontResource[0x0200];
+static uint8_t fontResource[0x0200];
 
-static void SetFontWord(word16 offset, word16 value)
+static void SetFontWord(uint16_t offset, uint16_t value)
 {
-    fontResource[offset] = (byte) value;
-    fontResource[offset + 0x01] = (byte) (value >> 0x08);
+    fontResource[offset] = (uint8_t) value;
+    fontResource[offset + 0x01] = (uint8_t) (value >> 0x08);
 }
 
 static void PrepareFont(void)

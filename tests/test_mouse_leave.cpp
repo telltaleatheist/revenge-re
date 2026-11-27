@@ -79,7 +79,7 @@ static void Deliver(void)
     SDLBackend_ServiceTimers();
 }
 
-static void ExpectCursor(int16 x, word16 y)
+static void ExpectCursor(int16_t x, uint16_t y)
 {
     assert(MouseCursorRequestedX == x && MouseY == y);
 }

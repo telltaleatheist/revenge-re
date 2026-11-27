@@ -11,25 +11,25 @@ enum
     TILE_BYTES = 0x0080
 };
 
-static byte spritePage[SPRITE_PAGE_BYTES];
+static uint8_t spritePage[SPRITE_PAGE_BYTES];
 
 void DrawTacticalViewportCell(
-    int16 viewportColumn,
-    int16 viewportRow,
-    word16 viewportCellIndex);
+    int16_t viewportColumn,
+    int16_t viewportRow,
+    uint16_t viewportCellIndex);
 
 static void ClearState(void)
 {
-    uint32 index;
+    uint32_t index;
 
     FakeBackend_Reset();
     for (index = 0x0000; index < SPRITE_PAGE_BYTES; ++index)
         spritePage[index] = 0x00;
 }
 
-static void TestPackedTile(word16 adapterType)
+static void TestPackedTile(uint16_t adapterType)
 {
-    byte *tile;
+    uint8_t *tile;
 
     ClearState();
     ActiveVideoAdapterType = adapterType;
@@ -47,10 +47,10 @@ static void TestPackedTile(word16 adapterType)
     assert(fakeBackend.indexedFramebuffer[0x0012 * 0x0140 + 0x0010] == 0x0C);
 }
 
-static void TestPackedComposition(word16 adapterType)
+static void TestPackedComposition(uint16_t adapterType)
 {
-    byte *foreground;
-    byte *background;
+    uint8_t *foreground;
+    uint8_t *background;
 
     ClearState();
     ActiveVideoAdapterType = adapterType;
@@ -68,10 +68,10 @@ static void TestPackedComposition(word16 adapterType)
 
 static void TestTerrainEffectOverlayFeedsViewportCell(void)
 {
-    static word16 terrainMap[0x00E4];
-    static word16 spriteMap[0x00E4];
-    byte *effectTile;
-    byte *terrainTile;
+    static uint16_t terrainMap[0x00E4];
+    static uint16_t spriteMap[0x00E4];
+    uint8_t *effectTile;
+    uint8_t *terrainTile;
 
     ClearState();
     ActiveVideoAdapterType = VIDEO_ADAPTER_VGA;

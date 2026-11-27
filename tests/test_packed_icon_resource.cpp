@@ -4,37 +4,37 @@
 #include <string.h>
 
 static const char *openedPath;
-static word16 openedMode;
-static int16 closedHandle;
-static word16 readCallCount;
-static uint32 readLengths[0x02];
+static uint16_t openedMode;
+static int16_t closedHandle;
+static uint16_t readCallCount;
+static uint32_t readLengths[0x02];
 static void *readDestinations[0x02];
 
-int16 OpenTrackedFile(char *path, word16 openMode)
+int16_t OpenTrackedFile(char *path, uint16_t openMode)
 {
     openedPath = path;
     openedMode = openMode;
     return 0x0003;
 }
 
-uint32 ReadTrackedFile(
-    int16 handleSlot,
+uint32_t ReadTrackedFile(
+    int16_t handleSlot,
     void *destination,
-    uint32 byteCount)
+    uint32_t byteCount)
 {
     assert(handleSlot == 0x0003);
     assert(readCallCount < 0x0002);
     readDestinations[readCallCount] = destination;
     readLengths[readCallCount] = byteCount;
     if (readCallCount == 0x0000)
-        *(word16 *) destination = 0x0005;
+        *(uint16_t *) destination = 0x0005;
     else
         memcpy(destination, "CHREV", 0x0005);
     ++readCallCount;
     return byteCount;
 }
 
-void CloseTrackedFile(int16 handleSlot)
+void CloseTrackedFile(int16_t handleSlot)
 {
     closedHandle = handleSlot;
 }
@@ -42,7 +42,7 @@ void CloseTrackedFile(int16 handleSlot)
 int main(void)
 {
     static const char path[] = "TACTICAL.ICN";
-    byte packedDisplayBuffer[0x0010] = { 0x00 };
+    uint8_t packedDisplayBuffer[0x0010] = { 0x00 };
 
     LoadPackedIconResource(path, packedDisplayBuffer);
 

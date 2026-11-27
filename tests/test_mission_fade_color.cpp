@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-byte MissionFadeColor(word16 fadeIndex);
+uint8_t MissionFadeColor(uint16_t fadeIndex);
 
 static int failures;
 
@@ -24,10 +24,10 @@ static void Check(int condition, const char *what)
 
 int main(void)
 {
-    word16 fadeIndex;
+    uint16_t fadeIndex;
 
     for (fadeIndex = 0x00; fadeIndex < 0x04; ++fadeIndex)
-        MissionFadeColorTable[fadeIndex] = (byte) (0x11 * (fadeIndex + 0x01));
+        MissionFadeColorTable[fadeIndex] = (uint8_t) (0x11 * (fadeIndex + 0x01));
     MissionBlinkRectX[0x00] = 0x1234;
 
     for (fadeIndex = 0x00; fadeIndex < 0x04; ++fadeIndex)

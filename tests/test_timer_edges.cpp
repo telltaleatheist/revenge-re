@@ -8,7 +8,7 @@
 
 static void TestPITDivisorExchange(void)
 {
-    word16 oldDivisor;
+    uint16_t oldDivisor;
 
     PITCalibration.Channel0Divisor = 0x1234;
     oldDivisor = SetPITChannel0Divisor(0x5678);
@@ -20,9 +20,9 @@ static void TestPITMath(void)
 {
     assert(PITFrequencyToDivisor(0x0012) == 0x0000);
     assert(PITFrequencyToDivisor(0x0013) ==
-        (word16) (0x001234DEUL / 0x0013));
+        (uint16_t) (0x001234DEUL / 0x0013));
     assert(PITFrequencyToDivisor(0x4440) ==
-        (word16) (0x001234DEUL / 0x4440));
+        (uint16_t) (0x001234DEUL / 0x4440));
 }
 
 static void TestVideoTimingCalibration(void)

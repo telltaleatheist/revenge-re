@@ -7,15 +7,15 @@
 #include <string.h>
 
 static int failures;
-static word16 readCalls;
-static word16 writeCalls;
-static word16 lastReadCount;
-static word16 lastWriteCount;
+static uint16_t readCalls;
+static uint16_t writeCalls;
+static uint16_t lastReadCount;
+static uint16_t lastWriteCount;
 static const void *firstReadPointer;
 static const void *secondReadPointer;
 static const void *firstWritePointer;
 static const void *secondWritePointer;
-static int16 nextOpenHandle = 0x0005;
+static int16_t nextOpenHandle = 0x0005;
 
 static void Check(int condition, const char *message)
 {
@@ -26,11 +26,11 @@ static void Check(int condition, const char *message)
     }
 }
 
-static byte errorCalls[0x04];
-static word16 errorCallCount;
-static word16 shutdownCalls;
+static uint8_t errorCalls[0x04];
+static uint16_t errorCallCount;
+static uint16_t shutdownCalls;
 
-static void RecordErrorCall(byte callId)
+static void RecordErrorCall(uint8_t callId)
 {
     if (errorCallCount < sizeof(errorCalls))
         errorCalls[errorCallCount] = callId;
@@ -44,20 +44,20 @@ ResourceErrorCallback ResourceErrorDisplayCallback = DisplayError;
 ResourceErrorCallback ResourceErrorDismissCallback = DismissError;
 
 void ShutdownGame(void) { ++shutdownCalls; }
-void RunExitHandlersAndTerminate(word16 exitCode) { (void) exitCode; }
-int16 GameFile_Open(const char *name, GameFileAccess access)
+void RunExitHandlersAndTerminate(uint16_t exitCode) { (void) exitCode; }
+int16_t GameFile_Open(const char *name, GameFileAccess access)
 {
     (void) name;
     (void) access;
     return nextOpenHandle;
 }
 
-int16 GameFile_Close(int16 fileHandle)
+int16_t GameFile_Close(int16_t fileHandle)
 {
     return fileHandle;
 }
 
-int16 GameFile_Read(int16 fileHandle, void *buffer, word16 requestedBytes)
+int16_t GameFile_Read(int16_t fileHandle, void *buffer, uint16_t requestedBytes)
 {
     (void) fileHandle;
     if (readCalls == 0x0000)
@@ -66,10 +66,10 @@ int16 GameFile_Read(int16 fileHandle, void *buffer, word16 requestedBytes)
         secondReadPointer = buffer;
     ++readCalls;
     lastReadCount = requestedBytes;
-    return (int16) requestedBytes;
+    return (int16_t) requestedBytes;
 }
 
-int16 GameFile_Write(int16 fileHandle, const void *buffer, word16 requestedBytes)
+int16_t GameFile_Write(int16_t fileHandle, const void *buffer, uint16_t requestedBytes)
 {
     (void) fileHandle;
     if (writeCalls == 0x0000)
@@ -78,23 +78,23 @@ int16 GameFile_Write(int16 fileHandle, const void *buffer, word16 requestedBytes
         secondWritePointer = buffer;
     ++writeCalls;
     lastWriteCount = requestedBytes;
-    return (int16) requestedBytes;
+    return (int16_t) requestedBytes;
 }
 
-int16 GameFile_Delete(const char *name)
+int16_t GameFile_Delete(const char *name)
 {
     (void) name;
     return 0x0000;
 }
 
-int32 GameFile_Seek(int16 fileHandle, int32 offset, GameFileOrigin origin)
+int32_t GameFile_Seek(int16_t fileHandle, int32_t offset, GameFileOrigin origin)
 {
     (void) fileHandle;
     (void) origin;
     return offset;
 }
 
-void *Heap_Allocate(uint32 byteCount, const char *caller)
+void *Heap_Allocate(uint32_t byteCount, const char *caller)
 {
     (void) caller;
     return malloc(byteCount);
@@ -107,7 +107,7 @@ void Heap_Free(void *block)
 
 static void ResetStreamState(void)
 {
-    word16 index;
+    uint16_t index;
 
     for (index = 0x0000; index < ORIGINAL_TRACKED_FILE_COUNT; ++index)
         ResourceFiles.trackedHandles[index] = ORIGINAL_TRACKED_FILE_UNUSED;
@@ -122,7 +122,7 @@ static void ResetStreamState(void)
 static void TestDescriptorCatalogue(void)
 {
     char path[] = "mechtype.dat";
-    word16 index;
+    uint16_t index;
 
     OriginalData_InitializeResourceDescriptorPointers();
     index = FindResourceDescriptorIndex(path);
@@ -137,13 +137,13 @@ static void TestDescriptorCatalogue(void)
 
 static void TestCachedStream(void)
 {
-    byte block[0x20];
-    byte *source = block;
-    byte destination[0x10];
-    word16 index;
+    uint8_t block[0x20];
+    uint8_t *source = block;
+    uint8_t destination[0x10];
+    uint16_t index;
 
     for (index = 0x0000; index < sizeof(block); ++index)
-        block[index] = (byte) (index + 0x18);
+        block[index] = (uint8_t) (index + 0x18);
     memset(destination, 0x00, sizeof(destination));
     CachedFileDescriptors[0x0000].cachedData = source;
     CachedFileDescriptors[0x0000].fileLength = 0x20;
@@ -173,7 +173,7 @@ static void TestCachedStream(void)
 
 static void TestChunkedStreams(void)
 {
-    byte buffer[0x10];
+    uint8_t buffer[0x10];
 
     ResourceFiles.trackedHandles[0x0001] = 0x0005;
     Check(ReadTrackedFile(0x0001, buffer, 0x00010010UL) == 0x00010010UL,
@@ -194,7 +194,7 @@ static void TestChunkedStreams(void)
 static void TestOpenCloseAndWindowMargin(void)
 {
     char path[] = "unknown.dat";
-    int16 slot;
+    int16_t slot;
 
     nextOpenHandle = 0x0005;
     slot = OpenTrackedFile(path, 0x0001);

@@ -16,7 +16,7 @@ static void ResetSpriteState(void)
 
 static void TestPackedSprite(void)
 {
-    const byte sprite[] = {
+    const uint8_t sprite[] = {
         0x00, 0x00, 0x01, 0x00,
         0xA0, 0x03, 0x40, 0x50
     };
@@ -33,7 +33,7 @@ static void TestPackedSprite(void)
 
 static void TestVgaRleSprite(void)
 {
-    const byte sprite[] = {
+    const uint8_t sprite[] = {
         0x00, 0x00, 0x01, 0x00,
         0x05, 0x00, 0x03, 0x07, 0x08, 0x09, 0x0A
     };
@@ -51,7 +51,7 @@ static void TestVgaRleSprite(void)
 
 static void TestSpriteClipRectangle(void)
 {
-    const byte sprite[] = {
+    const uint8_t sprite[] = {
         0x00, 0x00, 0x01, 0x00,
         0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
     };

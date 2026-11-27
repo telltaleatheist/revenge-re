@@ -8,10 +8,10 @@
 #include <string.h>
 
 static char renderedText[0x08][0x52];
-static word16 renderedAdvance[0x08];
-static word16 renderCount;
+static uint16_t renderedAdvance[0x08];
+static uint16_t renderCount;
 
-void RenderTextToActiveWindow(char *text, word16 advanceToNextLine)
+void RenderTextToActiveWindow(char *text, uint16_t advanceToNextLine)
 {
     size_t length = strlen(text);
     assert(length < sizeof(renderedText[renderCount]));
@@ -21,7 +21,7 @@ void RenderTextToActiveWindow(char *text, word16 advanceToNextLine)
     text[0x00] = '\0';
 }
 
-static void ResetRenderer(word16 widthTiles)
+static void ResetRenderer(uint16_t widthTiles)
 {
     memset(renderedText, 0x00, sizeof(renderedText));
     memset(renderedAdvance, 0x00, sizeof(renderedAdvance));
@@ -39,8 +39,8 @@ int main(void)
     static const char newline[] = "One\rTwo";
     static const char foreground[] = { 'A', 0x06, 0x05, 'B', 0x00 };
     static const char wrapped[] = "123456789";
-    static const byte compressedPair[] = { 0x80, 0x00 };
-    word16 messageIndex;
+    static const uint8_t compressedPair[] = { 0x80, 0x00 };
+    uint16_t messageIndex;
 
     RequireOriginalImport();
     assert(CompressedTextFirstByteTable[0x00] == ' ');
@@ -54,8 +54,8 @@ int main(void)
         messageIndex < CAMPAIGN_MESSAGE_COUNT;
         ++messageIndex)
     {
-        const byte *message =
-            (const byte *) CampaignMessageTextTable[messageIndex];
+        const uint8_t *message =
+            (const uint8_t *) CampaignMessageTextTable[messageIndex];
         while (*message != 0x00)
         {
             assert((*message & 0x80) == 0x00);

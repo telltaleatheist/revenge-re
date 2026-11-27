@@ -5,13 +5,13 @@
 #include <assert.h>
 #include <string.h>
 
-static word16 keyboardInputAvailable;
-static int16 translatedKey;
-static word16 mouseInside;
-static word16 hideCallCount;
-static word16 showCallCount;
-static word16 xorCallCount;
-static word16 serviceCallCount;
+static uint16_t keyboardInputAvailable;
+static int16_t translatedKey;
+static uint16_t mouseInside;
+static uint16_t hideCallCount;
+static uint16_t showCallCount;
+static uint16_t xorCallCount;
+static uint16_t serviceCallCount;
 
 void HideMouseCursorOverlay(void)
 {
@@ -23,36 +23,36 @@ void ShowMouseCursorOverlay(void)
     ++showCallCount;
 }
 
-word16 IsMouseCursorInsideRectangle(
-    int16 left, int16 top, int16 right, int16 bottom)
+uint16_t IsMouseCursorInsideRectangle(
+    int16_t left, int16_t top, int16_t right, int16_t bottom)
 {
     assert(left <= right);
     assert(top <= bottom);
     return mouseInside;
 }
 
-word16 ServiceMusicAndCheckKeyboardInput(void)
+uint16_t ServiceMusicAndCheckKeyboardInput(void)
 {
     ++serviceCallCount;
     return keyboardInputAvailable;
 }
 
-int16 ReadTranslatedKeypress(void)
+int16_t ReadTranslatedKeypress(void)
 {
     return translatedKey;
 }
 
-int16 NormalizeNavigationKeyCode(int16 keyCode)
+int16_t NormalizeNavigationKeyCode(int16_t keyCode)
 {
     return keyCode;
 }
 
 void XorVideoRectangle(
-    int16 leftX,
-    int16 topY,
-    int16 rightX,
-    int16 bottomY,
-    byte color)
+    int16_t leftX,
+    int16_t topY,
+    int16_t rightX,
+    int16_t bottomY,
+    uint8_t color)
 {
     assert(leftX <= rightX);
     assert(topY <= bottomY);
@@ -76,10 +76,10 @@ static void ResetPoller(void)
     region->xorColor = 0x000E;
     ActiveTextWindowLeftTile = 0x0001;
     ActiveTextWindowTopTile = 0x0001;
-    UiNavigationUpKey = (word16) TranslatedExtendedKey(KEY_UP);
-    UiNavigationDownKey = (word16) TranslatedExtendedKey(KEY_DOWN);
-    UiPreviousRegionKey = (word16) TranslatedExtendedKey(KEY_LEFT);
-    UiNextRegionKey = (word16) TranslatedExtendedKey(KEY_RIGHT);
+    UiNavigationUpKey = (uint16_t) TranslatedExtendedKey(KEY_UP);
+    UiNavigationDownKey = (uint16_t) TranslatedExtendedKey(KEY_DOWN);
+    UiPreviousRegionKey = (uint16_t) TranslatedExtendedKey(KEY_LEFT);
+    UiNextRegionKey = (uint16_t) TranslatedExtendedKey(KEY_RIGHT);
     PendingMouseButtonEvent = 0x0000;
     MouseButtonState = 0x0000;
     MouseY = 0x0000;
@@ -99,7 +99,7 @@ static void ResetPoller(void)
 
 static void TestIdlePollCachesHighlight(void)
 {
-    int16 result;
+    int16_t result;
 
     ResetPoller();
     result = PollUiRegionSelection(0x03, 0x0001);
@@ -115,7 +115,7 @@ static void TestIdlePollCachesHighlight(void)
 
 static void TestKeyboardSelection(void)
 {
-    int16 result;
+    int16_t result;
 
     ResetPoller();
     keyboardInputAvailable = 0x0001;
@@ -138,7 +138,7 @@ static void TestKeyboardSelection(void)
 
 static void TestEscapeRestoresSelections(void)
 {
-    int16 result;
+    int16_t result;
 
     ResetPoller();
     UiRegionTable[0x03].selectedRow = 0x0002;
@@ -158,7 +158,7 @@ static void TestEscapeRestoresSelections(void)
 
 static void TestMouseHoverAndClick(void)
 {
-    int16 result;
+    int16_t result;
 
     ResetPoller();
     MouseInputDisabled = 0x0000;

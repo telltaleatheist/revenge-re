@@ -14,28 +14,28 @@
  * and its count the replay copy of the count (DS:1B8E, of DS:1B8C-1B8E): drawing a pilot
  * takes one byte from that pool and lowers that count, the one the campaign
  * copies forward and back and a save writes. */
-static const byte *Image(word16 dataOffset)
+static const uint8_t *Image(uint16_t dataOffset)
 {
-    return (const byte *) &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + dataOffset];
+    return (const uint8_t *) &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + dataOffset];
 }
 
 static void DrawOnePilot(void)
 {
-    byte pool[sizeof(ReplayExtendedCampaignState)];
-    byte count = RandomPilotPoolCounts.replay;
-    int16 pilotId;
-    word16 index;
+    uint8_t pool[sizeof(ReplayExtendedCampaignState)];
+    uint8_t count = RandomPilotPoolCounts.replay;
+    int16_t pilotId;
+    uint16_t index;
     int found = 0;
 
     assert(count > 0x00 && count <= sizeof(pool));
     memcpy(pool, ReplayExtendedCampaignState, sizeof(pool));
     pilotId = PopRandomPilotId();
     for (index = 0x0000; index < count; ++index)
-        found |= pool[index] == (byte) pilotId;
+        found |= pool[index] == (uint8_t) pilotId;
     assert(found);
-    assert(RandomPilotPoolCounts.replay == (byte) (count - 0x01));
+    assert(RandomPilotPoolCounts.replay == (uint8_t) (count - 0x01));
     assert(&RandomSelectionPoolCount == &RandomPilotPoolCounts.replay);
-    assert(ReplayExtendedCampaignState[count - 0x01] == (byte) REVENGE_PILOT_ID_NONE);
+    assert(ReplayExtendedCampaignState[count - 0x01] == (uint8_t) REVENGE_PILOT_ID_NONE);
 }
 
 int main(void)

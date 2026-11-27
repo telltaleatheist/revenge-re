@@ -8,11 +8,11 @@
 
 #include "../src/Original/REVENGE.h"
 
-void *Heap_Allocate(uint32 byteCount, const char *caller)
+void *Heap_Allocate(uint32_t byteCount, const char *caller)
 {
     (void) byteCount;
     (void) caller;
-    return (byte *) 0;
+    return (uint8_t *) 0;
 }
 
 void Heap_Free(void *block)
@@ -20,10 +20,10 @@ void Heap_Free(void *block)
     (void) block;
 }
 
-word16 ReadWholeResourceFile(
+uint16_t ReadWholeResourceFile(
     const char *resourceName,
     void *destination,
-    word16 byteCount)
+    uint16_t byteCount)
 {
     (void) resourceName;
     (void) destination;
@@ -33,9 +33,9 @@ word16 ReadWholeResourceFile(
 
 void ReadResourceFileSpan(
     const char *resourceName,
-    int32 fileOffset,
+    int32_t fileOffset,
     void *destination,
-    word16 byteCount)
+    uint16_t byteCount)
 {
     (void) resourceName;
     (void) fileOffset;

@@ -8,40 +8,40 @@
 typedef struct DrawCall
 {
     const char *text;
-    word16 x;
-    word16 y;
-    byte foregroundColor;
-    byte backgroundColor;
+    uint16_t x;
+    uint16_t y;
+    uint8_t foregroundColor;
+    uint8_t backgroundColor;
 } DrawCall;
 
 typedef struct CopyCall
 {
-    int16 sourceXColumn;
-    int16 sourceY;
-    int16 destinationXColumn;
-    int16 destinationY;
-    word16 widthColumns;
-    word16 heightPixels;
-    const byte *source;
-    byte *destination;
+    int16_t sourceXColumn;
+    int16_t sourceY;
+    int16_t destinationXColumn;
+    int16_t destinationY;
+    uint16_t widthColumns;
+    uint16_t heightPixels;
+    const uint8_t *source;
+    uint8_t *destination;
 } CopyCall;
 
 typedef struct FillCall
 {
-    int16 leftX;
-    int16 topY;
-    int16 rightX;
-    int16 bottomY;
-    word16 color;
+    int16_t leftX;
+    int16_t topY;
+    int16_t rightX;
+    int16_t bottomY;
+    uint16_t color;
 } FillCall;
 
 static int failures;
 static DrawCall drawCall;
 static CopyCall copyCall;
 static FillCall fillCall;
-static word16 drawCallCount;
-static word16 copyCallCount;
-static word16 fillCallCount;
+static uint16_t drawCallCount;
+static uint16_t copyCallCount;
+static uint16_t fillCallCount;
 
 static void Check(int condition, const char *message)
 {
@@ -52,17 +52,17 @@ static void Check(int condition, const char *message)
     }
 }
 
-word16 StringLength(const char *text)
+uint16_t StringLength(const char *text)
 {
-    return (word16) strlen(text);
+    return (uint16_t) strlen(text);
 }
 
 void DrawTextString(
     const char *text,
-    word16 x,
-    word16 y,
-    byte foregroundColor,
-    byte backgroundColor)
+    uint16_t x,
+    uint16_t y,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor)
 {
     ++drawCallCount;
     drawCall.text = text;
@@ -73,14 +73,14 @@ void DrawTextString(
 }
 
 void CopyClippedVideoRegion(
-    int16 sourceXColumn,
-    int16 sourceY,
-    int16 destinationXColumn,
-    int16 destinationY,
-    word16 widthColumns,
-    word16 heightPixels,
-    const byte *source,
-    byte *destination)
+    int16_t sourceXColumn,
+    int16_t sourceY,
+    int16_t destinationXColumn,
+    int16_t destinationY,
+    uint16_t widthColumns,
+    uint16_t heightPixels,
+    const uint8_t *source,
+    uint8_t *destination)
 {
     ++copyCallCount;
     copyCall.sourceXColumn = sourceXColumn;
@@ -94,11 +94,11 @@ void CopyClippedVideoRegion(
 }
 
 void FillVideoRectangle(
-    int16 leftX,
-    int16 topY,
-    int16 rightX,
-    int16 bottomY,
-    word16 color)
+    int16_t leftX,
+    int16_t topY,
+    int16_t rightX,
+    int16_t bottomY,
+    uint16_t color)
 {
     ++fillCallCount;
     fillCall.leftX = leftX;
@@ -119,12 +119,12 @@ static void ResetCalls(void)
 }
 
 static void SetWindow(
-    word16 leftTile,
-    word16 topTile,
-    word16 widthTiles,
-    word16 heightTiles,
-    word16 cursorColumn,
-    word16 cursorRow)
+    uint16_t leftTile,
+    uint16_t topTile,
+    uint16_t widthTiles,
+    uint16_t heightTiles,
+    uint16_t cursorColumn,
+    uint16_t cursorRow)
 {
     ActiveTextWindowLeftTile = leftTile;
     ActiveTextWindowTopTile = topTile;
@@ -136,7 +136,7 @@ static void SetWindow(
     ActiveTextCursorRow = cursorRow;
     ActiveFontGlyphAdvanceX = 0x04;
     ActiveFontLineHeight = 0x06;
-    ActiveRenderTarget = (byte *) (uintptr_t) 0x12340056UL;
+    ActiveRenderTarget = (uint8_t *) (uintptr_t) 0x12340056UL;
 }
 
 static void TestDrawAndAdvanceColumn(void)
@@ -190,7 +190,7 @@ static void TestColumnWrap(void)
 static void TestScroll(void)
 {
     char text[] = "A";
-    const byte *expectedTarget = (const byte *) (uintptr_t) 0x12340056UL;
+    const uint8_t *expectedTarget = (const uint8_t *) (uintptr_t) 0x12340056UL;
 
     ResetCalls();
     SetWindow(0x02, 0x01, 0x05, 0x02, 0x03, 0x02);

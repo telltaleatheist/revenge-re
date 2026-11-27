@@ -5,47 +5,47 @@
 #include <assert.h>
 #include <string.h>
 
-static void FillRowMarkers(byte *framebuffer, word16 rowStride,
-    word16 firstOffset, word16 copiedBytes)
+static void FillRowMarkers(uint8_t *framebuffer, uint16_t rowStride,
+    uint16_t firstOffset, uint16_t copiedBytes)
 {
-    word16 column;
-    word16 row;
+    uint16_t column;
+    uint16_t row;
 
     for (row = 0x0000; row < 0x0008; ++row)
     {
         for (column = 0x0000; column < copiedBytes; ++column)
         {
             framebuffer[firstOffset + row * rowStride + column] =
-                (byte) (row * 0x10 + column);
+                (uint8_t) (row * 0x10 + column);
         }
     }
 }
 
-static void AssertCapturedRows(const byte *destination, word16 copiedBytes)
+static void AssertCapturedRows(const uint8_t *destination, uint16_t copiedBytes)
 {
-    word16 column;
-    word16 row;
+    uint16_t column;
+    uint16_t row;
 
     for (row = 0x0000; row < 0x0008; ++row)
     {
         for (column = 0x0000; column < copiedBytes; ++column)
         {
             assert(destination[row * copiedBytes + column] ==
-                (byte) (row * 0x10 + column));
+                (uint8_t) (row * 0x10 + column));
         }
     }
 }
 
-static void TestPackedAdapter(word16 adapterType, word16 rowStride,
-    word16 tileRowStride, word16 tileByteWidth)
+static void TestPackedAdapter(uint16_t adapterType, uint16_t rowStride,
+    uint16_t tileRowStride, uint16_t tileByteWidth)
 {
-    byte framebuffer[0x2000];
-    byte destination[0x0040];
-    word16 firstOffset;
+    uint8_t framebuffer[0x2000];
+    uint8_t destination[0x0040];
+    uint16_t firstOffset;
 
     memset(framebuffer, 0xCC, sizeof(framebuffer));
     memset(destination, 0xDD, sizeof(destination));
-    firstOffset = (word16) (tileRowStride + tileByteWidth);
+    firstOffset = (uint16_t) (tileRowStride + tileByteWidth);
     FillRowMarkers(framebuffer, rowStride, firstOffset, tileByteWidth);
     VideoAdapterType = adapterType;
     Capture8x8VideoTile(framebuffer, destination, 0x0001, 0x0001);

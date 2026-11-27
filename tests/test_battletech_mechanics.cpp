@@ -9,15 +9,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-uint16 Roll2D6(void);
-word16 CountOrRemoveUnitHeatSinks(
+uint16_t Roll2D6(void);
+uint16_t CountOrRemoveUnitHeatSinks(
     RevengeUnitRecord *unitRecord,
-    word16 removeInstalledHeatSinks);
-word16 CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord);
-void ResetLiveUnitState(uint16 unitIndex);
-byte AssignScenarioLanceAllegiances(word16 scenarioAllegianceIndex);
-word16 IsCurrentLanceLeader(word16 unitIndex);
-void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex);
+    uint16_t removeInstalledHeatSinks);
+uint16_t CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord);
+void ResetLiveUnitState(uint16_t unitIndex);
+uint8_t AssignScenarioLanceAllegiances(uint16_t scenarioAllegianceIndex);
+uint16_t IsCurrentLanceLeader(uint16_t unitIndex);
+void RebuildLanceFormationAfterLeaderLoss(uint16_t lanceBaseUnitIndex);
 
 static void VerifyDiceSequence(void)
 {
@@ -102,8 +102,8 @@ static void VerifyVehicleTypeIdentifiers(void)
 
 static void VerifyWeaponPriorityLists(void)
 {
-    word16 profileIndex;
-    word16 expectedOffset = 0x09C6;
+    uint16_t profileIndex;
+    uint16_t expectedOffset = 0x09C6;
 
     for (profileIndex = 0x00;
         profileIndex < WEAPON_PRIORITY_PROFILE_COUNT;
@@ -115,7 +115,7 @@ static void VerifyWeaponPriorityLists(void)
             0x3A6A);
         expectedOffset +=
             WeaponPriorityCountTable[profileIndex] *
-            0x02 * sizeof(uint32);
+            0x02 * sizeof(uint32_t);
     }
 
     assert(expectedOffset == 0x0F46);
@@ -152,8 +152,8 @@ static void VerifyScenarioUnitReset(void)
 
 static void VerifyScenarioAllegianceBands(void)
 {
-    word16 unitIndex;
-    byte finalAllegiance = AssignScenarioLanceAllegiances(0x00);
+    uint16_t unitIndex;
+    uint8_t finalAllegiance = AssignScenarioLanceAllegiances(0x00);
 
     for (unitIndex = 0x00; unitIndex < 0x0C; ++unitIndex)
     {
@@ -165,7 +165,7 @@ static void VerifyScenarioAllegianceBands(void)
 
 static void VerifyLanceFormationPropagation(void)
 {
-    word16 unitIndex;
+    uint16_t unitIndex;
     RevengeUnitRecord *leader = &PersistentUnitRoster[0x00];
 
     memset(PersistentUnitRoster, 0x00,
@@ -196,7 +196,7 @@ static void VerifyLanceFormationPropagation(void)
 
     for (unitIndex = 0x01; unitIndex < 0x04; ++unitIndex)
     {
-        word16 formationSlot = unitIndex - 0x01;
+        uint16_t formationSlot = unitIndex - 0x01;
         assert(UnitTacticalOrderMode[unitIndex] ==
             0x01);
         assert(UnitAttackTarget[unitIndex] == 0x0C);

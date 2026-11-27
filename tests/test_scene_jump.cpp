@@ -34,15 +34,15 @@ static void Check(int condition, const char *what)
 
 int main(void)
 {
-    byte *block;
+    uint8_t *block;
 
     memset(&LoadedSceneFile, 0x00, sizeof(LoadedSceneFile));
     LoadedSceneFile.header.instructionBlockOffset = INSTRUCTION_BLOCK_OFFSET;
     SceneInstructionBaseOffset = INSTRUCTION_BASE;
     block = LoadedSceneFile.raw + INSTRUCTION_BASE;
     block[0x00] = SCENE_JUMP;
-    block[0x01] = (byte) JUMP_TARGET;
-    block[0x02] = (byte) (JUMP_TARGET >> 0x08);
+    block[0x01] = (uint8_t) JUMP_TARGET;
+    block[0x02] = (uint8_t) (JUMP_TARGET >> 0x08);
     block[JUMP_TARGET] = SCENE_YIELD;
 
     // As the battle's start sets it: the instruction block.

@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-uint32 CalculateSelectedWeaponRating(uint32 weaponMask, const uint16 *weaponCounts);
+uint32_t CalculateSelectedWeaponRating(uint32_t weaponMask, const uint16_t *weaponCounts);
 
 constexpr int SLOT = 0x14;
 constexpr int NOT_READY = 0x05;
@@ -31,13 +31,13 @@ static void Check(int condition, const char *what)
 
 /* Weapons 00h, 0Eh and 10h, one of each, as the cached counts; those in
  * ready are recovered, the others still recycling. */
-static void Rate(uint32 ready, int16 closeFirepower, int16 mediumFirepower,
-    int16 longFirepower, const char *what)
+static void Rate(uint32_t ready, int16_t closeFirepower, int16_t mediumFirepower,
+    int16_t longFirepower, const char *what)
 {
-    static const word16 carried[] = { 0x00, 0x0E, 0x10 };
+    static const uint16_t carried[] = { 0x00, 0x0E, 0x10 };
     RevengeUnitRecord unit;
     const RevengeTacticalCombatRatings *ratings = &UnitCombatRatings[SLOT];
-    word16 index;
+    uint16_t index;
     char line[160];
 
     memset(&unit, 0x00, sizeof(unit));
@@ -45,7 +45,7 @@ static void Rate(uint32 ready, int16 closeFirepower, int16 mediumFirepower,
     memset(&UnitWeaponRecoveryCounters[SLOT * WEAPON_DEFINITION_COUNT], 0x00, WEAPON_DEFINITION_COUNT);
     for (index = 0x00; index < sizeof(carried) / sizeof(carried[0]); ++index)
     {
-        word16 weapon = carried[index];
+        uint16_t weapon = carried[index];
         UnitCachedWeaponCounts[SLOT * WEAPON_DEFINITION_COUNT + weapon] = 0x01;
         if ((ready >> weapon & 0x01) == 0x00)
             UnitWeaponRecoveryCounters[SLOT * WEAPON_DEFINITION_COUNT + weapon] = NOT_READY;
@@ -63,7 +63,7 @@ static void Rate(uint32 ready, int16 closeFirepower, int16 mediumFirepower,
 
 int main(void)
 {
-    uint16 counts[WEAPON_DEFINITION_COUNT];
+    uint16_t counts[WEAPON_DEFINITION_COUNT];
 
     memset(WeaponDefinitions, 0x00, sizeof(WeaponDefinitions));
     memset(WeaponCombatRatingByType, 0x00, sizeof(WeaponCombatRatingByType));

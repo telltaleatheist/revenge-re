@@ -5,11 +5,11 @@
 #include <assert.h>
 
 void DrawClippedSprite(
-    byte *destination,
-    const byte *encodedSprite,
-    int16 x,
-    int16 y,
-    word16 clippingRegionIndex);
+    uint8_t *destination,
+    const uint8_t *encodedSprite,
+    int16_t x,
+    int16_t y,
+    uint16_t clippingRegionIndex);
 
 static void ResetState(void)
 {
@@ -23,11 +23,11 @@ static void ResetState(void)
 
 static void TestVgaDispatchAndWindowRelativeCoordinates(void)
 {
-    const byte sprite[] = {
+    const uint8_t sprite[] = {
         0x00, 0x00, 0x01, 0x00,
         0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C
     };
-    uint32 row = 0x0008U * VIDEO_SCREEN_WIDTH;
+    uint32_t row = 0x0008U * VIDEO_SCREEN_WIDTH;
 
     ResetState();
     VideoAdapterType = VIDEO_ADAPTER_VGA;
@@ -49,12 +49,12 @@ static void TestVgaDispatchAndWindowRelativeCoordinates(void)
 
 static void TestExplicitDestinationIsHonored(void)
 {
-    const byte sprite[] = {
+    const uint8_t sprite[] = {
         0x00, 0x00, 0x01, 0x00,
         0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C
     };
-    byte destination[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT] = { 0x00 };
-    uint32 row = 0x0008U * VIDEO_SCREEN_WIDTH;
+    uint8_t destination[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT] = { 0x00 };
+    uint32_t row = 0x0008U * VIDEO_SCREEN_WIDTH;
 
     ResetState();
     VideoAdapterType = VIDEO_ADAPTER_VGA;

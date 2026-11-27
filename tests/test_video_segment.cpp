@@ -11,22 +11,22 @@
  * each row with rep movsb, its offsets 16-bit, so a row past FFFFh carries on
  * at the segment's start, as the original's does. A text window reaching
  * past row 200 saves and restores those off-screen rows. */
-void CopyVideoRegion(int16 sourceX, int16 sourceY, int16 destinationX,
-    int16 destinationY, word16 width, word16 height, const byte *sourceBase,
-    byte *destinationBase);
+void CopyVideoRegion(int16_t sourceX, int16_t sourceY, int16_t destinationX,
+    int16_t destinationY, uint16_t width, uint16_t height, const uint8_t *sourceBase,
+    uint8_t *destinationBase);
 
-static byte row[VIDEO_SCREEN_WIDTH];
-static byte saved[VIDEO_SCREEN_WIDTH * 0x02];
+static uint8_t row[VIDEO_SCREEN_WIDTH];
+static uint8_t saved[VIDEO_SCREEN_WIDTH * 0x02];
 
 int main(void)
 {
-    byte *screen = SDLBackend_GetIndexedFramebuffer();
-    byte *videoSegment = (byte *) (uintptr_t) 0xA0000000UL;
-    word16 index;
+    uint8_t *screen = SDLBackend_GetIndexedFramebuffer();
+    uint8_t *videoSegment = (uint8_t *) (uintptr_t) 0xA0000000UL;
+    uint16_t index;
 
     ActiveVideoAdapterType = VIDEO_ADAPTER_VGA;
     for (index = 0; index < sizeof(row); ++index)
-        row[index] = (byte) (index + 0x01);
+        row[index] = (uint8_t) (index + 0x01);
     memset(screen, 0x00, VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT);
 
     /* Row 204 starts at FF00h: its first 100h bytes end the segment and

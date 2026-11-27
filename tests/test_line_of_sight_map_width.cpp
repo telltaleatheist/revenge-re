@@ -10,10 +10,10 @@
  * trace walks rows of the loaded map's width. No map is 96 wide, the width
  * the image starts the tables at. */
 void InitializeResourceCache(void);
-void LoadTacticalMap(word16 mapNumber);
-word16 TraceMapLineOfSight(int16 sourceX, int16 sourceY, int16 targetX, int16 targetY,
-    const byte *terrainTypeMap, byte specialTerrainMinimum, byte specialTerrainMaximum,
-    byte blockingTerrainThreshold, byte maximumSteps);
+void LoadTacticalMap(uint16_t mapNumber);
+uint16_t TraceMapLineOfSight(int16_t sourceX, int16_t sourceY, int16_t targetX, int16_t targetY,
+    const uint8_t *terrainTypeMap, uint8_t specialTerrainMinimum, uint8_t specialTerrainMaximum,
+    uint8_t blockingTerrainThreshold, uint8_t maximumSteps);
 
 constexpr int WIDTH = 55;
 constexpr int HEIGHT = 70;
@@ -22,7 +22,7 @@ constexpr int BLOCKING = 0xCC;
 constexpr int CLEAR_COLUMN = 20;
 constexpr int CLEAR_ROW = 30;
 
-static word16 Trace(int16 sourceX, int16 sourceY, int16 targetX, int16 targetY)
+static uint16_t Trace(int16_t sourceX, int16_t sourceY, int16_t targetX, int16_t targetY)
 {
     /* The first battle's terrain bounds; no step limit (0 wraps to 255). */
     return TraceMapLineOfSight(sourceX, sourceY, targetX, targetY, TerrainTypeMap,
@@ -35,7 +35,7 @@ int main(void)
     int y;
 
     /* The map as the game allocates it: one block. */
-    TerrainTypeMap = (byte *) calloc(0x8000, 1);
+    TerrainTypeMap = (uint8_t *) calloc(0x8000, 1);
     assert(TerrainTypeMap != NULL);
     /* As the game's start-up does (2C7F): every tracked file's slot free, no
 	 * file cached. */

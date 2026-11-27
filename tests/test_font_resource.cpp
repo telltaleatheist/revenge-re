@@ -12,12 +12,12 @@ enum
 };
 
 static int failures;
-static byte fontFile[TEST_FONT_SIZE];
-static int32 filePosition;
-static int32 reportedFileLength;
-static word16 closeCount;
-static word16 allocationCount;
-static word16 freeCount;
+static uint8_t fontFile[TEST_FONT_SIZE];
+static int32_t filePosition;
+static int32_t reportedFileLength;
+static uint16_t closeCount;
+static uint16_t allocationCount;
+static uint16_t freeCount;
 
 static void Check(int condition, const char *message)
 {
@@ -28,7 +28,7 @@ static void Check(int condition, const char *message)
     }
 }
 
-int16 GameFile_Open(const char *name, GameFileAccess access)
+int16_t GameFile_Open(const char *name, GameFileAccess access)
 {
     (void) name;
     (void) access;
@@ -36,35 +36,35 @@ int16 GameFile_Open(const char *name, GameFileAccess access)
     return 0x05;
 }
 
-int16 GameFile_Close(int16 fileHandle)
+int16_t GameFile_Close(int16_t fileHandle)
 {
     (void) fileHandle;
     ++closeCount;
     return 0x00;
 }
 
-int16 GameFile_Read(int16 fileHandle, void *buffer, word16 requestedBytes)
+int16_t GameFile_Read(int16_t fileHandle, void *buffer, uint16_t requestedBytes)
 {
-    word16 available;
-    word16 byteCount;
+    uint16_t available;
+    uint16_t byteCount;
 
     (void) fileHandle;
     if (filePosition < 0x00 || filePosition >= TEST_FONT_SIZE)
         return 0x00;
-    available = (word16) (TEST_FONT_SIZE - filePosition);
+    available = (uint16_t) (TEST_FONT_SIZE - filePosition);
     byteCount = requestedBytes < available ? requestedBytes : available;
     memcpy(buffer, &fontFile[filePosition], byteCount);
     filePosition += byteCount;
-    return (int16) byteCount;
+    return (int16_t) byteCount;
 }
 
-int32 GameFile_Length(int16 fileHandle)
+int32_t GameFile_Length(int16_t fileHandle)
 {
     (void) fileHandle;
     return reportedFileLength;
 }
 
-int32 GameFile_Seek(int16 fileHandle, int32 offset, GameFileOrigin origin)
+int32_t GameFile_Seek(int16_t fileHandle, int32_t offset, GameFileOrigin origin)
 {
     (void) fileHandle;
     if (origin == GAME_FILE_FROM_START)
@@ -76,9 +76,9 @@ int32 GameFile_Seek(int16 fileHandle, int32 offset, GameFileOrigin origin)
     return filePosition;
 }
 
-void *Heap_Allocate(uint32 byteCount, const char *caller)
+void *Heap_Allocate(uint32_t byteCount, const char *caller)
 {
-    byte *allocation = (byte *) malloc(byteCount);
+    uint8_t *allocation = (uint8_t *) malloc(byteCount);
 
     (void) caller;
     if (allocation != NULL)
@@ -108,7 +108,7 @@ static void PrepareValidFont(void)
 
 static void TestValidFontLoad(void)
 {
-    byte *fontResource;
+    uint8_t *fontResource;
 
     PrepareValidFont();
     fontResource = LoadFontResource("FONT6.FNT");
@@ -134,7 +134,7 @@ static void TestValidFontLoad(void)
 
 static void TestInvalidPhysicalLength(void)
 {
-    byte *fontResource;
+    uint8_t *fontResource;
 
     PrepareValidFont();
     reportedFileLength = TEST_FONT_SIZE - 0x01;

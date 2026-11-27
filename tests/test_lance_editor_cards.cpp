@@ -32,14 +32,14 @@
  *
  * The editor's graphics buffers are built first, all of them: entries 01h-10h
  * for the units, 17h-25h for the pilots' portraits (2507:5016). */
-static byte framebuffer[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
-static byte encodingBuffer[0x2000];
+static uint8_t framebuffer[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
+static uint8_t encodingBuffer[0x2000];
 
 static void LoadOriginalSaveCards(void)
 {
     const char *path = getenv("REVENGE_ORIGINAL_SAVE");
-    static byte file[REVENGE_SAVE_FILE_SIZE];
-    word16 slotStart;
+    static uint8_t file[REVENGE_SAVE_FILE_SIZE];
+    uint16_t slotStart;
     RevengeCampaignSnapshot snapshot;
     FILE *save;
     size_t index;
@@ -54,7 +54,7 @@ static void LoadOriginalSaveCards(void)
     assert(fread(file, 1, sizeof(file), save) == sizeof(file));
     fclose(save);
     /* The directory's word for slot 1 is where its campaign snapshot starts. */
-    slotStart = (word16) (file[0x04] | (file[0x05] << 0x08));
+    slotStart = (uint16_t) (file[0x04] | (file[0x05] << 0x08));
     memcpy(&snapshot, &file[slotStart], sizeof(snapshot));
     for (index = 0; index < REVENGE_SAVE_SCENARIO_RECORD_COUNT; ++index)
         UnitSelectionCard_Load(&UnitSelectionCards[index], &snapshot.scenarioRecords[index]);
@@ -74,7 +74,7 @@ static void BuildEditorBuffers(void)
 
 int main(int argc, char **argv)
 {
-    word16 slot;
+    uint16_t slot;
 
     RequireOriginalImport();
     BuildEditorBuffers();
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     for (slot = 0x0000; slot < UnitEditorScenarioCardCount; ++slot)
     {
         const UnitSelectionCard *card = &UnitSelectionCards[slot];
-        word16 unitType = PersistentUnitRoster[card->persistentUnitSlot].unitTypeId;
+        uint16_t unitType = PersistentUnitRoster[card->persistentUnitSlot].unitTypeId;
 
         assert(LanceEditorCardSprite(card) ==
             UnitEditorGraphicsBuffer(UnitEditorUnitSpriteIndex[unitType]));

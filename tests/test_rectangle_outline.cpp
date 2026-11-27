@@ -5,22 +5,22 @@
 
 typedef struct LineCall
 {
-    int16 x1;
-    int16 y1;
-    int16 x2;
-    int16 y2;
-    word16 color;
+    int16_t x1;
+    int16_t y1;
+    int16_t x2;
+    int16_t y2;
+    uint16_t color;
 } LineCall;
 
 static LineCall lineCalls[0x04];
-static word16 lineCallCount;
+static uint16_t lineCallCount;
 
 void DrawClippedAxisAlignedLine(
-    int16 x1,
-    int16 y1,
-    int16 x2,
-    int16 y2,
-    word16 color)
+    int16_t x1,
+    int16_t y1,
+    int16_t x2,
+    int16_t y2,
+    uint16_t color)
 {
     LineCall *call;
 

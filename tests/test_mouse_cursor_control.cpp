@@ -4,26 +4,26 @@
 
 #include <assert.h>
 
-static word16 spriteDrawCalls;
+static uint16_t spriteDrawCalls;
 
 void DrawClippedSprite(
-    byte *destination,
-    const byte *encodedSprite,
-    int16 x,
-    int16 y,
-    word16 preserveExistingPixels)
+    uint8_t *destination,
+    const uint8_t *encodedSprite,
+    int16_t x,
+    int16_t y,
+    uint16_t preserveExistingPixels)
 {
     (void) encodedSprite;
     (void) preserveExistingPixels;
     ++spriteDrawCalls;
     if (x >= 0x0000 && y >= 0x0000)
-        destination[(word32) y * 0x0140 + x] = 0x0F;
+        destination[(uint32_t) y * 0x0140 + x] = 0x0F;
 }
 
 int main(void)
 {
-    static const byte cursorBitmap[0x20] = { 0x00 };
-    static byte cursorBackground[0x0240];
+    static const uint8_t cursorBitmap[0x20] = { 0x00 };
+    static uint8_t cursorBackground[0x0240];
 
     FakeBackend_Reset();
     MouseCursorUpdateLock = 0x0000;

@@ -4,14 +4,14 @@
 
 #include <assert.h>
 
-static word16 linearDecodeCount;
-static word16 columnDecodeCount;
-static const byte *decoderSource;
-static byte *decoderDestination;
+static uint16_t linearDecodeCount;
+static uint16_t columnDecodeCount;
+static const uint8_t *decoderSource;
+static uint8_t *decoderDestination;
 
 void DecodeLinearRleScreen(
-    const byte *compressedData,
-    byte *destination)
+    const uint8_t *compressedData,
+    uint8_t *destination)
 {
     ++linearDecodeCount;
     decoderSource = compressedData;
@@ -19,8 +19,8 @@ void DecodeLinearRleScreen(
 }
 
 void DecodeColumnMajorRleScreen(
-    const byte *compressedData,
-    byte *destination)
+    const uint8_t *compressedData,
+    uint8_t *destination)
 {
     ++columnDecodeCount;
     decoderSource = compressedData;
@@ -37,10 +37,10 @@ static void ResetObservations(void)
 
 /* 35C2:000B: the page's first byte picks the decoder; the rest is its
  * stream. The VGA keeps the decoded bytes as they are. */
-static void TestPage(byte layoutType)
+static void TestPage(uint8_t layoutType)
 {
-    byte packedDisplayBuffer[0x10] = { 0x00 };
-    byte iconPageDestination[0x10];
+    uint8_t packedDisplayBuffer[0x10] = { 0x00 };
+    uint8_t iconPageDestination[0x10];
 
     ResetObservations();
     packedDisplayBuffer[0x00] = layoutType;

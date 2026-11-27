@@ -4,17 +4,17 @@
 #include <assert.h>
 
 static char printedCharacters[0x10];
-static word16 printedCharacterCount;
-static byte retraceModes[0x10];
-static word16 retraceCallCount;
+static uint16_t printedCharacterCount;
+static uint8_t retraceModes[0x10];
+static uint16_t retraceCallCount;
 
-uint16 DOS_PrintCharacter(char character)
+uint16_t DOS_PrintCharacter(char character)
 {
     printedCharacters[printedCharacterCount++] = character;
-    return (word16) (byte) character;
+    return (uint16_t) (uint8_t) character;
 }
 
-void WaitForVerticalRetraceEdge(byte waitForRetraceStart)
+void WaitForVerticalRetraceEdge(uint8_t waitForRetraceStart)
 {
     retraceModes[retraceCallCount++] = waitForRetraceStart;
 }

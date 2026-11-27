@@ -20,7 +20,7 @@ static void Check(int condition, const char *message)
     }
 }
 
-static int RowIs(uint16 row, const char *text)
+static int RowIs(uint16_t row, const char *text)
 {
     char expected[80];
     size_t length = strlen(text);

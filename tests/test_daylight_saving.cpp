@@ -8,15 +8,15 @@
  * side of the 2 a.m. change. (A day of the year past the year's end would
  * read past the table, in the original as here.) The digest is of the port's answers before its calendar
  * table became the original's (DS:716E), which moved none of them. */
-word16 IsDaylightSavingTime(
-    word16 yearsSince1970,
-    word16 month,
-    word16 dayOrDayOfYear,
-    byte hour);
+uint16_t IsDaylightSavingTime(
+    uint16_t yearsSince1970,
+    uint16_t month,
+    uint16_t dayOrDayOfYear,
+    uint8_t hour);
 
 #define DAYLIGHT_DIGEST 0xBFE2FEF5UL
 
-static unsigned long Mix(unsigned long digest, word16 answer)
+static unsigned long Mix(unsigned long digest, uint16_t answer)
 {
     return ((digest ^ (answer != 0x00 ? 0x01UL : 0x00UL)) * 0x01000193UL) & 0xFFFFFFFFUL;
 }
@@ -24,15 +24,15 @@ static unsigned long Mix(unsigned long digest, word16 answer)
 int main(void)
 {
     unsigned long digest = 0x811C9DC5UL;
-    word16 years;
-    word16 month;
-    word16 day;
-    byte hour;
+    uint16_t years;
+    uint16_t month;
+    uint16_t day;
+    uint8_t hour;
     int failures = 0;
 
     for (years = 0x00; years < 0x80; ++years)
     {
-        word16 lastDay = ((years + 0x46) & 0x03) == 0x00 ? 0x016D : 0x016C;
+        uint16_t lastDay = ((years + 0x46) & 0x03) == 0x00 ? 0x016D : 0x016C;
 
         for (day = 0x00; day <= lastDay; ++day)
             for (hour = 0x00; hour < 0x04; ++hour)

@@ -16,8 +16,8 @@ static void Check(int condition, const char *message)
     }
 }
 
-static byte primaryBuffer[0x10];
-static byte ordinaryBuffer[0x10];
+static uint8_t primaryBuffer[0x10];
+static uint8_t ordinaryBuffer[0x10];
 
 static void TestOrdinaryTarget(void)
 {

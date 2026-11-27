@@ -9,13 +9,13 @@
 
 static void TestVgaPaletteBankAnchors(void)
 {
-    byte baseColors[0x30];
-    word16 index;
+    uint8_t baseColors[0x30];
+    uint16_t index;
 
     FakeBackend_Reset();
     for (index = 0x0000; index < 0x0030; ++index)
     {
-        baseColors[index] = (byte) (index + 0x01);
+        baseColors[index] = (uint8_t) (index + 0x01);
         VideoPaletteData[index] = baseColors[index];
     }
     memset(VideoPaletteData + 0x0030, 0x00, 0x02D0);
@@ -28,8 +28,8 @@ static void TestVgaPaletteBankAnchors(void)
     InstallVgaPaletteBankAnchors();
     for (index = 0x0000; index < 0x0010; ++index)
     {
-        word16 sourceOffset = index * 0x0003;
-        word16 destinationOffset = index * 0x0030;
+        uint16_t sourceOffset = index * 0x0003;
+        uint16_t destinationOffset = index * 0x0030;
 
         assert(memcmp(
                    VideoPaletteData + destinationOffset,

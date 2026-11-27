@@ -14,10 +14,10 @@
  * to the host. The host's end comes through exit(), so the order is checked
  * in an atexit function. */
 
-static byte callOrder[0x08];
-static byte callCount;
+static uint8_t callOrder[0x08];
+static uint8_t callCount;
 
-static void RecordCall(byte callId)
+static void RecordCall(uint8_t callId)
 {
     callOrder[callCount++] = callId;
 }
@@ -32,10 +32,10 @@ static void TerminationHook(void) { RecordCall(0x07); }
 
 static void CheckAtExit(void)
 {
-    static const byte expectedOrder[0x07] = {
+    static const uint8_t expectedOrder[0x07] = {
         0x03, 0x02, 0x01, 0x04, 0x05, 0x06, 0x07
     };
-    word16 index;
+    uint16_t index;
 
     if (ExitHandlerCount != 0xFFFF || fakeBackend.exitCode != 0x34 ||
         callCount != 0x07)

@@ -57,7 +57,7 @@ int main(int argc, char **argv)
     char path[1024];
     char buffer[16];
     char *current = SDL_GetCurrentDirectory();
-    int16 handle;
+    int16_t handle;
 
     assert(current != NULL);
     SDL_snprintf(root, sizeof(root), "%sgame-paths-test/", current);

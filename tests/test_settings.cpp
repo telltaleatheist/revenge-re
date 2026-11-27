@@ -43,7 +43,7 @@
  *            device) too, as 2C7F:055F tests its count before the decrement
  */
 /* 2C7F's loader; only its own file declares it. */
-word16 LoadMediaConfiguration(void);
+uint16_t LoadMediaConfiguration(void);
 
 static char saves[1024];
 static char settingsPath[1024];
@@ -121,7 +121,7 @@ static char *ExpectedText(char *original, size_t *size)
         InputConfigurationRecords[0].name);
 }
 
-static void Text(char *text, word16 capacity, word16 *length)
+static void Text(char *text, uint16_t capacity, uint16_t *length)
 {
     *length = MediaSettings_InstallerText(HostSettings_MediaChoices(), text, capacity);
     assert(*length > 0);
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 {
     const char *mode = argc > 1 ? argv[1] : "first";
     char text[0xC8];
-    word16 length;
+    uint16_t length;
 
     RequireOriginalImport();
     Folders(mode);

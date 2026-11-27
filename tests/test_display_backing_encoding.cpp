@@ -19,15 +19,15 @@ static void Check(int condition, const char *message)
 
 static void TestTacticalOverviewTranslation(void)
 {
-    const byte source[] = {
+    const uint8_t source[] = {
         0x00, 0x7F, 0x80, 0x9F, 0xA0,
         0xBF, 0xC0, 0xC5, 0xC6, 0xFF
     };
-    const byte expected[] = {
+    const uint8_t expected[] = {
         0x77, 0x77, 0xEE, 0xEE, 0x33, 0x33, 0xAA, 0xAA,
         0x00, 0x00, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77
     };
-    byte destination[0x10];
+    uint8_t destination[0x10];
 
     memset(destination, 0xCC, sizeof(destination));
     BuildTacticalOverviewMapBuffer(
@@ -57,12 +57,12 @@ static void TestTacticalLookupAndOverlayState(void)
 
 static void TestPackedAdapterRows(void)
 {
-    const byte source[] = {
+    const uint8_t source[] = {
         0x10, 0x11, 0x20, 0x21, 0xEE,
         0x30, 0x31, 0x40, 0x41, 0xDD
     };
-    byte destination[0x10];
-    word16 length;
+    uint8_t destination[0x10];
+    uint16_t length;
 
     memset(destination, 0xCC, sizeof(destination));
     ActiveVideoAdapterType = VIDEO_ADAPTER_VGA;

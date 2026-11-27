@@ -6,8 +6,8 @@
 
 static void TestVariableLengthQuantity(void)
 {
-    const byte encoded[] = { 0x81, 0x00 };
-    const byte *cursor;
+    const uint8_t encoded[] = { 0x81, 0x00 };
+    const uint8_t *cursor;
 
     cursor = encoded;
     assert(ReadMIDIVariableLengthQuantity(&cursor) == 0x0080);
@@ -20,7 +20,7 @@ static void TestSpeakerUnreservedVoiceAllocation(void)
 {
     MIDIChannelState *channelState;
     MIDIVoiceRecord *voiceRecord;
-    byte voice;
+    uint8_t voice;
 
     FakeBackend_Reset();
     ActivateMIDIDriver(&SpeakerMIDIDriverDescriptor);
@@ -36,7 +36,7 @@ static void TestSpeakerUnreservedVoiceAllocation(void)
     voiceRecord = NULL;
     for (voice = 0x00; voice < 0x04; ++voice)
     {
-        MIDIVoiceRecord *candidate = MIDIVoiceRecordAt((word16) (SpeakerMIDIDriverDescriptor.VoiceRecordsOffset + voice * 0x20));
+        MIDIVoiceRecord *candidate = MIDIVoiceRecordAt((uint16_t) (SpeakerMIDIDriverDescriptor.VoiceRecordsOffset + voice * 0x20));
         if (candidate->ChannelStateOffset == 0x6420)
         {
             assert(voiceRecord == NULL);
@@ -52,7 +52,7 @@ static void TestSpeakerUnreservedVoiceAllocation(void)
 
 static void TestSingleTrackSequence(void)
 {
-    static const byte sequence[] = {
+    static const uint8_t sequence[] = {
         'M', 'T', 'h', 'd', 0x00, 0x00, 0x00, 0x06,
         0x00, 0x00, 0x00, 0x01, 0x00, 0x60,
         'M', 'T', 'r', 'k', 0x00, 0x00, 0x00, 0x0C,
@@ -61,7 +61,7 @@ static void TestSingleTrackSequence(void)
         0x00, 0xFF, 0x2F, 0x00
     };
 
-    uint16 queuedByte;
+    uint16_t queuedByte;
 
     FakeBackend_Reset();
     assert(sizeof(MIDIDriverDescriptorData) == 0x1B);

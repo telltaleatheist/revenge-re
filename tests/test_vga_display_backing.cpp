@@ -6,12 +6,12 @@
 #include <assert.h>
 #include <string.h>
 
-static byte framebuffer[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
-static byte encodingBuffer[0x0400];
-static byte allocation[0x0400];
-static int32 requestedAllocationSize;
+static uint8_t framebuffer[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
+static uint8_t encodingBuffer[0x0400];
+static uint8_t allocation[0x0400];
+static int32_t requestedAllocationSize;
 
-void *Heap_Allocate(uint32 byteCount, const char *caller)
+void *Heap_Allocate(uint32_t byteCount, const char *caller)
 {
     (void) caller;
     requestedAllocationSize = byteCount;
@@ -30,13 +30,13 @@ static void ResetState(void)
 
 static void TestVgaZeroRunEncoding(void)
 {
-    static const byte expected[] = {
+    static const uint8_t expected[] = {
         0x00, 0x01, 0x01, 0x01,
         0x01, 0x00, 0x03, 0x02, 0x00, 0x01, 0x03, 0x04,
         0x00, 0x08
     };
-    byte *firstRow;
-    byte *result;
+    uint8_t *firstRow;
+    uint8_t *result;
 
     ResetState();
     firstRow = framebuffer + 0x0002 * VIDEO_SCREEN_WIDTH + 0x0008;
@@ -48,7 +48,7 @@ static void TestVgaZeroRunEncoding(void)
         0x0001, 0x0002, 0x0001, 0x0002);
 
     assert(result == allocation);
-    assert(requestedAllocationSize == (int32) sizeof(expected));
+    assert(requestedAllocationSize == (int32_t) sizeof(expected));
     assert(memcmp(allocation, expected, sizeof(expected)) == 0x00);
 }
 
@@ -69,7 +69,7 @@ static void TestAdapterDispatcher(void)
 
 static void TestPlanarBackingFormat(void)
 {
-    static const byte expected[] = {
+    static const uint8_t expected[] = {
         0xCC, 0x00, 0x01, 0x00, 0x01, 0x02, 0x03, 0x04
     };
 

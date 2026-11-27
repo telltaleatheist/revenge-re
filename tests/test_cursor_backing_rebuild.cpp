@@ -4,24 +4,24 @@
 
 #include <assert.h>
 
-static byte oldBacking[0x10];
-static byte replacementBacking[0x10];
-static byte *freedBacking;
-static word16 capturedSourceTileX;
-static word16 capturedSourcePixelY;
-static word16 capturedWidthTiles;
-static word16 capturedHeightPixels;
+static uint8_t oldBacking[0x10];
+static uint8_t replacementBacking[0x10];
+static uint8_t *freedBacking;
+static uint16_t capturedSourceTileX;
+static uint16_t capturedSourcePixelY;
+static uint16_t capturedWidthTiles;
+static uint16_t capturedHeightPixels;
 
 void Heap_Free(void *block)
 {
-    freedBacking = (byte *) block;
+    freedBacking = (uint8_t *) block;
 }
 
-byte *BuildDisplayBackingBuffer(
-    word16 sourceTileX,
-    word16 sourcePixelY,
-    word16 widthTiles,
-    word16 heightPixels)
+uint8_t *BuildDisplayBackingBuffer(
+    uint16_t sourceTileX,
+    uint16_t sourcePixelY,
+    uint16_t widthTiles,
+    uint16_t heightPixels)
 {
     capturedSourceTileX = sourceTileX;
     capturedSourcePixelY = sourcePixelY;
