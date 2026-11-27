@@ -87,7 +87,7 @@ word16 FindOperationalLanceLeader(word16 unitIndex);
 word16 ShouldDestroyUnitAfterLegLoss(void);
 void RebuildLanceFormationAfterLeaderLoss(word16 firstUnitIndex);
 word16 AdvanceTerrainDamageState(
-	word16 mapX, word16 mapY, word16 damageAmount);
+	int16 mapX, int16 mapY, word16 maximumDamageState);
 
 
 #endif

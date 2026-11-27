@@ -49,8 +49,8 @@ void DecodeWestwoodLzw14(
     byte *destination,
     byte *dictionary);
 void DecodeWestwoodPackedResource(
-    const byte *compressedBlock,
-    byte *destination);
+    const void *compressedBlock,
+    void *destination);
 
 /* Host-side container adapters. These replace no game logic; they validate
  * the original file envelope and then call the recovered routines above. */

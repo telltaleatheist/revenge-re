@@ -56,13 +56,13 @@ void LoadTacticalMap(word16 mapNumber);
 void LoadTacticalIconSetResources(word16 iconSetNumber);
 void ExecuteSceneInstructions(void);
 word16 AdvanceTerrainDamageState(
-	int16 mapX, int16 mapY, word16 damageAmount);
+	int16 mapX, int16 mapY, word16 maximumDamageState);
 void UpdateUnitSpriteForFacing(word16 unitIndex, word16 facing);
 void DrawTacticalOverviewMap(void);
 word16 RunGameOptionsMenu(word16 embeddedMode);
 void UpdateUnitHeatAccumulators(void);
 void ApplyAreaTerrainAndUnitDamage(
-	int16 mapX, int16 mapY, word16 radius, word16 damageAmount);
+	int16 mapX, int16 mapY, word16 visualEffectType, int16 weaponIndex);
 void OpenModalTextWindow(word16 windowIndex, word16 clearAndFrame);
 void RestoreModalTextWindow(void);
 word16 ConfirmExitToDos(void);

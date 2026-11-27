@@ -18,7 +18,7 @@
 
 // These callees are maintained in other segment files or will be promoted in
 // the following tactical pass. Their stack contracts are already unambiguous.
-void PlotPixel(word16 x, word16 y, word16 color);
+void PlotPixel(word16 x, word16 y, byte color);
 void ScrollTacticalViewportToCursor(void);
 void RedrawTacticalStatusPanel(void);
 void DrawTacticalOverviewViewportFrame(void);

@@ -68,12 +68,12 @@ void DrawClippedWeaponTraceLine(
 	word16 color,
 	word16 dashedTrace);
 void DrawWeaponAttackTrace(
-	word16 unitIndex,
-	word16 targetX,
-	word16 targetY,
-	word16 traceMode,
-	word16 traceWidth,
-	word16 dashedTrace);
+	word16 attackerUnitIndex,
+	int16 targetMapX,
+	int16 targetMapY,
+	word16 offsetEndpoints,
+	word16 shotHit,
+	word16 weaponIndex);
 void DrawCenteredTextInActiveWindow(
 	const char *text,
 	word16 rowOffset,
