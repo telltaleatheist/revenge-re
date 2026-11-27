@@ -2,5 +2,5 @@
 {"digest": "ca6c558bc4060f3a", "kinds": {"snap": 1}, "lines": 1, "snap": "message1"}
 {"digest": "173f0c0fb0ed28c6", "kinds": {"snap": 1, "tone": 484, "tone-effect": 17}, "lines": 502, "snap": "message2"}
 {"digest": "67f315696062b77c", "kinds": {"snap": 1, "tone": 22, "tone-effect": 5}, "lines": 28, "snap": "message3"}
-{"digest": "e40d2ebcf7827ea6", "kinds": {"midi 80": 81, "midi 90": 89, "midi B0": 8, "midi C0": 9, "midi E0": 9, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 43, "tone": 21, "tone-effect": 1}, "lines": 264, "snap": "message4"}
-{"digest": "2039bdbc1b7d09c5", "kinds": {"midi 80": 34, "midi 90": 34, "snap": 1, "tone": 6}, "lines": 75, "snap": "after"}
+{"digest": "bc05f9a0c6d8e85a", "kinds": {"midi 80": 81, "midi 90": 89, "midi B0": 8, "midi C0": 9, "midi E0": 9, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 43, "tone": 21, "tone-effect": 1}, "lines": 264, "snap": "message4"}
+{"digest": "9e1baea1d7a577b7", "kinds": {"midi 80": 34, "midi 90": 34, "snap": 1, "tone": 6}, "lines": 75, "snap": "after"}

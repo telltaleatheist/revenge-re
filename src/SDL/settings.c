@@ -25,7 +25,13 @@ enum
  * every card's as the soundfont or the samples, and the file is written
  * again in the new words. */
 static const char *const OptionWords[MEDIA_OPTION_COUNT] = { "video", "music", "sound", "input" };
-static const char *const VideoWords[] = { "vga", "mcga", "ega", "tandy", "cga" };
+/* The video has one word, as the rebuild draws every screen one way: in the
+ * 256-colour mode, as the game does on the MCGA record (DS:3AD1's second).
+ * On its VGA record the game sets DS:83DC (2C7F:06F7) and runs the battle in
+ * the 16-colour mode (0D73:0296, 030E), with the same pixels. The records'
+ * words are read as old values, once, and all of them as vga. */
+static const char *const VideoWords[] = { "vga" };
+static const char *const VideoRecordWords[] = { "vga", "mcga", "ega", "tandy", "cga" };
 static const char *const MusicWords[] = { "soundfont", "speaker", "off" };
 static const char *const MusicRecordWords[] = {
 	"lapc-1", "mt-32", "sound-blaster", "adlib", "ps-1", "tandy", "pc-speaker"
@@ -40,15 +46,17 @@ static const char *const InputWords[] = { "mouse", "keys" };
 /* Each option's words; the music's and the sound's are their records', as
  * the game counts them (the player's words are MusicWords and SoundWords). */
 static const char *const *const ChoiceWords[MEDIA_OPTION_COUNT] = {
-	VideoWords, MusicRecordWords, SoundRecordWords, InputWords
+	VideoRecordWords, MusicRecordWords, SoundRecordWords, InputWords
 };
 static const word16 ChoiceWordCounts[MEDIA_OPTION_COUNT] = {
-	sizeof(VideoWords) / sizeof(VideoWords[0]), sizeof(MusicRecordWords) / sizeof(MusicRecordWords[0]),
+	sizeof(VideoRecordWords) / sizeof(VideoRecordWords[0]), sizeof(MusicRecordWords) / sizeof(MusicRecordWords[0]),
 	sizeof(SoundRecordWords) / sizeof(SoundRecordWords[0]), sizeof(InputWords) / sizeof(InputWords[0])
 };
 
 enum
 {
+	/* The record the video's one way drives: the MCGA's. */
+	VIDEO_RECORD_VGA = 1,
 	MUSIC_WORD_COUNT = sizeof(MusicWords) / sizeof(MusicWords[0]),
 	/* The records the music's ways out drive: the speaker's own driver, and
 	 * the Roland driver for the soundfont and for none. */
@@ -62,10 +70,10 @@ enum
 	SOUND_RECORD_SPEAKER = 8
 };
 
-/* With no MEDIA.CFG: VGA, the music on the soundfont, the effects as
+/* With no MEDIA.CFG: VGA (the MCGA record), the music on the soundfont, the effects as
  * digital samples, the keyboard. */
 static const RevengeMediaChoices DefaultChoices = {
-	{ 0, MUSIC_RECORD_ROLAND, SOUND_RECORD_SAMPLES, 1 }, "220", MEDIA_MUSIC_SOUNDFONT, MEDIA_SOUND_SAMPLES
+	{ VIDEO_RECORD_VGA, MUSIC_RECORD_ROLAND, SOUND_RECORD_SAMPLES, 1 }, "220", MEDIA_MUSIC_SOUNDFONT, MEDIA_SOUND_SAMPLES
 };
 
 static RevengeMediaChoices choices;
@@ -206,16 +214,20 @@ static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
 		if (seen[option])
 			RevengeFault("%s:%d: %s is set twice", path, lineNumber, OptionWords[option]);
 		seen[option] = 1;
-		if (option == MEDIA_OPTION_MUSIC && (choice = WordIndex(MusicWords, MUSIC_WORD_COUNT, words[1])) >= 0)
+		if (option == MEDIA_OPTION_VIDEO && (choice = WordIndex(VideoWords, 1, words[1])) >= 0)
+		{
+			/* vga: the record is set below. */
+		}
+		else if (option == MEDIA_OPTION_MUSIC && (choice = WordIndex(MusicWords, MUSIC_WORD_COUNT, words[1])) >= 0)
 			out->music = (word16) choice;
 		else if (option == MEDIA_OPTION_SOUND && (choice = WordIndex(SoundWords, SOUND_WORD_COUNT, words[1])) >= 0)
 			out->sound = (word16) choice;
 		else if ((choice = WordIndex(ChoiceWords[option], ChoiceWordCounts[option], words[1])) >= 0
-			&& (option == MEDIA_OPTION_MUSIC || option == MEDIA_OPTION_SOUND))
+			&& option != MEDIA_OPTION_INPUT)
 		{
 			if (option == MEDIA_OPTION_MUSIC)
 				out->music = MusicFromRecord((word16) choice);
-			else
+			else if (option == MEDIA_OPTION_SOUND)
 			{
 				out->sound = SoundFromRecord((word16) choice);
 				if (count == 3 && MediaSettings_SoundTakesParameter((word16) choice) && IsHexParameter(words[2]))
@@ -228,7 +240,8 @@ static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
 		if (count == 3)
 			RevengeFault("%s:%d: %s %s takes no parameter", path, lineNumber,
 				OptionWords[option], words[1]);
-		out->choice[option] = option == MEDIA_OPTION_MUSIC ? MusicRecord(out->music)
+		out->choice[option] = option == MEDIA_OPTION_VIDEO ? (word16) VIDEO_RECORD_VGA
+			: option == MEDIA_OPTION_MUSIC ? MusicRecord(out->music)
 			: option == MEDIA_OPTION_SOUND ? SoundRecord(out->sound) : (word16) choice;
 	}
 	for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
@@ -263,6 +276,7 @@ static void ReadMediaConfiguration(char *text, RevengeMediaChoices *out)
 			continue;
 		out->choice[option] = (word16) choice;
 	}
+	out->choice[MEDIA_OPTION_VIDEO] = VIDEO_RECORD_VGA;
 	out->music = MusicFromRecord(out->choice[MEDIA_OPTION_MUSIC]);
 	out->choice[MEDIA_OPTION_MUSIC] = MusicRecord(out->music);
 	out->sound = SoundFromRecord(out->choice[MEDIA_OPTION_SOUND]);
@@ -282,9 +296,11 @@ static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
 	{
 		word16 choice;
 
-		const char *const *words = option == MEDIA_OPTION_MUSIC ? MusicWords
+		const char *const *words = option == MEDIA_OPTION_VIDEO ? VideoWords
+			: option == MEDIA_OPTION_MUSIC ? MusicWords
 			: option == MEDIA_OPTION_SOUND ? SoundWords : ChoiceWords[option];
-		word16 count = option == MEDIA_OPTION_MUSIC ? (word16) MUSIC_WORD_COUNT
+		word16 count = option == MEDIA_OPTION_VIDEO ? (word16) 1
+			: option == MEDIA_OPTION_MUSIC ? (word16) MUSIC_WORD_COUNT
 			: option == MEDIA_OPTION_SOUND ? (word16) SOUND_WORD_COUNT : ChoiceWordCounts[option];
 
 		length += snprintf(text + length, sizeof(text) - (size_t) length, "#   %s:", OptionWords[option]);
@@ -297,7 +313,10 @@ static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
 	{
 		word16 choice = values->choice[option];
 
-		if (option == MEDIA_OPTION_SOUND)
+		if (option == MEDIA_OPTION_VIDEO)
+			length += snprintf(text + length, sizeof(text) - (size_t) length, "%s = %s\n",
+				OptionWords[option], VideoWords[0]);
+		else if (option == MEDIA_OPTION_SOUND)
 			length += snprintf(text + length, sizeof(text) - (size_t) length, "%s = %s\n",
 				OptionWords[option], SoundWords[values->sound]);
 		else if (option == MEDIA_OPTION_MUSIC)

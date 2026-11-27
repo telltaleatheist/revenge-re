@@ -1,4 +1,4 @@
 {"digest": "11949fbd2e401a69", "kinds": {"midi --": 3, "midi 80": 1742, "midi 90": 1754, "midi B0": 71, "midi C0": 60, "midi E0": 29, "midi F7": 3, "midi reset": 4, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 160, "tone": 251, "tone-effect": 6}, "lines": 4088, "snap": "options"}
-{"digest": "a240dcab37507fa1", "kinds": {"snap": 1}, "lines": 1, "snap": "in_game"}
+{"digest": "5f9647faf0530ca6", "kinds": {"snap": 1}, "lines": 1, "snap": "in_game"}
 {"digest": "be619226ad87b62f", "kinds": {"snap": 1}, "lines": 1, "snap": "replay05"}
 {"digest": "298ca0b8d7532fab", "kinds": {"snap": 1}, "lines": 1, "snap": "replay10"}

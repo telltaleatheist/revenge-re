@@ -25,13 +25,15 @@
 /* The player's settings file stands for MEDIA.CFG (src/SDL/settings.c).
  *
  *   first    the first start takes the install's MEDIA.CFG: the text the game
- *            then parses is that file's bytes, and settings.txt is written;
- *            the next start reads settings.txt alone, to the same choices
+ *            then parses is that file's bytes but the video's, which is
+ *            always the MCGA record (the 256-colour mode on every screen),
+ *            and settings.txt is written; the next start reads settings.txt
+ *            alone, to the same choices
  *   none     with no MEDIA.CFG, our defaults
  *   own      a settings.txt of the player's own words wins; an old card
  *            word for the music reads as the soundfont, for the sound (its
- *            parameter passed over) as the samples, and the file is
- *            written again in the new words
+ *            parameter passed over) as the samples, any video record's
+ *            word as vga, and the file is written again in the new words
  *   words    the music's words (off, speaker) and the sound's (speaker,
  *            samples), each its record
  *   bad      a choice it doesn't know is a fault naming the file and line
@@ -70,6 +72,26 @@ static void Folders(const char *name)
 		assert(CHANGE_DIRECTORY(getenv("REVENGE_GAME")) == 0);
 }
 
+/* The install's MEDIA.CFG as the game is handed it: its first line, the
+ * video's, names the MCGA record. */
+static char *ExpectedText(char *original, size_t *size)
+{
+	const char *lineEnd = strstr(original, "\r\n");
+	char *expected;
+	int written;
+
+	assert(lineEnd != NULL && strncmp(original, ConfigOptionNames[MEDIA_OPTION_VIDEO],
+		strlen(ConfigOptionNames[MEDIA_OPTION_VIDEO])) == 0);
+	expected = (char *) SDL_malloc(*size + 0x20);
+	assert(expected != NULL);
+	written = SDL_snprintf(expected, *size + 0x20, "%s=%.12s%s",
+		ConfigOptionNames[MEDIA_OPTION_VIDEO], VideoConfigurationRecords[1].name, lineEnd);
+	assert(written > 0);
+	SDL_free(original);
+	*size = (size_t) written;
+	return expected;
+}
+
 static void Text(char *text, word16 capacity, word16 *length)
 {
 	*length = MediaSettings_InstallerText(HostSettings_MediaChoices(), text, capacity);
@@ -96,6 +118,7 @@ int main(int argc, char **argv)
 		assert(GamePaths_Resolve("MEDIA.CFG", GAME_PATH_READ, install, sizeof(install)) == 0);
 		original = (char *) SDL_LoadFile(install, &size);
 		assert(original != NULL);
+		original = ExpectedText(original, &size);
 		assert(HostSettings_Prepare());
 		Text(text, sizeof(text), &length);
 		assert(length == size && memcmp(text, original, size) == 0);
@@ -113,7 +136,7 @@ int main(int argc, char **argv)
 
 		assert(HostSettings_Prepare());
 		choices = HostSettings_MediaChoices();
-		assert(choices->choice[MEDIA_OPTION_VIDEO] == 0 && choices->choice[MEDIA_OPTION_MUSIC] == 1);
+		assert(choices->choice[MEDIA_OPTION_VIDEO] == 1 && choices->choice[MEDIA_OPTION_MUSIC] == 1);
 		assert(choices->choice[MEDIA_OPTION_SOUND] == 0 && choices->choice[MEDIA_OPTION_INPUT] == 1);
 		assert(strcmp(choices->soundParameter, "220") == 0);
 		assert(choices->music == MEDIA_MUSIC_SOUNDFONT && choices->sound == MEDIA_SOUND_SAMPLES);
@@ -124,13 +147,16 @@ int main(int argc, char **argv)
 		const RevengeMediaChoices *choices;
 		char *written;
 
-		WriteText(settingsPath, "# mine\nVIDEO = VGA\nmusic=adlib\n\nsound = ssi-2001 2C0   # the card\ninput = mouse\n");
+		WriteText(settingsPath, "# mine\nVIDEO = EGA\nmusic=adlib\n\nsound = ssi-2001 2C0   # the card\ninput = mouse\n");
 		assert(HostSettings_Prepare());
 		choices = HostSettings_MediaChoices();
 		assert(choices->music == MEDIA_MUSIC_SOUNDFONT && choices->choice[MEDIA_OPTION_MUSIC] == 1);
 		assert(choices->sound == MEDIA_SOUND_SAMPLES && choices->choice[MEDIA_OPTION_SOUND] == 0);
 		assert(choices->choice[MEDIA_OPTION_INPUT] == 0 && strcmp(choices->soundParameter, "220") == 0);
+		assert(choices->choice[MEDIA_OPTION_VIDEO] == 1);
 		written = (char *) SDL_LoadFile(settingsPath, NULL);
+		assert(written != NULL && strstr(written, "\nvideo = vga\n") != NULL);
+		assert(strstr(written, "EGA") == NULL && strstr(written, "ega\n") == NULL);
 		assert(written != NULL && strstr(written, "\nmusic = soundfont\n") != NULL);
 		assert(strstr(written, "\nsound = samples\n") != NULL && strstr(written, "adlib\n") == NULL);
 		assert(strstr(written, "2C0") == NULL && strstr(written, "ssi-2001") == NULL);
