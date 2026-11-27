@@ -45,6 +45,20 @@ harness writes `SNAP.objects` there at each snap, with every object's name,
 size and bytes (`src/SDL/map_dump.c`, written by `make_map_dump.py` from the
 headers). Unset, it does nothing.
 
+Every snap also writes `SNAP.names` (`MapDump_WriteNames`): each object by
+name with a hash of its bytes. An object declared as a pointer or an array of
+them has each pointer hashed as the place it points to (an object's name and
+offset, the DOS memory block's linear address, a function's name, or
+"elsewhere"), so it is the same on every run and system. Every other object is
+hashed as its bytes are: a number in it that happens to equal an address is
+not a pointer. Two linker habits are kept out: the empty stubs share one label
+("empty"), since MSVC folds identical functions into one address, and an
+address just past an object's end is not that object's, since what follows it
+differs from system to system.
+The trace records keep them (`objects`, tools/trace/README.md): the check
+holds by name while the later slices move the port's objects. `StoryTextSlots`,
+the story's own constant table, is left out.
+
 `check_dump.py` (ctest `map.dump_checks`) uses the dump the other way: each
 line of `dump_checks.txt` names a script, a snap and a span of the data
 segment, and the run must hold there what the image holds at a given place.

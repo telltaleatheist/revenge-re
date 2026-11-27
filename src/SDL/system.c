@@ -180,6 +180,13 @@ word16 SDLBackend_ResizeMemoryBlock(
 	return 0xFFFF;
 }
 
+const byte *SDLBackend_DOSMemoryBlock(uint32 *capacity, word16 *segment)
+{
+	*capacity = dosMemoryBlockCapacity;
+	*segment = dosMemoryBlockSegment;
+	return dosMemoryBlock;
+}
+
 word16 SDLBackend_GetLargestFreeConventionalMemoryParagraphs(
 	word16 requestedParagraphs)
 {

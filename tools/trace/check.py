@@ -13,7 +13,6 @@ first that differ, both sides), the frame, its palette, the save block.
 Exits 0 when everything matches.
 """
 import argparse
-import json
 import os
 import sys
 import tempfile
@@ -28,8 +27,7 @@ SKIP = 77
 
 
 def load(path):
-    with open(path, encoding="utf-8") as f:
-        return [json.loads(line) for line in f if line.strip()]
+    return record.load(path)
 
 
 def compare(name, golden, candidate):
@@ -53,6 +51,11 @@ def compare(name, golden, candidate):
                 problems.append(f"{where}: frame {part}")
         if want["save"] != got["save"]:
             problems.append(f"{where}: save block")
+        if "objects" in want and "objects" in got and want["objects"] != got["objects"]:
+            names = sorted(n for n in set(want["objects"]) | set(got["objects"])
+                           if want["objects"].get(n) != got["objects"].get(n))
+            shown = ", ".join(names[:12]) + (f" and {len(names) - 12} more" if len(names) > 12 else "")
+            problems.append(f"{where}: objects {shown}")
     return problems
 
 

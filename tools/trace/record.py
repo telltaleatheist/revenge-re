@@ -120,12 +120,15 @@ def trace(script, work):
         base = os.path.join(work, name)
         with open(base + ".state", encoding="utf-8") as f:
             state = [line.rstrip("\n") for line in f if line.strip()]
+        with open(base + ".names", encoding="utf-8") as f:
+            objects = dict(line.split() for line in f if line.strip())
         records.append({
             "snap": name,
             "keys": keys,
             "state": state,
             "frame": {"indices": digest(base + ".indices"), "palette": digest(base + ".palette")},
             "save": digest(base + ".save"),
+            "objects": objects,
         })
     if len(records) != len(tokens_by_snap(script)):
         sys.exit(f"record: the run took {len(records)} of the script's {len(tokens_by_snap(script))} snaps")
@@ -146,9 +149,36 @@ def record(exe, game, script, work):
 
 
 def write(records, out):
+    """The records, one a line. A snap's objects are those that changed since
+    the previous snap (all of them at the first); load() puts them back."""
+    previous = None
     with open(out, "w", encoding="utf-8", newline="\n") as f:
         for record_ in records:
-            f.write(json.dumps(record_, separators=(",", ":")) + "\n")
+            line = dict(record_)
+            if "objects" in line:
+                objects = line["objects"]
+                if previous is not None:
+                    if set(objects) != set(previous):
+                        sys.exit(f"record: the objects at {line['snap']} aren't those of the snap before")
+                    line["objects"] = {n: h for n, h in objects.items() if previous[n] != h}
+                previous = objects
+            f.write(json.dumps(line, separators=(",", ":")) + "\n")
+
+
+def load(path):
+    """A trace file's records, each snap's objects whole."""
+    records = []
+    current = None
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            if not line.strip():
+                continue
+            record_ = json.loads(line)
+            if "objects" in record_:
+                current = dict(record_["objects"]) if current is None else {**current, **record_["objects"]}
+                record_["objects"] = current
+            records.append(record_)
+    return records
 
 
 def main():

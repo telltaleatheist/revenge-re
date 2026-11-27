@@ -442,6 +442,21 @@ static void WriteState(const char *name)
 		Stop("can't write", path);
 }
 
+/* Every data object by name and the hash of its bytes (map_dump.c). */
+static void WriteNames(const char *name)
+{
+	char path[PATH_CAPACITY];
+	FILE *file;
+
+	OutPath(path, name, ".names");
+	file = fopen(path, "wb");
+	if (file == NULL)
+		Stop("can't write", path);
+	MapDump_WriteNames(file);
+	if (fclose(file) != 0)
+		Stop("can't write", path);
+}
+
 static void Snap(const char *name)
 {
 	byte palette[0x300];
@@ -454,6 +469,7 @@ static void Snap(const char *name)
 	SaveBlock(save);
 	WriteFile(name, ".save", save, sizeof(save));
 	WriteState(name);
+	WriteNames(name);
 	MapDump_Write(name);
 	AudioLog_Snap(name);
 	OutPath(path, "snaps", ".txt");

@@ -31,6 +31,9 @@ word16 SDLBackend_ResizeMemoryBlock(
 word16 SDLBackend_GetLargestFreeConventionalMemoryParagraphs(
 	word16 requestedParagraphs);
 void SDLBackend_InitializeDOSMemoryArena(void);
+/* The DOS memory block (AH=4Ah) as the host holds it: its first byte, its
+ * capacity in bytes and its segment; NULL before the game sizes it. */
+const byte *SDLBackend_DOSMemoryBlock(uint32 *capacity, word16 *segment);
 void SDLBackend_GetSystemDate(DOS_Date *date);
 void SDLBackend_GetSystemTime(DOS_Time *time);
 const char *SDLBackend_GetEnvironmentVariable(const char *name);

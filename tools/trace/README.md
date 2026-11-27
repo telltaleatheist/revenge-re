@@ -89,8 +89,21 @@ One JSON object a line, one line a snap:
  "frame": {"indices": SHA-256/128 of the 320×200 indexed frame,
            "palette": SHA-256/128 of the RGB colours it can show:
                       16 in the 16-colour mode, else 256},
- "save": SHA-256/128 of the 0x1031-byte save block}
+ "save": SHA-256/128 of the 0x1031-byte save block,
+ "objects": {NAME: hash, …}}
 ```
+
+`objects` is every data object the headers declare (the map's,
+tools/map/README.md) by name, with the first 16 hex digits of the SHA-256 of
+its bytes (`src/SDL/map_dump.c`). In an object declared as a pointer or an
+array of them, each pointer is hashed as where it points: the object it is in
+and the offset there, the DOS memory block's linear address, a function by
+name, or "elsewhere"; so the hash is the same on every run and system, and
+stays so when the port moves its objects. Other objects hash their bytes as
+they are. The
+file holds a snap's objects that changed since the snap before (all at a
+script's first); `record.load` reads them back whole. `check.py` names each
+object that differs.
 
 The state lines, one fact each:
 
