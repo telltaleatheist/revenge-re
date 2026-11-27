@@ -70,10 +70,11 @@ static void TestTacticalLookupAndOverlayState(void)
 		"overlay clear covers the complete E4h-byte tactical map");
 
 	DamagedTerrainSpriteLookup = NULL;
+	TerrainDamageCapabilityTable = NULL;
 	InstallDamagedTerrainSpriteLookup();
-	Check(DamagedTerrainSpriteLookup ==
-		(byte *) HostFarPointer_Resolve(0x080001C9UL),
-		"damaged-terrain lookup installer publishes CS:01C9 itself");
+	Check(DamagedTerrainSpriteLookup != NULL &&
+		DamagedTerrainSpriteLookup == TerrainDamageCapabilityTable,
+		"damaged-terrain lookup installer publishes the port's tables to both pointers");
 }
 
 static void TestPackedAdapterRows(void)
