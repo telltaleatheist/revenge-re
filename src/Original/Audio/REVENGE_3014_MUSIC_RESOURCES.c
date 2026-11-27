@@ -47,31 +47,31 @@ void InitializeMusicDriver(void)
 			PrepareMIDIDriver(&SpeakerMIDIDriverDescriptor);
 			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
 			ActivateMIDIDriver(&SpeakerMIDIDriverDescriptor);
-			MusicDriverPlaybackMode = 0x01;
+			Seg426B.MusicDriverMode = 0x01;
 			break;
 	case MIDI_DRIVER_TANDY:
 			PrepareMIDIDriver(&TandyMIDIDriverDescriptor);
 			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
 			ActivateMIDIDriver(&TandyMIDIDriverDescriptor);
-			MusicDriverPlaybackMode = 0x01;
+			Seg426B.MusicDriverMode = 0x01;
 			break;
 	case MIDI_DRIVER_IBM_PS1:
 			PrepareMIDIDriver(&IBMPS1MIDIDriverDescriptor);
 			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
 			ActivateMIDIDriver(&IBMPS1MIDIDriverDescriptor);
-			MusicDriverPlaybackMode = 0x01;
+			Seg426B.MusicDriverMode = 0x01;
 			break;
 	case MIDI_DRIVER_ADLIB:
 			PrepareMIDIDriver(&AdLibMIDIDriverDescriptor);
 			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
 			ActivateMIDIDriver(&AdLibMIDIDriverDescriptor);
-			MusicDriverPlaybackMode = 0x01;
+			Seg426B.MusicDriverMode = 0x01;
 			break;
 	case MIDI_DRIVER_ROLAND:
 			PrepareMIDIDriver(&RolandMIDIDriverDescriptor);
 			SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
 			ActivateMIDIDriver(&RolandMIDIDriverDescriptor);
-			MusicDriverPlaybackMode = 0x02;
+			Seg426B.MusicDriverMode = 0x02;
 			break;
 		}
 	}

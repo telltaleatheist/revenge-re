@@ -630,7 +630,6 @@ static const MapDumpObject objects[] =
 	{ "TacticalSpriteClipTopPixel", &TacticalSpriteClipTopPixel, sizeof(TacticalSpriteClipTopPixel) },
 	{ "TacticalSpriteClipBottomPixel", &TacticalSpriteClipBottomPixel, sizeof(TacticalSpriteClipBottomPixel) },
 	{ "RequestedMusicEnabled", &RequestedMusicEnabled, sizeof(RequestedMusicEnabled) },
-	{ "MusicDriverPlaybackMode", &MusicDriverPlaybackMode, sizeof(MusicDriverPlaybackMode) },
 	{ "CachedMusicResourceIndex", &CachedMusicResourceIndex, sizeof(CachedMusicResourceIndex) },
 	{ "SpriteDrawBusy", &SpriteDrawBusy, sizeof(SpriteDrawBusy) },
 	{ "PlanarBackingBufferExtentLow", &PlanarBackingBufferExtentLow, sizeof(PlanarBackingBufferExtentLow) },

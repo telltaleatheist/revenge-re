@@ -596,7 +596,6 @@ unplaced MoveDestinationPromptSuffix 4 host pointer
 unplaced MovementDescriptionTable 14 host pointer
 unplaced MusicConfigTokenDelimiters 4 zero at every snap
 unplaced MusicDriverIndex 1 zero at every snap
-unplaced MusicDriverPlaybackMode 1 several places match
 unplaced MusicStagingBuffer 4 host pointer
 unplaced NarrationFocusRegion 2 its bytes match nowhere (pointers or values differ)
 unplaced NoSatelliteUplinkText 4 host pointer

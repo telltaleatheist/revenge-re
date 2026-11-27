@@ -410,7 +410,6 @@ word16 TacticalSpriteClipTopPixel;
 word16 TacticalSpriteClipBottomPixel;
 /* REVENGE.EXE DS:800C is initialized to 0001h. */
 word16 RequestedMusicEnabled = TRUE;
-byte MusicDriverPlaybackMode;
 word16 CachedMusicResourceIndex;
 word16 SpriteDrawBusy;
 byte *MusicStagingBuffer;

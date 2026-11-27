@@ -593,7 +593,6 @@ extern word16 TacticalSpriteClipRightTile;
 extern word16 TacticalSpriteClipTopPixel;
 extern word16 TacticalSpriteClipBottomPixel;
 extern word16 RequestedMusicEnabled;
-extern byte MusicDriverPlaybackMode;
 extern word16 CachedMusicResourceIndex;
 extern word16 SpriteDrawBusy;
 extern word16 PlanarBackingBufferExtentLow;
