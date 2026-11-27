@@ -58,11 +58,12 @@ std::string remembered(const std::string& user) {
   return configured.empty() ? setup::remembered_folder(user) : configured;
 }
 
-// The program's file name as the player knows it: "chr" in a package, "Revenge" in a build tree.
+// The program's file name as the player knows it: "chr" in a package, "Revenge" in a build tree. An AppImage starts it
+// through its AppRun link, which is not a name the player knows: that is chr too.
 std::string program_name(const char* argv0) {
   std::string name = argv0 ? std::filesystem::path(argv0).filename().string() : "chr";
   if (name.size() > 4 && (name.ends_with(".exe") || name.ends_with(".EXE"))) name.resize(name.size() - 4);
-  return name.empty() ? "chr" : name;
+  return name.empty() || name == "AppRun" ? "chr" : name;
 }
 
 void usage(std::FILE* to, const std::string& name) {
