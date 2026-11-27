@@ -1,6 +1,6 @@
 // The game's door to the story file (revenge/story.h): imported from the
-// player's copy when it is missing or outdated, then read, and every text and
-// media piece put in its place before the game runs.
+// player's copy when it is missing or outdated, then read, and every text,
+// media and data piece put in its place before the game runs.
 #include "revenge/story.h"
 
 #include <cstdio>
@@ -19,8 +19,8 @@ void place_all(const std::vector<std::string>& texts) {
         StoryText_Place(static_cast<StoryTextId>(id), texts[std::size_t(id)].data(), texts[std::size_t(id)].size());
 }
 
-void place_media(const std::vector<revenge::import::Media>& media) {
-    for (const auto& item : media) std::memcpy(item.piece->target, item.bytes.data(), item.bytes.size());
+void place_pieces(const std::vector<revenge::import::StoredPiece>& pieces) {
+    for (const auto& item : pieces) std::memcpy(item.piece->target, item.bytes.data(), item.bytes.size());
 }
 
 void place_file(const std::filesystem::path& write_dir) {
@@ -45,17 +45,17 @@ extern "C" void StoryHost_Prepare(const char* executablePath, const char* writeD
     try {
         if (writeDirectory == nullptr) {
             place_all(revenge::import::import_texts(*edition));
-            place_media(revenge::import::import_media(*edition));
+            place_pieces(revenge::import::import_pieces(*edition));
         } else {
             const std::filesystem::path write_dir(writeDirectory);
             if (revenge::import::story_state(write_dir, *edition) != revenge::import::StoryState::Current) {
                 revenge::import::write_story(write_dir, *edition, revenge::import::import_texts(*edition),
-                                             revenge::import::import_media(*edition), executablePath);
+                                             revenge::import::import_pieces(*edition), executablePath);
                 std::fprintf(stderr, "imported the story file into %s\n",
                              revenge::import::story_dir(write_dir).string().c_str());
             }
             place_file(write_dir);
-            place_media(revenge::import::load_story_media(write_dir, *edition));
+            place_pieces(revenge::import::load_story_pieces(write_dir, *edition));
         }
     } catch (const std::exception& e) {
         RevengeFault("the story: %s", e.what());

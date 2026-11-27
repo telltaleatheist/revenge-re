@@ -4,9 +4,10 @@
 //
 //   match    every text is the bytes OriginalImport_PieceBytes gives for its
 //            piece, and each table entry is its text; the story file, written
-//            and read back, gives the same texts; each media piece's object
-//            holds its bytes, placed from its file in story/media, which
-//            import.json lists by its length and SHA-256
+//            and read back, gives the same texts; each media and data
+//            piece's object holds its bytes, placed from its file in
+//            story/media or story/data, which import.json lists by its
+//            length and SHA-256
 //   state    no story file is missing, and so is one with text.json but no
 //            import.json (an import cut short), or with a media file gone; a
 //            written one is current; one of another import version or table
@@ -75,7 +76,7 @@ void write(const fs::path& path, const std::string& text) {
 }
 
 bool is_text_kind(OriginalPieceKind kind) {
-    return kind != ORIGINAL_PIECE_BYTES && kind != ORIGINAL_PIECE_MEDIA && kind != ORIGINAL_PIECE_BYTE_LISTS;
+    return kind != ORIGINAL_PIECE_BYTES && kind != ORIGINAL_PIECE_MEDIA;
 }
 
 // The pieces' texts in order are the story ids in order (make_import_table.py
@@ -132,8 +133,9 @@ std::string sha256_hex(const std::string& bytes) {
     return hex;
 }
 
-// Each media piece's object holds the piece's bytes in the copy; with a
-// story folder, its file holds them too and import.json lists the file.
+// Each media and data piece's object holds the piece's bytes in the copy;
+// with a story folder, its file holds them too and import.json lists the
+// file.
 void check_media(const fs::path* folder) {
     const OriginalEdition* edition = OriginalImport_Edition();
     std::vector<std::uint8_t> bytes(0x10000);
@@ -141,27 +143,28 @@ void check_media(const fs::path* folder) {
     int count = 0;
     for (std::size_t index = 0; index < edition->pieceCount; ++index) {
         const OriginalPiece& piece = edition->pieces[index];
-        if (piece.kind != ORIGINAL_PIECE_MEDIA) continue;
+        if (!story::is_stored(piece)) continue;
         ++count;
         const std::size_t length = OriginalImport_PieceBytes(&piece, bytes.data(), bytes.size());
         assert(length == piece.length);
         assert(std::memcmp(piece.target, bytes.data(), length) == 0);
         if (folder == nullptr) continue;
-        const std::string id = story::media_id(piece);
-        const std::string file = read(story::story_dir(*folder) / "media" / (id + ".bin"));
+        const std::string id = story::piece_id(piece);
+        const std::string file = read(story::story_dir(*folder) / story::piece_file(piece));
         assert(file.size() == length && std::memcmp(file.data(), bytes.data(), length) == 0);
-        const std::string listed = "\"" + id + "\": {\"file\": \"media/" + id + ".bin\", \"length\": " +
+        const std::string listed = "\"" + id + "\": {\"file\": \"" + story::piece_file(piece) + "\", \"length\": " +
                                    std::to_string(length) + ", \"sha256\": \"" + sha256_hex(file) + "\"}";
         assert(manifest.find(listed) != std::string::npos);
     }
-    assert(count == 5);
+    assert(count == 11);
 }
 
-// Clears every media piece's object, so a check after proves it was placed.
+// Clears every media and data piece's object, so a check after proves it was
+// placed.
 void clear_media() {
     const OriginalEdition* edition = OriginalImport_Edition();
     for (std::size_t index = 0; index < edition->pieceCount; ++index)
-        if (edition->pieces[index].kind == ORIGINAL_PIECE_MEDIA)
+        if (story::is_stored(edition->pieces[index]))
             std::memset(edition->pieces[index].target, 0, edition->pieces[index].length);
 }
 
@@ -184,7 +187,7 @@ void check_weapon_names() {
 fs::path edited_story(const char* name, std::string (*edit)(std::string)) {
     const fs::path folder = fresh_folder(name);
     story::write_story(folder, *OriginalImport_Edition(), story::import_texts(*OriginalImport_Edition()),
-                       story::import_media(*OriginalImport_Edition()), executable_path());
+                       story::import_pieces(*OriginalImport_Edition()), executable_path());
     const fs::path text = story::story_dir(folder) / "text.json";
     write(text, edit(read(text)));
     return folder;
@@ -224,13 +227,13 @@ int main(int argc, char** argv) {
     } else if (mode == "state") {
         const fs::path folder = fresh_folder("state");
         assert(story::story_state(folder, edition) == story::StoryState::Missing);
-        story::write_story(folder, edition, story::import_texts(edition), story::import_media(edition),
+        story::write_story(folder, edition, story::import_texts(edition), story::import_pieces(edition),
                            executable_path());
         assert(story::story_state(folder, edition) == story::StoryState::Current);
         const fs::path manifest = story::story_dir(folder) / "import.json";
         const std::string written = read(manifest);
         std::string other = written;
-        other.replace(other.find("\"import_version\": 2"), 19, "\"import_version\": 0");
+        other.replace(other.find("\"import_version\": 3"), 19, "\"import_version\": 0");
         write(manifest, other);
         assert(story::story_state(folder, edition) == story::StoryState::Outdated);
         other = written;

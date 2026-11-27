@@ -63,7 +63,6 @@ KINDS = {
     "mutable_text_table": "ORIGINAL_PIECE_MUTABLE_TEXT_TABLE",
     "pointed_text": "ORIGINAL_PIECE_POINTED_TEXT",
     "mutable_pointed_text": "ORIGINAL_PIECE_MUTABLE_POINTED_TEXT",
-    "byte_lists": "ORIGINAL_PIECE_BYTE_LISTS",
     "bytes": "ORIGINAL_PIECE_BYTES",
     "media": "ORIGINAL_PIECE_MEDIA",
 }
@@ -282,12 +281,7 @@ def piece_bytes(img, kind, offset, count, stride):
     for index in range(count or 1):
         target = entry(img, offset, index, stride)
         if target is None:
-            if kind != "byte_lists":
-                out += b"\0"          # a null string is an empty one; a null list adds nothing
-            continue
-        if kind == "byte_lists":
-            end = img.index(b"\xff", target)
-            out += img[target:end + 1]
+            out += b"\0"          # a null string is an empty one
             continue
         text = string_at(img, target)
         out += (expand(img, text) if kind == "expanded_text_table" else text) + b"\0"
@@ -317,10 +311,6 @@ def render(img, edition):
         if kind in ("bytes", "media"):
             length, target = str(count), f"&{name}"
             checks.append(f"_Static_assert(sizeof({name}) == 0x{count:X}, \"{name} is the piece's size\");")
-        elif kind == "byte_lists":
-            length, target = "0", f"(void *) {name}"
-            checks.append(f"_Static_assert(sizeof({name}) / sizeof({name}[0]) == 0x{count:X}, "
-                          f"\"{name} has the piece's entries\");")
         else:
             length, target = "0", "NULL"     # a text: the story file places it
         lines.append(f'\t{{ "{name}", {KINDS[kind]}, 0x{offset:04X}, 0x{count:X}, {stride}, {length}, '

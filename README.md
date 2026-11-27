@@ -134,10 +134,11 @@ graphics driver; `SDL_RENDER_DRIVER=software` chooses it from the start.
 
 This tree carries none of the original game's text, art or sound: the program
 reads them from the player's own `REVENGE.EXE` and game files at start. The
-text, and the media the program keeps with it (the sounds, the palette and the
-text's digram tables), are taken from the copy once, into `story/` in the
-player's folder (`text.json`, `media/<id>.bin`, and `import.json` saying what
-they were taken from, with each media file's length and SHA-256), and read from
+text, and the media and data the program keeps with it (the sounds, the
+palette and the text's digram tables; the setup's device records and two small
+tables), are taken from the copy once, into `story/` in the player's folder
+(`text.json`, `media/<id>.bin`, `data/<id>.bin`, and `import.json` saying what
+they were taken from, with each file's length and SHA-256), and read from
 there; they are taken again when that folder is missing or from an older
 version. The rules, the screens' layout and a new campaign's starting state
 are the program's own numbers, the original's to begin with: `data/rules`,

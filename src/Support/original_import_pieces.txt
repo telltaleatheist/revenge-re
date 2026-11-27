@@ -13,9 +13,9 @@
 #   text ID DS-OFFSET            a single text, STORY_TEXT(ID)
 #
 # Kinds (include/revenge/original_import.h): text_table, expanded_text_table,
-# mutable_text_table, pointed_text, mutable_pointed_text, byte_lists, bytes,
-# media. A media piece is a bytes piece the story keeps: imported into the
-# story folder with the texts, and placed from there.
+# mutable_text_table, pointed_text, mutable_pointed_text, bytes, media. The
+# story keeps the bytes and media pieces as it keeps the texts: imported into
+# the story folder once (story/data and story/media), and placed from there.
 # Offsets and counts are hex. A table's COUNT is its array's; STRIDE is 4
 # unless given. A bytes or media piece's COUNT is its length, which must be
 # the size of the object it fills. A mutable pointed text fills its whole char array.
@@ -82,7 +82,7 @@ media                CompressedTextSecondByteTable           05BA 80
 media                PCSpeakerEffectStreamData               5642 299
 media                DigitalSoundData                        593E 62D
 
-# Data the game reads in place
+# Data: the story keeps each as story/data/<id>.bin (src/Import)
 bytes                VideoConfigurationRecords               3AD1 41
 bytes                MusicConfigurationRecords               3B12 5B
 bytes                InputConfigurationRecords               3B6D 1A

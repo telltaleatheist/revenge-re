@@ -23,8 +23,8 @@ namespace {
 
 fs::path manifest_path(const fs::path& write_dir) { return story_dir(write_dir) / "import.json"; }
 fs::path text_path(const fs::path& write_dir) { return story_dir(write_dir) / "text.json"; }
-fs::path media_path(const fs::path& write_dir, const std::string& id) {
-    return story_dir(write_dir) / "media" / (id + ".bin");
+fs::path piece_path(const fs::path& write_dir, const OriginalPiece& piece) {
+    return story_dir(write_dir) / piece_file(piece);
 }
 
 std::string read_file(const fs::path& path) {
@@ -76,7 +76,15 @@ std::string address(const StoryTextSource& source) {
 
 fs::path story_dir(const fs::path& write_dir) { return write_dir / "story"; }
 
-std::string media_id(const OriginalPiece& piece) {
+bool is_stored(const OriginalPiece& piece) {
+    return piece.kind == ORIGINAL_PIECE_MEDIA || piece.kind == ORIGINAL_PIECE_BYTES;
+}
+
+std::string piece_file(const OriginalPiece& piece) {
+    return std::string(piece.kind == ORIGINAL_PIECE_MEDIA ? "media/" : "data/") + piece_id(piece) + ".bin";
+}
+
+std::string piece_id(const OriginalPiece& piece) {
     const std::string name = piece.name;
     std::string id;
     for (std::size_t at = 0; at < name.size(); ++at) {
@@ -92,29 +100,29 @@ std::string media_id(const OriginalPiece& piece) {
     return id;
 }
 
-std::vector<Media> import_media(const OriginalEdition& edition) {
-    std::vector<Media> media;
+std::vector<StoredPiece> import_pieces(const OriginalEdition& edition) {
+    std::vector<StoredPiece> pieces;
     std::vector<std::string> refused;
     std::vector<std::uint8_t> bytes(0x10000);
     for (std::size_t index = 0; index < edition.pieceCount; ++index) {
         const OriginalPiece& piece = edition.pieces[index];
-        if (piece.kind != ORIGINAL_PIECE_MEDIA) continue;
+        if (!is_stored(piece)) continue;
         const std::size_t length = OriginalImport_PieceBytes(&piece, bytes.data(), bytes.size());
         char hash[17] = "";
         if (length == piece.length) OriginalImport_KeyedHash(bytes.data(), length, hash);
         if (length != piece.length || std::string_view(hash) != piece.keyedHash) {
-            refused.push_back(media_id(piece));
+            refused.push_back(piece_id(piece));
             continue;
         }
-        media.push_back({&piece, media_id(piece), std::string(reinterpret_cast<const char*>(bytes.data()), length)});
+        pieces.push_back({&piece, piece_id(piece), std::string(reinterpret_cast<const char*>(bytes.data()), length)});
     }
     if (!refused.empty()) {
         std::string list;
         for (const auto& name : refused) list += "\n  " + name;
-        throw ImportError(std::to_string(refused.size()) + " media pieces aren't " + edition.name +
+        throw ImportError(std::to_string(refused.size()) + " media and data pieces aren't " + edition.name +
                           "'s by their length or keyed hash:" + list);
     }
-    return media;
+    return pieces;
 }
 
 std::vector<std::string> import_texts(const OriginalEdition& edition) {
@@ -160,9 +168,9 @@ std::string story_table_hash(const OriginalEdition& edition) {
     }
     for (std::size_t index = 0; index < edition.pieceCount; ++index) {
         const OriginalPiece& piece = edition.pieces[index];
-        if (piece.kind != ORIGINAL_PIECE_MEDIA) continue;
+        if (!is_stored(piece)) continue;
         std::snprintf(row, sizeof row, " %04X %u ", unsigned(piece.dataOffset), unsigned(piece.length));
-        all += "media " + media_id(piece) + row + piece.keyedHash + '\n';
+        all += piece_file(piece) + row + piece.keyedHash + '\n';
     }
     return sha256_hex(all);
 }
@@ -178,8 +186,7 @@ StoryState story_state(const fs::path& write_dir, const OriginalEdition& edition
         const auto* hash = manifest.find("table_sha256");
         if (!hash || hash->string() != story_table_hash(edition)) return StoryState::Outdated;
         for (std::size_t index = 0; index < edition.pieceCount; ++index)
-            if (edition.pieces[index].kind == ORIGINAL_PIECE_MEDIA &&
-                !fs::exists(media_path(write_dir, media_id(edition.pieces[index])), ec))
+            if (is_stored(edition.pieces[index]) && !fs::exists(piece_path(write_dir, edition.pieces[index]), ec))
                 return StoryState::Missing;
     } catch (const std::exception&) {
         return StoryState::Outdated;
@@ -188,7 +195,7 @@ StoryState story_state(const fs::path& write_dir, const OriginalEdition& edition
 }
 
 void write_story(const fs::path& write_dir, const OriginalEdition& edition, const std::vector<std::string>& texts,
-                 const std::vector<Media>& media, const fs::path& exe) {
+                 const std::vector<StoredPiece>& pieces, const fs::path& exe) {
     std::string body;
     for (int id = 0; id < STORY_TEXT_COUNT; ++id) {
         const StoryTextSource& source = edition.storyTexts[id];
@@ -201,19 +208,21 @@ void write_story(const fs::path& write_dir, const OriginalEdition& edition, cons
     std::error_code ec;
     fs::remove(manifest_path(write_dir), ec);
     write_file(text_path(write_dir), "{\n  \"texts\": [\n" + body + "\n  ]\n}\n");
-    std::string listed;
-    for (const Media& item : media) {
-        write_file(media_path(write_dir, item.id), item.bytes);
-        if (!listed.empty()) listed += ",\n";
-        listed += "    " + json_quote(item.id) + ": {\"file\": " + json_quote("media/" + item.id + ".bin") +
-                  ", \"length\": " + std::to_string(item.bytes.size()) + ", \"sha256\": " +
-                  json_quote(sha256_hex(item.bytes)) + "}";
+    std::string listed[2];
+    for (const StoredPiece& item : pieces) {
+        write_file(piece_path(write_dir, *item.piece), item.bytes);
+        std::string& list = listed[item.piece->kind == ORIGINAL_PIECE_MEDIA ? 0 : 1];
+        if (!list.empty()) list += ",\n";
+        list += "    " + json_quote(item.id) + ": {\"file\": " + json_quote(piece_file(*item.piece)) +
+                ", \"length\": " + std::to_string(item.bytes.size()) + ", \"sha256\": " +
+                json_quote(sha256_hex(item.bytes)) + "}";
     }
     write_file(manifest_path(write_dir),
                "{\n  \"import_version\": " + std::to_string(kImportVersion) + ",\n  \"sources\": {" +
                    json_quote(exe.filename().string()) + ": " + json_quote(sha256_hex(read_file(exe))) +
                    "},\n  \"edition\": " + json_quote(edition.name) + ",\n  \"table_sha256\": " +
-                   json_quote(story_table_hash(edition)) + ",\n  \"media\": {\n" + listed + "\n  }\n}\n");
+                   json_quote(story_table_hash(edition)) + ",\n  \"media\": {\n" + listed[0] + "\n  },\n  \"data\": {\n" +
+                   listed[1] + "\n  }\n}\n");
 }
 
 StoryText load_story_text(const fs::path& write_dir) {
@@ -236,20 +245,20 @@ StoryText load_story_text(const fs::path& write_dir) {
     }
 }
 
-std::vector<Media> load_story_media(const fs::path& write_dir, const OriginalEdition& edition) {
-    std::vector<Media> media;
+std::vector<StoredPiece> load_story_pieces(const fs::path& write_dir, const OriginalEdition& edition) {
+    std::vector<StoredPiece> pieces;
     for (std::size_t index = 0; index < edition.pieceCount; ++index) {
         const OriginalPiece& piece = edition.pieces[index];
-        if (piece.kind != ORIGINAL_PIECE_MEDIA) continue;
-        const std::string id = media_id(piece);
-        const fs::path path = media_path(write_dir, id);
+        if (!is_stored(piece)) continue;
+        const std::string id = piece_id(piece);
+        const fs::path path = piece_path(write_dir, piece);
         std::string bytes = read_file(path);
         if (bytes.size() != piece.length)
             throw ImportError(path.string() + " is " + std::to_string(bytes.size()) + " bytes, and the game's " +
                               id + " is " + std::to_string(piece.length));
-        media.push_back({&piece, id, std::move(bytes)});
+        pieces.push_back({&piece, id, std::move(bytes)});
     }
-    return media;
+    return pieces;
 }
 
 }  // namespace revenge::import

@@ -15,8 +15,7 @@ enum
 {
 	MZ_HEADER_BYTES = 0x1C,
 	PIECE_SCRATCH_BYTES = 0x20000,
-	KEYED_HASH_DIGITS = 16,
-	TEXT_LIST_END = 0xFF
+	KEYED_HASH_DIGITS = 16
 };
 
 /* The digram dictionaries RenderFormattedText expands high-bit text codes with. */
@@ -62,15 +61,6 @@ static size_t TextLength(size_t offset)
 	while (offset + length < originalImageBytes && OriginalImage[offset + length] != '\0')
 		++length;
 	return offset + length < originalImageBytes ? length : (size_t) -1;
-}
-
-static size_t ListLength(size_t offset)
-{
-	size_t length = 0;
-
-	while (offset + length < originalImageBytes && (uint8_t) OriginalImage[offset + length] != TEXT_LIST_END)
-		++length;
-	return offset + length < originalImageBytes ? length + 1 : (size_t) -1;
 }
 
 /* Expands one string the way RenderFormattedText (35CE) does: a code with its
@@ -141,7 +131,6 @@ size_t OriginalImport_PieceBytes(const OriginalPiece *piece, uint8_t *out, size_
 	case ORIGINAL_PIECE_MUTABLE_TEXT_TABLE:
 	case ORIGINAL_PIECE_POINTED_TEXT:
 	case ORIGINAL_PIECE_MUTABLE_POINTED_TEXT:
-	case ORIGINAL_PIECE_BYTE_LISTS:
 		for (index = 0; index < (piece->count != 0 ? piece->count : 1); ++index)
 		{
 			size_t offset = EntryOffset(piece, index);
@@ -151,20 +140,18 @@ size_t OriginalImport_PieceBytes(const OriginalPiece *piece, uint8_t *out, size_
 				return (size_t) -1;
 			if (offset == (size_t) -1)
 			{
-				/* A null list adds nothing; a null string is an empty one. */
-				if (piece->kind != ORIGINAL_PIECE_BYTE_LISTS)
-					at = Append(out, capacity, at, &terminator, 1);
+				/* A null string is an empty one. */
+				at = Append(out, capacity, at, &terminator, 1);
 				continue;
 			}
-			length = piece->kind == ORIGINAL_PIECE_BYTE_LISTS ? ListLength(offset) : TextLength(offset);
+			length = TextLength(offset);
 			if (length == (size_t) -1)
 				return (size_t) -1;
 			if (piece->kind == ORIGINAL_PIECE_EXPANDED_TEXT_TABLE)
 				at += ExpandText(offset, length, at < capacity ? out + at : out, at < capacity ? capacity - at : 0);
 			else
 				at = Append(out, capacity, at, &OriginalImage[offset], length);
-			if (piece->kind != ORIGINAL_PIECE_BYTE_LISTS)
-				at = Append(out, capacity, at, &terminator, 1);
+			at = Append(out, capacity, at, &terminator, 1);
 		}
 		return at;
 	}
@@ -256,31 +243,6 @@ static int ReadImage(const char *executablePath)
 	originalHeaderBytes = headerBytes;
 	originalImageBytes = imageBytes;
 	return 1;
-}
-
-/* The data pieces go in place; the texts and the media are the story's
- * (revenge/story.h). */
-static void PlacePiece(const OriginalPiece *piece)
-{
-	uint16_t index;
-
-	switch (piece->kind)
-	{
-	case ORIGINAL_PIECE_BYTES:
-		memcpy(piece->target, &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + piece->dataOffset], piece->length);
-		break;
-	case ORIGINAL_PIECE_BYTE_LISTS:
-		for (index = 0; index < piece->count; ++index)
-		{
-			size_t offset = EntryOffset(piece, index);
-
-			((const uint8_t **) piece->target)[index] =
-				offset == (size_t) -1 ? NULL : (const uint8_t *) &OriginalImage[offset];
-		}
-		break;
-	default:
-		break;
-	}
 }
 
 size_t OriginalImport_TextBytes(const StoryTextSource *source, uint8_t *out, size_t capacity)
@@ -398,15 +360,12 @@ const OriginalEdition *OriginalImport_Identify(const char *executablePath, const
 int OriginalImport_Load(const char *executablePath)
 {
 	const OriginalEdition *edition;
-	size_t index;
 
 	if (originalImportLoaded)
 		return 1;
 	edition = OriginalImport_Identify(executablePath, OriginalEditions, OriginalEditionCount);
 	if (edition == NULL)
 		return 0;
-	for (index = 0; index < edition->pieceCount; ++index)
-		PlacePiece(&edition->pieces[index]);
 	loadedEdition = edition;
 	loadedVariant = identifiedVariant;
 	originalImportLoaded = 1;
