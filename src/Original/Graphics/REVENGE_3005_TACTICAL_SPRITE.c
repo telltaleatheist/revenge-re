@@ -43,19 +43,14 @@ void DrawTacticalClippedSprite(
 	SpriteClipRightTile = TacticalSpriteClipRightTile;
 	SpriteClipTopPixel = TacticalSpriteClipTopPixel;
 	EncodedSpriteClipBottomPixel = TacticalSpriteClipBottomPixel;
+	/* The EGA's A200 routing and decoder (3005:009F, 0800:30FD) went
+	 * with the EGA; the rebuild is VGA only. */
 	if (VideoAdapterType != VIDEO_ADAPTER_EGA)
 		DrawCgaTandyEncodedSprite(
 			renderTarget,
 			encodedSprite,
 			screenX,
 			screenY);
-	else
-	{
-		if (renderTarget == PrimaryScreenBuffer)
-			renderTarget = EGA_OFFSCREEN_FRAMEBUFFER;
-		DrawEGAEncodedSprite(
-			renderTarget, encodedSprite, screenX, screenY);
-	}
 
 	SpriteDrawBusy = FALSE;
 }

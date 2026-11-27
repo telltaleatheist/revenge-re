@@ -37,24 +37,12 @@ void DrawClippedSprite(
 	clippedY = y + (int16) SpriteClipTopPixel;
 	if (encodedSprite != NULL)
 	{
-		if (VideoAdapterType != VIDEO_ADAPTER_EGA)
+		/* The CGA's and the Tandy's decoder (0D73:5743, 0800:14B7) and the
+		 * EGA's (0D73:570F, 5777, 0800:30FD), with its A200
+		 * routing, went with those adapters; the rebuild is VGA only. */
+		if (VideoAdapterType == VIDEO_ADAPTER_VGA)
 		{
-			if (VideoAdapterType == VIDEO_ADAPTER_VGA)
-			{
-				DrawVgaRleSprite(
-					destination, encodedSprite, clippedX, clippedY);
-			}
-			else
-			{
-				DrawCgaTandyEncodedSprite(
-					destination, encodedSprite, clippedX, clippedY);
-			}
-		}
-		else
-		{
-			if (destination == PrimaryScreenBuffer)
-				destination = EGA_OFFSCREEN_FRAMEBUFFER;
-			DrawEGAEncodedSprite(
+			DrawVgaRleSprite(
 				destination, encodedSprite, clippedX, clippedY);
 		}
 	}

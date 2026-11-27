@@ -20,8 +20,6 @@ enum
     VIDEO_SCREEN_MAX_Y = VIDEO_SCREEN_HEIGHT - 0x0001,
     VIDEO_SCREEN_8PX_COLUMN_COUNT = 0x0028,
     VIDEO_SCREEN_MIN_COLUMN = 0x0000,
-    EGA_OFFSCREEN_FRAMEBUFFER_OFFSET = 0x0000,
-    EGA_OFFSCREEN_FRAMEBUFFER_SEGMENT = 0xA200,
     EGA_LOGICAL_PALETTE_ENTRY_COUNT = 0x10,
     VGA_DAC_ENTRY_COUNT = 0x0100,
     VGA_PALETTE_BYTE_COUNT = 0x0300,
@@ -33,12 +31,6 @@ enum
     VERTICAL_RETRACE_WAIT_FOR_END = 0x00,
     VERTICAL_RETRACE_WAIT_FOR_START = 0x01
 };
-
-/* Native view of the original A200:0000 EGA shadow framebuffer. */
-#define EGA_OFFSCREEN_FRAMEBUFFER \
-    ((byte *)HostFarPointer_Resolve(MAKE_DWORD( \
-        EGA_OFFSCREEN_FRAMEBUFFER_SEGMENT, \
-        EGA_OFFSCREEN_FRAMEBUFFER_OFFSET)))
 
 extern word16 VerticalRetraceEdgeMode;
 
@@ -127,27 +119,11 @@ void DrawNonEgaTacticalTile(
     word16 spriteId,
     word16 destinationX,
     word16 destinationY);
-void DrawEgaTacticalTile(
-    const byte *spritePage,
-    word16 spriteId,
-    word16 destinationX,
-    word16 destinationY);
 void DrawTacticalTileSprite(
     const byte *spritePage,
     word16 spriteId,
     word16 destinationX,
     word16 destinationY);
-void DrawCgaCompositeTacticalTile(
-    word16 foregroundSpriteId,
-    word16 backgroundSpriteId,
-    const byte *spritePage,
-    word16 destinationX,
-    word16 destinationY);
-void DrawCgaHighSpriteTile(
-    const byte *spritePage,
-    word16 spriteId,
-    word16 destinationX,
-    byte destinationY);
 void PlotPixel(word16 x, word16 y, byte color);
 void DrawCompositeTacticalTile(
     word16 foregroundSpriteId,
@@ -155,19 +131,7 @@ void DrawCompositeTacticalTile(
     const byte *spritePage,
     word16 destinationX,
     word16 destinationY);
-void CompositeEgaSpritePlane(
-    byte plane,
-    byte firstByteMask,
-    byte secondByteMask,
-    const byte *foreground,
-    const byte *background,
-    byte *destination);
 void DrawCgaTandyEncodedSprite(
-    byte *destination,
-    const byte *encodedSprite,
-    int16 x,
-    int16 y);
-void DrawEGAEncodedSprite(
     byte *destination,
     const byte *encodedSprite,
     int16 x,

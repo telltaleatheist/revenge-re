@@ -201,11 +201,9 @@ void InitializeTacticalScenario(void)
 	LoadDigitalWeaponEffectBank();
 	LoadScenarioDigitalSoundBank(scenarioSuffix);
 	HideMouseCursorOverlay();
-	if (UseEgaTacticalFallback != FALSE)
-	{
-		VideoAdapterType = VIDEO_ADAPTER_EGA;
-		RebuildTacticalVideoResources(VIDEO_ADAPTER_EGA, FALSE);
-	}
+	/* The VGA record's switch to the EGA for the battle (0D73:0296-02B0)
+	 * went with the EGA: the rebuild hands the game its MCGA record, which
+	 * leaves DS:83DC clear (src/SDL/settings.c). */
 
 	// [V] MECHSET1 is used by scenarios 1..E and T. Scenarios F..S use
 	// MECHSET2. This is the exact branch at 0D73:02B4-02CC.
@@ -224,17 +222,10 @@ void InitializeTacticalScenario(void)
 	ReleaseDigitalWeaponEffectBank();
 	HideMouseCursorOverlay();
 
-	if (UseEgaTacticalFallback != FALSE)
-	{
-		VideoAdapterType = VIDEO_ADAPTER_VGA;
-		RebuildTacticalVideoResources(VIDEO_ADAPTER_VGA, TRUE);
-	}
-	else
-	{
-		ClearActiveVideoBuffer();
-		if (VideoPathUnavailable == FALSE)
-			ShowScenarioCompletionStatus();
-	}
+	/* The switch back from the EGA (0D73:030E-032B) went with it. */
+	ClearActiveVideoBuffer();
+	if (VideoPathUnavailable == FALSE)
+		ShowScenarioCompletionStatus();
 
 	AllocateMusicStagingBuffer();
 	if (VideoPathUnavailable == FALSE)

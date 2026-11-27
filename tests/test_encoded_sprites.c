@@ -14,7 +14,7 @@ static void ResetSpriteState(void)
 	SpritePreserveMode = FALSE;
 }
 
-static void TestTandyPackedSprite(void)
+static void TestPackedSprite(void)
 {
 	const byte sprite[] = {
 		0x00, 0x00, 0x01, 0x00,
@@ -22,51 +22,13 @@ static void TestTandyPackedSprite(void)
 	};
 
 	ResetSpriteState();
-	ActiveVideoAdapterType = VIDEO_ADAPTER_TANDY;
+	ActiveVideoAdapterType = VIDEO_ADAPTER_VGA;
 	fakeBackend.indexedFramebuffer[0x0001 * VIDEO_SCREEN_WIDTH + 0x0003] = 0x07;
 	DrawCgaTandyEncodedSprite(NULL, sprite, 0x0002, 0x0001);
 	assert(fakeBackend.indexedFramebuffer[0x0001 * VIDEO_SCREEN_WIDTH + 0x0002] == 0x0A);
 	assert(fakeBackend.indexedFramebuffer[0x0001 * VIDEO_SCREEN_WIDTH + 0x0003] == 0x07);
 	assert(fakeBackend.indexedFramebuffer[0x0001 * VIDEO_SCREEN_WIDTH + 0x0005] == 0x03);
 	assert(fakeBackend.indexedFramebuffer[0x0001 * VIDEO_SCREEN_WIDTH + 0x0008] == 0x05);
-}
-
-static void TestCgaMaskedSprite(void)
-{
-	const byte sprite[] = {
-		0x00, 0x00, 0x01, 0x00,
-		0x1B, 0x30,
-		0x00, 0xCF
-	};
-
-	ResetSpriteState();
-	ActiveVideoAdapterType = VIDEO_ADAPTER_CGA;
-	fakeBackend.indexedFramebuffer[0x0000] = 0x03;
-	fakeBackend.indexedFramebuffer[0x0004] = 0x03;
-	fakeBackend.indexedFramebuffer[0x0006] = 0x02;
-	DrawCgaTandyEncodedSprite(NULL, sprite, 0x0000, 0x0000);
-	assert(fakeBackend.indexedFramebuffer[0x0000] == 0x00);
-	assert(fakeBackend.indexedFramebuffer[0x0001] == 0x01);
-	assert(fakeBackend.indexedFramebuffer[0x0002] == 0x02);
-	assert(fakeBackend.indexedFramebuffer[0x0003] == 0x03);
-	assert(fakeBackend.indexedFramebuffer[0x0004] == 0x03);
-	assert(fakeBackend.indexedFramebuffer[0x0006] == 0x02);
-}
-
-static void TestEgaTokenSprite(void)
-{
-	const byte sprite[] = {
-		0x00, 0x00, 0x00, 0x00,
-		0x81, 0xE3
-	};
-
-	ResetSpriteState();
-	ActiveVideoAdapterType = VIDEO_ADAPTER_EGA;
-	fakeBackend.indexedFramebuffer[0x0001] = 0x06;
-	DrawEGAEncodedSprite(NULL, sprite, 0x0000, 0x0000);
-	assert(fakeBackend.indexedFramebuffer[0x0000] == 0x03);
-	assert(fakeBackend.indexedFramebuffer[0x0001] == 0x06);
-	assert(fakeBackend.indexedFramebuffer[0x0007] == 0x03);
 }
 
 static void TestVgaRleSprite(void)
@@ -106,9 +68,7 @@ static void TestSpriteClipRectangle(void)
 
 int main(void)
 {
-	TestTandyPackedSprite();
-	TestCgaMaskedSprite();
-	TestEgaTokenSprite();
+	TestPackedSprite();
 	TestVgaRleSprite();
 	TestSpriteClipRectangle();
 	return 0;

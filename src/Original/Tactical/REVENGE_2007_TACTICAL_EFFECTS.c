@@ -53,15 +53,6 @@ void DrawTacticalClippedSprite(
 	int16 relativeX,
 	int16 relativeY,
 	word16 textWindowIndex);
-void DrawCgaHighSpriteTile(
-	const byte *spritePage, word16 spriteId,
-	word16 destinationX, byte destinationY);
-void DrawCgaCompositeTacticalTile(
-	word16 firstSpriteId,
-	word16 secondSpriteId,
-	const byte *spritePage,
-	word16 destinationX,
-	word16 destinationY);
 void DrawTacticalTileSprite(
 	const byte *spritePage, word16 spriteId,
 	word16 destinationX, word16 destinationY);
@@ -757,18 +748,10 @@ void RebuildTacticalViewport(void)
 		{
 			word16 firstSpriteId = 0x0100 + runtimeValue;
 			word16 secondSpriteId = 0x01F6 + runtimeState;
-			if (VideoAdapterType != VIDEO_ADAPTER_CGA)
-			{
-				DrawCompositeTacticalTile(
-					firstSpriteId, secondSpriteId,
-					spritePage, 0x00, destinationY);
-			}
-			else
-			{
-				DrawCgaCompositeTacticalTile(
-					firstSpriteId, secondSpriteId,
-					spritePage, 0x00, destinationY);
-			}
+			/* The CGA's compositor (2007:06DF, 0800:09BB) went with the CGA. */
+			DrawCompositeTacticalTile(
+				firstSpriteId, secondSpriteId,
+				spritePage, 0x00, destinationY);
 			TacticalStatusRowInvalidation[statusSlot] = runtimeState;
 		}
 		destinationY += 0x14;

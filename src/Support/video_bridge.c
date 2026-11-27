@@ -20,8 +20,7 @@ byte *Video_ResolveIndexedRenderTarget(const byte *renderTarget)
 
 	if (renderTarget == VideoFramebuffer || encodedTarget == 0xA0000000UL)
 		return SDLBackend_GetIndexedFramebuffer();
-	if (renderTarget == PrimaryScreenBuffer ||
-		encodedTarget == 0xA2000000UL)
+	if (renderTarget == PrimaryScreenBuffer)
 		return PrimaryScreenBuffer;
 	return (byte *) renderTarget;
 }

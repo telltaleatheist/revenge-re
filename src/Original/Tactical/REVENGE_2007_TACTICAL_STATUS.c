@@ -53,15 +53,6 @@ void DrawTacticalClippedSprite(
 	int16 relativeX,
 	int16 relativeY,
 	word16 textWindowIndex);
-void DrawCgaHighSpriteTile(
-	const byte *spritePage, word16 spriteId,
-	word16 destinationX, byte destinationY);
-void DrawCgaCompositeTacticalTile(
-	word16 firstSpriteId,
-	word16 secondSpriteId,
-	const byte *spritePage,
-	word16 destinationX,
-	word16 destinationY);
 void DrawTacticalTileSprite(
 	const byte *spritePage, word16 spriteId,
 	word16 destinationX, word16 destinationY);
@@ -738,12 +729,9 @@ void RedrawTacticalViewport(void)
 	for (speedIndex = 0x00; speedIndex < 0x08; ++speedIndex)
 	{
 		word16 color = 0x03;
+		/* The CGA's colour step (2007:15BD) went with the CGA. */
 		if (speedIndex == TacticalGameSpeedIndex)
-		{
 			color = 0x04;
-			if (VideoAdapterType == VIDEO_ADAPTER_CGA)
-				++color;
-		}
 		FillVideoRectangle(
 			0x00F8 + speedIndex * 0x03,
 			0x00C7 - speedIndex,

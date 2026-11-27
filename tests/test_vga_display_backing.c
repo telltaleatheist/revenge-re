@@ -69,16 +69,10 @@ static void TestAdapterDispatcher(void)
 	assert(requestedAllocationSize == 0x00000004L);
 }
 
-static void TestPlanarBackingFormats(void)
+static void TestPlanarBackingFormat(void)
 {
-	static const byte tandyExpected[] = {
+	static const byte expected[] = {
 		0xCC, 0x00, 0x01, 0x00, 0x01, 0x02, 0x03, 0x04
-	};
-	static const byte cgaExpected[] = {
-		0xCC, 0x00, 0x01, 0x00, 0x01, 0x03, 0x02, 0x04
-	};
-	static const byte egaExpected[] = {
-		0xCC, 0x00, 0x01, 0x00, 0x00, 0xE0
 	};
 
 	ResetState();
@@ -86,31 +80,17 @@ static void TestPlanarBackingFormats(void)
 	framebuffer[0x01] = 0x02;
 	framebuffer[0x02] = 0x03;
 	framebuffer[0x03] = 0x04;
-	VideoAdapterType = VIDEO_ADAPTER_TANDY;
-	ActiveVideoAdapterType = VIDEO_ADAPTER_TANDY;
+	VideoAdapterType = VIDEO_ADAPTER_VGA;
+	ActiveVideoAdapterType = VIDEO_ADAPTER_VGA;
 	BuildPlanarDisplayBackingBuffer(0x0000, 0x0000, 0x0001, 0x0001);
-	assert(memcmp(allocation, tandyExpected, sizeof(tandyExpected)) == 0x00);
-
-	VideoAdapterType = VIDEO_ADAPTER_CGA;
-	ActiveVideoAdapterType = VIDEO_ADAPTER_CGA;
-	BuildPlanarDisplayBackingBuffer(0x0000, 0x0000, 0x0001, 0x0001);
-	assert(memcmp(allocation, cgaExpected, sizeof(cgaExpected)) == 0x00);
-
-	memset(framebuffer, 0x00, sizeof(framebuffer));
-	VideoAdapterType = VIDEO_ADAPTER_EGA;
-	ActiveVideoAdapterType = VIDEO_ADAPTER_EGA;
-	BuildPlanarDisplayBackingBuffer(0x0000, 0x0000, 0x0001, 0x0001);
-	assert(requestedAllocationSize == 0x00000006L);
-	assert(memcmp(allocation, egaExpected, sizeof(egaExpected)) == 0x00);
-	assert(PlanarBackingBufferExtentLow == 0x0002);
-	assert(PlanarBackingBufferExtentHigh == 0x0000);
+	assert(memcmp(allocation, expected, sizeof(expected)) == 0x00);
 }
 
 int main(void)
 {
 	TestVgaZeroRunEncoding();
 	TestAdapterDispatcher();
-	TestPlanarBackingFormats();
+	TestPlanarBackingFormat();
 	HostFarPointer_Reset();
 	return 0;
 }

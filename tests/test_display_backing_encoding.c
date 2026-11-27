@@ -68,54 +68,12 @@ static void TestPackedAdapterRows(void)
 	word16 length;
 
 	memset(destination, 0xCC, sizeof(destination));
-	ActiveVideoAdapterType = VIDEO_ADAPTER_CGA;
-	length = EncodeDisplayBackingRows(
-		source, destination, 0x02, 0x02, 0x01);
-	Check(length == 0x04 && destination[0x00] == 0x10 &&
-		destination[0x01] == 0x20 && destination[0x02] == 0x30 &&
-		destination[0x03] == 0x40,
-		"CGA rows retain every other packed source byte");
-
-	memset(destination, 0xCC, sizeof(destination));
-	ActiveVideoAdapterType = VIDEO_ADAPTER_TANDY;
+	ActiveVideoAdapterType = VIDEO_ADAPTER_VGA;
 	length = EncodeDisplayBackingRows(
 		source, destination, 0x02, 0x02, 0x01);
 	Check(length == 0x08 &&
 		memcmp(destination, "\x10\x11\x20\x21\x30\x31\x40\x41", 0x08) == 0x00,
-		"Tandy rows retain both bytes in each source group");
-}
-
-static void TestEgaSparseRows(void)
-{
-	const byte source[] =
-	{
-		0x12, 0x34, 0x12, 0x34,
-		0x00, 0x00, 0x00, 0x00
-	};
-	const byte expected[] =
-	{
-		0x88, 0x01,
-		0x44, 0x02,
-		0x22, 0x03,
-		0x11, 0x84,
-		0x00, 0xE0
-	};
-	byte destination[0x20];
-	word16 packedPixels = 0xABCD;
-	word16 length;
-
-	Check(ExtractHighNibbleAndShiftLeft(&packedPixels) == 0x0A &&
-		packedPixels == 0xBCD0,
-		"nibble helper returns bits 15..12 and shifts BX left four times");
-
-	memset(destination, 0xCC, sizeof(destination));
-	ActiveVideoAdapterType = VIDEO_ADAPTER_EGA;
-	length = EncodeDisplayBackingRows(
-		source, destination, 0x02, 0x01, 0x00);
-	Check(length == sizeof(expected),
-		"EGA sparse encoding returns its emitted byte count");
-	Check(memcmp(destination, expected, sizeof(expected)) == 0x00,
-		"EGA sparse encoding preserves color masks and terminator flags");
+		"VGA rows retain both bytes in each source group");
 }
 
 int main(void)
@@ -123,6 +81,5 @@ int main(void)
 	TestTacticalOverviewTranslation();
 	TestTacticalLookupAndOverlayState();
 	TestPackedAdapterRows();
-	TestEgaSparseRows();
 	return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

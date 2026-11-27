@@ -3,7 +3,6 @@
 # PATH KIND FILE IMAGE-OFFSET REASON
 src/Original/Data/REVENGE_3A6A_RUNTIME_DATA.c bytes REVENGE.EXE 39701 the C runtime's character class table
 src/Original/Data/REVENGE_4184_TACTICAL_GRAPHICS_DATA.c bytes REVENGE.EXE 3A117 relative attack direction by mask (rule table)
-src/Original/Graphics/REVENGE_0800_TACTICAL_RASTER.c bytes REVENGE.EXE 00AE7 CGA dither colour pairs
 src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 285FF PC keyboard scan code to ASCII map
 src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 2863D PC keyboard scan code to shifted ASCII map
 src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 2867B PC keyboard extended key map

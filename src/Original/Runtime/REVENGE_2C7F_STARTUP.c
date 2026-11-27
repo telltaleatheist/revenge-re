@@ -427,11 +427,11 @@ uint16 ApplyVideoConfigOption(void)
 		{
 			VideoAdapterType =
 				VideoConfigurationRecords[optionIndex].value;
-			UseEgaTacticalFallback = FALSE;
+			/* The EGA fallback's flag (DS:83DC, cleared at 2C7F:06DB, set
+			 * for the VGA record at 06F0-06F7) went with the switch to the
+			 * EGA it chose (0D73:0296-02B0); the rebuild is VGA only. */
 			if (VideoAdapterType == VIDEO_ADAPTER_MCGA_CONFIG)
 				VideoAdapterType = VIDEO_ADAPTER_VGA;
-			else if (VideoAdapterType == VIDEO_ADAPTER_VGA)
-				UseEgaTacticalFallback = TRUE;
 			searchingForMatch = FALSE;
 		}
 		else

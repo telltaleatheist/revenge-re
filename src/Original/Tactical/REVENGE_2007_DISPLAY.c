@@ -91,18 +91,10 @@ void DrawTacticalTileSpriteForAdapter(
 	word16 destinationX,
 	word16 destinationY)
 {
-	if (VideoAdapterType == VIDEO_ADAPTER_CGA
-		&& (int16) spriteId >= 0x0100
-		&& (int16) spriteId < 0x0200)
-	{
-		DrawCgaHighSpriteTile(
-			spritePage, spriteId, destinationX, (byte) destinationY);
-	}
-	else
-	{
-		DrawTacticalTileSprite(
-			spritePage, spriteId, destinationX, destinationY);
-	}
+	/* The CGA's high sprite bank (2007:1CC4, 0800:0A2E) went with the CGA; the
+	 * rebuild is VGA only. */
+	DrawTacticalTileSprite(
+		spritePage, spriteId, destinationX, destinationY);
 }
 
 /* 2007:1D06-1D60 */

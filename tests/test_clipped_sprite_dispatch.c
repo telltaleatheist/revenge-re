@@ -83,35 +83,10 @@ static void TestReentryGuardAndNullSprite(void)
 	assert(EncodedSpriteClipLeftTile == 0x0002);
 }
 
-static void TestEgaMultipleColorsShareDestinationByte(void)
-{
-	/* Each pair is an EGA bit mask followed by colour/control flags.
-	 * The first colour leaves bit 7 clear and therefore stays in the same
-	 * eight-pixel destination byte.  E2h advances and terminates the row. */
-	const byte sprite[] = {
-		0x00, 0x00, 0x01, 0x00,
-		0x80, 0x01,
-		0x40, 0xE2
-	};
-	byte destination[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT] = { 0x00 };
-
-	ResetState();
-	EncodedSpriteClipLeftTile = 0x0000;
-	SpriteClipRightTile = VIDEO_SCREEN_8PX_COLUMN_COUNT;
-	SpriteClipTopPixel = 0x0000;
-	EncodedSpriteClipBottomPixel = VIDEO_SCREEN_HEIGHT;
-	DrawEGAEncodedSprite(destination, sprite, 0x0000, 0x0000);
-
-	assert(destination[0x0000] == 0x01);
-	assert(destination[0x0001] == 0x02);
-	assert(destination[0x0009] == 0x00);
-}
-
 int main(void)
 {
 	TestVgaDispatchAndWindowRelativeCoordinates();
 	TestExplicitDestinationIsHonored();
 	TestReentryGuardAndNullSprite();
-	TestEgaMultipleColorsShareDestinationByte();
 	return 0;
 }

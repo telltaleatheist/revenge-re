@@ -47,27 +47,6 @@ static void TestPackedTile(word16 adapterType)
 	assert(fakeBackend.indexedFramebuffer[0x0012 * 0x0140 + 0x0010] == 0x0C);
 }
 
-static void TestCgaTile(void)
-{
-	byte *tile;
-
-	ClearState();
-	ActiveVideoAdapterType = VIDEO_ADAPTER_CGA;
-	tile = spritePage + TILE_BYTES;
-	tile[0x00] = 0x1B;
-	tile[0x01] = 0x00;
-	tile[0x06] = 0xE4;
-	tile[0x07] = 0x00;
-
-	DrawTacticalTileSprite(spritePage, 0x0001, 0x0001, 0x0002);
-
-	assert(fakeBackend.indexedFramebuffer[0x0002 * 0x0140 + 0x0008] == 0x00);
-	assert(fakeBackend.indexedFramebuffer[0x0002 * 0x0140 + 0x0009] == 0x01);
-	assert(fakeBackend.indexedFramebuffer[0x0002 * 0x0140 + 0x000A] == 0x02);
-	assert(fakeBackend.indexedFramebuffer[0x0002 * 0x0140 + 0x000B] == 0x03);
-	assert(fakeBackend.indexedFramebuffer[0x0002 * 0x0140 + 0x0014] == 0x03);
-}
-
 static void TestPackedComposition(word16 adapterType)
 {
 	byte *foreground;
@@ -85,40 +64,6 @@ static void TestPackedComposition(word16 adapterType)
 
 	assert(fakeBackend.indexedFramebuffer[0x0000] == 0x0A);
 	assert(fakeBackend.indexedFramebuffer[0x0001] == 0x07);
-}
-
-static void TestCgaComposition(void)
-{
-	byte *foreground;
-	byte *background;
-
-	ClearState();
-	ActiveVideoAdapterType = VIDEO_ADAPTER_CGA;
-	foreground = spritePage + TILE_BYTES;
-	background = spritePage + TILE_BYTES * 0x02;
-	foreground[0x00] = 0x30;
-	foreground[0x01] = 0x0F;
-	background[0x00] = 0x09;
-
-	DrawCompositeTacticalTile(
-		0x0001, 0x0002, spritePage, 0x0000, 0x0000);
-
-	assert(fakeBackend.indexedFramebuffer[0x0000] == 0x00);
-	assert(fakeBackend.indexedFramebuffer[0x0001] == 0x03);
-	assert(fakeBackend.indexedFramebuffer[0x0002] == 0x02);
-	assert(fakeBackend.indexedFramebuffer[0x0003] == 0x01);
-}
-
-static void TestEgaPlaneHelper(void)
-{
-	const byte foreground[0x02] = { 0x80, 0x04 };
-	const byte background[0x02] = { 0x55, 0xAA };
-	byte destination[0x02];
-
-	CompositeEgaSpritePlane(
-		0x02, 0x0F, 0xF0, foreground, background, destination);
-	assert(destination[0x00] == 0x85);
-	assert(destination[0x01] == 0xA4);
 }
 
 static void TestTerrainEffectOverlayFeedsViewportCell(void)
@@ -153,15 +98,8 @@ static void TestTerrainEffectOverlayFeedsViewportCell(void)
 
 int main(void)
 {
-	TestPackedTile(VIDEO_ADAPTER_TANDY);
 	TestPackedTile(VIDEO_ADAPTER_VGA);
-	TestPackedTile(VIDEO_ADAPTER_EGA);
-	TestCgaTile();
-	TestPackedComposition(VIDEO_ADAPTER_TANDY);
 	TestPackedComposition(VIDEO_ADAPTER_VGA);
-	TestPackedComposition(VIDEO_ADAPTER_EGA);
-	TestCgaComposition();
-	TestEgaPlaneHelper();
 	TestTerrainEffectOverlayFeedsViewportCell();
 	return 0;
 }

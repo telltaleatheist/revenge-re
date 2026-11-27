@@ -722,7 +722,6 @@ unplaced UnitStatusSpace 4 host pointer
 unplaced UnknownUnitLabel 4 host pointer
 unplaced UnknownUnitText 4 host pointer
 unplaced UplinkJammedText 4 host pointer
-unplaced UseEgaTacticalFallback 2 several places match
 unplaced VersionDecimalSeparator 2 zero at every snap
 unplaced VersionTranslationReplacement 2 zero at every snap
 unplaced VersionTranslationSource 2 zero at every snap

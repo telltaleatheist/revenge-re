@@ -359,7 +359,6 @@ void CopyFarMemory(
 	word16 byteCount,
 	const byte *source,
 	byte *destination);
-byte ExtractHighNibbleAndShiftLeft(word16 *packedPixels);
 word16 EncodeDisplayBackingRows(
 	const byte *source,
 	byte *destination,

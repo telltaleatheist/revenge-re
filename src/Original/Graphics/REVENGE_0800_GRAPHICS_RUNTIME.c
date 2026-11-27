@@ -474,14 +474,6 @@ void CopyFarMemory(
 		*destination++ = *source++;
 }
 
-byte ExtractHighNibbleAndShiftLeft(word16 *packedPixels)
-{
-	byte highNibble = (byte) (*packedPixels >> 0x0C);
-
-	*packedPixels = (word16) (*packedPixels << 0x04);
-	return highNibble;
-}
-
 word16 EncodeDisplayBackingRows(
 	const byte *source,
 	byte *destination,
@@ -492,71 +484,20 @@ word16 EncodeDisplayBackingRows(
 	byte *destinationStart = destination;
 	byte row;
 
-	if (ActiveVideoAdapterType != VIDEO_ADAPTER_EGA)
-	{
-		for (row = 0x00; row < rowCount; ++row)
-		{
-			word16 group;
-
-			for (group = 0x0000; group < (byte) groupsPerRow; ++group)
-			{
-				*destination++ = *source++;
-				if (ActiveVideoAdapterType == VIDEO_ADAPTER_CGA)
-					++source;
-				else
-					*destination++ = *source++;
-			}
-			source += sourceRowSkip;
-		}
-		return (word16) (destination - destinationStart);
-	}
-
+	/* The CGA's single bytes (0800:11BD-11C2, 11DA-11ED) and the EGA's
+	 * sparse colour masks (0800:11B2-11B7, 11EE-129D, and 129E) went with
+	 * those adapters; the rebuild is VGA only. */
 	for (row = 0x00; row < rowCount; ++row)
 	{
 		word16 group;
 
 		for (group = 0x0000; group < (byte) groupsPerRow; ++group)
 		{
-			byte colorMasks[0x10] = { 0x00 };
-			word16 firstPixels = (word16)
-				(((word16) source[0x00] << 0x08) | source[0x01]);
-			word16 secondPixels = (word16)
-				(((word16) source[0x02] << 0x08) | source[0x03]);
-			byte pixelMask = 0x80;
-			byte pixel;
-			byte colorIndex;
-			byte emittedPair = FALSE;
-
-			source += 0x04;
-			for (pixel = 0x00; pixel < 0x08; ++pixel)
-			{
-				colorIndex = pixel < 0x04
-					? ExtractHighNibbleAndShiftLeft(&firstPixels)
-					: ExtractHighNibbleAndShiftLeft(&secondPixels);
-				colorMasks[colorIndex] |= pixelMask;
-				pixelMask >>= 0x01;
-			}
-
-			for (colorIndex = 0x01; colorIndex < 0x10; ++colorIndex)
-			{
-				if (colorMasks[colorIndex] != 0x00)
-				{
-					*destination++ = colorMasks[colorIndex];
-					*destination++ = colorIndex;
-					emittedPair = TRUE;
-				}
-			}
-			if (emittedPair == FALSE)
-			{
-				*destination++ = 0x00;
-				*destination++ = 0x00;
-			}
-			destination[-0x01] |= 0x80;
+			*destination++ = *source++;
+			*destination++ = *source++;
 		}
-		destination[-0x01] |= 0x40;
 		source += sourceRowSkip;
 	}
-	destination[-0x01] |= 0x20;
 	return (word16) (destination - destinationStart);
 }
 

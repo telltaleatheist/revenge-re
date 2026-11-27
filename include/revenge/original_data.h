@@ -81,7 +81,6 @@ extern word16 DigitalSoundBusy;
 extern word16 DigitalPlaybackRateHz;
 extern word16 AppliedMusicEnabled;
 extern word16 SoundDriverNumericParameter;
-extern word16 UseEgaTacticalFallback;
 extern word16 InputDeviceType;
 extern int8 SoundDriverIndex;
 extern byte *Font6Resource;

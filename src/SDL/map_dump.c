@@ -192,7 +192,6 @@ static const MapDumpObject objects[] =
 	{ "DigitalPlaybackRateHz", &DigitalPlaybackRateHz, sizeof(DigitalPlaybackRateHz) },
 	{ "AppliedMusicEnabled", &AppliedMusicEnabled, sizeof(AppliedMusicEnabled) },
 	{ "SoundDriverNumericParameter", &SoundDriverNumericParameter, sizeof(SoundDriverNumericParameter) },
-	{ "UseEgaTacticalFallback", &UseEgaTacticalFallback, sizeof(UseEgaTacticalFallback) },
 	{ "InputDeviceType", &InputDeviceType, sizeof(InputDeviceType) },
 	{ "SoundDriverIndex", &SoundDriverIndex, sizeof(SoundDriverIndex) },
 	{ "Font6Resource", &Font6Resource, sizeof(Font6Resource) },

@@ -67,7 +67,6 @@ word16 SoundEffectsEnabled;
 word16 DigitalSoundBusy;
 word16 AppliedMusicEnabled;
 word16 SoundDriverNumericParameter;
-word16 UseEgaTacticalFallback;
 word16 InputDeviceType;
 int8 SoundDriverIndex;
 byte *Font6Resource;

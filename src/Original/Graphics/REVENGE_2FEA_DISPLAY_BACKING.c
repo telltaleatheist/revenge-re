@@ -1,4 +1,4 @@
-/* REVENGE_2FEA_DISPLAY_BACKING.c -- planar display-backing builder. */
+/* REVENGE_2FEA_DISPLAY_BACKING.c -- packed display-backing builder. */
 
 #include "REVENGE.h"
 
@@ -18,40 +18,14 @@ byte *BuildPlanarDisplayBackingBuffer(
 	byte *framebuffer;
 	byte *source;
 	byte *backingBuffer;
-	word16 encodedByteCount;
 	word16 sourceRowSkip;
 
 	framebuffer = PrimaryScreenBuffer;
 	sourceTileX <<= 0x02;
 	source = framebuffer + sourcePixelY * 0x00A0 + sourceTileX;
 
-	if (VideoAdapterType == VIDEO_ADAPTER_EGA)
-	{
-		byte *encodingBuffer = PlanarScreenBuffer;
-
-		sourceRowSkip = 0x00A0 - (width << 0x02);
-		encodedByteCount = EncodeDisplayBackingRows(
-			source,
-			encodingBuffer,
-			width,
-			(byte) height,
-			(int16) sourceRowSkip);
-		backingBuffer = AllocateFarMemory((int32) encodedByteCount + 0x04);
-		if (backingBuffer == NULL)
-			return NULL;
-
-		backingBuffer[0x01] = (byte) height - 0x01;
-		backingBuffer[0x02] = (byte) width;
-		backingBuffer[0x03] = (byte) height - 0x01;
-		PlanarBackingBufferExtentLow = encodedByteCount;
-		PlanarBackingBufferExtentHigh = 0x0000;
-		CopyFarBytes32(
-			encodingBuffer,
-			backingBuffer + 0x04,
-			encodedByteCount);
-		return backingBuffer;
-	}
-
+	/* The EGA's sparse encoding (2FEA:0024-002D and the block it jumps
+	 * to) went with the EGA; the rebuild is VGA only. */
 	backingBuffer = AllocateFarMemory((int32) uncompressedPayloadBytes + 0x04);
 	if (backingBuffer == NULL)
 		return NULL;
@@ -67,15 +41,7 @@ byte *BuildPlanarDisplayBackingBuffer(
 		width,
 		(byte) height,
 		(int16) sourceRowSkip);
-	if (VideoAdapterType == VIDEO_ADAPTER_CGA)
-	{
-		EncodeDisplayBackingRows(
-			source + 0x01,
-			backingBuffer + 0x04 + (uncompressedPayloadBytes >> 0x01),
-			width,
-			(byte) height,
-			(int16) sourceRowSkip);
-	}
+	/* The CGA's second pass (2FEA:00B3-00F1) went with the CGA. */
 
 	{
 		uint32 backingBufferExtent = ((uint32) width * height) << 0x02;
