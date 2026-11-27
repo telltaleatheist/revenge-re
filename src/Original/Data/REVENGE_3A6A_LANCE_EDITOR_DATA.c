@@ -21,9 +21,11 @@ byte UnitEditorScenarioCardCountByFamily[0x07];
 byte RandomUnitTypeCountByFamily[0x0A];
 byte RandomUnitTypePoolByFamily[0x31];
 byte PilotPortraitIndexById[0x21];
+/* Filled at start from data/rules/pilots.json (revenge/rules.h). */
 word16 DefaultPilotIdsByScenario[0x14];
 byte UnitEditorPilotCardCountByFamily[0x07];
 
+/* Filled at start from data/rules/pilots.json (revenge/rules.h). */
 byte FixedPilotIds[0x02];
 /* Filled at start from data/rules/units.json (revenge/rules.h). */
 byte FixedUnitTypeIds[0x02];

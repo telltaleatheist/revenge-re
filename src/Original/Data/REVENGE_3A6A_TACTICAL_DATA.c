@@ -181,6 +181,8 @@ byte CampaignClockState[0x03];
 byte SavedCampaignClockState[0x03];
 /* DS:1D4C, the pilots as the game starts them: from the player's copy
  * (src/Support/original_import_pieces.txt). */
+/* Its starting records, from data/rules/pilots.json (revenge/rules.h); the
+ * campaign changes each pilot's availability. */
 RevengePilotRosterRecord PilotRoster[REVENGE_PILOT_ROSTER_COUNT];
 RevengeUnitLanceAssignment
 	LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];

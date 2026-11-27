@@ -36,6 +36,9 @@ const RulePiece RulePieces[] =
 	{ "units.unit_class_types", &UnitClassTypeListBytes, sizeof(UnitClassTypeListBytes), 0x3A6A, 0x3298, 0x44, "afa9e735f900a409" },
 	{ "units.fixed_unit_types", &FixedUnitTypeIds, sizeof(FixedUnitTypeIds), 0x3A6A, 0x3356, 0x2, "a82eaa24a41fddaa" },
 	{ "units.lance_allegiances", &ScenarioLanceAllegianceTable, sizeof(ScenarioLanceAllegianceTable), 0x3A6A, 0x5928, 0x15, "8a2a2d51ed8066f4" },
+	{ "pilots.roster", &PilotRoster, sizeof(PilotRoster), 0x3A6A, 0x1D4C, 0xEC, "3b6a8afa53abb786" },
+	{ "pilots.default_by_scenario", &DefaultPilotIdsByScenario, sizeof(DefaultPilotIdsByScenario), 0x3A6A, 0x3269, 0x28, "f4a1c9d3a839f49a" },
+	{ "pilots.fixed", &FixedPilotIds, sizeof(FixedPilotIds), 0x3A6A, 0x3354, 0x2, "fcff83adf5bf3e97" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -66,3 +69,6 @@ _Static_assert(sizeof(RandomUnitTypePoolByFamily) == 0x31, "units.random_unit_po
 _Static_assert(sizeof(UnitClassTypeListBytes) == 0x44, "units.unit_class_types is the original's size");
 _Static_assert(sizeof(FixedUnitTypeIds) == 0x2, "units.fixed_unit_types is the original's size");
 _Static_assert(sizeof(ScenarioLanceAllegianceTable) == 0x15, "units.lance_allegiances is the original's size");
+_Static_assert(sizeof(PilotRoster) == 0xEC, "pilots.roster is the original's size");
+_Static_assert(sizeof(DefaultPilotIdsByScenario) == 0x28, "pilots.default_by_scenario is the original's size");
+_Static_assert(sizeof(FixedPilotIds) == 0x2, "pilots.fixed is the original's size");

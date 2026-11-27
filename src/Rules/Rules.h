@@ -66,6 +66,14 @@
 //     "unit_class_types"  the training's 7 lists of unit types by class (or
 //         null); laid out one after another, each ended by FFh, in 44h bytes
 //
+//   pilots.json, pilots by roster number (0 to 58):
+//     "pilots"  59 {"identity" (the pilot's name and portrait number),
+//         "experience" (0 to 3), "gunnery"}: the roster's starting records.
+//         Each pilot's availability, which the campaign changes, starts at 0.
+//     "default_pilots_by_scenario"  5 rows of 4 pilots, by scenario row and
+//         lance slot
+//     "fixed_pilots"  2
+//
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
 // file and the key.

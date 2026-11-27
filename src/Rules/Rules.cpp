@@ -436,6 +436,41 @@ void read_units(const Json& root, Tables& tables) {
     file.done();
 }
 
+constexpr std::size_t kPilots = 0x3B;  // REVENGE_PILOT_ROSTER_COUNT
+
+void read_pilots(const Json& root, Tables& tables) {
+    Fields file(root, "pilots.json:");
+    const Json& pilots = file.take("pilots");
+    const std::string pilots_where = file.at("pilots");
+    if (!pilots.is_array() || pilots.array().size() != kPilots)
+        fail(pilots_where, "is not an array of " + std::to_string(kPilots) + " pilots");
+    // RevengePilotRosterRecord: identity, experience, gunnery, and the
+    // availability the campaign changes, which starts at 0.
+    std::vector<std::uint8_t>& roster = tables["pilots.roster"];
+    roster.assign(kPilots * 4, 0);
+    for (std::size_t index = 0; index < kPilots; ++index) {
+        Fields pilot(pilots.array()[index], pilots_where + "[" + std::to_string(index) + "]");
+        roster[index * 4] = std::uint8_t(whole(pilot.take("identity"), pilot.at("identity"), unsigned(kPilots - 1)));
+        roster[index * 4 + 1] = std::uint8_t(whole(pilot.take("experience"), pilot.at("experience"), 0x03));
+        roster[index * 4 + 2] = std::uint8_t(whole(pilot.take("gunnery"), pilot.at("gunnery"), 0x7F));
+        pilot.done();
+    }
+
+    const Json& defaults = file.take("default_pilots_by_scenario");
+    const std::string defaults_where = file.at("default_pilots_by_scenario");
+    if (!defaults.is_array() || defaults.array().size() != 5)
+        fail(defaults_where, "is not an array of 5 rows");
+    std::vector<std::uint8_t>& defaults_out = tables["pilots.default_by_scenario"];
+    defaults_out.clear();
+    for (std::size_t row = 0; row < 5; ++row) {
+        const std::vector<std::uint8_t> four = numbers(defaults.array()[row],
+            defaults_where + "[" + std::to_string(row) + "]", 4, unsigned(kPilots - 1), 2);
+        defaults_out.insert(defaults_out.end(), four.begin(), four.end());
+    }
+    tables["pilots.fixed"] = numbers(file.take("fixed_pilots"), file.at("fixed_pilots"), 2, unsigned(kPilots - 1), 1);
+    file.done();
+}
+
 // Bytes two tables share in the original's memory must agree.
 void check_shared(const Tables& tables) {
     // The first missile weapon's bonus is the high byte of the last direction
@@ -469,6 +504,7 @@ void load(const std::filesystem::path& data_dir) {
     read_combat(read_file(rules / "combat.json", "combat.json"), tables);
     read_ai(read_file(rules / "ai.json", "ai.json"), tables);
     read_units(read_file(rules / "units.json", "units.json"), tables);
+    read_pilots(read_file(rules / "pilots.json", "pilots.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {

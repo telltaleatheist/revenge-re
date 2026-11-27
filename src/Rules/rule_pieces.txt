@@ -50,3 +50,8 @@ units.random_unit_pools                 RandomUnitTypePoolByFamily        3A6A:3
 units.unit_class_types                  UnitClassTypeListBytes            3A6A:3298 44
 units.fixed_unit_types                  FixedUnitTypeIds                  3A6A:3356 2
 units.lance_allegiances                 ScenarioLanceAllegianceTable      3A6A:5928 15
+
+# pilots.json
+pilots.roster                           PilotRoster                       3A6A:1D4C EC
+pilots.default_by_scenario              DefaultPilotIdsByScenario         3A6A:3269 28
+pilots.fixed                            FixedPilotIds                     3A6A:3354 2

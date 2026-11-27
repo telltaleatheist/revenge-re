@@ -304,9 +304,7 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HYDRATE_DATA_OBJECT(UnitEditorSectionEnabled, 0x31E9);
 	HYDRATE_DATA_OBJECT(UnitEditorScenarioCardCountByFamily, 0x3206);
 	HYDRATE_DATA_OBJECT(PilotPortraitIndexById, 0x3248);
-	HYDRATE_DATA_OBJECT(DefaultPilotIdsByScenario, 0x3269);
 	HYDRATE_DATA_OBJECT(UnitEditorPilotCardCountByFamily, 0x3291);
-	HYDRATE_DATA_OBJECT(FixedPilotIds, 0x3354);
 	HYDRATE_DATA_OBJECT(LanceEditorLayout, 0x3470);
 #undef HYDRATE_DATA_OBJECT
 }
