@@ -79,6 +79,8 @@ stopped. (Every item also waits 4 polls, well inside one step.)
 | `second_battle` | on to the second battle: the options menu, a move order, steps 8 and 16, its messages to the end |
 | `save_load` | after the first stage, Save & Continue to slot 1; out of the second battle and Load Game, slot 1 |
 | `stages_02_04` | campaign set; from the 1e save: the second battle, then the third (stage 2) won by answering its messages, the fourth (stage 3) won with the lance moved east at once, the fifth (stage 4) won with the ammunition carrier driven at flank speed to its exit; its story, then Save & Continue to slot 1 |
+| `stage_05` | campaign set; from the original's save after stage 4: the story, the first of the two plans chosen (through the forest), its battle won hands-off at 07:14; the transmission after it, Save & Continue to slot 1 |
+| `stage_06_lost` | campaign set; from the original's save after stage 5: the Dragon battle (stage 6) lost, the lance sent at the Dragon at once and its leader lost at 07:27; the defeat, the menu after it, slot 1 loaded again |
 
 ## Trace records (`traces/*.jsonl`)
 
@@ -176,7 +178,10 @@ the 1e save_load run's SAVEGAME.DAT, kept outside the repo, named by
 `REVENGE_ORIGINAL_SAVE`. Without that variable `check.py` skips that script
 alone. The campaign scripts make a chain from it: each ends with Save &
 Continue, and the SAVEGAME.DAT the original writes there (under DOSBox-X,
-never the port's) starts the next script.
+never the port's) starts the next script. Each link's save is named by its own
+variable: `REVENGE_SAVE_STAGE_04` for the one stages_02_04 ends with, which
+stage_05 starts from, `REVENGE_SAVE_STAGE_05` for stage_05's, which
+stage 6's scripts start from.
 
 To re-record a golden after an intended change, record over it and say in the
 commit what moved and why.
