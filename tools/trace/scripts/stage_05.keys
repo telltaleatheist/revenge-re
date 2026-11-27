@@ -1,0 +1,29 @@
+# The sixth battle (stage 5, the forest plan) won hands-off, from the save the
+# original wrote at the end of stages_02_04, to a save the original writes
+# for stage 6.
+# set: campaign
+# start-save: REVENGE_SAVE_STAGE_04
+# Load Game, slot 1 (as old_save.keys); the story to the choice of plans.
+idle:1000 Return idle:50 Right idle:50 Return idle:300
+Return idle:600 @snap:stage5_story1
+Return idle:600 @snap:stage5_story2
+Return idle:600 @snap:stage5_story3
+Return idle:600 @snap:stage5_story4
+Return idle:600 @snap:stage5_story5
+Return idle:600 @snap:stage5_plans                 # the choice of two plans
+# The first plan (through the forest), highlighted; its briefing; the battle (SCENE6)
+# from 07:12, won hands-off at 07:14, each message answered when it is up.
+Return idle:600 @snap:stage5_briefing
+Return steps:4 @snap:stage5_battle
+still:2000 @snap:stage5_message1 Return
+still:2000 @snap:stage5_message2 Return
+still:2000 @snap:stage5_won Return
+# A transmission that waits for a key (Return; Down does not close it), then
+# the menu over it: Save & Continue to slot 1.
+still:2000 @snap:stage5_after
+Return idle:300 @snap:stage5_menu
+Down idle:50 Down idle:50 @snap:stage5_save         # Save & Continue highlighted
+Return idle:300 @snap:stage5_slots
+Return idle:300 @snap:stage5_save1 Return idle:300 @snap:stage5_save2
+# Saved; stage 6 (SCENE7) starts at once, its battle running: its fourth step.
+Return steps:4 @snap:stage5_saved
