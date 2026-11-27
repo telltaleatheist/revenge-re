@@ -5,7 +5,7 @@
 # reads this list and a copy of an edition (original_editions.txt), and writes
 # that edition's src/Support/original_import_table_<ID>.c (offsets, counts,
 # lengths and keyed hashes, never the bytes), include/revenge/story_text.h
-# (the ids and their places) and src/Support/story_text_slots.c (where each
+# (the ids and their places) and src/Support/story_text_slots.cpp (where each
 # text goes). The offsets are DOS 1.00's.
 #
 #   header PATH                  included by the generated tables
@@ -37,7 +37,7 @@ header revenge/original/lance_editor_data.h
 header revenge/original/scene_data.h
 header REVENGE.h
 
-# Text tables (REVENGE_TEXT_TABLES.c)
+# Text tables (REVENGE_TEXT_TABLES.cpp)
 text_table           TitleTextTable                          2411 12
 text_table           MonthNameTextTable                      2459 0C
 text_table           MissionDateLabelTextTable               24A1 0C

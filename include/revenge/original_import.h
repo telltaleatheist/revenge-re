@@ -25,9 +25,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 enum
 {
@@ -113,7 +110,7 @@ typedef struct OriginalVariant
 } OriginalVariant;
 
 /* An edition: how its program is laid out, its pieces and its known variants
- * (src/Support/original_import_editions.c, from original_editions.txt). */
+ * (src/Support/original_import_editions.cpp, from original_editions.txt). */
 typedef struct OriginalEdition
 {
 	const char *name;             /* as messages name it: "DOS 1.00" */
@@ -172,8 +169,5 @@ size_t OriginalImport_PieceBytes(const OriginalPiece *piece, uint8_t *out, size_
  * doesn't fit the image. Writes at most `capacity` bytes. */
 size_t OriginalImport_TextBytes(const StoryTextSource *source, uint8_t *out, size_t capacity);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

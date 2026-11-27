@@ -2,7 +2,7 @@
 
 ## Objective
 
-Maintain a C17 reconstruction of `REVENGE.EXE` in which every original
+Maintain a C++20 reconstruction of `REVENGE.EXE` in which every original
 assembly procedure has a traceable C procedure with behavior equivalent to the
 executable.
 
@@ -119,7 +119,8 @@ cooperative timer servicing, remain exceptional and are marked
 
 ## Transcription rules
 
-- Use C17 with conservative, 1990s-style formatting and control flow.
+- Use C++20 written in the original's plain procedural style, with
+  conservative formatting and control flow ([`CODE_STYLE.md`](CODE_STYLE.md)).
 - Prefer literal, readable translation over architectural improvement.
 - Preserve meaningful order of calls and writes.
 - Use fixed-width types where C promotion or overflow could alter 16-bit

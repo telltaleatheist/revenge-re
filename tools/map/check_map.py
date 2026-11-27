@@ -5,7 +5,7 @@
 
 Every data object the headers declare has exactly one line, and every line
 names one; no two placed objects share a byte unless an overlap line names the
-pair; and src/SDL/map_dump.c is the one make_map_dump.py writes.
+pair; and src/SDL/map_dump.cpp is the one make_map_dump.py writes.
 """
 import os
 import subprocess

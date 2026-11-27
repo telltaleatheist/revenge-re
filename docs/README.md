@@ -12,6 +12,8 @@ look like a current instruction.
   source model and its constraints.
 - [`SOURCE_LAYOUT.md`](SOURCE_LAYOUT.md) — directory ownership and where new
   evidence or code belongs.
+- [`CODE_STYLE.md`](CODE_STYLE.md) — how the C++20 is written, and the one
+  language extension it allows.
 - [`METHOD_TABLE.csv`](METHOD_TABLE.csv) — procedure-by-procedure assembly
   verification ledger.
 - [`SOURCE_CONVERSION_TABLE.csv`](SOURCE_CONVERSION_TABLE.csv) —

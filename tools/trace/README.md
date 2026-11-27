@@ -12,7 +12,7 @@ folder.
 
 ## The harness
 
-The port has the harness built in (`src/SDL/harness.c`). It is off unless
+The port has the harness built in (`src/SDL/harness.cpp`). It is off unless
 `REVENGE_HARNESS_SCRIPT` names a script and `REVENGE_HARNESS_OUT` an existing
 folder; `record.py` sets both. When it is on:
 
@@ -98,7 +98,7 @@ One JSON object a line, one line a snap:
 
 `objects` is every data object the headers declare (the map's,
 tools/map/README.md) by name, with the first 16 hex digits of the SHA-256 of
-its bytes (`src/SDL/map_dump.c`). In an object declared as a pointer or an
+its bytes (`src/SDL/map_dump.cpp`). In an object declared as a pointer or an
 array of them, each pointer is hashed as where it points: the object it is in
 and the offset there, a heap block by its number in allocation order and the
 offset in it, a function by name, or "elsewhere"; so the hash is the same on every run and system, and

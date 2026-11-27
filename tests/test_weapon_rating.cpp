@@ -15,11 +15,8 @@
 
 uint32 CalculateSelectedWeaponRating(uint32 weaponMask, const uint16 *weaponCounts);
 
-enum
-{
-	SLOT = 0x14,
-	NOT_READY = 0x05
-};
+constexpr int SLOT = 0x14;
+constexpr int NOT_READY = 0x05;
 
 static int failures;
 

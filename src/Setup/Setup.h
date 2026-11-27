@@ -20,12 +20,12 @@
 namespace chr::setup {
 
 inline constexpr const char* kId = "chr";  // the launcher contract's game id, and the launcher's catalog key
-// The setup screen's sentences; the window's title (src/SDL/platform.c) names it the same.
+// The setup screen's sentences; the window's title (src/SDL/platform.cpp) names it the same.
 inline constexpr const char* kTitle = "BattleTech: The Crescent Hawks' Revenge";
 inline constexpr const char* kFolderName = "Revenge Rebuild";  // a game folder made inside a picked one
 inline constexpr const char* kFolderKey = "chr";  // its mark's game=<key> (the kit's game_folder.h)
 // The player's folder (saves, settings.txt, story/): SDL's per-user folder for these names
-// (src/SDL/game_paths.c spells the same two), under the family's folder.
+// (src/SDL/game_paths.cpp spells the same two), under the family's folder.
 inline constexpr const char* kOrganisation = rekit::kFamilyOrg;
 inline constexpr const char* kApplication = "Revenge Rebuild";
 // In the player's folder: the game folder the setup chose, one "game_folder = <path>" line.

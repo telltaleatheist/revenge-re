@@ -25,9 +25,6 @@
 
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /* Opens the log at path with now() as its clock; no path, no log. */
 void AudioLog_Open(const char *path, uint64_t (*nowNanoseconds)(void));
@@ -42,8 +39,5 @@ void AudioLog_PcmStart(const char *kind, unsigned index, unsigned length);
 void AudioLog_PcmDone(void);
 void AudioLog_Snap(const char *name);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

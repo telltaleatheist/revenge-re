@@ -5,7 +5,7 @@
  * original's to begin with, read from the .json files of <data
  * directory>/rules, /ui and /start at start (src/Rules/Rules.h has the
  * files' shapes) into the tables the game reads, each table's bytes laid out
- * as the original's. The rule table (src/Rules/rule_table.c, written by
+ * as the original's. The rule table (src/Rules/rule_table.cpp, written by
  * tools/import/make_import_table.py from src/Rules/rule_pieces.txt) says
  * where each table is in the original's memory and the keyed hash of its
  * bytes there, so the tests can show that data/rules, data/ui and data/start
@@ -15,9 +15,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct RulePiece
 {
@@ -40,8 +37,5 @@ extern const size_t RulePieceCount;
  * and the key. */
 void Rules_Load(const char *dataDirectory);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

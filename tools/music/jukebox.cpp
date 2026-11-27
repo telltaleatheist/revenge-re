@@ -32,7 +32,6 @@
 #include <string>
 #include <vector>
 
-extern "C" {
 void JukeboxGame_Begin(void (*sink)(unsigned char));
 int JukeboxGame_Start(const unsigned char* bytes, unsigned length);
 int JukeboxGame_Playing(void);
@@ -40,7 +39,6 @@ void JukeboxGame_DriverTick(void);
 void JukeboxGame_SequenceTick(void);
 void JukeboxGame_Stop(void);
 void JukeboxGame_End(void);
-}
 
 namespace fs = std::filesystem;
 using revenge::audio::InstrumentTable;

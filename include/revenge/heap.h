@@ -33,7 +33,7 @@
  *
  * Each block is numbered in allocation order, from 1, a reused one anew; the
  * map dump names a pointer into a live block by that number and the offset
- * (src/SDL/map_dump.c).
+ * (src/SDL/map_dump.cpp).
  */
 void *Heap_Allocate(uint32 byteCount, const char *caller);
 /* NULL: nothing. A pointer that isn't a live block's start, a block freed

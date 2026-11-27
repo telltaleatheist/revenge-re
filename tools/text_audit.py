@@ -63,7 +63,7 @@ DICTIONARY_FIRST = (0x05AA, 0x10)      # DS offset, length
 DICTIONARY_SECOND = (0x05BA, 0x80)
 NOT_TEXT = re.compile(r"^[A-Za-z0-9_'$~-]{1,8}\.[A-Za-z0-9]{1,3}$|%[-+ #0-9.]*l?[dsxXuc]")
 TEXT_FILES = (".c", ".h", ".inc", ".cpp", ".hpp", ".md", ".txt", ".csv", ".py", ".ps1", ".cmake", ".json",
-              ".cfg", ".yml", ".yaml", ".sln", ".vcxproj", ".filters", ".editorconfig", ".gitattributes",
+              ".cfg", ".yml", ".yaml", ".editorconfig", ".gitattributes",
               ".gitignore")
 
 

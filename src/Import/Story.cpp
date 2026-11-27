@@ -9,9 +9,7 @@
 #include "../Support/Json.h"
 #include "revenge/story.h"
 
-extern "C" {
 #include "revenge/sha256.h"
-}
 
 namespace revenge::import {
 

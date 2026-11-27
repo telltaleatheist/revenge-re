@@ -8,7 +8,7 @@ trace in the port's format, so check.py compares the original with the goldens.
 Each capture (RVSnnnnn.BIN, in the script's @snap order) holds the frame, the
 DAC and the first 640K of memory; the state lines, the frame's and palette's
 hashes and the save block are made from them as the harness makes them from
-the port's globals (src/SDL/harness.c). Addresses are the listing's (the image
+the port's globals (src/SDL/harness.cpp). Addresses are the listing's (the image
 loaded at 0800, the data segment 3A6A); the capture names the real load
 segment. --frames writes NAME.indices, NAME.palette and NAME.save, as
 record.py does.

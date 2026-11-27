@@ -3,7 +3,7 @@
 ; @snaps, so the original's traces can be compared with the port's goldens
 ; (tools/trace/original.py). Our own code, for studying the original; its
 ; shape follows mech1-re's MWSNAP. It feeds keys by the harness's rules
-; (src/SDL/harness.c), so a script means the same on both sides.
+; (src/SDL/harness.cpp), so a script means the same on both sides.
 ;
 ; Usage: REVSNAP, then the game. It reads KEYS.BIN (tools/capture/keys.py).
 ;

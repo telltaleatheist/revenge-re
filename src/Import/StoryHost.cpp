@@ -39,7 +39,7 @@ void place_file(const std::filesystem::path& write_dir) {
 
 }  // namespace
 
-extern "C" int StoryHost_Prepare(const char* executablePath, const char* writeDirectory) {
+int StoryHost_Prepare(const char* executablePath, const char* writeDirectory) {
     try {
         if (writeDirectory == nullptr) {
             const OriginalEdition* edition = OriginalImport_Edition();

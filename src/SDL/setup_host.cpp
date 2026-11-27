@@ -3,9 +3,7 @@
 #include "Setup/FileCheck.h"
 #include "Setup/Setup.h"
 
-extern "C" {
 #include "game_paths.h"
-}
 
 #include <rekit/program_record.h>
 #include <rekit/sdl/pickers.h>
@@ -419,7 +417,7 @@ void record_program() {
 }
 
 // Whether a start already knows its game folder without the setup: REVENGE_ASSET_DIRECTORY, or REVENGE.CFG beside
-// the program (src/SDL/host_config.c reads them).
+// the program (src/SDL/host_config.cpp reads them).
 bool folder_configured() {
   if (!env("REVENGE_ASSET_DIRECTORY").empty()) return true;
   std::error_code ec;
@@ -428,7 +426,7 @@ bool folder_configured() {
 
 }  // namespace
 
-extern "C" int SetupHost_Start(int argc, char** argv) try {
+int SetupHost_Start(int argc, char** argv) try {
   const std::vector<std::string> args(argv + (argc > 0 ? 1 : 0), argv + argc);
   const std::string name = program_name(argc > 0 ? argv[0] : nullptr);
   // The launcher's asks about the setup, answered on stdout alone, before anything else of a start.

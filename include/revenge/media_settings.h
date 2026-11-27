@@ -5,7 +5,7 @@
 
 /* The game's four media options, in MEDIA.CFG's order. The DOS installer
  * wrote them to MEDIA.CFG; ours are the player's settings file in our write
- * folder (src/SDL/settings.c), which takes them from the install's MEDIA.CFG
+ * folder (src/SDL/settings.cpp), which takes them from the install's MEDIA.CFG
  * once. */
 enum
 {

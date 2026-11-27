@@ -1,6 +1,6 @@
 # The editions of REVENGE.EXE the rebuild knows, after which the loader
-# (src/Support/original_import.c) accepts a copy. tools/import/make_import_table.py
-# writes src/Support/original_import_editions.c from this list, and each
+# (src/Support/original_import.cpp) accepts a copy. tools/import/make_import_table.py
+# writes src/Support/original_import_editions.cpp from this list, and each
 # edition's table, src/Support/original_import_table_<ID>.c, from a copy of it.
 #
 #   edition ID FILE-BYTES HEADER-PARAGRAPHS HEADER-HASH NAME

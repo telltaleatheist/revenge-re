@@ -4,15 +4,12 @@
 /* Our sound (src/Audio): voices that take tones, samples and the music's
  * MIDI bytes, mixed on the game's clock into 48 kHz stereo frames. No device
  * and no SDL here: the host gives the mixer the clock's time, a sink for the
- * frames and the music's files (src/SDL/audio.c). Everything runs on the
+ * frames and the music's files (src/SDL/audio.cpp). Everything runs on the
  * game's thread. */
 
 #include <stddef.h>
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define AUDIO_MIX_SAMPLE_RATE 48000
 #define AUDIO_MIX_CHANNELS 2
@@ -47,8 +44,5 @@ void AudioMix_MusicOn(int on);
 /* A byte the game sends its Roland driver. */
 void AudioMix_MidiByte(uint8_t value);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

@@ -3,12 +3,7 @@
 
 #include <stddef.h>
 
-#ifdef __cplusplus
-extern "C" {
 #define REVENGE_NORETURN [[noreturn]]
-#else
-#define REVENGE_NORETURN _Noreturn
-#endif
 
 void RevengeTrace(const char *format, ...);
 void RevengeInstallCrashDiagnostics(void);
@@ -35,8 +30,5 @@ size_t RevengeCheckIndex(const char *object, size_t index, size_t count);
 #define REVENGE_PRESERVATION_TRACE(...) ((void) 0)
 #endif
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

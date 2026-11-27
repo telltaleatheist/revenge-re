@@ -27,28 +27,28 @@ the control flow that must remain comparable with the assembly.
 
 | File | Helper | Owning procedure/family | Reason |
 | --- | --- | --- | --- |
-| `REVENGE_0800_GRAPHICS_RUNTIME.c` | `GetVideoScanlineOffset` | video copy/fill/tile procedures | Adapter layout arithmetic belongs at each original call site. |
-| `REVENGE_0800_GRAPHICS_RUNTIME.c` | `GetAdapterByteX` | video copy/fill/tile procedures | Invented shared coordinate conversion. |
-| `REVENGE_0800_GRAPHICS_RUNTIME.c` | `GetAdapterRowByteCount` | video copy/fill/tile procedures | Wrapper around the invented coordinate conversion. |
-| `REVENGE_0800_GRAPHICS_RUNTIME.c` | `ReadRleRunLength` | `DecodeRLEBlock_33D6` family | Splits original decoder control flow. |
-| `REVENGE_0D73_SAVE_LOAD.c` | `GetSaveSlotDescriptor` | save/load menu procedures | Game-specific DS record selection. |
+| `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `GetVideoScanlineOffset` | video copy/fill/tile procedures | Adapter layout arithmetic belongs at each original call site. |
+| `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `GetAdapterByteX` | video copy/fill/tile procedures | Invented shared coordinate conversion. |
+| `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `GetAdapterRowByteCount` | video copy/fill/tile procedures | Wrapper around the invented coordinate conversion. |
+| `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `ReadRleRunLength` | `DecodeRLEBlock_33D6` family | Splits original decoder control flow. |
+| `REVENGE_0D73_SAVE_LOAD.cpp` | `GetSaveSlotDescriptor` | save/load menu procedures | Game-specific DS record selection. |
 | `REVENGE_1A1F_INTERNAL.h` | `GetPersistentUnitRecord` | scene interpreter `2A4E` | Game-record addressing inside the interpreter. |
 | `REVENGE_1A1F_INTERNAL.h` | `GetUnitRouteRecord` | scene interpreter `2A4E` | Game-record addressing inside the interpreter. |
 | `REVENGE_1A1F_INTERNAL.h` | `ReadSceneByte` | scene interpreter `2A4E` | Hides instruction-pointer mutation repeated by the ASM. |
 | `REVENGE_1A1F_INTERNAL.h` | `ReadSceneWord` | scene interpreter `2A4E` | Hides two byte reads and their ordering. |
 | `REVENGE_1A1F_INTERNAL.h` | `JumpToSceneOffset` | scene interpreter `2A4E` | Hides interpreter branch state changes. |
 | `REVENGE_1A1F_INTERNAL.h` | `BranchOrSkipSceneWord` | scene interpreter `2A4E` | Invented branch abstraction over original opcode cases. |
-| `REVENGE_24C5_OVERVIEW_MAP.c` | `GetOverviewRowStride` | tactical overview renderer | Game/video layout decision rather than a host boundary. |
-| `REVENGE_24C5_OVERVIEW_MAP.c` | `GetOverviewMapRow` | tactical overview renderer | Invented map-row abstraction. |
-| `REVENGE_2507_LANCE_CONFIGURATION.c` | `DrawRosterPilotUnitLabel` | lance/roster presentation | Extracted game presentation logic. |
-| `REVENGE_2507_LANCE_CONFIGURATION.c` | `GetLiveScenarioUnitTypeId` | lance/roster presentation | Game-record lookup. |
-| `REVENGE_2D1B_UNIT_STATE.c` | `LookupTacticalEngagementMode` | tactical engagement procedure | Extracted game decision table. |
-| `REVENGE_3621_MIDI_SEQUENCE.c` | `ConfigureMIDIChannelFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
-| `REVENGE_3621_MIDI_SEQUENCE.c` | `LoadMIDIInstrumentFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
-| `REVENGE_3621_MIDI_SEQUENCE.c` | `SetMIDIVoiceCountFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
-| `REVENGE_3621_MIDI_SEQUENCE.c` | `RebuildMIDIVoiceList` | MIDI allocation/service procedures | Extracted original voice-list loop. |
+| `REVENGE_24C5_OVERVIEW_MAP.cpp` | `GetOverviewRowStride` | tactical overview renderer | Game/video layout decision rather than a host boundary. |
+| `REVENGE_24C5_OVERVIEW_MAP.cpp` | `GetOverviewMapRow` | tactical overview renderer | Invented map-row abstraction. |
+| `REVENGE_2507_LANCE_CONFIGURATION.cpp` | `DrawRosterPilotUnitLabel` | lance/roster presentation | Extracted game presentation logic. |
+| `REVENGE_2507_LANCE_CONFIGURATION.cpp` | `GetLiveScenarioUnitTypeId` | lance/roster presentation | Game-record lookup. |
+| `REVENGE_2D1B_UNIT_STATE.cpp` | `LookupTacticalEngagementMode` | tactical engagement procedure | Extracted game decision table. |
+| `REVENGE_3621_MIDI_SEQUENCE.cpp` | `ConfigureMIDIChannelFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
+| `REVENGE_3621_MIDI_SEQUENCE.cpp` | `LoadMIDIInstrumentFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
+| `REVENGE_3621_MIDI_SEQUENCE.cpp` | `SetMIDIVoiceCountFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
+| `REVENGE_3621_MIDI_SEQUENCE.cpp` | `RebuildMIDIVoiceList` | MIDI allocation/service procedures | Extracted original voice-list loop. |
 | `REVENGE_39F8_STRING_TOKENIZE.c` | `IsFarStringDelimiter` | `FarStringTokenize` | Splits the original delimiter scans. |
-| `REVENGE_3A3C_TIMEZONE.c` | `ReadCalendarBoundary` | calendar conversion procedure | Extracted DS table access from the original arithmetic. |
+| `REVENGE_3A3C_TIMEZONE.cpp` | `ReadCalendarBoundary` | calendar conversion procedure | Extracted DS table access from the original arithmetic. |
 
 Applied on 2026-09-28:
 
@@ -84,9 +84,9 @@ No game/data-flow helper function definitions remain in `src/Original`.
 | File | Helpers | Count | Required destination |
 | --- | --- | ---: | --- |
 | `REVENGE_1A1F_INTERNAL.h` | `GetTacticalBackingBuffer`, `SetTacticalBackingBuffer` | 2 | Replace with explicit DS far-pointer loads/stores or a Support-level 16:16 bridge. |
-| `REVENGE_3037_KEYBOARD.c` | `PumpHostKeyboardEvent` | 1 | SDL input boundary. |
-| `REVENGE_31FB_DIGITAL_SOUND.c` | `DigitalSoundDataAt`, `DigitalSoundDriverDescriptorOffsets`, `DigitalSamplePlaybackDescriptors`, `DigitalWeaponEffectTable`, `DigitalSoundEntries`, `DigitalSoundString` | 6 | Typed views/macros over the recovered DS image in Support; no playback decisions. |
-| `REVENGE_375F_AUDIO_HARDWARE.c` | `ResolveDigitalHardwareDescriptor`, `ResolveDigitalPlaybackDescriptor`, `ResolveProbeCandidateList`, `DispatchDigitalHardwareProbe`, `DispatchDigitalHardwareAcquire`, `DispatchDigitalHardwareRelease`, `InvokeDigitalSampleCompletion` | 7 | Host callback/far-pointer dispatch bridge in Support/SDL. Original wrapper calls remain in `REVENGE_375F_AUDIO_HARDWARE.c`. |
+| `REVENGE_3037_KEYBOARD.cpp` | `PumpHostKeyboardEvent` | 1 | SDL input boundary. |
+| `REVENGE_31FB_DIGITAL_SOUND.cpp` | `DigitalSoundDataAt`, `DigitalSoundDriverDescriptorOffsets`, `DigitalSamplePlaybackDescriptors`, `DigitalWeaponEffectTable`, `DigitalSoundEntries`, `DigitalSoundString` | 6 | Typed views/macros over the recovered DS image in Support; no playback decisions. |
+| `REVENGE_375F_AUDIO_HARDWARE.cpp` | `ResolveDigitalHardwareDescriptor`, `ResolveDigitalPlaybackDescriptor`, `ResolveProbeCandidateList`, `DispatchDigitalHardwareProbe`, `DispatchDigitalHardwareAcquire`, `DispatchDigitalHardwareRelease`, `InvokeDigitalSampleCompletion` | 7 | Host callback/far-pointer dispatch bridge in Support/SDL. Original wrapper calls remain in `REVENGE_375F_AUDIO_HARDWARE.cpp`. |
 | `REVENGE_38CD_FAR_HEAP_UNLINK.c` | `ResolveBlock`, `EncodeBlock`, `GetFarHeapArenaBase`, `SetFarHeapArenaBase`, `GetFarHeapTailBlock`, `SetFarHeapTailBlock`, `GetFarHeapFreeListHead`, `SetFarHeapFreeListHead`, `FarHeapPayload` | 9 | Shared far-heap representation macros or Support primitives. Preserve allocator branches in the original procedures. |
 | `REVENGE_38FE_PROGRAM_BREAK.c` | `GetMinimumProgramBreak`, `GetCurrentProgramBreak`, `SetCurrentProgramBreak`, `GetMaximumProgramBreak`, `SetMaximumProgramBreak` | 5 | Explicit far-pointer state expressions or Support primitives. |
 | `REVENGE_398D_FAR_HEAP.c` | `ResolveBlock`, `EncodeBlock`, `GetFarHeapArenaBase`, `SetFarHeapArenaBase`, `GetFarHeapTailBlock`, `SetFarHeapTailBlock`, `GetFarHeapFreeListHead`, `SetFarHeapFreeListHead` | 8 | Share the same far-heap representation layer as `REVENGE_38CD_FAR_HEAP_UNLINK.c`. |
@@ -102,7 +102,7 @@ Applied on 2026-09-28:
 - Digital-audio DS views and resource-descriptor initialization moved to
   `src/Support/representation.c`.
 - Digital descriptor/callback resolution moved to
-  `src/Support/digital_bridge.c`.
+  `src/Support/digital_bridge.cpp`.
 - Far-heap 16:16 state access moved to `src/Support/far_heap_bridge.c` and is
   shared by the allocation and release translation units.
 - Program-break 16:16 state access moved to
@@ -116,7 +116,7 @@ branching, iteration, queue, allocation, and resource-selection decisions.
 
 | File | Helper | Disposition |
 | --- | --- | --- |
-| `REVENGE_0800_GRAPHICS_RUNTIME.c` | `RekoArtifact_ExtractHighNibbleAndShiftLeft` | It exists only inside disabled Reko pseudo-code. Delete that archival block; the annotation and executable remain the evidence. |
+| `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `RekoArtifact_ExtractHighNibbleAndShiftLeft` | It exists only inside disabled Reko pseudo-code. Delete that archival block; the annotation and executable remain the evidence. |
 
 Applied: the disabled block containing this artifact was removed on
 2026-09-28. It is no longer part of `src/Original`.
@@ -157,7 +157,7 @@ inside the addressed procedures whose assembly contains it.
 
 A follow-up inventory also found `MIDIDriverDispatch`, an older addressless
 host callback selector not included in the nine-helper regression count. Its
-selection loop now lives in `src/Support/host_dispatch.c`; `REVENGE_3621`
+selection loop now lives in `src/Support/host_dispatch.cpp`; `REVENGE_3621`
 retains only the descriptor-to-native-table identity data required because
 host function pointers cannot occupy the original DOS descriptor words.
 
@@ -175,7 +175,7 @@ preserve those separate identities.
 
 The same audit found two later host-only framebuffer helpers in segment 0800:
 `ResolveHostIndexedRenderTarget` and `DrawHostIndexedPixel`. They now terminate
-in `src/Support/video_bridge.c` as `Video_ResolveIndexedRenderTarget` and
+in `src/Support/video_bridge.cpp` as `Video_ResolveIndexedRenderTarget` and
 `Video_DrawIndexedPixelToActiveTarget`; no new Original procedure boundary is
 claimed for either adapter.
 

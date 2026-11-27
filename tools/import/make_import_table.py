@@ -6,7 +6,7 @@ and a copy of the game.
 
 src/Support/original_editions.txt lists the editions the rebuild knows and
 their known variants; from it alone this writes
-src/Support/original_import_editions.c. GAME_DIR (default: the REVENGE_GAME
+src/Support/original_import_editions.cpp. GAME_DIR (default: the REVENGE_GAME
 variable) is a copy of one edition, found there by its layout; for it this
 writes that edition's table, src/Support/original_import_table_<id>.c. A copy
 of no listed edition, or of an unlisted variant, stops with the line to add.
@@ -14,17 +14,17 @@ of no listed edition, or of an unlisted variant, stops with the line to add.
 A table's rows are src/Support/original_import_pieces.txt's pieces, its
 single texts last. Each row keeps the piece's offset, count, length and the
 first 16 hex digits of its keyed HMAC-SHA-256: never its bytes. The bytes
-hashed are the ones OriginalImport_PieceBytes (src/Support/original_import.c)
+hashed are the ones OriginalImport_PieceBytes (src/Support/original_import.cpp)
 forms.
 
 Every text is also a story id (the pieces list says how they are named), and
 for those this writes, besides the edition's table of where each is in the
 image with its length and keyed hash, include/revenge/story_text.h (the ids,
 and each one's place in StoryTextBuffer, sized by the copy's lengths) and
-src/Support/story_text_slots.c (where each text goes once the story file is
+src/Support/story_text_slots.cpp (where each text goes once the story file is
 read).
 
-The rule table, src/Rules/rule_table.c, is written from src/Rules/rule_pieces.txt
+The rule table, src/Rules/rule_table.cpp, is written from src/Rules/rule_pieces.txt
 and a copy of the reference edition (the editions list's first): each rule's
 place, length and keyed hash over the bytes there as DOS loads the image at
 0800h (its relocated segment words moved), never the bytes.
@@ -42,11 +42,11 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PIECES = os.path.join(ROOT, "src", "Support", "original_import_pieces.txt")
 EDITIONS = os.path.join(ROOT, "src", "Support", "original_editions.txt")
-EDITIONS_C = os.path.join(ROOT, "src", "Support", "original_import_editions.c")
+EDITIONS_C = os.path.join(ROOT, "src", "Support", "original_import_editions.cpp")
 STORY_H = os.path.join(ROOT, "include", "revenge", "story_text.h")
-SLOTS_C = os.path.join(ROOT, "src", "Support", "story_text_slots.c")
+SLOTS_C = os.path.join(ROOT, "src", "Support", "story_text_slots.cpp")
 RULE_PIECES = os.path.join(ROOT, "src", "Rules", "rule_pieces.txt")
-RULE_TABLE_C = os.path.join(ROOT, "src", "Rules", "rule_table.c")
+RULE_TABLE_C = os.path.join(ROOT, "src", "Rules", "rule_table.cpp")
 RULE_ID = re.compile(r"^[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$")
 LOAD_SEGMENT = 0x0800
 STORY_ID = re.compile(r"^[a-z][a-z0-9_]*(\.[0-9]+)?$")
@@ -75,7 +75,7 @@ def fail(message):
 
 
 def table_path(edition_id):
-    return os.path.join(ROOT, "src", "Support", f"original_import_table_{edition_id}.c")
+    return os.path.join(ROOT, "src", "Support", f"original_import_table_{edition_id}.cpp")
 
 
 def program(game_dir):
@@ -305,7 +305,9 @@ def render(img, edition):
     ]
     lines += [f'#include "{h}"' for h in headers]
     lines += ["", f'const char OriginalImportKey[] = "{KEY}";', "",
-              f"const OriginalPiece {array}[0x{piece_count():X}] =", "{"]
+              # extern: in C++ a namespace-scope const is internal without it,
+              # and only original_import_editions declares these.
+              f"extern const OriginalPiece {array}[0x{piece_count():X}] =", "{"]
     checks = []
     for kind, name, offset, count, stride in rows:
         data = piece_bytes(img, kind, offset, count, stride)
@@ -320,7 +322,7 @@ def render(img, edition):
         data = piece_bytes(img, "text", offset, 0, 0)
         lines.append(f'\t{{ "{ident}", ORIGINAL_PIECE_TEXT, 0x{offset:04X}, 0, 0, {len(data) - 1}, NULL, "{keyed(data)}" }},')
     lines += ["};", ""]
-    lines += [f"const StoryTextSource StoryTextSources_{edition['id']}[STORY_TEXT_COUNT] =", "{"]
+    lines += [f"extern const StoryTextSource StoryTextSources_{edition['id']}[STORY_TEXT_COUNT] =", "{"]
     for text in story_texts():
         where, expanded, data = story_source(img, text)
         place = f"0x{NO_SOURCE:08X}UL" if where is None else f"0x{where:08X}UL"
@@ -366,13 +368,7 @@ def render_story_header(img, edition):
     lines += [f"\tSTORY_TEXT_BYTES = 0x{total:X}", "};", "",
               "/* Every text the game shows, as the story file (src/Import) holds it:",
               " * filled once at start, before the game runs. */",
-              "#ifdef __cplusplus",
-              "extern \"C\" {",
-              "#endif",
-              "extern char StoryTextBuffer[STORY_TEXT_BYTES];",
-              "#ifdef __cplusplus",
-              "}",
-              "#endif", "",
+              "extern char StoryTextBuffer[STORY_TEXT_BYTES];", "",
               "/* A single text by its id, as STORY_TEXT(SAVE_GAME_SEPARATOR): an address",
               " * constant, so it may initialise a table, typed char * as a C string",
               " * literal is. */",

@@ -143,7 +143,7 @@ function Read-Definitions([string]$root, $metadata)
         return $definitions
     }
 
-    foreach ($file in Get-ChildItem -LiteralPath $root -Recurse -Filter '*.c')
+    foreach ($file in Get-ChildItem -LiteralPath $root -Recurse -Filter '*.cpp')
     {
         $segment = Get-SegmentFromFileName $file.Name
         if ($null -eq $segment)

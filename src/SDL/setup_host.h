@@ -9,9 +9,6 @@
  * folder by hand.
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /*
  * Everything the command line asks before the game starts. Returns -1 when
@@ -32,8 +29,5 @@ extern "C" {
  */
 int SetupHost_Start(int argc, char **argv);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

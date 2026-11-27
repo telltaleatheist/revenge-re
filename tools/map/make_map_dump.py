@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Writes src/SDL/map_dump.c: every data object the port's headers declare,
+"""Writes src/SDL/map_dump.cpp: every data object the port's headers declare,
 for the harness to write at each snap when REVENGE_MAP_DUMP_DIR names a
 folder (tools/map/README.md).
 
@@ -15,7 +15,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import map_objects  # noqa: E402
 
-OUT = os.path.join(map_objects.ROOT, "src", "SDL", "map_dump.c")
+OUT = os.path.join(map_objects.ROOT, "src", "SDL", "map_dump.cpp")
 # The import's and the rules' own state: not the game's data (the rule
 # table's length is the generated file's).
 LEFT_OUT = {"include/revenge/original_import.h", "include/revenge/rules.h"}
@@ -590,7 +590,7 @@ def main():
         except OSError:
             current = None
         if current != text:
-            sys.exit("make_map_dump: src/SDL/map_dump.c isn't current; run tools/map/make_map_dump.py")
+            sys.exit("make_map_dump: src/SDL/map_dump.cpp isn't current; run tools/map/make_map_dump.py")
         return
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
         f.write(text)

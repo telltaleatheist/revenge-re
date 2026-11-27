@@ -75,7 +75,7 @@ Run the asset-independent build and tests:
 ```
 
 On macOS (12 or later; the build is universal) and Linux, with CMake, Ninja
-and a C17 compiler:
+and a C++20 compiler:
 
 ```sh
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release

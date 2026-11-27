@@ -14,7 +14,7 @@ docs/METHOD_TABLE.csv and docs/SOURCE_CONVERSION_TABLE.csv:
 - the conversion table lists exactly the procedures of the method table;
 - a C name used by two addresses lives in one file and says it's an alias.
 
-src/Original/**/*.c:
+src/Original/**/*.cpp:
 - a static function has a SEG:OFF in the 700 characters before it;
 - no SDL call or header, and no RevengeTrace call.
 
@@ -121,7 +121,7 @@ def check(root):
     original = os.path.join(root, "src", "Original")
     for base, _, files in os.walk(original):
         for name in sorted(files):
-            if not name.endswith(".c"):
+            if not name.endswith(".cpp"):
                 continue
             path = os.path.join(base, name)
             relative = os.path.relpath(path, root).replace(os.sep, "/")

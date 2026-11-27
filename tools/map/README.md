@@ -19,11 +19,11 @@ stands for (4 bytes), and an import piece has the piece's size.
 `check_map.py` (ctest `map.data_map`) fails when a declared object has no
 line, or a line names no declared object. It also fails when two placed
 objects share a byte with no overlap line naming the pair, or when
-`src/SDL/map_dump.c` is out of date.
+`src/SDL/map_dump.cpp` is out of date.
 
 ## How a place was found (KIND)
 
-- `table`: a row of `tests/test_initial_data_image.c`. The source states the
+- `table`: a row of `tests/test_initial_data_image.cpp`. The source states the
   address, and the test checks the object's start against the image.
 - `import`: an import piece's offset (`src/Support/original_import_pieces.txt`).
   A pointed text sits where its pointer points.
@@ -42,7 +42,7 @@ objects share a byte with no overlap line naming the pair, or when
 
 The run kind can be repeated: with `REVENGE_MAP_DUMP_DIR` set to a folder, the
 harness writes `SNAP.objects` there at each snap, with every object's name,
-size and bytes (`src/SDL/map_dump.c`, written by `make_map_dump.py` from the
+size and bytes (`src/SDL/map_dump.cpp`, written by `make_map_dump.py` from the
 headers). Unset, it does nothing.
 
 Every snap also writes `SNAP.names` (`MapDump_WriteNames`): each object by

@@ -39,7 +39,7 @@
 int Harness_Active(void);
 
 /* The game's clock, in milliseconds: SDL's when the harness is off. Every
- * timer runs from it (src/SDL/platform.c). */
+ * timer runs from it (src/SDL/platform.cpp). */
 uint64_t HostClock_NowMS(void);
 /* Waits: sleeps when the harness is off; otherwise moves the test clock. */
 void HostClock_DelayMS(uint64_t milliseconds);
@@ -54,19 +54,19 @@ int HostClock_CalendarTime(struct tm *out, uint32_t *hundredths);
 int Harness_KeyPending(void);
 /* The due key: SDL's scancode and the modifiers (1 Shift, 2 Ctrl, 4 Alt) the
  * script gives it; polls until one is due. The platform sends it to the
- * game's keyboard handler as REVSNAP does (src/SDL/platform.c). */
+ * game's keyboard handler as REVSNAP does (src/SDL/platform.cpp). */
 void Harness_ReadKey(int *scancode, byte *modifiers);
 /* A script's key name (Shift+, Ctrl+, Alt+ allowed): 1 when it names a key
  * the keyboard has. */
 int Harness_ParseKey(const char *token, int *scancode, byte *modifiers);
 
-/* From the platform layer (platform.c), for the harness. */
+/* From the platform layer (platform.cpp), for the harness. */
 /* A script's mouse item, to the game's mouse handler when it has one. */
 void Platform_SendHarnessMouse(uint16 x, uint16 y, byte buttons);
 /* A script's quit item: the host's quit, as the window's close button asks it. */
 void Platform_RequestHarnessQuit(void);
 /* A script's fail item: fail:allocation, the heap's next request failing,
- * or fail:abort, a fatal path the game has, forced (platform.c,
+ * or fail:abort, a fatal path the game has, forced (platform.cpp,
  * FailIfAsked). */
 enum
 {
@@ -81,7 +81,7 @@ uint16 Platform_ScanCodeForKey(int scancode);
 /* The colours the screen can show (16 in the 16-colour mode, else 256) as RGB
  * into out; returns how many. */
 uint16 Platform_PaletteRgb(byte out[0x300]);
-/* A row of the text screen (src/SDL/platform.c), 80 characters, no NUL. */
+/* A row of the text screen (src/SDL/platform.cpp), 80 characters, no NUL. */
 const char *Platform_TextRow(uint16 row);
 
 #endif

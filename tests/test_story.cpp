@@ -36,12 +36,8 @@
 #include "original_import_for_tests.h"
 #include "revenge/story.h"
 
-extern "C" {
+#include "revenge/combat_data.h"
 #include "revenge/sha256.h"
-}
-
-// revenge/combat_data.h is C only (static_assert): its one table here.
-extern "C" const char* WeaponNameTable[0x17];
 
 namespace fs = std::filesystem;
 namespace story = revenge::import;

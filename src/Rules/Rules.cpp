@@ -17,24 +17,11 @@
 
 #include "../Support/Json.h"
 
-extern "C" {
+#include "revenge/original/lance_editor_data.h"
 #include "revenge/original_import.h"
-#include "revenge/story_text.h"
-}
-
-extern "C" {
+#include "revenge/roster.h"
 #include "revenge/rules.h"
-// The training's unit lists (revenge/original/lance_editor_data.h is C
-// only): host pointers into UnitClassTypeListBytes, set from units.json.
-extern const std::uint8_t* UnitClassTypeLists[0x07];
-extern std::uint8_t UnitClassTypeListBytes[0x44];
-}
-
-extern "C" {
-// The lance editor's selection cards from their starting records
-// (revenge/roster.h, C only).
-void UnitSelectionCards_LoadStart(void);
-}
+#include "revenge/story_text.h"
 
 namespace revenge::rules {
 

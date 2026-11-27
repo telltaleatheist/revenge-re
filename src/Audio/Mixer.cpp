@@ -69,8 +69,6 @@ Mixer mixer;
 
 using revenge::audio::mixer;
 
-extern "C" {
-
 void AudioMix_Reset(void) {
     mixer.tone.reset();
     mixer.samples.reset();
@@ -138,4 +136,3 @@ void AudioMix_MidiByte(uint8_t value) {
     if (mixer.musicOn) mixer.music.midiByte(value);
 }
 
-}  // extern "C"

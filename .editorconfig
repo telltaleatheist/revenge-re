@@ -9,5 +9,5 @@ trim_trailing_whitespace = true
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{ps1,ini,cfg,sln,vcxproj,filters}]
+[*.{ps1,ini,cfg}]
 end_of_line = crlf

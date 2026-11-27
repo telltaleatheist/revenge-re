@@ -14,9 +14,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /* What a text fills besides its own place. */
 typedef enum StoryTarget
@@ -60,8 +57,5 @@ void StoryText_FillTargets(void);
  * story file that can't be read, stop the game with a fault naming what. */
 int StoryHost_Prepare(const char *executablePath, const char *writeDirectory);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif

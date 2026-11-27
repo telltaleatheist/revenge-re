@@ -66,14 +66,14 @@ endfunction()
 include(cmake/OriginalAuditedSources.cmake)
 # The story (revenge/story.h): its texts' places and the importer that fills them.
 set(CHR_STORY_SOURCES
-	src/Support/story_text.c
-	src/Support/story_text_slots.c
+	src/Support/story_text.cpp
+	src/Support/story_text_slots.cpp
 	src/Import/Story.cpp
 	src/Import/StoryHost.cpp)
 # The rules, layout and starting state (revenge/rules.h): our numbers, read
 # from data/rules, data/ui, data/start and data/sound at start.
 set(CHR_RULES_SOURCES
-	src/Rules/rule_table.c
+	src/Rules/rule_table.cpp
 	src/Rules/Rules.cpp
 	src/Rules/RulesHost.cpp)
 # A test whose code reads the rules' tables loads them from the source tree's
@@ -88,16 +88,16 @@ add_library(chr_json STATIC src/Support/Json.cpp)
 chr_strict(chr_json)
 add_library(chr_original_runtime STATIC ${CHR_ORIGINAL_SOURCES})
 target_sources(chr_original_runtime PRIVATE
-	src/Support/audio_log.c
-	src/Support/debug.c
-	src/Support/media_settings.c
-    src/Support/host_dispatch.c
-    src/Support/digital_bridge.c
-    src/Support/heap.c
-    src/Support/midi_data.c
-    src/Support/video_bridge.c
-    src/Support/presentation_callback_bridge.c
-	src/Support/tactical_panel_data.c
+	src/Support/audio_log.cpp
+	src/Support/debug.cpp
+	src/Support/media_settings.cpp
+    src/Support/host_dispatch.cpp
+    src/Support/digital_bridge.cpp
+    src/Support/heap.cpp
+    src/Support/midi_data.cpp
+    src/Support/video_bridge.cpp
+    src/Support/presentation_callback_bridge.cpp
+	src/Support/tactical_panel_data.cpp
 	${CHR_STORY_SOURCES}
 	${CHR_RULES_SOURCES})
 target_include_directories(chr_original_runtime
@@ -112,8 +112,8 @@ endif()
 chr_strict(chr_original_runtime)
 
 add_library(chr_original_audio STATIC
-    src/Original/Audio/REVENGE_3621_MIDI_SEQUENCE.c
-    src/Support/midi_data.c)
+    src/Original/Audio/REVENGE_3621_MIDI_SEQUENCE.cpp
+    src/Support/midi_data.cpp)
 target_include_directories(chr_original_audio
     PUBLIC include
     PRIVATE src/Original src/SDL)
@@ -147,47 +147,47 @@ if(BUILD_TESTING)
 	endif()
 
     add_executable(test_midi_data
-        tests/test_midi_data.c
-        src/Support/midi_data.c)
+        tests/test_midi_data.cpp
+        src/Support/midi_data.cpp)
     target_include_directories(test_midi_data PRIVATE include)
     chr_strict(test_midi_data)
     add_test(NAME audio.original_segment_data_access COMMAND test_midi_data)
 
     add_executable(test_dos_redirects
-        tests/test_dos_redirects.c
-        tests/fake_backend.c)
+        tests/test_dos_redirects.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_dos_redirects PRIVATE src/SDL tests)
     target_link_libraries(test_dos_redirects PRIVATE chr_original_runtime)
     chr_strict(test_dos_redirects)
     add_test(NAME platform.original_dos_redirects COMMAND test_dos_redirects)
 
     add_executable(test_keyboard_translation
-        tests/test_keyboard_translation.c
-        tests/fake_backend.c)
+        tests/test_keyboard_translation.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_keyboard_translation PRIVATE src/SDL tests)
     target_link_libraries(test_keyboard_translation PRIVATE chr_original_runtime)
     chr_strict(test_keyboard_translation)
     add_test(NAME input.original_keyboard_translation COMMAND test_keyboard_translation)
 
     add_executable(test_random
-        tests/test_random.c
-        tests/fake_backend.c)
+        tests/test_random.cpp
+        tests/fake_backend.cpp)
 	target_include_directories(test_random PRIVATE tests)
     target_link_libraries(test_random PRIVATE chr_original_runtime)
     chr_strict(test_random)
     add_test(NAME runtime.original_random_generator COMMAND test_random)
 
 	add_executable(test_daylight_saving
-		tests/test_daylight_saving.c
-		tests/fake_backend.c)
+		tests/test_daylight_saving.cpp
+		tests/fake_backend.cpp)
 	target_include_directories(test_daylight_saving PRIVATE src/Original tests)
 	target_link_libraries(test_daylight_saving PRIVATE chr_original_runtime)
 	chr_strict(test_daylight_saving)
 	add_test(NAME runtime.original_daylight_saving COMMAND test_daylight_saving)
 
 	add_executable(test_battletech_mechanics
-		tests/test_battletech_mechanics.c
-		tests/fake_backend.c)
+		tests/test_battletech_mechanics.cpp
+		tests/fake_backend.cpp)
 	target_include_directories(test_battletech_mechanics PRIVATE
 		src/Original src/SDL tests)
 	target_link_libraries(test_battletech_mechanics PRIVATE
@@ -197,8 +197,8 @@ if(BUILD_TESTING)
 		COMMAND test_battletech_mechanics)
 
 	add_executable(test_battletech_combat_flow
-		tests/test_battletech_combat_flow.c
-		tests/fake_backend.c)
+		tests/test_battletech_combat_flow.cpp
+		tests/fake_backend.cpp)
 	target_include_directories(test_battletech_combat_flow PRIVATE
 		src/Original src/SDL tests)
 	target_link_libraries(test_battletech_combat_flow PRIVATE
@@ -208,8 +208,8 @@ if(BUILD_TESTING)
 		COMMAND test_battletech_combat_flow)
 
 	add_executable(test_game_clock
-		tests/test_game_clock.c
-		tests/fake_backend.c)
+		tests/test_game_clock.cpp
+		tests/fake_backend.cpp)
 	target_include_directories(test_game_clock PRIVATE
 		src/Original tests)
 	target_link_libraries(test_game_clock PRIVATE chr_original_runtime)
@@ -217,8 +217,8 @@ if(BUILD_TESTING)
 	add_test(NAME runtime.original_game_clock COMMAND test_game_clock)
 
 	add_executable(test_exit_handlers
-		tests/test_exit_handlers.c
-		tests/fake_backend.c)
+		tests/test_exit_handlers.cpp
+		tests/fake_backend.cpp)
 	target_include_directories(test_exit_handlers PRIVATE
 		src/Original tests)
 	target_link_libraries(test_exit_handlers PRIVATE chr_original_runtime)
@@ -227,16 +227,16 @@ if(BUILD_TESTING)
 		COMMAND test_exit_handlers)
 
     add_executable(test_video_redirects
-        tests/test_video_redirects.c
-        tests/fake_backend.c)
+        tests/test_video_redirects.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_video_redirects PRIVATE src/SDL tests)
     target_link_libraries(test_video_redirects PRIVATE chr_original_runtime)
     chr_strict(test_video_redirects)
     add_test(NAME graphics.original_video_redirects COMMAND test_video_redirects)
 
     add_executable(test_tactical_tile_raster
-        tests/test_tactical_tile_raster.c
-        tests/fake_backend.c)
+        tests/test_tactical_tile_raster.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_tactical_tile_raster PRIVATE
         src/SDL tests)
     target_link_libraries(test_tactical_tile_raster PRIVATE
@@ -246,8 +246,8 @@ if(BUILD_TESTING)
         COMMAND test_tactical_tile_raster)
 
     add_executable(test_encoded_sprites
-        tests/test_encoded_sprites.c
-        tests/fake_backend.c)
+        tests/test_encoded_sprites.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_encoded_sprites PRIVATE
         src/SDL tests)
     target_link_libraries(test_encoded_sprites PRIVATE chr_original_runtime)
@@ -256,8 +256,8 @@ if(BUILD_TESTING)
         COMMAND test_encoded_sprites)
 
     add_executable(test_clipped_sprite_dispatch
-        tests/test_clipped_sprite_dispatch.c
-        tests/fake_backend.c)
+        tests/test_clipped_sprite_dispatch.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_clipped_sprite_dispatch PRIVATE
         src/SDL tests)
     target_link_libraries(test_clipped_sprite_dispatch PRIVATE
@@ -267,8 +267,8 @@ if(BUILD_TESTING)
         COMMAND test_clipped_sprite_dispatch)
 
     add_executable(test_presentation_leaves
-        tests/test_presentation_leaves.c
-        tests/fake_backend.c)
+        tests/test_presentation_leaves.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_presentation_leaves PRIVATE
         src/Original src/SDL tests)
     target_link_libraries(test_presentation_leaves PRIVATE
@@ -278,16 +278,16 @@ if(BUILD_TESTING)
         COMMAND test_presentation_leaves)
 
     add_executable(test_video_segment
-        tests/test_video_segment.c
-        tests/fake_backend.c)
+        tests/test_video_segment.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_video_segment PRIVATE src/Original tests)
     target_link_libraries(test_video_segment PRIVATE chr_original_runtime)
     chr_strict(test_video_segment)
     add_test(NAME graphics.video_segment COMMAND test_video_segment)
 
     add_executable(test_vga_display_backing
-        tests/test_vga_display_backing.c
-        tests/fake_backend.c)
+        tests/test_vga_display_backing.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_vga_display_backing PRIVATE
         src/Original tests)
     target_link_libraries(test_vga_display_backing PRIVATE
@@ -297,7 +297,7 @@ if(BUILD_TESTING)
         COMMAND test_vga_display_backing)
 
     add_executable(test_cursor_backing_rebuild
-        tests/test_cursor_backing_rebuild.c)
+        tests/test_cursor_backing_rebuild.cpp)
     target_include_directories(test_cursor_backing_rebuild PRIVATE
         src/Original)
     target_link_libraries(test_cursor_backing_rebuild PRIVATE
@@ -307,7 +307,7 @@ if(BUILD_TESTING)
         COMMAND test_cursor_backing_rebuild)
 
     add_executable(test_graphics_resource_dispatch
-        tests/test_graphics_resource_dispatch.c)
+        tests/test_graphics_resource_dispatch.cpp)
     target_include_directories(test_graphics_resource_dispatch PRIVATE
         src/Original)
     target_link_libraries(test_graphics_resource_dispatch PRIVATE
@@ -317,16 +317,16 @@ if(BUILD_TESTING)
         COMMAND test_graphics_resource_dispatch)
 
     add_executable(test_font_raster
-        tests/test_font_raster.c
-        tests/fake_backend.c)
+        tests/test_font_raster.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_font_raster PRIVATE src/SDL tests)
     target_link_libraries(test_font_raster PRIVATE chr_original_runtime)
     chr_strict(test_font_raster)
     add_test(NAME graphics.original_font_raster COMMAND test_font_raster)
 
     add_executable(test_mouse_cursor_control
-        tests/test_mouse_cursor_control.c
-        tests/fake_backend.c)
+        tests/test_mouse_cursor_control.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_mouse_cursor_control PRIVATE
         src/Original src/SDL tests)
     target_link_libraries(test_mouse_cursor_control PRIVATE chr_original_runtime)
@@ -335,16 +335,16 @@ if(BUILD_TESTING)
         COMMAND test_mouse_cursor_control)
 
     add_executable(test_timer_edges
-        tests/test_timer_edges.c
-        tests/fake_backend.c
-        src/Original/Audio/REVENGE_38AE_PIT_TIMER.c)
+        tests/test_timer_edges.cpp
+        tests/fake_backend.cpp
+        src/Original/Audio/REVENGE_38AE_PIT_TIMER.cpp)
     target_include_directories(test_timer_edges PRIVATE
         src/Original src/SDL tests)
     target_link_libraries(test_timer_edges PRIVATE chr_original_runtime)
     chr_strict(test_timer_edges)
     add_test(NAME platform.original_timer_edges COMMAND test_timer_edges)
 
-    add_executable(test_video_tile_capture tests/test_video_tile_capture.c)
+    add_executable(test_video_tile_capture tests/test_video_tile_capture.cpp)
     target_include_directories(test_video_tile_capture PRIVATE src/Original)
     target_link_libraries(test_video_tile_capture PRIVATE chr_original_runtime)
     chr_strict(test_video_tile_capture)
@@ -352,14 +352,14 @@ if(BUILD_TESTING)
         COMMAND test_video_tile_capture)
 
     add_executable(test_packed_icon_resource
-        tests/test_packed_icon_resource.c)
+        tests/test_packed_icon_resource.cpp)
     target_include_directories(test_packed_icon_resource PRIVATE src/Original)
     target_link_libraries(test_packed_icon_resource PRIVATE chr_original_runtime)
     chr_strict(test_packed_icon_resource)
     add_test(NAME assets.original_packed_icon_resource
         COMMAND test_packed_icon_resource)
 
-    add_executable(test_packed_icon_page tests/test_packed_icon_page.c)
+    add_executable(test_packed_icon_page tests/test_packed_icon_page.cpp)
     target_include_directories(test_packed_icon_page PRIVATE src/Original)
     target_link_libraries(test_packed_icon_page PRIVATE chr_original_runtime)
     chr_strict(test_packed_icon_page)
@@ -367,8 +367,8 @@ if(BUILD_TESTING)
         COMMAND test_packed_icon_page)
 
     add_executable(test_critical_error_handler
-        tests/test_critical_error_handler.c
-        tests/fake_backend.c)
+        tests/test_critical_error_handler.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_critical_error_handler PRIVATE
         src/Original src/SDL tests)
     target_link_libraries(test_critical_error_handler PRIVATE
@@ -377,14 +377,14 @@ if(BUILD_TESTING)
     add_test(NAME platform.original_critical_error_handler
         COMMAND test_critical_error_handler)
 
-    add_executable(test_video_tile_strip tests/test_video_tile_strip.c)
+    add_executable(test_video_tile_strip tests/test_video_tile_strip.cpp)
     target_include_directories(test_video_tile_strip PRIVATE src/Original)
     target_link_libraries(test_video_tile_strip PRIVATE chr_original_runtime)
     chr_strict(test_video_tile_strip)
     add_test(NAME graphics.original_video_tile_strip
         COMMAND test_video_tile_strip)
 
-    add_executable(test_decoded_icon_page tests/test_decoded_icon_page.c)
+    add_executable(test_decoded_icon_page tests/test_decoded_icon_page.cpp)
     target_include_directories(test_decoded_icon_page PRIVATE src/Original)
     target_link_libraries(test_decoded_icon_page PRIVATE chr_original_runtime)
     chr_strict(test_decoded_icon_page)
@@ -392,7 +392,7 @@ if(BUILD_TESTING)
         COMMAND test_decoded_icon_page)
 
     add_executable(test_single_ui_region_selection
-        tests/test_single_ui_region_selection.c)
+        tests/test_single_ui_region_selection.cpp)
     target_include_directories(test_single_ui_region_selection PRIVATE
         src/Original)
     target_link_libraries(test_single_ui_region_selection PRIVATE
@@ -401,7 +401,7 @@ if(BUILD_TESTING)
     add_test(NAME input.original_single_ui_region_selection
         COMMAND test_single_ui_region_selection)
 
-    add_executable(test_ui_region_poller tests/test_ui_region_poller.c)
+    add_executable(test_ui_region_poller tests/test_ui_region_poller.cpp)
     target_include_directories(test_ui_region_poller PRIVATE src/Original)
     target_link_libraries(test_ui_region_poller PRIVATE chr_original_runtime)
     chr_strict(test_ui_region_poller)
@@ -409,7 +409,7 @@ if(BUILD_TESTING)
         COMMAND test_ui_region_poller)
 
     add_executable(test_navigation_normalization
-        tests/test_navigation_normalization.c)
+        tests/test_navigation_normalization.cpp)
     target_include_directories(test_navigation_normalization PRIVATE
         src/Original)
     target_link_libraries(test_navigation_normalization PRIVATE
@@ -418,26 +418,26 @@ if(BUILD_TESTING)
     add_test(NAME input.original_navigation_normalization
         COMMAND test_navigation_normalization)
 
-    add_executable(test_random_range tests/test_random_range.c)
+    add_executable(test_random_range tests/test_random_range.cpp)
     target_include_directories(test_random_range PRIVATE src/Original)
     target_link_libraries(test_random_range PRIVATE chr_original_runtime)
     chr_strict(test_random_range)
     add_test(NAME runtime.original_random_range COMMAND test_random_range)
 
-    add_executable(test_output_leaves tests/test_output_leaves.c)
+    add_executable(test_output_leaves tests/test_output_leaves.cpp)
     target_include_directories(test_output_leaves PRIVATE src/Original)
     target_link_libraries(test_output_leaves PRIVATE chr_original_runtime)
     chr_strict(test_output_leaves)
     add_test(NAME platform.original_output_leaves COMMAND test_output_leaves)
 
-    add_executable(test_text_window_state tests/test_text_window_state.c)
+    add_executable(test_text_window_state tests/test_text_window_state.cpp)
     target_include_directories(test_text_window_state PRIVATE src/Original)
     target_link_libraries(test_text_window_state PRIVATE chr_original_runtime)
     chr_strict(test_text_window_state)
     add_test(NAME output.original_text_window_state
         COMMAND test_text_window_state)
 
-    add_executable(test_render_text_window tests/test_render_text_window.c)
+    add_executable(test_render_text_window tests/test_render_text_window.cpp)
     target_include_directories(test_render_text_window PRIVATE src/Original)
     target_link_libraries(test_render_text_window PRIVATE chr_original_runtime)
     chr_strict(test_render_text_window)
@@ -445,7 +445,7 @@ if(BUILD_TESTING)
         COMMAND test_render_text_window)
 
     add_executable(test_active_render_target
-        tests/test_active_render_target.c)
+        tests/test_active_render_target.cpp)
     target_include_directories(test_active_render_target PRIVATE src/Original)
     target_link_libraries(test_active_render_target PRIVATE
         chr_original_runtime)
@@ -454,7 +454,7 @@ if(BUILD_TESTING)
         COMMAND test_active_render_target)
 
     add_executable(test_fill_video_rectangle
-        tests/test_fill_video_rectangle.c)
+        tests/test_fill_video_rectangle.cpp)
     target_include_directories(test_fill_video_rectangle PRIVATE src/Original)
     target_link_libraries(test_fill_video_rectangle PRIVATE
         chr_original_runtime)
@@ -462,21 +462,21 @@ if(BUILD_TESTING)
     add_test(NAME graphics.original_fill_video_rectangle
         COMMAND test_fill_video_rectangle)
 
-	add_executable(test_integer_format tests/test_integer_format.c)
+	add_executable(test_integer_format tests/test_integer_format.cpp)
 	target_include_directories(test_integer_format PRIVATE src/Original)
 	target_link_libraries(test_integer_format PRIVATE chr_original_runtime)
 	chr_strict(test_integer_format)
 	add_test(NAME utility.original_integer_format COMMAND test_integer_format)
 
-	add_executable(test_borland_strings tests/test_borland_strings.c)
+	add_executable(test_borland_strings tests/test_borland_strings.cpp)
 	target_include_directories(test_borland_strings PRIVATE src/Original)
 	target_link_libraries(test_borland_strings PRIVATE chr_original_runtime)
 	chr_strict(test_borland_strings)
 	add_test(NAME utility.original_borland_strings COMMAND test_borland_strings)
 
     add_executable(test_display_backing_encoding
-        tests/test_display_backing_encoding.c
-        tests/fake_backend.c)
+        tests/test_display_backing_encoding.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_display_backing_encoding PRIVATE
         src/Original src/SDL tests)
     target_link_libraries(test_display_backing_encoding PRIVATE
@@ -486,9 +486,9 @@ if(BUILD_TESTING)
         COMMAND test_display_backing_encoding)
 
     add_executable(test_heap
-        tests/test_heap.c
-        src/Support/heap.c
-        src/Support/debug.c)
+        tests/test_heap.cpp
+        src/Support/heap.cpp
+        src/Support/debug.cpp)
     target_include_directories(test_heap PRIVATE include)
     chr_strict(test_heap)
     add_test(NAME support.heap COMMAND test_heap)
@@ -506,11 +506,11 @@ if(BUILD_TESTING)
         PASS_REGULAR_EXPRESSION "fault: the free called from 3014:0133, of the block 3014:011E allocated, finds one 0D73:562F allocated since")
 
     add_executable(test_formatted_text
-        tests/test_formatted_text.c
-        src/Original/Text/REVENGE_35CE_FORMATTED_TEXT.c
+        tests/test_formatted_text.cpp
+        src/Original/Text/REVENGE_35CE_FORMATTED_TEXT.cpp
         ${CHR_3A6A_DATA_SOURCES}
         ${CHR_STORY_SOURCES}
-        src/Support/debug.c)
+        src/Support/debug.cpp)
     target_include_directories(test_formatted_text PRIVATE include src/Original tests)
     target_link_libraries(test_formatted_text PRIVATE chr_json)
     chr_strict(test_formatted_text)
@@ -518,30 +518,30 @@ if(BUILD_TESTING)
     set_tests_properties(output.original_formatted_text PROPERTIES SKIP_RETURN_CODE 77)
 
     add_executable(test_original_editions
-        tests/test_original_editions.c
+        tests/test_original_editions.cpp
         ${CHR_3A6A_DATA_SOURCES})
     target_include_directories(test_original_editions PRIVATE include src/Original)
     chr_strict(test_original_editions)
     add_test(NAME import.original_editions COMMAND test_original_editions)
 
     add_executable(test_resource_stream
-        tests/test_resource_stream.c
-        src/Original/Resources/REVENGE_3390_RESOURCE_STREAM.c
-        src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.c
+        tests/test_resource_stream.cpp
+        src/Original/Resources/REVENGE_3390_RESOURCE_STREAM.cpp
+        src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.cpp
         ${CHR_3A6A_DATA_SOURCES}
-        src/Support/debug.c)
+        src/Support/debug.cpp)
     target_include_directories(test_resource_stream PRIVATE
         include src/Original)
     chr_strict(test_resource_stream)
     add_test(NAME assets.original_resource_stream COMMAND test_resource_stream)
 
-    add_executable(test_font_resource tests/test_font_resource.c)
+    add_executable(test_font_resource tests/test_font_resource.cpp)
     target_include_directories(test_font_resource PRIVATE src/Original)
     target_link_libraries(test_font_resource PRIVATE chr_original_runtime)
     chr_strict(test_font_resource)
     add_test(NAME output.original_font_resource COMMAND test_font_resource)
 
-    add_executable(test_rectangle_outline tests/test_rectangle_outline.c)
+    add_executable(test_rectangle_outline tests/test_rectangle_outline.cpp)
     target_include_directories(test_rectangle_outline PRIVATE src/Original)
     target_link_libraries(test_rectangle_outline PRIVATE chr_original_runtime)
     chr_strict(test_rectangle_outline)
@@ -549,7 +549,7 @@ if(BUILD_TESTING)
         COMMAND test_rectangle_outline)
 
     add_executable(test_clipped_video_region
-        tests/test_clipped_video_region.c)
+        tests/test_clipped_video_region.cpp)
     target_include_directories(test_clipped_video_region PRIVATE src/Original)
     target_link_libraries(test_clipped_video_region PRIVATE
         chr_original_runtime)
@@ -558,16 +558,16 @@ if(BUILD_TESTING)
         COMMAND test_clipped_video_region)
 
     add_executable(test_asset_decoders
-        tests/test_asset_decoders.c
-        tests/fake_backend.c)
+        tests/test_asset_decoders.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_asset_decoders PRIVATE src/SDL tests)
     target_link_libraries(test_asset_decoders PRIVATE chr_original_runtime)
     chr_strict(test_asset_decoders)
     add_test(NAME assets.original_codec_transcriptions COMMAND test_asset_decoders)
 
     add_executable(test_midi_sequence
-        tests/test_midi_sequence.c
-        tests/fake_backend.c)
+        tests/test_midi_sequence.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_midi_sequence PRIVATE src/SDL tests)
     target_link_libraries(test_midi_sequence PRIVATE
         chr_original_runtime
@@ -576,14 +576,14 @@ if(BUILD_TESTING)
     add_test(NAME audio.midi_sequence_parser COMMAND test_midi_sequence)
 
     # The audio log's lines (revenge/audio_log.h).
-    add_executable(test_audio_log tests/test_audio_log.c)
+    add_executable(test_audio_log tests/test_audio_log.cpp)
     target_link_libraries(test_audio_log PRIVATE chr_original_runtime)
     chr_strict(test_audio_log)
     add_test(NAME audio.log_lines COMMAND test_audio_log)
 
     add_executable(test_digital_descriptors
-        tests/test_digital_descriptors.c
-        tests/fake_backend.c)
+        tests/test_digital_descriptors.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_digital_descriptors PRIVATE
         src/Original src/SDL tests)
     target_link_libraries(test_digital_descriptors PRIVATE chr_original_runtime)
@@ -592,9 +592,9 @@ if(BUILD_TESTING)
         COMMAND test_digital_descriptors)
 
     add_executable(test_weapon_effects
-        tests/test_weapon_effects.c
-        tests/audio_preservation_shims.c
-        tests/fake_backend.c)
+        tests/test_weapon_effects.cpp
+        tests/audio_preservation_shims.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_weapon_effects PRIVATE src/SDL tests)
     target_link_libraries(test_weapon_effects PRIVATE chr_original_runtime)
     chr_strict(test_weapon_effects)
@@ -603,8 +603,8 @@ if(BUILD_TESTING)
     set_tests_properties(audio.original_weapon_effect_dispatch PROPERTIES SKIP_RETURN_CODE 77)
 
     add_executable(test_status_row_highlight
-        tests/test_status_row_highlight.c
-        tests/fake_backend.c)
+        tests/test_status_row_highlight.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_status_row_highlight PRIVATE src/SDL tests)
     target_link_libraries(test_status_row_highlight PRIVATE chr_original_runtime)
     chr_strict(test_status_row_highlight)
@@ -612,8 +612,8 @@ if(BUILD_TESTING)
         COMMAND test_status_row_highlight)
 
     add_executable(test_tactical_cursor_retreat
-        tests/test_tactical_cursor_retreat.c
-        tests/fake_backend.c)
+        tests/test_tactical_cursor_retreat.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_tactical_cursor_retreat PRIVATE src/SDL tests)
     target_link_libraries(test_tactical_cursor_retreat PRIVATE chr_original_runtime)
     chr_strict(test_tactical_cursor_retreat)
@@ -621,8 +621,8 @@ if(BUILD_TESTING)
         COMMAND test_tactical_cursor_retreat)
 
     add_executable(test_line_of_sight_map_width
-        tests/test_line_of_sight_map_width.c
-        tests/fake_backend.c)
+        tests/test_line_of_sight_map_width.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_line_of_sight_map_width PRIVATE src/SDL tests)
     target_link_libraries(test_line_of_sight_map_width PRIVATE chr_original_runtime)
     chr_strict(test_line_of_sight_map_width)
@@ -630,13 +630,13 @@ if(BUILD_TESTING)
         COMMAND test_line_of_sight_map_width)
 
     # The scene's deploy with roster slot FF: the entry past the roster's end.
-    add_executable(test_deploy_pilot tests/test_deploy_pilot.c tests/fake_backend.c)
+    add_executable(test_deploy_pilot tests/test_deploy_pilot.cpp tests/fake_backend.cpp)
     target_include_directories(test_deploy_pilot PRIVATE src/SDL tests)
     target_link_libraries(test_deploy_pilot PRIVATE chr_original_runtime)
     chr_strict(test_deploy_pilot)
     add_test(NAME tactical.original_deploy_pilot COMMAND test_deploy_pilot)
 
-    add_executable(test_experience_mask tests/test_experience_mask.c tests/fake_backend.c)
+    add_executable(test_experience_mask tests/test_experience_mask.cpp tests/fake_backend.cpp)
     target_include_directories(test_experience_mask PRIVATE src/SDL tests)
     target_link_libraries(test_experience_mask PRIVATE chr_original_runtime)
     chr_strict(test_experience_mask)
@@ -644,15 +644,15 @@ if(BUILD_TESTING)
 
     # A unit's firepower ratings through the weapon-rating sum's mask, as the
     # original's loop leaves it.
-    add_executable(test_weapon_rating tests/test_weapon_rating.c tests/fake_backend.c)
+    add_executable(test_weapon_rating tests/test_weapon_rating.cpp tests/fake_backend.cpp)
     target_include_directories(test_weapon_rating PRIVATE src/SDL tests)
     target_link_libraries(test_weapon_rating PRIVATE chr_original_runtime)
     chr_strict(test_weapon_rating)
     add_test(NAME tactical.original_weapon_rating COMMAND test_weapon_rating)
 
     add_executable(test_scenario_clock_subtick
-        tests/test_scenario_clock_subtick.c
-        tests/fake_backend.c)
+        tests/test_scenario_clock_subtick.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_scenario_clock_subtick PRIVATE src/SDL tests)
     target_link_libraries(test_scenario_clock_subtick PRIVATE chr_original_runtime)
     chr_strict(test_scenario_clock_subtick)
@@ -661,7 +661,7 @@ if(BUILD_TESTING)
 
     # The rules: data/rules, ui, start and sound rebuild the original's tables (rebuild), the
     # player's copy holds them (exe), and a wrong file is a fault naming it.
-    add_executable(test_rules tests/test_rules.cpp tests/fake_backend.c)
+    add_executable(test_rules tests/test_rules.cpp tests/fake_backend.cpp)
     target_include_directories(test_rules PRIVATE src/SDL tests)
     target_link_libraries(test_rules PRIVATE chr_original_runtime)
     chr_strict(test_rules)
@@ -716,8 +716,8 @@ if(BUILD_TESTING)
         "fault: rules: combat.json can't be read from")
 
     add_executable(test_initial_data_values
-        tests/test_initial_data_values.c
-        tests/fake_backend.c)
+        tests/test_initial_data_values.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_initial_data_values PRIVATE src/SDL tests)
     target_link_libraries(test_initial_data_values PRIVATE chr_original_runtime)
     chr_strict(test_initial_data_values)
@@ -726,8 +726,8 @@ if(BUILD_TESTING)
     set_tests_properties(import.original_initial_data_values PROPERTIES SKIP_RETURN_CODE 77)
 
     add_executable(test_index_guard
-        tests/test_index_guard.c
-        src/Support/debug.c)
+        tests/test_index_guard.cpp
+        src/Support/debug.cpp)
     target_include_directories(test_index_guard PRIVATE include)
     chr_strict(test_index_guard)
     add_test(NAME support.index_guard COMMAND test_index_guard)
@@ -739,8 +739,8 @@ if(BUILD_TESTING)
         PASS_REGULAR_EXPRESSION "fault: GuardedTable\\[[0-9]+\\] is past its 5 entries")
 
     add_executable(test_random_pilot_pool
-        tests/test_random_pilot_pool.c
-        tests/fake_backend.c)
+        tests/test_random_pilot_pool.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_random_pilot_pool PRIVATE src/SDL src/Original tests)
     target_link_libraries(test_random_pilot_pool PRIVATE chr_original_runtime)
     chr_strict(test_random_pilot_pool)
@@ -749,8 +749,8 @@ if(BUILD_TESTING)
     set_tests_properties(import.random_pilot_pool PROPERTIES SKIP_RETURN_CODE 77)
 
     add_executable(test_unit_durability_totals
-        tests/test_unit_durability_totals.c
-        tests/fake_backend.c)
+        tests/test_unit_durability_totals.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_unit_durability_totals PRIVATE src/SDL tests)
     target_link_libraries(test_unit_durability_totals PRIVATE chr_original_runtime)
     chr_strict(test_unit_durability_totals)
@@ -758,8 +758,8 @@ if(BUILD_TESTING)
         COMMAND test_unit_durability_totals)
 
     add_executable(test_omni_unit_list
-        tests/test_omni_unit_list.c
-        tests/fake_backend.c)
+        tests/test_omni_unit_list.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_omni_unit_list PRIVATE src/Original src/SDL tests)
     target_link_libraries(test_omni_unit_list PRIVATE chr_original_runtime)
     chr_strict(test_omni_unit_list)
@@ -767,9 +767,9 @@ if(BUILD_TESTING)
     set_tests_properties(units.original_omni_unit_list PROPERTIES SKIP_RETURN_CODE 77)
 
     add_executable(test_scenario_sound
-        tests/test_scenario_sound.c
-        tests/audio_preservation_shims.c
-        tests/fake_backend.c)
+        tests/test_scenario_sound.cpp
+        tests/audio_preservation_shims.cpp
+        tests/fake_backend.cpp)
     target_include_directories(test_scenario_sound PRIVATE src/SDL tests)
     target_link_libraries(test_scenario_sound PRIVATE chr_original_runtime)
     chr_strict(test_scenario_sound)
@@ -821,26 +821,26 @@ if(CHR_BUILD_SDL)
     chr_strict(chr_audio)
 
     add_library(chr_sdl_backend STATIC
-        src/SDL/audio.c
-        src/SDL/host_config.c
-        src/SDL/game_file.c
-        src/SDL/game_paths.c
-        src/SDL/settings.c
-        src/SDL/harness.c
-        src/SDL/platform.c
-        src/SDL/system.c
-        src/SDL/map_dump.c)
+        src/SDL/audio.cpp
+        src/SDL/host_config.cpp
+        src/SDL/game_file.cpp
+        src/SDL/game_paths.cpp
+        src/SDL/settings.cpp
+        src/SDL/harness.cpp
+        src/SDL/platform.cpp
+        src/SDL/system.cpp
+        src/SDL/map_dump.cpp)
     target_include_directories(chr_sdl_backend PUBLIC src/SDL include)
     # The object dump names the game's data, some of it declared beside the
     # preserved source.
-    set_source_files_properties(src/SDL/map_dump.c PROPERTIES
+    set_source_files_properties(src/SDL/map_dump.cpp PROPERTIES
         INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/Original")
     target_link_libraries(chr_sdl_backend PUBLIC ${CHR_SDL_TARGET} chr_audio)
     chr_strict(chr_sdl_backend)
-    # The backend names the runtime's data objects (map_dump.c), and the
+    # The backend names the runtime's data objects (map_dump.cpp), and the
     # runtime calls the backend, so a program links the two as one group:
     # GNU ld reads each archive once, in order, and would leave the objects
-    # only map_dump.c names undefined. Apple's and MSVC's linkers search every
+    # only map_dump.cpp names undefined. Apple's and MSVC's linkers search every
     # archive as needed, and CMake has no group for them.
     if(CMAKE_LINK_GROUP_USING_RESCAN_SUPPORTED OR CMAKE_C_LINK_GROUP_USING_RESCAN_SUPPORTED
        OR CMAKE_CXX_LINK_GROUP_USING_RESCAN_SUPPORTED)
@@ -851,7 +851,7 @@ if(CHR_BUILD_SDL)
     endif()
 
     # The diagnostic still consumes the retired host-side CPS adapter.
-    add_executable(RevengeDiagnostic EXCLUDE_FROM_ALL src/SDL/diagnostic.c)
+    add_executable(RevengeDiagnostic EXCLUDE_FROM_ALL src/SDL/diagnostic.cpp)
     target_link_libraries(RevengeDiagnostic PRIVATE
         ${CHR_RUNTIME_WITH_BACKEND})
     chr_strict(RevengeDiagnostic)
@@ -954,7 +954,7 @@ if(CHR_BUILD_SDL)
     # normal build product now that the preservation inventory is complete.
     # The program, as `chr` in a package (tools/build_package.py). The
     # launcher's asks and the setup come first (src/SDL/setup_host.h).
-    set(CHR_PROGRAM_SOURCES src/SDL/entry.c src/SDL/setup_host.cpp src/Setup/BuildTag.cpp)
+    set(CHR_PROGRAM_SOURCES src/SDL/entry.cpp src/SDL/setup_host.cpp src/Setup/BuildTag.cpp)
     add_executable(Revenge ${CHR_PROGRAM_SOURCES})
     target_compile_definitions(Revenge PRIVATE
         CHR_VERSION="${PROJECT_VERSION}")
@@ -1103,7 +1103,7 @@ if(CHR_BUILD_SDL)
         # sequencer and Roland driver into the music, a WAV a song, and
         # listening.py's sheet; the test renders one short song (needs
         # REVENGE_GAME).
-        add_executable(revenge_jukebox tools/music/jukebox.cpp tools/music/jukebox_game.c tests/fake_backend.c)
+        add_executable(revenge_jukebox tools/music/jukebox.cpp tools/music/jukebox_game.cpp tests/fake_backend.cpp)
         target_include_directories(revenge_jukebox PRIVATE src/SDL tests)
         target_link_libraries(revenge_jukebox PRIVATE chr_original_runtime chr_audio)
         chr_strict(revenge_jukebox)
@@ -1116,7 +1116,7 @@ if(CHR_BUILD_SDL)
     endif()
 
     if(BUILD_TESTING)
-        add_executable(test_game_file tests/test_game_file.c)
+        add_executable(test_game_file tests/test_game_file.cpp)
         target_link_libraries(test_game_file PRIVATE
             ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_game_file)
@@ -1126,7 +1126,7 @@ if(CHR_BUILD_SDL)
         set_tests_properties(platform.game_file PROPERTIES
             ENVIRONMENT "REVENGE_SAVE_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}/test-saves/")
 
-        add_executable(test_text_screen tests/test_text_screen.c)
+        add_executable(test_text_screen tests/test_text_screen.cpp)
         target_include_directories(test_text_screen PRIVATE src/SDL)
         target_link_libraries(test_text_screen PRIVATE ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_text_screen)
@@ -1134,7 +1134,7 @@ if(CHR_BUILD_SDL)
         set_tests_properties(platform.text_screen PROPERTIES
             ENVIRONMENT "SDL_VIDEO_DRIVER=dummy;SDL_AUDIO_DRIVER=dummy;SDL_MAC_BACKGROUND_APP=1")
 
-        add_executable(test_sdl_game_paths tests/test_sdl_game_paths.c)
+        add_executable(test_sdl_game_paths tests/test_sdl_game_paths.cpp)
         target_link_libraries(test_sdl_game_paths PRIVATE
             ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_sdl_game_paths)
@@ -1147,7 +1147,7 @@ if(CHR_BUILD_SDL)
             "fault: play opens no program file, and the game asked for a:.REVENGE.exe")
 
         # The player's settings file, made once from the install's MEDIA.CFG.
-        add_executable(test_settings tests/test_settings.c)
+        add_executable(test_settings tests/test_settings.cpp)
         target_include_directories(test_settings PRIVATE src/Original src/SDL tests)
         target_link_libraries(test_settings PRIVATE
             ${CHR_RUNTIME_WITH_BACKEND})
@@ -1173,7 +1173,7 @@ if(CHR_BUILD_SDL)
             "fault: the story: .*digital_sound.bin is 1580 bytes, and the game's digital_sound is 1581|skipped")
 
         # A file the game can't open is a fault naming it, not a disk prompt.
-        add_executable(test_tracked_file_fault tests/test_tracked_file_fault.c)
+        add_executable(test_tracked_file_fault tests/test_tracked_file_fault.cpp)
         target_include_directories(test_tracked_file_fault PRIVATE src/Original tests)
         target_link_libraries(test_tracked_file_fault PRIVATE
             ${CHR_RUNTIME_WITH_BACKEND})
@@ -1195,14 +1195,14 @@ if(CHR_BUILD_SDL)
             "fault: .*settings.txt:3: sound samples takes no parameter|skipped")
 
         # The scene interpreter's plain jump from a battle's starting cursor.
-        add_executable(test_scene_jump tests/test_scene_jump.c)
+        add_executable(test_scene_jump tests/test_scene_jump.cpp)
         target_include_directories(test_scene_jump PRIVATE src/Original tests)
         target_link_libraries(test_scene_jump PRIVATE ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_scene_jump)
         add_test(NAME tactical.original_scene_jump COMMAND test_scene_jump)
 
         # The title text's fade colours: the fade-out's first step past them.
-        add_executable(test_mission_fade_color tests/test_mission_fade_color.c)
+        add_executable(test_mission_fade_color tests/test_mission_fade_color.cpp)
         target_include_directories(test_mission_fade_color PRIVATE src/Original tests)
         target_link_libraries(test_mission_fade_color PRIVATE ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_mission_fade_color)
@@ -1210,7 +1210,7 @@ if(CHR_BUILD_SDL)
 
         # The objects the source places in the data segment, as the program
         # starts them, against the player's copy's load image.
-        add_executable(test_initial_data_image tests/test_initial_data_image.c)
+        add_executable(test_initial_data_image tests/test_initial_data_image.cpp)
         target_include_directories(test_initial_data_image PRIVATE src/Original tests)
         target_link_libraries(test_initial_data_image PRIVATE
             ${CHR_RUNTIME_WITH_BACKEND})
@@ -1220,7 +1220,7 @@ if(CHR_BUILD_SDL)
 
         # A save the original wrote (REVENGE_ORIGINAL_SAVE): its selection
         # cards through the lance editor's card preparation.
-        add_executable(test_lance_editor_cards tests/test_lance_editor_cards.c)
+        add_executable(test_lance_editor_cards tests/test_lance_editor_cards.cpp)
         target_include_directories(test_lance_editor_cards PRIVATE src/Original tests)
         target_link_libraries(test_lance_editor_cards PRIVATE
             ${CHR_RUNTIME_WITH_BACKEND})
@@ -1231,14 +1231,14 @@ if(CHR_BUILD_SDL)
         set_tests_properties(units.lance_editor_cards_stale PROPERTIES SKIP_RETURN_CODE 77
             PASS_REGULAR_EXPRESSION "fault: a selection card's sprite pointer 7929:0008|skipped")
 
-        add_executable(test_sdl_renderer_fallback tests/test_sdl_renderer_fallback.c)
+        add_executable(test_sdl_renderer_fallback tests/test_sdl_renderer_fallback.cpp)
         target_link_libraries(test_sdl_renderer_fallback PRIVATE
             ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_sdl_renderer_fallback)
         add_test(NAME platform.sdl_renderer_fallback COMMAND test_sdl_renderer_fallback)
 
         # The pointer leaving the window never parks the game's cursor on an edge.
-        add_executable(test_mouse_leave tests/test_mouse_leave.c)
+        add_executable(test_mouse_leave tests/test_mouse_leave.cpp)
         target_include_directories(test_mouse_leave PRIVATE src/Original tests)
         target_link_libraries(test_mouse_leave PRIVATE
             ${CHR_RUNTIME_WITH_BACKEND})

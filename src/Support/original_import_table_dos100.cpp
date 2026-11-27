@@ -13,7 +13,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces_dos100[0x13D] =
+extern const OriginalPiece OriginalPieces_dos100[0x13D] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, NULL, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, NULL, "2de063a6fef0f14a" },
@@ -334,7 +334,7 @@ const OriginalPiece OriginalPieces_dos100[0x13D] =
 	{ "resource_fatal_disk_error", ORIGINAL_PIECE_TEXT, 0x61EC, 0, 0, 55, NULL, "1a997f34e5defdd4" },
 };
 
-const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
+extern const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
 {
 	{ 0x00034E83UL, 0x3A6A, 0xD, 0, "a51417b37f27e8f9" }, /* title.0 */
 	{ 0x00034E91UL, 0x3A6A, 0x13, 0, "1e8c1b137d7fe481" }, /* title.1 */

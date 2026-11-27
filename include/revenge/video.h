@@ -9,10 +9,13 @@
  * row 200). Phase 3's canvas must keep the off-screen rows too. */
 #define VIDEO_SEGMENT_SIZE 0x10000UL
 
+/* Plain ints, not enumerators: C++20 deprecates arithmetic between two
+ * unnamed enums, and these meet other modules' constants and floats. */
+inline constexpr int VIDEO_SCREEN_WIDTH = 0x0140;
+inline constexpr int VIDEO_SCREEN_HEIGHT = 0x00C8;
+
 enum
 {
-    VIDEO_SCREEN_WIDTH = 0x0140,
-    VIDEO_SCREEN_HEIGHT = 0x00C8,
     VIDEO_SCREEN_MIN_X = 0x0000,
     VIDEO_SCREEN_MAX_X = VIDEO_SCREEN_WIDTH - 0x0001,
     VIDEO_SCREEN_MIN_Y = 0x0000,

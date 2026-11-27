@@ -18,7 +18,7 @@ silently replacing its behavior.
    game logic must not call SDL directly.
 5. Do not add original executables, assets, extracted media, saves, screenshots
    or the game's text. The game's own data comes from the player's
-   `REVENGE.EXE` at start (`src/Support/original_import.c`), and its text from
+   `REVENGE.EXE` at start (`src/Support/original_import.cpp`), and its text from
    the story file imported from that copy into the player's folder
    (`src/Import`, `include/revenge/story.h`): give a string a `text` line, or
    a table its line, in `src/Support/original_import_pieces.txt`, name a single
