@@ -114,6 +114,7 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	REGISTER_DATA_OBJECT(RandomUnitTypeCount, 0x3118);
 	REGISTER_DATA_OBJECT(UnitEditorUnitSpriteIndex, 0x3119);
 	REGISTER_DATA_OBJECT(UnitNameSplitIndex, 0x3172);
+	REGISTER_DATA_OBJECT(PilotRosterRecordPastEnd, 0x2148);
 	REGISTER_DATA_OBJECT(PredefinedUnitTypeTable, 0x31CB);
 	REGISTER_DATA_OBJECT(UnitEditorSectionEnabled, 0x31E9);
 	REGISTER_DATA_OBJECT(UnitEditorScenarioCardCountByFamily, 0x3206);

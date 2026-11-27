@@ -90,6 +90,10 @@ bytes                SoundConfigurationRecords               3B87 7E
 
 # State the game starts with
 bytes                MIDIParser                              62B0 0A
+# What a scene's deploy with roster slot FF reads as that pilot's record
+# (1A1F:339F, 30F1:0AFC): the entry past the roster's end, in the image four
+# bytes of a table of file names.
+bytes                PilotRosterRecordPastEnd                2148 04
 
 # Single texts
 text                 print_allocation_error_and_exit.0       232B

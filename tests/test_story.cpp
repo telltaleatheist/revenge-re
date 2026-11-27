@@ -156,7 +156,7 @@ void check_media(const fs::path* folder) {
                                    std::to_string(length) + ", \"sha256\": \"" + sha256_hex(file) + "\"}";
         assert(manifest.find(listed) != std::string::npos);
     }
-    assert(count == 11);
+    assert(count == 12);
 }
 
 // Clears every media and data piece's object, so a check after proves it was

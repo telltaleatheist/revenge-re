@@ -436,7 +436,7 @@ static void WriteState(const char *name)
 		fprintf(file, "state unit %u deploy %u at %u %u durability %u heat %u engine %u pilot %u\n",
 			(unsigned) index, (unsigned) unit->deploymentState, (unsigned) ScenarioUnitMapX[index],
 			(unsigned) ScenarioUnitMapY[index], durability, (unsigned) unit->currentHeat,
-			(unsigned) unit->engineHits, (unsigned) unit->pilotId);
+			(unsigned) unit->engineHits, (unsigned) (byte) unit->pilotId);
 	}
 	if (fclose(file) != 0)
 		Stop("can't write", path);

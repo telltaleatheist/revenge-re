@@ -488,13 +488,17 @@ void UpdatePilotAvailability(void)
 //     word16 unitIndex, word16 rosterSlot)
 // Bind one four-byte pilot-roster entry at DS:1D4C to a persistent unit.
 // Bytes +01 and +02 supply pilot experience and the gunnery target number.
+// Slot FF, which a scene's deploy passes (1A1F:339F), is the entry 0x3FC
+// bytes on from DS:1D4C, past the roster: DS:2148, PilotRosterRecordPastEnd.
 void AssignPilotRosterEntryToUnit(
 	word16 unitIndex,
 	word16 rosterSlot)
 {
 	RevengeUnitRecord *unitRecord = &PersistentUnitRoster[unitIndex];
 	RevengePilotRosterRecord *pilotRecord =
-		PILOT_ROSTER_RECORD(rosterSlot);
+		rosterSlot == INVALID_ROSTER_INDEX
+			? &PilotRosterRecordPastEnd
+			: PILOT_ROSTER_RECORD(rosterSlot);
 
 	unitRecord->pilotId = (RevengePilotId)rosterSlot;
 	unitRecord->pilotExperience = pilotRecord->experienceIndex;

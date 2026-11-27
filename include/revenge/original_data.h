@@ -277,6 +277,10 @@ extern byte CampaignClockState[0x03];
 #define TacticalClockSubtick (CampaignClockState[0x02])
 extern byte SavedCampaignClockState[0x03];
 extern RevengePilotRosterRecord PilotRoster[REVENGE_PILOT_ROSTER_COUNT];
+/* DS:2148, the roster entry past its end that slot FF reads (1A1F:339F,
+ * 30F1:0AFC): in the image, four bytes of a table of file names. From the
+ * player's copy (src/Support/original_import_pieces.txt). */
+extern RevengePilotRosterRecord PilotRosterRecordPastEnd;
 extern RevengeUnitLanceAssignment
 	LanceAssignments[REVENGE_LANCE_ASSIGNMENT_COUNT];
 /* DS:5928: seven rows; the scenarios use rows 0-4 and 6. */

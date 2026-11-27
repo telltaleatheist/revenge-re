@@ -373,6 +373,7 @@ static const MapDumpObject objects[] =
 	{ "CampaignClockState", &CampaignClockState, sizeof(CampaignClockState), 0 },
 	{ "SavedCampaignClockState", &SavedCampaignClockState, sizeof(SavedCampaignClockState), 0 },
 	{ "PilotRoster", &PilotRoster, sizeof(PilotRoster), 0 },
+	{ "PilotRosterRecordPastEnd", &PilotRosterRecordPastEnd, sizeof(PilotRosterRecordPastEnd), 0 },
 	{ "LanceAssignments", &LanceAssignments, sizeof(LanceAssignments), 0 },
 	{ "ScenarioLanceAllegianceTable", &ScenarioLanceAllegianceTable, sizeof(ScenarioLanceAllegianceTable), 0 },
 	{ "AmmoCapacityMultiplierTable", &AmmoCapacityMultiplierTable, sizeof(AmmoCapacityMultiplierTable), 0 },

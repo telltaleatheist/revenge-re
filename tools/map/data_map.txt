@@ -58,6 +58,7 @@ place ReplayExtendedCampaignState 3A6A:1BAD F table
 place UnitSelectionCards 3A6A:1BBC 10E table
 place LanceAssignments 3A6A:1CCA 82 table
 place PilotRoster 3A6A:1D4C EC table
+place PilotRosterRecordPastEnd 3A6A:2148 4 import
 place TacticalMapFileName 3A6A:2188 9 run
 place TacticalIconSetFileName 3A6A:2191 D run
 place TacticalDestroyIconFileName 3A6A:219E D run

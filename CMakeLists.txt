@@ -709,6 +709,13 @@ if(BUILD_TESTING)
     add_test(NAME tactical.original_line_of_sight_map_width
         COMMAND test_line_of_sight_map_width)
 
+    # The scene's deploy with roster slot FF: the entry past the roster's end.
+    add_executable(test_deploy_pilot tests/test_deploy_pilot.c tests/fake_backend.c)
+    target_include_directories(test_deploy_pilot PRIVATE src/SDL tests)
+    target_link_libraries(test_deploy_pilot PRIVATE chr_original_runtime)
+    chr_strict(test_deploy_pilot)
+    add_test(NAME tactical.original_deploy_pilot COMMAND test_deploy_pilot)
+
     add_executable(test_scenario_clock_subtick
         tests/test_scenario_clock_subtick.c
         tests/fake_backend.c)

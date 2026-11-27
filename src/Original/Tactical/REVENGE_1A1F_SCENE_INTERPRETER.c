@@ -413,9 +413,10 @@ void ExecuteSceneInstructions(void)
 			}
 			UnitLanceFormationState[unitIndex] =
 				(byte)IsCurrentLanceLeader(unitIndex);
+			/* 1A1F:339F tests the slot, widened to a word, against FFFF,
+			 * which a byte never is: every slot is assigned, FF too. */
 			rosterSlot = ReadSceneByte();
-			if (rosterSlot != 0xFF)
-				AssignPilotRosterEntryToUnit(unitIndex, rosterSlot);
+			AssignPilotRosterEntryToUnit(unitIndex, rosterSlot);
 			if (ScenarioFileSuffix == 0x38
 				&& unitType == 0x04
 				&& SrmShipmentLoaded != 0x00)

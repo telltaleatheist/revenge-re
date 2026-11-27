@@ -291,3 +291,13 @@ What the comparison found in the port, and how each was fixed:
    its C array, a byte that depended on the host's layout and differed
    between the Mac's two architectures; it reads MissionBlinkRectX[0] as it
    stands now (campaign.original_mission_fade_color). Found by UBSan.
+5. **A scene's deploy assigns a pilot for slot FF.** The deploy opcode
+   (1A1F:339F) compares its roster-slot byte, widened to a word, with FFFF,
+   so it always calls AssignPilotRosterEntryToUnit (30F1:0AFC), and slot FF
+   is read 0x3FC bytes on from the roster (DS:1D4C), at DS:2148: four bytes
+   of a table of file names. The unit's pilot is FF and its gunnery that
+   entry's, a number far above any pilot's. An original bug, kept. The port
+   skipped the call for FF, so in stages_02_04 SCENE4's unit 16 had pilot 0
+   and the template's gunnery where the original's has pilot FF. It assigns
+   now, from those four bytes imported from the player's copy
+   (PilotRosterRecordPastEnd; tactical.original_deploy_pilot).

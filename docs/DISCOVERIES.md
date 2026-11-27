@@ -19,3 +19,12 @@ page on what the original does.
   the initial copy over replay, but the initial copy's pilot pool is 15 zeros,
   so from then on each random pilot drawn is pilot 0. Kept in
   `data/start/new_campaign.json`; `src/Rules/Rules.h` describes it.
+
+- **An enemy the scene sends in "without a pilot" barely hits.** A scene's
+  deploy names a pilot roster slot for the unit, or FF for none. The game
+  compares the slot, widened to a word, with FFFF (1A1F:339F), which a byte
+  never is, so it assigns a pilot even for FF. Slot FF's record lies far past
+  the 59 pilots, among the program's file names, so the unit takes its
+  gunnery from two letters of a file name: a target number in the seventies,
+  where a pilot's is a few. The first is the fourth battle's heavy unit, which
+  then almost never hits. Kept; `tools/trace/README.md` (finding 5).
