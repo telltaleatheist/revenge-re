@@ -35,7 +35,7 @@
  * map dump names a pointer into a live block by that number and the offset
  * (src/SDL/map_dump.cpp).
  */
-void *Heap_Allocate(uint32 byteCount, const char *caller);
+void *Heap_Allocate(uint32_t byteCount, const char *caller);
 /* NULL: nothing. A pointer that isn't a live block's start, a block freed
  * already among them, is a fault. */
 void Heap_Free(void *block);
@@ -49,7 +49,7 @@ const char *Heap_Caller(const void *block);
 
 /* The live block holding the address: its number and the address's offset,
  * and 1; else 0. */
-int Heap_Find(uintptr_t address, uint32 *number, uint32 *offset);
+int Heap_Find(uintptr_t address, uint32_t *number, uint32_t *offset);
 
 /* The harness's fail:allocation (src/SDL/harness.h): the next request fails
  * as if the host had no memory for it. */

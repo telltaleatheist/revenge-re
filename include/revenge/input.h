@@ -40,21 +40,21 @@ inline constexpr int MOUSE_BUTTON_LEFT = 0x01;
 inline constexpr int MOUSE_BUTTON_RIGHT = 0x02;
 inline constexpr int MOUSE_BUTTON_MIDDLE = 0x04;
 
-static inline int16 TranslatedExtendedKey(byte keyCode)
+static inline int16_t TranslatedExtendedKey(uint8_t keyCode)
 {
-    return (int16) (int8_t) keyCode;
+    return (int16_t) (int8_t) keyCode;
 }
 
-void KeyboardInterruptHandler(byte scanCode);
-word16 KeyboardInputPending(void);
-uint16 ReadRawKeypress(void);
-int8 TranslateKeyCode(void);
-int16 ReadTranslatedKeypress(void);
-word16 WaitForDismissInput(void);
-word16 WaitForKeyboardOrMouseInput(void);
+void KeyboardInterruptHandler(uint8_t scanCode);
+uint16_t KeyboardInputPending(void);
+uint16_t ReadRawKeypress(void);
+int8_t TranslateKeyCode(void);
+int16_t ReadTranslatedKeypress(void);
+uint16_t WaitForDismissInput(void);
+uint16_t WaitForKeyboardOrMouseInput(void);
 void FlushPendingInput(void);
 void InstallKeyboardHandlers(void);
 void RestoreKeyboardHandlers(void);
-void MouseEventCallback(word16 buttons, word16 x, word16 y);
+void MouseEventCallback(uint16_t buttons, uint16_t x, uint16_t y);
 
 #endif

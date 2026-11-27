@@ -13,7 +13,7 @@ enum
     WEAPON_PRIORITY_PROFILE_COUNT = 0x10,
     WEAPON_PRIORITY_DATA_BYTE_COUNT = 0x0580,
     WEAPON_PRIORITY_DATA_ENTRY_COUNT =
-        WEAPON_PRIORITY_DATA_BYTE_COUNT / sizeof(uint32),
+        WEAPON_PRIORITY_DATA_BYTE_COUNT / sizeof(uint32_t),
     HIT_LOCATION_FACING_TABLE_COUNT = 0x04,
     HIT_LOCATION_TABLE_INFANTRY = 0x04,
     HIT_LOCATION_TABLE_COUNT = 0x05,
@@ -104,28 +104,28 @@ enum
 #pragma pack(push, 1)
 typedef struct RevengeWeaponDefinition
 {
-    word16 nameOffset;
-    word16 nameSegment;
-    byte heat;
-    byte damage;
-    byte minimumRange;
-    byte maximumRangeUnits;
-    word16 weightHalfTons;
-    byte missileRackSize;
-    byte ammunitionFamilyId;
-    byte criticalSlotCount;
-    byte recoveryDelayTicks;
-    byte effectId;
+    uint16_t nameOffset;
+    uint16_t nameSegment;
+    uint8_t heat;
+    uint8_t damage;
+    uint8_t minimumRange;
+    uint8_t maximumRangeUnits;
+    uint16_t weightHalfTons;
+    uint8_t missileRackSize;
+    uint8_t ammunitionFamilyId;
+    uint8_t criticalSlotCount;
+    uint8_t recoveryDelayTicks;
+    uint8_t effectId;
 } RevengeWeaponDefinition;
 
 typedef struct RevengeTacticalCombatRatings
 {
-    int16 movement;
-    int16 durabilityDividedBy16;
-    int16 closeFirepower;
-    int16 mediumFirepower;
-    int16 longFirepower;
-    int16 sensorHits;
+    int16_t movement;
+    int16_t durabilityDividedBy16;
+    int16_t closeFirepower;
+    int16_t mediumFirepower;
+    int16_t longFirepower;
+    int16_t sensorHits;
 } RevengeTacticalCombatRatings;
 
 /*
@@ -136,8 +136,8 @@ typedef struct RevengeTacticalCombatRatings
  */
 typedef union RevengeWeaponPriorityData
 {
-    byte raw[WEAPON_PRIORITY_DATA_BYTE_COUNT];
-    uint32 entries[WEAPON_PRIORITY_DATA_ENTRY_COUNT];
+    uint8_t raw[WEAPON_PRIORITY_DATA_BYTE_COUNT];
+    uint32_t entries[WEAPON_PRIORITY_DATA_ENTRY_COUNT];
 } RevengeWeaponPriorityData;
 #pragma pack(pop)
 

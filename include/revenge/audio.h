@@ -45,112 +45,112 @@ enum
 
 typedef struct RevengeDigitalSoundEntry
 {
-    byte soundCode;
-    uint16 resourceIndex;
-    uint32 sourceOffset;
-    uint16 sampleLength;
-    uint16 packedBufferOffset;
+    uint8_t soundCode;
+    uint16_t resourceIndex;
+    uint32_t sourceOffset;
+    uint16_t sampleLength;
+    uint16_t packedBufferOffset;
     char resourceFileName[SCENARIO_DIGITAL_SOUND_FILE_NAME_CAPACITY];
 } RevengeDigitalSoundEntry;
 
 typedef struct RevengeDigitalSoundCatalog
 {
     RevengeDigitalSoundEntry entries[SCENARIO_DIGITAL_SOUND_ENTRY_COUNT];
-    byte sequenceData[SCENARIO_DIGITAL_SOUND_SEQUENCE_BYTE_COUNT];
+    uint8_t sequenceData[SCENARIO_DIGITAL_SOUND_SEQUENCE_BYTE_COUNT];
 } RevengeDigitalSoundCatalog;
 
 typedef struct RevengeScenarioDigitalSoundPlayer
 {
     const struct RevengeGameRuntime *game;
     RevengeDigitalSoundCatalog catalog;
-    byte *sampleBank;
-    uint16 sampleBankByteCount;
-    byte loadedEntries[SCENARIO_DIGITAL_SOUND_ENTRY_COUNT];
-    byte initialized;
+    uint8_t *sampleBank;
+    uint16_t sampleBankByteCount;
+    uint8_t loadedEntries[SCENARIO_DIGITAL_SOUND_ENTRY_COUNT];
+    uint8_t initialized;
 } RevengeScenarioDigitalSoundPlayer;
 
 typedef struct RevengeDigitalWeaponEffect
 {
-    int16 resourceIndex;
-    uint16 playbackScale;
-    uint16 packedBufferOffset;
-    uint16 sampleLength;
-    byte loadState;
+    int16_t resourceIndex;
+    uint16_t playbackScale;
+    uint16_t packedBufferOffset;
+    uint16_t sampleLength;
+    uint8_t loadState;
 } RevengeDigitalWeaponEffect;
 
 typedef struct RevengeDigitalWeaponEffectBank
 {
-    byte *sampleBank;
-    uint16 sampleBankByteCount;
+    uint8_t *sampleBank;
+    uint16_t sampleBankByteCount;
     RevengeDigitalWeaponEffect effects[DIGITAL_WEAPON_EFFECT_COUNT];
-    byte soundEffectsEnabled;
-    byte digitalDriverSelected;
+    uint8_t soundEffectsEnabled;
+    uint8_t digitalDriverSelected;
 } RevengeDigitalWeaponEffectBank;
 
 typedef struct RevengeMusicResourcePlayer
 {
     const struct RevengeGameRuntime *game;
-    byte *musicData;
-    uint16 musicDataByteCount;
-    uint16 cachedResourceIndex;
-    byte musicEnabled;
+    uint8_t *musicData;
+    uint16_t musicDataByteCount;
+    uint16_t cachedResourceIndex;
+    uint8_t musicEnabled;
 } RevengeMusicResourcePlayer;
 
 
-byte EnablePCSpeaker(void);
+uint8_t EnablePCSpeaker(void);
 void SilencePCSpeaker(void);
 void WritePCSpeakerPITDivisor(
-    byte divisorLowByte,
-    byte divisorHighByte);
+    uint8_t divisorLowByte,
+    uint8_t divisorHighByte);
 void StartPCSpeakerFixedTone(void);
 void DisablePCSpeaker(void);
 void InstallMusicTimer(void);
 void RestoreSystemTimer(void);
 void InitializeSpeakerEffectState(void);
-void StartPCSpeakerEffectStream(const byte *effectStream);
+void StartPCSpeakerEffectStream(const uint8_t *effectStream);
 void SetPCSpeakerEffectStopRequest(void);
 void DecodePCSpeakerEffectTick(void);
 /* 375F:0A62: one digital sample mixed and advanced for every playing one. */
 void ServiceDigitalAudioTick(void);
 
-void SetMIDITimingDivisor(uint16 timerCallsPerMinute);
+void SetMIDITimingDivisor(uint16_t timerCallsPerMinute);
 void ConfigureMIDITempo(
-    uint16 ticksPerQuarterNote,
-    uint16 beatsPerMinute);
+    uint16_t ticksPerQuarterNote,
+    uint16_t beatsPerMinute);
 void ConfigureMIDITimeSignature(
-    uint16 numerator,
-    uint16 denominator,
-    uint16 beatsPerMeasure);
+    uint16_t numerator,
+    uint16_t denominator,
+    uint16_t beatsPerMeasure);
 void SendMIDIAllNotesOff(void);
-uint16 ReadMIDIVariableLengthQuantity(const byte **cursor);
-uint16 StartMIDISequence(
-    const byte *midiData,
-    uint16 playbackFlags);
+uint16_t ReadMIDIVariableLengthQuantity(const uint8_t **cursor);
+uint16_t StartMIDISequence(
+    const uint8_t *midiData,
+    uint16_t playbackFlags);
 void PauseMIDISequence(void);
 void ResumeMIDISequence(void);
 void StopMIDISequence(void);
 void ServiceMIDISequenceTick(void);
-uint32 DivideUnsigned32(uint32 dividend, uint32 divisor);
-void DispatchMIDIByte(uint16 midiByte);
+uint32_t DivideUnsigned32(uint32_t dividend, uint32_t divisor);
+void DispatchMIDIByte(uint16_t midiByte);
 void PrepareMIDIDriver(MIDIDriverDescriptorData *driverDescriptor);
 void ActivateMIDIDriver(MIDIDriverDescriptorData *driverDescriptor);
 void DeactivateMIDIDriver(void);
-uint16 MIDIDriverHandlesByte(uint16 midiByte);
-uint16 ReleaseMIDINote(uint16 channel, uint16 note);
-uint16 StartMIDINote(
-    uint16 channel,
-    uint16 note,
-    uint16 velocity);
+uint16_t MIDIDriverHandlesByte(uint16_t midiByte);
+uint16_t ReleaseMIDINote(uint16_t channel, uint16_t note);
+uint16_t StartMIDINote(
+    uint16_t channel,
+    uint16_t note,
+    uint16_t velocity);
 void IgnoreMIDIPolyphonicKeyPressure(
-    uint16 channel,
-    uint16 note,
-    uint16 pressure);
-void IgnoreMIDIControllerChange(uint16 channel, uint16 value);
+    uint16_t channel,
+    uint16_t note,
+    uint16_t pressure);
+void IgnoreMIDIControllerChange(uint16_t channel, uint16_t value);
 void ReleaseAllMIDIVoices(void);
-void SetMIDIChannelProgram(uint16 channel, uint16 program);
-void IgnoreMIDIChannelPressure(uint16 channel, uint16 pressure);
-void IgnoreMIDIPitchBend(uint16 channel, uint16 bend);
-void DispatchMIDISystemByte(uint16 midiByte);
+void SetMIDIChannelProgram(uint16_t channel, uint16_t program);
+void IgnoreMIDIChannelPressure(uint16_t channel, uint16_t pressure);
+void IgnoreMIDIPitchBend(uint16_t channel, uint16_t bend);
+void DispatchMIDISystemByte(uint16_t midiByte);
 void ResetMIDIPlaybackState(void);
 void ServiceActiveMIDIDriver(void);
 
@@ -161,42 +161,42 @@ void StopLoadedMusicTrack(void);
 void InitializeDigitalSoundDriver(void);
 void LoadDigitalWeaponEffectBank(void);
 void ReleaseDigitalWeaponEffectBank(void);
-void DispatchWeaponEffect(int16 weaponEffectId);
-void PlayDigitalWeaponEffect(uint16 weaponEffectId);
+void DispatchWeaponEffect(int16_t weaponEffectId);
+void PlayDigitalWeaponEffect(uint16_t weaponEffectId);
 struct DigitalSampleDescriptor;
 void HandleDigitalWeaponEffectCompletion(
     struct DigitalSampleDescriptor *descriptor);
-void PlayPCSpeakerEffectByIndex(uint16 effectId);
+void PlayPCSpeakerEffectByIndex(uint16_t effectId);
 
-int16 ParseDigitalSoundCatalog(
-    const byte *executableData,
-    uint32 executableByteCount,
+int16_t ParseDigitalSoundCatalog(
+    const uint8_t *executableData,
+    uint32_t executableByteCount,
     RevengeDigitalSoundCatalog *catalog);
-int16 FindDigitalSoundEntryByCode(byte soundCode);
-const byte *GetDigitalSoundSequenceFragment(
+int16_t FindDigitalSoundEntryByCode(uint8_t soundCode);
+const uint8_t *GetDigitalSoundSequenceFragment(
     const RevengeDigitalSoundCatalog *catalog,
-    uint16 dataSegmentOffset);
-int16 InitializeScenarioDigitalSoundPlayer(
+    uint16_t dataSegmentOffset);
+int16_t InitializeScenarioDigitalSoundPlayer(
     RevengeScenarioDigitalSoundPlayer *player,
     const struct RevengeGameRuntime *game);
-void LoadScenarioDigitalSoundBank(int8 scenarioCode);
+void LoadScenarioDigitalSoundBank(int8_t scenarioCode);
 void ReleaseDigitalSoundBuffer(void);
 void ShutdownScenarioDigitalSoundPlayer(
     RevengeScenarioDigitalSoundPlayer *player);
-uint16 BuildScenarioDigitalSoundSequence(
+uint16_t BuildScenarioDigitalSoundSequence(
     const RevengeScenarioDigitalSoundPlayer *player,
-    int16 scenarioCode,
-    uint16 narrationMode,
-    uint16 forceIndex,
-    byte alternateResult,
-    byte soundCodes[0x10]);
-void PlayScenarioDigitalSoundSequence(int8 scenarioCode);
+    int16_t scenarioCode,
+    uint16_t narrationMode,
+    uint16_t forceIndex,
+    uint8_t alternateResult,
+    uint8_t soundCodes[0x10]);
+void PlayScenarioDigitalSoundSequence(int8_t scenarioCode);
 
-const char *GetMusicResourceFileName(uint16 resourceIndex);
+const char *GetMusicResourceFileName(uint16_t resourceIndex);
 void InitializeMusicResourcePlayer(
     RevengeMusicResourcePlayer *player,
     const struct RevengeGameRuntime *game,
-    byte musicEnabled);
+    uint8_t musicEnabled);
 void ShutdownMusicResourcePlayer(
     RevengeMusicResourcePlayer *player);
 

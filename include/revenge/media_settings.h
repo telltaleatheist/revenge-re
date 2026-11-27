@@ -36,10 +36,10 @@ inline constexpr int MEDIA_SOUND_SPEAKER = 1;
  * pick their records. */
 typedef struct RevengeMediaChoices
 {
-    word16 choice[MEDIA_OPTION_COUNT];
+    uint16_t choice[MEDIA_OPTION_COUNT];
     char soundParameter[MEDIA_SOUND_PARAMETER_CAPACITY];
-    word16 music;
-    word16 sound;
+    uint16_t music;
+    uint16_t sound;
 } RevengeMediaChoices;
 
 /* The names of MEDIA.CFG's options, in the option records at DS:3A91
@@ -47,16 +47,16 @@ typedef struct RevengeMediaChoices
 extern const char *const ConfigOptionNames[MEDIA_OPTION_COUNT];
 
 /* The number of records an option has. */
-word16 MediaSettings_ChoiceCount(word16 option);
+uint16_t MediaSettings_ChoiceCount(uint16_t option);
 /* 1 if that record of the sound option takes a parameter. */
-int MediaSettings_SoundTakesParameter(word16 choice);
+int MediaSettings_SoundTakesParameter(uint16_t choice);
 /* The option a MEDIA.CFG key names, or -1 (any case). */
 int MediaSettings_OptionIndex(const char *key);
 /* The record of `option` a MEDIA.CFG value names, or -1 (any case). */
-int MediaSettings_ChoiceIndex(word16 option, const char *value);
+int MediaSettings_ChoiceIndex(uint16_t option, const char *value);
 /* The choices as the DOS installer wrote MEDIA.CFG, CR LF lines in its
  * order; the length, or 0 if they don't fit. */
-word16 MediaSettings_InstallerText(const RevengeMediaChoices *choices, char *text, word16 capacity);
+uint16_t MediaSettings_InstallerText(const RevengeMediaChoices *choices, char *text, uint16_t capacity);
 
 /* The player's choices (the host's, from its settings file). */
 const RevengeMediaChoices *HostSettings_MediaChoices(void);

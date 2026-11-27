@@ -5,8 +5,8 @@
 
 #include "revenge/types.h"
 
-extern word16 SecondaryResourceDriveEnabled; /* DS:B662 */
-extern word16 ResourceDriveSelectionDisabled; /* DS:B668 */
+extern uint16_t SecondaryResourceDriveEnabled; /* DS:B662 */
+extern uint16_t ResourceDriveSelectionDisabled; /* DS:B668 */
 extern DosAddress CriticalErrorCallback; /* DS:B888 */
 
 #endif

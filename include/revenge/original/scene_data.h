@@ -83,35 +83,35 @@ typedef enum SceneOpcode
 #pragma pack(push, 1)
 typedef struct SceneFileHeader
 {
-    word16 payloadSize;
-    word16 instructionBlockOffset;
-    word16 narrationMessageOffsets[SCENE_NARRATION_OFFSET_COUNT];
-    byte lanceEnabled[SCENE_LANCE_COUNT];
-    byte initialUnitResourceCode[0x07];
-    byte artillerySupportAvailable;
-    byte strafingSupportAvailable;
-    byte reservedA0;
-    byte overviewNoticeChance;
-    byte lineOfSightMaximumSteps;
-    byte terrainEffectMode;
-    byte terrainDamageCapabilityMode;
-    byte overviewMapMode;
-    byte lanceFormationProfile[SCENE_LANCE_PROFILE_COUNT];
-    byte unitType[SCENE_UNIT_COUNT];
-    byte friendlyMapX[SCENE_FRIENDLY_UNIT_COUNT];
-    byte friendlyMapY[SCENE_FRIENDLY_UNIT_COUNT];
-    byte enemyMapX[SCENE_FRIENDLY_UNIT_COUNT];
-    byte enemyMapY[SCENE_FRIENDLY_UNIT_COUNT];
-    byte unitFacing[SCENE_UNIT_COUNT];
-    byte friendlyPilotRosterSlot[SCENE_FRIENDLY_UNIT_COUNT];
-    byte opposingPilotRosterSlot[SCENE_FRIENDLY_UNIT_COUNT];
-    byte reserved124[0x04];
+    uint16_t payloadSize;
+    uint16_t instructionBlockOffset;
+    uint16_t narrationMessageOffsets[SCENE_NARRATION_OFFSET_COUNT];
+    uint8_t lanceEnabled[SCENE_LANCE_COUNT];
+    uint8_t initialUnitResourceCode[0x07];
+    uint8_t artillerySupportAvailable;
+    uint8_t strafingSupportAvailable;
+    uint8_t reservedA0;
+    uint8_t overviewNoticeChance;
+    uint8_t lineOfSightMaximumSteps;
+    uint8_t terrainEffectMode;
+    uint8_t terrainDamageCapabilityMode;
+    uint8_t overviewMapMode;
+    uint8_t lanceFormationProfile[SCENE_LANCE_PROFILE_COUNT];
+    uint8_t unitType[SCENE_UNIT_COUNT];
+    uint8_t friendlyMapX[SCENE_FRIENDLY_UNIT_COUNT];
+    uint8_t friendlyMapY[SCENE_FRIENDLY_UNIT_COUNT];
+    uint8_t enemyMapX[SCENE_FRIENDLY_UNIT_COUNT];
+    uint8_t enemyMapY[SCENE_FRIENDLY_UNIT_COUNT];
+    uint8_t unitFacing[SCENE_UNIT_COUNT];
+    uint8_t friendlyPilotRosterSlot[SCENE_FRIENDLY_UNIT_COUNT];
+    uint8_t opposingPilotRosterSlot[SCENE_FRIENDLY_UNIT_COUNT];
+    uint8_t reserved124[0x04];
 } SceneFileHeader;
 
 typedef union SceneFileBuffer
 {
     SceneFileHeader header;
-    byte raw[SCENE_FILE_BUFFER_SIZE];
+    uint8_t raw[SCENE_FILE_BUFFER_SIZE];
 } SceneFileBuffer;
 
 REVENGE_ANONYMOUS_STRUCTS_BEGIN
@@ -119,13 +119,13 @@ typedef union SceneUnitRoute
 {
     struct
     {
-        int8 waypointIndex;
-        byte activeMapX;
-        byte activeMapY;
-        byte waypointMapX[SCENE_ROUTE_WAYPOINT_COUNT];
-        byte waypointMapY[SCENE_ROUTE_WAYPOINT_COUNT];
+        int8_t waypointIndex;
+        uint8_t activeMapX;
+        uint8_t activeMapY;
+        uint8_t waypointMapX[SCENE_ROUTE_WAYPOINT_COUNT];
+        uint8_t waypointMapY[SCENE_ROUTE_WAYPOINT_COUNT];
     };
-    byte raw[0x0B];
+    uint8_t raw[0x0B];
 } SceneUnitRoute;
 REVENGE_ANONYMOUS_STRUCTS_END
 #pragma pack(pop)
@@ -145,11 +145,11 @@ static_assert(sizeof(SceneUnitRoute) == 0x0B,
 
 extern SceneFileBuffer LoadedSceneFile;
 extern SceneUnitRoute SceneUnitRoutes[SCENE_ROUTE_COUNT];
-extern word16 SceneInstructionBaseOffset;
+extern uint16_t SceneInstructionBaseOffset;
 /* DS:A9D9, the next instruction's byte in LoadedSceneFile. The original's
  * far pointer names the same byte through the buffer's own segment at a
  * battle's start and through DS after a jump; either way it is that byte. */
-extern byte *SceneInstructionCursor;
+extern uint8_t *SceneInstructionCursor;
 /* DS:1554 is cached-file descriptor 42h's name pointer, not a second
  * object. */
 #define ScenarioResourcePathPointer (CachedFileDescriptors[0x42].fileName)

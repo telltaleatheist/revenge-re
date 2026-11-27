@@ -15,18 +15,18 @@ enum
 #pragma pack(push, 1)
 typedef struct RevengePilotRosterRecord
 {
-    int8 identityId;          /* +00 */
-    int8 experienceIndex;     /* +01 */
-    int8 gunneryIndex;        /* +02 */
-    byte availability;        /* +03 */
+    int8_t identityId;          /* +00 */
+    int8_t experienceIndex;     /* +01 */
+    int8_t gunneryIndex;        /* +02 */
+    uint8_t availability;        /* +03 */
 } RevengePilotRosterRecord;
 
 typedef struct RevengeUnitLanceAssignment
 {
-    uint16 left;              /* +00 */
-    uint16 top;               /* +02 */
-    uint16 width;             /* +04 */
-    byte style;               /* +06 */
+    uint16_t left;              /* +00 */
+    uint16_t top;               /* +02 */
+    uint16_t width;             /* +04 */
+    uint8_t style;               /* +06 */
     RevengeUnitSlot persistentUnitSlot;  /* +07 */
     RevengeUnitSlot liveUnitSlot;        /* +08 */
     RevengePilotId pilotId;              /* +09 */
@@ -36,10 +36,10 @@ typedef struct RevengeUnitLanceAssignment
  * out: its sprite is the original's far pointer. */
 typedef struct RevengeSavedSelectionCard
 {
-    word16 left;
-    word16 top;
-    word16 width;
-    byte state;
+    uint16_t left;
+    uint16_t top;
+    uint16_t width;
+    uint8_t state;
     RevengeUnitSlot persistentUnitSlot;
     RevengeAssignmentSlot assignmentSlot;
     RevengePilotId selectionId;
@@ -54,15 +54,15 @@ typedef struct RevengeSavedSelectionCard
  * back as it was (UnitSelectionCard_Store). */
 typedef struct UnitSelectionCard
 {
-    word16 left;
-    word16 top;
-    word16 width;
-    byte state;
+    uint16_t left;
+    uint16_t top;
+    uint16_t width;
+    uint8_t state;
     RevengeUnitSlot persistentUnitSlot;
     RevengeAssignmentSlot assignmentSlot;
     RevengePilotId selectionId;
     RevengePilotId alternateId;
-    const byte *spriteBuffer;
+    const uint8_t *spriteBuffer;
     DosAddress loadedSpriteBuffer;
 } UnitSelectionCard;
 

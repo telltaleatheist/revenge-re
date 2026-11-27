@@ -9,11 +9,11 @@
  * area.  These accessors preserve the executable's little-endian near
  * offsets without putting segmented-pointer operations in Original code.
  */
-byte *MIDIDataByte(word16 dataSegmentOffset);
-word16 ReadMIDIDataWord(word16 dataSegmentOffset);
-void WriteMIDIDataWord(word16 dataSegmentOffset, word16 value);
-void ClearMIDIData(word16 dataSegmentOffset, word16 byteCount);
-MIDIChannelState *MIDIChannelStateAt(word16 dataSegmentOffset);
-MIDIVoiceRecord *MIDIVoiceRecordAt(word16 dataSegmentOffset);
+uint8_t *MIDIDataByte(uint16_t dataSegmentOffset);
+uint16_t ReadMIDIDataWord(uint16_t dataSegmentOffset);
+void WriteMIDIDataWord(uint16_t dataSegmentOffset, uint16_t value);
+void ClearMIDIData(uint16_t dataSegmentOffset, uint16_t byteCount);
+MIDIChannelState *MIDIChannelStateAt(uint16_t dataSegmentOffset);
+MIDIVoiceRecord *MIDIVoiceRecordAt(uint16_t dataSegmentOffset);
 
 #endif

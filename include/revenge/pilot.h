@@ -6,15 +6,15 @@
 #include "revenge/roster.h"
 
 const RevengePilotRosterRecord *GetPilotRosterRecord(
-    uint16 rosterSlot);
+    uint16_t rosterSlot);
 void InitializePilotRosterMetadata(
-    byte pilotRoster[REVENGE_PILOT_ROSTER_COUNT][0x04]);
+    uint8_t pilotRoster[REVENGE_PILOT_ROSTER_COUNT][0x04]);
 void AssignPilotRosterEntryToUnit(
-    byte unitRecord[UNIT_RECORD_SIZE],
-    uint16 rosterSlot);
-const char *GetPilotName(uint16 identityId);
-const char *GetPilotGivenName(uint16 identityId);
-const char *GetPilotExperienceName(uint16 experienceIndex);
-const char *GetPilotGunneryName(uint16 gunneryIndex);
+    uint8_t unitRecord[UNIT_RECORD_SIZE],
+    uint16_t rosterSlot);
+const char *GetPilotName(uint16_t identityId);
+const char *GetPilotGivenName(uint16_t identityId);
+const char *GetPilotExperienceName(uint16_t experienceIndex);
+const char *GetPilotGunneryName(uint16_t gunneryIndex);
 
 #endif

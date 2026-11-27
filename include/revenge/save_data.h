@@ -31,50 +31,50 @@ enum
 #pragma pack(push, 1)
 typedef struct RevengeSaveSlotDescriptor
 {
-    byte occupied;
+    uint8_t occupied;
     char name[REVENGE_SAVE_DESCRIPTOR_NAME_SIZE];
 } RevengeSaveSlotDescriptor;
 
 typedef struct RevengeCampaignSnapshot
 {
-    word16 campaignStageIndex;
-    word16 scenarioVariantIndex;
-    byte campaignPhase;
-    byte trainingSequenceFlag;
-    word16 campaignFlags;
-    word16 state24E1;
-    word16 stateA967;
-    word16 scene3RosterSelector9991;
-    word16 state88F1;
-    word16 state8925;
-    word16 state99C5;
-    word16 stateA965;
-    word16 state8594;
-    word16 lrmShipmentLoaded;
-    word16 srmShipmentLoaded;
-    byte scenarioClock[0x03];
-    byte trainingScenarioCompletionFlags[0x06];
-    byte scenarioUnitMapX[REVENGE_SAVE_UNIT_COUNT];
-    byte scenarioUnitMapY[REVENGE_SAVE_UNIT_COUNT];
-    byte state1B85[0x07];
-    byte state1B8E;
-    byte state1BAD[0x0F];
+    uint16_t campaignStageIndex;
+    uint16_t scenarioVariantIndex;
+    uint8_t campaignPhase;
+    uint8_t trainingSequenceFlag;
+    uint16_t campaignFlags;
+    uint16_t state24E1;
+    uint16_t stateA967;
+    uint16_t scene3RosterSelector9991;
+    uint16_t state88F1;
+    uint16_t state8925;
+    uint16_t state99C5;
+    uint16_t stateA965;
+    uint16_t state8594;
+    uint16_t lrmShipmentLoaded;
+    uint16_t srmShipmentLoaded;
+    uint8_t scenarioClock[0x03];
+    uint8_t trainingScenarioCompletionFlags[0x06];
+    uint8_t scenarioUnitMapX[REVENGE_SAVE_UNIT_COUNT];
+    uint8_t scenarioUnitMapY[REVENGE_SAVE_UNIT_COUNT];
+    uint8_t state1B85[0x07];
+    uint8_t state1B8E;
+    uint8_t state1BAD[0x0F];
     RevengeSavedSelectionCard scenarioRecords[REVENGE_SAVE_SCENARIO_RECORD_COUNT];
     RevengeUnitLanceAssignment
         lanceAssignments[REVENGE_SAVE_LANCE_ASSIGNMENT_COUNT];
-    byte pilotAvailability[REVENGE_SAVE_PILOT_COUNT];
+    uint8_t pilotAvailability[REVENGE_SAVE_PILOT_COUNT];
 } RevengeCampaignSnapshot;
 
 typedef struct RevengeSaveSlot
 {
     RevengeSaveSlotDescriptor descriptor;
     RevengeCampaignSnapshot campaign;
-    byte liveUnits[REVENGE_SAVE_UNIT_COUNT][UNIT_RECORD_SIZE];
+    uint8_t liveUnits[REVENGE_SAVE_UNIT_COUNT][UNIT_RECORD_SIZE];
 } RevengeSaveSlot;
 
 typedef struct RevengeSaveGame
 {
-    byte directoryPrefix[REVENGE_SAVE_DIRECTORY_PREFIX_SIZE];
+    uint8_t directoryPrefix[REVENGE_SAVE_DIRECTORY_PREFIX_SIZE];
     RevengeSaveSlot slots[REVENGE_SAVE_SLOT_COUNT];
 } RevengeSaveGame;
 #pragma pack(pop)

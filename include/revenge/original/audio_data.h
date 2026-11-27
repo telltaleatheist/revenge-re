@@ -11,32 +11,32 @@
  */
 typedef struct RevengeMusicTimerState
 {
-    byte ReservedTimerPrefix[0x02];
-    word16 GameDataSegment;
-    byte MusicDriverMode;
-    byte SpeakerEffectServiceActive;
-    byte ReservedTimerControl;
-    byte ChainSystemTimerThisTick;
-    word16 SystemTickReload;
-    word16 SystemTickCountdown;
-    word16 MusicServiceCountdown;
-    word16 MusicServiceReload;
-    word16 MusicServiceBusy;
-    const byte *ActiveSpeakerEffectStream;   /* 426B:0012 */
-    word16 SpeakerEffectStreamCursor;        /* 426B:0016 */
-    const byte *PendingSpeakerEffectStream;  /* 426B:0018 */
-    word16 ReservedTimerStreamWord;
-    word16 SpeakerEffectTicksRemaining;
-    word16 MusicFrequencyDivisorTable[0x60]; /* 426B:0020 */
-    byte SpeakerEffectPlaybackActive;
-    byte SpeakerEffectStartRequested;
-    byte SpeakerEffectStopRequested;
-    byte SpeakerEffectFetchNextEvent;
-    byte SpeakerEffectDurationScale;
-    byte SpeakerEffectLoop1Remaining;
-    byte SpeakerEffectLoop2Remaining;
-    word16 MusicElapsedSubtick;              /* 426B:00E7 */
-    byte MusicElapsedUnit;
+    uint8_t ReservedTimerPrefix[0x02];
+    uint16_t GameDataSegment;
+    uint8_t MusicDriverMode;
+    uint8_t SpeakerEffectServiceActive;
+    uint8_t ReservedTimerControl;
+    uint8_t ChainSystemTimerThisTick;
+    uint16_t SystemTickReload;
+    uint16_t SystemTickCountdown;
+    uint16_t MusicServiceCountdown;
+    uint16_t MusicServiceReload;
+    uint16_t MusicServiceBusy;
+    const uint8_t *ActiveSpeakerEffectStream;   /* 426B:0012 */
+    uint16_t SpeakerEffectStreamCursor;        /* 426B:0016 */
+    const uint8_t *PendingSpeakerEffectStream;  /* 426B:0018 */
+    uint16_t ReservedTimerStreamWord;
+    uint16_t SpeakerEffectTicksRemaining;
+    uint16_t MusicFrequencyDivisorTable[0x60]; /* 426B:0020 */
+    uint8_t SpeakerEffectPlaybackActive;
+    uint8_t SpeakerEffectStartRequested;
+    uint8_t SpeakerEffectStopRequested;
+    uint8_t SpeakerEffectFetchNextEvent;
+    uint8_t SpeakerEffectDurationScale;
+    uint8_t SpeakerEffectLoop1Remaining;
+    uint8_t SpeakerEffectLoop2Remaining;
+    uint16_t MusicElapsedSubtick;              /* 426B:00E7 */
+    uint8_t MusicElapsedUnit;
 } RevengeMusicTimerState;
 
 extern RevengeMusicTimerState MusicTimer;
@@ -48,30 +48,30 @@ enum
     PC_SPEAKER_EFFECT_COUNT = 0x10
 };
 
-extern byte PCSpeakerEffectStreamData[PC_SPEAKER_EFFECT_STREAM_BYTE_COUNT];
+extern uint8_t PCSpeakerEffectStreamData[PC_SPEAKER_EFFECT_STREAM_BYTE_COUNT];
 /* DS:58DB, each effect's stream: the original's far pointers into DS:5642. */
-extern const byte *const PCSpeakerEffectStreamPointerTable[PC_SPEAKER_EFFECT_COUNT];
+extern const uint8_t *const PCSpeakerEffectStreamPointerTable[PC_SPEAKER_EFFECT_COUNT];
 
 /* Offset and segment words at DS:B60A/B60C. */
-extern byte *MusicStagingBuffer;
+extern uint8_t *MusicStagingBuffer;
 
 /* The standard-MIDI sequence state at DS:624A-6265. */
 typedef struct MIDISequenceState
 {
-    word16 MIDIBeatsPerMinute;
-    word16 MIDITimerCallsPerMinute;
-    word16 MIDITicksPerMinute;
-    word16 MIDITickRateRemainder;
-    word16 MIDITicksPerBeat;
-    word16 MIDIBeatsPerMeasure;
-    const byte *MIDIStreamCursor;  /* DS:6256 */
-    word16 MIDIPlaybackFlags;      /* DS:625A */
-    word16 MIDITicksUntilNextEvent;
-    word16 MIDIBeatTickRemainder;
-    word16 MIDIMeasureBeatRemainder;
-    word16 MIDIMeasureCount;
-    byte MIDIPlaybackStateBusy;
-    byte MIDIRunningStatus;
+    uint16_t MIDIBeatsPerMinute;
+    uint16_t MIDITimerCallsPerMinute;
+    uint16_t MIDITicksPerMinute;
+    uint16_t MIDITickRateRemainder;
+    uint16_t MIDITicksPerBeat;
+    uint16_t MIDIBeatsPerMeasure;
+    const uint8_t *MIDIStreamCursor;  /* DS:6256 */
+    uint16_t MIDIPlaybackFlags;      /* DS:625A */
+    uint16_t MIDITicksUntilNextEvent;
+    uint16_t MIDIBeatTickRemainder;
+    uint16_t MIDIMeasureBeatRemainder;
+    uint16_t MIDIMeasureCount;
+    uint8_t MIDIPlaybackStateBusy;
+    uint8_t MIDIRunningStatus;
 } MIDISequenceState;
 
 extern MIDISequenceState MIDISequence;
@@ -80,11 +80,11 @@ extern MIDISequenceState MIDISequence;
 #pragma pack(push, 1)
 typedef struct MIDIParserState
 {
-    word16 DispatchOffset;
-    word16 CurrentStatus;
-    word16 FirstDataByte;
-    word16 ControllerValue;
-    word16 ActiveDriverOffset;
+    uint16_t DispatchOffset;
+    uint16_t CurrentStatus;
+    uint16_t FirstDataByte;
+    uint16_t ControllerValue;
+    uint16_t ActiveDriverOffset;
 } MIDIParserState;
 #pragma pack(pop)
 
@@ -96,18 +96,18 @@ static_assert(offsetof(MIDIParserState, ActiveDriverOffset) == 0x08,
 extern MIDIParserState MIDIParser;
 
 /* Exact logical-to-physical channel map at DS:6728-6737. */
-extern byte MIDIChannelMap[0x10];
+extern uint8_t MIDIChannelMap[0x10];
 
 /* Exact system-exclusive command parser state at DS:6738-675F. */
 #pragma pack(push, 1)
 typedef struct MIDISystemExclusiveState
 {
-    byte CommandBuffer[0x20];
-    word16 HandlerOffset;
-    word16 CommandOffset;
-    byte CommandByteCount;
-    byte RemainingByteCount;
-    word16 WriteCursorOffset;
+    uint8_t CommandBuffer[0x20];
+    uint16_t HandlerOffset;
+    uint16_t CommandOffset;
+    uint8_t CommandByteCount;
+    uint8_t RemainingByteCount;
+    uint16_t WriteCursorOffset;
 } MIDISystemExclusiveState;
 #pragma pack(pop)
 
@@ -125,13 +125,13 @@ extern MIDISystemExclusiveState MIDISystemExclusive;
 #pragma pack(push, 1)
 typedef struct MIDIChannelState
 {
-    byte VoiceClass;
-    byte AllocationPriority;
-    byte ReservedVoiceCount;
-    byte Program;
-    byte NoteTransposeAndFlags;
-    byte AvailableVoiceCount;
-    word16 InstrumentOffset;
+    uint8_t VoiceClass;
+    uint8_t AllocationPriority;
+    uint8_t ReservedVoiceCount;
+    uint8_t Program;
+    uint8_t NoteTransposeAndFlags;
+    uint8_t AvailableVoiceCount;
+    uint16_t InstrumentOffset;
 } MIDIChannelState;
 #pragma pack(pop)
 
@@ -144,35 +144,35 @@ static_assert(offsetof(MIDIChannelState, InstrumentOffset) == 0x06,
 #pragma pack(push, 1)
 typedef struct MIDIVoiceRecord
 {
-    word16 NextOffset;
-    word16 PreviousOffset;
-    byte VoiceClass;
-    byte AllocationPriority;
-    word16 ChannelStateOffset;
-    byte SourceNote;
-    byte PlaybackNote;
+    uint16_t NextOffset;
+    uint16_t PreviousOffset;
+    uint8_t VoiceClass;
+    uint8_t AllocationPriority;
+    uint16_t ChannelStateOffset;
+    uint8_t SourceNote;
+    uint8_t PlaybackNote;
     union
     {
-        byte Raw[0x16];
+        uint8_t Raw[0x16];
         struct
         {
-            word16 PITDivisor;
-            byte SpeakerDriverStatePadding[0x14];
+            uint16_t PITDivisor;
+            uint8_t SpeakerDriverStatePadding[0x14];
         } Speaker;
         struct
         {
-            word16 FrequencyLatch;
-            byte AttenuationLatch;
-            byte VoiceMask;
-            byte LegacyPSGDriverStatePadding[0x12];
+            uint16_t FrequencyLatch;
+            uint8_t AttenuationLatch;
+            uint8_t VoiceMask;
+            uint8_t LegacyPSGDriverStatePadding[0x12];
         } LegacyPSG;
         struct
         {
-            byte Channel;
-            byte OperatorRegister;
-            word16 LoadedPatchOffset;
-            word16 Frequency;
-            byte AdLibDriverStatePadding[0x10];
+            uint8_t Channel;
+            uint8_t OperatorRegister;
+            uint16_t LoadedPatchOffset;
+            uint16_t Frequency;
+            uint8_t AdLibDriverStatePadding[0x10];
         } AdLib;
     } Driver;
 } MIDIVoiceRecord;
@@ -191,10 +191,10 @@ static_assert(offsetof(MIDIVoiceRecord, Driver) == 0x0A,
 #pragma pack(push, 1)
 typedef struct SpeakerMIDIRuntimeState
 {
-    word16 ActivePITDivisor;
-    word16 ServiceVoiceOffset;
-    byte ServiceVoiceCountdown;
-    byte ReservedSchedulerByte;
+    uint16_t ActivePITDivisor;
+    uint16_t ServiceVoiceOffset;
+    uint8_t ServiceVoiceCountdown;
+    uint8_t ReservedSchedulerByte;
 } SpeakerMIDIRuntimeState;
 #pragma pack(pop)
 
@@ -202,29 +202,29 @@ static_assert(sizeof(SpeakerMIDIRuntimeState) == 0x06,
     "The speaker MIDI scheduler state occupies exactly 6 bytes.");
 
 extern SpeakerMIDIRuntimeState SpeakerMIDIRuntime;
-extern const word16 SpeakerMIDIFrequencyDivisors[0x72];
+extern const uint16_t SpeakerMIDIFrequencyDivisors[0x72];
 
 #pragma pack(push, 1)
 typedef struct PackedAdLibInstrument
 {
-    byte Data[0x0B];
+    uint8_t Data[0x0B];
 } PackedAdLibInstrument;
 
 typedef struct AdLibOperatorPatch
 {
-    byte Characteristics;
-    byte ScaleAndOutputLevel;
-    byte SustainAndRelease;
-    byte AttackAndDecay;
-    byte WaveformSelect;
+    uint8_t Characteristics;
+    uint8_t ScaleAndOutputLevel;
+    uint8_t SustainAndRelease;
+    uint8_t AttackAndDecay;
+    uint8_t WaveformSelect;
 } AdLibOperatorPatch;
 
 typedef struct AdLibInstrumentPatch
 {
     AdLibOperatorPatch Modulator;
-    byte FeedbackAndConnection;
+    uint8_t FeedbackAndConnection;
     AdLibOperatorPatch Carrier;
-    byte ReservedInstrumentByte;
+    uint8_t ReservedInstrumentByte;
 } AdLibInstrumentPatch;
 #pragma pack(pop)
 
@@ -243,10 +243,10 @@ extern AdLibInstrumentPatch MIDIInstrumentPatches[0x20];
 #pragma pack(push, 1)
 typedef struct RolandMPU401State
 {
-    byte TransmitQueue[0x0100];
-    word16 WriteIndex;
-    word16 ReadIndex;
-    word16 ByteCount;
+    uint8_t TransmitQueue[0x0100];
+    uint16_t WriteIndex;
+    uint16_t ReadIndex;
+    uint16_t ByteCount;
 } RolandMPU401State;
 #pragma pack(pop)
 
@@ -259,20 +259,20 @@ extern RolandMPU401State RolandMPU401;
 #pragma pack(push, 1)
 typedef struct MIDIDriverDescriptorData
 {
-    byte Flags[0x03];
-    byte AvailableVoiceCount;
-    word16 ProbeOffset;
-    word16 ActivateOffset;
-    word16 DeactivateOffset;
-    word16 FilterByteOffset;
-    word16 StartVoiceOffset;
-    word16 ReleaseVoiceOffset;
-    word16 ResetOffset;
-    word16 LoadInstrumentOffset;
-    word16 ServiceOffset;
-    word16 ActivationArgument;
-    word16 VoiceRecordsOffset;
-    byte ActiveVoiceCount;
+    uint8_t Flags[0x03];
+    uint8_t AvailableVoiceCount;
+    uint16_t ProbeOffset;
+    uint16_t ActivateOffset;
+    uint16_t DeactivateOffset;
+    uint16_t FilterByteOffset;
+    uint16_t StartVoiceOffset;
+    uint16_t ReleaseVoiceOffset;
+    uint16_t ResetOffset;
+    uint16_t LoadInstrumentOffset;
+    uint16_t ServiceOffset;
+    uint16_t ActivationArgument;
+    uint16_t VoiceRecordsOffset;
+    uint8_t ActiveVoiceCount;
 } MIDIDriverDescriptorData;
 #pragma pack(pop)
 

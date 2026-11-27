@@ -46,10 +46,10 @@ typedef int32_t int32;
  * that signed interpretation in their C types so callers do not have to
  * reproduce the DOS compiler's CBW instruction at every use.
  */
-typedef int8 RevengePilotId;
-typedef int8 RevengeUnitTypeId;
-typedef int8 RevengeUnitSlot;
-typedef int8 RevengeAssignmentSlot;
+typedef int8_t RevengePilotId;
+typedef int8_t RevengeUnitTypeId;
+typedef int8_t RevengeUnitSlot;
+typedef int8_t RevengeAssignmentSlot;
 
 enum
 {
@@ -68,26 +68,26 @@ enum
  */
 typedef struct DosAddress
 {
-    word16 offset;
-    word16 segment;
+    uint16_t offset;
+    uint16_t segment;
 } DosAddress;
 #pragma pack(pop)
 
 static_assert(sizeof(DosAddress) == 0x04,
     "A DOS offset:segment address occupies four bytes.");
 
-static inline DosAddress DosAddress_FromValue(uint32 value)
+static inline DosAddress DosAddress_FromValue(uint32_t value)
 {
     DosAddress pointer;
 
-    pointer.offset = (word16) value;
-    pointer.segment = (word16) (value >> 0x10);
+    pointer.offset = (uint16_t) value;
+    pointer.segment = (uint16_t) (value >> 0x10);
     return pointer;
 }
 
-static inline uint32 DosAddress_ToValue(DosAddress pointer)
+static inline uint32_t DosAddress_ToValue(DosAddress pointer)
 {
-    return ((uint32) pointer.segment << 0x10) | pointer.offset;
+    return ((uint32_t) pointer.segment << 0x10) | pointer.offset;
 }
 
 static inline int DosAddress_IsNull(DosAddress pointer)

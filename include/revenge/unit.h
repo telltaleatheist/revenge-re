@@ -83,25 +83,25 @@ typedef enum RevengeUnitDamageModel
 
 typedef struct RevengeBattleMechDurabilityView
 {
-    byte headInternal;
-    byte leftArmInternal;
-    byte leftTorsoInternal;
-    byte centerTorsoInternal;
-    byte rightTorsoInternal;
-    byte rightArmInternal;
-    byte leftLegInternal;
-    byte rightLegInternal;
-    byte headArmor;
-    byte leftArmArmor;
-    byte leftTorsoArmor;
-    byte centerTorsoArmor;
-    byte rightTorsoArmor;
-    byte rightArmArmor;
-    byte leftLegArmor;
-    byte rightLegArmor;
-    byte leftRearTorsoArmor;
-    byte centerRearTorsoArmor;
-    byte rightRearTorsoArmor;
+    uint8_t headInternal;
+    uint8_t leftArmInternal;
+    uint8_t leftTorsoInternal;
+    uint8_t centerTorsoInternal;
+    uint8_t rightTorsoInternal;
+    uint8_t rightArmInternal;
+    uint8_t leftLegInternal;
+    uint8_t rightLegInternal;
+    uint8_t headArmor;
+    uint8_t leftArmArmor;
+    uint8_t leftTorsoArmor;
+    uint8_t centerTorsoArmor;
+    uint8_t rightTorsoArmor;
+    uint8_t rightArmArmor;
+    uint8_t leftLegArmor;
+    uint8_t rightLegArmor;
+    uint8_t leftRearTorsoArmor;
+    uint8_t centerRearTorsoArmor;
+    uint8_t rightRearTorsoArmor;
 } RevengeBattleMechDurabilityView;
 
 /*
@@ -111,8 +111,8 @@ typedef struct RevengeBattleMechDurabilityView
  */
 typedef struct RevengeVehicleDurabilityView
 {
-    byte internalSlot[0x08];
-    byte armorSlot[0x0B];
+    uint8_t internalSlot[0x08];
+    uint8_t armorSlot[0x0B];
 } RevengeVehicleDurabilityView;
 
 enum
@@ -187,18 +187,18 @@ typedef union RevengeUnitRecord
 {
     struct
     {
-        byte deploymentState;             /* +00 */
+        uint8_t deploymentState;             /* +00 */
         RevengeUnitTypeId unitTypeId;     /* +01 */
-        byte walkMovement;                /* +02 */
-        byte jumpMovement;                /* +03 */
+        uint8_t walkMovement;                /* +02 */
+        uint8_t jumpMovement;                /* +03 */
         union
         {
             struct
             {
-                byte currentInternal[0x08]; /* +04 */
-                byte currentArmor[0x0B];    /* +0C */
+                uint8_t currentInternal[0x08]; /* +04 */
+                uint8_t currentArmor[0x0B];    /* +0C */
             };
-            byte currentDurability[0x13];   /* +04 */
+            uint8_t currentDurability[0x13];   /* +04 */
             RevengeBattleMechDurabilityView currentBattleMech;
             RevengeVehicleDurabilityView currentVehicle;
         };
@@ -206,10 +206,10 @@ typedef union RevengeUnitRecord
         {
             struct
             {
-                byte maximumInternal[0x08]; /* +17 */
-                byte maximumArmor[0x0B];    /* +1F */
+                uint8_t maximumInternal[0x08]; /* +17 */
+                uint8_t maximumArmor[0x0B];    /* +1F */
             };
-            byte maximumDurability[0x13];   /* +17 */
+            uint8_t maximumDurability[0x13];   /* +17 */
             RevengeBattleMechDurabilityView maximumBattleMech;
             RevengeVehicleDurabilityView maximumVehicle;
         };
@@ -217,94 +217,94 @@ typedef union RevengeUnitRecord
         {
             struct
             {
-                byte autocannon2Count;      /* +2A */
-                byte autocannon5Count;      /* +2B */
-                byte autocannon10Count;     /* +2C */
-                byte lb10xAutocannonCount;  /* +2D */
-                byte gaussRifleCount;       /* +2E */
-                byte autocannon20Count;     /* +2F */
-                byte machineGunCount;       /* +30 */
-                byte lrm5Count;             /* +31 */
-                byte lrm10Count;            /* +32 */
-                byte lrm15Count;            /* +33 */
-                byte lrm20Count;            /* +34 */
-                byte srm2Count;             /* +35 */
-                byte srm4Count;             /* +36 */
-                byte srm6Count;             /* +37 */
+                uint8_t autocannon2Count;      /* +2A */
+                uint8_t autocannon5Count;      /* +2B */
+                uint8_t autocannon10Count;     /* +2C */
+                uint8_t lb10xAutocannonCount;  /* +2D */
+                uint8_t gaussRifleCount;       /* +2E */
+                uint8_t autocannon20Count;     /* +2F */
+                uint8_t machineGunCount;       /* +30 */
+                uint8_t lrm5Count;             /* +31 */
+                uint8_t lrm10Count;            /* +32 */
+                uint8_t lrm15Count;            /* +33 */
+                uint8_t lrm20Count;            /* +34 */
+                uint8_t srm2Count;             /* +35 */
+                uint8_t srm4Count;             /* +36 */
+                uint8_t srm6Count;             /* +37 */
             };
-            byte weaponFamilyCounts[0x0E]; /* +2A */
+            uint8_t weaponFamilyCounts[0x0E]; /* +2A */
         };
         union
         {
             struct
             {
-                word16 autocannon2Ammunition;      /* +38 */
-                word16 autocannon5Ammunition;      /* +3A */
-                word16 autocannon10Ammunition;     /* +3C */
-                word16 lb10xAutocannonAmmunition;  /* +3E */
-                word16 gaussRifleAmmunition;       /* +40 */
-                word16 autocannon20Ammunition;     /* +42 */
-                word16 machineGunAmmunition;       /* +44 */
-                word16 lrm5Ammunition;             /* +46 */
-                word16 lrm10Ammunition;            /* +48 */
-                word16 lrm15Ammunition;            /* +4A */
-                word16 lrm20Ammunition;            /* +4C */
-                word16 srm2Ammunition;             /* +4E */
-                word16 srm4Ammunition;             /* +50 */
-                word16 srm6Ammunition;             /* +52 */
+                uint16_t autocannon2Ammunition;      /* +38 */
+                uint16_t autocannon5Ammunition;      /* +3A */
+                uint16_t autocannon10Ammunition;     /* +3C */
+                uint16_t lb10xAutocannonAmmunition;  /* +3E */
+                uint16_t gaussRifleAmmunition;       /* +40 */
+                uint16_t autocannon20Ammunition;     /* +42 */
+                uint16_t machineGunAmmunition;       /* +44 */
+                uint16_t lrm5Ammunition;             /* +46 */
+                uint16_t lrm10Ammunition;            /* +48 */
+                uint16_t lrm15Ammunition;            /* +4A */
+                uint16_t lrm20Ammunition;            /* +4C */
+                uint16_t srm2Ammunition;             /* +4E */
+                uint16_t srm4Ammunition;             /* +50 */
+                uint16_t srm6Ammunition;             /* +52 */
             };
-            word16 currentAmmunition[0x0E]; /* +38 */
+            uint16_t currentAmmunition[0x0E]; /* +38 */
         };
-        byte engineHeatSinkCapacity;       /* +54 */
+        uint8_t engineHeatSinkCapacity;       /* +54 */
         union
         {
             struct
             {
-                byte headEquipment;                /* +55 */
-                byte leftArmEquipment[0x08];       /* +56 */
-                byte leftTorsoEquipment[0x0C];     /* +5E */
-                byte centerTorsoEquipment[0x02];   /* +6A */
-                byte rightTorsoEquipment[0x0C];    /* +6C */
-                byte rightArmEquipment[0x08];      /* +78 */
-                byte leftLegEquipment[0x02];       /* +80 */
-                byte rightLegEquipment[0x02];      /* +82 */
+                uint8_t headEquipment;                /* +55 */
+                uint8_t leftArmEquipment[0x08];       /* +56 */
+                uint8_t leftTorsoEquipment[0x0C];     /* +5E */
+                uint8_t centerTorsoEquipment[0x02];   /* +6A */
+                uint8_t rightTorsoEquipment[0x0C];    /* +6C */
+                uint8_t rightArmEquipment[0x08];      /* +78 */
+                uint8_t leftLegEquipment[0x02];       /* +80 */
+                uint8_t rightLegEquipment[0x02];      /* +82 */
             };
-            byte equipmentSlots[0x2F];             /* +55 */
+            uint8_t equipmentSlots[0x2F];             /* +55 */
         };
-        byte tonnage;                      /* +84 */
-        byte engineHits;                   /* +85 */
+        uint8_t tonnage;                      /* +84 */
+        uint8_t engineHits;                   /* +85 */
         union
         {
             struct
             {
-                byte heatAccumulator;      /* +86 */
-                byte currentHeat;          /* +87 */
+                uint8_t heatAccumulator;      /* +86 */
+                uint8_t currentHeat;          /* +87 */
             };
-            word16 heatAccumulatorQ8_8;    /* +86 */
+            uint16_t heatAccumulatorQ8_8;    /* +86 */
         };
         union
         {
             struct
             {
-                byte tacticalSpriteBaseLow; /* +88 */
-                byte sensorHits;            /* +89 */
+                uint8_t tacticalSpriteBaseLow; /* +88 */
+                uint8_t sensorHits;            /* +89 */
             };
-            word16 tacticalSpriteBase;      /* +88 */
+            uint16_t tacticalSpriteBase;      /* +88 */
         };
-        byte gunneryTargetNumber;          /* +8A */
-        byte targetMovementModifier;       /* +8B */
-        byte missileUpgradeState;          /* +8C */
-        byte beagleActiveProbe;            /* +8D */
-        byte indirectFireSpotter;          /* +8E */
-        byte unknown8F;                    /* +8F */
-        byte doubleHeatSinks;              /* +90 */
-        byte caseProtection;               /* +91 */
+        uint8_t gunneryTargetNumber;          /* +8A */
+        uint8_t targetMovementModifier;       /* +8B */
+        uint8_t missileUpgradeState;          /* +8C */
+        uint8_t beagleActiveProbe;            /* +8D */
+        uint8_t indirectFireSpotter;          /* +8E */
+        uint8_t unknown8F;                    /* +8F */
+        uint8_t doubleHeatSinks;              /* +90 */
+        uint8_t caseProtection;               /* +91 */
         RevengePilotId pilotId;            /* +92 */
-        byte pilotExperience;              /* +93 */
-        byte allegiance;                   /* +94 */
-        byte damageModel;                  /* +95 */
+        uint8_t pilotExperience;              /* +93 */
+        uint8_t allegiance;                   /* +94 */
+        uint8_t damageModel;                  /* +95 */
     };
-    byte raw[UNIT_RECORD_SIZE];
+    uint8_t raw[UNIT_RECORD_SIZE];
 } RevengeUnitRecord;
 REVENGE_ANONYMOUS_STRUCTS_END
 #pragma pack(pop)
@@ -387,12 +387,12 @@ typedef struct RevengeUnitTypeDatabase
     RevengeUnitRecord records[REVENGE_UNIT_TYPE_COUNT];
 } RevengeUnitTypeDatabase;
 
-uint16 LoadUnitTypeDatabase(
+uint16_t LoadUnitTypeDatabase(
     const RevengeGameRuntime *game,
     RevengeUnitTypeDatabase *database);
-uint16 LoadUnitTemplateFromDatabase(
+uint16_t LoadUnitTemplateFromDatabase(
     const RevengeUnitTypeDatabase *database,
-    int16 unitType,
+    int16_t unitType,
     RevengeUnitRecord *destination);
 
 #endif

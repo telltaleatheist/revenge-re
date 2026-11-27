@@ -32,21 +32,21 @@ typedef enum GameFileOrigin
     GAME_FILE_FROM_END
 } GameFileOrigin;
 
-int16 GameFile_Open(const char *name, GameFileAccess access);
-int16 GameFile_Close(int16 handle);
+int16_t GameFile_Open(const char *name, GameFileAccess access);
+int16_t GameFile_Close(int16_t handle);
 
 /* The bytes moved, as the 16-bit count DOS returned in AX: a count of 8000h
  * or more reads as negative, and callers treat only -1 as a failure.
  * 0 bytes asked for: 0, with nothing read or written. */
-int16 GameFile_Read(int16 handle, void *destination, word16 byteCount);
-int16 GameFile_Write(int16 handle, const void *source, word16 byteCount);
+int16_t GameFile_Read(int16_t handle, void *destination, uint16_t byteCount);
+int16_t GameFile_Write(int16_t handle, const void *source, uint16_t byteCount);
 
 /* The new position. */
-int32 GameFile_Seek(int16 handle, int32 offset, GameFileOrigin origin);
+int32_t GameFile_Seek(int16_t handle, int32_t offset, GameFileOrigin origin);
 /* The file's length, the position left where it was (39C0:0000). */
-int32 GameFile_Length(int16 handle);
+int32_t GameFile_Length(int16_t handle);
 
 /* The save folder's copy; the install's own files are never deleted. */
-int16 GameFile_Delete(const char *name);
+int16_t GameFile_Delete(const char *name);
 
 #endif

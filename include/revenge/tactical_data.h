@@ -17,44 +17,44 @@ enum
 #pragma pack(push, 1)
 typedef struct RevengeTacticalProjectileRecord
 {
-    byte weaponIndex;
+    uint8_t weaponIndex;
     RevengeUnitSlot targetUnitIndex;
-    byte shotHit;
+    uint8_t shotHit;
     RevengeUnitSlot attackerUnitIndex;
-    word16 spriteId;
-    int16 currentMapX;
-    int16 currentMapY;
-    int16 destinationMapX;
-    int16 destinationMapY;
+    uint16_t spriteId;
+    int16_t currentMapX;
+    int16_t currentMapY;
+    int16_t destinationMapX;
+    int16_t destinationMapY;
 } RevengeTacticalProjectileRecord;
 
 typedef struct RevengeTacticalImpactRecord
 {
-    int16 mapX;
-    int16 mapY;
-    word16 spriteId;
-    word16 terminalSpriteId;
+    int16_t mapX;
+    int16_t mapY;
+    uint16_t spriteId;
+    uint16_t terminalSpriteId;
 } RevengeTacticalImpactRecord;
 
 typedef struct RevengeTerrainImpactAnimationRecord
 {
-    int16 mapX;
-    int16 mapY;
-    word16 animationVariant;
+    int16_t mapX;
+    int16_t mapY;
+    uint16_t animationVariant;
 } RevengeTerrainImpactAnimationRecord;
 
 typedef struct RevengeMapEdgeEffectRecord
 {
-    int16 mapX;
-    int16 mapY;
-    word16 spriteId;
-    word16 edgeDirection;
+    int16_t mapX;
+    int16_t mapY;
+    uint16_t spriteId;
+    uint16_t edgeDirection;
 } RevengeMapEdgeEffectRecord;
 
 typedef struct RevengeTerrainDamageQueueEntry
 {
-    word16 packedByteIndex;
-    word16 subcellIndex;
+    uint16_t packedByteIndex;
+    uint16_t subcellIndex;
 } RevengeTerrainDamageQueueEntry;
 #pragma pack(pop)
 

@@ -14,14 +14,14 @@ enum
 #pragma pack(push, 1)
 typedef struct OriginalUiRegionRecord
 {
-    word16 leftColumn; /* +00 */
-    word16 topRow; /* +02 */
-    word16 widthColumns; /* +04 */
-    word16 rowCount; /* +06 */
-    word16 selectedRow; /* +08 */
-    word16 unknown000A;
-    word16 xorColor; /* +0C */
-    word16 unknown000E;
+    uint16_t leftColumn; /* +00 */
+    uint16_t topRow; /* +02 */
+    uint16_t widthColumns; /* +04 */
+    uint16_t rowCount; /* +06 */
+    uint16_t selectedRow; /* +08 */
+    uint16_t unknown000A;
+    uint16_t xorColor; /* +0C */
+    uint16_t unknown000E;
 } OriginalUiRegionRecord;
 #pragma pack(pop)
 

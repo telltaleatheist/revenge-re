@@ -34,113 +34,113 @@ enum
     VERTICAL_RETRACE_WAIT_FOR_START = 0x01
 };
 
-extern word16 VerticalRetraceEdgeMode;
+extern uint16_t VerticalRetraceEdgeMode;
 
-uint16 GetCurrentBIOSVideoMode(void);
-void SetVideoModeForAdapter(uint16 adapterOrRestoreSlot);
-void VGA_LoadPalette(const byte *paletteRgbTriplets);
-void SetVideoAdapterType(uint16 adapterType);
-void WaitForVerticalRetraceEdge(byte waitForRetraceStart);
-void WaitVerticalRetraces(word16 retraceCount);
-byte *Video_GetIndexedFramebuffer(void);
-void Video_ClearIndexedFramebuffer(byte color);
+uint16_t GetCurrentBIOSVideoMode(void);
+void SetVideoModeForAdapter(uint16_t adapterOrRestoreSlot);
+void VGA_LoadPalette(const uint8_t *paletteRgbTriplets);
+void SetVideoAdapterType(uint16_t adapterType);
+void WaitForVerticalRetraceEdge(uint8_t waitForRetraceStart);
+void WaitVerticalRetraces(uint16_t retraceCount);
+uint8_t *Video_GetIndexedFramebuffer(void);
+void Video_ClearIndexedFramebuffer(uint8_t color);
 /* Host termination points for original procedures which address DOS video
  * pages through segment-shaped pointer values. */
-byte *Video_ResolveIndexedRenderTarget(const byte *renderTarget);
-void Video_DrawIndexedPixelToActiveTarget(word16 x, word16 y, byte color);
+uint8_t *Video_ResolveIndexedRenderTarget(const uint8_t *renderTarget);
+void Video_DrawIndexedPixelToActiveTarget(uint16_t x, uint16_t y, uint8_t color);
 /* SDL replacement for the visibility of an immediate write to DOS video
  * memory.  Use only for transient frames which the preserved game draws and
  * then overwrites before the host's ordinary presentation poll. */
 void Video_PresentTransientFrame(void);
-void DrawClippedPixel(int16 x, int16 y, uint16 color);
+void DrawClippedPixel(int16_t x, int16_t y, uint16_t color);
 void DrawClippedAxisAlignedLine(
-    int16 x1,
-    int16 y1,
-    int16 x2,
-    int16 y2,
-    uint16 color);
+    int16_t x1,
+    int16_t y1,
+    int16_t x2,
+    int16_t y2,
+    uint16_t color);
 void DrawClippedRectangleOutline(
-    int16 left,
-    int16 top,
-    int16 right,
-    int16 bottom,
-    uint16 color);
+    int16_t left,
+    int16_t top,
+    int16_t right,
+    int16_t bottom,
+    uint16_t color);
 void FillVideoRectangle(
-    int16 leftX,
-    int16 topY,
-    int16 rightX,
-    int16 bottomY,
-    uint16 color);
+    int16_t leftX,
+    int16_t topY,
+    int16_t rightX,
+    int16_t bottomY,
+    uint16_t color);
 void XorVideoRectangle(
-    int16 leftX,
-    int16 topY,
-    int16 rightX,
-    int16 bottomY,
-    byte color);
+    int16_t leftX,
+    int16_t topY,
+    int16_t rightX,
+    int16_t bottomY,
+    uint8_t color);
 void CopyBufferToVideoRegion(
-    int16 xColumn,
-    uint16 yCharacterRow,
-    uint16 widthColumns,
-    uint16 heightCharacterRows,
-    const byte *source);
+    int16_t xColumn,
+    uint16_t yCharacterRow,
+    uint16_t widthColumns,
+    uint16_t heightCharacterRows,
+    const uint8_t *source);
 void CopyVideoRegionToBuffer(
-    int16 xColumn,
-    uint16 yCharacterRow,
-    uint16 widthColumns,
-    uint16 heightCharacterRows,
-    byte *destination);
+    int16_t xColumn,
+    uint16_t yCharacterRow,
+    uint16_t widthColumns,
+    uint16_t heightCharacterRows,
+    uint8_t *destination);
 void FillVideoTileRectangle(
-    int16 tileX,
-    uint16 tileY,
-    uint16 widthTiles,
-    uint16 heightTiles,
-    byte color);
+    int16_t tileX,
+    uint16_t tileY,
+    uint16_t widthTiles,
+    uint16_t heightTiles,
+    uint8_t color);
 void CopyClippedVideoRegion(
-    int16 sourceXColumn,
-    int16 sourceY,
-    int16 destinationXColumn,
-    int16 destinationY,
-    uint16 widthColumns,
-    uint16 heightPixels,
-    const byte *source,
-    byte *destination);
+    int16_t sourceXColumn,
+    int16_t sourceY,
+    int16_t destinationXColumn,
+    int16_t destinationY,
+    uint16_t widthColumns,
+    uint16_t heightPixels,
+    const uint8_t *source,
+    uint8_t *destination);
 void ClearActiveVideoBuffer(void);
 void DrawVerticalSpan(
-    uint16 x,
-    uint16 yStart,
-    uint16 yEnd,
-    uint16 color);
+    uint16_t x,
+    uint16_t yStart,
+    uint16_t yEnd,
+    uint16_t color);
 void DrawHorizontalVideoRun(
-    int16 x,
-    word16 y,
-    word16 nativeRunLength,
-    word16 color);
+    int16_t x,
+    uint16_t y,
+    uint16_t nativeRunLength,
+    uint16_t color);
 void DrawNonEgaTacticalTile(
-    const byte *spritePage,
-    word16 spriteId,
-    word16 destinationX,
-    word16 destinationY);
+    const uint8_t *spritePage,
+    uint16_t spriteId,
+    uint16_t destinationX,
+    uint16_t destinationY);
 void DrawTacticalTileSprite(
-    const byte *spritePage,
-    word16 spriteId,
-    word16 destinationX,
-    word16 destinationY);
-void PlotPixel(word16 x, word16 y, byte color);
+    const uint8_t *spritePage,
+    uint16_t spriteId,
+    uint16_t destinationX,
+    uint16_t destinationY);
+void PlotPixel(uint16_t x, uint16_t y, uint8_t color);
 void DrawCompositeTacticalTile(
-    word16 foregroundSpriteId,
-    word16 backgroundSpriteId,
-    const byte *spritePage,
-    word16 destinationX,
-    word16 destinationY);
+    uint16_t foregroundSpriteId,
+    uint16_t backgroundSpriteId,
+    const uint8_t *spritePage,
+    uint16_t destinationX,
+    uint16_t destinationY);
 void DrawCgaTandyEncodedSprite(
-    byte *destination,
-    const byte *encodedSprite,
-    int16 x,
-    int16 y);
+    uint8_t *destination,
+    const uint8_t *encodedSprite,
+    int16_t x,
+    int16_t y);
 void DrawVgaRleSprite(
-    byte *destination,
-    const byte *encodedSprite,
-    int16 x,
-    int16 y);
+    uint8_t *destination,
+    const uint8_t *encodedSprite,
+    int16_t x,
+    int16_t y);
 
 #endif

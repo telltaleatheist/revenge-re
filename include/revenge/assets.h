@@ -30,24 +30,24 @@ typedef enum RevengeAssetResult
 
 typedef struct RevengeScreenImage
 {
-    byte pixels[REVENGE_SCREEN_PIXEL_COUNT];
-    byte palette[REVENGE_PALETTE_BYTE_COUNT];
-    uint16 paletteByteCount;
-    byte compressionType;
+    uint8_t pixels[REVENGE_SCREEN_PIXEL_COUNT];
+    uint8_t palette[REVENGE_PALETTE_BYTE_COUNT];
+    uint16_t paletteByteCount;
+    uint8_t compressionType;
 } RevengeScreenImage;
 
 /* Original REVENGE 0800 codec entry points. The compressed block starts at
  * its eight-byte Westwood header, exactly as it did at offset zero of a DOS
  * segment. Callers validate the surrounding file container first. */
-void DecodeRLEBlock(const byte *compressedBlock, byte *destination);
+void DecodeRLEBlock(const uint8_t *compressedBlock, uint8_t *destination);
 void DecodeWestwoodLzw12(
-    const byte *compressedBlock,
-    byte *destination,
-    byte *dictionary);
+    const uint8_t *compressedBlock,
+    uint8_t *destination,
+    uint8_t *dictionary);
 void DecodeWestwoodLzw14(
-    const byte *compressedBlock,
-    byte *destination,
-    byte *dictionary);
+    const uint8_t *compressedBlock,
+    uint8_t *destination,
+    uint8_t *dictionary);
 void DecodeWestwoodPackedResource(
     const void *compressedBlock,
     void *destination);
@@ -55,17 +55,17 @@ void DecodeWestwoodPackedResource(
 /* Host-side container adapters. These replace no game logic; they validate
  * the original file envelope and then call the recovered routines above. */
 RevengeAssetResult DecodeCpsImage(
-    const byte *fileData,
+    const uint8_t *fileData,
     size_t fileByteCount,
     RevengeScreenImage *image);
 RevengeAssetResult DecodeCmpImage(
-    const byte *fileData,
+    const uint8_t *fileData,
     size_t fileByteCount,
     RevengeScreenImage *image);
 RevengeAssetResult DecodeIcnTiles(
-    const byte *fileData,
+    const uint8_t *fileData,
     size_t fileByteCount,
-    byte *tilePixels,
+    uint8_t *tilePixels,
     size_t tilePixelCapacity);
 
 #endif
