@@ -6,4 +6,4 @@
 #include "REVENGE.h"
 #include "revenge/audio.h"
 
-RevengeMusicTimerState Seg426B;
+RevengeMusicTimerState MusicTimer;

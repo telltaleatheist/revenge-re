@@ -93,7 +93,7 @@ const RulePiece RulePieces[] =
 	{ "game_start.tactical_status_blink_countdown", &TacticalStatusBlinkCountdown, sizeof(TacticalStatusBlinkCountdown), 0x3A6A, 0x2F36, 0x2, "58f87d0a96fd20cb" },
 	{ "game_start.displayed_tactical_status_row", &DisplayedTacticalStatusRow, sizeof(DisplayedTacticalStatusRow), 0x3A6A, 0x2F38, 0x2, "ac6c9144ab715413" },
 	{ "save_directory.directory", &SaveDirectory, sizeof(SaveDirectory), 0x3A6A, 0x18CE, 0x88, "f838daf88a97478a" },
-	{ "sound.speaker_note_divisors", &Seg426B.MusicFrequencyDivisorTable, sizeof(Seg426B.MusicFrequencyDivisorTable), 0x426B, 0x0020, 0xC0, "46a4813a841aec0e" },
+	{ "sound.speaker_note_divisors", &MusicTimer.MusicFrequencyDivisorTable, sizeof(MusicTimer.MusicFrequencyDivisorTable), 0x426B, 0x0020, 0xC0, "46a4813a841aec0e" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -179,4 +179,4 @@ static_assert(sizeof(PresentationDismissTimeout) == 0x2, "game_start.presentatio
 static_assert(sizeof(TacticalStatusBlinkCountdown) == 0x2, "game_start.tactical_status_blink_countdown is the original's size");
 static_assert(sizeof(DisplayedTacticalStatusRow) == 0x2, "game_start.displayed_tactical_status_row is the original's size");
 static_assert(sizeof(SaveDirectory) == 0x88, "save_directory.directory is the original's size");
-static_assert(sizeof(Seg426B.MusicFrequencyDivisorTable) == 0xC0, "sound.speaker_note_divisors is the original's size");
+static_assert(sizeof(MusicTimer.MusicFrequencyDivisorTable) == 0xC0, "sound.speaker_note_divisors is the original's size");

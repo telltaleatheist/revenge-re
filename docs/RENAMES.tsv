@@ -139,3 +139,4 @@ file	src/Original/Utility/REVENGE_34C6_RANDOM_RANGE.cpp	src/Original/Utility/Ran
 file	src/Original/Utility/REVENGE_3968_INTEGER_FORMAT.cpp	src/Original/Utility/IntegerFormat.cpp	3968	integer format
 file	src/Original/Utility/REVENGE_39C4_DECIMAL_PARSE.cpp	src/Original/Utility/DecimalParse.cpp	39C4	decimal parse
 file	src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.cpp	src/Original/Utility/StringUppercase.cpp	3A04	string uppercase
+name	Seg426B	MusicTimer	426B	the music and speaker timer state, segment 426B

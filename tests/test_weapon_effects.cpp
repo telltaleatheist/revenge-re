@@ -15,7 +15,7 @@ static DigitalWeaponEffectRecord *WeaponEffectRecord(word16 effectId)
 
 static const byte *PendingSpeakerEffectStream(void)
 {
-    return Seg426B.PendingSpeakerEffectStream;
+    return MusicTimer.PendingSpeakerEffectStream;
 }
 
 int main(void)
@@ -36,7 +36,7 @@ int main(void)
     SoundEffectsEnabled = TRUE;
     SoundDriverIndex = 0x00;
     DispatchWeaponEffect(0x03);
-    assert(Seg426B.PendingSpeakerEffectStream != NULL);
+    assert(MusicTimer.PendingSpeakerEffectStream != NULL);
     assert(PendingSpeakerEffectStream()[0x00] == 0xE2);
     assert(PendingSpeakerEffectStream()[0x01] == 0x01);
 

@@ -605,7 +605,7 @@ unplaced SceneFileTooLargeText 4 host pointer
 unplaced SceneNarrationSeparatorText 4 host pointer
 unplaced SecondaryStatusHighlightColor 2 its bytes match nowhere (pointers or values differ)
 unplaced SecondaryStatusRow 2 several places match
-unplaced Seg426B EA its bytes match nowhere (pointers or values differ)
+unplaced MusicTimer EA its bytes match nowhere (pointers or values differ)
 unplaced SelectArtilleryTargetPrompt 4 host pointer
 unplaced SelectBarrageEndPrompt 4 host pointer
 unplaced SelectBarrageStartPrompt 4 host pointer

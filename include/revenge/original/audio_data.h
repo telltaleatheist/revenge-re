@@ -39,7 +39,7 @@ typedef struct RevengeMusicTimerState
     byte MusicElapsedUnit;
 } RevengeMusicTimerState;
 
-extern RevengeMusicTimerState Seg426B;
+extern RevengeMusicTimerState MusicTimer;
 
 enum
 {

@@ -23,7 +23,7 @@ void JukeboxGame_Begin(void (*sink)(unsigned char))
     PrepareMIDIDriver(&RolandMIDIDriverDescriptor);
     SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
     ActivateMIDIDriver(&RolandMIDIDriverDescriptor);
-    Seg426B.MusicDriverMode = 0x02;
+    MusicTimer.MusicDriverMode = 0x02;
 }
 
 /* 1 if the song fits the game's buffer and starts. */

@@ -131,4 +131,4 @@ game_start.displayed_tactical_status_row DisplayedTacticalStatusRow         3A6A
 save_directory.directory                SaveDirectory                       3A6A:18CE 88
 
 # data/sound/speaker.json
-sound.speaker_note_divisors             Seg426B.MusicFrequencyDivisorTable  426B:0020 C0
+sound.speaker_note_divisors             MusicTimer.MusicFrequencyDivisorTable  426B:0020 C0

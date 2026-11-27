@@ -383,11 +383,11 @@ static void RunClockTimer(ClockTimerId id)
             gameClockHandler();
         break;
     case MIDIDriverTimer:
-        if (Seg426B.MusicDriverMode != 0x00)
+        if (MusicTimer.MusicDriverMode != 0x00)
             ServiceActiveMIDIDriver();
         break;
     case MIDISequenceTimer:
-        if (Seg426B.MusicDriverMode != 0x00)
+        if (MusicTimer.MusicDriverMode != 0x00)
             ServiceMIDISequenceTick();
         break;
     case DigitalPlaybackTimer:

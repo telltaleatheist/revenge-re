@@ -48,7 +48,7 @@ static const MapDumpObject objects[] =
 	{ "WeaponDefinitions", &WeaponDefinitions, sizeof(WeaponDefinitions), 0 },
 	{ "WeaponNameTable", &WeaponNameTable, sizeof(WeaponNameTable), 1 },
 	{ "ConfigOptionNames", &ConfigOptionNames, sizeof(ConfigOptionNames), 1 },
-	{ "Seg426B", &Seg426B, sizeof(Seg426B), 0 },
+	{ "MusicTimer", &MusicTimer, sizeof(MusicTimer), 0 },
 	{ "PCSpeakerEffectStreamData", &PCSpeakerEffectStreamData, sizeof(PCSpeakerEffectStreamData), 0 },
 	{ "PCSpeakerEffectStreamPointerTable", &PCSpeakerEffectStreamPointerTable, sizeof(PCSpeakerEffectStreamPointerTable), 1 },
 	{ "MusicStagingBuffer", &MusicStagingBuffer, sizeof(MusicStagingBuffer), 1 },

@@ -50,7 +50,7 @@ void InitializeMusicDriver(void)
             PrepareMIDIDriver(&SpeakerMIDIDriverDescriptor);
             SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
             ActivateMIDIDriver(&SpeakerMIDIDriverDescriptor);
-            Seg426B.MusicDriverMode = 0x01;
+            MusicTimer.MusicDriverMode = 0x01;
             break;
     /* Drivers 1-3 (Tandy, PS/1, AdLib) set up the same way on their own
 	 * descriptors; the music setting reaches only 0 and 4, and the rebuild
@@ -59,7 +59,7 @@ void InitializeMusicDriver(void)
             PrepareMIDIDriver(&RolandMIDIDriverDescriptor);
             SetMIDITimingDivisor(MIDI_TIMER_CALLS_PER_MINUTE);
             ActivateMIDIDriver(&RolandMIDIDriverDescriptor);
-            Seg426B.MusicDriverMode = 0x02;
+            MusicTimer.MusicDriverMode = 0x02;
             break;
         }
     }

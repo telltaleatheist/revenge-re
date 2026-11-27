@@ -22,7 +22,7 @@ enum
 
 // This module has two distinct data segments:
 //   Seg30B2 owns the saved IRQ0 vector at 0004:0006 (addressed through CS).
-//   Seg426B owns all timer and PC-speaker stream state used by the IRQ handler.
+//   MusicTimer owns all timer and PC-speaker stream state used by the IRQ handler.
 // Seg3A6A is not this module's DS. Its selector is merely saved at 426B:0002
 // while installing the handler, then restored around callbacks into the game.
 
@@ -74,18 +74,18 @@ void InstallMusicTimer(void)
 {
     word16 timerDivisor;
 
-    Seg426B.GameDataSegment = 0x3A6A;
-    Seg426B.SystemTickReload = MUSIC_SYSTEM_TICK_RELOAD;
-    Seg426B.SystemTickCountdown = 0x0000;
-    if (Seg426B.MusicDriverMode == MUSIC_DRIVER_MODE_1 ||
-        Seg426B.MusicDriverMode == MUSIC_DRIVER_MODE_2)
-        Seg426B.MusicServiceReload = MUSIC_SERVICE_RELOAD;
+    MusicTimer.GameDataSegment = 0x3A6A;
+    MusicTimer.SystemTickReload = MUSIC_SYSTEM_TICK_RELOAD;
+    MusicTimer.SystemTickCountdown = 0x0000;
+    if (MusicTimer.MusicDriverMode == MUSIC_DRIVER_MODE_1 ||
+        MusicTimer.MusicDriverMode == MUSIC_DRIVER_MODE_2)
+        MusicTimer.MusicServiceReload = MUSIC_SERVICE_RELOAD;
     else
-        Seg426B.MusicServiceReload = 0x0000;
-    Seg426B.MusicServiceCountdown = 0x0000;
-    Seg426B.MusicServiceBusy = 0x0000;
+        MusicTimer.MusicServiceReload = 0x0000;
+    MusicTimer.MusicServiceCountdown = 0x0000;
+    MusicTimer.MusicServiceBusy = 0x0000;
 
-    if (Seg426B.MusicDriverMode == MUSIC_DRIVER_NONE)
+    if (MusicTimer.MusicDriverMode == MUSIC_DRIVER_NONE)
         timerDivisor = MUSIC_PIT_DIVISOR_NORMAL_DRIVER;
     else
         timerDivisor = MUSIC_PIT_DIVISOR_FAST_DRIVER;
@@ -106,16 +106,16 @@ void RestoreSystemTimer(void)
 // 30B2:03B6
 void StartPCSpeakerEffectStream(const byte *effectStream)
 {
-    Seg426B.PendingSpeakerEffectStream = effectStream;
-    Seg426B.SpeakerEffectStartRequested = 0x01;
-    Seg426B.SpeakerEffectPlaybackActive = 0x01;
-    Seg426B.SpeakerEffectServiceActive = 0x01;
+    MusicTimer.PendingSpeakerEffectStream = effectStream;
+    MusicTimer.SpeakerEffectStartRequested = 0x01;
+    MusicTimer.SpeakerEffectPlaybackActive = 0x01;
+    MusicTimer.SpeakerEffectServiceActive = 0x01;
 }
 
 // 30B2:03E1
 void SetPCSpeakerEffectStopRequest(void)
 {
-    Seg426B.SpeakerEffectStopRequested = 0x01;
+    MusicTimer.SpeakerEffectStopRequested = 0x01;
 }
 
 // 30B2:0010, the IRQ0 handler InstallMusicTimer installed, is Replaced: the
@@ -133,10 +133,10 @@ void SetPCSpeakerEffectStopRequest(void)
 static void StopPCSpeakerEffect(word16 streamCursor)
 {
     SilencePCSpeaker();
-    Seg426B.SpeakerEffectStopRequested = 0x00;
-    Seg426B.SpeakerEffectPlaybackActive = 0x00;
-    Seg426B.SpeakerEffectServiceActive = 0x00;
-    Seg426B.SpeakerEffectStreamCursor = streamCursor;
+    MusicTimer.SpeakerEffectStopRequested = 0x00;
+    MusicTimer.SpeakerEffectPlaybackActive = 0x00;
+    MusicTimer.SpeakerEffectServiceActive = 0x00;
+    MusicTimer.SpeakerEffectStreamCursor = streamCursor;
 }
 
 // 30B2:00DF's command loop: runs the stream's commands from *cursor to the
@@ -155,7 +155,7 @@ static word16 FetchPCSpeakerEffectEvent(
         byte command = effectStream[streamCursor];
         if (command <= SPEAKER_EFFECT_NOTE_MAX)
         {
-            *pitDivisor = Seg426B.MusicFrequencyDivisorTable[command];
+            *pitDivisor = MusicTimer.MusicFrequencyDivisorTable[command];
             *cursor = streamCursor;
             return TRUE;
         }
@@ -163,14 +163,14 @@ static word16 FetchPCSpeakerEffectEvent(
         switch (command)
         {
         case SPEAKER_EFFECT_COMMAND_LOOP1_BEGIN:
-            Seg426B.SpeakerEffectLoop1Remaining =
+            MusicTimer.SpeakerEffectLoop1Remaining =
                 effectStream[streamCursor + 0x01];
-            if (Seg426B.SpeakerEffectLoop1Remaining == 0x00)
-                Seg426B.SpeakerEffectLoop1Remaining = 0x01;
+            if (MusicTimer.SpeakerEffectLoop1Remaining == 0x00)
+                MusicTimer.SpeakerEffectLoop1Remaining = 0x01;
             streamCursor += 0x02;
             continue;
         case SPEAKER_EFFECT_COMMAND_LOOP1_END:
-            if (--Seg426B.SpeakerEffectLoop1Remaining != 0x00)
+            if (--MusicTimer.SpeakerEffectLoop1Remaining != 0x00)
             {
                 word16 loopOrigin = streamCursor + 0x01;
                 word16 loopDistance = effectStream[streamCursor + 0x01] |
@@ -189,14 +189,14 @@ static word16 FetchPCSpeakerEffectEvent(
                 streamCursor += 0x03;
             continue;
         case SPEAKER_EFFECT_COMMAND_LOOP2_BEGIN:
-            Seg426B.SpeakerEffectLoop2Remaining =
+            MusicTimer.SpeakerEffectLoop2Remaining =
                 effectStream[streamCursor + 0x01];
-            if (Seg426B.SpeakerEffectLoop2Remaining == 0x00)
-                Seg426B.SpeakerEffectLoop2Remaining = 0x01;
+            if (MusicTimer.SpeakerEffectLoop2Remaining == 0x00)
+                MusicTimer.SpeakerEffectLoop2Remaining = 0x01;
             streamCursor += 0x02;
             continue;
         case SPEAKER_EFFECT_COMMAND_LOOP2_END:
-            if (--Seg426B.SpeakerEffectLoop2Remaining != 0x00)
+            if (--MusicTimer.SpeakerEffectLoop2Remaining != 0x00)
             {
                 word16 loopOrigin = streamCursor + 0x01;
                 word16 loopDistance = effectStream[streamCursor + 0x01] |
@@ -221,36 +221,36 @@ static word16 FetchPCSpeakerEffectEvent(
             *cursor = (word16) (streamCursor + 0x02);
             return TRUE;
         case SPEAKER_EFFECT_COMMAND_SET_DURATION_SCALE:
-            Seg426B.SpeakerEffectDurationScale =
+            MusicTimer.SpeakerEffectDurationScale =
                 effectStream[streamCursor + 0x01];
-            if (Seg426B.SpeakerEffectDurationScale == 0x00)
-                Seg426B.SpeakerEffectDurationScale = 0x01;
+            if (MusicTimer.SpeakerEffectDurationScale == 0x00)
+                MusicTimer.SpeakerEffectDurationScale = 0x01;
             streamCursor += 0x02;
             continue;
         case SPEAKER_EFFECT_COMMAND_DECREASE_DURATION_SCALE:
         {
-            byte oldScale = Seg426B.SpeakerEffectDurationScale;
+            byte oldScale = MusicTimer.SpeakerEffectDurationScale;
             byte decrease = effectStream[streamCursor + 0x01];
             byte result = oldScale - decrease;
             byte signedOverflow = (byte) (((oldScale ^ decrease) & (oldScale ^ result) & 0x80) !=
                 0x00);
-            Seg426B.SpeakerEffectDurationScale = result;
+            MusicTimer.SpeakerEffectDurationScale = result;
             // The original uses JNO followed by JNZ, not an unsigned borrow test.
             // Preserve that unusual behavior exactly; in practice this condition
             // cannot be true for SUB, so the byte subtraction wraps normally.
             if (signedOverflow && result == 0x00)
-                Seg426B.SpeakerEffectDurationScale = 0x01;
+                MusicTimer.SpeakerEffectDurationScale = 0x01;
             streamCursor += 0x02;
             continue;
         }
         case SPEAKER_EFFECT_COMMAND_INCREASE_DURATION_SCALE:
         {
-            byte oldScale = Seg426B.SpeakerEffectDurationScale;
+            byte oldScale = MusicTimer.SpeakerEffectDurationScale;
             byte increase = effectStream[streamCursor + 0x01];
             byte result = oldScale + increase;
             byte signedOverflow = (byte) (((~(oldScale ^ increase) & (oldScale ^ result)) & 0x80) !=
                 0x00);
-            Seg426B.SpeakerEffectDurationScale = signedOverflow ? 0xFF : result;
+            MusicTimer.SpeakerEffectDurationScale = signedOverflow ? 0xFF : result;
             streamCursor += 0x02;
             continue;
         }
@@ -265,33 +265,33 @@ static word16 FetchPCSpeakerEffectEvent(
 }
 
 // 30B2:00DF
-// Consume one PC-speaker stream tick. DS is implicit Seg426B, not an argument.
+// Consume one PC-speaker stream tick. DS is implicit MusicTimer, not an argument.
 // Verified against 30B2:00DF-0290.
 void DecodePCSpeakerEffectTick(void)
 {
-    if (Seg426B.SpeakerEffectStartRequested != 0x00)
+    if (MusicTimer.SpeakerEffectStartRequested != 0x00)
     {
-        Seg426B.SpeakerEffectServiceActive = 0x01;
-        Seg426B.SpeakerEffectPlaybackActive = 0x01;
-        Seg426B.SpeakerEffectFetchNextEvent = 0x01;
-        Seg426B.SpeakerEffectStartRequested = 0x00;
-        Seg426B.SpeakerEffectStopRequested = 0x00;
-        Seg426B.ActiveSpeakerEffectStream =
-            Seg426B.PendingSpeakerEffectStream;
-        Seg426B.SpeakerEffectStreamCursor = 0x0000;
+        MusicTimer.SpeakerEffectServiceActive = 0x01;
+        MusicTimer.SpeakerEffectPlaybackActive = 0x01;
+        MusicTimer.SpeakerEffectFetchNextEvent = 0x01;
+        MusicTimer.SpeakerEffectStartRequested = 0x00;
+        MusicTimer.SpeakerEffectStopRequested = 0x00;
+        MusicTimer.ActiveSpeakerEffectStream =
+            MusicTimer.PendingSpeakerEffectStream;
+        MusicTimer.SpeakerEffectStreamCursor = 0x0000;
     }
 
-    if (Seg426B.SpeakerEffectPlaybackActive == 0x00)
+    if (MusicTimer.SpeakerEffectPlaybackActive == 0x00)
         return;
 
-    word16 streamCursor = Seg426B.SpeakerEffectStreamCursor;
-    if (Seg426B.SpeakerEffectFetchNextEvent == 0x00)
+    word16 streamCursor = MusicTimer.SpeakerEffectStreamCursor;
+    if (MusicTimer.SpeakerEffectFetchNextEvent == 0x00)
     {
-        --Seg426B.SpeakerEffectTicksRemaining;
-        if ((int16) Seg426B.SpeakerEffectTicksRemaining < 0x00 &&
-            Seg426B.SpeakerEffectTicksRemaining != 0xFFFF)
-            Seg426B.SpeakerEffectFetchNextEvent = 0x01;
-        if (Seg426B.SpeakerEffectStopRequested != 0x00)
+        --MusicTimer.SpeakerEffectTicksRemaining;
+        if ((int16) MusicTimer.SpeakerEffectTicksRemaining < 0x00 &&
+            MusicTimer.SpeakerEffectTicksRemaining != 0xFFFF)
+            MusicTimer.SpeakerEffectFetchNextEvent = 0x01;
+        if (MusicTimer.SpeakerEffectStopRequested != 0x00)
         {
             StopPCSpeakerEffect(streamCursor);
             return;
@@ -299,7 +299,7 @@ void DecodePCSpeakerEffectTick(void)
     }
     else
     {
-        const byte *effectStream = Seg426B.ActiveSpeakerEffectStream;
+        const byte *effectStream = MusicTimer.ActiveSpeakerEffectStream;
         word16 pitDivisor;
 
         if (FetchPCSpeakerEffectEvent(effectStream, &streamCursor, &pitDivisor) == FALSE)
@@ -316,13 +316,13 @@ void DecodePCSpeakerEffectTick(void)
         else
             SilencePCSpeaker();
 
-        Seg426B.SpeakerEffectTicksRemaining =
-            Seg426B.SpeakerEffectDurationScale *
+        MusicTimer.SpeakerEffectTicksRemaining =
+            MusicTimer.SpeakerEffectDurationScale *
                 (byte) (effectStream[streamCursor + 0x01] + 0x01) -
             0x01;
-        Seg426B.SpeakerEffectFetchNextEvent = 0x00;
+        MusicTimer.SpeakerEffectFetchNextEvent = 0x00;
         streamCursor += 0x02;
     }
 
-    Seg426B.SpeakerEffectStreamCursor = streamCursor;
+    MusicTimer.SpeakerEffectStreamCursor = streamCursor;
 }
