@@ -4,10 +4,10 @@ const void *HostDispatch_Select(
     const void *identity,
     const void *const *identities,
     const void *const *dispatches,
-    word16 count,
+    uint16_t count,
     const void *fallback)
 {
-    word16 index;
+    uint16_t index;
 
     for (index = 0x0000; index < count; ++index)
     {

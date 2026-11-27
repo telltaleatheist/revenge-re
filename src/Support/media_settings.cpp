@@ -10,7 +10,7 @@
 /* The player's settings stand for MEDIA.CFG: these name its options and
  * choices as the game's own tables do (ConfigOptionNames, the option
  * records), and write the text the DOS installer wrote. */
-static const char *MediaChoiceName(word16 option, word16 choice)
+static const char *MediaChoiceName(uint16_t option, uint16_t choice)
 {
     switch (option)
     {
@@ -36,9 +36,9 @@ static int SameNameAnyCase(const char *first, const char *second, size_t capacit
     return second[capacity] == '\0';
 }
 
-word16 MediaSettings_ChoiceCount(word16 option)
+uint16_t MediaSettings_ChoiceCount(uint16_t option)
 {
-    static const word16 counts[MEDIA_OPTION_COUNT] = {
+    static const uint16_t counts[MEDIA_OPTION_COUNT] = {
         sizeof(VideoConfigurationRecords) / sizeof(VideoConfigurationRecords[0]),
         sizeof(MusicConfigurationRecords) / sizeof(MusicConfigurationRecords[0]),
         sizeof(SoundConfigurationRecords) / sizeof(SoundConfigurationRecords[0]),
@@ -48,7 +48,7 @@ word16 MediaSettings_ChoiceCount(word16 option)
     return counts[REVENGE_INDEX(counts, option)];
 }
 
-int MediaSettings_SoundTakesParameter(word16 choice)
+int MediaSettings_SoundTakesParameter(uint16_t choice)
 {
     return SoundConfigurationRecords[REVENGE_INDEX(SoundConfigurationRecords, choice)]
                .hasNumericParameter != FALSE;
@@ -56,7 +56,7 @@ int MediaSettings_SoundTakesParameter(word16 choice)
 
 int MediaSettings_OptionIndex(const char *key)
 {
-    word16 option;
+    uint16_t option;
 
     for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
         if (SameNameAnyCase(ConfigOptionNames[option], key, 0x10))
@@ -64,9 +64,9 @@ int MediaSettings_OptionIndex(const char *key)
     return -1;
 }
 
-int MediaSettings_ChoiceIndex(word16 option, const char *value)
+int MediaSettings_ChoiceIndex(uint16_t option, const char *value)
 {
-    word16 choice;
+    uint16_t choice;
 
     for (choice = 0; choice < MediaSettings_ChoiceCount(option); ++choice)
         if (SameNameAnyCase(MediaChoiceName(option, choice), value, 0x0C))
@@ -74,10 +74,10 @@ int MediaSettings_ChoiceIndex(word16 option, const char *value)
     return -1;
 }
 
-word16 MediaSettings_InstallerText(const RevengeMediaChoices *choices, char *text, word16 capacity)
+uint16_t MediaSettings_InstallerText(const RevengeMediaChoices *choices, char *text, uint16_t capacity)
 {
     size_t length = 0;
-    word16 option;
+    uint16_t option;
 
     for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
     {
@@ -95,5 +95,5 @@ word16 MediaSettings_InstallerText(const RevengeMediaChoices *choices, char *tex
             return 0x0000;
         length += (size_t) written;
     }
-    return (word16) length;
+    return (uint16_t) length;
 }

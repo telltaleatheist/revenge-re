@@ -8,9 +8,9 @@
 
 typedef struct HeapBlock
 {
-    byte *start;
-    uint32 size;
-    uint32 number;
+    uint8_t *start;
+    uint32_t size;
+    uint32_t number;
     const char *caller;
 } HeapBlock;
 
@@ -20,7 +20,7 @@ static size_t blockCapacity;
 static HeapBlock *freed;
 static size_t freedCount;
 static size_t freedCapacity;
-static uint32 blocksMade;
+static uint32_t blocksMade;
 static int failNext;
 static int realFree = -1;
 
@@ -39,7 +39,7 @@ static size_t LiveIndex(const void *block)
 
     for (index = 0; index < blockCount; ++index)
     {
-        if (blocks[index].start == (const byte *) block)
+        if (blocks[index].start == (const uint8_t *) block)
             return index;
     }
     return blockCount;
@@ -63,7 +63,7 @@ static int Grow(HeapBlock **list, size_t count, size_t *capacity)
 
 /* The block freed last of exactly this size, taken off the freed list and
  * zeroed; else NULL. */
-static byte *Reuse(uint32 byteCount)
+static uint8_t *Reuse(uint32_t byteCount)
 {
     size_t index = freedCount;
 
@@ -73,7 +73,7 @@ static byte *Reuse(uint32 byteCount)
     {
         if (freed[index].size == byteCount)
         {
-            byte *start = freed[index].start;
+            uint8_t *start = freed[index].start;
 
             freed[index] = freed[--freedCount];
             memset(start, 0x00, (size_t) byteCount);
@@ -83,9 +83,9 @@ static byte *Reuse(uint32 byteCount)
     return NULL;
 }
 
-void *Heap_Allocate(uint32 byteCount, const char *caller)
+void *Heap_Allocate(uint32_t byteCount, const char *caller)
 {
-    byte *start;
+    uint8_t *start;
 
     if (byteCount == 0x00000000UL)
         RevengeFault("a 0-byte allocation, called from %s", caller);
@@ -94,7 +94,7 @@ void *Heap_Allocate(uint32 byteCount, const char *caller)
     {
         start = Reuse(byteCount);
         if (start == NULL)
-            start = (byte *) calloc(1, (size_t) byteCount);
+            start = (uint8_t *) calloc(1, (size_t) byteCount);
     }
     failNext = 0;
     if (start == NULL)
@@ -146,7 +146,7 @@ const char *Heap_Caller(const void *block)
     return block != NULL && index < blockCount ? blocks[index].caller : NULL;
 }
 
-int Heap_Find(uintptr_t address, uint32 *number, uint32 *offset)
+int Heap_Find(uintptr_t address, uint32_t *number, uint32_t *offset)
 {
     size_t index;
 
@@ -157,7 +157,7 @@ int Heap_Find(uintptr_t address, uint32 *number, uint32 *offset)
         if (address >= start && address - start < blocks[index].size)
         {
             *number = blocks[index].number;
-            *offset = (uint32) (address - start);
+            *offset = (uint32_t) (address - start);
             return 1;
         }
     }

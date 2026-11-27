@@ -4,7 +4,7 @@
 #include "revenge/story_text.h"
 
 /* Filled at start from data/rules/combat.json (revenge/rules.h). */
-byte MovementRatingByWalkMP[0x09];
+uint8_t MovementRatingByWalkMP[0x09];
 
 const char *UnitNameTable[0x59] = {
     STORY_TEXT(UNIT_NAME_0), STORY_TEXT(UNIT_NAME_1), STORY_TEXT(UNIT_NAME_2), STORY_TEXT(UNIT_NAME_3), STORY_TEXT(UNIT_NAME_4), STORY_TEXT(UNIT_NAME_5),

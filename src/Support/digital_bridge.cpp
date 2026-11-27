@@ -3,7 +3,7 @@
 #include "revenge/digital_bridge.h"
 
 struct DigitalPlaybackDescriptor *
-DigitalBridge_ResolvePlaybackDescriptor(word16 descriptorOffset)
+DigitalBridge_ResolvePlaybackDescriptor(uint16_t descriptorOffset)
 {
     switch (descriptorOffset)
     {
