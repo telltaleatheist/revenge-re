@@ -7,6 +7,11 @@
 #include "Data/StartupData.h"
 #include "Graphics/Graphics.h"
 #include "Tactical/Tactical.h"
+#include "Data/CampaignStateData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
+#include "Data/TacticalUnitData.h"
 
 // 2D1B:2453: void DestroyScenarioUnit(word16 unitIndex)
 // Called from:

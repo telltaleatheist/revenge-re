@@ -13,6 +13,9 @@
 
 #include "Data/TacticalTables.h"
 #include "Tactical/CombatInternal.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalUnitData.h"
 
 #include <stdio.h>
 #include <stdlib.h>

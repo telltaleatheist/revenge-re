@@ -4,7 +4,10 @@
 // REVENGE.EXE segment 0800.
 
 // Video-buffer, adapter, timer, and arithmetic procedures from segment 0800.
-#include "Data/TacticalData.h"
+#include "Data/GraphicsData.h"
+#include "Data/MouseCursorData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
 #include "Data/TacticalGraphicsData.h"
 #include "Graphics/Graphics.h"
 #include "Utility/Utility.h"
@@ -13,6 +16,7 @@
 #include "revenge/platform_backend.h"
 #include "revenge/random.h"
 #include "revenge/video.h"
+#include "revenge/combat_data.h"
 
 #include <string.h>
 

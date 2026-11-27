@@ -1,7 +1,8 @@
 // 2208: scenario unit initialization
 /* Scenario-unit initialization procedure from original segment 2208. */
 
-#include "Data/TacticalData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalUnitData.h"
 #include "Tactical/Tactical.h"
 #include "Units/Units.h"
 

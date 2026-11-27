@@ -1,5 +1,5 @@
 // 3A6A: tactical tables
-// TacticalData.cpp
+// TacticalTables.cpp
 // Immutable tactical tables recovered from the REVENGE.EXE data segment.
 
 #include "Data/TacticalTables.h"

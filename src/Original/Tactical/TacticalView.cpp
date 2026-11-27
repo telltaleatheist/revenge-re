@@ -12,6 +12,13 @@
 #include "Text/Text.h"
 #include "Units/Units.h"
 #include "Utility/Utility.h"
+#include "Data/CampaignStateData.h"
+#include "Data/MouseCursorData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
+#include "Data/TacticalStatusData.h"
+#include "Data/TacticalUnitData.h"
 
 // 1A1F:0D55: draw and clip a tactical weapon trace.
 // Verified against ASM 1A1F:0D55-10CC.

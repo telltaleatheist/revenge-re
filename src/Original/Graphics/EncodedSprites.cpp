@@ -1,7 +1,7 @@
 // 0800: encoded sprites
 /* Adapter sprite decoders from REVENGE_0800. */
 
-#include "Data/TacticalData.h"
+#include "Data/GraphicsData.h"
 #include "Data/TacticalGraphicsData.h"
 #include "Graphics/Graphics.h"
 #include "revenge/video.h"

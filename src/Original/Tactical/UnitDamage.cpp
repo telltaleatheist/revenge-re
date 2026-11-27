@@ -8,6 +8,10 @@
 #include "Graphics/Graphics.h"
 #include "Tactical/Tactical.h"
 #include "revenge/debug.h"
+#include "Data/CampaignStateData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalUnitData.h"
 
 /* A center-torso critical hits the engine when a second 2D6 roll comes in
  * under 7. */

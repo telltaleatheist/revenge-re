@@ -5,7 +5,8 @@
 
 #include "Audio/Audio.h"
 #include "Data/RuntimeData.h"
-#include "Data/TacticalData.h"
+#include "Data/AudioData.h"
+#include "Data/CampaignStateData.h"
 #include "Resources/Resources.h"
 #include "revenge/heap.h"
 #include "revenge/audio.h"

@@ -9,7 +9,10 @@
 
 #include "revenge/audio_log.h"
 #include "revenge/battletech.h"
-#include "Data/TacticalData.h"
+#include "Data/CampaignStateData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalUnitData.h"
 #include "revenge/platform_backend.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"

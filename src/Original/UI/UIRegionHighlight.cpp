@@ -2,7 +2,7 @@
 // Reconstructed original active UI-region highlight toggle (segment 35CA).
 
 #include "Data/RuntimeData.h"
-#include "Data/TacticalData.h"
+#include "Data/MouseCursorData.h"
 #include "Input/Input.h"
 #include "UI/UI.h"
 #include "revenge/video.h"

@@ -15,7 +15,11 @@
 header revenge/combat_data.h
 header Data/HitLocationData.h
 header Data/RuntimeData.h
-header Data/TacticalData.h
+header Data/CampaignStateData.h
+header Data/RosterData.h
+header Data/TacticalControlData.h
+header Data/TacticalStatusData.h
+header Data/TacticalUnitData.h
 header Data/TacticalGraphicsData.h
 header Data/TacticalTables.h
 header Data/TextIOData.h

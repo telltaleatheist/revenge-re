@@ -2,7 +2,7 @@
 #define REVENGE_ORIGINAL_LANCE_EDITOR_DATA_H
 
 #include "revenge/original/campaign_data.h"
-#include "Data/TacticalData.h"
+#include "Data/RosterData.h"
 #include "revenge/roster.h"
 #include "revenge/debug.h"
 #include "revenge/types.h"

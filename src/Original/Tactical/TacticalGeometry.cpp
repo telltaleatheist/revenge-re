@@ -4,7 +4,7 @@
 // REVENGE.EXE segment 0800.
 
 // Tactical geometry and terrain procedures from REVENGE.EXE segment 0800.
-#include "Data/TacticalData.h"
+#include "Data/TacticalMapData.h"
 #include "Data/TacticalGraphicsData.h"
 #include "Tactical/Tactical.h"
 #include "revenge/platform_backend.h"

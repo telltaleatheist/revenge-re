@@ -2,7 +2,7 @@
 // Reconstructed original active text-window string renderer (segment 356F).
 
 #include "Data/RuntimeData.h"
-#include "Data/TacticalData.h"
+#include "Data/GraphicsData.h"
 #include "Data/TextIOData.h"
 #include "Graphics/Graphics.h"
 #include "Text/Text.h"

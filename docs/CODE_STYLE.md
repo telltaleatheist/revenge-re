@@ -12,7 +12,7 @@ in [`RECONSTRUCTED_C_PLAN.md`](RECONSTRUCTED_C_PLAN.md).
   provenance comments (`// 3390:0A22`) where they help compare the code with
   the assembly.
 - Define shared state once, in its owning source file, and declare it in the
-  header beside that file (`Tactical/Tactical.h`, `Data/TacticalData.h`;
+  header beside that file (`Tactical/Tactical.h`, `Data/TacticalUnitData.h`;
   docs/SOURCE_LAYOUT.md); make private state `static`.
 - Use ordinary typed structures, arrays and references for known records.
   Proven parallel arrays and explicit field-copy loops are valid recovered

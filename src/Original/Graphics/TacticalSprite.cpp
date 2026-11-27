@@ -3,7 +3,7 @@
 // Tactical clipped-sprite rendering wrapper.
 
 #include "Data/RuntimeData.h"
-#include "Data/TacticalData.h"
+#include "Data/GraphicsData.h"
 #include "Data/TacticalGraphicsData.h"
 #include "Data/TextIOData.h"
 #include "Graphics/Graphics.h"

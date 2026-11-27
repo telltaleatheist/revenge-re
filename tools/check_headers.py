@@ -10,7 +10,7 @@ defines it:
 - src/Original/DOMAIN/DOMAIN.h declares what the .cpp files of
   src/Original/DOMAIN define (Audio/Audio.h, Tactical/Tactical.h);
 - src/Original/Data/NAME.h declares what src/Original/Data/NAME.cpp
-  defines (Data/TacticalData.h).
+  defines (Data/TacticalUnitData.h).
 
 It fails when such a header declares a function or a variable that isn't
 defined where the rule says, when two of them declare the same name, when

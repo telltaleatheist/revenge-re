@@ -83,3 +83,7 @@ static_assert(sizeof(PCSpeakerEffectStreamPointerTable) /
             sizeof(PCSpeakerEffectStreamPointerTable[0]) ==
         0x10,
     "DS:58DB-591A holds a far pointer for each of the 10h effects.");
+/* REVENGE.EXE DS:800C is initialized to 0001h. */
+uint16_t RequestedMusicEnabled = TRUE;
+uint16_t CachedMusicResourceIndex;
+uint8_t *MusicStagingBuffer;

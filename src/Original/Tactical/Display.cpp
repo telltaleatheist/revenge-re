@@ -2,7 +2,8 @@
 /* Tactical sprite composition and display procedures from segment 2007. */
 
 #include "Data/StartupData.h"
-#include "Data/TacticalData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
 #include "Tactical/Tactical.h"

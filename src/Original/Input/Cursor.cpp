@@ -1,7 +1,7 @@
 // 0800: cursor
 /* Software-cursor procedures from original segment 0800. */
 
-#include "Data/TacticalData.h"
+#include "Data/MouseCursorData.h"
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
 #include "revenge/platform_backend.h"

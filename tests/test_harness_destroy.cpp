@@ -4,7 +4,8 @@
 
 #include "harness.h"
 
-#include "Data/TacticalData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
 
 #include <SDL3/SDL.h>
 #include <stdio.h>

@@ -6,6 +6,10 @@
 #include "Data/TacticalTables.h"
 #include "Tactical/Tactical.h"
 #include "revenge/debug.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
+#include "Data/TacticalUnitData.h"
 
 // The heat limit at `index` of the table at DS:03E0 (2D1B:14A4 reads it with
 // the experience byte unchecked). Past the table's five bytes it is the

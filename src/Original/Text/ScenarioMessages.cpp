@@ -1,7 +1,7 @@
 // 0D73: scenario messages
 /* Indexed scenario-message procedures from original segment 0D73. */
 
-#include "Data/TacticalData.h"
+#include "Data/CampaignStateData.h"
 #include "Data/TextIOData.h"
 #include "Input/Input.h"
 #include "Text/Text.h"

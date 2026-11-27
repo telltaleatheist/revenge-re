@@ -2,7 +2,7 @@
 /* Clipped-sprite procedure from original segment 0D73. */
 
 #include "Data/RuntimeData.h"
-#include "Data/TacticalData.h"
+#include "Data/GraphicsData.h"
 #include "Data/TacticalGraphicsData.h"
 #include "Data/TextIOData.h"
 #include "Graphics/Graphics.h"

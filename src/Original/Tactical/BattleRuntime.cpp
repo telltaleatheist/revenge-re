@@ -19,6 +19,13 @@
 #include "revenge/heap.h"
 #include "revenge/debug.h"
 #include "revenge/platform_backend.h"
+#include "Data/CampaignStateData.h"
+#include "Data/MouseCursorData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
+#include "Data/TacticalStatusData.h"
+#include "Data/TacticalUnitData.h"
 
 #include <string.h>
 

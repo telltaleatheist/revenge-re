@@ -8,7 +8,11 @@
 
 #include "CommandsInternal.h"
 #include "Data/AudioData.h"
-#include "Data/TacticalData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
+#include "Data/TacticalStatusData.h"
+#include "Data/TacticalUnitData.h"
 #include "Data/TextIOData.h"
 #include "Input/Input.h"
 #include "Tactical/Tactical.h"

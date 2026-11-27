@@ -1,6 +1,6 @@
 /* Mechanical dispatch for the original DS:24E6:24E8 far callback. */
 
-#include "Data/TacticalData.h"
+#include "Data/CampaignStateData.h"
 #include "revenge/presentation_callback_bridge.h"
 
 void RenderActivePilotList(void);

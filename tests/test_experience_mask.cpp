@@ -6,7 +6,9 @@
 // past the table, and the port reads it from UnitActionMaskByExperiencePastEnd.
 // Synthetic values only.
 
-#include "Data/TacticalData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalUnitData.h"
 #include "Data/TacticalTables.h"
 
 #include <stdio.h>

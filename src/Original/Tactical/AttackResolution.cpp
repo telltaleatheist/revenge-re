@@ -3,6 +3,9 @@
 
 #include "CombatInternal.h"
 #include "Tactical/Tactical.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalMapData.h"
+#include "Data/TacticalUnitData.h"
 
 /* The to-hit number's changes this attack makes: easier at a map cell, with
  * a spotter for indirect LRM fire, at an immobile target and with a pulse

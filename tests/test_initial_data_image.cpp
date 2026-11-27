@@ -20,6 +20,13 @@
 #include "revenge/platform_backend.h"
 #include "revenge/random.h"
 #include "original_import_for_tests.h"
+#include "Data/AudioData.h"
+#include "Data/CampaignStateData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
+#include "Data/TacticalStatusData.h"
+#include "Data/TacticalUnitData.h"
 
 #include <stddef.h>
 #include <stdio.h>

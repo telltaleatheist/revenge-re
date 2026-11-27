@@ -2,7 +2,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "Data/TacticalData.h"
+#include "Data/CampaignStateData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalUnitData.h"
 #include "revenge/original/audio_data.h"
 #include "original_import_for_tests.h"
 

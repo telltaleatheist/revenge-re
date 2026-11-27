@@ -1,4 +1,5 @@
-#include "Data/TacticalData.h"
+#include "Data/CampaignStateData.h"
+#include "Data/TacticalControlData.h"
 #include "Units/Units.h"
 
 #include <assert.h>

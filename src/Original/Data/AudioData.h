@@ -91,4 +91,7 @@ inline constexpr uint16_t NARRATION_MODE_COUNT = 0x0003;
 extern uint16_t ActiveNarrationSubject;
 extern uint16_t NarrationEmphasis;
 
+extern uint16_t RequestedMusicEnabled;
+extern uint16_t CachedMusicResourceIndex;
+
 #endif

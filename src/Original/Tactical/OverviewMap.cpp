@@ -4,7 +4,12 @@
 
 #include "Data/RuntimeData.h"
 #include "Data/StartupData.h"
-#include "Data/TacticalData.h"
+#include "Data/CampaignStateData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
+#include "Data/TacticalStatusData.h"
+#include "Data/TacticalUnitData.h"
 #include "Graphics/Graphics.h"
 #include "Input/Input.h"
 #include "Tactical/Tactical.h"

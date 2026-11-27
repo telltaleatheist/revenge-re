@@ -9,6 +9,12 @@
 #include "Units/Units.h"
 #include "revenge/text.h"
 #include "revenge/original/campaign_data.h"
+#include "Data/CampaignStateData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
+#include "Data/TacticalStatusData.h"
+#include "Data/TacticalUnitData.h"
 
 // 1A1F:1C27
 uint16_t IsTacticalFunctionKey(int16_t inputAction)

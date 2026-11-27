@@ -7,6 +7,10 @@
 #include "Data/StartupData.h"
 #include "Data/TacticalTables.h"
 #include "Tactical/Tactical.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalMapData.h"
+#include "Data/TacticalUnitData.h"
 
 // 2D1B:0005: void RecalculateUnitCombatRatings(Stack RevengeUnitRecord *unitRecord,
 //     Stack word16 unitSlot, Stack word16 rebuildWeaponCounts, Stack word16 advanceRecovery)

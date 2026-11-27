@@ -2,7 +2,6 @@
 #include "revenge/input.h"
 #include "Data/AudioData.h"
 #include "Data/StartupData.h"
-#include "Data/TacticalData.h"
 #include "Input/Input.h"
 
 #include <assert.h>

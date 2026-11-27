@@ -8,7 +8,13 @@ set(CHR_3A6A_DATA_SOURCES
 	src/Original/Data/AudioData.cpp
 	src/Original/Data/StartupData.cpp
 	src/Original/Data/TextIOData.cpp
-	src/Original/Data/TacticalData.cpp
+	src/Original/Data/CampaignStateData.cpp
+	src/Original/Data/RosterData.cpp
+	src/Original/Data/TacticalUnitData.cpp
+	src/Original/Data/TacticalMapData.cpp
+	src/Original/Data/TacticalControlData.cpp
+	src/Original/Data/TacticalStatusData.cpp
+	src/Original/Data/MouseCursorData.cpp
 	src/Original/Data/TacticalTables.cpp
 	src/Original/Data/HitLocationData.cpp
 	src/Original/Data/CampaignData.cpp

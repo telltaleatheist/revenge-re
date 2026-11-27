@@ -2,7 +2,7 @@
 /* PlanarDisplayBacking.cpp -- packed display-backing builder. */
 
 #include "Data/RuntimeData.h"
-#include "Data/TacticalData.h"
+#include "Data/GraphicsData.h"
 #include "Graphics/Graphics.h"
 #include "Utility/Utility.h"
 #include "revenge/heap.h"

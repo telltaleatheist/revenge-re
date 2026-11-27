@@ -4,7 +4,7 @@
 // using Reko decompiler version 0.11.4.0.
 
 #include "Data/RuntimeData.h"
-#include "Data/TacticalData.h"
+#include "Data/MouseCursorData.h"
 #include "Data/TextIOData.h"
 #include "Input/Input.h"
 #include "Runtime/Runtime.h"

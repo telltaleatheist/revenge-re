@@ -2,7 +2,7 @@
 #include "revenge/video.h"
 #include "Data/RuntimeData.h"
 #include "Data/StartupData.h"
-#include "Data/TacticalData.h"
+#include "Data/GraphicsData.h"
 
 #include <stdint.h>
 

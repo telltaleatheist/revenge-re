@@ -1,5 +1,6 @@
 #include "fake_backend.h"
-#include "Data/TacticalData.h"
+#include "Data/MouseCursorData.h"
+#include "Data/TacticalStatusData.h"
 #include "Tactical/Tactical.h"
 
 #include <assert.h>

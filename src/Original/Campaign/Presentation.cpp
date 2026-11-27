@@ -2,7 +2,7 @@
 /* Campaign screen/message presentation procedure from original segment 0D73. */
 
 #include "Campaign/Campaign.h"
-#include "Data/TacticalData.h"
+#include "Data/CampaignStateData.h"
 #include "Input/Input.h"
 #include "Text/Text.h"
 

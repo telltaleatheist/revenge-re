@@ -7,7 +7,9 @@
 // clock procedures reconstructed from REVENGE.EXE segment 1A1F.
 
 #include "Data/StartupData.h"
-#include "Data/TacticalData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalControlData.h"
+#include "Data/TacticalUnitData.h"
 #include "revenge/input.h"
 #include "revenge/original/scene_data.h"
 #include "revenge/debug.h"

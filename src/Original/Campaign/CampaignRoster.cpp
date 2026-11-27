@@ -4,7 +4,9 @@
 
 #include "CampaignInternal.h"
 #include "Data/RuntimeData.h"
-#include "Data/TacticalData.h"
+#include "Data/CampaignStateData.h"
+#include "Data/RosterData.h"
+#include "Data/TacticalUnitData.h"
 #include "Input/Input.h"
 #include "revenge/text.h"
 

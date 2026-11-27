@@ -29,8 +29,8 @@ be split only between original procedure boundaries. Every procedure keeps its
 
 A procedure or a variable that `src/Original` shares is declared once, in the
 header beside the file that defines it: `Tactical/Tactical.h` declares what
-the files of `src/Original/Tactical` define, and `Data/TacticalData.h` what
-`Data/TacticalData.cpp` defines. A file includes the headers whose names it
+the files of `src/Original/Tactical` define, and `Data/TacticalUnitData.h` what
+`Data/TacticalUnitData.cpp` defines. A file includes the headers whose names it
 uses, spelled with their folder (`#include "Tactical/Tactical.h"`).
 
 A named constant sits beside its users: in the `.cpp` that alone uses it, in

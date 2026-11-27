@@ -6,7 +6,7 @@
 // Tactical movement, targeting, weapon, damage, and terrain procedures
 // reconstructed from REVENGE.EXE segment 2D1B.
 
-#include "Data/TacticalData.h"
+#include "Data/TacticalUnitData.h"
 
 inline constexpr uint8_t TACTICAL_ENGAGEMENT_NONE = 0x00;
 inline constexpr uint8_t TACTICAL_ENGAGEMENT_CLOSE = 0x01;
