@@ -3,6 +3,7 @@
 
 #include "REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
 #include "revenge/original_import.h"
+#include "revenge/story_text.h"
 
 // 2507:0008: enable the pilots used by the three training-selection rows.
 // VERIFIED against physical-alias ASM 24C5:0428-0475 (2507:0008-0055).
@@ -889,7 +890,7 @@ int16 SelectUnitClass(void)
 bool IsOmniUnitTypeList(const byte *unitTypeIdList)
 {
 	return unitTypeIdList ==
-		(const byte *) ORIGINAL_TEXT(OMNI_UNIT_TYPE_LIST_OFFSET);
+		(const byte *) &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + OMNI_UNIT_TYPE_LIST_OFFSET];
 }
 
 // 2507:0625: int16 SelectUnitTypeFromList(const byte far *unitTypeIdList)
@@ -941,7 +942,7 @@ int16 SelectUnitTypeFromList(const byte *unitTypeIdList)
 		if (menuEntryIndex < selectableUnitTypeCount)
 			label = UnitNameTable[unitTypeIdList[menuEntryIndex]];
 		else
-			label = ORIGINAL_TEXT(0x437E); // TEXT DS:437E
+			label = STORY_TEXT(SELECT_UNIT_TYPE_FROM_LIST_0); // TEXT DS:437E
 		DrawCenteredClippedText(label, 0x00, textLeft, textTop, textWidth,
 			(byte)ActiveTextForegroundColor,
 			(byte)ActiveTextBackgroundColor);

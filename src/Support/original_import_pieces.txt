@@ -1,18 +1,29 @@
-# The pieces of the player's REVENGE.EXE the game takes at start, besides the
-# strings named in place by ORIGINAL_TEXT(offset) (every use in src and include
-# is a row of its own). tools/import/make_import_table.py reads this list, the
-# sources and a copy of an edition (original_editions.txt), and writes that
-# edition's src/Support/original_import_table_<ID>.c: offsets, counts, lengths
-# and keyed hashes, never the bytes. The offsets are DOS 1.00's.
+# The pieces of the player's REVENGE.EXE the game takes. Its texts are each
+# a story id: the story file (src/Import) holds them, and the game reads them
+# from there; the sources name a single text by STORY_TEXT(ID). The rest is
+# data, still taken from the copy at start. tools/import/make_import_table.py
+# reads this list and a copy of an edition (original_editions.txt), and writes
+# that edition's src/Support/original_import_table_<ID>.c (offsets, counts,
+# lengths and keyed hashes, never the bytes), include/revenge/story_text.h
+# (the ids and their places) and src/Support/story_text_slots.c (where each
+# text goes). The offsets are DOS 1.00's.
 #
-#   header PATH                  included by the generated table
+#   header PATH                  included by the generated tables
 #   KIND NAME DS-OFFSET [COUNT [STRIDE]]
+#   text ID DS-OFFSET            a single text, STORY_TEXT(ID)
 #
 # Kinds (include/revenge/original_import.h): text_table, expanded_text_table,
 # mutable_text_table, pointed_text, mutable_pointed_text, byte_lists, bytes.
 # Offsets and counts are hex. A table's COUNT is its array's; STRIDE is 4
 # unless given. A bytes piece's COUNT is its length, which must be the size of
 # the object it fills. A mutable pointed text fills its whole char array.
+#
+# A table's texts are the ids NAME.0, NAME.1 and so on, NAME the table's name
+# in lower case with words split by "_" and without "TextTable", "Table" or
+# "Text" at its end; a pointed text's id is that name alone. A single text is
+# named after the object it fills, or the table and entry it is, or the
+# function that uses it in place. One that is an entry of a text_table or a
+# pointed_text has that entry's id and no line of its own.
 
 header revenge/original_data.h
 header revenge/original/audio_data.h
@@ -75,3 +86,279 @@ bytes                PilotRoster                             1D4C EC
 bytes                RandomPilotPoolCounts                   1B8C 3
 bytes                PresentationDismissTimeout              240F 2
 bytes                MIDIParser                              62B0 0A
+
+# Single texts
+text                 print_allocation_error_and_exit.0       232B
+text                 print_allocation_error_and_exit.1       233F
+text                 print_allocation_error_and_exit.2       2349
+text                 print_allocation_error_and_exit.3       234F
+text                 allocate_far_memory.0                   235E
+text                 invalid_save_version                    2372
+text                 mission_map_header                      2489
+text                 exit_to_dos_prompt                      2562
+text                 restart_confirmation                    2597
+text                 save_game.0                             261D
+text                 save_game.1                             2630
+text                 show_save_load_menu.6                   263D
+text                 show_save_load_menu.0                   265B
+text                 show_save_load_menu.1                   2662
+text                 show_save_load_menu.2                   2668
+text                 save_game_separator                     266E
+text                 show_save_load_menu.5                   2675
+text                 rename_save_slot.0                      267D
+text                 rename_save_slot.1                      2696
+text                 show_save_load_menu.3                   26AF
+text                 show_save_load_menu.7                   26BC
+text                 wait_for_acknowledgement.0              26DB
+text                 prompt_yes_no.0                         26F2
+text                 show_save_load_menu.4                   26FA
+text                 in_game_menu.0                          2A89
+text                 in_game_menu.1                          2A8E
+text                 in_game_menu.2                          2A93
+text                 in_game_menu.3                          2A9C
+text                 in_game_menu.4                          2AA7
+text                 in_game_menu.5                          2AB7
+text                 in_game_menu.6                          2AC3
+text                 in_game_menu.7                          2ACD
+text                 in_game_menu.8                          2ADD
+text                 in_game_menu.9                          2AEA
+text                 in_game_menu.10                         2AF7
+text                 pilot_identity_prefix                   2B04
+text                 pilot_name_prefix                       2B09
+text                 date_comma_space                        2B0B
+text                 date_space                              2B0D
+text                 scenario_complete_heading               2B11
+text                 scenario_failed_heading                 2B31
+text                 scene_file_too_large                    2F0E
+text                 unknown_unit_label                      30D3
+text                 unit_status_space                       30D9
+text                 unit_roster_separator                   30DB
+text                 unit_status_separator                   30DD
+text                 unit_status_armor_label                 30E0
+text                 unit_status_heat_label                  30E7
+text                 unit_status_exit_label                  30ED
+text                 training_category_heading               3390
+text                 training_scenario_heading               339F
+text                 no_selection_options                    33D0
+text                 training_unit_selection_prompt          33F1
+text                 initialize_game.0                       38E4
+text                 initialize_game.1                       3925
+text                 initialize_game.2                       392F
+text                 initialize_game.4                       3A12
+text                 initialize_game.3                       3A53
+text                 config_option_names.0                   3A91
+text                 config_option_names.1                   3AA1
+text                 config_option_names.2                   3AB1
+text                 config_option_names.3                   3AC1
+text                 media_configuration_error               3C05
+text                 initialize_game.6                       3C41
+text                 initialize_game.5                       3C70
+text                 unit_status_rating_labels               40EB
+text                 unit_status_heat_detail_label           4105
+text                 unit_status_damage_label                410C
+text                 view_satellite_map                      4215
+text                 intelligence_heading                    4228
+text                 scanned_by_active_probe                 4269
+text                 detected_by                             4278
+text                 radar_sensor                            4284
+text                 enemy_and_friendly_lances               4299
+text                 dead_text                               42D6
+text                 unknown_unit                            42DB
+text                 select_unit_type_from_list.0            437E
+text                 no_satellite_uplink                     4534
+text                 uplink_jammed                           4553
+text                 unit_status_equipment_separator         45F8
+text                 arrow_tag_equipment                     45FD
+text                 accuracy_equipment                      4608
+text                 double_heat_sink_equipment              4612
+text                 jump_equipment_suffix                   461D
+text                 friendly_unit_status_heading            4620
+text                 tactical_narration_label                4624
+text                 case_equipment                          4628
+text                 select_strafing_area_prompt             462E
+text                 select_artillery_target_prompt          4645
+text                 select_barrage_start_prompt             465C
+text                 select_barrage_end_prompt               467B
+text                 move_destination_prompt_suffix          4698
+text                 select_fire_target_prompt               46A5
+text                 focus_unit                              46E6
+text                 focus_lance                             46F1
+text                 scene_narration_separator               478D
+text                 formation_heading                       4790
+text                 satellite_zoom                          479C
+text                 continue_text                           47AB
+text                 pilot_roster_heading                    47B4
+text                 unit_name.0                             47B6
+text                 unit_name.1                             47BD
+text                 unit_name.2                             47C2
+text                 unit_name.3                             47CA
+text                 unit_name.4                             47D3
+text                 unit_name.5                             47DB
+text                 unit_name.6                             47E2
+text                 unit_name.7                             47EC
+text                 unit_name.8                             47F5
+text                 unit_name.9                             4801
+text                 unit_name.10                            4808
+text                 unit_name.11                            4811
+text                 unit_name.12                            4819
+text                 unit_name.13                            4822
+text                 unit_name.14                            4829
+text                 unit_name.15                            482F
+text                 unit_name.16                            4839
+text                 unit_name.17                            4840
+text                 unit_name.18                            484A
+text                 unit_name.19                            4854
+text                 unit_name.20                            485F
+text                 unit_name.21                            486C
+text                 unit_name.22                            4877
+text                 unit_name.23                            4881
+text                 unit_name.24                            488A
+text                 unit_name.25                            4894
+text                 unit_name.26                            489E
+text                 unit_name.27                            48A6
+text                 unit_name.28                            48AE
+text                 unit_name.29                            48BA
+text                 unit_name.30                            48C3
+text                 unit_name.31                            48CD
+text                 unit_name.32                            48D4
+text                 unit_name.33                            48DB
+text                 unit_name.34                            48E2
+text                 unit_name.35                            48EC
+text                 unit_name.36                            48F5
+text                 unit_name.37                            48FE
+text                 unit_name.38                            4907
+text                 unit_name.39                            4911
+text                 unit_name.40                            491D
+text                 unit_name.41                            4924
+text                 unit_name.42                            4930
+text                 unit_name.43                            493A
+text                 unit_name.44                            4943
+text                 unit_name.45                            4949
+text                 unit_name.46                            4951
+text                 unit_name.47                            4959
+text                 unit_name.48                            4961
+text                 unit_name.49                            4968
+text                 unit_name.50                            496D
+text                 unit_name.51                            497A
+text                 unit_name.52                            4982
+text                 unit_name.53                            498A
+text                 unit_name.54                            4992
+text                 unit_name.55                            4998
+text                 unit_name.56                            49A4
+text                 unit_name.57                            49AC
+text                 unit_name.58                            49B5
+text                 unit_name.59                            49BF
+text                 unit_name.60                            49C3
+text                 unit_name.61                            49D0
+text                 unit_name.62                            49D8
+text                 unit_name.63                            49E0
+text                 unit_name.64                            49E9
+text                 unit_name.65                            49F7
+text                 unit_name.66                            4A02
+text                 unit_name.67                            4A07
+text                 unit_name.68                            4A12
+text                 unit_name.69                            4A1A
+text                 unit_name.70                            4A22
+text                 unit_name.71                            4A2A
+text                 unit_name.72                            4A30
+text                 unit_name.73                            4A36
+text                 unit_name.74                            4A40
+text                 unit_name.75                            4A4A
+text                 unit_name.76                            4A55
+text                 unit_name.77                            4A63
+text                 unit_name.78                            4A71
+text                 unit_name.79                            4A7A
+text                 unit_name.80                            4A83
+text                 unit_name.81                            4A8D
+text                 unit_name.82                            4A97
+text                 unit_name.83                            4AA2
+text                 unit_name.84                            4AAD
+text                 unit_name.85                            4AB7
+text                 unit_name.86                            4ABF
+text                 unit_name.87                            4AC7
+text                 unit_name.88                            4AD4
+text                 unit_affiliation_name.0                 4D9A
+text                 unit_affiliation_name.1                 4DA9
+text                 unit_affiliation_name.2                 4DB5
+text                 unit_affiliation_name.3                 4DC4
+text                 combat_rating_moderate                  4E09
+text                 combat_rating_heavy                     4E12
+text                 combat_rating_brutal                    4E18
+text                 combat_rating_devastating               4E1F
+text                 combat_rating_incredible                4E2B
+text                 combat_rating_none                      4E36
+text                 heat_scale_description.1                4E40
+text                 heat_scale_description.2                4E45
+text                 heat_scale_description.4                4E52
+text                 heat_scale_description.5                4E5C
+text                 heat_scale_description.6                4E64
+text                 condition_description.2                 4EBB
+text                 condition_description.3                 4EC3
+text                 condition_description.4                 4ECC
+text                 tactical_unit_command.0                 4EDF
+text                 tactical_unit_command.1                 4EE8
+text                 tactical_unit_command.2                 4EF7
+text                 tactical_unit_command.3                 4F00
+text                 tactical_unit_command.4                 4F0E
+text                 tactical_unit_command.5                 4F13
+text                 tactical_unit_command.6                 4F21
+text                 tactical_unit_command.7                 4F2F
+text                 tactical_unit_command.8                 4F35
+text                 tactical_unit_command.9                 4F3A
+text                 tactical_unit_command.10                4F49
+text                 tactical_unit_command.11                4F55
+text                 tactical_unit_command.12                4F64
+text                 tactical_unit_command.13                4F75
+text                 tactical_support_command.0              4F82
+text                 tactical_support_command.1              4F93
+text                 tactical_support_command.2              4FA5
+text                 tactical_support_command.3              4FB5
+text                 tactical_support_command.4              4FC6
+text                 tactical_support_command.5              4FD4
+text                 tactical_support_command.6              4FE6
+text                 tactical_support_command.7              4FF4
+text                 tactical_overburn.0                     5002
+text                 tactical_overburn.1                     5010
+text                 out_of_scanning                         501D
+text                 range_text                              502D
+text                 lance_status.0                          5033
+text                 lance_status.1                          503B
+text                 lance_status.2                          5040
+text                 lance_status.3                          5048
+text                 lance_status.4                          504E
+text                 lance_status.5                          5054
+text                 lance_status.6                          505B
+text                 lance_status.7                          5061
+text                 friendly_equipment_description.0        5137
+text                 friendly_equipment_description.1        5145
+text                 enemy_assessment.0                      53D7
+text                 enemy_assessment.1                      53FD
+text                 enemy_assessment.2                      542A
+text                 enemy_assessment.3                      5449
+text                 enemy_assessment.4                      546F
+text                 enemy_assessment.5                      5497
+text                 enemy_assessment.6                      54C4
+text                 enemy_assessment.7                      54E7
+text                 enemy_assessment.8                      5510
+text                 enemy_assessment.9                      5536
+text                 enemy_assessment.10                     555F
+text                 enemy_assessment.11                     557C
+text                 enemy_assessment.12                     5594
+text                 enemy_assessment.13                     55AE
+text                 enemy_assessment.14                     55C8
+text                 enemy_assessment.15                     55E1
+text                 enemy_assessment.16                     5601
+text                 enemy_assessment.17                     5621
+text                 resource_create_file_error              5FD0
+text                 resource_illegal_open_mode_error        5FF5
+text                 resource_insert_disk_error              6012
+text                 resource_too_many_open_files_error      603F
+text                 resource_close_unopened_error           6056
+text                 resource_read_unopened_error            607B
+text                 resource_write_unopened_error           609F
+text                 resource_seek_unopened_error            60C4
+text                 resource_illegal_seek_origin_error      60E8
+text                 resource_write_cached_error             6112
+text                 resource_unknown_drive_error            6139
+text                 resource_unknown_cache_index_error      616B
+text                 resource_open_files_at_exit_error       619F

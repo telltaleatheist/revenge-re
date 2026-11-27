@@ -6,7 +6,7 @@
 #include "revenge/far_memory.h"
 #include "revenge/video.h"
 #include "REVENGE.h"
-#include "revenge/original_import.h"
+#include "revenge/story_text.h"
 
 word16 MemoryBlockSegment;
 byte VideoPathUnavailable;
@@ -35,7 +35,7 @@ char TacticalDestroyIconFileName[0x0D] = "DESTROYx.ICN";
 char TacticalIconListFileName[0x0D] = "ICONLIST.DAT";
 char TacticalMechSetFileName[0x0D] = "MECHSETX.ICN";
 const char *const InvalidSaveVersionText =
-	ORIGINAL_TEXT(0x2372);
+	STORY_TEXT(INVALID_SAVE_VERSION);
 const char CampaignClockSeparatorText[] = ":";
 const char FormattedLineBreak[] = "\r";
 const char PathSeparatorText[] = "/";

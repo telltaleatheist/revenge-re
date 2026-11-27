@@ -6,7 +6,7 @@
 #include "revenge/far_memory.h"
 #include "revenge/video.h"
 #include "REVENGE.h"
-#include "revenge/original_import.h"
+#include "revenge/story_text.h"
 
 char ResourceFileNames[
 	ORIGINAL_RESOURCE_DESCRIPTOR_COUNT][0x10] =
@@ -86,29 +86,29 @@ DOS_InterruptHandler SavedInvalidOpcodeHandler;
 ResourceErrorCallback ResourceErrorDisplayCallback;
 ResourceErrorCallback ResourceErrorDismissCallback;
 const char *const ResourceCreateFileErrorText =
-	ORIGINAL_TEXT(0x5FD0);
+	STORY_TEXT(RESOURCE_CREATE_FILE_ERROR);
 const char *const ResourceIllegalOpenModeErrorText =
-	ORIGINAL_TEXT(0x5FF5);
+	STORY_TEXT(RESOURCE_ILLEGAL_OPEN_MODE_ERROR);
 const char *const ResourceInsertDiskErrorText =
-	ORIGINAL_TEXT(0x6012);
+	STORY_TEXT(RESOURCE_INSERT_DISK_ERROR);
 const char *const ResourceTooManyOpenFilesErrorText =
-	ORIGINAL_TEXT(0x603F);
+	STORY_TEXT(RESOURCE_TOO_MANY_OPEN_FILES_ERROR);
 const char *const ResourceCloseUnopenedErrorText =
-	ORIGINAL_TEXT(0x6056);
+	STORY_TEXT(RESOURCE_CLOSE_UNOPENED_ERROR);
 const char *const ResourceReadUnopenedErrorText =
-	ORIGINAL_TEXT(0x607B);
+	STORY_TEXT(RESOURCE_READ_UNOPENED_ERROR);
 const char *const ResourceWriteUnopenedErrorText =
-	ORIGINAL_TEXT(0x609F);
+	STORY_TEXT(RESOURCE_WRITE_UNOPENED_ERROR);
 const char *const ResourceSeekUnopenedErrorText =
-	ORIGINAL_TEXT(0x60C4);
+	STORY_TEXT(RESOURCE_SEEK_UNOPENED_ERROR);
 const char *const ResourceIllegalSeekOriginErrorText =
-	ORIGINAL_TEXT(0x60E8);
+	STORY_TEXT(RESOURCE_ILLEGAL_SEEK_ORIGIN_ERROR);
 const char *const ResourceWriteCachedErrorText =
-	ORIGINAL_TEXT(0x6112);
+	STORY_TEXT(RESOURCE_WRITE_CACHED_ERROR);
 const char *const ResourceUnknownDriveErrorText =
-	ORIGINAL_TEXT(0x6139);
+	STORY_TEXT(RESOURCE_UNKNOWN_DRIVE_ERROR);
 const char *const ResourceUnknownCacheIndexErrorText =
-	ORIGINAL_TEXT(0x616B);
+	STORY_TEXT(RESOURCE_UNKNOWN_CACHE_INDEX_ERROR);
 const char *const ResourceOpenFilesAtExitErrorText =
-	ORIGINAL_TEXT(0x619F);
+	STORY_TEXT(RESOURCE_OPEN_FILES_AT_EXIT_ERROR);
 

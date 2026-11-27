@@ -100,6 +100,7 @@ int main(void)
 	edition.headerKeyedHash = headerHash;
 	edition.pieces = pieces;
 	edition.pieceCount = 1;
+	edition.storyTexts = NULL;
 	edition.variants = variants;
 	edition.variantCount = 1;
 
@@ -109,7 +110,7 @@ int main(void)
 	assert(OriginalImport_ImageBytes() == IMAGE_BYTES);
 	assert(OriginalImport_RelocationCount() == 1);
 	assert(OriginalImport_Relocation(0) == 0x14);
-	assert(memcmp(ORIGINAL_TEXT(TEXT_OFFSET), "Kq7", 4) == 0);
+	assert(memcmp(&OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + TEXT_OFFSET], "Kq7", 4) == 0);
 
 	/* A byte changed outside the pieces: refused, as the whole program is loaded. */
 	file[HEADER_BYTES + 0x40] = 0x01;

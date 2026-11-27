@@ -440,6 +440,8 @@ host OriginalEditionCount 0 the import's own state
 host OriginalEditions 0 the import's own state
 host OriginalImage 0 the import's own state
 host OriginalImportKey 0 the import's own state
+host StoryTextBuffer 0 the story's own state: the texts, each the original's, at places of our own
+host StoryTextSlots 0 the story's own state
 host ResourceFileLengths 168 representation: the image holds the lengths in the cached-file descriptors (DS:10B4, 12h apart); the port keeps them apart and copies them in when the cache starts
 unplaced AccuracyEquipmentText 4 host pointer
 unplaced ActiveDigitalDriverQueue 12 zero at every snap
@@ -457,7 +459,7 @@ unplaced ArtilleryShellingActive 1 zero at every snap
 unplaced ArtillerySupportAvailable 1 zero at every snap
 unplaced ArtilleryTargetMapX 1 zero at every snap
 unplaced ArtilleryTargetMapY 1 zero at every snap
-unplaced BapEquipmentText 5 zero at every snap
+unplaced BapEquipmentText 4 host pointer
 unplaced BlankUnitRecord 96 zero at every snap
 unplaced BusyWaitLoopCalibration 2 zero at every snap
 unplaced CachedMusicResourceIndex 2 its bytes match nowhere (pointers or values differ)
@@ -489,7 +491,7 @@ unplaced CurrentUnitDurabilityTotal 2 its bytes match nowhere (pointers or value
 unplaced DamagedTerrainSpriteLookup 4 host pointer
 unplaced DateCommaSpaceText 4 host pointer
 unplaced DateSpaceText 4 host pointer
-unplaced DeadText 5 zero at every snap
+unplaced DeadText 4 host pointer
 unplaced DeferredStage16Story 2 zero at every snap
 unplaced DetectedByText 4 host pointer
 unplaced DigitalDriverHardwareOffset 2 zero at every snap
@@ -539,7 +541,7 @@ unplaced FormationHeading 4 host pointer
 unplaced FormationOffsetTable F6 its bytes match nowhere (pointers or values differ)
 unplaced FormattedLineBreak 2 zero at every snap
 unplaced FriendlyEquipmentDescriptionTable 8 host pointer
-unplaced FriendlyUnitStatusHeading 4 zero at every snap
+unplaced FriendlyUnitStatusHeading 4 host pointer
 unplaced GameInitialized 2 several places match
 unplaced GroundTargetWasAttacked 1 several places match
 unplaced HeatScaleDescriptionTable 1C host pointer
@@ -549,7 +551,7 @@ unplaced InGameMenuTextTable 2C host pointer
 unplaced InputConfigTokenDelimiters 4 zero at every snap
 unplaced IntelligenceHeading 4 host pointer
 unplaced InvalidSaveVersionText 4 host pointer
-unplaced JumpEquipmentSuffix 3 zero at every snap
+unplaced JumpEquipmentSuffix 4 host pointer
 unplaced LanceFormationProfile 6 several places match
 unplaced LanceStatusTextTable 20 host pointer
 unplaced LastOverviewNoticeHour 2 zero at every snap
@@ -693,7 +695,7 @@ unplaced TacticalEffectOverlayMap E4 zero at every snap
 unplaced TacticalKeyRepeatDelayTicks 2 its bytes match nowhere (pointers or values differ)
 unplaced TacticalMenuInputState 2 zero at every snap
 unplaced TacticalNarrationBlankText 4 zero at every snap
-unplaced TacticalNarrationLabel 4 zero at every snap
+unplaced TacticalNarrationLabel 4 host pointer
 unplaced TacticalNoUnitStatusText 1C zero at every snap
 unplaced TacticalOverburnTextTable 8 host pointer
 unplaced TacticalOverviewClockNoticeActive 2 zero at every snap

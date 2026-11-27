@@ -3,7 +3,7 @@
 
 #include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
 #include "revenge/debug.h"
-#include "revenge/original_import.h"
+#include "revenge/story_text.h"
 
 // 0D73:4866: word16 SaveGame(void)
 // Called from:
@@ -28,7 +28,7 @@ word16 SaveGame(void)
 		{
 			ActiveTextCursorRow = 0x000A;
 			HideMouseCursorOverlay();
-			RenderFormattedText(ORIGINAL_TEXT(0x261D)); // TEXT DS:261D
+			RenderFormattedText(STORY_TEXT(SAVE_GAME_0)); // TEXT DS:261D
 			ShowMouseCursorOverlay();
 			if (ScenarioRosterPrepared == FALSE)
 			{
@@ -101,7 +101,7 @@ word16 SaveGame(void)
 				0x0044,
 				(int16) SelectedSaveSlotIndex + 0x0001);
 			HideMouseCursorOverlay();
-			RenderFormattedText(ORIGINAL_TEXT(0x2630)); // TEXT DS:2630
+			RenderFormattedText(STORY_TEXT(SAVE_GAME_1)); // TEXT DS:2630
 			ShowMouseCursorOverlay();
 				SaveDirectory.slots[SelectedSaveSlotIndex].occupied = TRUE;
 			SavedSaveTransferState = SaveTransferState;
@@ -393,25 +393,25 @@ int16 ShowSaveLoadMenu(word16 menuMode)
 
 	menuItemCount = SAVE_SLOT_COUNT;
 	renameItemIndex = menuItemCount;
-	RenderFormattedText(ORIGINAL_TEXT(0x265B)); // TEXT DS:265B
+	RenderFormattedText(STORY_TEXT(SHOW_SAVE_LOAD_MENU_0)); // TEXT DS:265B
 	if (menuMode == SAVE_LOAD_MODE_LOAD)
-		RenderFormattedText(ORIGINAL_TEXT(0x2662)); // TEXT DS:2662
+		RenderFormattedText(STORY_TEXT(SHOW_SAVE_LOAD_MENU_1)); // TEXT DS:2662
 	else
-		RenderFormattedText(ORIGINAL_TEXT(0x2668)); // TEXT DS:2668
+		RenderFormattedText(STORY_TEXT(SHOW_SAVE_LOAD_MENU_2)); // TEXT DS:2668
 	RenderFormattedText(SaveGameSeparatorText);
 	RenderFormattedText("\r"); // TEXT DS:47B4: CR before unit-name table; Locust starts at DS:47B6
 
 	exitDosItemIndex = ++menuItemCount;
-	RenderFormattedText(ORIGINAL_TEXT(0x26AF)); // TEXT DS:26AF
+	RenderFormattedText(STORY_TEXT(SHOW_SAVE_LOAD_MENU_3)); // TEXT DS:26AF
 	trainingItemIndex = -0x000A;
 	if (menuMode == SAVE_LOAD_MODE_LOAD && SaveTransferState == 0x8000)
 	{
 		++SaveLoadMenuDefaultSelection;
 		trainingItemIndex = ++menuItemCount;
-		RenderFormattedText(ORIGINAL_TEXT(0x26FA)); // TEXT DS:26FA
+		RenderFormattedText(STORY_TEXT(SHOW_SAVE_LOAD_MENU_4)); // TEXT DS:26FA
 	}
 	cancelItemIndex = ++menuItemCount;
-	RenderFormattedText(ORIGINAL_TEXT(0x2675)); // TEXT DS:2675
+	RenderFormattedText(STORY_TEXT(SHOW_SAVE_LOAD_MENU_5)); // TEXT DS:2675
 	RenderFormattedText("\r"); // TEXT DS:47B4: CR before unit-name table; Locust starts at DS:47B6
 	ShowMouseCursorOverlay();
 	UiRegionTable[0x0C].rowCount = menuItemCount + 0x0001;
@@ -425,7 +425,7 @@ int16 ShowSaveLoadMenu(word16 menuMode)
 		if (menuMode == SAVE_LOAD_MODE_LOAD && !selectedSlot->occupied)
 		{
 			HideMouseCursorOverlay();
-			RenderFormattedText(ORIGINAL_TEXT(0x263D)); // TEXT DS:263D
+			RenderFormattedText(STORY_TEXT(SHOW_SAVE_LOAD_MENU_6)); // TEXT DS:263D
 			ShowMouseCursorOverlay();
 			WaitForAcknowledgement();
 		}
@@ -451,11 +451,11 @@ int16 ShowSaveLoadMenu(word16 menuMode)
 					promptY = (int16)
 						((ActiveTextWindowTopTile << 0x03) +
 						0x0009 * ActiveFontGlyphAdvanceX);
-					RenderFormattedText(ORIGINAL_TEXT(0x26BC)); // TEXT DS:26BC
+					RenderFormattedText(STORY_TEXT(SHOW_SAVE_LOAD_MENU_7)); // TEXT DS:26BC
 					XorVideoRectangle(promptX, promptY,
 						(word16) (promptX +
 							ActiveFontGlyphAdvanceX *
-							StringLength(ORIGINAL_TEXT(0x26BC)) - 0x0001),
+							StringLength(STORY_TEXT(SHOW_SAVE_LOAD_MENU_7)) - 0x0001),
 						(word16) (promptY +
 							ActiveFontLineHeight - 0x0001),
 						0x0001);
@@ -539,13 +539,13 @@ word16 RenameSaveSlot(int16 slotIndex)
 			ActiveTextCursorRow *
 			ActiveFontGlyphAdvanceX);
 		HideMouseCursorOverlay();
-		RenderFormattedText(ORIGINAL_TEXT(0x267D)); // TEXT DS:267D
+		RenderFormattedText(STORY_TEXT(RENAME_SAVE_SLOT_0)); // TEXT DS:267D
 		XorVideoRectangle(
 			promptX,
 			promptY,
 			(word16) (promptX +
 				ActiveFontGlyphAdvanceX *
-				StringLength(ORIGINAL_TEXT(0x267D)) - 0x0001),
+				StringLength(STORY_TEXT(RENAME_SAVE_SLOT_0)) - 0x0001),
 			(word16) (promptY +
 				ActiveFontLineHeight -
 				0x0001),
@@ -573,13 +573,13 @@ word16 RenameSaveSlot(int16 slotIndex)
 		ActiveTextCursorRow *
 		ActiveFontGlyphAdvanceX);
 	HideMouseCursorOverlay();
-	RenderFormattedText(ORIGINAL_TEXT(0x2696)); // TEXT DS:2696
+	RenderFormattedText(STORY_TEXT(RENAME_SAVE_SLOT_1)); // TEXT DS:2696
 	XorVideoRectangle(
 		promptX,
 		promptY,
 		(word16) (promptX +
 			ActiveFontGlyphAdvanceX *
-			StringLength(ORIGINAL_TEXT(0x2696)) - 0x0001),
+			StringLength(STORY_TEXT(RENAME_SAVE_SLOT_1)) - 0x0001),
 		(word16) (promptY +
 			ActiveFontLineHeight -
 			0x0001),
@@ -617,10 +617,10 @@ void WaitForAcknowledgement(void)
 	topY = (word16) ((ActiveTextWindowTopTile << 0x03) +
 		ActiveTextCursorRow *
 		ActiveFontGlyphAdvanceX);
-	RenderFormattedText(ORIGINAL_TEXT(0x26DB)); // TEXT DS:26DB
+	RenderFormattedText(STORY_TEXT(WAIT_FOR_ACKNOWLEDGEMENT_0)); // TEXT DS:26DB
 	rightX = (word16) (leftX +
 		ActiveFontGlyphAdvanceX *
-		StringLength(ORIGINAL_TEXT(0x26DB)) - 0x0001);
+		StringLength(STORY_TEXT(WAIT_FOR_ACKNOWLEDGEMENT_0)) - 0x0001);
 	bottomY = (word16) (topY +
 		ActiveFontLineHeight -
 		0x0001);
@@ -646,7 +646,7 @@ int16 PromptYesNo(word16 initialSelection)
 		RenderFormattedText("\r"); // TEXT DS:47B4: CR before unit-name table; Locust starts at DS:47B6
 	UiRegionTable[0x0D].topRow = ActiveTextCursorRow;
 	UiRegionTable[0x0D].selectedRow = initialSelection;
-	RenderFormattedText(ORIGINAL_TEXT(0x26F2)); // TEXT DS:26F2
+	RenderFormattedText(STORY_TEXT(PROMPT_YES_NO_0)); // TEXT DS:26F2
 	ShowMouseCursorOverlay();
 	FlushPendingInput();
 	return RunSingleUiRegionSelection(0x0D);

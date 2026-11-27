@@ -7,7 +7,7 @@
 #include "revenge/input.h"
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
-#include "revenge/original_import.h"
+#include "revenge/story_text.h"
 #include "revenge/media_settings.h"
 
 #include <stdint.h>
@@ -62,7 +62,7 @@ enum
 };
 
 static const char *const MediaConfigurationErrorText =
-	ORIGINAL_TEXT(0x3C05);
+	STORY_TEXT(MEDIA_CONFIGURATION_ERROR);
 
 static MediaConfigurationHandler const ConfigOptionHandlers[0x04] =
 {
@@ -75,7 +75,7 @@ static MediaConfigurationHandler const ConfigOptionHandlers[0x04] =
 /* The names in MEDIA.CFG's option records (DS:3A91, 16 bytes apart). */
 const char *const ConfigOptionNames[MEDIA_OPTION_COUNT] =
 {
-	ORIGINAL_TEXT(0x3A91), ORIGINAL_TEXT(0x3AA1), ORIGINAL_TEXT(0x3AB1), ORIGINAL_TEXT(0x3AC1)
+	STORY_TEXT(CONFIG_OPTION_NAMES_0), STORY_TEXT(CONFIG_OPTION_NAMES_1), STORY_TEXT(CONFIG_OPTION_NAMES_2), STORY_TEXT(CONFIG_OPTION_NAMES_3)
 };
 
 
@@ -116,8 +116,8 @@ void InitializeGame(void)
 	StartupInputMode = 0x0201;
 	InstallKeyboardHandlers();
 
-	DOS_PrintString(ORIGINAL_TEXT(0x38E4)); // TEXT DS:38E4
-	DOS_PrintString(ORIGINAL_TEXT(0x3925)); // TEXT DS:3925
+	DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_0)); // TEXT DS:38E4
+	DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_1)); // TEXT DS:3925
 	IntegerToString(0x01, versionText, 0x10);
 	DOS_PrintString(versionText);
 	DOS_PrintString(VersionDecimalSeparator); // TEXT DS:3A8F "."
@@ -129,7 +129,7 @@ void InitializeGame(void)
 	DOS_PrintString(versionText);
 	DOS_PrintString(VersionDecimalSeparator); // TEXT DS:3A8F "."
 	DOS_PrintString("\r\n"); // TEXT DS:3A8C
-	DOS_PrintString(ORIGINAL_TEXT(0x392F)); // TEXT DS:392F
+	DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_2)); // TEXT DS:392F
 	DOS_PrintString("\r\n");
 	DOS_PrintString("\r\n");
 
@@ -140,17 +140,17 @@ void InitializeGame(void)
 	{
 		if (availableMemoryKiB < 0x0110)
 		{
-			DOS_PrintString(ORIGINAL_TEXT(0x3A53)); // TEXT DS:3A53
+			DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_3)); // TEXT DS:3A53
 			startupChecksPassed = FALSE;
 		}
 		else if (VideoAdapterType == VIDEO_ADAPTER_TANDY && availableMemoryKiB < 0x0120)
 		{
-			DOS_PrintString(ORIGINAL_TEXT(0x3A12)); // TEXT DS:3A12
+			DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_4)); // TEXT DS:3A12
 			startupChecksPassed = FALSE;
 		}
 		if (startupChecksPassed == FALSE)
 		{
-			DOS_PrintString(ORIGINAL_TEXT(0x3C70)); // TEXT DS:3C70
+			DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_5)); // TEXT DS:3C70
 			FlushPendingInput();
 			ReadTranslatedKeypress();
 		}
@@ -166,7 +166,7 @@ void InitializeGame(void)
 	Font8Resource = font8;
 	if (font6 == NULL || font8 == NULL)
 	{
-		DOS_PrintString(ORIGINAL_TEXT(0x3C41)); // TEXT DS:3C41
+		DOS_PrintString(STORY_TEXT(INITIALIZE_GAME_6)); // TEXT DS:3C41
 		FlushPendingInput();
 		ReadTranslatedKeypress();
 		return;

@@ -19,7 +19,8 @@ set(CHR_3A6A_DATA_SOURCES
 	src/Support/original_import.c
 	src/Support/original_import_editions.c
 	src/Support/original_import_table_dos100.c
-	src/Support/sha256.c)
+	src/Support/sha256.c
+	src/Support/story_text_buffer.c)
 
 set(CHR_ORIGINAL_SOURCES
 	src/Original/Graphics/REVENGE_0800_GRAPHICS_RUNTIME.c

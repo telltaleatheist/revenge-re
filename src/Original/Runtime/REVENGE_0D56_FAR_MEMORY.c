@@ -3,7 +3,7 @@
 
 #include "REVENGE.h"
 #include "revenge/original_data.h"
-#include "revenge/original_import.h"
+#include "revenge/story_text.h"
 
 char *LongToString(
 	int32 value,
@@ -23,19 +23,19 @@ void PrintAllocationErrorAndExit(const char *message)
 	// and terminates with exit status 1. This routine does not return.
 	SetVideoModeForAdapter(0x06);
 	DOS_PrintString(message);
-	DOS_PrintString(ORIGINAL_TEXT(0x232B)); // TEXT DS:232B
+	DOS_PrintString(STORY_TEXT(PRINT_ALLOCATION_ERROR_AND_EXIT_0)); // TEXT DS:232B
 	LongToString((int32) MAKE_DWORD(
 		FailedAllocationSizeHigh,
 		FailedAllocationSizeLow),
 		numberText,
 		0x0A);
 	DOS_PrintString(numberText);
-	DOS_PrintString(ORIGINAL_TEXT(0x233F)); // TEXT DS:233F
-	DOS_PrintString(ORIGINAL_TEXT(0x2349)); // TEXT DS:2349
+	DOS_PrintString(STORY_TEXT(PRINT_ALLOCATION_ERROR_AND_EXIT_1)); // TEXT DS:233F
+	DOS_PrintString(STORY_TEXT(PRINT_ALLOCATION_ERROR_AND_EXIT_2)); // TEXT DS:2349
 
 	LongToString((int32) GetAvailableHeapBytes(), numberText, 0x0A);
 	DOS_PrintString(numberText);
-	DOS_PrintString(ORIGINAL_TEXT(0x234F)); // TEXT DS:234F
+	DOS_PrintString(STORY_TEXT(PRINT_ALLOCATION_ERROR_AND_EXIT_3)); // TEXT DS:234F
 	ReadTranslatedKeypress();
 	ShutdownGame();
 	RunExitHandlersAndTerminate(0x01);
@@ -53,7 +53,7 @@ byte *AllocateFarMemory(int32 byteCount)
 	// long-integer implementation of byteCount > 0000FFFFh.
 	if (byteCount > 0x0000FFFFL)
 	{
-		PrintAllocationErrorAndExit(ORIGINAL_TEXT(0x235E)); // TEXT DS:235E
+		PrintAllocationErrorAndExit(STORY_TEXT(ALLOCATE_FAR_MEMORY_0)); // TEXT DS:235E
 		return 0x00; // Unreachable: the error routine terminates the process.
 	}
 

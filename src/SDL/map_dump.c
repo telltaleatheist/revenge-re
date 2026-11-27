@@ -13,6 +13,8 @@
 #include "revenge/original/scene_data.h"
 #include "revenge/original_data.h"
 #include "revenge/random.h"
+#include "revenge/story.h"
+#include "revenge/story_text.h"
 #include "Audio/REVENGE_3621_MIDI_INTERNAL.h"
 #include "map_dump.h"
 
@@ -310,10 +312,10 @@ static const MapDumpObject objects[] =
 	{ "OutOfScanningText", &OutOfScanningText, sizeof(OutOfScanningText) },
 	{ "RangeText", &RangeText, sizeof(RangeText) },
 	{ "ArrowTagEquipmentText", &ArrowTagEquipmentText, sizeof(ArrowTagEquipmentText) },
-	{ "BapEquipmentText", BapEquipmentText, 0 },
+	{ "BapEquipmentText", &BapEquipmentText, sizeof(BapEquipmentText) },
 	{ "AccuracyEquipmentText", &AccuracyEquipmentText, sizeof(AccuracyEquipmentText) },
 	{ "DoubleHeatSinkEquipmentText", &DoubleHeatSinkEquipmentText, sizeof(DoubleHeatSinkEquipmentText) },
-	{ "JumpEquipmentSuffix", JumpEquipmentSuffix, 0 },
+	{ "JumpEquipmentSuffix", &JumpEquipmentSuffix, sizeof(JumpEquipmentSuffix) },
 	{ "CaseEquipmentText", &CaseEquipmentText, sizeof(CaseEquipmentText) },
 	{ "MoveDestinationPromptSuffix", &MoveDestinationPromptSuffix, sizeof(MoveDestinationPromptSuffix) },
 	{ "FormationHeading", &FormationHeading, sizeof(FormationHeading) },
@@ -331,7 +333,7 @@ static const MapDumpObject objects[] =
 	{ "TacticalSupportCommandTextTable", &TacticalSupportCommandTextTable, sizeof(TacticalSupportCommandTextTable) },
 	{ "TacticalOverburnTextTable", &TacticalOverburnTextTable, sizeof(TacticalOverburnTextTable) },
 	{ "LanceStatusTextTable", &LanceStatusTextTable, sizeof(LanceStatusTextTable) },
-	{ "DeadText", DeadText, 0 },
+	{ "DeadText", &DeadText, sizeof(DeadText) },
 	{ "MapEdgeEffectQueue", &MapEdgeEffectQueue, sizeof(MapEdgeEffectQueue) },
 	{ "MapEdgeEffectCount", &MapEdgeEffectCount, sizeof(MapEdgeEffectCount) },
 	{ "PrimaryStatusRow", &PrimaryStatusRow, sizeof(PrimaryStatusRow) },
@@ -355,13 +357,13 @@ static const MapDumpObject objects[] =
 	{ "WeaponTraceMinorStepX", &WeaponTraceMinorStepX, sizeof(WeaponTraceMinorStepX) },
 	{ "WeaponTraceMinorStepY", &WeaponTraceMinorStepY, sizeof(WeaponTraceMinorStepY) },
 	{ "TacticalNoUnitStatusText", TacticalNoUnitStatusText, 0 },
-	{ "FriendlyUnitStatusHeading", FriendlyUnitStatusHeading, 0 },
+	{ "FriendlyUnitStatusHeading", &FriendlyUnitStatusHeading, sizeof(FriendlyUnitStatusHeading) },
 	{ "EnemyUnitStatusHeading", EnemyUnitStatusHeading, 0 },
 	{ "UnitStatusSeparatorText", UnitStatusSeparatorText, 0 },
 	{ "UnitHeatStatusPrefix", UnitHeatStatusPrefix, 0 },
 	{ "TacticalNarrationBlankText", TacticalNarrationBlankText, 0 },
 	{ "TacticalClockBlankText", TacticalClockBlankText, 0 },
-	{ "TacticalNarrationLabel", TacticalNarrationLabel, 0 },
+	{ "TacticalNarrationLabel", &TacticalNarrationLabel, sizeof(TacticalNarrationLabel) },
 	{ "CombatRatingLightText", &CombatRatingLightText, sizeof(CombatRatingLightText) },
 	{ "CombatRatingModerateText", &CombatRatingModerateText, sizeof(CombatRatingModerateText) },
 	{ "CombatRatingHeavyText", &CombatRatingHeavyText, sizeof(CombatRatingHeavyText) },
@@ -753,6 +755,8 @@ static const MapDumpObject objects[] =
 	{ "EncodedSpriteHorizontalPhase", &EncodedSpriteHorizontalPhase, sizeof(EncodedSpriteHorizontalPhase) },
 	{ "EncodedSpriteClipWidthTiles", &EncodedSpriteClipWidthTiles, sizeof(EncodedSpriteClipWidthTiles) },
 	{ "PseudoRandomState", &PseudoRandomState, sizeof(PseudoRandomState) },
+	{ "StoryTextSlots", &StoryTextSlots, sizeof(StoryTextSlots) },
+	{ "StoryTextBuffer", &StoryTextBuffer, sizeof(StoryTextBuffer) },
 	{ "MIDIDriverDescriptorIdentities", &MIDIDriverDescriptorIdentities, sizeof(MIDIDriverDescriptorIdentities) },
 	{ "MIDIDriverHostDispatches", &MIDIDriverHostDispatches, sizeof(MIDIDriverHostDispatches) },
 	{ "NullDigitalHardware", &NullDigitalHardware, sizeof(NullDigitalHardware) },

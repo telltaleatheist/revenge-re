@@ -7,6 +7,7 @@
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
 #include "revenge/original/scene_data.h"
+#include "revenge/story_text.h"
 
 const char *TitleTextTable[0x12];
 
@@ -14,7 +15,7 @@ const char *MonthNameTextTable[0x0C];
 
 const char *MissionDateLabelTextTable[0x0C];
 
-const char *const ExitToDosPrompt = ORIGINAL_TEXT(0x2562);
+const char *const ExitToDosPrompt = STORY_TEXT(EXIT_TO_DOS_PROMPT);
 
 const char *CampaignPathMenuTextTable[0x02];
 
@@ -24,19 +25,19 @@ const char *AlternateScenarioMenuTextTable[0x02];
 
 const char *MainMenuTextTable[0x03];
 
-const char *const PilotIdentityPrefixText = ORIGINAL_TEXT(0x2B04);
-const char *const PilotNamePrefixText = ORIGINAL_TEXT(0x2B09);
-const char *const DateCommaSpaceText = ORIGINAL_TEXT(0x2B0B);
-const char *const DateSpaceText = ORIGINAL_TEXT(0x2B0D);
-const char *const ScenarioCompleteHeadingText = ORIGINAL_TEXT(0x2B11);
-const char *const ScenarioFailedHeadingText = ORIGINAL_TEXT(0x2B31);
+const char *const PilotIdentityPrefixText = STORY_TEXT(PILOT_IDENTITY_PREFIX);
+const char *const PilotNamePrefixText = STORY_TEXT(PILOT_NAME_PREFIX);
+const char *const DateCommaSpaceText = STORY_TEXT(DATE_COMMA_SPACE);
+const char *const DateSpaceText = STORY_TEXT(DATE_SPACE);
+const char *const ScenarioCompleteHeadingText = STORY_TEXT(SCENARIO_COMPLETE_HEADING);
+const char *const ScenarioFailedHeadingText = STORY_TEXT(SCENARIO_FAILED_HEADING);
 
 const char *CampaignMessageTextTable[CAMPAIGN_MESSAGE_COUNT];
 
-const char *const PilotRosterHeadingText = ORIGINAL_TEXT(0x47B4);
+const char *const PilotRosterHeadingText = STORY_TEXT(PILOT_ROSTER_HEADING);
 
 char ScenarioResourcePathText[0x0B];
-const char *const SceneFileTooLargeText = ORIGINAL_TEXT(0x2F0E);
+const char *const SceneFileTooLargeText = STORY_TEXT(SCENE_FILE_TOO_LARGE);
 
 const char *GameOptionLabelTextTable[0x07];
 
@@ -46,8 +47,8 @@ const char *NarrationModeLabelTextTable[0x03];
 
 const char *InputDeviceLabelTextTable[0x02];
 
-const char *const FocusUnitText = ORIGINAL_TEXT(0x46E6);
-const char *const FocusLanceText = ORIGINAL_TEXT(0x46F1);
+const char *const FocusUnitText = STORY_TEXT(FOCUS_UNIT);
+const char *const FocusLanceText = STORY_TEXT(FOCUS_LANCE);
 
 char *DisabledUnitNarrationTextTable[0x03];
 
@@ -55,14 +56,14 @@ char *DestroyedUnitNarrationTextTable[0x03];
 
 char *ScenarioEventNarrationTextTable[0x1E];
 
-const char *const SceneNarrationSeparatorText = ORIGINAL_TEXT(0x478D);
+const char *const SceneNarrationSeparatorText = STORY_TEXT(SCENE_NARRATION_SEPARATOR);
 
 const char *UnitAllegianceLabelTextTable[0x02];
 
-const char *const UnknownUnitLabel = ORIGINAL_TEXT(0x30D3);
-const char *const UnitStatusSpace = ORIGINAL_TEXT(0x30D9);
-const char *const UnitRosterSeparator = ORIGINAL_TEXT(0x30DB);
-const char *const UnitStatusSeparator = ORIGINAL_TEXT(0x30DD);
+const char *const UnknownUnitLabel = STORY_TEXT(UNKNOWN_UNIT_LABEL);
+const char *const UnitStatusSpace = STORY_TEXT(UNIT_STATUS_SPACE);
+const char *const UnitRosterSeparator = STORY_TEXT(UNIT_ROSTER_SEPARATOR);
+const char *const UnitStatusSeparator = STORY_TEXT(UNIT_STATUS_SEPARATOR);
 
 const char *UnitStatHeaderTextTable[0x06];
 
@@ -87,14 +88,14 @@ const char *TrainingDeploymentRosterLabelTextTable[0x02];
 const char *UnitRosterColumnLabelTextTable[0x03];
 
 const char *FriendlyEnemySuffixText;
-const char *const TrainingCategoryHeadingText = ORIGINAL_TEXT(0x3390);
+const char *const TrainingCategoryHeadingText = STORY_TEXT(TRAINING_CATEGORY_HEADING);
 const char *TrainingCategoryLabelTextTable[0x02];
 
-const char *const TrainingScenarioHeadingText = ORIGINAL_TEXT(0x339F);
+const char *const TrainingScenarioHeadingText = STORY_TEXT(TRAINING_SCENARIO_HEADING);
 char *TrainingScenarioLabelTextTable[0x06];
 
-const char *const NoSelectionOptionsText = ORIGINAL_TEXT(0x33D0);
-const char *const TrainingUnitSelectionPrompt = ORIGINAL_TEXT(0x33F1);
+const char *const NoSelectionOptionsText = STORY_TEXT(NO_SELECTION_OPTIONS);
+const char *const TrainingUnitSelectionPrompt = STORY_TEXT(TRAINING_UNIT_SELECTION_PROMPT);
 
 const char *PilotSurnameTextTable[0x3B];
 
@@ -108,4 +109,4 @@ const char *UnitMovementClassLabelTextTable[0x05];
 
 const char *UnitArmorConditionLabelTextTable[0x06];
 
-const char *const UnitStatusEquipmentSeparator = ORIGINAL_TEXT(0x45F8);
+const char *const UnitStatusEquipmentSeparator = STORY_TEXT(UNIT_STATUS_EQUIPMENT_SEPARATOR);

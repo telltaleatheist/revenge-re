@@ -134,6 +134,9 @@ graphics driver; `SDL_RENDER_DRIVER=software` chooses it from the start.
 
 This tree carries none of the original game's text, art or data: the program
 reads them from the player's own `REVENGE.EXE` and game files at start. The
+text is taken from the copy once, into `story/` in the player's folder
+(`text.json`, and `import.json` saying what it was taken from), and read from
+there; it is taken again when that folder is missing or from an older version. The
 title artwork and screenshots of the upstream port (`docs/images`, which
 `NOTICE.md` and `LICENSES/README.md` still mention) are left out.
 

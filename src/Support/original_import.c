@@ -32,7 +32,6 @@ static int originalImageAccepted;  /* by the last OriginalImport_Identify */
 static int originalImportLoaded;
 static const OriginalEdition *loadedEdition;
 static const OriginalVariant *loadedVariant;
-static char emptyText[1];
 
 static uint16_t ImageWord(size_t offset)
 {
@@ -258,55 +257,16 @@ static int ReadImage(const char *executablePath)
 	return 1;
 }
 
-static char *CopyText(const uint8_t *bytes, size_t length)
-{
-	char *copy = (char *) malloc(length + 1);
-
-	if (copy != NULL)
-	{
-		memcpy(copy, bytes, length);
-		copy[length] = '\0';
-	}
-	return copy;
-}
-
-/* Puts a matched piece in place. Returns 0 only when memory runs out. */
-static int PlacePiece(const OriginalPiece *piece, uint8_t *scratch)
+/* The data pieces go in place; the texts are the story's (revenge/story.h). */
+static void PlacePiece(const OriginalPiece *piece)
 {
 	uint16_t index;
 
 	switch (piece->kind)
 	{
-	case ORIGINAL_PIECE_TEXT:
-		return 1;
 	case ORIGINAL_PIECE_BYTES:
 		memcpy(piece->target, &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + piece->dataOffset], piece->length);
-		return 1;
-	case ORIGINAL_PIECE_POINTED_TEXT:
-	{
-		size_t offset = EntryOffset(piece, 0);
-
-		*(const char **) piece->target = offset == (size_t) -1 ? emptyText : &OriginalImage[offset];
-		return 1;
-	}
-	case ORIGINAL_PIECE_MUTABLE_POINTED_TEXT:
-	{
-		size_t offset = EntryOffset(piece, 0);
-		size_t length = offset == (size_t) -1 ? 0 : TextLength(offset);
-
-		memset(piece->target, 0, piece->length);
-		if (length > 0)
-			memcpy(piece->target, &OriginalImage[offset], length);
-		return 1;
-	}
-	case ORIGINAL_PIECE_TEXT_TABLE:
-		for (index = 0; index < piece->count; ++index)
-		{
-			size_t offset = EntryOffset(piece, index);
-
-			((const char **) piece->target)[index] = offset == (size_t) -1 ? emptyText : &OriginalImage[offset];
-		}
-		return 1;
+		break;
 	case ORIGINAL_PIECE_BYTE_LISTS:
 		for (index = 0; index < piece->count; ++index)
 		{
@@ -315,34 +275,27 @@ static int PlacePiece(const OriginalPiece *piece, uint8_t *scratch)
 			((const uint8_t **) piece->target)[index] =
 				offset == (size_t) -1 ? NULL : (const uint8_t *) &OriginalImage[offset];
 		}
-		return 1;
-	case ORIGINAL_PIECE_EXPANDED_TEXT_TABLE:
-		for (index = 0; index < piece->count; ++index)
-		{
-			size_t offset = EntryOffset(piece, index);
-			size_t length = offset == (size_t) -1 ? 0
-				: ExpandText(offset, TextLength(offset), scratch, PIECE_SCRATCH_BYTES);
-			char *copy = CopyText(scratch, length);
-
-			if (copy == NULL)
-				return 0;
-			((const char **) piece->target)[index] = copy;
-		}
-		return 1;
-	case ORIGINAL_PIECE_MUTABLE_TEXT_TABLE:
-		for (index = 0; index < piece->count; ++index)
-		{
-			size_t offset = EntryOffset(piece, index);
-			char *copy = offset == (size_t) -1 ? CopyText(scratch, 0)
-				: CopyText((const uint8_t *) &OriginalImage[offset], TextLength(offset));
-
-			if (copy == NULL)
-				return 0;
-			((char **) piece->target)[index] = copy;
-		}
-		return 1;
+		break;
+	default:
+		break;
 	}
-	return 0;
+}
+
+size_t OriginalImport_TextBytes(const StoryTextSource *source, uint8_t *out, size_t capacity)
+{
+	size_t length;
+
+	if (source->imageOffset == STORY_NO_SOURCE)
+		return 0;
+	if (source->imageOffset >= originalImageBytes)
+		return (size_t) -1;
+	length = TextLength(source->imageOffset);
+	if (length == (size_t) -1)
+		return (size_t) -1;
+	if (source->expanded)
+		return ExpandText(source->imageOffset, length, out, capacity);
+	memcpy(out, &OriginalImage[source->imageOffset], length < capacity ? length : capacity);
+	return length;
 }
 
 /* Names on one line each of the edition's pieces that doesn't match the
@@ -443,7 +396,6 @@ const OriginalEdition *OriginalImport_Identify(const char *executablePath, const
 int OriginalImport_Load(const char *executablePath)
 {
 	const OriginalEdition *edition;
-	uint8_t *scratch;
 	size_t index;
 
 	if (originalImportLoaded)
@@ -451,22 +403,8 @@ int OriginalImport_Load(const char *executablePath)
 	edition = OriginalImport_Identify(executablePath, OriginalEditions, OriginalEditionCount);
 	if (edition == NULL)
 		return 0;
-	scratch = (uint8_t *) malloc(PIECE_SCRATCH_BYTES);
-	if (scratch == NULL)
-	{
-		fprintf(stderr, "%s: no memory to place its pieces\n", executablePath);
-		return 0;
-	}
 	for (index = 0; index < edition->pieceCount; ++index)
-	{
-		if (!PlacePiece(&edition->pieces[index], scratch))
-		{
-			fprintf(stderr, "%s: no memory for %s\n", executablePath, edition->pieces[index].name);
-			free(scratch);
-			return 0;
-		}
-	}
-	free(scratch);
+		PlacePiece(&edition->pieces[index]);
 	loadedEdition = edition;
 	loadedVariant = identifiedVariant;
 	originalImportLoaded = 1;

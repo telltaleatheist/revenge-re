@@ -17,11 +17,13 @@ silently replacing its behavior.
    `src/SDL`; representation-only bridges belong in `src/Support`. Original
    game logic must not call SDL directly.
 5. Do not add original executables, assets, extracted media, saves, screenshots
-   or the game's text. The game's own strings and data come from the player's
-   `REVENGE.EXE` at start (`src/Support/original_import.c`): name a string with
-   `ORIGINAL_TEXT(offset)` or a table in `src/Support/original_import_pieces.txt`,
-   then run `tools/import/make_import_table.py`. `tools/text_audit.py` must
-   find nothing. The copy is accepted only as an edition and variant
+   or the game's text. The game's own data comes from the player's
+   `REVENGE.EXE` at start (`src/Support/original_import.c`), and its text from
+   the story file imported from that copy into the player's folder
+   (`src/Import`, `include/revenge/story.h`): give a string a `text` line, or
+   a table its line, in `src/Support/original_import_pieces.txt`, name a single
+   string `STORY_TEXT(ID)`, then run `tools/import/make_import_table.py`.
+   `tools/text_audit.py` must find nothing. The copy is accepted only as an edition and variant
    `src/Support/original_editions.txt` lists; for a copy it doesn't, the tool
    prints the line to add.
 6. Cite the procedure's segment:offset and update `docs/METHOD_TABLE.csv` and

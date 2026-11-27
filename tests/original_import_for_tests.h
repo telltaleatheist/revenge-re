@@ -7,6 +7,7 @@
 /* A test including this defines _CRT_SECURE_NO_WARNINGS first, for MSVC,
  * which otherwise rejects fopen under /W4 /WX. */
 #include "revenge/original_import.h"
+#include "revenge/story.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,6 +36,8 @@ static void RequireOriginalImport(void)
 			fclose(file);
 			if (!OriginalImport_Load(path))
 				exit(1);
+			/* Its texts too, in memory: no story file. */
+			StoryHost_Prepare(path, NULL);
 			return;
 		}
 	}

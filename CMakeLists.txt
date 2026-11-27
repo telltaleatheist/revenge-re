@@ -9,11 +9,15 @@ endif()
 
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" CHR_RELEASE_VERSION)
 string(STRIP "${CHR_RELEASE_VERSION}" CHR_RELEASE_VERSION)
-project(CrescentHawksRevenge VERSION ${CHR_RELEASE_VERSION} LANGUAGES C)
+project(CrescentHawksRevenge VERSION ${CHR_RELEASE_VERSION} LANGUAGES C CXX)
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
+# The importer (src/Import) and its JSON support are C++20.
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(CHR_BUILD_SDL "Build the SDL3 replacement for the DOS platform" ON)
 option(CHR_FETCH_SDL "Fetch the pinned SDL3 release when it is not installed" ON)
@@ -40,6 +44,13 @@ function(chr_strict target)
 endfunction()
 
 include(cmake/OriginalAuditedSources.cmake)
+# The story (revenge/story.h): its texts' places and the importer that fills them.
+set(CHR_STORY_SOURCES
+	src/Support/story_text.c
+	src/Support/story_text_slots.c
+	src/Support/Json.cpp
+	src/Import/Story.cpp
+	src/Import/StoryHost.cpp)
 add_library(chr_original_runtime STATIC ${CHR_ORIGINAL_SOURCES})
 target_sources(chr_original_runtime PRIVATE
 	src/Support/debug.c
@@ -53,7 +64,8 @@ target_sources(chr_original_runtime PRIVATE
     src/Support/representation.c
     src/Support/video_bridge.c
     src/Support/presentation_callback_bridge.c
-	src/Support/tactical_panel_data.c)
+	src/Support/tactical_panel_data.c
+	${CHR_STORY_SOURCES})
 target_include_directories(chr_original_runtime
     PUBLIC include
     PRIVATE src/Original src/SDL)
@@ -513,7 +525,9 @@ if(BUILD_TESTING)
         src/Original/Text/REVENGE_35CE_FORMATTED_TEXT.c
         src/Original/Utility/REVENGE_397A_STRING_CONCAT.c
         src/Original/Utility/REVENGE_3983_STRING_COPY.c
-        ${CHR_3A6A_DATA_SOURCES})
+        ${CHR_3A6A_DATA_SOURCES}
+        ${CHR_STORY_SOURCES}
+        src/Support/debug.c)
     target_include_directories(test_formatted_text PRIVATE include src/Original tests)
     chr_strict(test_formatted_text)
     add_test(NAME output.original_formatted_text COMMAND test_formatted_text)
@@ -863,6 +877,24 @@ if(CHR_BUILD_SDL)
             chr_original_runtime
             chr_sdl_backend)
         chr_strict(test_settings)
+        # The story: the texts the import took, the story file, and its faults.
+        add_executable(test_story tests/test_story.cpp)
+        target_include_directories(test_story PRIVATE src/Import tests)
+        target_link_libraries(test_story PRIVATE chr_original_runtime chr_sdl_backend)
+        chr_strict(test_story)
+        foreach(mode match state refuse twice stray absent long)
+            add_test(NAME import.story_${mode} COMMAND test_story ${mode})
+            set_tests_properties(import.story_${mode} PROPERTIES SKIP_RETURN_CODE 77)
+        endforeach()
+        set_tests_properties(import.story_twice PROPERTIES PASS_REGULAR_EXPRESSION
+            "fault: the story: .*text.json: the id .title.0. twice|skipped")
+        set_tests_properties(import.story_stray PROPERTIES PASS_REGULAR_EXPRESSION
+            "fault: .*text.json: the id .title.99. is no text of the game's|skipped")
+        set_tests_properties(import.story_absent PROPERTIES PASS_REGULAR_EXPRESSION
+            "fault: .*text.json has no text .title.0.|skipped")
+        set_tests_properties(import.story_long PROPERTIES PASS_REGULAR_EXPRESSION
+            "fault: the story text title.0 is [0-9]+ bytes, and its place holds|skipped")
+
         # A file the game can't open is a fault naming it, not a disk prompt.
         add_executable(test_tracked_file_fault tests/test_tracked_file_fault.c)
         target_include_directories(test_tracked_file_fault PRIVATE src/Original tests)

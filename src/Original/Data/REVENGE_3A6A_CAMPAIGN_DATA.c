@@ -7,11 +7,11 @@
 #include "revenge/far_memory.h"
 #include "revenge/video.h"
 #include "REVENGE.h"
-#include "revenge/original_import.h"
+#include "revenge/story_text.h"
 
 const char *const RestartConfirmationText =
-	ORIGINAL_TEXT(0x2597);
-const char *const MissionMapHeaderText = ORIGINAL_TEXT(0x2489);
+	STORY_TEXT(RESTART_CONFIRMATION);
+const char *const MissionMapHeaderText = STORY_TEXT(MISSION_MAP_HEADER);
 char TextEntryBuffer[0x16];
 word16 TextEntryCursorIndex;
 byte TextEntryActive;
@@ -19,19 +19,19 @@ const char TextEntryPunctuation[] = "!\"&'+,-./:;?";
 const char TextCursorBlinkGlyph[] = "_";
 const char * const InGameMenuTextTable[0x0B] =
 {
-	ORIGINAL_TEXT(0x2A89),             /* DS:2A89 */
-	ORIGINAL_TEXT(0x2A8E),             /* DS:2A8E */
-	ORIGINAL_TEXT(0x2A93),         /* DS:2A93 */
-	ORIGINAL_TEXT(0x2A9C),       /* DS:2A9C */
-	ORIGINAL_TEXT(0x2AA7),  /* DS:2AA7 */
-	ORIGINAL_TEXT(0x2AB7),      /* DS:2AB7 */
-	ORIGINAL_TEXT(0x2AC3),        /* DS:2AC3 */
-	ORIGINAL_TEXT(0x2ACD),  /* DS:2ACD */
-	ORIGINAL_TEXT(0x2ADD),     /* DS:2ADD */
-	ORIGINAL_TEXT(0x2AEA),     /* DS:2AEA */
-	ORIGINAL_TEXT(0x2AF7)      /* DS:2AF7 */
+	STORY_TEXT(IN_GAME_MENU_0),             /* DS:2A89 */
+	STORY_TEXT(IN_GAME_MENU_1),             /* DS:2A8E */
+	STORY_TEXT(IN_GAME_MENU_2),         /* DS:2A93 */
+	STORY_TEXT(IN_GAME_MENU_3),       /* DS:2A9C */
+	STORY_TEXT(IN_GAME_MENU_4),  /* DS:2AA7 */
+	STORY_TEXT(IN_GAME_MENU_5),      /* DS:2AB7 */
+	STORY_TEXT(IN_GAME_MENU_6),        /* DS:2AC3 */
+	STORY_TEXT(IN_GAME_MENU_7),  /* DS:2ACD */
+	STORY_TEXT(IN_GAME_MENU_8),     /* DS:2ADD */
+	STORY_TEXT(IN_GAME_MENU_9),     /* DS:2AEA */
+	STORY_TEXT(IN_GAME_MENU_10)      /* DS:2AF7 */
 };
-const char *const SaveGameSeparatorText = ORIGINAL_TEXT(0x266E);
+const char *const SaveGameSeparatorText = STORY_TEXT(SAVE_GAME_SEPARATOR);
 
 byte TrainingScenarioCompletionFlags[0x06];
 int8 ScreenPaletteResourceByScreen[CAMPAIGN_SCREEN_PALETTE_COUNT];

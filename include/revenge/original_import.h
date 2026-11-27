@@ -13,15 +13,21 @@
  * written by tools/import/make_import_table.py): an offset, a length and a
  * keyed hash for each, never the bytes. A copy that isn't accepted is named
  * with what differs: no edition's layout, or the pieces that don't match.
+ * The data pieces are put in place here; the texts go to the story
+ * (revenge/story.h), which the importer takes from the same image.
  *
- * The working form is DOS 1.00's: the pieces' offsets, ORIGINAL_TEXT's and the
- * data segment's place in the image are its own. It is the only edition so
+ * The working form is DOS 1.00's: the pieces' offsets and the data segment's
+ * place in the image are its own. It is the only edition so
  * far; one laid out otherwise needs its pieces mapped to these offsets, which
  * the table and the loader gain with it.
  */
 
 #include <stddef.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum
 {
@@ -32,16 +38,6 @@ enum
 #define ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET 0x326A0UL
 
 extern char OriginalImage[ORIGINAL_IMAGE_CAPACITY];
-
-/*
- * A NUL-terminated string of the original's data segment, by its DS offset.
- * It is an address constant, so it may initialise a table; until the import
- * has run it is an empty string. Typed as a C string literal is (char *), so
- * callers see the same types as before. Each offset used is a row of the
- * import table.
- */
-#define ORIGINAL_TEXT(offset) \
-	(&OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + (offset)])
 
 /* 1 when the copy is a known edition and variant, every piece matched and was
  * put in place; otherwise 0, after naming on stderr what didn't match. */
@@ -74,6 +70,23 @@ typedef struct OriginalPiece
 	const char *keyedHash;  /* the first 16 hex digits of the keyed HMAC-SHA-256 of the piece */
 } OriginalPiece;
 
+/* Where a story text (revenge/story.h) is in an edition's load image: the
+ * image offset of its string, or STORY_NO_SOURCE for a null table entry (an
+ * empty text); the segment the original names it by (its far pointer's, the
+ * image loaded at 0800h); its length and keyed hash as the importer must find
+ * them, the hash over the text and its NUL. An expanded text is hashed as
+ * expanded. */
+#define STORY_NO_SOURCE 0xFFFFFFFFUL
+
+typedef struct StoryTextSource
+{
+	uint32_t imageOffset;
+	uint16_t segment;
+	uint16_t length;
+	uint8_t expanded;       /* 1: the game's digram compression, expanded */
+	const char *keyedHash;
+} StoryTextSource;
+
 /* One known copy of an edition, by the keyed hash of its whole load image. */
 typedef struct OriginalVariant
 {
@@ -91,6 +104,7 @@ typedef struct OriginalEdition
 	const char *headerKeyedHash;  /* the MZ header with its relocation table */
 	const OriginalPiece *pieces;
 	size_t pieceCount;
+	const StoryTextSource *storyTexts;   /* STORY_TEXT_COUNT of them, by StoryTextId */
 	const OriginalVariant *variants;
 	size_t variantCount;
 } OriginalEdition;
@@ -125,5 +139,14 @@ void OriginalImport_KeyedHash(const uint8_t *bytes, size_t length, char hex[17])
  * or (size_t) -1 when the piece doesn't fit the image. Writes at most
  * `capacity` bytes. */
 size_t OriginalImport_PieceBytes(const OriginalPiece *piece, uint8_t *out, size_t capacity);
+
+/* A story text's bytes as the image holds them (expanded where the source
+ * says), without the NUL: the byte count, or (size_t) -1 when the source
+ * doesn't fit the image. Writes at most `capacity` bytes. */
+size_t OriginalImport_TextBytes(const StoryTextSource *source, uint8_t *out, size_t capacity);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
