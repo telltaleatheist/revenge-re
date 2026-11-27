@@ -73,3 +73,32 @@ alias to merge, a size to correct, or a table the original lays over another.
 A line without a note is one byte in the original, and `check_dump.py`'s
 `agree` lines hold the two objects to the same bytes at every snap. A note
 says why they may differ for now (a host pointer, a size still to settle).
+
+## Where it stands
+
+At the end of the whole-program check, the map has 763 objects:
+
+- 428 placed: 153 by the image test's table, 147 by the runs, 65 by
+  annotations, 44 by import pieces and 19 by procedures.
+- 5 host: the import's own state and the resource file lengths.
+- 330 unplaced: 161 zero at every snap, 100 host pointers, 45 whose bytes
+  match nowhere and 24 with several places that match. None is in conflict,
+  and no text constant is left.
+
+The 10 overlap lines are all noted, and none is a defect:
+
+- 6 are host pointers. Five path pointers lie over the cached-file
+  descriptors (each set once at start, only read after), and the campaign
+  message table lies over the port's own pointers to the same texts.
+- 4 are constant tables the original lays over each other: the AdLib
+  register lists, the two pairs of line step tables, and the missile damage
+  bonus over the hit location selector's tail.
+
+Every object the port had larger than the original's is now the original's
+size. Where an index comes from data, `REVENGE_INDEX` (`revenge/debug.h`)
+guards it: an index past the table stops the program with a fault that names
+the table.
+
+The unplaced objects are left for the typed state. The scripts that would
+reach the zero ones (training, the overview map) are listed in the trace
+README.
