@@ -2,12 +2,14 @@
 
 #include "REVENGE.h"
 
+#include <string.h>
+
 // 0D73:418E: void RightAlignStringField(char far *text, word16 fieldWidth)
 // Called from:
 //      InitializeGame
 void RightAlignStringField(char *text, word16 fieldWidth)
 {
-	word16 textLength = StringLength(text);
+	word16 textLength = (word16) strlen(text);
 	if (textLength >= fieldWidth)
 		return;
 	word16 leadingSpaces = fieldWidth - textLength;
@@ -29,8 +31,8 @@ void TranslateCharactersInPlace(
 	const char *sourceAlphabet,
 	const char *replacementAlphabet)
 {
-	word16 textLength = StringLength(text);
-	word16 alphabetLength = StringLength(sourceAlphabet);
+	word16 textLength = (word16) strlen(text);
+	word16 alphabetLength = (word16) strlen(sourceAlphabet);
 	word16 textIndex;
 	for (textIndex = 0x00; textIndex < textLength; ++textIndex)
 	{

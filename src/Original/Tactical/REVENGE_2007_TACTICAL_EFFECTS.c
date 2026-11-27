@@ -38,10 +38,6 @@ void QueueTacticalImpactVisual(
 	int16 mapX, int16 mapY, word16 impactClass);
 uint16 DetermineRelativeAttackDirection(
 	int16 sourceX, int16 sourceY, int16 targetX, int16 targetY);
-void CopyFarMemory(
-	word16 byteCount,
-	const byte *source,
-	byte *destination);
 word16 GeneratePseudoRandomByte(void);
 word16 DetermineOctant(int16 deltaY, int16 deltaX);
 void DrawClippedAxisAlignedLine(

@@ -501,7 +501,6 @@ unplaced FarHeapFreeListHeadOffset 2 zero at every snap
 unplaced FarHeapFreeListHeadSegment 2 its bytes match nowhere (pointers or values differ)
 unplaced FarHeapTailBlockOffset 2 zero at every snap
 unplaced FarHeapTailBlockSegment 2 its bytes match nowhere (pointers or values differ)
-unplaced FarStrtokCursor 4 host pointer
 unplaced FirstLanceOrdersEnabled 2 several places match
 unplaced FocusLanceText 4 host pointer
 unplaced FocusUnitText 4 host pointer

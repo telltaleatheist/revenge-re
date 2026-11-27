@@ -281,7 +281,7 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
 			DrawTileAlignedText(
 				(char *)SharedNumericTextBuffer,
 				ActiveTextWindowLeftTile + 0x05 +
-					StringLength(DurabilityDescriptionTable[durabilityBand]),
+					(word16) strlen(DurabilityDescriptionTable[durabilityBand]),
 				ActiveTextWindowTopTile + firstDetailRow + 0x05,
 				0x0F, 0x00);
 		}
@@ -310,7 +310,7 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
 			DrawTileAlignedText(
 				(char *)JumpEquipmentSuffix,
 				ActiveTextWindowLeftTile + 0x04 +
-					StringLength(MovementDescriptionTable[movementDescription]),
+					(word16) strlen(MovementDescriptionTable[movementDescription]),
 				ActiveTextWindowTopTile + firstDetailRow + 0x06,
 				(byte)textColor, 0x00);
 		}
@@ -486,7 +486,7 @@ void DrawCenteredTextInActiveWindow(
 	word16 foregroundColor,
 	word16 backgroundColor)
 {
-	word16 textLength = StringLength(text);
+	word16 textLength = (word16) strlen(text);
 	word16 tileX = ActiveTextWindowLeftTile +
 		((ActiveTextWindowWidthTiles - textLength) >> 0x01);
 	word16 tileY = ActiveTextWindowTopTile + rowOffset;

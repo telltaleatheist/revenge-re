@@ -25,11 +25,6 @@ static void Check(int condition, const char *message)
 	}
 }
 
-word16 StringLength(const char *text)
-{
-	return (word16)strlen(text);
-}
-
 static byte errorCalls[0x04];
 static word16 errorCallCount;
 static word16 shutdownCalls;

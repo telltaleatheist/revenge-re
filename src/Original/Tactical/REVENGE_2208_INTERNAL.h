@@ -113,10 +113,6 @@ void ShowTacticalCommandPrompt(const char *prompt);
 void AdvanceLanceFormation(word16 unitIndex);
 word16 SelectTacticalMoveDestination(
 	word16 unitIndex, word16 selectionMode);
-void CopyFarMemory(
-	word16 byteCount,
-	const byte *source,
-	byte *destination);
 
 
 #endif

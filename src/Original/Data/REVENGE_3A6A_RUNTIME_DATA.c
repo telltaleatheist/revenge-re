@@ -60,7 +60,6 @@ int16 ActiveUiRegionIndex;
 word16 ExpandFirstUiRowHighlight;
 word16 VideoAdapterType;
 DosAddress CriticalErrorCallback;
-char *FarStrtokCursor;
 
 byte g_bFFFFF694 = 0x70; // 3184:F694
 

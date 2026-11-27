@@ -418,17 +418,6 @@ void CopyFarBytes32(
 		*destinationByte++ = *sourceByte++;
 }
 
-// 0800:2D37: byte fill used by the graphics/runtime segment.
-void FillRuntimeFarMemoryBytes(
-	byte *destination,
-	word16 byteCount,
-	byte value)
-{
-	/* ES:DI destination, CX count, AL value, REP STOSB. */
-	while (byteCount-- != 0x0000)
-		*destination++ = value;
-}
-
 uint32 MultiplyUnsignedLong(
 	word16 leftLow,
 	word16 rightHigh,
@@ -460,17 +449,6 @@ uint32 ShiftRight32_DXAX(
 	uint32 value = ((uint32) valueHigh << 0x10) | valueLow;
 
 	return value >> shiftCount;
-}
-
-void CopyFarMemory(
-	word16 byteCount,
-	const byte *source,
-	byte *destination)
-{
-	/* 0800:554B -- CLD; REP MOVSW; ADC CX,CX; REP MOVSB. This is a
-	 * forward copy and deliberately does not provide memmove semantics. */
-	while (byteCount-- != 0x0000)
-		*destination++ = *source++;
 }
 
 word16 EncodeDisplayBackingRows(

@@ -5,12 +5,14 @@
 #include "revenge/original_data.h"
 #include "revenge/text.h"
 
+#include <string.h>
+
 // 0D73:41E8: void RemoveLeadingSpacesFrom(char far *text, word16 oneBasedStart)
 // Called from:
 //      DrawCenteredClippedText
 void RemoveLeadingSpacesFrom(char *text, word16 oneBasedStart)
 {
-	word16 textLength = StringLength(text);
+	word16 textLength = (word16) strlen(text);
 	word16 sourceIndex = oneBasedStart - 0x01;
 	word16 destinationIndex = sourceIndex;
 
@@ -27,7 +29,7 @@ void RemoveLeadingSpacesFrom(char *text, word16 oneBasedStart)
 void TrimTrailingEncodedSpaces(char *text)
 {
 	int16 index;
-	for (index = StringLength(text) - 0x01; index >= 0x00; --index)
+	for (index = (word16) strlen(text) - 0x01; index >= 0x00; --index)
 	{
 		if ((text[index] & 0x3F) != ' ')
 		{
@@ -43,7 +45,7 @@ void TrimTrailingEncodedSpaces(char *text)
 //      EditTextField
 void PadStringToWidth(char *text, word16 width)
 {
-	word16 index = StringLength(text);
+	word16 index = (word16) strlen(text);
 	while (index < width)
 		text[index++] = ' ';
 	text[width] = '\0';

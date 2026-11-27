@@ -30,7 +30,7 @@ word16 EditTextField(
 
 	HideMouseCursorOverlay();
 	TextEntryActive = TRUE;
-	punctuationCount = StringLength(TextEntryPunctuation);
+	punctuationCount = (word16) strlen(TextEntryPunctuation);
 	glyphAdvance = ActiveFontGlyphAdvanceX;
 	effectiveMaximumLength = maximumLength;
 	windowWidthPixels = ActiveTextWindowWidthTiles << 0x03;
@@ -49,7 +49,7 @@ word16 EditTextField(
 
 	savedCursorColumn = ActiveTextCursorColumn;
 	savedCursorRow = ActiveTextCursorRow;
-	if (StringLength((const char *) TextEntryBuffer) <
+	if ((word16) strlen((const char *) TextEntryBuffer) <
 		effectiveMaximumLength)
 	{
 		PadStringToWidth(
@@ -137,5 +137,5 @@ word16 EditTextField(
 	TrimTrailingEncodedSpaces((char *) TextEntryBuffer);
 	TextEntryActive = FALSE;
 	ShowMouseCursorOverlay();
-	return StringLength((const char *) TextEntryBuffer);
+	return (word16) strlen((const char *) TextEntryBuffer);
 }

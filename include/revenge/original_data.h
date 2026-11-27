@@ -668,7 +668,6 @@ extern char TacticalIconSetFileName[0x0D];
 extern char TacticalDestroyIconFileName[0x0D];
 extern char TacticalIconListFileName[0x0D];
 extern char TacticalMechSetFileName[0x0D];
-extern char *FarStrtokCursor;
 extern word16 ResourceRetryCount;
 extern word16 ReservedConventionalMemoryKB;
 extern word16 FailedAllocationSizeLow;

@@ -60,14 +60,14 @@ word16 SaveGame(void)
 			snapshot->state8594 = CampaignScenarioState;
 			snapshot->lrmShipmentLoaded = LrmShipmentLoaded;
 			snapshot->srmShipmentLoaded = SrmShipmentLoaded;
-			CopyFarMemory(
-				sizeof(snapshot->scenarioClock),
+			memcpy(
+				snapshot->scenarioClock,
 				SavedCampaignClockState,
-				snapshot->scenarioClock);
-			CopyFarMemory(
-				sizeof(snapshot->trainingScenarioCompletionFlags),
+				sizeof(snapshot->scenarioClock));
+			memcpy(
+				snapshot->trainingScenarioCompletionFlags,
 				TrainingScenarioCompletionFlags,
-				snapshot->trainingScenarioCompletionFlags);
+				sizeof(snapshot->trainingScenarioCompletionFlags));
 			for (unitIndex = 0x0000;
 				unitIndex < REVENGE_UNIT_SLOT_COUNT;
 				++unitIndex)
@@ -75,15 +75,15 @@ word16 SaveGame(void)
 				snapshot->scenarioUnitMapX[unitIndex] = ScenarioUnitMapX[unitIndex];
 				snapshot->scenarioUnitMapY[unitIndex] = ScenarioUnitMapY[unitIndex];
 			}
-			CopyFarMemory(
-				sizeof(snapshot->state1B85),
+			memcpy(
+				snapshot->state1B85,
 				ReplayCampaignState,
-				snapshot->state1B85);
+				sizeof(snapshot->state1B85));
 			snapshot->state1B8E = RandomPilotPoolCounts.replay;
-			CopyFarMemory(
-				sizeof(snapshot->state1BAD),
+			memcpy(
+				snapshot->state1BAD,
 				ReplayExtendedCampaignState,
-				snapshot->state1BAD);
+				sizeof(snapshot->state1BAD));
 			for (scenarioRecordIndex = 0x0000;
 				scenarioRecordIndex < 0x0012;
 				++scenarioRecordIndex)
@@ -232,14 +232,14 @@ word16 LoadGame(void)
 				CampaignScenarioState = snapshot->state8594;
 				LrmShipmentLoaded = snapshot->lrmShipmentLoaded;
 				SrmShipmentLoaded = snapshot->srmShipmentLoaded;
-				CopyFarMemory(
-					sizeof(snapshot->scenarioClock),
+				memcpy(
+					SavedCampaignClockState,
 					snapshot->scenarioClock,
-					SavedCampaignClockState);
-				CopyFarMemory(
-					sizeof(snapshot->trainingScenarioCompletionFlags),
+					sizeof(snapshot->scenarioClock));
+				memcpy(
+					TrainingScenarioCompletionFlags,
 					snapshot->trainingScenarioCompletionFlags,
-					TrainingScenarioCompletionFlags);
+					sizeof(snapshot->trainingScenarioCompletionFlags));
 				for (unitIndex = 0x0000;
 					unitIndex < REVENGE_UNIT_SLOT_COUNT;
 					++unitIndex)
@@ -463,7 +463,7 @@ int16 ShowSaveLoadMenu(word16 menuMode)
 					XorVideoRectangle(promptX, promptY,
 						(word16) (promptX +
 							ActiveFontGlyphAdvanceX *
-							StringLength(STORY_TEXT(SHOW_SAVE_LOAD_MENU_7)) - 0x0001),
+							(word16) strlen(STORY_TEXT(SHOW_SAVE_LOAD_MENU_7)) - 0x0001),
 						(word16) (promptY +
 							ActiveFontLineHeight - 0x0001),
 						0x0001);
@@ -509,7 +509,7 @@ word16 IsBlankSaveSlotName(const char *slotName)
 	word16 isBlank;
 
 	isBlank = TRUE;
-	nameLength = (int16) StringLength(slotName);
+	nameLength = (int16) strlen(slotName);
 	for (characterIndex = 0x0000;
 		characterIndex < nameLength;
 		++characterIndex)
@@ -553,7 +553,7 @@ word16 RenameSaveSlot(int16 slotIndex)
 			promptY,
 			(word16) (promptX +
 				ActiveFontGlyphAdvanceX *
-				StringLength(STORY_TEXT(RENAME_SAVE_SLOT_0)) - 0x0001),
+				(word16) strlen(STORY_TEXT(RENAME_SAVE_SLOT_0)) - 0x0001),
 			(word16) (promptY +
 				ActiveFontLineHeight -
 				0x0001),
@@ -587,7 +587,7 @@ word16 RenameSaveSlot(int16 slotIndex)
 		promptY,
 		(word16) (promptX +
 			ActiveFontGlyphAdvanceX *
-			StringLength(STORY_TEXT(RENAME_SAVE_SLOT_1)) - 0x0001),
+			(word16) strlen(STORY_TEXT(RENAME_SAVE_SLOT_1)) - 0x0001),
 		(word16) (promptY +
 			ActiveFontLineHeight -
 			0x0001),
@@ -628,7 +628,7 @@ void WaitForAcknowledgement(void)
 	RenderFormattedText(STORY_TEXT(WAIT_FOR_ACKNOWLEDGEMENT_0)); // TEXT DS:26DB
 	rightX = (word16) (leftX +
 		ActiveFontGlyphAdvanceX *
-		StringLength(STORY_TEXT(WAIT_FOR_ACKNOWLEDGEMENT_0)) - 0x0001);
+		(word16) strlen(STORY_TEXT(WAIT_FOR_ACKNOWLEDGEMENT_0)) - 0x0001);
 	bottomY = (word16) (topY +
 		ActiveFontLineHeight -
 		0x0001);

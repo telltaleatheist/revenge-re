@@ -491,24 +491,17 @@ if(BUILD_TESTING)
     chr_strict(test_resource_drive)
     add_test(NAME platform.original_resource_drive COMMAND test_resource_drive)
 
-    add_executable(test_string_length tests/test_string_length.c)
-    target_include_directories(test_string_length PRIVATE src/Original)
-    target_link_libraries(test_string_length PRIVATE chr_original_runtime)
-    chr_strict(test_string_length)
-    add_test(NAME utility.original_string_length COMMAND test_string_length)
-
 	add_executable(test_integer_format tests/test_integer_format.c)
 	target_include_directories(test_integer_format PRIVATE src/Original)
 	target_link_libraries(test_integer_format PRIVATE chr_original_runtime)
 	chr_strict(test_integer_format)
 	add_test(NAME utility.original_integer_format COMMAND test_integer_format)
 
-	add_executable(test_far_string_tokenize tests/test_far_string_tokenize.c)
-	target_include_directories(test_far_string_tokenize PRIVATE src/Original)
-	target_link_libraries(test_far_string_tokenize PRIVATE chr_original_runtime)
-	chr_strict(test_far_string_tokenize)
-	add_test(NAME utility.original_far_string_tokenize
-		COMMAND test_far_string_tokenize)
+	add_executable(test_borland_strings tests/test_borland_strings.c)
+	target_include_directories(test_borland_strings PRIVATE src/Original)
+	target_link_libraries(test_borland_strings PRIVATE chr_original_runtime)
+	chr_strict(test_borland_strings)
+	add_test(NAME utility.original_borland_strings COMMAND test_borland_strings)
 
     add_executable(test_far_memory_primitives
         tests/test_far_memory_primitives.c

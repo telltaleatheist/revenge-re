@@ -15,7 +15,7 @@
 void InitializeTimezoneFromEnvironment(void)
 {
 	const char * timezone = GetEnvironmentVariable(TimezoneEnvironmentName);
-	word16 validTimezone = timezone != 0x00 && StringLength(timezone) >= 0x04;
+	word16 validTimezone = timezone != 0x00 && (word16) strlen(timezone) >= 0x04;
 
 	if (validTimezone)
 	{
@@ -61,7 +61,7 @@ void InitializeTimezoneFromEnvironment(void)
 		{
 			if ((CharacterClassTable[(unsigned char) timezone[index]] & 0x0C) != 0x00)
 			{
-				if (StringLength(timezone + index) >= 0x03 &&
+				if ((word16) strlen(timezone + index) >= 0x03 &&
 					(CharacterClassTable[(unsigned char) timezone[index + 0x01]] & 0x0C) != 0x00 &&
 					(CharacterClassTable[(unsigned char) timezone[index + 0x02]] & 0x0C) != 0x00)
 				{

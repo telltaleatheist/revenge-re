@@ -108,7 +108,6 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/IO/REVENGE_3965_FILE_SEEK.c
 	src/Original/Utility/REVENGE_3968_INTEGER_FORMAT.c
     src/Original/IO/REVENGE_3978_FILE_DELETE.c
-	src/Original/Utility/REVENGE_397E_STRING_LENGTH.c
     src/Original/IO/REVENGE_3989_FILE_ATTRIBUTES.c
     src/Original/Utility/REVENGE_398B_HEAP_SIZE.c
     src/Original/Runtime/REVENGE_398D_FAR_HEAP.c
@@ -117,7 +116,6 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Campaign/REVENGE_39CC_CLOCK_SNAPSHOT.c
     src/Original/IO/REVENGE_39D9_SYSTEM_TIME.c
 	src/Original/IO/REVENGE_39DC_ENVIRONMENT.c
-	src/Original/Utility/REVENGE_39F8_STRING_TOKENIZE.c
 	src/Original/Campaign/REVENGE_3A07_EPOCH_TIME.c
 	src/Original/Campaign/REVENGE_3A3C_TIMEZONE.c
     src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.c

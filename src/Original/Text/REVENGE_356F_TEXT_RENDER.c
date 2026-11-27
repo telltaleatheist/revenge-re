@@ -5,7 +5,8 @@
 #include "revenge/original_data.h"
 #include "revenge/video.h"
 
-word16 StringLength(const char *text);
+#include <string.h>
+
 
 // 356F:000B
 // Draw a mutable string in the active text window. When its cursor is below the
@@ -83,7 +84,7 @@ void RenderTextToActiveWindow(char *text, word16 advanceToNextLine)
 		if (windowScrolled)
 			ActiveTextCursorRow =
 				(word16) ((int16) lastLineY / lineHeight);
-		ActiveTextCursorColumn += StringLength(text);
+		ActiveTextCursorColumn += (word16) strlen(text);
 		if ((int16) (word16) (widthPixels - glyphWidth)
 			< (int16) (word16)
 				(ActiveTextCursorColumn * glyphWidth))

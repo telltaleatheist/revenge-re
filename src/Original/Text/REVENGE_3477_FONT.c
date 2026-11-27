@@ -3,6 +3,8 @@
 #include "REVENGE.h"
 #include "revenge/original_data.h"
 
+#include <string.h>
+
 // 3477:000B: unsigned char *LoadFontResource(
 //     const char *fileName)
 byte *LoadFontResource(const char *fileName)
@@ -96,5 +98,5 @@ uint16 MeasureTextWidth(const char *text)
 	const byte *activeFont = ActiveFontResource;
 	int16 glyphAdvance = (int8) activeFont[0x0103];
 
-	return (word16) (StringLength(text) * glyphAdvance);
+	return (word16) ((word16) strlen(text) * glyphAdvance);
 }

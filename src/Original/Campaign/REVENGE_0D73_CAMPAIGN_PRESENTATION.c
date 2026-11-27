@@ -788,7 +788,7 @@ void DrawCenteredClippedText(
 			strncpy(text, sourceText + splitIndex, 0x32);
 			textWidth = MeasureTextWidth(text);
 		}
-		word16 textLength = StringLength(text);
+		word16 textLength = (word16) strlen(text);
 		while (textWidth > maximumWidth)
 		{
 			text[textLength] = 0x00;
@@ -821,7 +821,7 @@ void DrawLeftAlignedClippedText(
 	word16 textWidth = MeasureTextWidth(renderText);
 	if (textWidth > maximumWidth)
 	{
-		word16 textLength = StringLength(renderText);
+		word16 textLength = (word16) strlen(renderText);
 		while (textWidth > maximumWidth)
 		{
 			renderText[textLength] = '\0';
@@ -851,7 +851,7 @@ void DrawRightAlignedClippedText(
 	word16 textWidth = MeasureTextWidth(renderText);
 	if (textWidth > maximumWidth)
 	{
-		word16 textLength = StringLength(renderText);
+		word16 textLength = (word16) strlen(renderText);
 		while (textWidth > maximumWidth)
 		{
 			renderText[textLength] = '\0';

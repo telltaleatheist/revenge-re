@@ -562,7 +562,7 @@ int16 SelectScenarioVariant(word16 presentationMode)
 				0x0000,
 				LanceEditorLayout.ScenarioVariantTextLeft[variantIndex >> 0x01] + 0x0001,
 				(variantIndex & 0x0001) == 0x0000 ? 0x00B0 : 0x00B8,
-				(word16) (StringLength(label) *
+				(word16) ((word16) strlen(label) *
 					ActiveFontGlyphAdvanceX),
 				0x0F,
 				0x00);

@@ -5,6 +5,8 @@
 #include "revenge/debug.h"
 #include "revenge/platform_backend.h"
 
+#include <string.h>
+
 // 1A1F:5755: translate pending mouse input into a tactical input code.
 // Verified against 1A1F:5755-5961.
 int16 TranslateTacticalMouseInput(int16 inputAction)
@@ -1191,13 +1193,13 @@ void ShowPendingNarrationPrompt(void)
 	{
 		focusLabel = FocusUnitText;
 	}
-	focusLabelWidth = (word16) (StringLength(focusLabel) *
+	focusLabelWidth = (word16) ((word16) strlen(focusLabel) *
 		ActiveFontGlyphAdvanceX);
 	DrawBeveledMenuButton(
 		0x18, 0x05, focusLabel, focusLabelWidth);
 
 	continueLabel = ContinueText;
-	continueLabelWidth = (word16) (StringLength(continueLabel) *
+	continueLabelWidth = (word16) ((word16) strlen(continueLabel) *
 		ActiveFontGlyphAdvanceX);
 	DrawBeveledMenuButton(
 		0x04, 0x05, continueLabel, continueLabelWidth);

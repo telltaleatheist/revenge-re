@@ -7,6 +7,8 @@
 #include "revenge/original/campaign_data.h"
 #include "revenge/debug.h"
 
+#include <string.h>
+
 void AdvanceCampaignClock(byte hours, byte minutes);
 void ResetLiveUnitState(uint16 unitIndex);
 void UpdatePilotAvailability(void);
@@ -54,7 +56,7 @@ void PrepareScenarioUnitRosters(void)
 	// Preserve the current three-byte campaign clock before the
 	// scenario-specific changes below: DS:8337 the hour, DS:8338 the minute,
 	// DS:8339 the battle's subtick.
-	CopyFarMemory(0x03, CampaignClockState, SavedCampaignClockState);
+	memcpy(SavedCampaignClockState, CampaignClockState, 0x03);
 	uint16 sceneSuffix = ScenarioFileSuffix;
 	uint16 rosterIndex36;
 	uint16 rosterIndex37;

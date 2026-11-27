@@ -5,6 +5,8 @@
 #include "revenge/debug.h"
 #include "revenge/platform_backend.h"
 
+#include <string.h>
+
 // 1A1F:0000: void RunTacticalBattle(word16 scenarioCode)
 // Called from:
 //      InitializeTacticalScenario
@@ -27,10 +29,7 @@ void RunTacticalBattle(word16 scenarioCode)
 		AddBytesToFarPointer(runtimeMemory, TACTICAL_CELL_SPRITE_MAP_OFFSET);
 	TacticalCellTerrainMap = (word16 *)
 		AddBytesToFarPointer(runtimeMemory, TACTICAL_CELL_TERRAIN_MAP_OFFSET);
-	FillRuntimeFarMemoryBytes(
-		runtimeMemory,
-		TACTICAL_RUNTIME_ALLOCATION_SIZE,
-		0x00);
+	memset(runtimeMemory, 0x00, TACTICAL_RUNTIME_ALLOCATION_SIZE);
 	InstallDamagedTerrainSpriteLookup();
 
 	LoadPackedIconPageDirect(
@@ -75,7 +74,7 @@ void RunTacticalBattle(word16 scenarioCode)
 	/* ASM 1A1F:0233-0244 restores the saved scenario clock into the live
 	 * tactical clock.  PrepareScenarioUnitRosters performs the opposite
 	 * copy when leaving a scenario. */
-	CopyFarMemory(0x03, SavedCampaignClockState, CampaignClockState);
+	memcpy(CampaignClockState, SavedCampaignClockState, 0x03);
 	LoadTacticalScenarioResources((byte) scenarioCode);
 	REVENGE_PRESERVATION_TRACE("tactical: scenario loaded unit0=%u,%u deployed=%u unit15=%u,%u deployed=%u\n",
 		ScenarioUnitMapX[0x00], ScenarioUnitMapY[0x00],

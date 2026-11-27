@@ -315,9 +315,6 @@ int8 TranslateKeyCode(void);
 int16 ReadTranslatedKeypress(void);
 int16 NormalizeNavigationKeyCode(int16 keyCode);
 int16 RandomInRangeInclusive(word16 minimum, word16 maximum);
-word16 StringLength(const char *text);
-void FillRuntimeFarMemoryBytes(
-	byte *destination, word16 byteCount, byte value);
 segptr32 NormalizeFarPointer(word16 offset, word16 segment);
 void *AddSignedOffsetToFarPointer(
 	const void *pointer, int32 displacement);
@@ -342,10 +339,6 @@ uint32 ShiftRight32_DXAX(
 	word16 valueLow,
 	byte shiftCount,
 	word16 valueHigh);
-void CopyFarMemory(
-	word16 byteCount,
-	const byte *source,
-	byte *destination);
 word16 EncodeDisplayBackingRows(
 	const byte *source,
 	byte *destination,
@@ -443,9 +436,6 @@ char *LongToString(
 	int32 value,
 	char *destination,
 	uint16 radix);
-char *FarStringTokenize(
-	char *string,
-	const char *delimiters);
 void LoadVideoPalette(const byte *paletteData);
 void InstallVgaPaletteBankAnchors(void);
 word16 FlushInputAndWait(word16 timeoutRetraces);

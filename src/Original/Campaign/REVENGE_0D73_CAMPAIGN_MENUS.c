@@ -4,6 +4,8 @@
 #include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
 #include "revenge/debug.h"
 
+#include <string.h>
+
 // 0D73:2414: word16 ConfirmExitToDos(void)
 // Called from:
 //      RunInGameMenu
@@ -103,15 +105,15 @@ word16 RunTwoOptionMenuSelection(
 
 	const char *firstText = menuOptionText[0x00];
 	const char *secondText = menuOptionText[0x01];
-	firstLength = StringLength(firstText);
+	firstLength = (word16) strlen(firstText);
 	DrawBeveledMenuButton(0x0005, menuRow,
 		firstText,
 		(word16)(glyphWidth * firstLength));
 	UiRegionTable[0x08].leftColumn = 0x0005;
 	UiRegionTable[0x08].topRow = menuRow;
-	UiRegionTable[0x08].widthColumns = StringLength(firstText);
+	UiRegionTable[0x08].widthColumns = (word16) strlen(firstText);
 
-	secondLength = StringLength(secondText);
+	secondLength = (word16) strlen(secondText);
 	secondColumn = (int16)(0x0108 / glyphWidth) - secondLength;
 	DrawBeveledMenuButton(secondColumn, menuRow,
 		secondText,
@@ -153,15 +155,15 @@ word16 RunMainMenuSelection(const char * const menuOptionText[0x03])
 	const char *firstText = menuOptionText[0x00];
 	const char *secondText = menuOptionText[0x01];
 	const char *thirdText = menuOptionText[0x02];
-	firstLength = StringLength(firstText);
+	firstLength = (word16) strlen(firstText);
 	DrawBeveledMenuButton(0x03, menuRow, firstText,
 		(word16) (glyphWidth * firstLength));
 	UiRegionTable[0x08].leftColumn = 0x03;
 	UiRegionTable[0x08].topRow = menuRow;
-	firstLength = StringLength(firstText);
+	firstLength = (word16) strlen(firstText);
 	UiRegionTable[0x08].widthColumns = firstLength;
 
-	secondLength = StringLength(secondText);
+	secondLength = (word16) strlen(secondText);
 	secondColumn = (int16) ((0x0130 / glyphWidth) - secondLength);
 	secondColumn >>= 0x01;
 	DrawBeveledMenuButton(secondColumn, menuRow, secondText,
@@ -170,7 +172,7 @@ word16 RunMainMenuSelection(const char * const menuOptionText[0x03])
 	UiRegionTable[0x09].topRow = menuRow;
 	UiRegionTable[0x09].widthColumns = secondLength;
 
-	thirdLength = StringLength(thirdText);
+	thirdLength = (word16) strlen(thirdText);
 	thirdColumn = (int16) ((0x0130 / glyphWidth) - thirdLength);
 	DrawBeveledMenuButton(thirdColumn, menuRow, thirdText,
 		(word16) (thirdLength * glyphWidth));
