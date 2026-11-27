@@ -26,56 +26,56 @@ static int failures;
 
 static void Check(int condition, const char *what)
 {
-	if (!condition)
-	{
-		fprintf(stderr, "FAIL: %s\n", what);
-		++failures;
-	}
+    if (!condition)
+    {
+        fprintf(stderr, "FAIL: %s\n", what);
+        ++failures;
+    }
 }
 
 static void Prepare(word16 divider)
 {
-	word16 unitIndex;
+    word16 unitIndex;
 
-	for (unitIndex = 0x00; unitIndex < 0x18; ++unitIndex)
-	{
-		PersistentUnitRoster[unitIndex].deploymentState = 0x00;
-		UnitAttackTarget[unitIndex] = TACTICAL_TARGET_NONE;
-		UnitTacticalTarget[unitIndex] = TACTICAL_TARGET_NONE;
-		UnitEnemyVisible[unitIndex] = FALSE;
-	}
-	memset(UnitActionMaskByExperience, 0x00, sizeof(UnitActionMaskByExperience));
-	memset(UnitActionMaskByExperiencePastEnd, 0x00, sizeof(UnitActionMaskByExperiencePastEnd));
-	UnitActionMaskByExperiencePastEnd[PAST_END_EXPERIENCE - 0x04] = MASK_BIT;
+    for (unitIndex = 0x00; unitIndex < 0x18; ++unitIndex)
+    {
+        PersistentUnitRoster[unitIndex].deploymentState = 0x00;
+        UnitAttackTarget[unitIndex] = TACTICAL_TARGET_NONE;
+        UnitTacticalTarget[unitIndex] = TACTICAL_TARGET_NONE;
+        UnitEnemyVisible[unitIndex] = FALSE;
+    }
+    memset(UnitActionMaskByExperience, 0x00, sizeof(UnitActionMaskByExperience));
+    memset(UnitActionMaskByExperiencePastEnd, 0x00, sizeof(UnitActionMaskByExperiencePastEnd));
+    UnitActionMaskByExperiencePastEnd[PAST_END_EXPERIENCE - 0x04] = MASK_BIT;
 
-	PersistentUnitRoster[ACTING_UNIT].deploymentState = 0x01;
-	PersistentUnitRoster[ACTING_UNIT].pilotExperience = PAST_END_EXPERIENCE;
-	UnitTacticalOrderMode[ACTING_UNIT] = SEEK_AND_DESTROY_ORDER;
-	ScenarioUnitMapX[ACTING_UNIT] = 0x10;
-	ScenarioUnitMapY[ACTING_UNIT] = 0x10;
+    PersistentUnitRoster[ACTING_UNIT].deploymentState = 0x01;
+    PersistentUnitRoster[ACTING_UNIT].pilotExperience = PAST_END_EXPERIENCE;
+    UnitTacticalOrderMode[ACTING_UNIT] = SEEK_AND_DESTROY_ORDER;
+    ScenarioUnitMapX[ACTING_UNIT] = 0x10;
+    ScenarioUnitMapY[ACTING_UNIT] = 0x10;
 
-	PersistentUnitRoster[TARGET_UNIT].deploymentState = 0x01;
-	PersistentUnitRoster[TARGET_UNIT].pilotExperience = 0x00;
-	UnitEnemyVisible[TARGET_UNIT] = TRUE;
-	ScenarioUnitMapX[TARGET_UNIT] = 0x14;
-	ScenarioUnitMapY[TARGET_UNIT] = 0x10;
+    PersistentUnitRoster[TARGET_UNIT].deploymentState = 0x01;
+    PersistentUnitRoster[TARGET_UNIT].pilotExperience = 0x00;
+    UnitEnemyVisible[TARGET_UNIT] = TRUE;
+    ScenarioUnitMapX[TARGET_UNIT] = 0x14;
+    ScenarioUnitMapY[TARGET_UNIT] = 0x10;
 
-	TacticalClockDivider = divider;
+    TacticalClockDivider = divider;
 }
 
 int main(void)
 {
-	Prepare(MASK_BIT);
-	SelectUnitTacticalTargets();
-	Check(UnitTacticalTarget[ACTING_UNIT] == TARGET_UNIT,
-		"on a subtick its past-end word has, the unit acts and takes its target");
+    Prepare(MASK_BIT);
+    SelectUnitTacticalTargets();
+    Check(UnitTacticalTarget[ACTING_UNIT] == TARGET_UNIT,
+        "on a subtick its past-end word has, the unit acts and takes its target");
 
-	Prepare(OTHER_BIT);
-	SelectUnitTacticalTargets();
-	Check(UnitTacticalTarget[ACTING_UNIT] == TACTICAL_TARGET_NONE,
-		"on a subtick its past-end word lacks, the unit waits");
+    Prepare(OTHER_BIT);
+    SelectUnitTacticalTargets();
+    Check(UnitTacticalTarget[ACTING_UNIT] == TACTICAL_TARGET_NONE,
+        "on a subtick its past-end word lacks, the unit waits");
 
-	if (failures == 0)
-		printf("experience mask: ok\n");
-	return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+    if (failures == 0)
+        printf("experience mask: ok\n");
+    return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

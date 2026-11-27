@@ -5,10 +5,10 @@
 
 static void WriteDword(byte *destination, uint32 value)
 {
-    destination[0x00] = (byte)value;
-    destination[0x01] = (byte)(value >> 0x08);
-    destination[0x02] = (byte)(value >> 0x10);
-    destination[0x03] = (byte)(value >> 0x18);
+    destination[0x00] = (byte) value;
+    destination[0x01] = (byte) (value >> 0x08);
+    destination[0x02] = (byte) (value >> 0x10);
+    destination[0x03] = (byte) (value >> 0x18);
 }
 
 static void TestRawBlock(void)
@@ -28,8 +28,7 @@ static void TestRawBlock(void)
 static void TestRleBlock(void)
 {
     byte block[0x12] = { 0x03 };
-    const byte expected[] =
-    {
+    const byte expected[] = {
         0x10, 0x20, 0x30,
         0x44, 0x44, 0x44,
         0x55, 0x55, 0x55, 0x55
@@ -82,8 +81,7 @@ static void PackFourLzw14Codes(byte *destination, const uint16 *codes)
 
         codeIndex = bitIndex / 0x000E;
         codeBit = 0x000D - (bitIndex % 0x000E);
-        destination[bitIndex / 0x0008] |= (byte)(
-            ((codes[codeIndex] >> codeBit) & 0x01)
+        destination[bitIndex / 0x0008] |= (byte) (((codes[codeIndex] >> codeBit) & 0x01)
             << (0x07 - bitIndex % 0x0008));
     }
 }

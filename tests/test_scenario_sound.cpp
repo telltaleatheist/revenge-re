@@ -9,37 +9,37 @@
 
 int main(void)
 {
-	static byte informationSample[0x3442];
-	RequireOriginalImport();
+    static byte informationSample[0x3442];
+    RequireOriginalImport();
 
-	FakeBackend_Reset();
+    FakeBackend_Reset();
 
-	/* The assertions read the exact DS:5CFC catalog embedded in Original. */
-	assert(FindDigitalSoundEntryByCode('I') == 0x00);
-	assert(FindDigitalSoundEntryByCode('T') == 0x01);
-	assert(FindDigitalSoundEntryByCode('=') == 0x02);
-	assert(FindDigitalSoundEntryByCode('.') == 0x03);
-	assert(FindDigitalSoundEntryByCode('J') == 0x0A);
-	assert(FindDigitalSoundEntryByCode('r') == 0x15);
-	assert(FindDigitalSoundEntryByCode('?') == -0x01);
+    /* The assertions read the exact DS:5CFC catalog embedded in Original. */
+    assert(FindDigitalSoundEntryByCode('I') == 0x00);
+    assert(FindDigitalSoundEntryByCode('T') == 0x01);
+    assert(FindDigitalSoundEntryByCode('=') == 0x02);
+    assert(FindDigitalSoundEntryByCode('.') == 0x03);
+    assert(FindDigitalSoundEntryByCode('J') == 0x0A);
+    assert(FindDigitalSoundEntryByCode('r') == 0x15);
+    assert(FindDigitalSoundEntryByCode('?') == -0x01);
 
-	/* Scenario FFh is the one-code "I" sequence at DS:5E6E. Run it
+    /* Scenario FFh is the one-code "I" sequence at DS:5E6E. Run it
 	 * through the original descriptor builder to the speaker's speech,
 	 * which plays the samples clean at 8000 Hz. */
-	DigitalSoundBuffer = informationSample;
-	NarrationMode = 0x01;
-	SoundDriverIndex = 0x00;
-	PlayScenarioDigitalSoundSequence(-0x01);
-	assert(fakeBackend.buffer == informationSample);
-	assert(fakeBackend.secondWord == sizeof(informationSample));
-	assert(fakeBackend.firstWord == 0x1F40);
-	assert(ActiveDigitalSampleDescriptor != NULL);
-	assert(ActiveDigitalSampleDescriptor->SampleLength ==
-		sizeof(informationSample));
+    DigitalSoundBuffer = informationSample;
+    NarrationMode = 0x01;
+    SoundDriverIndex = 0x00;
+    PlayScenarioDigitalSoundSequence(-0x01);
+    assert(fakeBackend.buffer == informationSample);
+    assert(fakeBackend.secondWord == sizeof(informationSample));
+    assert(fakeBackend.firstWord == 0x1F40);
+    assert(ActiveDigitalSampleDescriptor != NULL);
+    assert(ActiveDigitalSampleDescriptor->SampleLength ==
+        sizeof(informationSample));
 
-	NarrationMode = 0x00;
-	fakeBackend.buffer = NULL;
-	PlayScenarioDigitalSoundSequence(-0x01);
-	assert(fakeBackend.buffer == NULL);
-	return 0x00;
+    NarrationMode = 0x00;
+    fakeBackend.buffer = NULL;
+    PlayScenarioDigitalSoundSequence(-0x01);
+    assert(fakeBackend.buffer == NULL);
+    return 0x00;
 }

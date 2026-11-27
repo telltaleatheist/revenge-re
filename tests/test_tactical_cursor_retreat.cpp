@@ -8,17 +8,17 @@ void RetreatTacticalCursorCell(void);
 
 static void Check(word16 x, word16 y, word16 expectedX, word16 expectedY)
 {
-	TacticalCursorViewportX = x;
-	TacticalCursorViewportY = y;
-	RetreatTacticalCursorCell();
-	assert(TacticalCursorViewportX == expectedX);
-	assert(TacticalCursorViewportY == expectedY);
+    TacticalCursorViewportX = x;
+    TacticalCursorViewportY = y;
+    RetreatTacticalCursorCell();
+    assert(TacticalCursorViewportX == expectedX);
+    assert(TacticalCursorViewportY == expectedY);
 }
 
 int main(void)
 {
-	Check(0x0005, 0x0003, 0x0004, 0x0003);
-	Check(0x0000, 0x0003, 0x0012, 0x0002);
-	Check(0x0000, 0x0000, 0x0012, 0x000B);
-	return 0;
+    Check(0x0005, 0x0003, 0x0004, 0x0003);
+    Check(0x0000, 0x0003, 0x0012, 0x0002);
+    Check(0x0000, 0x0000, 0x0012, 0x000B);
+    return 0;
 }

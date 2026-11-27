@@ -11,7 +11,7 @@
 
 static void RequireRules(void)
 {
-	Rules_Load(CHR_DATA_DIRECTORY);
+    Rules_Load(CHR_DATA_DIRECTORY);
 }
 
 #endif

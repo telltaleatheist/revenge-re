@@ -12,8 +12,8 @@
 void InitializeResourceCache(void);
 void LoadTacticalMap(word16 mapNumber);
 word16 TraceMapLineOfSight(int16 sourceX, int16 sourceY, int16 targetX, int16 targetY,
-	const byte *terrainTypeMap, byte specialTerrainMinimum, byte specialTerrainMaximum,
-	byte blockingTerrainThreshold, byte maximumSteps);
+    const byte *terrainTypeMap, byte specialTerrainMinimum, byte specialTerrainMaximum,
+    byte blockingTerrainThreshold, byte maximumSteps);
 
 constexpr int WIDTH = 55;
 constexpr int HEIGHT = 70;
@@ -24,45 +24,45 @@ constexpr int CLEAR_ROW = 30;
 
 static word16 Trace(int16 sourceX, int16 sourceY, int16 targetX, int16 targetY)
 {
-	/* The first battle's terrain bounds; no step limit (0 wraps to 255). */
-	return TraceMapLineOfSight(sourceX, sourceY, targetX, targetY, TerrainTypeMap,
-		0xA0, 0xC6, BLOCKING, 0x00);
+    /* The first battle's terrain bounds; no step limit (0 wraps to 255). */
+    return TraceMapLineOfSight(sourceX, sourceY, targetX, targetY, TerrainTypeMap,
+        0xA0, 0xC6, BLOCKING, 0x00);
 }
 
 int main(void)
 {
-	int x;
-	int y;
+    int x;
+    int y;
 
-	/* The map as the game allocates it: one block. */
-	TerrainTypeMap = (byte *) calloc(0x8000, 1);
-	assert(TerrainTypeMap != NULL);
-	/* As the game's start-up does (2C7F): every tracked file's slot free, no
+    /* The map as the game allocates it: one block. */
+    TerrainTypeMap = (byte *) calloc(0x8000, 1);
+    assert(TerrainTypeMap != NULL);
+    /* As the game's start-up does (2C7F): every tracked file's slot free, no
 	 * file cached. */
-	InitializeResourceCache();
-	/* The test backend's reads leave the buffer as it is: the header the
+    InitializeResourceCache();
+    /* The test backend's reads leave the buffer as it is: the header the
 	 * loader reads first is these bytes, and the cells read over it after are
 	 * the ones filled in below. */
-	TerrainTypeMap[0x00] = WIDTH;
-	TerrainTypeMap[0x02] = HEIGHT;
-	LoadTacticalMap(0x0000);
-	assert(MapWidth == WIDTH && MapHeight == HEIGHT);
+    TerrainTypeMap[0x00] = WIDTH;
+    TerrainTypeMap[0x02] = HEIGHT;
+    LoadTacticalMap(0x0000);
+    assert(MapWidth == WIDTH && MapHeight == HEIGHT);
 
-	/* Everything blocks but one column and one row. */
-	for (y = 0; y < HEIGHT; ++y)
-	{
-		for (x = 0; x < WIDTH; ++x)
-		{
-			TerrainTypeMap[y * WIDTH + x] = (x == CLEAR_COLUMN || y == CLEAR_ROW) ? OPEN : BLOCKING;
-		}
-	}
+    /* Everything blocks but one column and one row. */
+    for (y = 0; y < HEIGHT; ++y)
+    {
+        for (x = 0; x < WIDTH; ++x)
+        {
+            TerrainTypeMap[y * WIDTH + x] = (x == CLEAR_COLUMN || y == CLEAR_ROW) ? OPEN : BLOCKING;
+        }
+    }
 
-	/* Along the row: no row step taken, clear either way. */
-	assert(Trace(5, CLEAR_ROW, 50, CLEAR_ROW) != 0x0000);
-	/* Down and up the column: each step is one row of the map. */
-	assert(Trace(CLEAR_COLUMN, 23, CLEAR_COLUMN, 56) != 0x0000);
-	assert(Trace(CLEAR_COLUMN, 56, CLEAR_COLUMN, 23) != 0x0000);
-	/* Off the clear lines, a blocked cell stops it. */
-	assert(Trace(CLEAR_COLUMN, 23, CLEAR_COLUMN + 3, 56) == 0x0000);
-	return 0;
+    /* Along the row: no row step taken, clear either way. */
+    assert(Trace(5, CLEAR_ROW, 50, CLEAR_ROW) != 0x0000);
+    /* Down and up the column: each step is one row of the map. */
+    assert(Trace(CLEAR_COLUMN, 23, CLEAR_COLUMN, 56) != 0x0000);
+    assert(Trace(CLEAR_COLUMN, 56, CLEAR_COLUMN, 23) != 0x0000);
+    /* Off the clear lines, a blocked cell stops it. */
+    assert(Trace(CLEAR_COLUMN, 23, CLEAR_COLUMN + 3, 56) == 0x0000);
+    return 0;
 }

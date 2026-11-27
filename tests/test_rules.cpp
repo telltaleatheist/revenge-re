@@ -28,44 +28,53 @@
 
 namespace fs = std::filesystem;
 
-namespace {
+namespace
+{
 
 int g_failures = 0;
 
-void check(bool ok, const std::string& what) {
-    if (!ok) {
+void check(bool ok, const std::string &what)
+{
+    if (!ok)
+    {
         ++g_failures;
         std::printf("FAIL %s\n", what.c_str());
     }
 }
 
-std::string hash_of(const std::uint8_t* bytes, std::size_t length) {
+std::string hash_of(const std::uint8_t *bytes, std::size_t length)
+{
     char hex[17];
     OriginalImport_KeyedHash(bytes, length, hex);
     return hex;
 }
 
-int rebuild() {
+int rebuild()
+{
     RequireRules();
     std::size_t tuned = 0;
-    for (std::size_t index = 0; index < RulePieceCount; ++index) {
-        const RulePiece& piece = RulePieces[index];
+    for (std::size_t index = 0; index < RulePieceCount; ++index)
+    {
+        const RulePiece &piece = RulePieces[index];
         check(piece.size == piece.length, std::string(piece.id) + ": its object isn't its length");
-        if (piece.keyedHash[0] == '\0') {
+        if (piece.keyedHash[0] == '\0')
+        {
             ++tuned;
             continue;
         }
-        check(hash_of(static_cast<const std::uint8_t*>(piece.object), piece.size) == piece.keyedHash,
-              std::string(piece.id) + ": data/rules doesn't rebuild the original's bytes");
+        check(hash_of(static_cast<const std::uint8_t *>(piece.object), piece.size) == piece.keyedHash,
+            std::string(piece.id) + ": data/rules doesn't rebuild the original's bytes");
     }
     std::printf("rules.rebuild: %zu tables, %zu tuned, %d wrong\n", RulePieceCount, tuned, g_failures);
     return g_failures == 0 ? 0 : 1;
 }
 
 // The image as DOS loads it at 0800h: each relocated segment word moved.
-std::vector<std::uint8_t> loaded_image() {
+std::vector<std::uint8_t> loaded_image()
+{
     std::vector<std::uint8_t> image(OriginalImage, OriginalImage + OriginalImport_ImageBytes());
-    for (std::size_t index = 0; index < OriginalImport_RelocationCount(); ++index) {
+    for (std::size_t index = 0; index < OriginalImport_RelocationCount(); ++index)
+    {
         const std::size_t at = OriginalImport_Relocation(index);
         if (at + 1 >= image.size()) continue;
         const unsigned value = (image[at] | image[at + 1] << 8) + 0x0800;
@@ -75,23 +84,26 @@ std::vector<std::uint8_t> loaded_image() {
     return image;
 }
 
-int exe() {
+int exe()
+{
     RequireOriginalImport();
     const std::vector<std::uint8_t> image = loaded_image();
     std::size_t checked = 0;
-    for (std::size_t index = 0; index < RulePieceCount; ++index) {
-        const RulePiece& piece = RulePieces[index];
+    for (std::size_t index = 0; index < RulePieceCount; ++index)
+    {
+        const RulePiece &piece = RulePieces[index];
         if (piece.keyedHash[0] == '\0') continue;
         const std::size_t at = std::size_t(piece.segment - 0x0800) * 16 + piece.offset;
         check(at + piece.length <= image.size() && hash_of(&image[at], piece.length) == piece.keyedHash,
-              std::string(piece.id) + ": the copy doesn't hold the rule table's bytes");
+            std::string(piece.id) + ": the copy doesn't hold the rule table's bytes");
         ++checked;
     }
     std::printf("rules.exe: %zu tables checked, %d wrong\n", checked, g_failures);
     return g_failures == 0 ? 0 : 1;
 }
 
-std::string read(const fs::path& path) {
+std::string read(const fs::path &path)
+{
     std::ifstream in(path, std::ios::binary);
     return std::string((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
 }
@@ -99,22 +111,26 @@ std::string read(const fs::path& path) {
 // data/rules, ui, start and sound copied to a folder of the test's, with `from` made
 // `to` in `file`, a path under the data folder (or with no `file` when
 // `from` is null).
-std::string broken_data(const char* mode, const char* file, const char* from, const char* to) {
+std::string broken_data(const char *mode, const char *file, const char *from, const char *to)
+{
     const fs::path folder = fs::current_path() / (std::string("rules-test-") + mode);
     fs::remove_all(folder);
-    for (const char* part : {"rules", "ui", "start", "sound"}) {
+    for (const char *part : { "rules", "ui", "start", "sound" })
+    {
         fs::create_directories(folder / part);
-        for (const fs::directory_entry& entry : fs::directory_iterator(fs::path(CHR_DATA_DIRECTORY) / part))
+        for (const fs::directory_entry &entry : fs::directory_iterator(fs::path(CHR_DATA_DIRECTORY) / part))
             fs::copy_file(entry.path(), folder / part / entry.path().filename());
     }
     const fs::path target = folder / file;
-    if (from == nullptr) {
+    if (from == nullptr)
+    {
         fs::remove(target);
         return folder.string();
     }
     std::string text = read(target);
     const std::size_t at = text.find(from);
-    if (at == std::string::npos) {
+    if (at == std::string::npos)
+    {
         std::printf("FAIL %s: %s has no %s\n", mode, file, from);
         std::exit(1);
     }
@@ -125,44 +141,47 @@ std::string broken_data(const char* mode, const char* file, const char* from, co
 
 }  // namespace
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv)
+{
     const std::string mode = argc > 1 ? argv[1] : "from_data";
     if (mode == "from_data") return rebuild();
     if (mode == "in_copy") return exe();
 
-    struct Broken {
-        const char* mode;
-        const char* file;
-        const char* from;
-        const char* to;
+    struct Broken
+    {
+        const char *mode;
+        const char *file;
+        const char *from;
+        const char *to;
     };
     static const Broken broken[] = {
-        {"stray", "rules/weapons.json", "\"small_laser\": {", "\"small_laser\": {\"rate_of_fire\": 1, "},
-        {"absent", "rules/weapons.json", "\"ppc\": {\"heat\": 10, ", "\"ppc\": {"},
-        {"too_large", "rules/weapons.json", "\"ppc\": {\"heat\": 10,", "\"ppc\": {\"heat\": 300,"},
-        {"length", "rules/weapons.json", "[45, ", "["},
-        {"shared", "rules/weapons.json", "\"improved_missile_damage_bonus\": 0}", "\"improved_missile_damage_bonus\": 1}"},
-        {"location", "rules/combat.json", "[\"center_rear_torso\", ", "[\"tail\", "},
-        {"direction", "rules/combat.json", "\"hit_table_by_direction\": [0,", "\"hit_table_by_direction\": [4,"},
-        {"engagement", "rules/ai.json", "\"engagement_by_comparison_mask\": [\n    \"withdraw\"",
-         "\"engagement_by_comparison_mask\": [\n    \"retreat\""},
-        {"overfull", "rules/ai.json", "\"weapon_priorities\": [\n    [\n",
-         "\"weapon_priorities\": [\n    [\n      {\"if_ready\": [\"ppc\"], \"fire\": \"ppc\"},\n"},
-        {"unit_type", "rules/units.json", "\"fixed_unit_types\": [4,", "\"fixed_unit_types\": [89,"},
-        {"class_lists", "rules/units.json", "\"unit_class_types\": [\n    [", "\"unit_class_types\": [\n    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, "},
-        {"experience", "rules/pilots.json", "{\"identity\": 0, \"experience\": ", "{\"identity\": 0, \"experience\": 4"},
-        {"month", "rules/campaign.json", "{\"month\": ", "{\"month\": 1"},
-        {"record", "ui/lance_editor.json", "{\"left\": 14, \"top\": 5,", "{\"top\": 5,"},
-        {"frame", "ui/screens.json", "\"top\": [4]", "\"top\": [4, 4]"},
-        {"pilot_count", "start/new_campaign.json", "\"random_pilot_count\": 15\n  },\n  \"forward\"",
-         "\"random_pilot_count\": 16\n  },\n  \"forward\""},
-        {"section", "start/lance_editor.json", "    1, 1, 1, 1,", "    1, 2, 1, 1,"},
-        {"speed", "start/game.json", "\"tactical_game_speed\": 2", "\"tactical_game_speed\": 8"},
-        {"slot_name", "start/save_directory.json", "\"name\": \"3\"", "\"name\": \"123456789012345678901\""},
-        {"nofile", "rules/combat.json", nullptr, nullptr},
+        { "stray", "rules/weapons.json", "\"small_laser\": {", "\"small_laser\": {\"rate_of_fire\": 1, " },
+        { "absent", "rules/weapons.json", "\"ppc\": {\"heat\": 10, ", "\"ppc\": {" },
+        { "too_large", "rules/weapons.json", "\"ppc\": {\"heat\": 10,", "\"ppc\": {\"heat\": 300," },
+        { "length", "rules/weapons.json", "[45, ", "[" },
+        { "shared", "rules/weapons.json", "\"improved_missile_damage_bonus\": 0}", "\"improved_missile_damage_bonus\": 1}" },
+        { "location", "rules/combat.json", "[\"center_rear_torso\", ", "[\"tail\", " },
+        { "direction", "rules/combat.json", "\"hit_table_by_direction\": [0,", "\"hit_table_by_direction\": [4," },
+        { "engagement", "rules/ai.json", "\"engagement_by_comparison_mask\": [\n    \"withdraw\"",
+            "\"engagement_by_comparison_mask\": [\n    \"retreat\"" },
+        { "overfull", "rules/ai.json", "\"weapon_priorities\": [\n    [\n",
+            "\"weapon_priorities\": [\n    [\n      {\"if_ready\": [\"ppc\"], \"fire\": \"ppc\"},\n" },
+        { "unit_type", "rules/units.json", "\"fixed_unit_types\": [4,", "\"fixed_unit_types\": [89," },
+        { "class_lists", "rules/units.json", "\"unit_class_types\": [\n    [", "\"unit_class_types\": [\n    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, " },
+        { "experience", "rules/pilots.json", "{\"identity\": 0, \"experience\": ", "{\"identity\": 0, \"experience\": 4" },
+        { "month", "rules/campaign.json", "{\"month\": ", "{\"month\": 1" },
+        { "record", "ui/lance_editor.json", "{\"left\": 14, \"top\": 5,", "{\"top\": 5," },
+        { "frame", "ui/screens.json", "\"top\": [4]", "\"top\": [4, 4]" },
+        { "pilot_count", "start/new_campaign.json", "\"random_pilot_count\": 15\n  },\n  \"forward\"",
+            "\"random_pilot_count\": 16\n  },\n  \"forward\"" },
+        { "section", "start/lance_editor.json", "    1, 1, 1, 1,", "    1, 2, 1, 1," },
+        { "speed", "start/game.json", "\"tactical_game_speed\": 2", "\"tactical_game_speed\": 8" },
+        { "slot_name", "start/save_directory.json", "\"name\": \"3\"", "\"name\": \"123456789012345678901\"" },
+        { "nofile", "rules/combat.json", nullptr, nullptr },
     };
-    for (const Broken& one : broken)
-        if (mode == one.mode) {
+    for (const Broken &one : broken)
+        if (mode == one.mode)
+        {
             const std::string folder = broken_data(one.mode, one.file, one.from, one.to);
             Rules_Load(folder.c_str());
             std::printf("FAIL %s: the rules were read\n", one.mode);

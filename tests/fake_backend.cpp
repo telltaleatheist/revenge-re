@@ -11,8 +11,8 @@ FakeBackendState fakeBackend;
 
 REVENGE_NORETURN void SDLBackend_TerminateProcess(byte exitCode)
 {
-	fakeBackend.exitCode = exitCode;
-	exit((int) exitCode);
+    fakeBackend.exitCode = exitCode;
+    exit((int) exitCode);
 }
 
 void FakeBackend_Reset(void)
@@ -23,7 +23,7 @@ void FakeBackend_Reset(void)
 uint16 SDLBackend_DirectConsoleIO(byte character)
 {
     fakeBackend.consoleCharacters[fakeBackend.consoleCharacterCount++] = character;
-    return (uint16)(0x0600 | character);
+    return (uint16) (0x0600 | character);
 }
 
 /* Game files as the DOS fakes had them: every open succeeds, a read or a
@@ -31,38 +31,50 @@ uint16 SDLBackend_DirectConsoleIO(byte character)
  * seek lands at 12345678h. */
 int16 GameFile_Open(const char *name, GameFileAccess access)
 {
-	(void) name;
-	(void) access;
-	return 0x0006;
+    (void) name;
+    (void) access;
+    return 0x0006;
 }
 
-int16 GameFile_Close(int16 handle) { (void) handle; return 0x0000; }
+int16 GameFile_Close(int16 handle)
+{
+    (void) handle;
+    return 0x0000;
+}
 
 int16 GameFile_Read(int16 handle, void *destination, word16 byteCount)
 {
-	(void) handle;
-	(void) destination;
-	return (int16) byteCount;
+    (void) handle;
+    (void) destination;
+    return (int16) byteCount;
 }
 
 int16 GameFile_Write(int16 handle, const void *source, word16 byteCount)
 {
-	(void) handle;
-	(void) source;
-	return (int16) byteCount;
+    (void) handle;
+    (void) source;
+    return (int16) byteCount;
 }
 
 int32 GameFile_Seek(int16 handle, int32 offset, GameFileOrigin origin)
 {
-	(void) handle;
-	(void) offset;
-	(void) origin;
-	return 0x12345678L;
+    (void) handle;
+    (void) offset;
+    (void) origin;
+    return 0x12345678L;
 }
 
-int32 GameFile_Length(int16 handle) { (void) handle; return 0x12345678L; }
+int32 GameFile_Length(int16 handle)
+{
+    (void) handle;
+    return 0x12345678L;
+}
 
-int16 GameFile_Delete(const char *name) { (void) name; return 0x0000; }
+int16 GameFile_Delete(const char *name)
+{
+    (void) name;
+    return 0x0000;
+}
 
 void SDLBackend_GetSystemDate(DOS_Date *date)
 {
@@ -81,8 +93,8 @@ void SDLBackend_GetSystemTime(DOS_Time *timeValue)
 
 const char *SDLBackend_GetEnvironmentVariable(const char *name)
 {
-	(void) name;
-	return 0;
+    (void) name;
+    return 0;
 }
 
 void SDLBackend_SetGameClockHandler(void (*handler)(void))
@@ -149,7 +161,7 @@ uint64_t SDLBackend_Milliseconds(void)
 
 void SDLBackend_Delay(uint32_t milliseconds)
 {
-    (void)milliseconds;
+    (void) milliseconds;
 }
 
 void SDLBackend_InstallKeyboardHandlers(void)
@@ -191,13 +203,13 @@ void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart)
 
 void SDLBackend_SetMouseVisible(uint16 visible)
 {
-	(void) visible;
+    (void) visible;
 }
 
 void SDLBackend_SetMousePosition(int16 logicalX, int16 logicalY)
 {
-	fakeBackend.mouseX = logicalX;
-	fakeBackend.mouseY = logicalY;
+    fakeBackend.mouseX = logicalX;
+    fakeBackend.mouseY = logicalY;
 }
 
 byte *SDLBackend_GetIndexedFramebuffer(void)
@@ -213,7 +225,7 @@ void SDLBackend_ClearIndexedFramebuffer(byte color)
 void SDLBackend_DrawIndexedPixel(uint16 x, uint16 y, byte color)
 {
     if (x < 0x0140 && y < 0x00C8)
-        fakeBackend.indexedFramebuffer[(uint32)y * 0x0140 + x] = color;
+        fakeBackend.indexedFramebuffer[(uint32) y * 0x0140 + x] = color;
 }
 
 int SDLBackend_PresentIndexedFramebuffer(void)
@@ -254,14 +266,14 @@ void SDLBackend_AdvanceAudio(void)
 
 void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz)
 {
-    fakeBackend.buffer = (void *)samples;
+    fakeBackend.buffer = (void *) samples;
     fakeBackend.secondWord = sampleCount;
     fakeBackend.firstWord = sampleRateHz;
 }
 
 void SDLBackend_HoldTimers(uint64_t nanoseconds)
 {
-    (void)nanoseconds;
+    (void) nanoseconds;
 }
 
 void SDLBackend_WriteMIDIByte(byte midiByte)
@@ -274,12 +286,12 @@ void SDLBackend_WriteMIDIByte(byte midiByte)
 
 void SDLBackend_SetDigitalOutputRate(word16 sampleRateHz)
 {
-	fakeBackend.firstWord = sampleRateHz;
+    fakeBackend.firstWord = sampleRateHz;
 }
 
 void SDLBackend_WriteUnsigned8Sample(byte sample)
 {
-	fakeBackend.firstByte = sample;
+    fakeBackend.firstByte = sample;
 }
 
 void SDLBackend_ServiceTimers(void)
@@ -290,7 +302,7 @@ void SDLBackend_ServiceTimers(void)
  * the trace copy has, VGA and the speaker. */
 const RevengeMediaChoices *HostSettings_MediaChoices(void)
 {
-	static const RevengeMediaChoices speaker = { { 0x0000, 0x0006, 0x0008, 0x0001 }, "", MEDIA_MUSIC_SPEAKER, MEDIA_SOUND_SPEAKER };
+    static const RevengeMediaChoices speaker = { { 0x0000, 0x0006, 0x0008, 0x0001 }, "", MEDIA_MUSIC_SPEAKER, MEDIA_SOUND_SPEAKER };
 
-	return &speaker;
+    return &speaker;
 }

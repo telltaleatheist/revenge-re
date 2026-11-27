@@ -9,11 +9,11 @@ static int failures;
 
 static void Check(int condition, const char *message)
 {
-	if (!condition)
-	{
-		fprintf(stderr, "FAIL: %s\n", message);
-		++failures;
-	}
+    if (!condition)
+    {
+        fprintf(stderr, "FAIL: %s\n", message);
+        ++failures;
+    }
 }
 
 static byte primaryBuffer[0x10];
@@ -21,27 +21,27 @@ static byte ordinaryBuffer[0x10];
 
 static void TestOrdinaryTarget(void)
 {
-	VideoAdapterType = VIDEO_ADAPTER_VGA;
-	PrimaryScreenBuffer = primaryBuffer;
-	SetActiveRenderTarget(ordinaryBuffer);
+    VideoAdapterType = VIDEO_ADAPTER_VGA;
+    PrimaryScreenBuffer = primaryBuffer;
+    SetActiveRenderTarget(ordinaryBuffer);
 
-	Check(ActiveRenderTarget == ordinaryBuffer,
-		"ordinary targets retain the selected buffer");
+    Check(ActiveRenderTarget == ordinaryBuffer,
+        "ordinary targets retain the selected buffer");
 }
 
 static void TestPrimaryTarget(void)
 {
-	VideoAdapterType = VIDEO_ADAPTER_VGA;
-	PrimaryScreenBuffer = primaryBuffer;
-	SetActiveRenderTarget(primaryBuffer);
+    VideoAdapterType = VIDEO_ADAPTER_VGA;
+    PrimaryScreenBuffer = primaryBuffer;
+    SetActiveRenderTarget(primaryBuffer);
 
-	Check(ActiveRenderTarget == primaryBuffer,
-		"the primary buffer is a target as it is");
+    Check(ActiveRenderTarget == primaryBuffer,
+        "the primary buffer is a target as it is");
 }
 
 int main(void)
 {
-	TestOrdinaryTarget();
-	TestPrimaryTarget();
-	return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
+    TestOrdinaryTarget();
+    TestPrimaryTarget();
+    return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

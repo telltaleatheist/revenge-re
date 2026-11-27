@@ -12,26 +12,26 @@ void AdvanceTacticalCampaignClock(void);
 
 int main(void)
 {
-	/* No scenario's roster case (31h-54h): only the clock and the map
+    /* No scenario's roster case (31h-54h): only the clock and the map
 	 * positions are saved. The clock isn't drawn. */
-	ScenarioFileSuffix = 0x0055;
-	SuppressCampaignClock = TRUE;
+    ScenarioFileSuffix = 0x0055;
+    SuppressCampaignClock = TRUE;
 
-	/* Out: 14:25 and the battle's clock stepped twice (2 subticks each). */
-	CampaignClockState[0x00] = 0x0E;
-	CampaignClockState[0x01] = 0x19;
-	AdvanceTacticalCampaignClock();
-	AdvanceTacticalCampaignClock();
-	PrepareScenarioUnitRosters();
-	assert(SavedCampaignClockState[0x00] == 0x0E);
-	assert(SavedCampaignClockState[0x01] == 0x19);
-	assert(SavedCampaignClockState[0x02] == 0x04);
+    /* Out: 14:25 and the battle's clock stepped twice (2 subticks each). */
+    CampaignClockState[0x00] = 0x0E;
+    CampaignClockState[0x01] = 0x19;
+    AdvanceTacticalCampaignClock();
+    AdvanceTacticalCampaignClock();
+    PrepareScenarioUnitRosters();
+    assert(SavedCampaignClockState[0x00] == 0x0E);
+    assert(SavedCampaignClockState[0x01] == 0x19);
+    assert(SavedCampaignClockState[0x02] == 0x04);
 
-	/* Back: the three bytes a battle restores are the ones it steps, so
+    /* Back: the three bytes a battle restores are the ones it steps, so
 	 * 14:25 with 58 subticks rolls to 14:26 at the next step. */
-	CampaignClockState[0x02] = 0x3A;
-	AdvanceTacticalCampaignClock();
-	assert(CampaignClockState[0x01] == 0x1A);
-	assert(CampaignClockState[0x02] == 0x00);
-	return 0;
+    CampaignClockState[0x02] = 0x3A;
+    AdvanceTacticalCampaignClock();
+    assert(CampaignClockState[0x01] == 0x1A);
+    assert(CampaignClockState[0x02] == 0x00);
+    return 0;
 }

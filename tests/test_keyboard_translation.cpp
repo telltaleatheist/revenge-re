@@ -32,7 +32,7 @@ static void Send(byte scanCode)
 static void Tap(byte scanCode)
 {
     Send(scanCode);
-    Send((byte)(scanCode | SCAN_BREAK));
+    Send((byte) (scanCode | SCAN_BREAK));
 }
 
 static void TapExtended(byte scanCode)
@@ -40,7 +40,7 @@ static void TapExtended(byte scanCode)
     Send(0xE0);
     Send(scanCode);
     Send(0xE0);
-    Send((byte)(scanCode | SCAN_BREAK));
+    Send((byte) (scanCode | SCAN_BREAK));
 }
 
 /* KeyboardInputPending is the ring's two offsets XORed: nonzero when an
@@ -89,7 +89,7 @@ static void TestModifiersFromHeldKeys(void)
 static void ExpectTranslation(byte scanCode, int16 translated)
 {
     Tap(scanCode);
-    assert((int16)(int8_t)TranslateKeyCode() == translated);
+    assert((int16) (int8_t) TranslateKeyCode() == translated);
 }
 
 static void TestTranslation(void)
@@ -126,7 +126,7 @@ static void TestGreyKeys(void)
     TapExtended(SCAN_KEYPAD_4);
     assert(ReadOne() == 0x004F);
     TapExtended(SCAN_KEYPAD_4);
-    assert((int16)(int8_t)TranslateKeyCode() == -0x004B);
+    assert((int16) (int8_t) TranslateKeyCode() == -0x004B);
     StartupInputMode = 0x0201;
     ExpectEmpty();
 }

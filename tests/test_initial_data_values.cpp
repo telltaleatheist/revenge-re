@@ -20,22 +20,22 @@
  * from the player's copy too. */
 static const byte *Image(word16 dataOffset)
 {
-	return (const byte *) &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + dataOffset];
+    return (const byte *) &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + dataOffset];
 }
 
 int main(void)
 {
-	RequireOriginalImport();
-	assert(sizeof(PilotRoster) == 0xEC);
-	assert(memcmp(PilotRoster, Image(0x1D4C), sizeof(PilotRoster)) == 0);
-	assert(memcmp(&RandomPilotPoolCounts, Image(0x1B8C), sizeof(RandomPilotPoolCounts)) == 0);
-	assert(TacticalSelectedUnitIndex == 0xFFFF);
-	assert(TacticalSelectedUnitIndex == (word16) (Image(0x03DC)[0] | Image(0x03DC)[1] << 8));
-	assert(TacticalOverviewMapMode == 0x0001);
-	assert(TacticalOverviewMapMode == (word16) (Image(0x03E5)[0] | Image(0x03E5)[1] << 8));
-	assert(memcmp(TacticalScenarioLanceEnabled, Image(0x03EA), sizeof(TacticalScenarioLanceEnabled)) == 0);
-	assert(PresentationDismissTimeout == (word16) (Image(0x240F)[0] | Image(0x240F)[1] << 8));
-	assert(sizeof(MIDIParser) == 0x0A);
-	assert(memcmp(&MIDIParser, Image(0x62B0), sizeof(MIDIParser)) == 0);
-	return 0;
+    RequireOriginalImport();
+    assert(sizeof(PilotRoster) == 0xEC);
+    assert(memcmp(PilotRoster, Image(0x1D4C), sizeof(PilotRoster)) == 0);
+    assert(memcmp(&RandomPilotPoolCounts, Image(0x1B8C), sizeof(RandomPilotPoolCounts)) == 0);
+    assert(TacticalSelectedUnitIndex == 0xFFFF);
+    assert(TacticalSelectedUnitIndex == (word16) (Image(0x03DC)[0] | Image(0x03DC)[1] << 8));
+    assert(TacticalOverviewMapMode == 0x0001);
+    assert(TacticalOverviewMapMode == (word16) (Image(0x03E5)[0] | Image(0x03E5)[1] << 8));
+    assert(memcmp(TacticalScenarioLanceEnabled, Image(0x03EA), sizeof(TacticalScenarioLanceEnabled)) == 0);
+    assert(PresentationDismissTimeout == (word16) (Image(0x240F)[0] | Image(0x240F)[1] << 8));
+    assert(sizeof(MIDIParser) == 0x0A);
+    assert(memcmp(&MIDIParser, Image(0x62B0), sizeof(MIDIParser)) == 0);
+    return 0;
 }

@@ -19,7 +19,7 @@ static byte callCount;
 
 static void RecordCall(byte callId)
 {
-	callOrder[callCount++] = callId;
+    callOrder[callCount++] = callId;
 }
 
 static void ExitHandler0(void) { RecordCall(0x01); }
@@ -32,60 +32,59 @@ static void TerminationHook(void) { RecordCall(0x07); }
 
 static void CheckAtExit(void)
 {
-	static const byte expectedOrder[0x07] =
-	{
-		0x03, 0x02, 0x01, 0x04, 0x05, 0x06, 0x07
-	};
-	word16 index;
+    static const byte expectedOrder[0x07] = {
+        0x03, 0x02, 0x01, 0x04, 0x05, 0x06, 0x07
+    };
+    word16 index;
 
-	if (ExitHandlerCount != 0xFFFF || fakeBackend.exitCode != 0x34 ||
-		callCount != 0x07)
-	{
-		fputs("exit-handler state mismatch\n", stderr);
-		_Exit(0x01);
-	}
-	for (index = 0x0000; index < 0x0007; ++index)
-	{
-		if (callOrder[index] != expectedOrder[index])
-		{
-			fputs("exit-handler call order mismatch\n", stderr);
-			_Exit(0x01);
-		}
-	}
-	_Exit(0x00);
+    if (ExitHandlerCount != 0xFFFF || fakeBackend.exitCode != 0x34 ||
+        callCount != 0x07)
+    {
+        fputs("exit-handler state mismatch\n", stderr);
+        _Exit(0x01);
+    }
+    for (index = 0x0000; index < 0x0007; ++index)
+    {
+        if (callOrder[index] != expectedOrder[index])
+        {
+            fputs("exit-handler call order mismatch\n", stderr);
+            _Exit(0x01);
+        }
+    }
+    _Exit(0x00);
 }
 
 int main(void)
 {
-	if (RuntimeExitHook1 != RuntimeExitStepStub ||
-		RuntimeExitHook2 != RuntimeExitStepStub ||
-		RuntimeExitHook3 != RuntimeExitStepStub ||
-		RuntimeTerminationHook != RuntimeTerminationStub ||
-		ResourceErrorDisplayCallback != ShowResourceErrorMessage ||
-		ResourceErrorDismissCallback != ShowFatalDiskErrorMessage)
-	{
-		fputs("a hook isn't the image's\n", stderr);
-		return 0x01;
-	}
-	RuntimeExitHook1();
-	RuntimeExitHook2();
-	RuntimeExitHook3();
-	RuntimeTerminationHook();
+    if (RuntimeExitHook1 != RuntimeExitStepStub ||
+        RuntimeExitHook2 != RuntimeExitStepStub ||
+        RuntimeExitHook3 != RuntimeExitStepStub ||
+        RuntimeTerminationHook != RuntimeTerminationStub ||
+        ResourceErrorDisplayCallback != ShowResourceErrorMessage ||
+        ResourceErrorDismissCallback != ShowFatalDiskErrorMessage)
+    {
+        fputs("a hook isn't the image's\n", stderr);
+        return 0x01;
+    }
+    RuntimeExitHook1();
+    RuntimeExitHook2();
+    RuntimeExitHook3();
+    RuntimeTerminationHook();
 
-	FakeBackend_Reset();
-	ExitHandlerCount = 0x0003;
-	ExitHandlerTable[0x00] = ExitHandler0;
-	ExitHandlerTable[0x01] = ExitHandler1;
-	ExitHandlerTable[0x02] = ExitHandler2;
-	RuntimeExitHook1 = RuntimeHook1;
-	RuntimeExitHook2 = RuntimeHook2;
-	RuntimeExitHook3 = RuntimeHook3;
-	RuntimeTerminationHook = TerminationHook;
-	if (atexit(CheckAtExit) != 0)
-		return 0x01;
+    FakeBackend_Reset();
+    ExitHandlerCount = 0x0003;
+    ExitHandlerTable[0x00] = ExitHandler0;
+    ExitHandlerTable[0x01] = ExitHandler1;
+    ExitHandlerTable[0x02] = ExitHandler2;
+    RuntimeExitHook1 = RuntimeHook1;
+    RuntimeExitHook2 = RuntimeHook2;
+    RuntimeExitHook3 = RuntimeHook3;
+    RuntimeTerminationHook = TerminationHook;
+    if (atexit(CheckAtExit) != 0)
+        return 0x01;
 
-	/* The DOS exit takes the code's low byte (AL). */
-	RunExitHandlersAndTerminate(0x1234);
-	fputs("RunExitHandlersAndTerminate returned\n", stderr);
-	return 0x01;
+    /* The DOS exit takes the code's low byte (AL). */
+    RunExitHandlersAndTerminate(0x1234);
+    fputs("RunExitHandlersAndTerminate returned\n", stderr);
+    return 0x01;
 }

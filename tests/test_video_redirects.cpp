@@ -34,7 +34,7 @@ int main(void)
     memset(vgaPalette, 0x2A, sizeof(vgaPalette));
     VGA_LoadPalette(vgaPalette);
     assert(memcmp(fakeBackend.vgaPalette, vgaPalette,
-        sizeof(vgaPalette)) == 0x00);
+               sizeof(vgaPalette)) == 0x00);
     Video_ClearIndexedFramebuffer(0xA5);
     assert(fakeBackend.indexedFramebuffer[0x0000] == 0xA5);
     DrawClippedPixel(0x0001, 0x0001, 0x00C7);
@@ -61,7 +61,7 @@ int main(void)
      * screen keeps its pixels. */
     memset(primaryScreen, 0x05, sizeof(primaryScreen));
     PrimaryScreenBuffer = primaryScreen;
-    VideoFramebuffer = (byte *)(uintptr_t)0xA0000000UL;
+    VideoFramebuffer = (byte *) (uintptr_t) 0xA0000000UL;
     SetActiveRenderTarget(primaryScreen);
     assert(ActiveRenderTarget == primaryScreen);
     DrawClippedPixel(0x000A, 0x000B, 0x000C);
@@ -69,7 +69,7 @@ int main(void)
     assert(primaryScreen[0x000B * VIDEO_SCREEN_WIDTH + 0x000A] == 0x0C);
     assert(primaryScreen[0x0018 * VIDEO_SCREEN_WIDTH + 0x0010] == 0x00);
     assert(fakeBackend.indexedFramebuffer[0x000B * VIDEO_SCREEN_WIDTH +
-        0x000A] == 0x05);
+               0x000A] == 0x05);
     VideoFramebuffer = NULL;
     ActiveRenderTarget = NULL;
 
@@ -86,11 +86,9 @@ int main(void)
     Draw8x8VideoTile(tile, 0x0005, 0x0003);
     for (row = 0x0000; row < 0x0008; ++row)
         for (pixel = 0x0000; pixel < 0x0008; ++pixel)
-            assert(fakeBackend.indexedFramebuffer[
-                (0x0018 + row) * VIDEO_SCREEN_WIDTH + 0x0028 + pixel] ==
-                (byte)(0x40 + row * 0x08 + pixel));
-    assert(fakeBackend.indexedFramebuffer[
-        0x0018 * VIDEO_SCREEN_WIDTH + 0x0030] == 0xA5);
+            assert(fakeBackend.indexedFramebuffer[(0x0018 + row) * VIDEO_SCREEN_WIDTH + 0x0028 + pixel] ==
+                (byte) (0x40 + row * 0x08 + pixel));
+    assert(fakeBackend.indexedFramebuffer[0x0018 * VIDEO_SCREEN_WIDTH + 0x0030] == 0xA5);
 
     Video_ClearIndexedFramebuffer(0xA5);
     ClearActiveVideoBuffer();

@@ -20,37 +20,37 @@
 
 static void RequireOriginalImport(void)
 {
-	static const char *const names[] = { "REVENGE.EXE", "revenge.exe", "Revenge.exe" };
-	const char *directory = getenv("REVENGE_GAME");
-	char path[4096];
-	size_t index;
+    static const char *const names[] = { "REVENGE.EXE", "revenge.exe", "Revenge.exe" };
+    const char *directory = getenv("REVENGE_GAME");
+    char path[4096];
+    size_t index;
 
-	if (directory == NULL || directory[0] == '\0')
-	{
-		printf("skipped: set REVENGE_GAME to a copy of the game\n");
-		exit(77);
-	}
-	for (index = 0; index < sizeof(names) / sizeof(names[0]); ++index)
-	{
-		FILE *file;
+    if (directory == NULL || directory[0] == '\0')
+    {
+        printf("skipped: set REVENGE_GAME to a copy of the game\n");
+        exit(77);
+    }
+    for (index = 0; index < sizeof(names) / sizeof(names[0]); ++index)
+    {
+        FILE *file;
 
-		snprintf(path, sizeof(path), "%s/%s", directory, names[index]);
-		file = fopen(path, "rb");
-		if (file != NULL)
-		{
-			fclose(file);
-			if (!OriginalImport_Load(path))
-				exit(1);
-			/* Its texts too, in memory: no story file. */
-			StoryHost_Prepare(path, NULL);
+        snprintf(path, sizeof(path), "%s/%s", directory, names[index]);
+        file = fopen(path, "rb");
+        if (file != NULL)
+        {
+            fclose(file);
+            if (!OriginalImport_Load(path))
+                exit(1);
+            /* Its texts too, in memory: no story file. */
+            StoryHost_Prepare(path, NULL);
 #ifdef CHR_DATA_DIRECTORY
-			RequireRules();
+            RequireRules();
 #endif
-			return;
-		}
-	}
-	printf("skipped: no REVENGE.EXE in REVENGE_GAME\n");
-	exit(77);
+            return;
+        }
+    }
+    printf("skipped: no REVENGE.EXE in REVENGE_GAME\n");
+    exit(77);
 }
 
 #endif

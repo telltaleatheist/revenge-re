@@ -10,35 +10,35 @@
 
 void *Heap_Allocate(uint32 byteCount, const char *caller)
 {
-	(void) byteCount;
-	(void) caller;
-	return (byte *) 0;
+    (void) byteCount;
+    (void) caller;
+    return (byte *) 0;
 }
 
 void Heap_Free(void *block)
 {
-	(void) block;
+    (void) block;
 }
 
 word16 ReadWholeResourceFile(
-	const char *resourceName,
-	void *destination,
-	word16 byteCount)
+    const char *resourceName,
+    void *destination,
+    word16 byteCount)
 {
-	(void) resourceName;
-	(void) destination;
-	(void) byteCount;
-	return 0x0000;
+    (void) resourceName;
+    (void) destination;
+    (void) byteCount;
+    return 0x0000;
 }
 
 void ReadResourceFileSpan(
-	const char *resourceName,
-	int32 fileOffset,
-	void *destination,
-	word16 byteCount)
+    const char *resourceName,
+    int32 fileOffset,
+    void *destination,
+    word16 byteCount)
 {
-	(void) resourceName;
-	(void) fileOffset;
-	(void) destination;
-	(void) byteCount;
+    (void) resourceName;
+    (void) fileOffset;
+    (void) destination;
+    (void) byteCount;
 }

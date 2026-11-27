@@ -28,33 +28,33 @@
  */
 int main(int argc, char **argv)
 {
-	const char *mode = argc > 1 ? argv[1] : "read";
-	char *current = SDL_GetCurrentDirectory();
-	char folder[1024];
-	char saves[1024];
-	char path[] = "ABSENT.DAT";
+    const char *mode = argc > 1 ? argv[1] : "read";
+    char *current = SDL_GetCurrentDirectory();
+    char folder[1024];
+    char saves[1024];
+    char path[] = "ABSENT.DAT";
 
-	assert(current != NULL);
-	RequireOriginalImport();
-	/* The cached files' names, as the start sets them. */
-	OriginalData_InitializeResourceDescriptorPointers();
-	SDL_snprintf(folder, sizeof(folder), "%stracked-file-test/", current);
-	SDL_free(current);
-	assert(SDL_CreateDirectory(folder));
-	if (strcmp(mode, "make") == 0)
-	{
-		/* A save folder under a plain file can't be made. */
-		char blocker[1024];
+    assert(current != NULL);
+    RequireOriginalImport();
+    /* The cached files' names, as the start sets them. */
+    OriginalData_InitializeResourceDescriptorPointers();
+    SDL_snprintf(folder, sizeof(folder), "%stracked-file-test/", current);
+    SDL_free(current);
+    assert(SDL_CreateDirectory(folder));
+    if (strcmp(mode, "make") == 0)
+    {
+        /* A save folder under a plain file can't be made. */
+        char blocker[1024];
 
-		SDL_snprintf(blocker, sizeof(blocker), "%sblocker", folder);
-		assert(SDL_SaveFile(blocker, "x", 1));
-		SDL_snprintf(saves, sizeof(saves), "%s/saves/", blocker);
-	}
-	else
-		SDL_snprintf(saves, sizeof(saves), "%ssaves/", folder);
-	assert(SDL_setenv_unsafe("REVENGE_SAVE_DIRECTORY", saves, 1) == 0);
-	assert(CHANGE_DIRECTORY(folder) == 0);
+        SDL_snprintf(blocker, sizeof(blocker), "%sblocker", folder);
+        assert(SDL_SaveFile(blocker, "x", 1));
+        SDL_snprintf(saves, sizeof(saves), "%s/saves/", blocker);
+    }
+    else
+        SDL_snprintf(saves, sizeof(saves), "%ssaves/", folder);
+    assert(SDL_setenv_unsafe("REVENGE_SAVE_DIRECTORY", saves, 1) == 0);
+    assert(CHANGE_DIRECTORY(folder) == 0);
 
-	(void) OpenTrackedFile(path, strcmp(mode, "make") == 0 ? 0x0003 : 0x0001);
-	return 0;
+    (void) OpenTrackedFile(path, strcmp(mode, "make") == 0 ? 0x0003 : 0x0001);
+    return 0;
 }

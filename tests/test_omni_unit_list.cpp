@@ -13,11 +13,11 @@
  * only while an Enemy unit is chosen. */
 int main(void)
 {
-	word16 listIndex;
+    word16 listIndex;
 
-	RequireOriginalImport();
-	assert(IsOmniUnitTypeList(UnitClassTypeLists[0x05]));
-	for (listIndex = 0x00; listIndex < 0x05; ++listIndex)
-		assert(!IsOmniUnitTypeList(UnitClassTypeLists[listIndex]));
-	return 0;
+    RequireOriginalImport();
+    assert(IsOmniUnitTypeList(UnitClassTypeLists[0x05]));
+    for (listIndex = 0x00; listIndex < 0x05; ++listIndex)
+        assert(!IsOmniUnitTypeList(UnitClassTypeLists[listIndex]));
+    return 0;
 }
