@@ -19,6 +19,11 @@ enum
 
 /* Our word for each option, and for each of its records in the records'
  * order (DS:3AD1 video, 3B12 music, 3B87 sound, 3B6D input). */
+/* Phase 3 replaces the music and sound words with the rebuild's own
+ * (music: a soundfont, the speaker or off; effects: samples or the
+ * speaker). The card words below then stay readable as old values, read
+ * once and mapped to the new ones, so ReadOurFile keeps each option's
+ * words in a table of its own. */
 static const char *const OptionWords[MEDIA_OPTION_COUNT] = { "video", "music", "sound", "input" };
 static const char *const VideoWords[] = { "vga", "mcga", "ega", "tandy", "cga" };
 static const char *const MusicWords[] = {
