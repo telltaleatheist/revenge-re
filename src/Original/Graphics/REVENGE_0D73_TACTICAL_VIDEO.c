@@ -40,11 +40,8 @@ void RebuildTacticalVideoResources(
 	}
 
 	LoadScreenAssetToWorkBuffer(0x0000);
-	if (VideoAdapterType == VIDEO_ADAPTER_EGA)
-	{
-		EGA_ConvertPackedScreenToPlanar(
-			primaryScreenBuffer, EGA_OFFSCREEN_FRAMEBUFFER_SEGMENT);
-	}
+	/* The EGA's planar copy at A200 (0D73:03FD-0416, 0800:3038) went with
+	 * the EGA. */
 
 	oldTileStrip = TacticalTileStrip;
 	FreeFarMemory(oldTileStrip);

@@ -284,8 +284,8 @@ void LoadScreenPalette(word16 screenResourceIndex)
 		ClearActiveVideoBuffer();
 		LoadVideoPalette(VideoPaletteData);
 	}
-	else
-		ClearActiveVideoBuffer();
+	/* The other adapters' clear (0D73:3297) went with them; the rebuild is
+	 * VGA only. */
 }
 
 /* 0D73:329E is reconstructed in Graphics/REVENGE_0D73_PALETTE.c. */
@@ -302,30 +302,9 @@ void LoadScreenAssetToWorkBuffer(word16 resourceIndex)
 			CACHED_FILE_NAME(resourceIndex),
 			SecondaryScreenBuffer,
 			PrimaryScreenBuffer);
-	else
-	{
-		LoadAndDecodePackedResource(
-			CACHED_FILE_NAME(resourceIndex),
-			PrimaryScreenBuffer,
-			SecondaryScreenBuffer);
-		PackLowNibblesTo4Bpp(
-			SecondaryScreenBuffer,
-			PrimaryScreenBuffer);
-	}
-	if (VideoAdapterType == VIDEO_ADAPTER_CGA)
-	{
-		word16 cgaRowByteCount = 0x50;
-		if (CgaNarrowStrideMode != 0x00)
-			cgaRowByteCount = 0x04;
-		ConvertCgaPackedPixels(
-			PrimaryScreenBuffer,
-			PrimaryScreenBuffer,
-			(byte) cgaRowByteCount,
-			0x3E80);
-		if (CgaNarrowStrideMode != 0x00)
-			RepackCgaAlternateScanlines(
-				PrimaryScreenBuffer);
-	}
+	/* The other adapters' 4-bit packing (0D73:3330-3376, 0800:0F74) and
+	 * the CGA's conversion (0D73:3377-33BD, 0800:3571, 32ED) went with
+	 * them; the rebuild is VGA only. */
 }
 
 // 0D73:33C1: void LoadAndPresentScreen(word16 resourceIndex)
@@ -334,11 +313,8 @@ void LoadScreenAssetToWorkBuffer(word16 resourceIndex)
 void LoadAndPresentScreen(word16 resourceIndex)
 {
 	LoadScreenAssetToWorkBuffer(resourceIndex);
-	if (VideoAdapterType == VIDEO_ADAPTER_EGA)
-		ConvertPackedPixelsToEGAPlanar(
-			PrimaryScreenBuffer,
-			PrimaryScreenBuffer,
-			0x3E80);
+	/* The EGA's planar conversion (0D73:33CC-33ED, 0800:3498) went with
+	 * the EGA. */
 	HideMouseCursorOverlay();
 	LoadScreenPalette(resourceIndex);
 	CopyBufferToVideoRegion(

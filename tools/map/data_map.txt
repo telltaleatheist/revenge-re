@@ -436,10 +436,7 @@ unplaced CampaignUpgradeAwards 4 zero at every snap
 unplaced CampaignUpgradeMarkerX 4 zero at every snap
 unplaced CampaignUpgradeMarkerY 4 zero at every snap
 unplaced CaseEquipmentText 4 host pointer
-unplaced CgaEvenPixelPhaseLookup 100 zero at every snap
 unplaced CgaNarrowStrideMode 2 zero at every snap
-unplaced CgaOddPixelPhaseLookup 100 zero at every snap
-unplaced CgaPackedPixelSeedTable 20 zero at every snap
 unplaced CombatRatingBrutalText 4 host pointer
 unplaced CombatRatingDescriptionTable 1C host pointer
 unplaced CombatRatingDevastatingText 4 host pointer

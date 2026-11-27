@@ -20,15 +20,7 @@ void LoadGraphicsResourceToBuffers(
 		LoadAndDecodePackedResource(
 			resourceName, decodeBuffer, displayBuffer);
 	}
-	else
-	{
-		LoadAndDecodePackedResource(
-			resourceName, displayBuffer, decodeBuffer);
-		PackLowNibblesTo4Bpp(decodeBuffer, displayBuffer);
-	}
-	if (VideoAdapterType == VIDEO_ADAPTER_CGA)
-	{
-		ConvertCgaPackedPixelsAndBuildMask(
-			displayBuffer, CgaNarrowStrideMode);
-	}
+	/* The other adapters' 4-bit packing (0D73:40CF-410B, 0800:0F74) and
+	 * the CGA's conversion (0D73:410C-4123, 0800:35D8) went with them;
+	 * the rebuild is VGA only. */
 }

@@ -56,12 +56,8 @@ void RunCampaignLoop(void)
 	SetActiveFontResource(Font6Resource);
 	ShowMouseCursorOverlay();
 	LoadScreenAssetToWorkBuffer(0x0000);
-	if (VideoAdapterType == VIDEO_ADAPTER_EGA)
-	{
-		EGA_ConvertPackedScreenToPlanar(
-			PrimaryScreenBuffer,
-			EGA_OFFSCREEN_FRAMEBUFFER_SEGMENT);
-	}
+	/* The EGA's planar copy at A200 (0D73:007D-0097, 0800:3038) went with
+	 * the EGA. */
 	titleTileStrip = CaptureVideoTileStrip(
 		PrimaryScreenBuffer,
 		0x0000,

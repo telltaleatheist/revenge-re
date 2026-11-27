@@ -359,9 +359,6 @@ void CopyFarMemory(
 	word16 byteCount,
 	const byte *source,
 	byte *destination);
-void PackLowNibblesTo4Bpp(
-	const byte *source,
-	byte *destination);
 byte ExtractHighNibbleAndShiftLeft(word16 *packedPixels);
 word16 EncodeDisplayBackingRows(
 	const byte *source,
@@ -369,25 +366,6 @@ word16 EncodeDisplayBackingRows(
 	word16 groupsPerRow,
 	byte rowCount,
 	int16 sourceRowSkip);
-void RepackCgaAlternateScanlines(byte *screenBuffer);
-void ShiftPackedPixelsIntoEGAPlanes(
-	byte packedPixels,
-	byte *plane3,
-	byte *plane2,
-	byte *plane1,
-	byte *plane0);
-void ConvertPackedPixelsToEGAPlanar(
-	const byte *source,
-	byte *destination,
-	word16 packedWordCount);
-void ConvertCgaPackedPixels(
-	const byte *source,
-	byte *destination,
-	byte phaseRunLength,
-	word16 outputByteCount);
-void ConvertCgaPackedPixelsAndBuildMask(
-	byte *buffer,
-	word16 narrowStrideMode);
 void BuildTacticalOverviewMapBuffer(
 	const byte *source,
 	byte *destination,
@@ -420,9 +398,6 @@ void Draw8x8VideoTile(
 	const byte *tilePixels,
 	int16 tileX,
 	word16 tileY);
-void EGA_ConvertPackedScreenToPlanar(
-	const byte *packedPixels,
-	word16 destinationVideoSegment);
 void ConfigureMouseCursorOverlay(
 	int16 hotspotX,
 	int16 hotspotY,

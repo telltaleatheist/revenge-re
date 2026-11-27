@@ -84,9 +84,6 @@ void XorVideoRectangle(
     int16 rightX,
     int16 bottomY,
     byte color);
-void EGA_ConvertPackedScreenToPlanar(
-    const byte *packedPixels,
-    uint16 destinationVideoSegment);
 void CopyBufferToVideoRegion(
     int16 xColumn,
     uint16 yCharacterRow,

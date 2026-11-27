@@ -697,23 +697,6 @@ void CopyFarMemory(
 		*destination++ = *source++;
 }
 
-void PackLowNibblesTo4Bpp(
-	const byte *source,
-	byte *destination)
-{
-	word16 packedByteCount;
-
-	/* 0800:0F74 -- 7D00h LODSW/STOSB iterations. */
-	for (packedByteCount = 0x7D00;
-		packedByteCount != 0x0000;
-		--packedByteCount)
-	{
-		*destination++ = (byte) ((source[0x00] << 0x04) |
-			(source[0x01] & 0x0F));
-		source += 0x02;
-	}
-}
-
 byte ExtractHighNibbleAndShiftLeft(word16 *packedPixels)
 {
 	byte highNibble = (byte) (*packedPixels >> 0x0C);
@@ -798,136 +781,6 @@ word16 EncodeDisplayBackingRows(
 	}
 	destination[-0x01] |= 0x20;
 	return (word16) (destination - destinationStart);
-}
-
-void RepackCgaAlternateScanlines(byte *screenBuffer)
-{
-	word16 row;
-
-	/* 0800:32ED copies from the end toward the beginning so expansion in
-	 * place cannot overwrite source rows that have not yet been read. */
-	for (row = 0x0000; row < 0x00FA; ++row)
-	{
-		byte *source = screenBuffer + 0x3E40 - row * 0x0040;
-		byte *destination = screenBuffer + 0x7C80 - row * 0x0080;
-
-		CopyFarMemory(0x0040, source, destination);
-	}
-}
-
-void ShiftPackedPixelsIntoEGAPlanes(
-	byte packedPixels,
-	byte *plane3,
-	byte *plane2,
-	byte *plane1,
-	byte *plane0)
-{
-	*plane3 = (byte) ((*plane3 << 0x01) |
-		((packedPixels >> 0x07) & 0x01));
-	*plane2 = (byte) ((*plane2 << 0x01) |
-		((packedPixels >> 0x06) & 0x01));
-	*plane1 = (byte) ((*plane1 << 0x01) |
-		((packedPixels >> 0x05) & 0x01));
-	*plane0 = (byte) ((*plane0 << 0x01) |
-		((packedPixels >> 0x04) & 0x01));
-}
-
-void ConvertPackedPixelsToEGAPlanar(
-	const byte *source,
-	byte *destination,
-	word16 packedWordCount)
-{
-	word16 groupCount = packedWordCount >> 0x01;
-	word16 group;
-
-	for (group = 0x0000; group < groupCount; ++group)
-	{
-		byte plane0 = 0x00;
-		byte plane1 = 0x00;
-		byte plane2 = 0x00;
-		byte plane3 = 0x00;
-		byte packedByte;
-
-		for (packedByte = 0x00; packedByte < 0x04; ++packedByte)
-		{
-			byte pixels = *source++;
-
-			ShiftPackedPixelsIntoEGAPlanes(
-				pixels, &plane3, &plane2, &plane1, &plane0);
-			pixels <<= 0x04;
-			ShiftPackedPixelsIntoEGAPlanes(
-				pixels, &plane3, &plane2, &plane1, &plane0);
-		}
-		*destination++ = plane0;
-		*destination++ = plane1;
-		*destination++ = plane2;
-		*destination++ = plane3;
-	}
-}
-
-void ConvertCgaPackedPixels(
-	const byte *source,
-	byte *destination,
-	byte phaseRunLength,
-	word16 outputByteCount)
-{
-	byte oddPhase = FALSE;
-	byte phaseRemaining = phaseRunLength;
-
-	while (outputByteCount-- != 0x0000)
-	{
-		const byte *lookup = oddPhase != FALSE
-			? CgaOddPixelPhaseLookup
-			: CgaEvenPixelPhaseLookup;
-
-		*destination++ = (byte) ((lookup[source[0x00]] << 0x04) |
-			lookup[source[0x01]]);
-		source += 0x02;
-		if (--phaseRemaining == 0x00)
-		{
-			oddPhase ^= TRUE;
-			phaseRemaining = phaseRunLength;
-		}
-	}
-}
-
-void ConvertCgaPackedPixelsAndBuildMask(
-	byte *buffer,
-	word16 narrowStrideMode)
-{
-	byte phaseRunLength = narrowStrideMode != FALSE ? 0x04 : 0x50;
-	byte phaseRemaining = phaseRunLength;
-	byte oddPhase = FALSE;
-	word16 pairCount;
-
-	for (pairCount = 0x0000; pairCount < 0x3E80; ++pairCount)
-	{
-		const byte *lookup = oddPhase != FALSE
-			? CgaOddPixelPhaseLookup
-			: CgaEvenPixelPhaseLookup;
-		byte firstPackedPixels = buffer[0x00];
-		byte secondPackedPixels = buffer[0x01];
-		byte opaqueMask = 0x00;
-
-		buffer[0x00] = (byte) ((lookup[firstPackedPixels] << 0x04) |
-			lookup[secondPackedPixels]);
-		if ((firstPackedPixels & 0xF0) != 0x00)
-			opaqueMask |= 0xC0;
-		if ((firstPackedPixels & 0x0F) != 0x00)
-			opaqueMask |= 0x30;
-		if ((secondPackedPixels & 0xF0) != 0x00)
-			opaqueMask |= 0x0C;
-		if ((secondPackedPixels & 0x0F) != 0x00)
-			opaqueMask |= 0x03;
-		buffer[0x01] = (byte) ~opaqueMask;
-		buffer += 0x02;
-
-		if (--phaseRemaining == 0x00)
-		{
-			oddPhase ^= TRUE;
-			phaseRemaining = phaseRunLength;
-		}
-	}
 }
 
 uint32 DivideUnsignedLong(uint32 dividend, uint32 divisor)
@@ -1125,33 +978,6 @@ void ClearActiveVideoBuffer(void)
 	 * the equivalent 320x200 indexed image. */
 	DisableHardwareInterrupts();
 	SDLBackend_ClearIndexedFramebuffer(0x00);
-	EnableHardwareInterrupts();
-}
-
-void EGA_ConvertPackedScreenToPlanar(
-	const byte *packedPixels,
-	word16 destinationVideoSegment)
-{
-	word16 y;
-
-	(void) destinationVideoSegment;
-	DisableHardwareInterrupts();
-	for (y = 0x0000; y < VIDEO_SCREEN_HEIGHT; ++y)
-	{
-		word16 packedX;
-
-		for (packedX = 0x0000; packedX < VIDEO_SCREEN_WIDTH / 0x0002;
-			++packedX)
-		{
-			byte packed = *packedPixels++;
-			word16 x = packedX << 0x01;
-
-			SDLBackend_DrawIndexedPixel(
-				x, y, (byte) (packed >> 0x04));
-			SDLBackend_DrawIndexedPixel(
-				(word16) (x + 0x0001), y, (byte) (packed & 0x0F));
-		}
-	}
 	EnableHardwareInterrupts();
 }
 

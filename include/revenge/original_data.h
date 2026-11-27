@@ -708,9 +708,6 @@ extern word16 SpriteClipRightTile;
 extern word16 SpriteClipTopPixel;
 extern word16 EncodedSpriteClipBottomPixel;
 extern word16 SpritePreserveMode;
-extern byte CgaEvenPixelPhaseLookup[0x0100];
-extern byte CgaOddPixelPhaseLookup[0x0100];
-extern byte CgaPackedPixelSeedTable[0x20];
 extern byte WeaponCombatRatingByType[0x17];         /* the rules' */
 extern const byte RelativeAttackDirectionByMask[0x10];
 extern const int16 LinePrimaryYStep[0x08];

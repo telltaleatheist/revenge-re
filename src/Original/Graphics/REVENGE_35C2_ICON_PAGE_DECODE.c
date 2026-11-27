@@ -17,7 +17,6 @@ void CopyDecodedIconPage(
 	byte *iconPageDestination)
 {
 	byte layoutType;
-	byte phaseRunLength;
 	const byte *compressedData;
 
 	layoutType = packedDisplayBuffer[0x00];
@@ -27,16 +26,6 @@ void CopyDecodedIconPage(
 		DecodeLinearRleScreen(compressedData, iconPageDestination);
 	else
 		DecodeColumnMajorRleScreen(compressedData, iconPageDestination);
-
-	if (VideoAdapterType == VIDEO_ADAPTER_CGA)
-	{
-		phaseRunLength = CgaNarrowStrideMode != FALSE ? 0x04 : 0x50;
-		ConvertCgaPackedPixels(
-			iconPageDestination,
-			iconPageDestination,
-			phaseRunLength,
-			0x3E80);
-		if (CgaNarrowStrideMode != FALSE)
-			RepackCgaAlternateScanlines(iconPageDestination);
-	}
+	/* The CGA's conversion (35C2:0045-0083, 0800:3571, 32ED) went with
+	 * the CGA; the rebuild is VGA only. */
 }

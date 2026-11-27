@@ -56,8 +56,4 @@ word16 SpriteClipTopPixel = 0x0000;
 word16 EncodedSpriteClipBottomPixel = 0x00C8;
 word16 SpritePreserveMode = FALSE;
 
-byte CgaEvenPixelPhaseLookup[0x0100];
-byte CgaOddPixelPhaseLookup[0x0100];
-byte CgaPackedPixelSeedTable[0x20];
-
 word16 ActiveVideoAdapterType = VIDEO_ADAPTER_CGA;

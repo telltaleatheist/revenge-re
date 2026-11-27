@@ -13,7 +13,6 @@ void Draw8x8VideoTile(
 
 int main(void)
 {
-    static byte packedScreen[0x7D00];
     static byte primaryScreen[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
     byte vgaPalette[VGA_PALETTE_BYTE_COUNT];
     byte planarTile[0x20];
@@ -83,15 +82,6 @@ int main(void)
         0x000A] == 0x05);
     VideoFramebuffer = NULL;
     ActiveRenderTarget = NULL;
-
-    memset(packedScreen, 0x00, sizeof(packedScreen));
-    packedScreen[0x0000] = 0xA5;
-    packedScreen[0x7CFF] = 0x3C;
-    EGA_ConvertPackedScreenToPlanar(packedScreen, 0xA000);
-    assert(fakeBackend.indexedFramebuffer[0x0000] == 0x0A);
-    assert(fakeBackend.indexedFramebuffer[0x0001] == 0x05);
-    assert(fakeBackend.indexedFramebuffer[0xF9FE] == 0x03);
-    assert(fakeBackend.indexedFramebuffer[0xF9FF] == 0x0C);
 
     Video_ClearIndexedFramebuffer(0x05);
     ActiveVideoAdapterType = VIDEO_ADAPTER_EGA;

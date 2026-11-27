@@ -8,9 +8,6 @@
 void LoadPackedIconResource(
 	const char *resourcePath,
 	byte *packedDisplayBuffer);
-void ConvertCgaPackedPixelsAndBuildMask(
-	byte *buffer,
-	word16 narrowStrideMode);
 
 // 34DF:0003
 void LoadPackedIconPageDirect(
@@ -18,24 +15,9 @@ void LoadPackedIconPageDirect(
 	byte *packedDisplayBuffer,
 	byte *iconPageDestination)
 {
-	word16 restoredCgaMode = FALSE;
-
 	LoadPackedIconResource(resourcePath, packedDisplayBuffer);
-	if (VideoAdapterType == VIDEO_ADAPTER_CGA)
-	{
-		// Decode without the ordinary CGA post-pass; this path needs the
-		// paired-pixel mask builder after the full page has been expanded.
-		VideoAdapterType = VIDEO_ADAPTER_TANDY;
-		SetVideoAdapterType(VIDEO_ADAPTER_TANDY);
-		restoredCgaMode = TRUE;
-	}
-
+	/* The CGA's switch to the Tandy's decode and back, with its mask
+	 * builder (34DF:001D-0036, 004F-0070, 0800:35D8), went with the CGA;
+	 * the rebuild is VGA only. */
 	CopyDecodedIconPage(packedDisplayBuffer, iconPageDestination);
-	if (restoredCgaMode != FALSE)
-	{
-		VideoAdapterType = VIDEO_ADAPTER_CGA;
-		SetVideoAdapterType(VIDEO_ADAPTER_CGA);
-		ConvertCgaPackedPixelsAndBuildMask(
-			iconPageDestination, CgaNarrowStrideMode);
-	}
 }

@@ -185,8 +185,7 @@ void UpdateTacticalFrame(word16 inputAction, word16 advanceUnits)
 //     const char far *resourcePath, word16 destinationPage)
 // [V] destinationPage selects a 32 KiB page in the secondary graphics buffer.
 // Page 1 takes the direct three-buffer loader; the other pages load through the
-// packed display buffer and copy into the selected page. EGA additionally
-// converts that packed page into the corresponding 8 KiB planar video page.
+// packed display buffer and copy into the selected page.
 void LoadTacticalIconResource(
 	const char *resourcePath,
 	word16 destinationPage)
@@ -213,12 +212,8 @@ void LoadTacticalIconResource(
 	}
 
 	CgaNarrowStrideMode = FALSE;
-	if (VideoAdapterType == VIDEO_ADAPTER_EGA)
-	{
-		EGA_ConvertPackedScreenToPlanar(
-			iconPageDestination,
-			(word16)(0xA400 + destinationPage * 0x0200));
-	}
+	/* The EGA's planar copy of the page at A400 (1A1F:04F6-0514,
+	 * 0800:3038) went with the EGA. */
 }
 
 // 1A1F:03D4: void LoadTacticalIconSetResources(word16 iconSetNumber)
