@@ -1,7 +1,13 @@
 // REVENGE_2507_LANCE_CONFIGURATION.c
 // Reconstructed from the original procedures in segment 2507.
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
+
+#include <string.h>
 
 // 2507:1848: prepare and run the combined unit/pilot lance editor.
 // VERIFIED against ASM 2507:1848-18AF.
@@ -779,9 +785,9 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
 	{
 		pilotName = PilotSurnameTextTable[assignedPilotIds[0x00]];
 		unitName = UnitNameTable[assignedUnitTypeIds[0x00]];
-		FarStringCopy(rosterLine, pilotName);
-		FarStringConcat(rosterLine, separator);
-		FarStringConcat(rosterLine, unitName);
+		strcpy(rosterLine, pilotName);
+		strcat(rosterLine, separator);
+		strcat(rosterLine, unitName);
 		DrawCenteredClippedText(rosterLine, 0x00,
 			leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
 			UNIT_ROSTER_FIRST_ROW_Y, UNIT_ROSTER_TEXT_WIDTH_PIXELS,
@@ -789,9 +795,9 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
 
 		pilotName = PilotSurnameTextTable[assignedPilotIds[0x01]];
 		unitName = UnitNameTable[assignedUnitTypeIds[0x01]];
-		FarStringCopy(rosterLine, pilotName);
-		FarStringConcat(rosterLine, separator);
-		FarStringConcat(rosterLine, unitName);
+		strcpy(rosterLine, pilotName);
+		strcat(rosterLine, separator);
+		strcat(rosterLine, unitName);
 		DrawCenteredClippedText(rosterLine, 0x00,
 			leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
 			UNIT_ROSTER_FIRST_ROW_Y + 0x08,
@@ -799,9 +805,9 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
 
 		pilotName = PilotSurnameTextTable[assignedPilotIds[0x02]];
 		unitName = UnitNameTable[assignedUnitTypeIds[0x02]];
-		FarStringCopy(rosterLine, pilotName);
-		FarStringConcat(rosterLine, separator);
-		FarStringConcat(rosterLine, unitName);
+		strcpy(rosterLine, pilotName);
+		strcat(rosterLine, separator);
+		strcat(rosterLine, unitName);
 		DrawCenteredClippedText(rosterLine, 0x00,
 			leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
 			UNIT_ROSTER_FIRST_ROW_Y + 0x10,
@@ -809,9 +815,9 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
 
 		pilotName = PilotSurnameTextTable[fixedPilotIds[0x00]];
 		unitName = UnitNameTable[fixedUnitTypeIds[0x00]];
-		FarStringCopy(rosterLine, pilotName);
-		FarStringConcat(rosterLine, separator);
-		FarStringConcat(rosterLine, unitName);
+		strcpy(rosterLine, pilotName);
+		strcat(rosterLine, separator);
+		strcat(rosterLine, unitName);
 		DrawCenteredClippedText(rosterLine, 0x00,
 			rightX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
 			UNIT_ROSTER_FIRST_ROW_Y, UNIT_ROSTER_TEXT_WIDTH_PIXELS,
@@ -819,9 +825,9 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
 
 		pilotName = PilotSurnameTextTable[fixedPilotIds[0x01]];
 		unitName = UnitNameTable[fixedUnitTypeIds[0x01]];
-		FarStringCopy(rosterLine, pilotName);
-		FarStringConcat(rosterLine, separator);
-		FarStringConcat(rosterLine, unitName);
+		strcpy(rosterLine, pilotName);
+		strcat(rosterLine, separator);
+		strcat(rosterLine, unitName);
 		DrawCenteredClippedText(rosterLine, 0x00,
 			rightX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
 			UNIT_ROSTER_FIRST_ROW_Y + 0x08,
@@ -831,9 +837,9 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
 
 	pilotName = PilotSurnameTextTable[assignedPilotIds[0x01]];
 	unitName = UnitNameTable[assignedUnitTypeIds[0x01]];
-	FarStringCopy(rosterLine, pilotName);
-	FarStringConcat(rosterLine, separator);
-	FarStringConcat(rosterLine, unitName);
+	strcpy(rosterLine, pilotName);
+	strcat(rosterLine, separator);
+	strcat(rosterLine, unitName);
 	DrawCenteredClippedText(rosterLine, 0x00,
 		leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
 		UNIT_ROSTER_FIRST_ROW_Y, UNIT_ROSTER_TEXT_WIDTH_PIXELS,
@@ -841,9 +847,9 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
 
 	pilotName = PilotSurnameTextTable[assignedPilotIds[0x02]];
 	unitName = UnitNameTable[assignedUnitTypeIds[0x02]];
-	FarStringCopy(rosterLine, pilotName);
-	FarStringConcat(rosterLine, separator);
-	FarStringConcat(rosterLine, unitName);
+	strcpy(rosterLine, pilotName);
+	strcat(rosterLine, separator);
+	strcat(rosterLine, unitName);
 	DrawCenteredClippedText(rosterLine, 0x00,
 		leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
 		UNIT_ROSTER_FIRST_ROW_Y + 0x08,
@@ -851,9 +857,9 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
 
 	pilotName = PilotSurnameTextTable[fixedPilotIds[0x00]];
 	unitName = UnitNameTable[assignedUnitTypeIds[0x00]];
-	FarStringCopy(rosterLine, pilotName);
-	FarStringConcat(rosterLine, separator);
-	FarStringConcat(rosterLine, unitName);
+	strcpy(rosterLine, pilotName);
+	strcat(rosterLine, separator);
+	strcat(rosterLine, unitName);
 	DrawCenteredClippedText(rosterLine, 0x00,
 		leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
 		UNIT_ROSTER_FIRST_ROW_Y + 0x10,
@@ -861,9 +867,9 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
 
 	pilotName = PilotSurnameTextTable[assignedPilotIds[0x00]];
 	unitName = UnitNameTable[fixedUnitTypeIds[0x00]];
-	FarStringCopy(rosterLine, pilotName);
-	FarStringConcat(rosterLine, separator);
-	FarStringConcat(rosterLine, unitName);
+	strcpy(rosterLine, pilotName);
+	strcat(rosterLine, separator);
+	strcat(rosterLine, unitName);
 	DrawCenteredClippedText(rosterLine, 0x00,
 		rightX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
 		UNIT_ROSTER_FIRST_ROW_Y, UNIT_ROSTER_TEXT_WIDTH_PIXELS,
@@ -871,9 +877,9 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
 
 	pilotName = PilotSurnameTextTable[fixedPilotIds[0x01]];
 	unitName = UnitNameTable[fixedUnitTypeIds[0x01]];
-	FarStringCopy(rosterLine, pilotName);
-	FarStringConcat(rosterLine, separator);
-	FarStringConcat(rosterLine, unitName);
+	strcpy(rosterLine, pilotName);
+	strcat(rosterLine, separator);
+	strcat(rosterLine, unitName);
 	DrawCenteredClippedText(rosterLine, 0x00,
 		rightX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
 		UNIT_ROSTER_FIRST_ROW_Y + 0x08,

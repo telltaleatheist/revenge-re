@@ -1,8 +1,14 @@
 // REVENGE_0D73_CAMPAIGN_PRESENTATION.c
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
 #include "revenge/debug.h"
+
+#include <string.h>
 
 // 0D73:2A5D: void OpenModalTextWindow(Stack word16 wArg04, Stack word16 wArg06)
 // Called from:
@@ -477,12 +483,12 @@ void DisplayMissionDate(
 		currentYear = MissionDateYear[dateEntryIndex];
 		monthsRemaining = MissionDateAdvanceMonths[REVENGE_INDEX(
 			MissionDateAdvanceMonths, dateEntryIndex)];
-		FarStringCopy(dateText, MonthNameTextTable[(word16)currentMonth]);
-		FarStringConcat(dateText, DateCommaSpaceText);
+		strcpy(dateText, MonthNameTextTable[(word16)currentMonth]);
+		strcat(dateText, DateCommaSpaceText);
 		IntegerToString(currentYear, yearText, 0x0A);
 		RemoveLeadingSpacesFrom(yearText, 0x01);
 		TrimTrailingEncodedSpaces(yearText);
-		FarStringConcat(dateText, yearText);
+		strcat(dateText, yearText);
 		DrawCenteredClippedText(dateText, 0x00, 0x00, 0x18, 0x0140, 0x0F, 0x0D);
 		ShowMouseCursorOverlay();
 		FlushInputAndWait(0x39);
@@ -528,12 +534,12 @@ void DisplayMissionDate(
 					}
 				}
 				HideMouseCursorOverlay();
-				FarStringCopy(dateText, MonthNameTextTable[(word16)animatedMonth]);
-				FarStringConcat(dateText, DateSpaceText);
+				strcpy(dateText, MonthNameTextTable[(word16)animatedMonth]);
+				strcat(dateText, DateSpaceText);
 				IntegerToString(animatedYear, yearText, 0x0A);
 				RemoveLeadingSpacesFrom(yearText, 0x01);
 				TrimTrailingEncodedSpaces(yearText);
-				FarStringConcat(dateText, yearText);
+				strcat(dateText, yearText);
 				DrawCenteredClippedText(dateText, 0x00, 0x00, 0x18, 0x0140, (byte) textColor, 0x0D);
 				ShowMouseCursorOverlay();
 				previousMonthsRemaining = monthsRemaining;
@@ -764,7 +770,7 @@ void DrawCenteredClippedText(
 	int16 centeredOffset;
 
 	// Verified against 0D73:3E35-3F56.
-	FarStringNCopy(text, sourceText, 0x32);
+	strncpy(text, sourceText, 0x32);
 	RemoveLeadingSpacesFrom(text, 0x01);
 	TrimTrailingEncodedSpaces(text);
 	word16 textWidth = MeasureTextWidth(text);
@@ -779,7 +785,7 @@ void DrawCenteredClippedText(
 			DrawTextString(text, (word16) (leftX + centeredOffset), y,
 				foregroundColor, backgroundColor);
 			y = (word16) (y + ActiveFontLineHeight);
-			FarStringNCopy(text, sourceText + splitIndex, 0x32);
+			strncpy(text, sourceText + splitIndex, 0x32);
 			textWidth = MeasureTextWidth(text);
 		}
 		word16 textLength = StringLength(text);
@@ -809,7 +815,7 @@ void DrawLeftAlignedClippedText(
 	byte backgroundColor)
 {
 	char renderText[0x34];
-	FarStringNCopy(renderText, sourceText, 0x32);
+	strncpy(renderText, sourceText, 0x32);
 	RemoveLeadingSpacesFrom(renderText, 0x01);
 	TrimTrailingEncodedSpaces(renderText);
 	word16 textWidth = MeasureTextWidth(renderText);
@@ -839,7 +845,7 @@ void DrawRightAlignedClippedText(
 	byte backgroundColor)
 {
 	char renderText[0x34];
-	FarStringNCopy(renderText, sourceText, 0x32);
+	strncpy(renderText, sourceText, 0x32);
 	RemoveLeadingSpacesFrom(renderText, 0x01);
 	TrimTrailingEncodedSpaces(renderText);
 	word16 textWidth = MeasureTextWidth(renderText);

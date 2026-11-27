@@ -2,9 +2,15 @@
 // Reconstructed from REVENGE.EXE and its annotated instruction listing.
 // using Reko decompiler version 0.11.4.0.
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE.h"
 #include "revenge/original_data.h"
 #include "revenge/text.h"
+
+#include <string.h>
 
 enum
 {
@@ -49,10 +55,6 @@ word16 UpdateUnitEnemyProximityState(word16 unitIndex);
 word16 UpdateUnitEnemyVisibility(word16 unitIndex);
 word16 HasTacticalReferencePointLineOfSightToUnit(
 	word16 referencePointIndex, word16 unitIndex);
-char *FarStringCopy(
-	char *destination, const char *source);
-char *FarStringConcat(
-	char *destination, const char *source);
 char *IntegerToString(
 	int16 value, char *destination, word16 radix);
 
@@ -151,13 +153,13 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
 			0x00, 0x0F, 0x00);
 		if (enemyUnit == FALSE)
 		{
-			FarStringCopy(
+			strcpy(
 				(char *)SharedNumericTextBuffer,
 				PilotSurnameTable[unitRecord->pilotId]);
-			FarStringConcat(
+			strcat(
 				(char *)SharedNumericTextBuffer,
 				PathSeparatorText);
-			FarStringConcat(
+			strcat(
 				(char *)SharedNumericTextBuffer,
 				PilotExperienceNameTable[unitRecord->pilotExperience]);
 			DrawCenteredTextInActiveWindow(
@@ -270,7 +272,7 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
 		IntegerToString(
 			(int16)conditionPercent,
 			(char *)&SharedNumericTextBuffer[0x01], 0x0A);
-		FarStringConcat(
+		strcat(
 			(char *)SharedNumericTextBuffer,
 			PercentCloseText);
 		if (concealEnemyDamage == FALSE ||

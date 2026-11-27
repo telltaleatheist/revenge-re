@@ -30,11 +30,6 @@ word16 StringLength(const char *text)
 	return (word16)strlen(text);
 }
 
-short FarStringCompare(const char *left, const char *right)
-{
-	return (short)strcmp(left, right);
-}
-
 static byte errorCalls[0x04];
 static word16 errorCallCount;
 static word16 shutdownCalls;

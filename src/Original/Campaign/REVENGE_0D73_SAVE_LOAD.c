@@ -1,9 +1,15 @@
 // REVENGE_0D73_SAVE_LOAD.c
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE_0D73_CAMPAIGN_INTERNAL.h"
 #include "revenge/debug.h"
 #include "revenge/story_text.h"
+
+#include <string.h>
 
 // 0D73:4866: word16 SaveGame(void)
 // Called from:
@@ -436,10 +442,10 @@ int16 ShowSaveLoadMenu(word16 menuMode)
 			menuAction = SAVE_LOAD_ACTION_SLOT;
 			if (menuMode == SAVE_LOAD_MODE_SAVE)
 			{
-				FarStringCopy(previousSlotName, selectedSlot->name);
+				strcpy(previousSlotName, selectedSlot->name);
 				directoryChanged = RenameSaveSlot(selectedMenuItem);
 				if (directoryChanged != FALSE &&
-					(FarStringCompare(previousSlotName, selectedSlot->name) == 0x0000 ||
+					(strcmp(previousSlotName, selectedSlot->name) == 0x0000 ||
 					 IsBlankSaveSlotName(selectedSlot->name)))
 				{
 					ActiveTextCursorColumn = 0x0000;
@@ -465,7 +471,7 @@ int16 ShowSaveLoadMenu(word16 menuMode)
 					ShowMouseCursorOverlay();
 					if (PromptYesNo(0x0000) != FALSE)
 					{
-						FarStringCopy(selectedSlot->name, previousSlotName);
+						strcpy(selectedSlot->name, previousSlotName);
 						directoryChanged = FALSE;
 						menuAction = SAVE_LOAD_ACTION_REOPEN_MENU;
 					}
@@ -594,7 +600,7 @@ word16 RenameSaveSlot(int16 slotIndex)
 		wasRenamed = EditTextField(0x0014, slot->name, 0x07);
 	}
 	while (wasRenamed == FALSE);
-	FarStringCopy(slot->name, (const char *)TextEntryBuffer);
+	strcpy(slot->name, (const char *)TextEntryBuffer);
 	ActiveTextBackgroundColor = previousBackground;
 	return TRUE;
 }

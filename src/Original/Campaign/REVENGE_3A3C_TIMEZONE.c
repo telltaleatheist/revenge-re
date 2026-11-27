@@ -1,7 +1,13 @@
 // Reconstructed original timezone and daylight-saving runtime (segment 3A3C).
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE.h"
 #include "revenge/original_data.h"
+
+#include <string.h>
 
 // 3A3C:0008
 // Borland tzset path. Parse TZ as a three-character standard-zone name,
@@ -33,13 +39,13 @@ void InitializeTimezoneFromEnvironment(void)
 		DaylightSavingEnabled = 0x01;
 		TimezoneOffsetHighWord = 0x00;
 		TimezoneOffsetLowWord = 0x4650;
-		FarStringCopy(StandardTimezoneName, DefaultStandardTimezoneName);
-		FarStringCopy(DaylightTimezoneName, DefaultDaylightTimezoneName);
+		strcpy(StandardTimezoneName, DefaultStandardTimezoneName);
+		strcpy(DaylightTimezoneName, DefaultDaylightTimezoneName);
 		return;
 	}
 
-	FarMemorySet((byte *) DaylightTimezoneName, 0x00, 0x04);
-	FarStringNCopy(StandardTimezoneName, timezone, 0x03);
+	memset(DaylightTimezoneName, 0x00, 0x04);
+	strncpy(StandardTimezoneName, timezone, 0x03);
 	StandardTimezoneName[0x03] = 0x00;
 
 	{
@@ -59,7 +65,7 @@ void InitializeTimezoneFromEnvironment(void)
 					(CharacterClassTable[(unsigned char) timezone[index + 0x01]] & 0x0C) != 0x00 &&
 					(CharacterClassTable[(unsigned char) timezone[index + 0x02]] & 0x0C) != 0x00)
 				{
-					FarStringNCopy(DaylightTimezoneName, timezone + index, 0x03);
+					strncpy(DaylightTimezoneName, timezone + index, 0x03);
 					DaylightTimezoneName[0x03] = 0x00;
 					DaylightSavingEnabled = 0x01;
 				}

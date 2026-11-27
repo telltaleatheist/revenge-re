@@ -15,59 +15,9 @@ static void Check(int condition, const char *message)
 	}
 }
 
-static void TestFarStringCopy(void)
-{
-	char destination[0x10];
-	char *result;
-	char *source;
-	char *largeDestination;
-
-	memset(destination, 0x55, sizeof(destination));
-	result = FarStringCopy(destination, "Lantern");
-	Check(result == destination, "far string copy returns its destination");
-	Check(memcmp(destination, "Lantern\0", 0x08) == 0,
-		"far string copy includes the terminating NUL");
-	Check((byte) destination[0x08] == 0x55,
-		"far string copy stops immediately after the NUL");
-
-	source = (char *) malloc(0xFFFF);
-	largeDestination = (char *) malloc(0xFFFF);
-	Check(source != NULL && largeDestination != NULL,
-		"maximum-copy fixtures allocate");
-	if (source == NULL || largeDestination == NULL)
-	{
-		free(source);
-		free(largeDestination);
-		return;
-	}
-	memset(source, 'X', 0xFFFF);
-	memset(largeDestination, 0x00, 0xFFFF);
-	FarStringCopy(largeDestination, source);
-	Check(memcmp(largeDestination, source, 0xFFFF) == 0,
-		"unterminated source copies exactly the FFFFh scan cap");
-	free(source);
-	free(largeDestination);
-}
-
 static void TestFarMemoryFill(void)
 {
 	byte bytes[0x08];
-
-	memset(bytes, 0x11, sizeof(bytes));
-	FillFarMemoryBytes(&bytes[0x01], 0x00, 0xAA);
-	Check(bytes[0x01] == 0x11, "a zero byte count writes nothing");
-
-	FillFarMemoryBytes(&bytes[0x01], 0x03, 0xAA);
-	Check(bytes[0x00] == 0x11 && bytes[0x01] == 0xAA &&
-		bytes[0x03] == 0xAA && bytes[0x04] == 0x11,
-		"odd fill count changes exactly the requested bytes");
-
-	memset(bytes, 0x11, sizeof(bytes));
-	Check(FarMemorySet(&bytes[0x02], 0xCC, 0x04) == &bytes[0x02],
-		"far memory set returns the original destination");
-	Check(bytes[0x01] == 0x11 && bytes[0x02] == 0xCC &&
-		bytes[0x05] == 0xCC && bytes[0x06] == 0x11,
-		"far memory set forwards value and even byte count");
 
 	memset(bytes, 0x11, sizeof(bytes));
 	FillRuntimeFarMemoryBytes(&bytes[0x02], 0x03, 0x5A);
@@ -105,7 +55,6 @@ static void TestLongArithmeticHelpers(void)
 
 int main(void)
 {
-	TestFarStringCopy();
 	TestFarMemoryFill();
 	TestFarMemoryCopy();
 	TestLongArithmeticHelpers();

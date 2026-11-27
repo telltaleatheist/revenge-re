@@ -497,13 +497,6 @@ if(BUILD_TESTING)
     chr_strict(test_string_length)
     add_test(NAME utility.original_string_length COMMAND test_string_length)
 
-    add_executable(test_far_string_compare tests/test_far_string_compare.c)
-    target_include_directories(test_far_string_compare PRIVATE src/Original)
-    target_link_libraries(test_far_string_compare PRIVATE chr_original_runtime)
-    chr_strict(test_far_string_compare)
-    add_test(NAME utility.original_far_string_compare
-        COMMAND test_far_string_compare)
-
 	add_executable(test_integer_format tests/test_integer_format.c)
 	target_include_directories(test_integer_format PRIVATE src/Original)
 	target_link_libraries(test_integer_format PRIVATE chr_original_runtime)
@@ -575,8 +568,6 @@ if(BUILD_TESTING)
     add_executable(test_formatted_text
         tests/test_formatted_text.c
         src/Original/Text/REVENGE_35CE_FORMATTED_TEXT.c
-        src/Original/Utility/REVENGE_397A_STRING_CONCAT.c
-        src/Original/Utility/REVENGE_3983_STRING_COPY.c
         ${CHR_3A6A_DATA_SOURCES}
         ${CHR_STORY_SOURCES}
         src/Support/debug.c)

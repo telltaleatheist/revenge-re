@@ -316,18 +316,8 @@ int16 ReadTranslatedKeypress(void);
 int16 NormalizeNavigationKeyCode(int16 keyCode);
 int16 RandomInRangeInclusive(word16 minimum, word16 maximum);
 word16 StringLength(const char *text);
-short FarStringCompare(
-	const char *left, const char *right);
-char *FarStringCopy(
-	char *destination, const char *source);
-char *FarStringConcat(
-	char *destination, const char *source);
 void FillRuntimeFarMemoryBytes(
 	byte *destination, word16 byteCount, byte value);
-void FillFarMemoryBytes(
-	byte *destination, word16 byteCount, byte value);
-byte *FarMemorySet(
-	byte *destination, byte value, word16 byteCount);
 segptr32 NormalizeFarPointer(word16 offset, word16 segment);
 void *AddSignedOffsetToFarPointer(
 	const void *pointer, int32 displacement);
@@ -620,10 +610,6 @@ word16 DrawRepeatingFrameTileSequence(
 	word16 horizontal);
 void DrawActiveTextWindowFrame(word16 frameStyleIndex);
 long ParseSignedDecimalLong(const char *text);
-char *FarStringNCopy(
-	char *destination,
-	const char *source,
-	word16 maximumLength);
 char *GetEnvironmentVariable(const char *name);
 void InitializeTimezoneFromEnvironment(void);
 word16 IsDaylightSavingTime(

@@ -1,8 +1,14 @@
 // REVENGE_2507_TRAINING.c
 // Reconstructed from the original procedures in segment 2507.
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
 #include "revenge/story_text.h"
+
+#include <string.h>
 
 // 2507:0008: enable the pilots used by the three training-selection rows.
 // VERIFIED against physical-alias ASM 24C5:0428-0475 (2507:0008-0055).
@@ -981,8 +987,8 @@ void DrawUnitAllegianceHeader(word16 headerColorIndex)
 	allegianceIndex = UnitEditorAllegiance;
 	allegianceText = UnitAllegianceLabelTextTable[allegianceIndex];
 	suffixText = FriendlyEnemySuffixText;
-	FarStringCopy(headerText, allegianceText);
-	FarStringConcat(headerText, suffixText);
+	strcpy(headerText, allegianceText);
+	strcat(headerText, suffixText);
 	HideMouseCursorOverlay();
 	DrawCenteredClippedText(
 		headerText,

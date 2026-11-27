@@ -1,10 +1,16 @@
 /* Preserved fixed-width text-field editor from REVENGE_0D73. */
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE.h"
 
 #include "revenge/input.h"
 #include "revenge/original_data.h"
 #include "revenge/text.h"
+
+#include <string.h>
 
 /* 0D73:4317-4549 */
 word16 EditTextField(
@@ -39,7 +45,7 @@ word16 EditTextField(
 	if (*initialText == ' ')
 		FillTextEntryBuffer(effectiveMaximumLength, ' ');
 	else
-		FarStringCopy((char *) TextEntryBuffer, initialText);
+		strcpy((char *) TextEntryBuffer, initialText);
 
 	savedCursorColumn = ActiveTextCursorColumn;
 	savedCursorRow = ActiveTextCursorRow;

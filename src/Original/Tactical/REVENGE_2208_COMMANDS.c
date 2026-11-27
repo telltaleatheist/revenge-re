@@ -1,8 +1,14 @@
 // REVENGE_2208_COMMANDS.c
 // Procedures preserved from REVENGE_2208_TACTICAL_INTERACTION.c.
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE_2208_INTERNAL.h"
 #include "revenge/debug.h"
+
+#include <string.h>
 
 // 2208:000B: void RunTacticalUnitCommandMenu(word16 unitIndex)
 // Verified against ASM 2208:000B-060C. The original eight-entry
@@ -104,7 +110,7 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
 		{
 			word16 targetType =
 				PersistentUnitRoster[attackTarget].unitTypeId;
-			FarStringNCopy(
+			strncpy(
 				(char *)SharedNumericTextBuffer,
 				UnitNameTable[targetType],
 				0x09);

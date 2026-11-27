@@ -1,7 +1,13 @@
 // Reconstructed original formatted text interpreter (segment 35CE).
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE.h"
 #include "revenge/original_data.h"
+
+#include <string.h>
 
 enum FormattedTextControl
 {
@@ -78,7 +84,7 @@ void RenderFormattedText(const char *formattedText)
 				* (tokenLength + lineColumn)
 				<= ActiveTextWindowWidthTiles << 0x03)
 			{
-				FarStringConcat(composedLine, tokenBuffer);
+				strcat(composedLine, tokenBuffer);
 				RenderTextToActiveWindow(composedLine, 0x01);
 			}
 			else
@@ -96,7 +102,7 @@ void RenderFormattedText(const char *formattedText)
 				* (tokenLength + lineColumn)
 				<= ActiveTextWindowWidthTiles << 0x03)
 			{
-				FarStringConcat(composedLine, tokenBuffer);
+				strcat(composedLine, tokenBuffer);
 				RenderTextToActiveWindow(composedLine, 0x00);
 			}
 			else
@@ -116,7 +122,7 @@ void RenderFormattedText(const char *formattedText)
 				* (tokenLength + lineColumn)
 				<= ActiveTextWindowWidthTiles << 0x03)
 			{
-				FarStringConcat(composedLine, tokenBuffer);
+				strcat(composedLine, tokenBuffer);
 				RenderTextToActiveWindow(composedLine, 0x00);
 			}
 			else
@@ -136,7 +142,7 @@ void RenderFormattedText(const char *formattedText)
 				* (tokenLength + lineColumn)
 				<= ActiveTextWindowWidthTiles << 0x03)
 			{
-				FarStringConcat(composedLine, tokenBuffer);
+				strcat(composedLine, tokenBuffer);
 				RenderTextToActiveWindow(composedLine, 0x00);
 			}
 			else
@@ -172,7 +178,7 @@ void RenderFormattedText(const char *formattedText)
 					tokenLength = (word16) tokenLength + 0x01;
 				}
 				tokenBuffer[tokenLength] = 0x00;
-				FarStringConcat(composedLine, tokenBuffer);
+				strcat(composedLine, tokenBuffer);
 				lineColumn += tokenLength;
 				tokenLength = 0x00;
 			}
@@ -191,7 +197,7 @@ void RenderFormattedText(const char *formattedText)
 					tokenLength = (word16) tokenLength + 0x01;
 				}
 				tokenBuffer[tokenLength] = 0x00;
-				FarStringConcat(composedLine, tokenBuffer);
+				strcat(composedLine, tokenBuffer);
 			}
 			else
 			{
@@ -205,7 +211,7 @@ void RenderFormattedText(const char *formattedText)
 				}
 				tokenBuffer[tokenLength] = 0x00;
 				RenderTextToActiveWindow(composedLine, 0x01);
-				FarStringCopy(composedLine, tokenBuffer);
+				strcpy(composedLine, tokenBuffer);
 				lineColumn = 0x00;
 			}
 			lineColumn += tokenLength;
@@ -219,7 +225,7 @@ void RenderFormattedText(const char *formattedText)
 				if (composedLine[0x00] != 0x00)
 					RenderTextToActiveWindow(composedLine, 0x01);
 				tokenBuffer[tokenLength] = 0x00;
-				FarStringConcat(composedLine, tokenBuffer);
+				strcat(composedLine, tokenBuffer);
 				RenderTextToActiveWindow(composedLine, 0x01);
 				lineColumn = 0x00;
 				tokenBuffer[0x00] = formatByte;
@@ -241,7 +247,7 @@ void RenderFormattedText(const char *formattedText)
 			>= ActiveFontGlyphAdvanceX
 				* (tokenLength + lineColumn))
 		{
-			FarStringConcat(composedLine, tokenBuffer);
+			strcat(composedLine, tokenBuffer);
 			RenderTextToActiveWindow(composedLine, 0x00);
 		}
 		else

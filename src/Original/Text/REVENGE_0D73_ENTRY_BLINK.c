@@ -1,8 +1,14 @@
 /* Preserved text-entry cursor blink from REVENGE_0D73. */
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE.h"
 
 #include "revenge/original_data.h"
+
+#include <string.h>
 
 /* 0D73:3DA9-3E1D */
 void UpdateTextEntryCursorBlink(void)
@@ -18,7 +24,7 @@ void UpdateTextEntryCursorBlink(void)
 	cursorText[0x00] = TextEntryBuffer[TextEntryCursorIndex];
 	cursorText[0x01] = '\0';
 	if ((clockSnapshot.milliseconds & 0x0200) != 0x0000)
-		FarStringCopy(cursorText, TextCursorBlinkGlyph);
+		strcpy(cursorText, TextCursorBlinkGlyph);
 	ActiveTextCursorColumn += TextEntryCursorIndex;
 	HideMouseCursorOverlay();
 	RenderFormattedText(cursorText);

@@ -5,6 +5,8 @@
 #include "revenge/original_data.h"
 #include "revenge/debug.h"
 
+#include <string.h>
+
 // 3390:0002
 void AbortRuntimeWithMessage(const char *errorText)
 {
@@ -272,7 +274,7 @@ word16 GetResourceDriveMask(char *path)
 	{
 		CachedFileDescriptor *resource = &CachedFileDescriptors[resourceIndex];
 
-		if (FarStringCompare(
+		if (strcmp(
 			resource->fileName,
 			normalizedPath) == 0x0000)
 			return resource->resourceDriveMask;
@@ -387,7 +389,7 @@ word16 IsResourceCached(char *path)
 	{
 		CachedFileDescriptor *resource = &CachedFileDescriptors[resourceIndex];
 
-		if (FarStringCompare(
+		if (strcmp(
 			resource->fileName,
 			normalizedPath) == 0x0000)
 			return resource->cachedData != NULL ? TRUE : FALSE;
@@ -404,7 +406,7 @@ word16 FindResourceDescriptorIndex(char *path)
 
 	while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
 	{
-		if (FarStringCompare(
+		if (strcmp(
 			CachedFileDescriptors[resourceIndex].fileName,
 			normalizedPath) == 0x0000)
 			return resourceIndex;

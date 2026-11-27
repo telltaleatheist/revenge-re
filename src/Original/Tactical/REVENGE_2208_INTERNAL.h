@@ -117,10 +117,6 @@ void CopyFarMemory(
 	word16 byteCount,
 	const byte *source,
 	byte *destination);
-char *FarStringNCopy(
-	char *destination,
-	const char *source,
-	word16 maximumLength);
 
 
 #endif

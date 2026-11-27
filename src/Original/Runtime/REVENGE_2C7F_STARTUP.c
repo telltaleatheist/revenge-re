@@ -371,7 +371,7 @@ word16 LoadMediaConfiguration(void)
 				{
 					const char *tableName =
 						ConfigOptionNames[handlerIndex];
-					if (FarStringCompare(tableName, optionName) == 0x00)
+					if (strcmp(tableName, optionName) == 0x00)
 					{
 						// ASM 2C7F:05F8 calls the far callback at +0Ch in the selected 10h-byte configuration record.
 						configurationValid =
@@ -417,7 +417,7 @@ uint16 ApplyVideoConfigOption(void)
 	word16 searchingForMatch = TRUE;
 	while (searchingForMatch != FALSE && optionIndex < 0x05)
 	{
-		if (FarStringCompare(
+		if (strcmp(
 			VideoConfigurationRecords[optionIndex].name,
 			optionValue) == 0x00)
 		{
@@ -455,7 +455,7 @@ uint16 ApplyMusicConfigOption(void)
 	word16 searchingForMatch = TRUE;
 	while (searchingForMatch != FALSE && optionIndex < 0x07)
 	{
-		if (FarStringCompare(
+		if (strcmp(
 			MusicConfigurationRecords[optionIndex].name,
 			optionValue) == 0x00)
 		{
@@ -491,7 +491,7 @@ uint16 ApplySoundConfigOption(void)
 	word16 searchingForMatch = TRUE;
 	while (searchingForMatch != FALSE && optionIndex < 0x09)
 	{
-		if (FarStringCompare(
+		if (strcmp(
 			SoundConfigurationRecords[optionIndex].name,
 			optionValue) == 0x00)
 		{
@@ -535,7 +535,7 @@ uint16 ApplyInputDeviceConfigOption(void)
 	word16 searchingForMatch = TRUE;
 	while (searchingForMatch != FALSE && optionIndex < 0x02)
 	{
-		if (FarStringCompare(
+		if (strcmp(
 			InputConfigurationRecords[optionIndex].name,
 			optionValue) == 0x00)
 		{

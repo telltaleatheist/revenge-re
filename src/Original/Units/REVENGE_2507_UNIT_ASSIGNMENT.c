@@ -1,8 +1,14 @@
 // REVENGE_2507_UNIT_ASSIGNMENT.c
 // Reconstructed from the original procedures in segment 2507.
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
 #include "revenge/debug.h"
+
+#include <string.h>
 
 // 2507:30FC: select a lance section and enter its unit-assignment grid.
 // VERIFIED against ASM 2507:30FC-3575.
@@ -1154,10 +1160,10 @@ void DrawUnitStatusScreen(
 	movementClassIndex = MovementRatingByWalkMP[
 		DisplayedUnitCombatRatings.movement];
 	text = UnitMovementClassLabelTextTable[movementClassIndex];
-	FarStringCopy(textBuffer, text);
+	strcpy(textBuffer, text);
 	if (unitRecord->jumpMovement != 0x00)
 	{
-		FarStringConcat(
+		strcat(
 			textBuffer,
 			UnitStatusSeparator);
 	}
@@ -1191,11 +1197,11 @@ void DrawUnitStatusScreen(
 			if (equippedCount == 0x00)
 				continue;
 			IntegerToString(equippedCount, textBuffer, 0x0A);
-			FarStringConcat(
+			strcat(
 				textBuffer,
 				UnitStatusSpace);
 			text = WeaponNameTable[weaponIndex];
-			FarStringConcat(textBuffer, text);
+			strcat(textBuffer, text);
 			DrawLeftAlignedClippedText(
 				textBuffer, weaponListX, weaponListY, 0x54,
 				(byte)detailTextColor, 0x00);
@@ -1229,7 +1235,7 @@ void DrawUnitStatusScreen(
 				(byte)detailTextColor, 0x00);
 		}
 
-		FarStringCopy(
+		strcpy(
 			textBuffer,
 			UnitStatusArmorLabel);
 		DrawTextString(
@@ -1247,7 +1253,7 @@ void DrawUnitStatusScreen(
 			text, weaponListX + armorLabelWidth, 0x39,
 			0x54 - armorLabelWidth, (byte)detailTextColor, 0x00);
 
-		FarStringCopy(
+		strcpy(
 			textBuffer,
 			UnitStatusHeatLabel);
 		DrawTextString(

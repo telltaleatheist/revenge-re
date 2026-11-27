@@ -1,9 +1,15 @@
 // REVENGE_2007_TACTICAL_EFFECTS.c - tactical display, projectile, and effect procedures.
 // Reconstructed from REVENGE.EXE and its verified annotation project.
 
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE.h"
 #include "revenge/original_data.h"
 #include "revenge/video.h"
+
+#include <string.h>
 
 #define TACTICAL_VIEWPORT_WIDTH_CELLS       0x0013
 #define TACTICAL_VIEWPORT_HEIGHT_CELLS      0x000C
@@ -311,7 +317,7 @@ void FormatUnitDurabilityPercentage(int16 unitIndex)
 		percentage,
 		SharedNumericTextBuffer,
 		0x0A);
-	FarStringConcat(
+	strcat(
 		SharedNumericTextBuffer,
 		PercentageSuffixText);
 }
@@ -604,7 +610,7 @@ void DrawSelectedUnitStatusPanel(void)
 			FormatUnitDurabilityPercentage(selectedUnitIndex);
 
 			statusText = SharedNumericTextBuffer;
-			FarStringConcat(
+			strcat(
 				statusText,
 				UnitHeatStatusPrefix);
 			heatScaleIndex =
@@ -613,7 +619,7 @@ void DrawSelectedUnitStatusPanel(void)
 				heatScaleIndex = 0x0005;
 			if (UnitShutdownState[selectedUnitIndex] != 0x00)
 				heatScaleIndex = 0x0006;
-			FarStringConcat(
+			strcat(
 				statusText,
 				(const char *)HeatScaleDescriptionTable[
 					heatScaleIndex]);
