@@ -107,9 +107,9 @@ void DecodeWestwoodPackedResource(
 	// Verified against 21E7:00F4-0201. The LZW cases first compare the
 	// shared dictionary's size (DS:2F70) with what they need and use the
 	// shared one (segment DS:2F6E) when it is big enough (21E7:0193, 01E8).
-	// Both words lie past the load image, in the zeroed BSS, and nothing in
-	// the program writes either, so the size is always 0 and each decode
-	// allocates its own dictionary.
+	// Both words are 0 in the image and nothing in the program writes
+	// either, so the size is always 0 and each decode allocates its own
+	// dictionary.
 	switch (header->compressionType)
 	{
 	case 0x00:
