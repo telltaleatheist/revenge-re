@@ -1,15 +1,16 @@
 // The rules files' readers (Rules.h has the shapes).
 #include "Rules.h"
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstring>
-#include <map>
 #include <fstream>
 #include <initializer_list>
-#include <span>
 #include <iterator>
+#include <map>
 #include <set>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -688,6 +689,97 @@ void read_lance_editor(const Json& root, Tables& tables) {
     file.done();
 }
 
+constexpr unsigned kResourceFiles = 0x5A;  // ORIGINAL_RESOURCE_DESCRIPTOR_COUNT
+
+void read_screens(const Json& root, Tables& tables) {
+    Fields file(root, "screens.json:");
+    tables["screens.palette_files"] = numbers(file.take("palette_file_by_screen"), file.at("palette_file_by_screen"),
+                                              0x25, kResourceFiles - 1, 1);
+
+    // TextWindowFrameDefinition: the four corner tiles, then the top, left,
+    // right and bottom edges' tile runs, each ended by FFh, in 12 words.
+    Fields frame(file.take("text_window_frame"), file.at("text_window_frame"));
+    std::vector<std::uint8_t>& out = tables["screens.text_window_frame"];
+    out.assign(0x0C * 2, 0);
+    std::size_t used = 0;
+    const auto put = [&out, &used, &frame](unsigned tile) {
+        if (used == 0x0C) fail(frame.where(), "doesn't fit: the frame holds 12 tiles and ends in all");
+        put_word(&out[used * 2], tile);
+        ++used;
+    };
+    Fields corners(frame.take("corners"), frame.at("corners"));
+    for (const char* corner : {"top_left", "top_right", "bottom_left", "bottom_right"})
+        put(whole(corners.take(corner), corners.at(corner), 0xFE));
+    corners.done();
+    Fields edges(frame.take("edges"), frame.at("edges"));
+    for (const char* edge : {"top", "left", "right", "bottom"}) {
+        const Json& tiles = edges.take(edge);
+        const std::string where = edges.at(edge);
+        if (!tiles.is_array()) fail(where, "is not an array of tiles");
+        for (std::size_t index = 0; index < tiles.array().size(); ++index)
+            put(whole(tiles.array()[index], where + "[" + std::to_string(index) + "]", 0xFE));
+        put(0xFF);
+    }
+    edges.done();
+    if (used != 0x0C) fail(frame.where(), "doesn't fill the frame's 12 tiles and ends");
+    frame.done();
+    file.done();
+}
+
+// A line of the unit status glyph: [x0, y0, x1, y1] in pixels from its
+// origin, the start into entry `at` of the two tables and the end into entry
+// `at + 8`.
+void put_line(const Json& value, const std::string& where, std::vector<std::uint8_t>& x, std::vector<std::uint8_t>& y,
+              std::size_t at) {
+    const std::vector<std::uint8_t> line = numbers(value, where, 4, 0x7FFF, 2);
+    std::copy_n(&line[0], 2, &x[at * 2]);
+    std::copy_n(&line[2], 2, &y[at * 2]);
+    std::copy_n(&line[4], 2, &x[(at + 8) * 2]);
+    std::copy_n(&line[6], 2, &y[(at + 8) * 2]);
+}
+
+void read_tactical_panel(const Json& root, Tables& tables) {
+    Fields file(root, "tactical_panel.json:");
+    const Json& facing = file.take("facing_lines");
+    const std::string facing_where = file.at("facing_lines");
+    if (!facing.is_array() || facing.array().size() != 8) fail(facing_where, "is not an array of 8 facings");
+    std::vector<std::uint8_t>* tables_by_line[2][2] = {
+        {&tables["tactical_panel.facing_start_x"], &tables["tactical_panel.facing_start_y"]},
+        {&tables["tactical_panel.facing_end_x"], &tables["tactical_panel.facing_end_y"]}};
+    for (auto& pair : tables_by_line)
+        for (std::vector<std::uint8_t>* table : pair) table->assign(0x10 * 2, 0);
+    for (std::size_t direction = 0; direction < 8; ++direction) {
+        const Json& lines = facing.array()[direction];
+        const std::string where = facing_where + "[" + std::to_string(direction) + "]";
+        if (!lines.is_array() || lines.array().size() != 2) fail(where, "is not an array of 2 lines");
+        for (std::size_t line = 0; line < 2; ++line)
+            put_line(lines.array()[line], where + "[" + std::to_string(line) + "]", *tables_by_line[line][0],
+                     *tables_by_line[line][1], direction);
+    }
+
+    // By movement band (UnitMovementHeatExponent less one), then facing.
+    const Json& movement = file.take("movement_lines");
+    const std::string movement_where = file.at("movement_lines");
+    if (!movement.is_array() || movement.array().size() != 2) fail(movement_where, "is not an array of 2 bands");
+    std::vector<std::uint8_t>& movement_x = tables["tactical_panel.movement_x"];
+    std::vector<std::uint8_t>& movement_y = tables["tactical_panel.movement_y"];
+    movement_x.assign(0x20 * 2, 0);
+    movement_y.assign(0x20 * 2, 0);
+    for (std::size_t band = 0; band < 2; ++band) {
+        const Json& lines = movement.array()[band];
+        const std::string where = movement_where + "[" + std::to_string(band) + "]";
+        if (!lines.is_array() || lines.array().size() != 8) fail(where, "is not an array of 8 facings");
+        for (std::size_t direction = 0; direction < 8; ++direction)
+            put_line(lines.array()[direction], where + "[" + std::to_string(direction) + "]", movement_x, movement_y,
+                     band * 0x10 + direction);
+    }
+
+    records(file.take("formation_marker_origins"), file.at("formation_marker_origins"), 0x0A,
+            {{"x", "tactical_panel.formation_marker_x", 2, 0x7FFF}, {"y", "tactical_panel.formation_marker_y", 2, 0x7FFF}},
+            tables);
+    file.done();
+}
+
 // Bytes two tables share in the original's memory must agree.
 void check_shared(const Tables& tables) {
     // The first missile weapon's bonus is the high byte of the last direction
@@ -726,6 +818,8 @@ void load(const std::filesystem::path& data_dir) {
     const std::filesystem::path ui = data_dir / "ui";
     read_mission(read_file(ui / "mission.json", "mission.json"), tables);
     read_lance_editor(read_file(ui / "lance_editor.json", "lance_editor.json"), tables);
+    read_screens(read_file(ui / "screens.json", "screens.json"), tables);
+    read_tactical_panel(read_file(ui / "tactical_panel.json", "tactical_panel.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {

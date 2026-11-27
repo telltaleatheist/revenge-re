@@ -57,6 +57,16 @@ const RulePiece RulePieces[] =
 	{ "lance_editor.unit_sprites", &UnitEditorUnitSpriteIndex, sizeof(UnitEditorUnitSpriteIndex), 0x3A6A, 0x3119, 0x59, "32e2805258a97d7d" },
 	{ "lance_editor.pilot_portraits", &PilotPortraitIndexById, sizeof(PilotPortraitIndexById), 0x3A6A, 0x3248, 0x21, "bc30e707e833bb08" },
 	{ "lance_editor.layout", &LanceEditorLayout, sizeof(LanceEditorLayout), 0x3A6A, 0x3470, 0x1D4, "133bbdf581993fe9" },
+	{ "screens.text_window_frame", &TextWindowFrameDefinition, sizeof(TextWindowFrameDefinition), 0x3A6A, 0x08AA, 0x18, "784fdaba56e12fbc" },
+	{ "screens.palette_files", &ScreenPaletteResourceByScreen, sizeof(ScreenPaletteResourceByScreen), 0x3A6A, 0x1704, 0x25, "e78bb6d27f4e84d3" },
+	{ "tactical_panel.formation_marker_x", &FormationMarkerOriginX, sizeof(FormationMarkerOriginX), 0x3A6A, 0x2F96, 0x14, "b096bff2a16441c6" },
+	{ "tactical_panel.formation_marker_y", &FormationMarkerOriginY, sizeof(FormationMarkerOriginY), 0x3A6A, 0x2FAA, 0x14, "d4b7e94022312e3d" },
+	{ "tactical_panel.facing_start_x", &FacingVectorStartX, sizeof(FacingVectorStartX), 0x3A6A, 0x2FBE, 0x20, "cdaf1ce7f55e11fe" },
+	{ "tactical_panel.facing_start_y", &FacingVectorStartY, sizeof(FacingVectorStartY), 0x3A6A, 0x2FDE, 0x20, "fbafd066f1163192" },
+	{ "tactical_panel.facing_end_x", &FacingVectorEndX, sizeof(FacingVectorEndX), 0x3A6A, 0x2FFE, 0x20, "7bcc3bfc01fd3f0f" },
+	{ "tactical_panel.facing_end_y", &FacingVectorEndY, sizeof(FacingVectorEndY), 0x3A6A, 0x301E, 0x20, "276d404218862052" },
+	{ "tactical_panel.movement_x", &MovementVectorX, sizeof(MovementVectorX), 0x3A6A, 0x303E, 0x40, "2e470f455aec0344" },
+	{ "tactical_panel.movement_y", &MovementVectorY, sizeof(MovementVectorY), 0x3A6A, 0x307E, 0x40, "86d4436c3808c49b" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -107,3 +117,13 @@ _Static_assert(sizeof(MissionSpriteHeightPixels) == 0x18, "mission.sprite_height
 _Static_assert(sizeof(UnitEditorUnitSpriteIndex) == 0x59, "lance_editor.unit_sprites is the original's size");
 _Static_assert(sizeof(PilotPortraitIndexById) == 0x21, "lance_editor.pilot_portraits is the original's size");
 _Static_assert(sizeof(LanceEditorLayout) == 0x1D4, "lance_editor.layout is the original's size");
+_Static_assert(sizeof(TextWindowFrameDefinition) == 0x18, "screens.text_window_frame is the original's size");
+_Static_assert(sizeof(ScreenPaletteResourceByScreen) == 0x25, "screens.palette_files is the original's size");
+_Static_assert(sizeof(FormationMarkerOriginX) == 0x14, "tactical_panel.formation_marker_x is the original's size");
+_Static_assert(sizeof(FormationMarkerOriginY) == 0x14, "tactical_panel.formation_marker_y is the original's size");
+_Static_assert(sizeof(FacingVectorStartX) == 0x20, "tactical_panel.facing_start_x is the original's size");
+_Static_assert(sizeof(FacingVectorStartY) == 0x20, "tactical_panel.facing_start_y is the original's size");
+_Static_assert(sizeof(FacingVectorEndX) == 0x20, "tactical_panel.facing_end_x is the original's size");
+_Static_assert(sizeof(FacingVectorEndY) == 0x20, "tactical_panel.facing_end_y is the original's size");
+_Static_assert(sizeof(MovementVectorX) == 0x40, "tactical_panel.movement_x is the original's size");
+_Static_assert(sizeof(MovementVectorY) == 0x40, "tactical_panel.movement_y is the original's size");

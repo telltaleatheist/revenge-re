@@ -153,6 +153,7 @@ int main(int argc, char** argv) {
         {"experience", "rules/pilots.json", "{\"identity\": 0, \"experience\": ", "{\"identity\": 0, \"experience\": 4"},
         {"month", "rules/campaign.json", "{\"month\": ", "{\"month\": 1"},
         {"record", "ui/lance_editor.json", "{\"left\": 14, \"top\": 5,", "{\"top\": 5,"},
+        {"frame", "ui/screens.json", "\"top\": [4]", "\"top\": [4, 4]"},
         {"nofile", "rules/combat.json", nullptr, nullptr},
     };
     for (const Broken& one : broken)

@@ -35,12 +35,8 @@ const word16 PackedPixelShiftCounts[0x03] =
 {
 	0x0002, 0x0001, 0x0003
 };
-const word16 TextWindowFrameDefinition[0x0C] =
-{
-	0x0000, 0x0001, 0x0006, 0x0007,
-	0x0004, 0x00FF, 0x0005, 0x00FF,
-	0x0005, 0x00FF, 0x0004, 0x00FF
-};
+/* Filled at start from data/ui/screens.json (revenge/rules.h). */
+word16 TextWindowFrameDefinition[0x0C];
 const word16 *const TextWindowFrameDefinitionTable[0x01] =
 {
 	TextWindowFrameDefinition

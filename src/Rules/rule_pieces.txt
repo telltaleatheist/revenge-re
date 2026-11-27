@@ -79,3 +79,17 @@ mission.sprite_height_pixels            MissionSpriteHeightPixels           3A6A
 lance_editor.unit_sprites               UnitEditorUnitSpriteIndex           3A6A:3119 59
 lance_editor.pilot_portraits            PilotPortraitIndexById              3A6A:3248 21
 lance_editor.layout                     LanceEditorLayout                   3A6A:3470 1D4
+
+# data/ui/screens.json
+screens.text_window_frame               TextWindowFrameDefinition           3A6A:08AA 18
+screens.palette_files                   ScreenPaletteResourceByScreen       3A6A:1704 25
+
+# data/ui/tactical_panel.json
+tactical_panel.formation_marker_x       FormationMarkerOriginX              3A6A:2F96 14
+tactical_panel.formation_marker_y       FormationMarkerOriginY              3A6A:2FAA 14
+tactical_panel.facing_start_x           FacingVectorStartX                  3A6A:2FBE 20
+tactical_panel.facing_start_y           FacingVectorStartY                  3A6A:2FDE 20
+tactical_panel.facing_end_x             FacingVectorEndX                    3A6A:2FFE 20
+tactical_panel.facing_end_y             FacingVectorEndY                    3A6A:301E 20
+tactical_panel.movement_x               MovementVectorX                     3A6A:303E 40
+tactical_panel.movement_y               MovementVectorY                     3A6A:307E 40

@@ -109,6 +109,21 @@
 //     "pilot_portrait_by_pilot"  33, the graphics buffer each pilot's card
 //         shows
 //
+//   screens.json:
+//     "palette_file_by_screen"  37, the resource file (0 to 89) whose palette
+//         each screen loads, by screen number less one
+//     "text_window_frame"  {"corners": {"top_left", "top_right",
+//         "bottom_left", "bottom_right"}, "edges": {"top", "left", "right",
+//         "bottom"}}: the tiles a text window's frame is drawn from, each
+//         edge a run of tiles repeated along it; 12 tiles and ends in all
+//
+//   tactical_panel.json, the unit status glyph, lines as [x0, y0, x1, y1] in
+//   pixels from its origin:
+//     "facing_lines"  8 facings of 2 lines, the facing arrow
+//     "movement_lines"  2 bands (UnitMovementHeatExponent less one) of 8
+//         facings, the line that shows the unit moving
+//     "formation_marker_origins"  10 {"x", "y"}, by formation
+//
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
 // file and the key.

@@ -492,14 +492,14 @@ extern int8 FormationOffsetTable[0xF0];  /* the rules' */
 extern byte FormationSelectionAggressive[0x0C];  /* the rules' */
 extern byte FormationSelectionDefensive[0x0C];  /* the rules' */
 extern byte FormationSelectionBalanced[0x0C];  /* the rules' */
-extern const int16 FormationMarkerOriginX[0x0A];
-extern const int16 FormationMarkerOriginY[0x0A];
-extern const int16 FacingVectorStartX[0x10];
-extern const int16 FacingVectorStartY[0x10];
-extern const int16 FacingVectorEndX[0x10];
-extern const int16 FacingVectorEndY[0x10];
-extern const int16 MovementVectorX[0x20];
-extern const int16 MovementVectorY[0x20];
+extern int16 FormationMarkerOriginX[0x0A];
+extern int16 FormationMarkerOriginY[0x0A];
+extern int16 FacingVectorStartX[0x10];
+extern int16 FacingVectorStartY[0x10];
+extern int16 FacingVectorEndX[0x10];
+extern int16 FacingVectorEndY[0x10];
+extern int16 MovementVectorX[0x20];
+extern int16 MovementVectorY[0x20];
 extern const int16 DirectionDeltaXTable[0x08];
 extern const int16 DirectionDeltaYTable[0x08];
 extern int16 NeighborMapOffsetTable[0x08];
@@ -619,7 +619,7 @@ extern const char TextCursorBlinkGlyph[];
 extern const byte CharacterClassTable[0x100];
 extern const word16 VideoPixelAlignmentMasks[0x08];
 extern const word16 PackedPixelShiftCounts[0x03];
-extern const word16 TextWindowFrameDefinition[0x0C];
+extern word16 TextWindowFrameDefinition[0x0C];
 extern const word16 *const TextWindowFrameDefinitionTable[0x01];
 extern const byte MonthLengthTable[0x0C];
 /* DS:716E: the days before each month of a common year, and the year's. */

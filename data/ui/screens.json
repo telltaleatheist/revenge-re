@@ -1,0 +1,7 @@
+{
+  "palette_file_by_screen": [39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 54, 55, 55, 56, 56, 57, 57, 57, 58, 58, 58, 58, 58, 58, 58, 58, 58, 58, 59, 59, 59],
+  "text_window_frame": {
+    "corners": {"top_left": 0, "top_right": 1, "bottom_left": 6, "bottom_right": 7},
+    "edges": {"top": [4], "left": [5], "right": [5], "bottom": [4]}
+  }
+}
