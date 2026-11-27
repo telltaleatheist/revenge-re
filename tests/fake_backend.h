@@ -25,10 +25,9 @@ typedef struct FakeBackendState
     word16 pitChannel0Divisor;
     byte pitChannel0Mode;
     byte acknowledgedInterrupt;
-    uint16 rawKeypress;
-    word16 inputPending;
-    uint16 queuedRawKeypress;
-    word16 queuedInputPending;
+    byte biosKeyboardFlags[0x03];  /* 0040:0017, 0018, 0096 */
+    word16 keyboardHandlerInstalled;
+    word16 inputPolls;
     MouseInputState mouse;
     byte videoMode;
     byte vgaPalette[0x0300];

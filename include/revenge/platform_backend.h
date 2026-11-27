@@ -72,8 +72,18 @@ void SDLBackend_ClearIndexedFramebuffer(byte color);
 void SDLBackend_DrawIndexedPixel(uint16 x, uint16 y, byte color);
 int SDLBackend_PresentIndexedFramebuffer(void);
 
-word16 SDLBackend_InputPending(void);
-uint16 SDLBackend_ReadRawKeypress(void);
+/* The keyboard and the mouse as their interrupts brought them: the host's
+ * events since the last pass go to KeyboardInterruptHandler (3037:0510) a
+ * byte at a time once InstallKeyboardHandlers has run, and timers are
+ * serviced. PollInput doesn't wait; WaitInput first waits briefly for the
+ * host's next event. The harness's keys arrive here instead (harness.h). */
+void SDLBackend_PollInput(void);
+void SDLBackend_WaitInput(void);
+/* The BIOS's keyboard byte at 0040:offset (17h, 18h, 96h): shift, lock and
+ * prefix flags as SDL has them; zero under the harness. */
+byte SDLBackend_ReadBiosKeyboardFlags(word16 offset);
+/* From InstallKeyboardHandlers until RestoreKeyboardHandlers, key events go
+ * to the game's handler. */
 void SDLBackend_InstallKeyboardHandlers(void);
 void SDLBackend_RestoreKeyboardHandlers(void);
 void SDLBackend_SetMouseVisible(uint16 visible);

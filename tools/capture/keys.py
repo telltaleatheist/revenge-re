@@ -11,9 +11,9 @@ KEYS.BIN: a word, the item count, then 20 bytes an item:
     a step); then three words: for a key, the modifier flags (1 Shift, 2 Ctrl,
     4 Alt) and the scan code; for a mouse, X, Y and the buttons.
 
-Key names are SDL's, mapped to the scan codes the port's keyboard gives them
-(set 1, no E0 prefix: the arrows are the keypad's), so the game's own int 9
-handler translates the same codes the port does. --names writes the @snap
+Key names are SDL's, mapped to the scan codes the port's harness sends its
+scripted keys as (set 1, no E0 prefix: the arrows are the keypad's), so the
+game's own int 9 handler takes the same codes on both sides. --names writes the @snap
 names in capture order (RVS00000.BIN, RVS00001.BIN, ...), one a line.
 """
 import argparse

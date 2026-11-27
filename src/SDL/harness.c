@@ -39,7 +39,8 @@ typedef struct HarnessItem
 	unsigned idle;              /* extra polls before it */
 	unsigned steps;             /* battle steps before it, since the last key or snap */
 	unsigned still;             /* polls without a step before it (a message or menu up) */
-	uint16 key;                 /* ITEM_KEY */
+	int scancode;               /* ITEM_KEY: SDL's scancode */
+	byte modifiers;             /* ITEM_KEY: 1 Shift, 2 Ctrl, 4 Alt */
 	uint16 x, y;                /* ITEM_MOUSE */
 	byte buttons;
 	char name[NAME_CAPACITY];   /* ITEM_SNAP */
@@ -84,36 +85,36 @@ static void WriteFile(const char *name, const char *suffix, const void *bytes, s
 		Stop("can't write", path);
 }
 
-static int ParseKey(const char *token, uint16 *key)
+int Harness_ParseKey(const char *token, int *scancode, byte *modifiers)
 {
-	byte modifiers = 0x00;
-	SDL_Scancode scancode;
+	SDL_Scancode key;
 
+	*modifiers = 0x00;
 	for (;;)
 	{
 		if (SDL_strncasecmp(token, "Shift+", 6) == 0)
 		{
-			modifiers |= 0x01;
+			*modifiers |= 0x01;
 			token += 6;
 		}
 		else if (SDL_strncasecmp(token, "Ctrl+", 5) == 0)
 		{
-			modifiers |= 0x02;
+			*modifiers |= 0x02;
 			token += 5;
 		}
 		else if (SDL_strncasecmp(token, "Alt+", 4) == 0)
 		{
-			modifiers |= 0x04;
+			*modifiers |= 0x04;
 			token += 4;
 		}
 		else
 			break;
 	}
-	scancode = SDL_GetScancodeFromName(token);
-	if (scancode == SDL_SCANCODE_UNKNOWN)
+	key = SDL_GetScancodeFromName(token);
+	if (key == SDL_SCANCODE_UNKNOWN)
 		return 0;
-	*key = Platform_RawKeypressForScancode((int) scancode, modifiers);
-	return (*key & 0x00FF) != 0x0000;
+	*scancode = (int) key;
+	return Platform_ScanCodeForKey((int) key) != 0x0000;
 }
 
 static int ValidName(const char *name)
@@ -214,7 +215,7 @@ static void ReadScript(const char *path)
 		else
 		{
 			item.kind = ITEM_KEY;
-			if (!ParseKey(token, &item.key))
+			if (!Harness_ParseKey(token, &item.scancode, &item.modifiers))
 				Stop("not a key the game reads", token);
 		}
 		item.idle = idle;
@@ -536,20 +537,18 @@ int Harness_KeyPending(void)
 	return 0;
 }
 
-uint16 Harness_ReadKey(void)
+void Harness_ReadKey(int *scancode, byte *modifiers)
 {
-	uint16 key;
-
 	while (itemIndex >= itemCount || items[itemIndex].kind != ITEM_KEY || !ItemDue(&items[itemIndex]))
 	{
 		HostClock_Step();
 		(void) Harness_KeyPending();
 	}
-	key = items[itemIndex].key;
+	*scancode = items[itemIndex].scancode;
+	*modifiers = items[itemIndex].modifiers;
 	++itemIndex;
 	++reads;
 	ItemTaken();
-	return key;
 }
 
 void Harness_PlaceMouse(int16 x, int16 y)

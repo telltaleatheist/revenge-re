@@ -12,7 +12,8 @@
 ; code segment, KeyboardInputPending (3037:01A0) compares the ring's ends, and
 ; ReadRawKeypress (3037:01B5) spins until the ring has an event. A poll is a
 ; call of the first or a pass of the second's spin, as in the port, where
-; both call SDLBackend_InputPending.
+; each pass calls SDLBackend_PollInput or SDLBackend_WaitInput and the
+; harness's keys go through the same handler.
 ;
 ; When the game installs its int 9 handler (int 21h AX=2509h, DX=0510h),
 ; REVSNAP takes DS as segment 3037, checks a sum of the bytes at both entries

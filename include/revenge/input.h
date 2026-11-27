@@ -55,6 +55,7 @@ static inline int16 TranslatedExtendedKey(byte keyCode)
     return (int16)(int8_t)keyCode;
 }
 
+void KeyboardInterruptHandler(byte scanCode);
 word16 KeyboardInputPending(void);
 uint16 ReadRawKeypress(void);
 int8 TranslateKeyCode(void);

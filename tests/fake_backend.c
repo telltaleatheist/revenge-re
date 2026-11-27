@@ -228,15 +228,25 @@ uint32 SDLBackend_GetBIOSTickCount(void)
     return result;
 }
 
-word16 SDLBackend_InputPending(void)
+void SDLBackend_PollInput(void)
 {
-    return fakeBackend.inputPending;
+    ++fakeBackend.inputPolls;
 }
 
-uint16 SDLBackend_ReadRawKeypress(void)
+void SDLBackend_WaitInput(void)
 {
-    fakeBackend.inputPending = FALSE;
-    return fakeBackend.rawKeypress;
+    ++fakeBackend.inputPolls;
+}
+
+byte SDLBackend_ReadBiosKeyboardFlags(word16 offset)
+{
+    switch (offset)
+    {
+    case 0x0017: return fakeBackend.biosKeyboardFlags[0x00];
+    case 0x0018: return fakeBackend.biosKeyboardFlags[0x01];
+    case 0x0096: return fakeBackend.biosKeyboardFlags[0x02];
+    default: return 0x00;
+    }
 }
 
 int SDLBackend_PollQuit(void)
@@ -252,20 +262,16 @@ uint64_t SDLBackend_Milliseconds(void)
 void SDLBackend_Delay(uint32_t milliseconds)
 {
     (void)milliseconds;
-    if (fakeBackend.queuedInputPending != FALSE)
-    {
-        fakeBackend.rawKeypress = fakeBackend.queuedRawKeypress;
-        fakeBackend.inputPending = TRUE;
-        fakeBackend.queuedInputPending = FALSE;
-    }
 }
 
 void SDLBackend_InstallKeyboardHandlers(void)
 {
+    fakeBackend.keyboardHandlerInstalled = TRUE;
 }
 
 void SDLBackend_RestoreKeyboardHandlers(void)
 {
+    fakeBackend.keyboardHandlerInstalled = FALSE;
 }
 
 void ReadMouseInputState(MouseInputState *state)

@@ -6,9 +6,10 @@ play testing. Neither is a claim that the complete campaign is verified.
 ## Automated smoke path
 
 Established on 2026-09-29, the smoke path runs the SDL executable against a
-private original-game installation. `REVENGE_SMOKE_INPUT` supplies delayed raw
-keyboard values at the SDL input boundary; it does not bypass menus or call
-game procedures directly.
+private original-game installation. `REVENGE_SMOKE_INPUT` supplies delayed keys
+(`DELAY_MS:KEY`, comma-separated, each KEY a key name as the trace scripts
+write them) through the game's own keyboard handler; it does not bypass menus
+or call game procedures directly.
 
 | Check | Result |
 | --- | --- |
@@ -21,9 +22,9 @@ game procedures directly.
 | Tactical interaction loop is entered | Pass |
 | Confirmed title/options shutdown returns zero | Pass |
 
-The original raw keys used by this harness include Enter `002B`, Escape
-`006E`, Right `0066`, Down `0062` and Up `0060`. The harness is optional and is
-inactive unless `REVENGE_SMOKE_INPUT` is set.
+The keys used by this harness include `Return`, `Escape`, `Right`, `Down` and
+`Up` (for example `REVENGE_SMOKE_INPUT=1500:Return,300:Down`). The harness is
+optional and is inactive unless `REVENGE_SMOKE_INPUT` is set.
 
 ## Manual acceptance
 

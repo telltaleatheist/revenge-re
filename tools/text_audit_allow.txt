@@ -7,4 +7,7 @@ src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 285FF PC keyboard s
 src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 2863D PC keyboard scan code to shifted ASCII map
 src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 2867B PC keyboard extended key map
 src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 2869E PC keyboard numeric keypad map
-src/SDL/platform.c bytes REVENGE.EXE 28474 PC keyboard scan code translation
+src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 283BC PC keyboard scan codes after E0h
+src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 283CC PC keyboard key ids after E0h
+src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 283DC PC keyboard queued key ids after E0h
+src/Original/Input/REVENGE_3037_KEYBOARD.c bytes REVENGE.EXE 28474 PC keyboard scan code translation

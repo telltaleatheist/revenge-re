@@ -43,7 +43,8 @@ enum
 typedef struct SmokeInputEvent
 {
     uint32_t delayMilliseconds;
-    uint16 rawKeypress;
+    int scancode;
+    byte modifiers;
 } SmokeInputEvent;
 
 static SmokeInputEvent smokeInputEvents[SmokeInputCapacity];
@@ -51,7 +52,14 @@ static uint16 smokeInputEventCount;
 static uint16 smokeInputEventIndex;
 static uint64_t smokeInputDueTime;
 static byte smokeInputInitialized;
+static byte keyboardHandlerInstalled;
+static byte deliveringHostEvents;
+static byte quitRequested;
 
+static void SendScriptedKey(int scancode, byte modifiers);
+
+/* REVENGE_SMOKE_INPUT: DELAY_MS:KEY[,DELAY_MS:KEY...], each KEY a key name
+ * as the harness's scripts write them (Shift+, Ctrl+, Alt+ allowed). */
 static void InitializeSmokeInput(void)
 {
     const char *cursor;
@@ -64,20 +72,26 @@ static void InitializeSmokeInput(void)
         smokeInputEventCount < SmokeInputCapacity)
     {
         char *end;
+        char name[0x40];
+        size_t length;
         unsigned long delay = strtoul(cursor, &end, 0x0A);
-        unsigned long key;
+        SmokeInputEvent *event = &smokeInputEvents[smokeInputEventCount];
 
         if (end == cursor || *end != ':')
             break;
         cursor = end + 0x01;
-        key = strtoul(cursor, &end, 0x10);
-        if (end == cursor)
+        length = strcspn(cursor, ",");
+        if (length == 0x00 || length >= sizeof(name))
             break;
-        smokeInputEvents[smokeInputEventCount].delayMilliseconds =
-            (uint32_t)delay;
-        smokeInputEvents[smokeInputEventCount].rawKeypress = (uint16)key;
+        memcpy(name, cursor, length);
+        name[length] = '\0';
+        if (!Harness_ParseKey(name, &event->scancode, &event->modifiers))
+            break;
+        event->delayMilliseconds = (uint32_t)delay;
         ++smokeInputEventCount;
-        cursor = *end == ',' ? end + 0x01 : end;
+        cursor += length;
+        if (*cursor == ',')
+            ++cursor;
     }
     if (smokeInputEventCount != 0x00)
         smokeInputDueTime = HostClock_NowMS() +
@@ -86,24 +100,26 @@ static void InitializeSmokeInput(void)
         smokeInputEventCount, (unsigned long long) smokeInputDueTime);
 }
 
-static word16 SmokeInputPending(void)
+static void SendDueSmokeInput(void)
 {
-    InitializeSmokeInput();
-    return smokeInputEventIndex < smokeInputEventCount &&
-        HostClock_NowMS() >= smokeInputDueTime;
-}
+    const SmokeInputEvent *event;
 
-static uint16 ReadSmokeInput(void)
-{
-    uint16 result = smokeInputEvents[smokeInputEventIndex].rawKeypress;
-	RevengeTrace("input: smoke event=%u/%u key=%04X\n",
-		smokeInputEventIndex + 0x01, smokeInputEventCount, result);
+    InitializeSmokeInput();
+    if (smokeInputEventIndex >= smokeInputEventCount ||
+        HostClock_NowMS() < smokeInputDueTime)
+        return;
+    event = &smokeInputEvents[smokeInputEventIndex];
+    RevengeTrace("input: smoke event=%u/%u scancode=%d modifiers=%u\n",
+        smokeInputEventIndex + 0x01, smokeInputEventCount,
+        event->scancode, event->modifiers);
+    SendScriptedKey(event->scancode, event->modifiers);
     ++smokeInputEventIndex;
     if (smokeInputEventIndex < smokeInputEventCount)
         smokeInputDueTime = HostClock_NowMS() +
             smokeInputEvents[smokeInputEventIndex].delayMilliseconds;
-    return result;
 }
+
+static void DeliverHostEvents(void);
 
 void SDLBackend_ServiceTimers(void)
 {
@@ -167,6 +183,9 @@ void SDLBackend_ServiceTimers(void)
         nextGameClockTick += gameClockPeriod;
     }
     SDLBackend_AdvanceAudio();
+    /* The keyboard's and the mouse's interrupts, delivered at the same
+     * passes as the timer's. */
+    DeliverHostEvents();
 }
 
 void SDLBackend_HoldTimers(uint64_t nanoseconds)
@@ -226,7 +245,16 @@ static void ResetEgaPalette(void)
         SetEgaColor((byte)color, defaultEgaColors[color]);
 }
 
-static byte GetSet1ScanCode(SDL_Scancode scanCode)
+enum
+{
+    ScanCodeExtended = 0x0100
+};
+
+/* A key's set-1 scan code, as the keyboard controller handed it to IRQ1;
+ * ScanCodeExtended marks the codes that follow E0h (the grey keys, the right
+ * Ctrl and Alt, the keypad's Enter and slash). Zero for a key with none, and
+ * none above 58h (KeyboardInterruptHandler indexes its table by it). */
+static uint16 GetSet1ScanCode(SDL_Scancode scanCode)
 {
     switch (scanCode)
     {
@@ -257,8 +285,10 @@ static byte GetSet1ScanCode(SDL_Scancode scanCode)
     case SDL_SCANCODE_P: return 0x19;
     case SDL_SCANCODE_LEFTBRACKET: return 0x1A;
     case SDL_SCANCODE_RIGHTBRACKET: return 0x1B;
-    case SDL_SCANCODE_RETURN:
-    case SDL_SCANCODE_KP_ENTER: return 0x1C;
+    case SDL_SCANCODE_RETURN: return 0x1C;
+    case SDL_SCANCODE_KP_ENTER: return ScanCodeExtended | 0x1C;
+    case SDL_SCANCODE_LCTRL: return 0x1D;
+    case SDL_SCANCODE_RCTRL: return ScanCodeExtended | 0x1D;
     case SDL_SCANCODE_A: return 0x1E;
     case SDL_SCANCODE_S: return 0x1F;
     case SDL_SCANCODE_D: return 0x20;
@@ -271,6 +301,7 @@ static byte GetSet1ScanCode(SDL_Scancode scanCode)
     case SDL_SCANCODE_SEMICOLON: return 0x27;
     case SDL_SCANCODE_APOSTROPHE: return 0x28;
     case SDL_SCANCODE_GRAVE: return 0x29;
+    case SDL_SCANCODE_LSHIFT: return 0x2A;
     case SDL_SCANCODE_BACKSLASH: return 0x2B;
     case SDL_SCANCODE_Z: return 0x2C;
     case SDL_SCANCODE_X: return 0x2D;
@@ -282,7 +313,13 @@ static byte GetSet1ScanCode(SDL_Scancode scanCode)
     case SDL_SCANCODE_COMMA: return 0x33;
     case SDL_SCANCODE_PERIOD: return 0x34;
     case SDL_SCANCODE_SLASH: return 0x35;
+    case SDL_SCANCODE_KP_DIVIDE: return ScanCodeExtended | 0x35;
+    case SDL_SCANCODE_RSHIFT: return 0x36;
+    case SDL_SCANCODE_KP_MULTIPLY: return 0x37;
+    case SDL_SCANCODE_LALT: return 0x38;
+    case SDL_SCANCODE_RALT: return ScanCodeExtended | 0x38;
     case SDL_SCANCODE_SPACE: return 0x39;
+    case SDL_SCANCODE_CAPSLOCK: return 0x3A;
     case SDL_SCANCODE_F1: return 0x3B;
     case SDL_SCANCODE_F2: return 0x3C;
     case SDL_SCANCODE_F3: return 0x3D;
@@ -293,40 +330,82 @@ static byte GetSet1ScanCode(SDL_Scancode scanCode)
     case SDL_SCANCODE_F8: return 0x42;
     case SDL_SCANCODE_F9: return 0x43;
     case SDL_SCANCODE_F10: return 0x44;
-    case SDL_SCANCODE_HOME: return 0x47;
-    case SDL_SCANCODE_UP: return 0x48;
-    case SDL_SCANCODE_PAGEUP: return 0x49;
-    case SDL_SCANCODE_LEFT: return 0x4B;
-    case SDL_SCANCODE_RIGHT: return 0x4D;
-    case SDL_SCANCODE_END: return 0x4F;
-    case SDL_SCANCODE_DOWN: return 0x50;
-    case SDL_SCANCODE_PAGEDOWN: return 0x51;
-    case SDL_SCANCODE_DELETE: return 0x53;
-    default: return 0x00;
+    case SDL_SCANCODE_NUMLOCKCLEAR: return 0x45;
+    case SDL_SCANCODE_SCROLLLOCK: return 0x46;
+    case SDL_SCANCODE_KP_7: return 0x47;
+    case SDL_SCANCODE_HOME: return ScanCodeExtended | 0x47;
+    case SDL_SCANCODE_KP_8: return 0x48;
+    case SDL_SCANCODE_UP: return ScanCodeExtended | 0x48;
+    case SDL_SCANCODE_KP_9: return 0x49;
+    case SDL_SCANCODE_PAGEUP: return ScanCodeExtended | 0x49;
+    case SDL_SCANCODE_KP_MINUS: return 0x4A;
+    case SDL_SCANCODE_KP_4: return 0x4B;
+    case SDL_SCANCODE_LEFT: return ScanCodeExtended | 0x4B;
+    case SDL_SCANCODE_KP_5: return 0x4C;
+    case SDL_SCANCODE_KP_6: return 0x4D;
+    case SDL_SCANCODE_RIGHT: return ScanCodeExtended | 0x4D;
+    case SDL_SCANCODE_KP_PLUS: return 0x4E;
+    case SDL_SCANCODE_KP_1: return 0x4F;
+    case SDL_SCANCODE_END: return ScanCodeExtended | 0x4F;
+    case SDL_SCANCODE_KP_2: return 0x50;
+    case SDL_SCANCODE_DOWN: return ScanCodeExtended | 0x50;
+    case SDL_SCANCODE_KP_3: return 0x51;
+    case SDL_SCANCODE_PAGEDOWN: return ScanCodeExtended | 0x51;
+    case SDL_SCANCODE_KP_0: return 0x52;
+    case SDL_SCANCODE_INSERT: return ScanCodeExtended | 0x52;
+    case SDL_SCANCODE_KP_PERIOD: return 0x53;
+    case SDL_SCANCODE_DELETE: return ScanCodeExtended | 0x53;
+    case SDL_SCANCODE_F11: return 0x57;
+    case SDL_SCANCODE_F12: return 0x58;
+    default: return 0x0000;
     }
 }
 
-static byte TranslateScanCode(byte scanCode)
+static void SendScanCode(byte scanCode)
 {
-    static const byte scanCodeTranslation[0x59] =
-    {
-        0x7F, 0x6E, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-        0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0F, 0x10,
-        0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-        0x19, 0x1A, 0x1B, 0x1C, 0x2B, 0x3A, 0x1F, 0x20,
-        0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
-        0x29, 0x01, 0x2C, 0x1D, 0x2E, 0x2F, 0x30, 0x31,
-        0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x39, 0x64,
-        0x3C, 0x3D, 0x1E, 0x70, 0x71, 0x72, 0x73, 0x74,
-        0x75, 0x76, 0x77, 0x78, 0x79, 0x5A, 0x7D, 0x5B,
-        0x60, 0x65, 0x69, 0x5C, 0x61, 0x66, 0x6A, 0x5D,
-        0x62, 0x67, 0x63, 0x68, 0x7F, 0x7F, 0x7F, 0x7A,
-        0x7B
-    };
+    if (keyboardHandlerInstalled != FALSE)
+        KeyboardInterruptHandler(scanCode);
+}
 
-    if (scanCode >= sizeof(scanCodeTranslation))
-        return 0x7F;
-    return scanCodeTranslation[scanCode];
+static void SendKeyEvent(SDL_Scancode scancode, int down)
+{
+    uint16 scanCode = GetSet1ScanCode(scancode);
+
+    if (scanCode == 0x0000)
+        return;
+    RevengeTrace("input: key scancode=%03X down=%u\n", scanCode, down ? 1 : 0);
+    if ((scanCode & ScanCodeExtended) != 0x0000)
+        SendScanCode(0xE0);
+    SendScanCode((byte)((scanCode & 0x00FF) | (down ? 0x00 : 0x80)));
+}
+
+uint16 Platform_ScanCodeForKey(int scancode)
+{
+    return GetSet1ScanCode((SDL_Scancode)scancode) & 0x00FF;
+}
+
+/* A scripted key (the harness's, the smoke input's), sent as REVSNAP sends
+ * it to the original (tools/capture/revsnap.asm): Shift, Ctrl, Alt pressed
+ * as asked, the key pressed and released, the modifiers released; the key's
+ * code without E0h, as tools/capture/keys.py has it. */
+static void SendScriptedKey(int scancode, byte modifiers)
+{
+    byte scanCode = (byte)Platform_ScanCodeForKey(scancode);
+
+    if ((modifiers & 0x01) != 0x00)
+        SendScanCode(0x2A);
+    if ((modifiers & 0x02) != 0x00)
+        SendScanCode(0x1D);
+    if ((modifiers & 0x04) != 0x00)
+        SendScanCode(0x38);
+    SendScanCode(scanCode);
+    SendScanCode((byte)(scanCode | 0x80));
+    if ((modifiers & 0x04) != 0x00)
+        SendScanCode(0xB8);
+    if ((modifiers & 0x02) != 0x00)
+        SendScanCode(0x9D);
+    if ((modifiers & 0x01) != 0x00)
+        SendScanCode(0xAA);
 }
 
 /* Makes the renderer and the screen texture with the named SDL driver (NULL
@@ -431,6 +510,11 @@ int SDLBackend_PollQuit(void)
 
     if (Harness_Active())
         return FALSE;
+    if (quitRequested != FALSE)
+    {
+        quitRequested = FALSE;
+        return TRUE;
+    }
     SDL_PumpEvents();
     return SDL_PeepEvents(
         &event,
@@ -528,15 +612,6 @@ void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart)
     (void)SDLBackend_PresentIndexedFramebuffer();
 }
 
-uint16 Platform_RawKeypressForScancode(int scancode, byte modifierFlags)
-{
-    byte scanCode = GetSet1ScanCode((SDL_Scancode)scancode);
-
-    if (scanCode == 0x00)
-        return 0x0000;
-    return ((uint16)modifierFlags << 0x08) | TranslateScanCode(scanCode);
-}
-
 uint16 Platform_PaletteRgb(byte out[0x300])
 {
     uint16 color;
@@ -613,89 +688,118 @@ static void PresentPendingVideoFrame(void)
     nextVideoPresentTick = now + videoPresentPeriod;
 }
 
-word16 SDLBackend_InputPending(void)
+/* Every event SDL has queued: keys to the game's keyboard handler, closing
+ * the window as Escape (as the port has always taken it), the rest dropped.
+ * Nothing under the harness, whose keys come at the game's polls. */
+static void DeliverHostEvents(void)
 {
     SDL_Event event;
 
-    /* DOS tested the keyboard controller without waiting.  Sleeping here
-       turns the preserved queue-drain loops into multi-second stalls when a
-       held key has generated repeat make codes. */
+    if (Harness_Active() || deliveringHostEvents != FALSE)
+        return;
+    deliveringHostEvents = TRUE;
+    while (SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
+        case SDL_EVENT_QUIT:
+            quitRequested = TRUE;
+            SendScanCode(0x01);
+            SendScanCode(0x81);
+            break;
+        case SDL_EVENT_KEY_DOWN:
+            /* SDL's repeats are the keyboard's typematic make codes. */
+            SendKeyEvent(event.key.scancode, TRUE);
+            break;
+        case SDL_EVENT_KEY_UP:
+            SendKeyEvent(event.key.scancode, FALSE);
+            break;
+        default:
+            break;
+        }
+    }
+    deliveringHostEvents = FALSE;
+}
+
+void SDLBackend_PollInput(void)
+{
+    /* DOS tested the keyboard ring without waiting. Sleeping here turns the
+       preserved queue-drain loops into multi-second stalls when a held key
+       has generated repeat make codes. */
     SDLBackend_ServiceTimers();
     PresentPendingVideoFrame();
     if (Harness_Active())
-        return Harness_KeyPending() ? 0x00FF : 0x0000;
-    if (SmokeInputPending() != FALSE)
-        return 0x00FF;
-    SDL_PumpEvents();
-    if (SDL_PeepEvents(
-        &event,
-        0x01,
-        SDL_PEEKEVENT,
-        SDL_EVENT_QUIT,
-        SDL_EVENT_QUIT) > 0x00)
-        return 0x00FF;
-    if (SDL_PeepEvents(
-        &event,
-        0x01,
-        SDL_PEEKEVENT,
-        SDL_EVENT_KEY_DOWN,
-        SDL_EVENT_KEY_DOWN) > 0x00)
-        return 0x00FF;
-    return 0x0000;
+    {
+        if (Harness_KeyPending())
+        {
+            int scancode;
+            byte modifiers;
+
+            Harness_ReadKey(&scancode, &modifiers);
+            SendScriptedKey(scancode, modifiers);
+        }
+        return;
+    }
+    SendDueSmokeInput();
 }
 
-uint16 SDLBackend_ReadRawKeypress(void)
+void SDLBackend_WaitInput(void)
 {
-    SDL_Event event;
-    byte scanCode;
-    byte keyId;
-    byte modifierFlags;
+    if (!Harness_Active())
+        (void)SDL_WaitEventTimeout(NULL, 0x08);
+    SDLBackend_PollInput();
+}
+
+byte SDLBackend_ReadBiosKeyboardFlags(word16 offset)
+{
+    SDL_Keymod modifiers;
+    byte flags = 0x00;
 
     if (Harness_Active())
-        return Harness_ReadKey();
-    for (;;)
+        return 0x00;
+    modifiers = SDL_GetModState();
+    switch (offset)
     {
-        SDLBackend_ServiceTimers();
-        PresentPendingVideoFrame();
-        if (SmokeInputPending() != FALSE)
-            return ReadSmokeInput();
-        if (!SDL_WaitEventTimeout(&event, 0x08))
-            continue;
-        if (event.type == SDL_EVENT_QUIT)
-            return 0x006E;
-		if (event.type == SDL_EVENT_KEY_UP)
-			continue;
-        if (event.type != SDL_EVENT_KEY_DOWN)
-            continue;
-
-		/* SDL repeat key-down events are the host equivalent of the repeated
-		 * make codes generated by the original PC keyboard controller. */
-        scanCode = GetSet1ScanCode(event.key.scancode);
-        if (scanCode == 0x00)
-            continue;
-
-        keyId = TranslateScanCode(scanCode);
-		RevengeTrace("input: key scancode=%02X key=%02X repeat=%u\n",
-			scanCode, keyId, event.key.repeat ? 0x01 : 0x00);
-        modifierFlags = 0x00;
-        if ((event.key.mod & SDL_KMOD_SHIFT) != 0)
-            modifierFlags |= 0x01;
-        if ((event.key.mod & SDL_KMOD_CTRL) != 0)
-            modifierFlags |= 0x02;
-        if ((event.key.mod & SDL_KMOD_ALT) != 0)
-            modifierFlags |= 0x04;
-        return ((uint16)modifierFlags << 0x08) | keyId;
+    case 0x0017:
+        if ((modifiers & SDL_KMOD_RSHIFT) != 0)
+            flags |= 0x01;
+        if ((modifiers & SDL_KMOD_LSHIFT) != 0)
+            flags |= 0x02;
+        if ((modifiers & SDL_KMOD_CTRL) != 0)
+            flags |= 0x04;
+        if ((modifiers & SDL_KMOD_ALT) != 0)
+            flags |= 0x08;
+        if ((modifiers & SDL_KMOD_NUM) != 0)
+            flags |= 0x20;
+        if ((modifiers & SDL_KMOD_CAPS) != 0)
+            flags |= 0x40;
+        break;
+    case 0x0018:
+        if ((modifiers & SDL_KMOD_LCTRL) != 0)
+            flags |= 0x01;
+        if ((modifiers & SDL_KMOD_LALT) != 0)
+            flags |= 0x02;
+        break;
+    case 0x0096:
+        if ((modifiers & SDL_KMOD_RCTRL) != 0)
+            flags |= 0x04;
+        if ((modifiers & SDL_KMOD_RALT) != 0)
+            flags |= 0x08;
+        break;
+    default:
+        break;
     }
+    return flags;
 }
 
 void SDLBackend_InstallKeyboardHandlers(void)
 {
-    SDL_FlushEvents(SDL_EVENT_KEY_DOWN, SDL_EVENT_KEY_UP);
+    keyboardHandlerInstalled = TRUE;
 }
 
 void SDLBackend_RestoreKeyboardHandlers(void)
 {
-    SDL_FlushEvents(SDL_EVENT_KEY_DOWN, SDL_EVENT_KEY_UP);
+    keyboardHandlerInstalled = FALSE;
 }
 
 void ReadMouseInputState(MouseInputState *state)

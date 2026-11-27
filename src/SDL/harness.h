@@ -17,7 +17,8 @@
  *   REVENGE_HARNESS_STEP_US microseconds, 1000 unless set). Nothing sleeps.
  *   The date and time the game asks DOS for are 1991-01-01 12:00:00 plus the
  *   clock.
- * - keys come from the script, each fed at the game's own keyboard polls: a
+ * - keys come from the script, each fed through the game's own keyboard
+ *   handler at the game's own keyboard polls: a
  *   key is pending on the 4th poll since the last item was taken (more after
  *   idle:N, not before steps:N battle steps since then, and not before
  *   still:N polls without a step), so the run depends on what the game does,
@@ -50,16 +51,22 @@ int HostClock_CalendarTime(struct tm *out, uint32_t *hundredths);
 
 /* One keyboard poll: 1 when the script's next key is due now. */
 int Harness_KeyPending(void);
-/* The due key, as SDLBackend_ReadRawKeypress returns keys; polls until one is
- * due. */
-uint16 Harness_ReadKey(void);
+/* The due key: SDL's scancode and the modifiers (1 Shift, 2 Ctrl, 4 Alt) the
+ * script gives it; polls until one is due. The platform sends it to the
+ * game's keyboard handler as REVSNAP does (src/SDL/platform.c). */
+void Harness_ReadKey(int *scancode, byte *modifiers);
+/* A script's key name (Shift+, Ctrl+, Alt+ allowed): 1 when it names a key
+ * the keyboard has. */
+int Harness_ParseKey(const char *token, int *scancode, byte *modifiers);
 void Harness_Mouse(uint16 *x, uint16 *y, byte *buttons);
 /* The game placing the mouse (int 33h AX=4): it stays there until the script
  * or the game moves it, as a mouse nobody touches does. */
 void Harness_PlaceMouse(int16 x, int16 y);
 
 /* From the platform layer (platform.c), for the harness. */
-uint16 Platform_RawKeypressForScancode(int scancode, byte modifierFlags);
+/* The set-1 scan code the keyboard gives SDL's scancode, without E0h (as
+ * tools/capture/keys.py has it); zero for a key with none. */
+uint16 Platform_ScanCodeForKey(int scancode);
 /* The colours the screen can show (16 in the 16-colour mode, else 256) as RGB
  * into out; returns how many. */
 uint16 Platform_PaletteRgb(byte out[0x300]);
