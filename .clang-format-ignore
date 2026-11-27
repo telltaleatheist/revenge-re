@@ -1,0 +1,10 @@
+# Not formatted: the libraries kept as their authors wrote them, and the
+# files tools write (their --check compares them byte for byte).
+extern/**
+include/revenge/story_text.h
+src/Rules/rule_table.cpp
+src/SDL/map_dump.cpp
+src/Setup/GameFilesTable.cpp
+src/Support/original_import_editions.cpp
+src/Support/original_import_table_*.cpp
+src/Support/story_text_slots.cpp

@@ -1,0 +1,43 @@
+# The rebuild's layout: 4 spaces, Allman braces, no column limit (a line is
+# wrapped where its author wrapped it). Formatted with clang-format 21;
+# tools/check_format.py checks the tree. docs/CODE_STYLE.md says why.
+Language: Cpp
+Standard: c++20
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+BreakBeforeBraces: Allman
+ColumnLimit: 0
+IndentCaseLabels: false
+IndentPPDirectives: None
+NamespaceIndentation: None
+FixNamespaceComments: false
+PointerAlignment: Right
+SpaceAfterCStyleCast: true
+Cpp11BracedListStyle: false
+AlignAfterOpenBracket: DontAlign
+AlignOperands: DontAlign
+AlignTrailingComments:
+  Kind: Leave
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: None
+AlignConsecutiveMacros: Consecutive
+AlignEscapedNewlines: DontAlign
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AllowShortLoopsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: All
+AllowShortBlocksOnASingleLine: Always
+AllowShortEnumsOnASingleLine: true
+BinPackArguments: true
+BinPackParameters: true
+BreakBeforeBinaryOperators: None
+BreakStringLiterals: false
+ReflowComments: false
+SortIncludes: Never
+IncludeBlocks: Preserve
+MaxEmptyLinesToKeep: 2
+KeepEmptyLinesAtTheStartOfBlocks: true
+InsertNewlineAtEOF: true
+SpacesBeforeTrailingComments: 2

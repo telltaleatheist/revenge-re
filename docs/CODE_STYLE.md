@@ -59,3 +59,20 @@ C++ as an extension and warn. `revenge/types.h` defines
 silence exactly that warning, and only `revenge/unit.h`,
 `revenge/original/campaign_data.h` and `revenge/original/scene_data.h` use
 them, around those unions.
+
+## Layout
+
+`.clang-format` sets it: 4 spaces, never tabs; braces on their own lines;
+`*` with the name (`const char *name`); a space after a cast
+(`(word16) value`). There is no column limit: a long line is wrapped where
+its author wrapped it, with the operator at the end of the line, and the
+formatter keeps that wrap. Keep lines near 80 columns, and a table's rows as
+they are laid out.
+
+The layout is clang-format 21's: other major versions lay some lines out
+differently. Xcode's clang-format 21 and LLVM's (`pip install
+clang-format==21.*`) agree. `tools/check_format.py` checks the tree with it,
+and `--fix` formats it; run it with each change. Files in
+`.clang-format-ignore` are not formatted: the libraries in `extern/`, kept
+as their authors wrote them, and the files tools write, which their `--check`
+compares byte for byte.
