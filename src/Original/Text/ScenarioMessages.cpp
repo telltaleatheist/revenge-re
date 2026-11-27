@@ -8,11 +8,11 @@
 #include "revenge/original_data.h"
 #include "revenge/original/campaign_data.h"
 
-void OpenModalTextWindow(word16 windowIndex, word16 clearAndFrame);
+void OpenModalTextWindow(uint16_t windowIndex, uint16_t clearAndFrame);
 void RestoreModalTextWindow(void);
 
 /* 0D73:2E7C-2F15 */
-void ShowScenarioMessage(word16 messageIndex)
+void ShowScenarioMessage(uint16_t messageIndex)
 {
     const CampaignMessageEntry *message;
 
@@ -30,7 +30,7 @@ void ShowScenarioMessage(word16 messageIndex)
         messageIndex, message->windowHeight,
         (void *) CampaignMessageTextTable[messageIndex]);
     TextWindowContexts[0x0F].heightTiles =
-        (word16) (int16) message->windowHeight;
+        (uint16_t) (int16_t) message->windowHeight;
     TextWindowContexts[0x0F].topTile = 0x0001;
     OpenModalTextWindow(0x000F, TRUE);
     HideMouseCursorOverlay();
@@ -51,7 +51,7 @@ void ShowScenarioMessage(word16 messageIndex)
 }
 
 /* 0D73:3AE4-3B7D */
-void ShowMissionFollowupMessage(word16 messageIndex)
+void ShowMissionFollowupMessage(uint16_t messageIndex)
 {
     const CampaignMessageEntry *message;
 
@@ -65,7 +65,7 @@ void ShowMissionFollowupMessage(word16 messageIndex)
 
     message = &CampaignMessageTable[messageIndex];
     TextWindowContexts[0x0F].heightTiles =
-        (word16) (int16) message->windowHeight;
+        (uint16_t) (int16_t) message->windowHeight;
     TextWindowContexts[0x0F].topTile = 0x0006;
     OpenModalTextWindow(0x000F, TRUE);
     HideMouseCursorOverlay();

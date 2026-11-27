@@ -8,7 +8,7 @@
 
 void HideMouseCursorOverlay(void);
 void ShowMouseCursorOverlay(void);
-int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount);
+int16_t PollUiRegionSelection(int16_t firstRegionIndex, uint16_t regionCount);
 
 // 358E:000C: int16 RunSingleUiRegionSelection(int16 regionIndex)
 // Called from:
@@ -18,10 +18,10 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount);
 //      RenameSaveSlot
 //      PromptYesNo
 //      RunOptionsMenuSelection
-int16 RunSingleUiRegionSelection(int16 regionIndex)
+int16_t RunSingleUiRegionSelection(int16_t regionIndex)
 {
-    word16 savedCursorHideDepth;
-    int16 selectedRegion;
+    uint16_t savedCursorHideDepth;
+    int16_t selectedRegion;
 
     savedCursorHideDepth = MouseCursorHideDepth;
     if (savedCursorHideDepth == 0x00)

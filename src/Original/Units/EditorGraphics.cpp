@@ -5,10 +5,10 @@
 #include "LanceEditorInternal.h"
 
 // 2507:60D2: draw the first four unit stat headers (UnitStatHeaderTextTable 0-3), 7 pixels apart.
-void DrawRangeAndSpeedStatHeaders(word16 topY)
+void DrawRangeAndSpeedStatHeaders(uint16_t topY)
 {
-    word16 yOffset = 0x00;
-    word16 labelIndex;
+    uint16_t yOffset = 0x00;
+    uint16_t labelIndex;
     for (labelIndex = 0x00; labelIndex < 0x04; ++labelIndex)
     {
         DrawTextString(UnitStatHeaderTextTable[labelIndex],
@@ -18,10 +18,10 @@ void DrawRangeAndSpeedStatHeaders(word16 topY)
 }
 
 // 2507:6111: draw the last two unit stat headers (UnitStatHeaderTextTable 4-5), 9 pixels apart.
-void DrawExperienceAndGunneryHeaders(word16 topY)
+void DrawExperienceAndGunneryHeaders(uint16_t topY)
 {
-    word16 yOffset = 0x00;
-    word16 labelIndex;
+    uint16_t yOffset = 0x00;
+    uint16_t labelIndex;
     for (labelIndex = 0x00; labelIndex < 0x02; ++labelIndex)
     {
         DrawTextString(UnitStatHeaderTextTable[labelIndex + 0x04],
@@ -35,9 +35,9 @@ void DrawExperienceAndGunneryHeaders(word16 topY)
 // VERIFIED against ASM 2507:6150-6198.
 void LoadLanceConfigurationGraphicsBuffers(void)
 {
-    word16 tableIndex;
-    word16 bufferIndex;
-    byte *backingBuffer;
+    uint16_t tableIndex;
+    uint16_t bufferIndex;
+    uint8_t *backingBuffer;
 
     bufferIndex = 0x0013;
     for (tableIndex = 0x0000; tableIndex < 0x0004; ++tableIndex)
@@ -57,9 +57,9 @@ void LoadLanceConfigurationGraphicsBuffers(void)
 // VERIFIED against ASM 2507:6199-61E1.
 void LoadScenarioVariantGraphicsBuffers(void)
 {
-    word16 tableIndex;
-    word16 bufferIndex;
-    byte *backingBuffer;
+    uint16_t tableIndex;
+    uint16_t bufferIndex;
+    uint8_t *backingBuffer;
 
     bufferIndex = 0x0011;
     for (tableIndex = 0x0000; tableIndex < 0x0002; ++tableIndex)
@@ -77,12 +77,12 @@ void LoadScenarioVariantGraphicsBuffers(void)
 // 2507:61E2: build an inclusive indexed range of display backing buffers.
 // VERIFIED against ASM 2507:61E2-623C.
 void LoadGraphicsBufferRange(
-    int16 firstBufferIndex,
-    int16 lastBufferIndex)
+    int16_t firstBufferIndex,
+    int16_t lastBufferIndex)
 {
-    int16 rangeOffset;
-    int16 bufferIndex;
-    byte *backingBuffer;
+    int16_t rangeOffset;
+    int16_t bufferIndex;
+    uint8_t *backingBuffer;
 
     bufferIndex = firstBufferIndex;
     rangeOffset = 0x0000;
@@ -93,29 +93,29 @@ void LoadGraphicsBufferRange(
             LanceEditorLayout.EditorBackingSourcePixelY[rangeOffset],
             LanceEditorLayout.EditorBackingWidthTiles[rangeOffset],
             LanceEditorLayout.EditorBackingHeightPixels[rangeOffset]);
-        UnitEditorGraphicsBuffer((word16) bufferIndex) = backingBuffer;
+        UnitEditorGraphicsBuffer((uint16_t) bufferIndex) = backingBuffer;
         ++bufferIndex;
         ++rangeOffset;
-    } while (rangeOffset <= (int16) (lastBufferIndex - firstBufferIndex));
+    } while (rangeOffset <= (int16_t) (lastBufferIndex - firstBufferIndex));
 }
 
 // 2507:623D: free an inclusive range of indexed graphics backing buffers.
 // Called from:
 //      PrepareMissionDateScreen
 // VERIFIED against ASM 2507:623D-625F and the segment-end epilogue.
-void FreeGraphicsBufferRange(int16 firstBufferIndex, int16 lastBufferIndex)
+void FreeGraphicsBufferRange(int16_t firstBufferIndex, int16_t lastBufferIndex)
 {
-    int16 bufferIndex;
+    int16_t bufferIndex;
     for (bufferIndex = firstBufferIndex; bufferIndex <= lastBufferIndex; ++bufferIndex)
     {
         Heap_Free(UnitEditorGraphicsBuffer(bufferIndex));
     }
 }
 
-const byte *LanceEditorCardSprite(const UnitSelectionCard *card)
+const uint8_t *LanceEditorCardSprite(const UnitSelectionCard *card)
 {
-    const byte *sprite = card->spriteBuffer;
-    word16 bufferIndex;
+    const uint8_t *sprite = card->spriteBuffer;
+    uint16_t bufferIndex;
 
     for (bufferIndex = 0x0000;
         bufferIndex < sizeof(SharedGraphicsBackingBuffers) / sizeof(SharedGraphicsBackingBuffers[0]);

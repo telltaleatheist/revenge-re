@@ -40,14 +40,14 @@ OriginalExitHandler RuntimeTerminationHook = RuntimeTerminationStub;
 // 0800:010D: void DOS_TerminateProcess(word16 exitCode)
 // Called from:
 //      RunExitHandlersAndTerminate
-void DOS_TerminateProcess(word16 exitCode)
+void DOS_TerminateProcess(uint16_t exitCode)
 {
     /* 0800:0112 called InstallExceptionHandlers (0800:0172) first, which
 	 * put back the divide, overflow, bounds and invalid-opcode vectors (00h,
 	 * 04h, 05h, 06h) saved at start-up: Replaced, there is no vector table. */
     RuntimeTerminationHook();
     // ANNOTATION: DOS INT 21h/AH=4Ch process termination.
-    SDLBackend_TerminateProcess((byte) exitCode);
+    SDLBackend_TerminateProcess((uint8_t) exitCode);
 }
 
 // 0800:0C34: copy a 32-bit byte count between normalized far buffers.
@@ -56,10 +56,10 @@ void DOS_TerminateProcess(word16 exitCode)
 void CopyUncompressedFarBlock(
     const void *source,
     void *destination,
-    uint32 byteCount)
+    uint32_t byteCount)
 {
-    const byte *sourceByte = (const byte *) source;
-    byte *destinationByte = (byte *) destination;
+    const uint8_t *sourceByte = (const uint8_t *) source;
+    uint8_t *destinationByte = (uint8_t *) destination;
 
     /* 0800:0C34-0C86 uses the low word with REP MOVSW/MOVSB, then
 	 * normalizes both far pointers before every high-word 10000h-byte block. */
@@ -75,11 +75,11 @@ void CopyUncompressedFarBlock(
 // 0800:0C9A: decode signed literal/repeat runs until the header's 32-bit
 // output count is exhausted.
 void DecodeRLEBlock(
-    const byte *compressedBlock,
-    byte *destination)
+    const uint8_t *compressedBlock,
+    uint8_t *destination)
 {
-    uint32 remainingOutputBytes;
-    word16 sourceOffset;
+    uint32_t remainingOutputBytes;
+    uint16_t sourceOffset;
 
     memcpy(&remainingOutputBytes, compressedBlock + 0x02,
         sizeof(remainingOutputBytes));
@@ -87,12 +87,12 @@ void DecodeRLEBlock(
     compressedBlock += sourceOffset + 0x08;
     while (remainingOutputBytes != 0x00000000UL)
     {
-        byte command = *compressedBlock++;
-        word16 runLength;
+        uint8_t command = *compressedBlock++;
+        uint16_t runLength;
 
         if (command == 0x00)
         {
-            runLength = ((word16) compressedBlock[0x00] << 0x08) |
+            runLength = ((uint16_t) compressedBlock[0x00] << 0x08) |
                 compressedBlock[0x01];
             compressedBlock += 0x02;
             memset(destination, *compressedBlock++, runLength);
@@ -105,7 +105,7 @@ void DecodeRLEBlock(
         }
         else
         {
-            runLength = (word16) (byte) -command;
+            runLength = (uint16_t) (uint8_t) -command;
             memset(destination, *compressedBlock++, runLength);
         }
         destination += runLength;
@@ -119,34 +119,34 @@ void DecodeRLEBlock(
  * 0 and a code's offset is counted from there, in 16 bits. */
 typedef struct WestwoodLzwDecoderState
 {
-    word16 OutputByteCount;
-    word16 Reserved;
-    const byte *CompressedStream;
-    byte CodePhase;
+    uint16_t OutputByteCount;
+    uint16_t Reserved;
+    const uint8_t *CompressedStream;
+    uint8_t CodePhase;
 } WestwoodLzwDecoderState;
 
 static WestwoodLzwDecoderState WestwoodLzwDecoder;
 
-uint16 ReadWestwoodLzw12Code(
-    byte nibbleShift,
-    word16 sourceOffset,
-    word16 *nextSourceOffset);
-uint16 ReadWestwoodLzw14Code(
-    word16 sourceOffset,
-    word16 *nextSourceOffset);
+uint16_t ReadWestwoodLzw12Code(
+    uint8_t nibbleShift,
+    uint16_t sourceOffset,
+    uint16_t *nextSourceOffset);
+uint16_t ReadWestwoodLzw14Code(
+    uint16_t sourceOffset,
+    uint16_t *nextSourceOffset);
 
 
-uint32 PrepareRLEOutputRun(
-    uint32 remainingOutputBytes,
-    word16 runLength,
-    word16 destinationOffset,
-    word16 destinationSegment,
-    word16 *normalizedOffsetOut,
-    word16 *normalizedSegmentOut)
+uint32_t PrepareRLEOutputRun(
+    uint32_t remainingOutputBytes,
+    uint16_t runLength,
+    uint16_t destinationOffset,
+    uint16_t destinationSegment,
+    uint16_t *normalizedOffsetOut,
+    uint16_t *normalizedSegmentOut)
 {
-    uint32 nextRemainingOutputBytes;
+    uint32_t nextRemainingOutputBytes;
 
-    nextRemainingOutputBytes = remainingOutputBytes - (uint32) runLength;
+    nextRemainingOutputBytes = remainingOutputBytes - (uint32_t) runLength;
     *normalizedOffsetOut = destinationOffset & 0x000F;
     *normalizedSegmentOut = destinationSegment + (destinationOffset >> 0x04);
     return nextRemainingOutputBytes;
@@ -154,18 +154,18 @@ uint32 PrepareRLEOutputRun(
 
 // 0800:0D1A: expand the original 12-bit Westwood dictionary stream.
 void DecodeWestwoodLzw12(
-    const byte *compressed,
-    byte *destination,
-    byte *dictionary)
+    const uint8_t *compressed,
+    uint8_t *destination,
+    uint8_t *dictionary)
 {
-    word16 sourceOffset;
-    word16 outputOffset;
-    word16 nextCode;
-    word16 previousCode;
-    byte previousFirst;
+    uint16_t sourceOffset;
+    uint16_t outputOffset;
+    uint16_t nextCode;
+    uint16_t previousCode;
+    uint8_t previousFirst;
 
     memcpy(&WestwoodLzwDecoder.OutputByteCount,
-        compressed + 0x02, sizeof(word16));
+        compressed + 0x02, sizeof(uint16_t));
     memcpy(&sourceOffset, compressed + 0x06, sizeof(sourceOffset));
     WestwoodLzwDecoder.CompressedStream = compressed;
     WestwoodLzwDecoder.CodePhase = 0x00;
@@ -174,16 +174,16 @@ void DecodeWestwoodLzw12(
     nextCode = 0x0100;
     previousCode = ReadWestwoodLzw12Code(
         0x04, sourceOffset, &sourceOffset);
-    previousFirst = (byte) previousCode;
+    previousFirst = (uint8_t) previousCode;
     destination[outputOffset++] = previousFirst;
     while (outputOffset < WestwoodLzwDecoder.OutputByteCount)
     {
-        word16 code = ReadWestwoodLzw12Code(
+        uint16_t code = ReadWestwoodLzw12Code(
             0x04, sourceOffset, &sourceOffset);
-        word16 expandedCode = code;
-        word16 sequenceStart = outputOffset;
-        word16 left;
-        word16 right;
+        uint16_t expandedCode = code;
+        uint16_t sequenceStart = outputOffset;
+        uint16_t left;
+        uint16_t right;
 
         if (code >= nextCode)
         {
@@ -192,26 +192,26 @@ void DecodeWestwoodLzw12(
         }
         while (expandedCode >= 0x0100)
         {
-            word16 dictionaryOffset = (expandedCode - 0x0100) << 0x02;
+            uint16_t dictionaryOffset = (expandedCode - 0x0100) << 0x02;
 
             destination[outputOffset++] = dictionary[dictionaryOffset + 0x02];
             memcpy(&expandedCode, dictionary + dictionaryOffset,
                 sizeof(expandedCode));
         }
-        previousFirst = (byte) expandedCode;
+        previousFirst = (uint8_t) expandedCode;
         destination[outputOffset++] = previousFirst;
         left = sequenceStart;
         right = outputOffset - 0x01;
         while (left < right)
         {
-            byte swap = destination[left];
+            uint8_t swap = destination[left];
 
             destination[left++] = destination[right];
             destination[right--] = swap;
         }
         if (nextCode < 0x1000)
         {
-            word16 dictionaryOffset = (nextCode - 0x0100) << 0x02;
+            uint16_t dictionaryOffset = (nextCode - 0x0100) << 0x02;
 
             memcpy(dictionary + dictionaryOffset, &previousCode,
                 sizeof(previousCode));
@@ -222,43 +222,43 @@ void DecodeWestwoodLzw12(
     }
 }
 
-uint16 ReadWestwoodLzw12Code(
-    byte nibbleShift,
-    word16 sourceOffset,
-    word16 *nextSourceOffset)
+uint16_t ReadWestwoodLzw12Code(
+    uint8_t nibbleShift,
+    uint16_t sourceOffset,
+    uint16_t *nextSourceOffset)
 {
-    const byte *compressedData;
-    word16 packedCode;
+    const uint8_t *compressedData;
+    uint16_t packedCode;
 
     compressedData = WestwoodLzwDecoder.CompressedStream + sourceOffset;
     ++WestwoodLzwDecoder.CodePhase;
     if ((WestwoodLzwDecoder.CodePhase & 0x01) != 0x00)
     {
-        packedCode = ((word16) compressedData[0x00] << 0x08) |
+        packedCode = ((uint16_t) compressedData[0x00] << 0x08) |
             compressedData[0x01];
         *nextSourceOffset = sourceOffset + 0x01;
         return packedCode >> nibbleShift;
     }
 
     *nextSourceOffset = sourceOffset + 0x02;
-    return ((word16) (compressedData[0x00] & 0x0F) << 0x08) |
+    return ((uint16_t) (compressedData[0x00] & 0x0F) << 0x08) |
         compressedData[0x01];
 }
 
 // 0800:0E16: expand the original 14-bit Westwood dictionary stream.
 void DecodeWestwoodLzw14(
-    const byte *compressed,
-    byte *destination,
-    byte *dictionary)
+    const uint8_t *compressed,
+    uint8_t *destination,
+    uint8_t *dictionary)
 {
-    word16 sourceOffset;
-    word16 outputOffset;
-    word16 nextCode;
-    word16 previousCode;
-    byte previousFirst;
+    uint16_t sourceOffset;
+    uint16_t outputOffset;
+    uint16_t nextCode;
+    uint16_t previousCode;
+    uint8_t previousFirst;
 
     memcpy(&WestwoodLzwDecoder.OutputByteCount,
-        compressed + 0x02, sizeof(word16));
+        compressed + 0x02, sizeof(uint16_t));
     memcpy(&sourceOffset, compressed + 0x06, sizeof(sourceOffset));
     WestwoodLzwDecoder.CompressedStream = compressed;
     WestwoodLzwDecoder.CodePhase = 0x00;
@@ -266,16 +266,16 @@ void DecodeWestwoodLzw14(
     outputOffset = 0x0000;
     nextCode = 0x0100;
     previousCode = ReadWestwoodLzw14Code(sourceOffset, &sourceOffset);
-    previousFirst = (byte) previousCode;
+    previousFirst = (uint8_t) previousCode;
     destination[outputOffset++] = previousFirst;
     while (outputOffset < WestwoodLzwDecoder.OutputByteCount)
     {
-        word16 code = ReadWestwoodLzw14Code(
+        uint16_t code = ReadWestwoodLzw14Code(
             sourceOffset, &sourceOffset);
-        word16 expandedCode = code;
-        word16 sequenceStart = outputOffset;
-        word16 left;
-        word16 right;
+        uint16_t expandedCode = code;
+        uint16_t sequenceStart = outputOffset;
+        uint16_t left;
+        uint16_t right;
 
         if (code >= nextCode)
         {
@@ -284,27 +284,27 @@ void DecodeWestwoodLzw14(
         }
         while (expandedCode >= 0x0100)
         {
-            word16 dictionaryIndex = expandedCode - 0x0100;
+            uint16_t dictionaryIndex = expandedCode - 0x0100;
 
             destination[outputOffset++] = dictionary[0x7E00 + dictionaryIndex];
             memcpy(&expandedCode,
                 dictionary + (dictionaryIndex << 0x01),
                 sizeof(expandedCode));
         }
-        previousFirst = (byte) expandedCode;
+        previousFirst = (uint8_t) expandedCode;
         destination[outputOffset++] = previousFirst;
         left = sequenceStart;
         right = outputOffset - 0x01;
         while (left < right)
         {
-            byte swap = destination[left];
+            uint8_t swap = destination[left];
 
             destination[left++] = destination[right];
             destination[right--] = swap;
         }
         if (nextCode < 0x4000)
         {
-            word16 dictionaryIndex = nextCode - 0x0100;
+            uint16_t dictionaryIndex = nextCode - 0x0100;
 
             memcpy(dictionary + (dictionaryIndex << 0x01),
                 &previousCode, sizeof(previousCode));
@@ -315,12 +315,12 @@ void DecodeWestwoodLzw14(
     }
 }
 
-uint16 ReadWestwoodLzw14Code(
-    word16 sourceOffset,
-    word16 *nextSourceOffset)
+uint16_t ReadWestwoodLzw14Code(
+    uint16_t sourceOffset,
+    uint16_t *nextSourceOffset)
 {
-    const byte *compressedData;
-    byte phase;
+    const uint8_t *compressedData;
+    uint8_t phase;
 
     compressedData = WestwoodLzwDecoder.CompressedStream + sourceOffset;
     phase = (WestwoodLzwDecoder.CodePhase + 0x01) & 0x03;
@@ -329,21 +329,21 @@ uint16 ReadWestwoodLzw14Code(
     {
     case 0x01:
         *nextSourceOffset = sourceOffset + 0x01;
-        return ((word16) compressedData[0x00] << 0x06) |
+        return ((uint16_t) compressedData[0x00] << 0x06) |
             (compressedData[0x01] >> 0x02);
     case 0x02:
         *nextSourceOffset = sourceOffset + 0x02;
-        return ((word16) (compressedData[0x00] & 0x03) << 0x0C) |
-            ((word16) compressedData[0x01] << 0x04) |
+        return ((uint16_t) (compressedData[0x00] & 0x03) << 0x0C) |
+            ((uint16_t) compressedData[0x01] << 0x04) |
             (compressedData[0x02] >> 0x04);
     case 0x03:
         *nextSourceOffset = sourceOffset + 0x02;
-        return ((word16) (compressedData[0x00] & 0x0F) << 0x0A) |
-            ((word16) compressedData[0x01] << 0x02) |
+        return ((uint16_t) (compressedData[0x00] & 0x0F) << 0x0A) |
+            ((uint16_t) compressedData[0x01] << 0x02) |
             (compressedData[0x02] >> 0x06);
     default:
         *nextSourceOffset = sourceOffset + 0x02;
-        return ((word16) (compressedData[0x00] & 0x3F) << 0x08) |
+        return ((uint16_t) (compressedData[0x00] & 0x3F) << 0x08) |
             compressedData[0x01];
     }
 }

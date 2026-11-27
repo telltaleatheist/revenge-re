@@ -9,7 +9,7 @@
 // 3596:0004: void SetActiveRenderTarget(byte *renderTarget)
 // Called from:
 //      DrawUnitStatusScreen
-void SetActiveRenderTarget(byte *renderTarget)
+void SetActiveRenderTarget(uint8_t *renderTarget)
 {
     ActiveRenderTarget = renderTarget;
     /* The EGA's routing of the primary buffer to its A200 page

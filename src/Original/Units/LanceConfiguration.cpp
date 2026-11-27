@@ -13,8 +13,8 @@
 // 2507:1848: prepare and run the combined unit/pilot lance editor.
 // VERIFIED against ASM 2507:1848-18AF.
 void RunLanceConfiguration(
-    word16 selectionFamily,
-    word16 scenarioVariantIndex)
+    uint16_t selectionFamily,
+    uint16_t scenarioVariantIndex)
 {
     if (ReplayScenarioRequested != FALSE)
         return;
@@ -42,30 +42,30 @@ void RunLanceConfiguration(
 
 // 2507:18B0: run the four-section lance configuration menu.
 // VERIFIED against ASM 2507:18B0-1EBD.
-int16 RunLanceConfigurationEditor(
-    word16 selectionFamily,
-    word16 scenarioVariantIndex)
+int16_t RunLanceConfigurationEditor(
+    uint16_t selectionFamily,
+    uint16_t scenarioVariantIndex)
 {
-    word16 repeatEditor;
-    word16 selectedSection;
-    word16 previousSection;
-    word16 selectionActivated;
-    word16 highlightPhase;
-    word16 sectionIndex;
-    word16 mouseButtonState;
-    word16 mouseButtonEvent;
-    int16 mouseX;
-    int16 mouseY;
-    int16 leftX;
-    int16 topY;
-    int16 width;
-    int16 heightMinusOne;
-    int16 inputCode;
-    word16 configurationIndex;
+    uint16_t repeatEditor;
+    uint16_t selectedSection;
+    uint16_t previousSection;
+    uint16_t selectionActivated;
+    uint16_t highlightPhase;
+    uint16_t sectionIndex;
+    uint16_t mouseButtonState;
+    uint16_t mouseButtonEvent;
+    int16_t mouseX;
+    int16_t mouseY;
+    int16_t leftX;
+    int16_t topY;
+    int16_t width;
+    int16_t heightMinusOne;
+    int16_t inputCode;
+    uint16_t configurationIndex;
     const char *sectionLabel;
-    byte *primaryFramebuffer;
-    byte *displayBuffer;
-    byte *sectionSprite;
+    uint8_t *primaryFramebuffer;
+    uint8_t *displayBuffer;
+    uint8_t *sectionSprite;
 
     repeatEditor = TRUE;
     configurationIndex = selectionFamily + scenarioVariantIndex;
@@ -98,8 +98,8 @@ int16 RunLanceConfigurationEditor(
     DrawClippedSprite(
         primaryFramebuffer,
         sectionSprite,
-        (int16) (LanceEditorLayout.UnitEditorSectionLeft[selectedSection] << 0x03),
-        (int16) LanceEditorLayout.UnitEditorSectionTop[selectedSection],
+        (int16_t) (LanceEditorLayout.UnitEditorSectionLeft[selectedSection] << 0x03),
+        (int16_t) LanceEditorLayout.UnitEditorSectionTop[selectedSection],
         0x0000);
     sectionLabel = UnitEditorSectionLabelTextTable[selectedSection];
     DrawTextString(
@@ -172,15 +172,15 @@ int16 RunLanceConfigurationEditor(
                 }
             }
 
-            if ((int16) selectedSection < 0x0000)
+            if ((int16_t) selectedSection < 0x0000)
                 selectedSection = 0x0003;
-            if ((int16) selectedSection > 0x0003)
+            if ((int16_t) selectedSection > 0x0003)
                 selectedSection = 0x0000;
         }
         else if (MouseInputDisabled == 0x0000)
         {
-            mouseX = (int16) MouseCursorRequestedX;
-            mouseY = (int16) MouseY;
+            mouseX = (int16_t) MouseCursorRequestedX;
+            mouseY = (int16_t) MouseY;
             mouseButtonState = MouseButtonState;
             mouseButtonEvent = PendingMouseButtonEvent;
             PendingMouseButtonEvent = 0x0000;
@@ -210,10 +210,10 @@ int16 RunLanceConfigurationEditor(
                 for (sectionIndex = 0x0000; sectionIndex < 0x0004;
                     ++sectionIndex)
                 {
-                    leftX = (int16) (LanceEditorLayout.UnitEditorSectionLeft[sectionIndex] << 0x03);
-                    topY = (int16) LanceEditorLayout.UnitEditorSectionTop[sectionIndex];
-                    width = (int16) (LanceEditorLayout.UnitEditorSectionWidth[sectionIndex] << 0x03);
-                    heightMinusOne = (int16) (LanceEditorLayout.UnitEditorSectionHeight[sectionIndex] - 0x0001);
+                    leftX = (int16_t) (LanceEditorLayout.UnitEditorSectionLeft[sectionIndex] << 0x03);
+                    topY = (int16_t) LanceEditorLayout.UnitEditorSectionTop[sectionIndex];
+                    width = (int16_t) (LanceEditorLayout.UnitEditorSectionWidth[sectionIndex] << 0x03);
+                    heightMinusOne = (int16_t) (LanceEditorLayout.UnitEditorSectionHeight[sectionIndex] - 0x0001);
                     if (mouseX >= leftX && mouseX < leftX + width &&
                         mouseY >= topY && mouseY < topY + heightMinusOne)
                     {
@@ -246,10 +246,10 @@ int16 RunLanceConfigurationEditor(
         {
             HideMouseCursorOverlay();
             CopyClippedVideoRegion(
-                (int16) LanceEditorLayout.UnitEditorSectionLeft[previousSection],
-                (int16) LanceEditorLayout.UnitEditorSectionTop[previousSection],
-                (int16) LanceEditorLayout.UnitEditorSectionLeft[previousSection],
-                (int16) LanceEditorLayout.UnitEditorSectionTop[previousSection],
+                (int16_t) LanceEditorLayout.UnitEditorSectionLeft[previousSection],
+                (int16_t) LanceEditorLayout.UnitEditorSectionTop[previousSection],
+                (int16_t) LanceEditorLayout.UnitEditorSectionLeft[previousSection],
+                (int16_t) LanceEditorLayout.UnitEditorSectionTop[previousSection],
                 LanceEditorLayout.UnitEditorSectionWidth[previousSection],
                 LanceEditorLayout.UnitEditorSectionHeight[previousSection],
                 displayBuffer,
@@ -258,16 +258,16 @@ int16 RunLanceConfigurationEditor(
             DrawClippedSprite(
                 primaryFramebuffer,
                 sectionSprite,
-                (int16) (LanceEditorLayout.UnitEditorSectionLeft[selectedSection] << 0x03),
-                (int16) LanceEditorLayout.UnitEditorSectionTop[selectedSection],
+                (int16_t) (LanceEditorLayout.UnitEditorSectionLeft[selectedSection] << 0x03),
+                (int16_t) LanceEditorLayout.UnitEditorSectionTop[selectedSection],
                 0x0000);
 
             sectionIndex = previousSection + 0x0004;
             CopyClippedVideoRegion(
-                (int16) LanceEditorLayout.UnitEditorSectionLeft[sectionIndex],
-                (int16) LanceEditorLayout.UnitEditorSectionTop[sectionIndex],
-                (int16) LanceEditorLayout.UnitEditorSectionLeft[sectionIndex],
-                (int16) LanceEditorLayout.UnitEditorSectionTop[sectionIndex],
+                (int16_t) LanceEditorLayout.UnitEditorSectionLeft[sectionIndex],
+                (int16_t) LanceEditorLayout.UnitEditorSectionTop[sectionIndex],
+                (int16_t) LanceEditorLayout.UnitEditorSectionLeft[sectionIndex],
+                (int16_t) LanceEditorLayout.UnitEditorSectionTop[sectionIndex],
                 LanceEditorLayout.UnitEditorSectionWidth[sectionIndex],
                 LanceEditorLayout.UnitEditorSectionHeight[sectionIndex],
                 displayBuffer,
@@ -289,10 +289,10 @@ int16 RunLanceConfigurationEditor(
             HideMouseCursorOverlay();
             sectionIndex = previousSection + 0x0004;
             CopyClippedVideoRegion(
-                (int16) LanceEditorLayout.UnitEditorSectionLeft[sectionIndex],
-                (int16) LanceEditorLayout.UnitEditorSectionTop[sectionIndex],
-                (int16) LanceEditorLayout.UnitEditorSectionLeft[sectionIndex],
-                (int16) LanceEditorLayout.UnitEditorSectionTop[sectionIndex],
+                (int16_t) LanceEditorLayout.UnitEditorSectionLeft[sectionIndex],
+                (int16_t) LanceEditorLayout.UnitEditorSectionTop[sectionIndex],
+                (int16_t) LanceEditorLayout.UnitEditorSectionLeft[sectionIndex],
+                (int16_t) LanceEditorLayout.UnitEditorSectionTop[sectionIndex],
                 LanceEditorLayout.UnitEditorSectionWidth[sectionIndex],
                 LanceEditorLayout.UnitEditorSectionHeight[sectionIndex],
                 displayBuffer,
@@ -310,17 +310,17 @@ int16 RunLanceConfigurationEditor(
             DrawClippedSprite(
                 primaryFramebuffer,
                 sectionSprite,
-                (int16) (LanceEditorLayout.UnitEditorSectionLeft[selectedSection] << 0x03),
-                (int16) LanceEditorLayout.UnitEditorSectionTop[selectedSection],
+                (int16_t) (LanceEditorLayout.UnitEditorSectionLeft[selectedSection] << 0x03),
+                (int16_t) LanceEditorLayout.UnitEditorSectionTop[selectedSection],
                 0x0000);
         }
         else
         {
             CopyClippedVideoRegion(
-                (int16) LanceEditorLayout.UnitEditorSectionLeft[selectedSection],
-                (int16) LanceEditorLayout.UnitEditorSectionTop[selectedSection],
-                (int16) LanceEditorLayout.UnitEditorSectionLeft[selectedSection],
-                (int16) LanceEditorLayout.UnitEditorSectionTop[selectedSection],
+                (int16_t) LanceEditorLayout.UnitEditorSectionLeft[selectedSection],
+                (int16_t) LanceEditorLayout.UnitEditorSectionTop[selectedSection],
+                (int16_t) LanceEditorLayout.UnitEditorSectionLeft[selectedSection],
+                (int16_t) LanceEditorLayout.UnitEditorSectionTop[selectedSection],
                 LanceEditorLayout.UnitEditorSectionWidth[selectedSection],
                 LanceEditorLayout.UnitEditorSectionHeight[selectedSection],
                 displayBuffer,
@@ -374,14 +374,14 @@ int16 RunLanceConfigurationEditor(
         repeatEditor = FALSE;
     }
 
-    return (int16) repeatEditor;
+    return (int16_t) repeatEditor;
 }
 
 // 2507:1EBE: show the unavailable-selection message and wait for dismissal.
 // Verified against 2507:1EBE-1F04.
 void ShowNoSelectionOptions(void)
 {
-    word16 savedTextOutputMode;
+    uint16_t savedTextOutputMode;
 
     savedTextOutputMode = TextOutputMode;
     TextOutputMode = 0x0001;
@@ -397,7 +397,7 @@ void ShowNoSelectionOptions(void)
 
 // 2507:1F03: show the briefing associated with a lance configuration.
 // VERIFIED against ASM 2507:1F03-2004, including the seven-entry jump table.
-void ShowLanceConfigurationBriefing(word16 configurationIndex)
+void ShowLanceConfigurationBriefing(uint16_t configurationIndex)
 {
     switch (configurationIndex)
     {
@@ -448,27 +448,27 @@ void ShowLanceConfigurationBriefing(word16 configurationIndex)
 
 // 2507:2005: present one of two scenario-route choices and return its index.
 // VERIFIED against ASM 2507:2005-26ED.
-int16 SelectScenarioVariant(word16 presentationMode)
+int16_t SelectScenarioVariant(uint16_t presentationMode)
 {
-    word16 selectedVariant;
-    word16 previousVariant;
-    word16 selectionComplete;
-    word16 highlightPhase;
-    word16 variantIndex;
-    word16 variantTextBaseIndex;
-    int16 leftX;
-    int16 topY;
-    int16 width;
-    int16 height;
-    int16 mouseX;
-    int16 mouseY;
-    word16 mouseButtonState;
-    word16 mouseButtonEvent;
-    int16 inputCode;
+    uint16_t selectedVariant;
+    uint16_t previousVariant;
+    uint16_t selectionComplete;
+    uint16_t highlightPhase;
+    uint16_t variantIndex;
+    uint16_t variantTextBaseIndex;
+    int16_t leftX;
+    int16_t topY;
+    int16_t width;
+    int16_t height;
+    int16_t mouseX;
+    int16_t mouseY;
+    uint16_t mouseButtonState;
+    uint16_t mouseButtonEvent;
+    int16_t inputCode;
     const char *label;
-    byte *primaryFramebuffer;
-    byte *displayBuffer;
-    byte *selectionSprite;
+    uint8_t *primaryFramebuffer;
+    uint8_t *displayBuffer;
+    uint8_t *selectionSprite;
 
     SceneTransitionAbortFlag = FALSE;
     primaryFramebuffer = VideoFramebuffer;
@@ -500,17 +500,17 @@ int16 SelectScenarioVariant(word16 presentationMode)
     if (presentationMode == 0x0000)
     {
         DrawClippedRectangleOutline(
-            (int16) LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant],
-            (int16) topY,
-            (int16) (LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant] + width),
-            (int16) (topY + height),
+            (int16_t) LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant],
+            (int16_t) topY,
+            (int16_t) (LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant] + width),
+            (int16_t) (topY + height),
             LanceEditorLayout.ScenarioVariantNormalColor);
         selectedVariant ^= 0x0001;
         DrawClippedRectangleOutline(
-            (int16) LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant],
-            (int16) topY,
-            (int16) (LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant] + width),
-            (int16) (topY + height),
+            (int16_t) LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant],
+            (int16_t) topY,
+            (int16_t) (LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant] + width),
+            (int16_t) (topY + height),
             LanceEditorLayout.ScenarioVariantNormalColor);
     }
     else
@@ -519,10 +519,10 @@ int16 SelectScenarioVariant(word16 presentationMode)
             ++selectedVariant)
         {
             CopyClippedVideoRegion(
-                (int16) LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant],
-                (int16) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
-                (int16) LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant],
-                (int16) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
+                (int16_t) LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant],
+                (int16_t) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
+                (int16_t) LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant],
+                (int16_t) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
                 LanceEditorLayout.ScenarioVariantRegionWidth[selectedVariant],
                 LanceEditorLayout.ScenarioVariantRegionHeight[selectedVariant],
                 primaryFramebuffer,
@@ -533,8 +533,8 @@ int16 SelectScenarioVariant(word16 presentationMode)
         DrawClippedSprite(
             primaryFramebuffer,
             selectionSprite,
-            (int16) (LanceEditorLayout.ScenarioVariantRegionLeft[0x00] << 0x03),
-            (int16) LanceEditorLayout.ScenarioVariantRegionTop[0x00],
+            (int16_t) (LanceEditorLayout.ScenarioVariantRegionLeft[0x00] << 0x03),
+            (int16_t) LanceEditorLayout.ScenarioVariantRegionTop[0x00],
             0x0000);
     }
 
@@ -562,7 +562,7 @@ int16 SelectScenarioVariant(word16 presentationMode)
                 0x0000,
                 LanceEditorLayout.ScenarioVariantTextLeft[variantIndex >> 0x01] + 0x0001,
                 (variantIndex & 0x0001) == 0x0000 ? 0x00B0 : 0x00B8,
-                (word16) ((word16) strlen(label) *
+                (uint16_t) ((uint16_t) strlen(label) *
                     ActiveFontGlyphAdvanceX),
                 0x0F,
                 0x00);
@@ -592,8 +592,8 @@ int16 SelectScenarioVariant(word16 presentationMode)
         }
         else if (MouseInputDisabled == 0x0000)
         {
-            mouseX = (int16) MouseCursorRequestedX;
-            mouseY = (int16) MouseY;
+            mouseX = (int16_t) MouseCursorRequestedX;
+            mouseY = (int16_t) MouseY;
             mouseButtonState = MouseButtonState;
             mouseButtonEvent = PendingMouseButtonEvent;
             PendingMouseButtonEvent = 0x0000;
@@ -630,27 +630,27 @@ int16 SelectScenarioVariant(word16 presentationMode)
             if (presentationMode == 0x0000)
             {
                 DrawClippedRectangleOutline(
-                    (int16) LanceEditorLayout.ScenarioVariantTextLeft[previousVariant],
-                    (int16) topY,
-                    (int16) (LanceEditorLayout.ScenarioVariantTextLeft[previousVariant] + width),
-                    (int16) (topY + height),
+                    (int16_t) LanceEditorLayout.ScenarioVariantTextLeft[previousVariant],
+                    (int16_t) topY,
+                    (int16_t) (LanceEditorLayout.ScenarioVariantTextLeft[previousVariant] + width),
+                    (int16_t) (topY + height),
                     LanceEditorLayout.ScenarioVariantNormalColor);
                 DrawUnitRosterScreen(previousVariant, 0x000C);
                 DrawClippedRectangleOutline(
-                    (int16) LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant],
-                    (int16) topY,
-                    (int16) (LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant] + width),
-                    (int16) (topY + height),
+                    (int16_t) LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant],
+                    (int16_t) topY,
+                    (int16_t) (LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant] + width),
+                    (int16_t) (topY + height),
                     LanceEditorLayout.ScenarioVariantSelectedColor);
                 DrawUnitRosterScreen(selectedVariant, 0x000F);
             }
             else
             {
                 CopyClippedVideoRegion(
-                    (int16) LanceEditorLayout.ScenarioVariantRegionLeft[previousVariant],
-                    (int16) LanceEditorLayout.ScenarioVariantRegionTop[previousVariant],
-                    (int16) LanceEditorLayout.ScenarioVariantRegionLeft[previousVariant],
-                    (int16) LanceEditorLayout.ScenarioVariantRegionTop[previousVariant],
+                    (int16_t) LanceEditorLayout.ScenarioVariantRegionLeft[previousVariant],
+                    (int16_t) LanceEditorLayout.ScenarioVariantRegionTop[previousVariant],
+                    (int16_t) LanceEditorLayout.ScenarioVariantRegionLeft[previousVariant],
+                    (int16_t) LanceEditorLayout.ScenarioVariantRegionTop[previousVariant],
                     LanceEditorLayout.ScenarioVariantRegionWidth[previousVariant],
                     LanceEditorLayout.ScenarioVariantRegionHeight[previousVariant],
                     displayBuffer,
@@ -666,8 +666,8 @@ int16 SelectScenarioVariant(word16 presentationMode)
                 DrawClippedSprite(
                     primaryFramebuffer,
                     selectionSprite,
-                    (int16) (LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant] << 0x03),
-                    (int16) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
+                    (int16_t) (LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant] << 0x03),
+                    (int16_t) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
                     0x0000);
                 label = ScenarioVariantDescriptionTextTable[variantTextBaseIndex + selectedVariant];
                 DrawCenteredClippedText(
@@ -689,10 +689,10 @@ int16 SelectScenarioVariant(word16 presentationMode)
         if (presentationMode == 0x0000)
         {
             DrawClippedRectangleOutline(
-                (int16) LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant],
-                (int16) topY,
-                (int16) (LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant] + width),
-                (int16) (topY + height),
+                (int16_t) LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant],
+                (int16_t) topY,
+                (int16_t) (LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant] + width),
+                (int16_t) (topY + height),
                 highlightPhase == 0x0000 ? LanceEditorLayout.ScenarioVariantNormalColor : LanceEditorLayout.ScenarioVariantSelectedColor);
         }
         else if (highlightPhase != 0x0000)
@@ -702,24 +702,24 @@ int16 SelectScenarioVariant(word16 presentationMode)
             DrawClippedSprite(
                 primaryFramebuffer,
                 selectionSprite,
-                (int16) (LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant] << 0x03),
-                (int16) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
+                (int16_t) (LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant] << 0x03),
+                (int16_t) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
                 0x0000);
             label = ScenarioVariantDescriptionTextTable[variantTextBaseIndex + selectedVariant];
             DrawCenteredClippedText(
                 label, 0x0000,
                 LanceEditorLayout.ScenarioVariantTextLeft[selectedVariant],
                 0x00A9, 0x00A0,
-                (byte) LanceEditorLayout.ScenarioVariantLabelColor[variantTextBaseIndex + selectedVariant],
-                (byte) 0x00);
+                (uint8_t) LanceEditorLayout.ScenarioVariantLabelColor[variantTextBaseIndex + selectedVariant],
+                (uint8_t) 0x00);
         }
         else
         {
             CopyClippedVideoRegion(
-                (int16) LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant],
-                (int16) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
-                (int16) LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant],
-                (int16) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
+                (int16_t) LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant],
+                (int16_t) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
+                (int16_t) LanceEditorLayout.ScenarioVariantRegionLeft[selectedVariant],
+                (int16_t) LanceEditorLayout.ScenarioVariantRegionTop[selectedVariant],
                 LanceEditorLayout.ScenarioVariantRegionWidth[selectedVariant],
                 LanceEditorLayout.ScenarioVariantRegionHeight[selectedVariant],
                 displayBuffer,
@@ -737,21 +737,21 @@ int16 SelectScenarioVariant(word16 presentationMode)
 
     if (presentationMode != 0x0000)
         FreeGraphicsBufferRange(0x0011, 0x0012);
-    return (int16) selectedVariant;
+    return (int16_t) selectedVariant;
 }
 
 // 2507:26EE: draw five pilot/unit roster labels in the normal or alternate
 // assignment layout. VERIFIED against ASM 2507:26EE-2BD8.
-void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
+void DrawUnitRosterScreen(uint16_t useAlternateAssignmentLayout, uint16_t textColor)
 {
     char rosterLine[0x2A];
-    byte assignedUnitTypeIds[0x03];
-    byte assignedPilotIds[0x03];
-    byte fixedPilotIds[0x02];
-    byte fixedUnitTypeIds[0x02];
-    word16 assignmentIndex;
-    word16 leftX;
-    word16 rightX;
+    uint8_t assignedUnitTypeIds[0x03];
+    uint8_t assignedPilotIds[0x03];
+    uint8_t fixedPilotIds[0x02];
+    uint8_t fixedUnitTypeIds[0x02];
+    uint16_t assignmentIndex;
+    uint16_t leftX;
+    uint16_t rightX;
     const char *pilotName;
     const char *unitName;
     const char *separator;
@@ -759,7 +759,7 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
     for (assignmentIndex = 0x0000; assignmentIndex < 0x0003;
         ++assignmentIndex)
     {
-        word16 liveUnitSlot =
+        uint16_t liveUnitSlot =
             LanceAssignments[assignmentIndex].liveUnitSlot;
         assignedPilotIds[assignmentIndex] =
             LanceAssignments[assignmentIndex].pilotId;
@@ -784,7 +784,7 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
         DrawCenteredClippedText(rosterLine, 0x00,
             leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
             UNIT_ROSTER_FIRST_ROW_Y, UNIT_ROSTER_TEXT_WIDTH_PIXELS,
-            (byte) textColor, 0x00);
+            (uint8_t) textColor, 0x00);
 
         pilotName = PilotSurnameTextTable[assignedPilotIds[0x01]];
         unitName = UnitNameTable[assignedUnitTypeIds[0x01]];
@@ -794,7 +794,7 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
         DrawCenteredClippedText(rosterLine, 0x00,
             leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
             UNIT_ROSTER_FIRST_ROW_Y + 0x08,
-            UNIT_ROSTER_TEXT_WIDTH_PIXELS, (byte) textColor, 0x00);
+            UNIT_ROSTER_TEXT_WIDTH_PIXELS, (uint8_t) textColor, 0x00);
 
         pilotName = PilotSurnameTextTable[assignedPilotIds[0x02]];
         unitName = UnitNameTable[assignedUnitTypeIds[0x02]];
@@ -804,7 +804,7 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
         DrawCenteredClippedText(rosterLine, 0x00,
             leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
             UNIT_ROSTER_FIRST_ROW_Y + 0x10,
-            UNIT_ROSTER_TEXT_WIDTH_PIXELS, (byte) textColor, 0x00);
+            UNIT_ROSTER_TEXT_WIDTH_PIXELS, (uint8_t) textColor, 0x00);
 
         pilotName = PilotSurnameTextTable[fixedPilotIds[0x00]];
         unitName = UnitNameTable[fixedUnitTypeIds[0x00]];
@@ -814,7 +814,7 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
         DrawCenteredClippedText(rosterLine, 0x00,
             rightX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
             UNIT_ROSTER_FIRST_ROW_Y, UNIT_ROSTER_TEXT_WIDTH_PIXELS,
-            (byte) textColor, 0x00);
+            (uint8_t) textColor, 0x00);
 
         pilotName = PilotSurnameTextTable[fixedPilotIds[0x01]];
         unitName = UnitNameTable[fixedUnitTypeIds[0x01]];
@@ -824,7 +824,7 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
         DrawCenteredClippedText(rosterLine, 0x00,
             rightX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
             UNIT_ROSTER_FIRST_ROW_Y + 0x08,
-            UNIT_ROSTER_TEXT_WIDTH_PIXELS, (byte) textColor, 0x00);
+            UNIT_ROSTER_TEXT_WIDTH_PIXELS, (uint8_t) textColor, 0x00);
         return;
     }
 
@@ -836,7 +836,7 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
     DrawCenteredClippedText(rosterLine, 0x00,
         leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
         UNIT_ROSTER_FIRST_ROW_Y, UNIT_ROSTER_TEXT_WIDTH_PIXELS,
-        (byte) textColor, 0x00);
+        (uint8_t) textColor, 0x00);
 
     pilotName = PilotSurnameTextTable[assignedPilotIds[0x02]];
     unitName = UnitNameTable[assignedUnitTypeIds[0x02]];
@@ -846,7 +846,7 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
     DrawCenteredClippedText(rosterLine, 0x00,
         leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
         UNIT_ROSTER_FIRST_ROW_Y + 0x08,
-        UNIT_ROSTER_TEXT_WIDTH_PIXELS, (byte) textColor, 0x00);
+        UNIT_ROSTER_TEXT_WIDTH_PIXELS, (uint8_t) textColor, 0x00);
 
     pilotName = PilotSurnameTextTable[fixedPilotIds[0x00]];
     unitName = UnitNameTable[assignedUnitTypeIds[0x00]];
@@ -856,7 +856,7 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
     DrawCenteredClippedText(rosterLine, 0x00,
         leftX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
         UNIT_ROSTER_FIRST_ROW_Y + 0x10,
-        UNIT_ROSTER_TEXT_WIDTH_PIXELS, (byte) textColor, 0x00);
+        UNIT_ROSTER_TEXT_WIDTH_PIXELS, (uint8_t) textColor, 0x00);
 
     pilotName = PilotSurnameTextTable[assignedPilotIds[0x00]];
     unitName = UnitNameTable[fixedUnitTypeIds[0x00]];
@@ -866,7 +866,7 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
     DrawCenteredClippedText(rosterLine, 0x00,
         rightX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
         UNIT_ROSTER_FIRST_ROW_Y, UNIT_ROSTER_TEXT_WIDTH_PIXELS,
-        (byte) textColor, 0x00);
+        (uint8_t) textColor, 0x00);
 
     pilotName = PilotSurnameTextTable[fixedPilotIds[0x01]];
     unitName = UnitNameTable[fixedUnitTypeIds[0x01]];
@@ -876,23 +876,23 @@ void DrawUnitRosterScreen(word16 useAlternateAssignmentLayout, word16 textColor)
     DrawCenteredClippedText(rosterLine, 0x00,
         rightX + UNIT_ROSTER_COLUMN_X_ADJUSTMENT,
         UNIT_ROSTER_FIRST_ROW_Y + 0x08,
-        UNIT_ROSTER_TEXT_WIDTH_PIXELS, (byte) textColor, 0x00);
+        UNIT_ROSTER_TEXT_WIDTH_PIXELS, (uint8_t) textColor, 0x00);
 }
 
 // 2507:2BD9: prepare unit-selection records and their sprite buffers.
 // VERIFIED against ASM 2507:2BD9-2E49.
 void PrepareLanceSelectionRecords(
-    word16 firstRosterIndex,
-    int16 selectionMode,
-    word16 loadPresentationResources)
+    uint16_t firstRosterIndex,
+    int16_t selectionMode,
+    uint16_t loadPresentationResources)
 {
-    word16 lanceGroup;
-    word16 scenarioSlot;
-    word16 unitType;
-    word16 persistentUnitSlot;
-    word16 unitTypeId;
-    word16 graphicsBufferIndex;
-    word16 poolIndex;
+    uint16_t lanceGroup;
+    uint16_t scenarioSlot;
+    uint16_t unitType;
+    uint16_t persistentUnitSlot;
+    uint16_t unitTypeId;
+    uint16_t graphicsBufferIndex;
+    uint16_t poolIndex;
     UnitSelectionCard *scenarioRecord;
 
     if (loadPresentationResources != FALSE)
@@ -909,7 +909,7 @@ void PrepareLanceSelectionRecords(
         LoadGraphicsBufferRange(0x0009, 0x0010);
     }
 
-    if ((int16) firstRosterIndex < 0x0003)
+    if ((int16_t) firstRosterIndex < 0x0003)
     {
         UnitEditorScenarioCardCount = 0x0006;
         if (firstRosterIndex == 0x0000)
@@ -961,24 +961,24 @@ void PrepareLanceSelectionRecords(
     }
 
     for (lanceGroup = 0x0000;
-        (int16) lanceGroup < (int16) UnitEditorScenarioGroupCount;
+        (int16_t) lanceGroup < (int16_t) UnitEditorScenarioGroupCount;
         ++lanceGroup)
     {
         for (scenarioSlot = 0x0000; scenarioSlot < 0x0006; ++scenarioSlot)
         {
             scenarioRecord = &UnitSelectionCards[lanceGroup * 0x0006 + scenarioSlot];
-            if ((int16) scenarioSlot < (int16) UnitEditorScenarioCardCount)
+            if ((int16_t) scenarioSlot < (int16_t) UnitEditorScenarioCardCount)
             {
                 if (selectionMode != 0x0000)
                 {
-                    if ((int16) firstRosterIndex < 0x0003)
+                    if ((int16_t) firstRosterIndex < 0x0003)
                     {
                         unitType = PredefinedUnitTypeTable[(firstRosterIndex + lanceGroup) * 0x0006 +
                             scenarioSlot];
                     }
                     else
                     {
-                        unitType = (word16) PopRandomUnitType();
+                        unitType = (uint16_t) PopRandomUnitType();
                     }
 
                     if (selectionMode == 0x0001)
@@ -991,7 +991,7 @@ void PrepareLanceSelectionRecords(
                             REVENGE_ASSIGNMENT_SLOT_NONE;
                     }
 
-                    LoadUnitTemplateRecord((int16) unitType);
+                    LoadUnitTemplateRecord((int16_t) unitType);
                     persistentUnitSlot = scenarioRecord->persistentUnitSlot;
                     PersistentUnitRoster[REVENGE_INDEX(PersistentUnitRoster,
                         persistentUnitSlot)] = EstimatedUnitRecord;
@@ -1025,18 +1025,18 @@ void PrepareLanceSelectionRecords(
 // 2507:2E4A: initialize the active lance-assignment records.
 // VERIFIED against ASM 2507:2E4A-2FCC.
 void InitializeLanceAssignments(
-    word16 firstRosterIndex,
-    int16 selectionMode)
+    uint16_t firstRosterIndex,
+    int16_t selectionMode)
 {
-    word16 lanceGroup;
-    word16 lanceSlot;
-    word16 assignmentIndex;
+    uint16_t lanceGroup;
+    uint16_t lanceSlot;
+    uint16_t assignmentIndex;
     RevengePilotId pilotId;
     RevengeUnitSlot liveUnitSlot;
     RevengeUnitLanceAssignment *assignment;
 
     for (lanceGroup = 0x0000;
-        (int16) lanceGroup < (int16) UnitEditorLanceGroupCount;
+        (int16_t) lanceGroup < (int16_t) UnitEditorLanceGroupCount;
         ++lanceGroup)
     {
         for (lanceSlot = 0x0000; lanceSlot < 0x0004; ++lanceSlot)
@@ -1044,8 +1044,8 @@ void InitializeLanceAssignments(
             assignmentIndex = lanceGroup * 0x0004 + lanceSlot;
             assignment = &LanceAssignments[assignmentIndex];
 
-            if ((int16) UnitEditorLanceSlotCount[lanceGroup] >
-                (int16) lanceSlot)
+            if ((int16_t) UnitEditorLanceSlotCount[lanceGroup] >
+                (int16_t) lanceSlot)
             {
                 if (selectionMode == 0x0001 && firstRosterIndex < 0x0003)
                 {
@@ -1116,8 +1116,8 @@ void InitializeLanceAssignments(
 // 2507:2FCD: prepare, display, and edit one lance-selection configuration.
 // VERIFIED against ASM 2507:2FCD-300E.
 void PrepareLanceSelection(
-    word16 firstRosterIndex,
-    int16 selectionMode)
+    uint16_t firstRosterIndex,
+    int16_t selectionMode)
 {
     if (ReplayScenarioRequested != FALSE)
         return;
@@ -1135,15 +1135,15 @@ void PrepareLanceSelection(
 // 2507:300F: validate the currently assigned live-unit slots for one
 // lance-selection family.
 // VERIFIED against ASM 2507:300F-30FB.
-word16 ValidateLanceConfiguration(word16 selectionFamily)
+uint16_t ValidateLanceConfiguration(uint16_t selectionFamily)
 {
-    word16 configurationValid;
-    word16 lanceGroup;
-    word16 remainingScenarioUnits;
-    word16 firstScenarioRecord;
-    word16 scenarioSlot;
-    word16 firstAssignmentRecord;
-    word16 assignmentSlot;
+    uint16_t configurationValid;
+    uint16_t lanceGroup;
+    uint16_t remainingScenarioUnits;
+    uint16_t firstScenarioRecord;
+    uint16_t scenarioSlot;
+    uint16_t firstAssignmentRecord;
+    uint16_t assignmentSlot;
 
     configurationValid = TRUE;
     if (UnitEditorScenarioCardCount != 0x0000)
@@ -1160,8 +1160,8 @@ word16 ValidateLanceConfiguration(word16 selectionFamily)
                     firstScenarioRecord = lanceGroup * 0x0006;
 
                 for (scenarioSlot = 0x0000;
-                    (int16) scenarioSlot <
-                    (int16) UnitEditorScenarioCardCount;
+                    (int16_t) scenarioSlot <
+                    (int16_t) UnitEditorScenarioCardCount;
                     ++scenarioSlot)
                 {
                     if ((UnitSelectionCards[firstScenarioRecord + scenarioSlot].state &
@@ -1183,8 +1183,8 @@ word16 ValidateLanceConfiguration(word16 selectionFamily)
                             configurationValid = FALSE;
                         }
                         ++assignmentSlot;
-                    } while ((int16) assignmentSlot < (int16)
-                                                          UnitEditorLanceSlotCount[lanceGroup] &&
+                    } while ((int16_t) assignmentSlot < (int16_t)
+                                                            UnitEditorLanceSlotCount[lanceGroup] &&
                         configurationValid != FALSE);
                 }
             }
@@ -1193,6 +1193,6 @@ word16 ValidateLanceConfiguration(word16 selectionFamily)
     }
 
     UnitEditorSectionEnabled[selectionFamily * LANCE_EDITOR_SECTION_COUNT + 0x03] =
-        (byte) configurationValid;
+        (uint8_t) configurationValid;
     return configurationValid;
 }

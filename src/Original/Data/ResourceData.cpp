@@ -34,7 +34,7 @@ char ResourceFileNames[ORIGINAL_RESOURCE_DESCRIPTOR_COUNT][0x10] = {
     "WARN1.BIN", ""
 };
 
-const uint32 ResourceFileLengths[ORIGINAL_RESOURCE_DESCRIPTOR_COUNT] = {
+const uint32_t ResourceFileLengths[ORIGINAL_RESOURCE_DESCRIPTOR_COUNT] = {
     0x00007D00UL, 0x000048F3UL, 0x00006658UL, 0x00007D00UL,
     0x000048D0UL, 0x00007D00UL, 0x00001037UL, 0x0000566EUL,
     0x00004B0EUL, 0x0000479CUL, 0x00007D00UL, 0x00007D00UL,
@@ -66,7 +66,7 @@ CachedFileDescriptor CachedFileDescriptors[ORIGINAL_RESOURCE_DESCRIPTOR_COUNT];
  * before the game starts. */
 void OriginalData_InitializeResourceDescriptorPointers(void)
 {
-    word16 resourceIndex;
+    uint16_t resourceIndex;
 
     for (resourceIndex = 0x0000;
         resourceIndex < ORIGINAL_RESOURCE_DESCRIPTOR_COUNT;
@@ -79,10 +79,10 @@ void OriginalData_InitializeResourceDescriptorPointers(void)
     }
 }
 
-word16 ResourceRetryCount = 0x0003;
-word16 ReservedConventionalMemoryKB = 0x00C8;
+uint16_t ResourceRetryCount = 0x0003;
+uint16_t ReservedConventionalMemoryKB = 0x00C8;
 ResourceFileRuntime ResourceFiles;
-word16 ExitHandlerCount;
+uint16_t ExitHandlerCount;
 OriginalExitHandler ExitHandlerTable[0x20];
 DOS_InterruptHandler SavedDivideErrorHandler;
 DOS_InterruptHandler SavedOverflowHandler;

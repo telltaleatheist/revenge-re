@@ -5,7 +5,7 @@
 #include "BattleInternal.h"
 #include "revenge/debug.h"
 
-static byte tracedSceneOpcodeCount;
+static uint8_t tracedSceneOpcodeCount;
 
 enum
 {
@@ -27,28 +27,28 @@ static RevengeUnitRecord SceneUnitRecordOverflow;
  * alias explicitly now that the reconstructed C gives the two roster regions
  * separate named objects.
  */
-RevengeUnitRecord *GetPersistentUnitRecord(word16 unitIndex)
+RevengeUnitRecord *GetPersistentUnitRecord(uint16_t unitIndex)
 {
-    uint32 originalOffset;
-    uint32 liveOffset;
+    uint32_t originalOffset;
+    uint32_t liveOffset;
 
     if (unitIndex < TACTICAL_UNIT_COUNT)
         return &PersistentUnitRoster[unitIndex];
 
     originalOffset = PERSISTENT_UNIT_ROSTER_ORIGINAL_OFFSET +
-        (uint32) unitIndex * sizeof(RevengeUnitRecord);
+        (uint32_t) unitIndex * sizeof(RevengeUnitRecord);
     if (originalOffset >= LIVE_SCENARIO_UNITS_ORIGINAL_OFFSET)
     {
         liveOffset = originalOffset - LIVE_SCENARIO_UNITS_ORIGINAL_OFFSET;
         if (liveOffset + sizeof(RevengeUnitRecord) <=
             sizeof(LiveScenarioUnits))
         {
-            return (RevengeUnitRecord *) ((byte *) LiveScenarioUnits + liveOffset);
+            return (RevengeUnitRecord *) ((uint8_t *) LiveScenarioUnits + liveOffset);
         }
     }
 
     REVENGE_PRESERVATION_TRACE("scene: unsupported legacy unit alias %u at DS:%04X\n",
-        unitIndex, (word16) originalOffset);
+        unitIndex, (uint16_t) originalOffset);
     return &SceneUnitRecordOverflow;
 }
 
@@ -61,16 +61,16 @@ RevengeUnitRecord *GetPersistentUnitRecord(word16 unitIndex)
 // data at DS:71A8 plus SceneInstructionBaseOffset.
 void ExecuteSceneInstructions(void)
 {
-    word16 stopInterpreter = 0x00;
+    uint16_t stopInterpreter = 0x00;
 
     while (stopInterpreter == 0x00 &&
         *SceneInstructionCursor != SCENE_END)
     {
-        byte opcode = ReadSceneByte();
+        uint8_t opcode = ReadSceneByte();
         if (tracedSceneOpcodeCount < 0x60)
         {
             REVENGE_PRESERVATION_TRACE("scene: offset=%04X opcode=%02X\n",
-                (word16) (0x71A8 + (SceneInstructionCursor - 0x01 - LoadedSceneFile.raw)),
+                (uint16_t) (0x71A8 + (SceneInstructionCursor - 0x01 - LoadedSceneFile.raw)),
                 opcode);
             ++tracedSceneOpcodeCount;
         }
@@ -86,7 +86,7 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_SET_UNIT_RESOURCE:
         {
-            word16 slotIndex = ReadSceneByte();
+            uint16_t slotIndex = ReadSceneByte();
             UnitTypeResourceCode[slotIndex] = ReadSceneByte();
             TacticalSlotSpriteState[slotIndex] = 0x00;
             TacticalStatusRowInvalidation[REVENGE_INDEX(
@@ -96,9 +96,9 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_CREATE_AREA_IMPACT:
         {
-            int16 centerX = ReadSceneByte();
-            int16 centerY = ReadSceneByte();
-            word16 chanceDenominator = ReadSceneByte();
+            int16_t centerX = ReadSceneByte();
+            int16_t centerY = ReadSceneByte();
+            uint16_t chanceDenominator = ReadSceneByte();
             CreateRandomAreaImpact(
                 centerX,
                 centerY,
@@ -108,9 +108,9 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_SET_LANCE_FORMATION:
         {
-            word16 firstUnit = ReadSceneByte();
-            byte formationMode = ReadSceneByte();
-            word16 unitOffset;
+            uint16_t firstUnit = ReadSceneByte();
+            uint8_t formationMode = ReadSceneByte();
+            uint16_t unitOffset;
             for (unitOffset = 0x00; unitOffset < 0x04; ++unitOffset)
                 UnitFormationMode[firstUnit + unitOffset] =
                     formationMode;
@@ -183,7 +183,7 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_GRANT_UNIT_UPGRADE:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             RevengeUnitRecord *unitRecord =
                 GetPersistentUnitRecord(unitIndex);
             switch (ReadSceneByte())
@@ -202,7 +202,7 @@ void ExecuteSceneInstructions(void)
                 break;
             case UNIT_UPGRADE_CAMPAIGN_AWARD:
             {
-                word16 slotIndex;
+                uint16_t slotIndex;
                 for (slotIndex = 0x00; slotIndex < 0x04; ++slotIndex)
                 {
                     if (CampaignUpgradeAwards[slotIndex] == 0x00)
@@ -219,8 +219,8 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_BRANCH_IF_UNIT_Y_EQUALS:
         {
-            word16 unitIndex = ReadSceneByte();
-            byte expectedY = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
+            uint8_t expectedY = ReadSceneByte();
             BranchOrSkipSceneWord(
                 ScenarioUnitMapY[unitIndex] == expectedY);
             break;
@@ -228,8 +228,8 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_BRANCH_IF_UNIT_X_EQUALS:
         {
-            word16 unitIndex = ReadSceneByte();
-            byte expectedX = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
+            uint8_t expectedX = ReadSceneByte();
             BranchOrSkipSceneWord(
                 ScenarioUnitMapX[unitIndex] == expectedX);
             break;
@@ -247,10 +247,10 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_BRANCH_IF_UNIT_WITHDRAWN:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             RevengeUnitRecord *unitRecord =
                 GetPersistentUnitRecord(unitIndex);
-            word16 takeBranch =
+            uint16_t takeBranch =
                 (UnitWithdrawalState[unitIndex] & 0x80) != 0x00 ||
                 unitRecord->deploymentState == 0x00;
             BranchOrSkipSceneWord(takeBranch);
@@ -259,9 +259,9 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_WITHDRAW_UNIT_AT_LOCATION:
         {
-            word16 unitIndex = ReadSceneByte();
-            byte mapX = ReadSceneByte();
-            byte mapY = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
+            uint8_t mapX = ReadSceneByte();
+            uint8_t mapY = ReadSceneByte();
             RevengeUnitRecord *unitRecord =
                 GetPersistentUnitRecord(unitIndex);
             SceneUnitRoute *route = GetUnitRouteRecord(unitIndex);
@@ -274,7 +274,7 @@ void ExecuteSceneInstructions(void)
             {
                 if (IsCurrentLanceLeader(unitIndex) != 0x00)
                 {
-                    word16 lanceUnit = unitIndex;
+                    uint16_t lanceUnit = unitIndex;
                     do
                     {
                         UnitWithdrawalState[lanceUnit] |= 0x80;
@@ -310,9 +310,9 @@ void ExecuteSceneInstructions(void)
         case SCENE_QUEUE_NARRATION_EVENT_20:
         case SCENE_QUEUE_NARRATION_EVENT_19:
         {
-            word16 eventNumber = 0x0100 - opcode;
-            word16 eventFlagIndex = eventNumber - 0x001F;
-            byte narrationSubject = ReadSceneByte();
+            uint16_t eventNumber = 0x0100 - opcode;
+            uint16_t eventFlagIndex = eventNumber - 0x001F;
+            uint8_t narrationSubject = ReadSceneByte();
             if (SceneNarrationEventFlags[eventFlagIndex] == 0x00)
             {
                 ActiveNarrationSubject = narrationSubject;
@@ -327,9 +327,9 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_CREATE_RANDOM_EDGE_EFFECT:
         {
-            int16 centerX = ReadSceneByte();
-            int16 centerY = ReadSceneByte();
-            word16 chanceDenominator = ReadSceneByte();
+            int16_t centerX = ReadSceneByte();
+            int16_t centerY = ReadSceneByte();
+            uint16_t chanceDenominator = ReadSceneByte();
             if (RandomInRangeInclusive(0x01, chanceDenominator) ==
                 chanceDenominator)
             {
@@ -340,7 +340,7 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_SET_UNIT_GUNNERY:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             GetPersistentUnitRecord(unitIndex)->gunneryTargetNumber =
                 ReadSceneByte();
             break;
@@ -348,7 +348,7 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_SET_UNIT_PILOT:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             GetPersistentUnitRecord(unitIndex)->pilotId =
                 ReadSceneByte();
             break;
@@ -356,7 +356,7 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_SET_UNIT_PILOT_EXPERIENCE:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             GetPersistentUnitRecord(unitIndex)->pilotExperience =
                 ReadSceneByte();
             break;
@@ -364,8 +364,8 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_BRANCH_IF_TERRAIN_DESTROYED:
         {
-            int16 mapX = ReadSceneByte();
-            int16 mapY = ReadSceneByte();
+            int16_t mapX = ReadSceneByte();
+            int16_t mapY = ReadSceneByte();
             BranchOrSkipSceneWord(
                 ReadTerrainDamageState(mapX, mapY) >= 0x03);
             break;
@@ -373,8 +373,8 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_BRANCH_IF_TERRAIN_DAMAGED:
         {
-            int16 mapX = ReadSceneByte();
-            int16 mapY = ReadSceneByte();
+            int16_t mapX = ReadSceneByte();
+            int16_t mapY = ReadSceneByte();
             BranchOrSkipSceneWord(
                 ReadTerrainDamageState(mapX, mapY) != 0x00);
             break;
@@ -386,13 +386,13 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_DEPLOY_UNIT:
         {
-            word16 unitIndex = ReadSceneByte();
-            word16 unitType = ReadSceneByte();
-            byte mapX;
-            byte mapY;
+            uint16_t unitIndex = ReadSceneByte();
+            uint16_t unitType = ReadSceneByte();
+            uint8_t mapX;
+            uint8_t mapY;
             SceneUnitRoute *route;
-            word16 waypointIndex;
-            word16 rosterSlot;
+            uint16_t waypointIndex;
+            uint16_t rosterSlot;
 
             InitializeScenarioUnitFromTemplate(unitType, unitIndex);
             PrepareUnitTypeResources(unitType);
@@ -411,7 +411,7 @@ void ExecuteSceneInstructions(void)
                 route->waypointMapY[waypointIndex] = mapY;
             }
             UnitLanceFormationState[unitIndex] =
-                (byte) IsCurrentLanceLeader(unitIndex);
+                (uint8_t) IsCurrentLanceLeader(unitIndex);
             /* 1A1F:339F tests the slot, widened to a word, against FFFF,
 			 * which a byte never is: every slot is assigned, FF too. */
             rosterSlot = ReadSceneByte();
@@ -429,21 +429,21 @@ void ExecuteSceneInstructions(void)
         case SCENE_ADD_AMMUNITION:
         case SCENE_REMOVE_AMMUNITION:
         {
-            word16 unitIndex = ReadSceneByte();
-            word16 ammunitionFamilyIndex = ReadSceneByte();
-            word16 capacityIncrement =
+            uint16_t unitIndex = ReadSceneByte();
+            uint16_t ammunitionFamilyIndex = ReadSceneByte();
+            uint16_t capacityIncrement =
                 AmmoCapacityMultiplierTable[ammunitionFamilyIndex];
             RevengeUnitRecord *unitRecord =
                 GetPersistentUnitRecord(unitIndex);
-            word16 *ammunition =
+            uint16_t *ammunition =
                 &unitRecord->currentAmmunition[ammunitionFamilyIndex];
 
             if (opcode == SCENE_ADD_AMMUNITION)
                 *ammunition += capacityIncrement;
             else
             {
-                word16 remaining = *ammunition - capacityIncrement;
-                *ammunition = (int16) remaining < 0x0000
+                uint16_t remaining = *ammunition - capacityIncrement;
+                *ammunition = (int16_t) remaining < 0x0000
                     ? 0x0000
                     : remaining;
             }
@@ -453,11 +453,11 @@ void ExecuteSceneInstructions(void)
         case SCENE_BRANCH_IF_CLOCK_EQUALS:
         case SCENE_BRANCH_IF_CLOCK_REACHED:
         {
-            byte expectedDay = ReadSceneByte();
-            byte expectedMinute = ReadSceneByte();
-            byte expectedHour = ReadSceneByte();
-            byte currentDay = TacticalClockSubtick;
-            word16 condition;
+            uint8_t expectedDay = ReadSceneByte();
+            uint8_t expectedMinute = ReadSceneByte();
+            uint8_t expectedHour = ReadSceneByte();
+            uint8_t currentDay = TacticalClockSubtick;
+            uint16_t condition;
 
             if (opcode == SCENE_BRANCH_IF_CLOCK_EQUALS)
             {
@@ -493,19 +493,19 @@ void ExecuteSceneInstructions(void)
 			 * sign-extended imm8, hence FFFFh rather than 00FFh. This is the
 			 * normal no-match result from FindUnitWeaponByOrdinal.
 			 */
-            word16 unitIndex = ReadSceneByte();
-            word16 requestedWeapon = ReadSceneByte();
-            word16 occurrence = 0x00;
-            word16 found = 0x00;
+            uint16_t unitIndex = ReadSceneByte();
+            uint16_t requestedWeapon = ReadSceneByte();
+            uint16_t occurrence = 0x00;
+            uint16_t found = 0x00;
             RevengeUnitRecord *unitRecord =
                 GetPersistentUnitRecord(unitIndex);
             while (TRUE)
             {
-                int16 weapon = FindUnitWeaponByOrdinal(
+                int16_t weapon = FindUnitWeaponByOrdinal(
                     unitRecord,
                     occurrence,
                     0x00);
-                if (weapon == (int16) requestedWeapon)
+                if (weapon == (int16_t) requestedWeapon)
                 {
                     found = 0x01;
                     break;
@@ -520,11 +520,11 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_BRANCH_IF_AMMUNITION_PRESENT:
         {
-            word16 unitIndex = ReadSceneByte();
-            word16 ammunitionFamilyIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
+            uint16_t ammunitionFamilyIndex = ReadSceneByte();
             RevengeUnitRecord *unitRecord =
                 GetPersistentUnitRecord(unitIndex);
-            word16 ammunition =
+            uint16_t ammunition =
                 unitRecord->currentAmmunition[ammunitionFamilyIndex];
             BranchOrSkipSceneWord(ammunition != 0x00);
             break;
@@ -532,10 +532,10 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_BRANCH_IF_UNIT_OPERATIONAL:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             RevengeUnitRecord *unitRecord =
                 GetPersistentUnitRecord(unitIndex);
-            word16 takeBranch =
+            uint16_t takeBranch =
                 unitRecord->deploymentState != 0x00 &&
                 unitRecord->walkMovement != 0x00;
             BranchOrSkipSceneWord(takeBranch);
@@ -544,71 +544,71 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_BRANCH_IF_INTERNAL_PERCENT:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             RevengeUnitRecord *unitRecord =
                 GetPersistentUnitRecord(unitIndex);
-            word16 currentStructure = 0x00;
-            word16 maximumStructure = 0x00;
-            word16 locationIndex;
-            word16 percentage = 0x00;
-            byte threshold;
+            uint16_t currentStructure = 0x00;
+            uint16_t maximumStructure = 0x00;
+            uint16_t locationIndex;
+            uint16_t percentage = 0x00;
+            uint8_t threshold;
             if (unitRecord->deploymentState != 0x00)
             {
                 for (locationIndex = 0x00; locationIndex < 0x0B; ++locationIndex)
                 {
-                    currentStructure = (word16) (currentStructure +
+                    currentStructure = (uint16_t) (currentStructure +
                         unitRecord->currentDurability[locationIndex]);
-                    maximumStructure = (word16) (maximumStructure +
+                    maximumStructure = (uint16_t) (maximumStructure +
                         unitRecord->maximumDurability[locationIndex]);
                 }
             }
             if (maximumStructure != 0x00)
             {
-                int16 wrappedProduct =
-                    (int16) (word16) (currentStructure * 0x64);
-                percentage = (word16) (wrappedProduct / (int16) maximumStructure);
+                int16_t wrappedProduct =
+                    (int16_t) (uint16_t) (currentStructure * 0x64);
+                percentage = (uint16_t) (wrappedProduct / (int16_t) maximumStructure);
             }
             threshold = ReadSceneByte();
             BranchOrSkipSceneWord(
-                (int16) (word16) threshold <= (int16) percentage);
+                (int16_t) (uint16_t) threshold <= (int16_t) percentage);
             break;
         }
 
         case SCENE_BRANCH_IF_DURABILITY_PERCENT:
         {
-            word16 unitIndex = ReadSceneByte();
-            word16 percentage = 0x00;
-            byte threshold;
+            uint16_t unitIndex = ReadSceneByte();
+            uint16_t percentage = 0x00;
+            uint8_t threshold;
             CalculateUnitDurabilityTotals(
                 GetPersistentUnitRecord(unitIndex));
-            if ((word16) MaximumUnitDurabilityTotal != 0x00)
+            if ((uint16_t) MaximumUnitDurabilityTotal != 0x00)
             {
-                int16 wrappedProduct = (int16) (word16) ((word16) CurrentUnitDurabilityTotal * 0x64);
-                percentage = (word16) (wrappedProduct /
-                    (int16) (word16) MaximumUnitDurabilityTotal);
+                int16_t wrappedProduct = (int16_t) (uint16_t) ((uint16_t) CurrentUnitDurabilityTotal * 0x64);
+                percentage = (uint16_t) (wrappedProduct /
+                    (int16_t) (uint16_t) MaximumUnitDurabilityTotal);
             }
             threshold = ReadSceneByte();
             BranchOrSkipSceneWord(
-                (int16) (word16) threshold <= (int16) percentage);
+                (int16_t) (uint16_t) threshold <= (int16_t) percentage);
             break;
         }
 
         case SCENE_REPAIR_ARMOR:
         case SCENE_DAMAGE_ARMOR:
         {
-            word16 unitIndex = ReadSceneByte();
-            word16 armorLocation = ReadSceneByte();
-            byte amount = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
+            uint16_t armorLocation = ReadSceneByte();
+            uint8_t amount = ReadSceneByte();
             REVENGE_PRESERVATION_TRACE("scene: armor unit=%u location=%u amount=%u\n",
                 unitIndex, armorLocation, amount);
-            byte *armor = &GetPersistentUnitRecord(unitIndex)
-                               ->currentArmor[armorLocation];
+            uint8_t *armor = &GetPersistentUnitRecord(unitIndex)
+                                  ->currentArmor[armorLocation];
             if (opcode == SCENE_REPAIR_ARMOR)
                 *armor += amount;
             else
             {
-                int16 remaining = *armor - amount;
-                *armor = remaining < 0x00 ? 0x00 : (byte) remaining;
+                int16_t remaining = *armor - amount;
+                *armor = remaining < 0x00 ? 0x00 : (uint8_t) remaining;
             }
             break;
         }
@@ -623,7 +623,7 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_BRANCH_IF_UNIT_NOT_ATTACKED:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             BranchOrSkipSceneWord(
                 UnitWasAttackedThisTick[unitIndex] == 0x00);
             break;
@@ -631,15 +631,15 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_SET_UNIT_ROUTE:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             SceneUnitRoute *route = GetUnitRouteRecord(unitIndex);
-            word16 waypointIndex;
+            uint16_t waypointIndex;
             route->activeMapX = ScenarioUnitMapX[unitIndex];
             route->activeMapY = ScenarioUnitMapY[unitIndex];
             for (waypointIndex = 0x00; waypointIndex < 0x04; ++waypointIndex)
             {
-                byte waypointX = ReadSceneByte();
-                byte waypointY = ReadSceneByte();
+                uint8_t waypointX = ReadSceneByte();
+                uint8_t waypointY = ReadSceneByte();
                 route->waypointMapX[waypointIndex] = waypointX;
                 route->waypointMapY[waypointIndex] = waypointY;
                 if (waypointIndex == 0x00)
@@ -651,7 +651,7 @@ void ExecuteSceneInstructions(void)
             route->waypointIndex = 0x00;
             if (IsCurrentLanceLeader(unitIndex) != 0x00)
             {
-                word16 followerIndex = unitIndex + 0x01;
+                uint16_t followerIndex = unitIndex + 0x01;
                 while ((followerIndex & 0x03) != 0x00)
                 {
                     if (UnitLanceFormationState[followerIndex] !=
@@ -673,8 +673,8 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_SET_MOVEMENT_HEAT:
         {
-            word16 unitIndex = ReadSceneByte();
-            byte movementHeatExponent = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
+            uint8_t movementHeatExponent = ReadSceneByte();
             UnitMovementHeatExponent[unitIndex] = movementHeatExponent;
             REVENGE_PRESERVATION_TRACE("scene: movement unit=%u exponent=%u\n",
                 unitIndex, movementHeatExponent);
@@ -683,8 +683,8 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_SET_UNIT_TARGET:
         {
-            word16 unitIndex = ReadSceneByte();
-            byte targetUnit = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
+            uint8_t targetUnit = ReadSceneByte();
             UnitAttackTarget[unitIndex] = targetUnit;
             if (targetUnit == 0x18)
             {
@@ -696,14 +696,14 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_SET_UNIT_ORDER:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             UnitTacticalOrderMode[unitIndex] = ReadSceneByte();
             break;
         }
 
         case SCENE_INSTALL_UNIT_EQUIPMENT:
         {
-            word16 unitIndex = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
             InstallUnitEquipmentInFirstFreeSlot(
                 unitIndex,
                 ReadSceneByte());
@@ -712,17 +712,17 @@ void ExecuteSceneInstructions(void)
 
         case SCENE_REMOVE_UNIT_WEAPON:
         {
-            word16 unitIndex = ReadSceneByte();
-            word16 requestedWeapon = ReadSceneByte();
+            uint16_t unitIndex = ReadSceneByte();
+            uint16_t requestedWeapon = ReadSceneByte();
             RevengeUnitRecord *unitRecord =
                 GetPersistentUnitRecord(unitIndex);
-            word16 occurrence;
+            uint16_t occurrence;
             for (occurrence = 0x00; occurrence < 0x0C; ++occurrence)
             {
                 if (FindUnitWeaponByOrdinal(
                         unitRecord,
                         occurrence,
-                        0x00) == (int16) requestedWeapon)
+                        0x00) == (int16_t) requestedWeapon)
                 {
                     FindUnitWeaponByOrdinal(
                         unitRecord,
@@ -743,12 +743,12 @@ void ExecuteSceneInstructions(void)
 // right torso, left arm, then right arm order; arm arrays contain eight
 // slots while torso arrays contain twelve.
 void InstallUnitEquipmentInFirstFreeSlot(
-    word16 unitIndex,
-    byte equipmentId)
+    uint16_t unitIndex,
+    uint8_t equipmentId)
 {
     RevengeUnitRecord *unitRecord =
         GetPersistentUnitRecord(unitIndex);
-    word16 slotIndex;
+    uint16_t slotIndex;
     for (slotIndex = 0x00;
         slotIndex < BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT;
         ++slotIndex)
@@ -788,25 +788,25 @@ void RenderPendingNarration(void)
     RevengeUnitRecord *speakerRecord;
     RevengeUnitRecord *sourceRecord;
     char *message;
-    word16 speakerUnitIndex;
-    word16 sourceUnitIndex;
-    word16 messageCategory;
-    word16 sceneMessageTableIndex;
-    word16 messageOffset;
-    word16 messageIndex;
-    word16 speakerBank;
-    word16 savedCursorColumn;
-    word16 delimiterIndex;
-    word16 hasUnitNameSubstitution;
-    word16 adjustedMessageCategory;
-    int16 pilotId;
-    int16 unitTypeId;
+    uint16_t speakerUnitIndex;
+    uint16_t sourceUnitIndex;
+    uint16_t messageCategory;
+    uint16_t sceneMessageTableIndex;
+    uint16_t messageOffset;
+    uint16_t messageIndex;
+    uint16_t speakerBank;
+    uint16_t savedCursorColumn;
+    uint16_t delimiterIndex;
+    uint16_t hasUnitNameSubstitution;
+    uint16_t adjustedMessageCategory;
+    int16_t pilotId;
+    int16_t unitTypeId;
 
     speakerUnitIndex = ActiveNarrationSubject;
     messageCategory = NarrationMessageCategory;
     if (speakerUnitIndex > 0x04 && messageCategory != 0x12)
     {
-        word16 lanceLeaderIndex;
+        uint16_t lanceLeaderIndex;
 
         lanceLeaderIndex =
             FindOperationalLanceLeader(speakerUnitIndex);
@@ -824,7 +824,7 @@ void RenderPendingNarration(void)
     ShowMouseCursorOverlay();
 
     savedCursorColumn =
-        (word16) (ActiveTextCursorColumn - 0x03);
+        (uint16_t) (ActiveTextCursorColumn - 0x03);
     SelectTextWindow(0x0E);
     ActiveTextCursorColumn = savedCursorColumn;
     ActiveTextCursorRow = 0x00;
@@ -833,7 +833,7 @@ void RenderPendingNarration(void)
     message = 0;
     if (messageCategory == 0x11)
     {
-        messageIndex = (word16) (GeneratePseudoRandomByte() % 0x03);
+        messageIndex = (uint16_t) (GeneratePseudoRandomByte() % 0x03);
         if (speakerRecord->damageModel == UNIT_DAMAGE_MODEL_BATTLEMECH)
         {
             message = DisabledUnitNarrationTextTable[messageIndex];
@@ -846,12 +846,12 @@ void RenderPendingNarration(void)
     else if (messageCategory == 0x12)
     {
         messageIndex = 0x00;
-        if ((int16) ScenarioFileSuffix >= 0x4F &&
-            (int16) ScenarioFileSuffix <= 0x53)
+        if ((int16_t) ScenarioFileSuffix >= 0x4F &&
+            (int16_t) ScenarioFileSuffix <= 0x53)
         {
             messageIndex = 0x03;
         }
-        messageIndex = (word16) (messageIndex +
+        messageIndex = (uint16_t) (messageIndex +
             GeneratePseudoRandomByte() % 0x03);
         message = ScenarioEventNarrationTextTable[messageIndex];
     }
@@ -866,17 +866,17 @@ void RenderPendingNarration(void)
                 speakerBank = 0x05;
             else if (speakerBank >= 0x04)
                 speakerBank = 0x04;
-            sceneMessageTableIndex = (word16) (sceneMessageTableIndex +
+            sceneMessageTableIndex = (uint16_t) (sceneMessageTableIndex +
                 speakerBank * 0x0B);
         }
         else
         {
-            sceneMessageTableIndex = (word16) (sceneMessageTableIndex + 0x42);
+            sceneMessageTableIndex = (uint16_t) (sceneMessageTableIndex + 0x42);
             NarrationMessageCategory =
-                (word16) (messageCategory - 0x0B);
+                (uint16_t) (messageCategory - 0x0B);
             adjustedMessageCategory = TRUE;
         }
-        sceneMessageTableIndex = (word16) (sceneMessageTableIndex +
+        sceneMessageTableIndex = (uint16_t) (sceneMessageTableIndex +
             NarrationMessageCategory);
         messageOffset = LoadedSceneFile.header
                             .narrationMessageOffsets[sceneMessageTableIndex];
@@ -884,7 +884,7 @@ void RenderPendingNarration(void)
         if (adjustedMessageCategory != FALSE)
         {
             NarrationMessageCategory =
-                (word16) (NarrationMessageCategory + 0x0B);
+                (uint16_t) (NarrationMessageCategory + 0x0B);
         }
     }
 
@@ -920,11 +920,11 @@ void RenderPendingNarration(void)
 // 1A1F:469C: void AdvanceUnitSceneRoute(word16 unitIndex)
 // Verified against 1A1F:469C-4856. Select the next route waypoint and skip
 // any waypoint already occupied by the unit.
-void AdvanceUnitSceneRoute(word16 unitIndex)
+void AdvanceUnitSceneRoute(uint16_t unitIndex)
 {
     SceneUnitRoute *route = GetUnitRouteRecord(unitIndex);
-    int16 routeIndex = route->waypointIndex;
-    word16 routeComplete = 0x00;
+    int16_t routeIndex = route->waypointIndex;
+    uint16_t routeComplete = 0x00;
 
     if (routeIndex == 0x02)
         SwapUnitRouteWaypoint(unitIndex, 0x01);
@@ -968,10 +968,10 @@ void AdvanceUnitSceneRoute(word16 unitIndex)
 //     word16 unitIndex, word16 waypointIndex)
 // Verified against 1A1F:4857-4922. Swap waypoint zero with the selected
 // waypoint in both four-byte coordinate arrays of the 0Bh-byte route record.
-void SwapUnitRouteWaypoint(word16 unitIndex, word16 waypointIndex)
+void SwapUnitRouteWaypoint(uint16_t unitIndex, uint16_t waypointIndex)
 {
     SceneUnitRoute *routeRecord = GetUnitRouteRecord(unitIndex);
-    byte savedCoordinate = routeRecord->waypointMapX[0x00];
+    uint8_t savedCoordinate = routeRecord->waypointMapX[0x00];
 
     routeRecord->waypointMapX[0x00] =
         routeRecord->waypointMapX[waypointIndex];
@@ -985,11 +985,11 @@ void SwapUnitRouteWaypoint(word16 unitIndex, word16 waypointIndex)
 
 // 1A1F:4923: void QueueRandomMapEdgeEffect(
 //     short centerX, short centerY)
-void QueueRandomMapEdgeEffect(int16 centerX, int16 centerY)
+void QueueRandomMapEdgeEffect(int16_t centerX, int16_t centerY)
 {
-    word16 edgeDirection = GeneratePseudoRandomByte() & 0x03;
-    int16 mapX;
-    int16 mapY;
+    uint16_t edgeDirection = GeneratePseudoRandomByte() & 0x03;
+    int16_t mapX;
+    int16_t mapY;
     switch (edgeDirection)
     {
     case 0x00:
@@ -1015,11 +1015,11 @@ void QueueRandomMapEdgeEffect(int16 centerX, int16 centerY)
 
 // 1A1F:5476: word16 HasNarrationMessage(
 //     word16 narrationSubject, word16 messageCategory)
-word16 HasNarrationMessage(
-    word16 narrationSubject,
-    word16 messageCategory)
+uint16_t HasNarrationMessage(
+    uint16_t narrationSubject,
+    uint16_t messageCategory)
 {
-    word16 activeCategory = NarrationMessageCategory;
+    uint16_t activeCategory = NarrationMessageCategory;
     if (activeCategory == 0x11 || activeCategory == 0x12)
         return 0x01;
 
@@ -1031,24 +1031,24 @@ word16 HasNarrationMessage(
     if (activeCategory >= 0x0B)
         return 0x01;
 
-    word16 speakerBank = narrationSubject;
+    uint16_t speakerBank = narrationSubject;
     if (speakerBank >= 0x08)
         speakerBank = 0x05;
     else if (speakerBank >= 0x04)
         speakerBank = 0x04;
 
-    word16 messageOffset = LoadedSceneFile.header.narrationMessageOffsets[speakerBank * 0x0B + messageCategory];
+    uint16_t messageOffset = LoadedSceneFile.header.narrationMessageOffsets[speakerBank * 0x0B + messageCategory];
     char *message = (char *) &LoadedSceneFile.raw[REVENGE_INDEX(LoadedSceneFile.raw, messageOffset)];
-    return (byte) message[0x00];
+    return (uint8_t) message[0x00];
 }
 
 // 1A1F:5525: void QueueLinkedUnitStatusNarration(word16 unitIndex)
-void QueueLinkedUnitStatusNarration(word16 unitIndex)
+void QueueLinkedUnitStatusNarration(uint16_t unitIndex)
 {
     if (unitIndex < 0x0C || UnitEnemyVisible[unitIndex] == 0x00)
         return;
 
-    int16 linkedUnitIndex = UnitTacticalTarget[unitIndex];
+    int16_t linkedUnitIndex = UnitTacticalTarget[unitIndex];
     if (linkedUnitIndex == 0x18)
         linkedUnitIndex = 0x00;
     if (linkedUnitIndex < 0x00 || linkedUnitIndex >= 0x0C ||

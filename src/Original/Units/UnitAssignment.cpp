@@ -13,24 +13,24 @@
 
 // 2507:30FC: select a lance section and enter its unit-assignment grid.
 // VERIFIED against ASM 2507:30FC-3575.
-void RunUnitAssignmentEditor(word16 configurationIndex)
+void RunUnitAssignmentEditor(uint16_t configurationIndex)
 {
-    word16 selectedSection;
-    word16 previousSection;
-    word16 sectionBeforeInput;
-    word16 sectionIndex;
-    word16 useSeparateScenarioGroups;
-    word16 activateSection;
-    word16 finished;
-    word16 mouseButtonState;
-    word16 mouseButtonEvent;
-    int16 inputCode;
-    int16 mouseX;
-    int16 mouseY;
-    int16 textLeftColumn;
-    int16 sectionRow;
-    int16 fontWidth;
-    int16 fontHeight;
+    uint16_t selectedSection;
+    uint16_t previousSection;
+    uint16_t sectionBeforeInput;
+    uint16_t sectionIndex;
+    uint16_t useSeparateScenarioGroups;
+    uint16_t activateSection;
+    uint16_t finished;
+    uint16_t mouseButtonState;
+    uint16_t mouseButtonEvent;
+    int16_t inputCode;
+    int16_t mouseX;
+    int16_t mouseY;
+    int16_t textLeftColumn;
+    int16_t sectionRow;
+    int16_t fontWidth;
+    int16_t fontHeight;
 
     selectedSection = 0x0000;
     if (configurationIndex == 0x0000 || configurationIndex == 0x0001)
@@ -51,13 +51,13 @@ void RunUnitAssignmentEditor(word16 configurationIndex)
     fontWidth = ActiveFontGlyphAdvanceX;
     fontHeight = ActiveFontLineHeight;
 
-    sectionRow = (int16) LanceEditorLayout.UnitEditorSectionRows[selectedSection];
+    sectionRow = (int16_t) LanceEditorLayout.UnitEditorSectionRows[selectedSection];
     HideMouseCursorOverlay();
     XorVideoRectangle(
-        (int16) (textLeftColumn * fontWidth),
-        (int16) (sectionRow * fontHeight),
-        (int16) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
-        (int16) ((sectionRow + 0x0001) * fontHeight - 0x0001),
+        (int16_t) (textLeftColumn * fontWidth),
+        (int16_t) (sectionRow * fontHeight),
+        (int16_t) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
+        (int16_t) ((sectionRow + 0x0001) * fontHeight - 0x0001),
         0x01);
     ShowMouseCursorOverlay();
     FlushPendingInput();
@@ -81,7 +81,7 @@ void RunUnitAssignmentEditor(word16 configurationIndex)
             {
                 do
                 {
-                    if ((int16) --selectedSection < 0x0000)
+                    if ((int16_t) --selectedSection < 0x0000)
                         selectedSection = 0x0003;
                 } while (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
                     selectedSection != sectionBeforeInput);
@@ -105,8 +105,8 @@ void RunUnitAssignmentEditor(word16 configurationIndex)
         }
         else if (MouseInputDisabled == 0x0000)
         {
-            mouseX = (int16) MouseCursorRequestedX;
-            mouseY = (int16) MouseY;
+            mouseX = (int16_t) MouseCursorRequestedX;
+            mouseY = (int16_t) MouseY;
             mouseButtonState = MouseButtonState;
             mouseButtonEvent = PendingMouseButtonEvent;
             PendingMouseButtonEvent = 0x0000;
@@ -124,7 +124,7 @@ void RunUnitAssignmentEditor(word16 configurationIndex)
                 {
                     if (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + sectionIndex] == 0x00)
                         continue;
-                    sectionRow = (int16) LanceEditorLayout.UnitEditorSectionRows[sectionIndex];
+                    sectionRow = (int16_t) LanceEditorLayout.UnitEditorSectionRows[sectionIndex];
                     if (mouseX >= textLeftColumn * fontWidth &&
                         mouseX < (textLeftColumn + 0x0007) * fontWidth &&
                         mouseY >= sectionRow * fontHeight &&
@@ -147,20 +147,20 @@ void RunUnitAssignmentEditor(word16 configurationIndex)
         if (selectedSection != sectionBeforeInput)
         {
             HideMouseCursorOverlay();
-            sectionRow = (int16) LanceEditorLayout.UnitEditorSectionRows[sectionBeforeInput];
+            sectionRow = (int16_t) LanceEditorLayout.UnitEditorSectionRows[sectionBeforeInput];
             XorVideoRectangle(
-                (int16) (textLeftColumn * fontWidth),
-                (int16) (sectionRow * fontHeight),
-                (int16) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
-                (int16) ((sectionRow + 0x0001) * fontHeight - 0x0001),
+                (int16_t) (textLeftColumn * fontWidth),
+                (int16_t) (sectionRow * fontHeight),
+                (int16_t) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
+                (int16_t) ((sectionRow + 0x0001) * fontHeight - 0x0001),
                 0x01);
             WaitVerticalRetraces(0x0002);
-            sectionRow = (int16) LanceEditorLayout.UnitEditorSectionRows[selectedSection];
+            sectionRow = (int16_t) LanceEditorLayout.UnitEditorSectionRows[selectedSection];
             XorVideoRectangle(
-                (int16) (textLeftColumn * fontWidth),
-                (int16) (sectionRow * fontHeight),
-                (int16) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
-                (int16) ((sectionRow + 0x0001) * fontHeight - 0x0001),
+                (int16_t) (textLeftColumn * fontWidth),
+                (int16_t) (sectionRow * fontHeight),
+                (int16_t) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
+                (int16_t) ((sectionRow + 0x0001) * fontHeight - 0x0001),
                 0x01);
             ShowMouseCursorOverlay();
         }
@@ -202,12 +202,12 @@ void RunUnitAssignmentEditor(word16 configurationIndex)
             (void) DrawUnitEditorSectionMenu(configurationIndex);
             FlushPendingInput();
             HideMouseCursorOverlay();
-            sectionRow = (int16) LanceEditorLayout.UnitEditorSectionRows[selectedSection];
+            sectionRow = (int16_t) LanceEditorLayout.UnitEditorSectionRows[selectedSection];
             XorVideoRectangle(
-                (int16) (textLeftColumn * fontWidth),
-                (int16) (sectionRow * fontHeight),
-                (int16) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
-                (int16) ((sectionRow + 0x0001) * fontHeight - 0x0001),
+                (int16_t) (textLeftColumn * fontWidth),
+                (int16_t) (sectionRow * fontHeight),
+                (int16_t) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
+                (int16_t) ((sectionRow + 0x0001) * fontHeight - 0x0001),
                 0x01);
             ShowMouseCursorOverlay();
             activateSection = FALSE;
@@ -217,7 +217,7 @@ void RunUnitAssignmentEditor(word16 configurationIndex)
 
 // 2507:3576: constant true callback retained as its own executable boundary.
 // VERIFIED against ASM 2507:3576-357F.
-word16 ReturnTrue(void)
+uint16_t ReturnTrue(void)
 {
     return TRUE;
 }
@@ -225,34 +225,34 @@ word16 ReturnTrue(void)
 // 2507:3580: edit the unit-card to lance-slot assignment grid.
 // VERIFIED against ASM 2507:3580-4296.
 void RunUnitAssignmentGrid(
-    word16 scenarioGroupIndex,
-    word16 lanceGroupIndex,
-    word16 useSeparateScenarioGroups)
+    uint16_t scenarioGroupIndex,
+    uint16_t lanceGroupIndex,
+    uint16_t useSeparateScenarioGroups)
 {
-    int16 selectedLanceSlot;
-    int16 previousLanceSlot;
-    int16 selectedUnitCard;
-    int16 previousUnitCard;
-    word16 lanceGroupBase;
-    word16 unitCardGroupBase;
-    word16 selectedAssignmentIndex;
-    word16 previousAssignmentIndex;
-    word16 selectedUnitCardIndex;
-    word16 previousUnitCardIndex;
-    word16 scanIndex;
-    word16 actionRequested;
-    word16 exitRequested;
-    word16 finished;
-    word16 mouseButtonState;
-    word16 mouseButtonEvent;
-    word16 oldAssignmentIndex;
-    word16 graphicsBufferIndex;
-    word16 unitType;
-    word16 allowExitSelection;
-    int16 inputCode;
-    int16 mouseX;
-    int16 mouseY;
-    byte pilotId;
+    int16_t selectedLanceSlot;
+    int16_t previousLanceSlot;
+    int16_t selectedUnitCard;
+    int16_t previousUnitCard;
+    uint16_t lanceGroupBase;
+    uint16_t unitCardGroupBase;
+    uint16_t selectedAssignmentIndex;
+    uint16_t previousAssignmentIndex;
+    uint16_t selectedUnitCardIndex;
+    uint16_t previousUnitCardIndex;
+    uint16_t scanIndex;
+    uint16_t actionRequested;
+    uint16_t exitRequested;
+    uint16_t finished;
+    uint16_t mouseButtonState;
+    uint16_t mouseButtonEvent;
+    uint16_t oldAssignmentIndex;
+    uint16_t graphicsBufferIndex;
+    uint16_t unitType;
+    uint16_t allowExitSelection;
+    int16_t inputCode;
+    int16_t mouseX;
+    int16_t mouseY;
+    uint8_t pilotId;
     RevengeUnitLanceAssignment *assignmentRecord;
     UnitSelectionCard *unitCardRecord;
     RevengeUnitLanceAssignment *previousRecord;
@@ -336,8 +336,8 @@ void RunUnitAssignmentGrid(
         }
         else if (MouseInputDisabled == 0x0000)
         {
-            mouseX = (int16) MouseCursorRequestedX;
-            mouseY = (int16) MouseY;
+            mouseX = (int16_t) MouseCursorRequestedX;
+            mouseY = (int16_t) MouseY;
             mouseButtonState = MouseButtonState;
             mouseButtonEvent = PendingMouseButtonEvent;
             PendingMouseButtonEvent = 0x0000;
@@ -353,10 +353,10 @@ void RunUnitAssignmentGrid(
                     scanIndex < UnitEditorScenarioCardCount; ++scanIndex)
                 {
                     unitCardRecord = &UnitSelectionCards[unitCardGroupBase + scanIndex];
-                    if (mouseX >= (int16) (unitCardRecord->left + 0x0001) &&
-                        mouseX < (int16) (unitCardRecord->left + 0x003F) &&
-                        mouseY >= (int16) (unitCardRecord->top + 0x0001) &&
-                        mouseY < (int16) (unitCardRecord->top + 0x0038))
+                    if (mouseX >= (int16_t) (unitCardRecord->left + 0x0001) &&
+                        mouseX < (int16_t) (unitCardRecord->left + 0x003F) &&
+                        mouseY >= (int16_t) (unitCardRecord->top + 0x0001) &&
+                        mouseY < (int16_t) (unitCardRecord->top + 0x0038))
                     {
                         selectedUnitCard = scanIndex;
                         if (mouseButtonEvent != 0x0000 &&
@@ -373,10 +373,10 @@ void RunUnitAssignmentGrid(
                     ++scanIndex)
                 {
                     assignmentRecord = &LanceAssignments[lanceGroupBase + scanIndex];
-                    if (mouseX >= (int16) assignmentRecord->left &&
-                        mouseX < (int16) (assignmentRecord->left + 0x0054) &&
-                        mouseY >= (int16) assignmentRecord->top &&
-                        mouseY < (int16) (assignmentRecord->top + 0x0018))
+                    if (mouseX >= (int16_t) assignmentRecord->left &&
+                        mouseX < (int16_t) (assignmentRecord->left + 0x0054) &&
+                        mouseY >= (int16_t) assignmentRecord->top &&
+                        mouseY < (int16_t) (assignmentRecord->top + 0x0018))
                     {
                         if (mouseButtonEvent != 0x0000 &&
                             (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x0000 &&
@@ -386,10 +386,10 @@ void RunUnitAssignmentGrid(
                     }
                 }
                 if (allowExitSelection != FALSE &&
-                    mouseX >= (int16) UnitEditorExitButtonLeft &&
-                    mouseX < (int16) (UnitEditorExitButtonLeft + 0x0054) &&
-                    mouseY >= (int16) UnitEditorExitButtonTop &&
-                    mouseY < (int16) (UnitEditorExitButtonTop + 0x0018))
+                    mouseX >= (int16_t) UnitEditorExitButtonLeft &&
+                    mouseX < (int16_t) (UnitEditorExitButtonLeft + 0x0054) &&
+                    mouseY >= (int16_t) UnitEditorExitButtonTop &&
+                    mouseY < (int16_t) (UnitEditorExitButtonTop + 0x0018))
                 {
                     if (mouseButtonEvent != 0x0000 &&
                         (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x0000)
@@ -405,7 +405,7 @@ void RunUnitAssignmentGrid(
         if (selectedLanceSlot > 0x0004)
             selectedLanceSlot = 0x0000;
         if (selectedLanceSlot >=
-            (int16) UnitEditorLanceSlotCount[lanceGroupIndex])
+            (int16_t) UnitEditorLanceSlotCount[lanceGroupIndex])
         {
             selectedLanceSlot = allowExitSelection != FALSE ? 0x0004 : 0x0000;
         }
@@ -413,7 +413,7 @@ void RunUnitAssignmentGrid(
         {
             selectedLanceSlot = allowExitSelection != FALSE ? 0x0004 : UnitEditorLanceSlotCount[lanceGroupIndex] - 0x0001;
         }
-        if (selectedUnitCard >= (int16) UnitEditorScenarioCardCount)
+        if (selectedUnitCard >= (int16_t) UnitEditorScenarioCardCount)
             selectedUnitCard = 0x0000;
         if (selectedUnitCard < 0x0000)
             selectedUnitCard = UnitEditorScenarioCardCount - 0x0001;
@@ -458,14 +458,14 @@ void RunUnitAssignmentGrid(
             continue;
         REVENGE_PRESERVATION_TRACE(
             "lance: action key=%04X card=%u slot=%u exit=%u\n",
-            (word16) inputCode, selectedUnitCard, selectedLanceSlot,
+            (uint16_t) inputCode, selectedUnitCard, selectedLanceSlot,
             exitRequested);
 
         assignmentRecord = &LanceAssignments[selectedAssignmentIndex];
         unitCardRecord = &UnitSelectionCards[selectedUnitCardIndex];
         // The exit button, or a card another lance holds, skips the
         // assignment and goes on to the next free slot.
-        word16 assignCard = TRUE;
+        uint16_t assignCard = TRUE;
         if (exitRequested != FALSE && selectedLanceSlot == 0x0004)
         {
             selectedLanceSlot = 0x0000;
@@ -478,7 +478,7 @@ void RunUnitAssignmentGrid(
             assignCard = FALSE;
         }
         else if (unitCardRecord->assignmentSlot != REVENGE_ASSIGNMENT_SLOT_NONE &&
-            (unitCardRecord->assignmentSlot >> 0x02) != (byte) lanceGroupIndex)
+            (unitCardRecord->assignmentSlot >> 0x02) != (uint8_t) lanceGroupIndex)
             assignCard = FALSE;
 
         if (assignCard != FALSE)
@@ -515,7 +515,7 @@ void RunUnitAssignmentGrid(
                     {
                         unitCardRecord->state ^= 0x01;
                         unitCardRecord->assignmentSlot =
-                            (byte) selectedAssignmentIndex;
+                            (uint8_t) selectedAssignmentIndex;
                         DRAW_UNIT_CARD(selectedUnitCardIndex, 0x0001);
                     }
                     else
@@ -530,7 +530,7 @@ void RunUnitAssignmentGrid(
                         previousRecord->liveUnitSlot =
                             REVENGE_UNIT_SLOT_NONE;
                         unitCardRecord->assignmentSlot =
-                            (byte) selectedAssignmentIndex;
+                            (uint8_t) selectedAssignmentIndex;
                     }
 
                     /* Both branches above converge at 2507:3C12.  Restore the
@@ -538,9 +538,9 @@ void RunUnitAssignmentGrid(
 					 * selected card, and redraw the replacement assignment. */
                     assignmentRecord->style ^= 0x04;
                     assignmentRecord->persistentUnitSlot =
-                        (byte) selectedUnitCardIndex;
+                        (uint8_t) selectedUnitCardIndex;
                     assignmentRecord->liveUnitSlot =
-                        (byte) selectedAssignmentIndex;
+                        (uint8_t) selectedAssignmentIndex;
                     persistentUnit =
                         &PersistentUnitRoster[selectedUnitCardIndex];
                     liveUnit =
@@ -589,15 +589,15 @@ void RunUnitAssignmentGrid(
                         UnitEditorGraphicsBuffer(graphicsBufferIndex);
                     unitCardRecord->state |= 0x01;
                     unitCardRecord->persistentUnitSlot =
-                        (byte) selectedUnitCardIndex;
+                        (uint8_t) selectedUnitCardIndex;
                     unitCardRecord->assignmentSlot = REVENGE_ASSIGNMENT_SLOT_NONE;
                     DRAW_UNIT_CARD(selectedUnitCardIndex, 0x0001);
 
                     assignmentRecord->style ^= 0x04;
                     assignmentRecord->persistentUnitSlot =
-                        (byte) selectedUnitCardIndex;
+                        (uint8_t) selectedUnitCardIndex;
                     assignmentRecord->liveUnitSlot =
-                        (byte) selectedAssignmentIndex;
+                        (uint8_t) selectedAssignmentIndex;
                     pilotId = assignmentRecord->pilotId;
                     liveUnit->pilotId = pilotId;
                     liveUnit->gunneryTargetNumber =
@@ -610,9 +610,9 @@ void RunUnitAssignmentGrid(
             else
             {
                 assignmentRecord->persistentUnitSlot =
-                    (byte) selectedUnitCardIndex;
+                    (uint8_t) selectedUnitCardIndex;
                 assignmentRecord->liveUnitSlot =
-                    (byte) selectedAssignmentIndex;
+                    (uint8_t) selectedAssignmentIndex;
                 persistentUnit = &PersistentUnitRoster[selectedUnitCardIndex];
                 liveUnit = &LiveScenarioUnits[selectedAssignmentIndex];
                 *liveUnit = *persistentUnit;
@@ -629,7 +629,7 @@ void RunUnitAssignmentGrid(
                 {
                     unitCardRecord->state ^= 0x01;
                     unitCardRecord->assignmentSlot =
-                        (byte) selectedAssignmentIndex;
+                        (uint8_t) selectedAssignmentIndex;
                     DRAW_UNIT_CARD(selectedUnitCardIndex, 0x0001);
                 }
                 else
@@ -641,7 +641,7 @@ void RunUnitAssignmentGrid(
                     previousRecord->persistentUnitSlot = REVENGE_UNIT_SLOT_NONE;
                     previousRecord->liveUnitSlot = REVENGE_UNIT_SLOT_NONE;
                     unitCardRecord->assignmentSlot =
-                        (byte) selectedAssignmentIndex;
+                        (uint8_t) selectedAssignmentIndex;
                 }
             }
         }
@@ -739,96 +739,96 @@ void RunUnitAssignmentGrid(
 // VERIFIED against ASM 2507:4297-44F8.
 void DrawSelectionScreenBackground(void)
 {
-    word16 recordIndex;
+    uint16_t recordIndex;
     RevengeUnitLanceAssignment *assignment;
     UnitSelectionCard *unitCard;
-    int16 leftX;
-    int16 topY;
-    word16 width;
+    int16_t leftX;
+    int16_t topY;
+    uint16_t width;
 
     SelectAndClearTextWindow(0x0000);
     leftX = 0x0000;
     topY = 0x0000;
     FillVideoRectangle(
-        leftX, topY, (int16) (leftX + 0x0012),
-        (int16) (topY + 0x0062), 0x000D);
+        leftX, topY, (int16_t) (leftX + 0x0012),
+        (int16_t) (topY + 0x0062), 0x000D);
     DrawClippedAxisAlignedLine(
-        leftX, topY, (int16) (leftX + 0x0013), topY, 0x000E);
+        leftX, topY, (int16_t) (leftX + 0x0013), topY, 0x000E);
     DrawClippedAxisAlignedLine(
-        leftX, topY, leftX, (int16) (topY + 0x0063), 0x000E);
+        leftX, topY, leftX, (int16_t) (topY + 0x0063), 0x000E);
 
     topY = 0x0065;
     FillVideoRectangle(
-        leftX, topY, (int16) (leftX + 0x0012),
-        (int16) (topY + 0x0062), 0x000D);
+        leftX, topY, (int16_t) (leftX + 0x0012),
+        (int16_t) (topY + 0x0062), 0x000D);
     DrawClippedAxisAlignedLine(
-        leftX, topY, (int16) (leftX + 0x0013), topY, 0x000E);
+        leftX, topY, (int16_t) (leftX + 0x0013), topY, 0x000E);
     DrawClippedAxisAlignedLine(
-        leftX, topY, leftX, (int16) (topY + 0x0062), 0x000E);
+        leftX, topY, leftX, (int16_t) (topY + 0x0062), 0x000E);
 
     for (recordIndex = 0x0000; recordIndex < 0x0006; ++recordIndex)
     {
         unitCard = &UnitSelectionCards[recordIndex];
-        leftX = (int16) unitCard->left - 0x0003;
-        topY = (int16) unitCard->top;
+        leftX = (int16_t) unitCard->left - 0x0003;
+        topY = (int16_t) unitCard->top;
         if (recordIndex == 0x0002 || recordIndex == 0x0005)
         {
             FillVideoRectangle(
-                leftX, topY, (int16) (leftX + 0x0044),
-                (int16) (topY + 0x0062), 0x000D);
+                leftX, topY, (int16_t) (leftX + 0x0044),
+                (int16_t) (topY + 0x0062), 0x000D);
             DrawClippedAxisAlignedLine(
-                leftX, topY, (int16) (leftX + 0x0044), topY, 0x000E);
+                leftX, topY, (int16_t) (leftX + 0x0044), topY, 0x000E);
         }
         else
         {
             FillVideoRectangle(
-                leftX, topY, (int16) (leftX + 0x0045),
-                (int16) (topY + 0x0062), 0x000D);
+                leftX, topY, (int16_t) (leftX + 0x0045),
+                (int16_t) (topY + 0x0062), 0x000D);
             DrawClippedAxisAlignedLine(
-                leftX, topY, (int16) (leftX + 0x0046), topY, 0x000E);
+                leftX, topY, (int16_t) (leftX + 0x0046), topY, 0x000E);
         }
         DrawClippedAxisAlignedLine(
             leftX,
             topY,
             leftX,
-            (int16) (topY + (recordIndex < 0x0003 ? 0x0063 : 0x0062)),
+            (int16_t) (topY + (recordIndex < 0x0003 ? 0x0063 : 0x0062)),
             0x000E);
     }
 
     for (recordIndex = 0x0000; recordIndex < 0x0004; ++recordIndex)
     {
         assignment = &LanceAssignments[recordIndex];
-        leftX = (int16) assignment->left;
-        topY = (int16) assignment->top;
+        leftX = (int16_t) assignment->left;
+        topY = (int16_t) assignment->top;
         width = assignment->width;
         FillVideoRectangle(
-            leftX, topY, (int16) (leftX + width),
-            (int16) (topY + 0x0017), 0x000D);
+            leftX, topY, (int16_t) (leftX + width),
+            (int16_t) (topY + 0x0017), 0x000D);
         DrawClippedAxisAlignedLine(
-            leftX, topY, (int16) (leftX + width), topY, 0x000E);
+            leftX, topY, (int16_t) (leftX + width), topY, 0x000E);
         DrawClippedAxisAlignedLine(
-            leftX, topY, leftX, (int16) (topY + 0x0017), 0x000E);
+            leftX, topY, leftX, (int16_t) (topY + 0x0017), 0x000E);
     }
 
     assignment = &LanceAssignments[0x0C];
-    leftX = (int16) assignment->left;
-    topY = (int16) assignment->top;
+    leftX = (int16_t) assignment->left;
+    topY = (int16_t) assignment->top;
     width = assignment->width;
     FillVideoRectangle(
-        leftX, topY, (int16) (leftX + width),
-        (int16) (topY + 0x0017), 0x000D);
+        leftX, topY, (int16_t) (leftX + width),
+        (int16_t) (topY + 0x0017), 0x000D);
     DrawClippedAxisAlignedLine(
-        leftX, topY, (int16) (leftX + width), topY, 0x000E);
+        leftX, topY, (int16_t) (leftX + width), topY, 0x000E);
     DrawClippedAxisAlignedLine(
-        leftX, topY, leftX, (int16) (topY + 0x0017), 0x000E);
+        leftX, topY, leftX, (int16_t) (topY + 0x0017), 0x000E);
 }
 
 // 2507:44F9: draw the complete lance-selection screen and its active group.
 // VERIFIED against ASM 2507:44F9-45DD.
-void DrawLanceSelectionScreen(word16 configurationIndex)
+void DrawLanceSelectionScreen(uint16_t configurationIndex)
 {
-    int16 selectedLanceGroup;
-    word16 scenarioSlot;
+    int16_t selectedLanceGroup;
+    uint16_t scenarioSlot;
 
     REVENGE_PRESERVATION_TRACE(
         "lance: draw configuration=%u card0=%u,%u,%u card1=%u,%u,%u "
@@ -851,7 +851,7 @@ void DrawLanceSelectionScreen(word16 configurationIndex)
     SetActiveRenderTarget(PrimaryScreenBuffer);
     DrawSelectionScreenBackground();
 
-    if ((int16) configurationIndex < 0x0002)
+    if ((int16_t) configurationIndex < 0x0002)
     {
         selectedLanceGroup = 0x0000;
         ClearUnitEditorSectionPanel();
@@ -865,10 +865,10 @@ void DrawLanceSelectionScreen(word16 configurationIndex)
 
     for (scenarioSlot = 0x0000; scenarioSlot < 0x0006; ++scenarioSlot)
     {
-        if ((int16) scenarioSlot >= (int16) UnitEditorScenarioCardCount)
+        if ((int16_t) scenarioSlot >= (int16_t) UnitEditorScenarioCardCount)
         {
             DrawUnitStatusScreen(
-                (word16) (selectedLanceGroup * 0x0006 + scenarioSlot),
+                (uint16_t) (selectedLanceGroup * 0x0006 + scenarioSlot),
                 FALSE,
                 0xFFFF,
                 FALSE);
@@ -891,26 +891,26 @@ void DrawLanceSelectionScreen(word16 configurationIndex)
     ShowMouseCursorOverlay();
     RefreshLanceSelectionSlots(
         0x0000,
-        (word16) selectedLanceGroup,
+        (uint16_t) selectedLanceGroup,
         TRUE);
 }
 
 // 2507:45DE: redraw scenario cards and assignment buttons for one group.
 // VERIFIED against ASM 2507:45DE-46CA.
 void RefreshLanceSelectionSlots(
-    word16 scenarioGroupIndex,
-    word16 lanceGroupIndex,
-    word16 showSelectionContents)
+    uint16_t scenarioGroupIndex,
+    uint16_t lanceGroupIndex,
+    uint16_t showSelectionContents)
 {
-    word16 scenarioRecordIndex;
-    word16 lastScenarioRecordIndex;
-    word16 assignmentIndex;
-    word16 lastAssignmentIndex;
-    word16 lastActiveAssignmentIndex;
+    uint16_t scenarioRecordIndex;
+    uint16_t lastScenarioRecordIndex;
+    uint16_t assignmentIndex;
+    uint16_t lastAssignmentIndex;
+    uint16_t lastActiveAssignmentIndex;
 
     scenarioRecordIndex = scenarioGroupIndex * 0x0006;
     lastScenarioRecordIndex = scenarioRecordIndex + UnitEditorScenarioCardCount;
-    while ((int16) scenarioRecordIndex < (int16) lastScenarioRecordIndex)
+    while ((int16_t) scenarioRecordIndex < (int16_t) lastScenarioRecordIndex)
     {
         UnitSelectionCards[scenarioRecordIndex].state &= 0xFD;
         DrawUnitStatusScreen(
@@ -925,9 +925,9 @@ void RefreshLanceSelectionSlots(
     lastAssignmentIndex = assignmentIndex + 0x0004;
     lastActiveAssignmentIndex = assignmentIndex +
         UnitEditorLanceSlotCount[lanceGroupIndex];
-    while ((int16) assignmentIndex < (int16) lastAssignmentIndex)
+    while ((int16_t) assignmentIndex < (int16_t) lastAssignmentIndex)
     {
-        if ((int16) assignmentIndex < (int16) lastActiveAssignmentIndex)
+        if ((int16_t) assignmentIndex < (int16_t) lastActiveAssignmentIndex)
         {
             LanceAssignments[assignmentIndex].style &= 0xFE;
             DrawLanceAssignmentSlot(
@@ -949,21 +949,21 @@ void RefreshLanceSelectionSlots(
 
 // 2507:46CB: remove and return one random unit type from DS:1B85.
 // VERIFIED against ASM 2507:46CB-4709.
-int16 PopRandomUnitType(void)
+int16_t PopRandomUnitType(void)
 {
-    word16 selectedIndex;
-    int16 unitType;
-    word16 randomUnitTypeCount;
+    uint16_t selectedIndex;
+    int16_t unitType;
+    uint16_t randomUnitTypeCount;
 
     randomUnitTypeCount = RandomUnitTypeCount;
-    selectedIndex = (word16) RandomInRangeInclusive(
+    selectedIndex = (uint16_t) RandomInRangeInclusive(
         0x0000,
-        (word16) (randomUnitTypeCount - 0x0001));
+        (uint16_t) (randomUnitTypeCount - 0x0001));
     unitType = RandomUnitTypePool[selectedIndex];
     RandomUnitTypePool[selectedIndex] =
         RandomUnitTypePool[randomUnitTypeCount - 0x0001];
     RandomUnitTypePool[randomUnitTypeCount - 0x0001] =
-        (byte) REVENGE_UNIT_TYPE_NONE;
+        (uint8_t) REVENGE_UNIT_TYPE_NONE;
     --RandomUnitTypeCount;
     return unitType;
 }
@@ -971,14 +971,14 @@ int16 PopRandomUnitType(void)
 // 2507:470A: draw the four unit-editor section buttons and return the first
 // enabled section, or FFFFh when none is enabled.
 // VERIFIED against ASM 2507:470A-47DE.
-int16 DrawUnitEditorSectionMenu(word16 configurationIndex)
+int16_t DrawUnitEditorSectionMenu(uint16_t configurationIndex)
 {
-    word16 buttonColumn;
-    word16 fontWidth;
-    word16 fontHeight;
-    word16 sectionIndex;
-    word16 buttonRow;
-    int16 firstEnabledSection;
+    uint16_t buttonColumn;
+    uint16_t fontWidth;
+    uint16_t fontHeight;
+    uint16_t sectionIndex;
+    uint16_t buttonRow;
+    int16_t firstEnabledSection;
     const char *label;
 
     HideMouseCursorOverlay();
@@ -995,20 +995,20 @@ int16 DrawUnitEditorSectionMenu(word16 configurationIndex)
             buttonColumn,
             buttonRow,
             label,
-            (word16) (fontWidth * 0x0007));
+            (uint16_t) (fontWidth * 0x0007));
 
         if (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + sectionIndex] != FALSE)
         {
             if (firstEnabledSection == -0x0001)
-                firstEnabledSection = (int16) sectionIndex;
+                firstEnabledSection = (int16_t) sectionIndex;
         }
         else
         {
             XorVideoRectangle(
-                (int16) (buttonColumn * fontWidth),
-                (int16) (buttonRow * fontHeight),
-                (int16) ((buttonColumn + 0x0007) * fontWidth - 0x0001),
-                (int16) ((buttonRow + 0x0001) * fontHeight - 0x0001),
+                (int16_t) (buttonColumn * fontWidth),
+                (int16_t) (buttonRow * fontHeight),
+                (int16_t) ((buttonColumn + 0x0007) * fontWidth - 0x0001),
+                (int16_t) ((buttonRow + 0x0001) * fontHeight - 0x0001),
                 0x02);
         }
     }
@@ -1032,32 +1032,32 @@ void ClearUnitEditorSectionPanel(void)
 // 2507:483A: draw one unit card and, when requested, its detailed equipment
 // panel. VERIFIED against ASM 2507:483A-4E44.
 void DrawUnitStatusScreen(
-    word16 statusPanelIndex,
-    word16 redrawBackground,
-    word16 displayMode,
-    word16 showDetailedStats)
+    uint16_t statusPanelIndex,
+    uint16_t redrawBackground,
+    uint16_t displayMode,
+    uint16_t showDetailedStats)
 {
     char textBuffer[0x1C];
-    byte *savedRenderTarget;
+    uint8_t *savedRenderTarget;
     UnitSelectionCard *statusPanel;
     RevengeUnitRecord *unitRecord;
     const char *text;
-    word16 leftX;
-    word16 topY;
-    word16 panelWidth;
-    word16 panelTextColor;
-    word16 detailTextColor;
-    word16 weaponListX;
-    word16 weaponListY;
-    word16 equippedCount;
-    word16 armorLabelWidth;
-    word16 heatLabelWidth;
-    word16 heatScaleIndex;
-    word16 unitTypeId;
-    word16 movementClassIndex;
-    word16 weaponIndex;
-    int16 armorConditionIndex;
-    byte panelFlags;
+    uint16_t leftX;
+    uint16_t topY;
+    uint16_t panelWidth;
+    uint16_t panelTextColor;
+    uint16_t detailTextColor;
+    uint16_t weaponListX;
+    uint16_t weaponListY;
+    uint16_t equippedCount;
+    uint16_t armorLabelWidth;
+    uint16_t heatLabelWidth;
+    uint16_t heatScaleIndex;
+    uint16_t unitTypeId;
+    uint16_t movementClassIndex;
+    uint16_t weaponIndex;
+    int16_t armorConditionIndex;
+    uint8_t panelFlags;
 
     HideMouseCursorOverlay();
     savedRenderTarget = ActiveRenderTarget;
@@ -1114,8 +1114,8 @@ void DrawUnitStatusScreen(
     if (redrawBackground != FALSE)
     {
         CopyClippedVideoRegion(
-            (int16) leftX >> 0x03, topY,
-            (int16) leftX >> 0x03, topY,
+            (int16_t) leftX >> 0x03, topY,
+            (int16_t) leftX >> 0x03, topY,
             0x08, 0x38,
             PrimaryScreenBuffer,
             VideoFramebuffer);
@@ -1132,19 +1132,19 @@ void DrawUnitStatusScreen(
         UnitNameTable[unitTypeId],
         UnitNameSplitIndex[unitTypeId],
         leftX - 0x01, topY + 0x38, panelWidth,
-        (byte) panelTextColor, 0x00);
+        (uint8_t) panelTextColor, 0x00);
 
     RecalculateUnitCombatRatings(
         unitRecord, 0x0018, TRUE, TRUE);
     DrawCombatRatingDescription(
         DisplayedUnitCombatRatings.longFirepower,
-        leftX - 0x01, topY + 0x47, (byte) panelTextColor, 0x00);
+        leftX - 0x01, topY + 0x47, (uint8_t) panelTextColor, 0x00);
     DrawCombatRatingDescription(
         DisplayedUnitCombatRatings.mediumFirepower,
-        leftX - 0x01, topY + 0x4E, (byte) panelTextColor, 0x00);
+        leftX - 0x01, topY + 0x4E, (uint8_t) panelTextColor, 0x00);
     DrawCombatRatingDescription(
         DisplayedUnitCombatRatings.closeFirepower,
-        leftX - 0x01, topY + 0x55, (byte) panelTextColor, 0x00);
+        leftX - 0x01, topY + 0x55, (uint8_t) panelTextColor, 0x00);
 
     movementClassIndex = MovementRatingByWalkMP[DisplayedUnitCombatRatings.movement];
     text = UnitMovementClassLabelTextTable[movementClassIndex];
@@ -1157,7 +1157,7 @@ void DrawUnitStatusScreen(
     }
     DrawTextString(
         textBuffer, leftX - 0x01, topY + 0x5C,
-        (byte) panelTextColor, 0x00);
+        (uint8_t) panelTextColor, 0x00);
 
     if (displayMode != 0x00 && showDetailedStats != FALSE)
     {
@@ -1173,7 +1173,7 @@ void DrawUnitStatusScreen(
         DrawCenteredClippedText(
             UnitNameTable[unitTypeId],
             UnitNameSplitIndex[unitTypeId],
-            0xEC, 0x02, 0x54, (byte) detailTextColor, 0x00);
+            0xEC, 0x02, 0x54, (uint8_t) detailTextColor, 0x00);
         CountUnitWeaponsByType(unitRecord);
         weaponListX = 0xEC;
         weaponListY = 0x11;
@@ -1192,8 +1192,8 @@ void DrawUnitStatusScreen(
             strcat(textBuffer, text);
             DrawLeftAlignedClippedText(
                 textBuffer, weaponListX, weaponListY, 0x54,
-                (byte) detailTextColor, 0x00);
-            weaponListY = (word16) (weaponListY +
+                (uint8_t) detailTextColor, 0x00);
+            weaponListY = (uint16_t) (weaponListY +
                 ActiveFontLineHeight);
         }
 
@@ -1202,8 +1202,8 @@ void DrawUnitStatusScreen(
             DrawLeftAlignedClippedText(
                 UnitStatusEquipmentSeparator,
                 weaponListX, weaponListY, 0x54,
-                (byte) detailTextColor, 0x00);
-            weaponListY = (word16) (weaponListY +
+                (uint8_t) detailTextColor, 0x00);
+            weaponListY = (uint16_t) (weaponListY +
                 ActiveFontLineHeight);
         }
         if (unitRecord->caseProtection != 0x00)
@@ -1211,8 +1211,8 @@ void DrawUnitStatusScreen(
             DrawLeftAlignedClippedText(
                 CaseEquipmentText,
                 weaponListX, weaponListY, 0x54,
-                (byte) detailTextColor, 0x00);
-            weaponListY = (word16) (weaponListY +
+                (uint8_t) detailTextColor, 0x00);
+            weaponListY = (uint16_t) (weaponListY +
                 ActiveFontLineHeight);
         }
         if (unitRecord->doubleHeatSinks != 0x00)
@@ -1220,7 +1220,7 @@ void DrawUnitStatusScreen(
             DrawLeftAlignedClippedText(
                 DoubleHeatSinkEquipmentText,
                 weaponListX, weaponListY, 0x54,
-                (byte) detailTextColor, 0x00);
+                (uint8_t) detailTextColor, 0x00);
         }
 
         strcpy(
@@ -1228,7 +1228,7 @@ void DrawUnitStatusScreen(
             UnitStatusArmorLabel);
         DrawTextString(
             textBuffer, weaponListX, 0x39,
-            (byte) detailTextColor, 0x00);
+            (uint8_t) detailTextColor, 0x00);
         unitRecord->deploymentState = 0x01;
         CalculateUnitDurabilityTotals(unitRecord);
         unitRecord->deploymentState = 0x00;
@@ -1239,23 +1239,23 @@ void DrawUnitStatusScreen(
         text = UnitArmorConditionLabelTextTable[armorConditionIndex];
         DrawRightAlignedClippedText(
             text, weaponListX + armorLabelWidth, 0x39,
-            0x54 - armorLabelWidth, (byte) detailTextColor, 0x00);
+            0x54 - armorLabelWidth, (uint8_t) detailTextColor, 0x00);
 
         strcpy(
             textBuffer,
             UnitStatusHeatLabel);
         DrawTextString(
             textBuffer, weaponListX,
-            (word16) (ActiveFontLineHeight + 0x39),
-            (byte) detailTextColor, 0x00);
+            (uint16_t) (ActiveFontLineHeight + 0x39),
+            (uint8_t) detailTextColor, 0x00);
         heatScaleIndex = CalculateUnitWeaponHeatScale(unitRecord);
         heatLabelWidth = MeasureTextWidth(textBuffer);
         DrawRightAlignedClippedText(
             HeatScaleDescriptionTable[heatScaleIndex],
             weaponListX + heatLabelWidth,
-            (word16) (ActiveFontLineHeight + 0x39),
+            (uint16_t) (ActiveFontLineHeight + 0x39),
             0x54 - heatLabelWidth,
-            (byte) detailTextColor,
+            (uint8_t) detailTextColor,
             0x00);
     }
     ShowMouseCursorOverlay();
@@ -1264,27 +1264,27 @@ void DrawUnitStatusScreen(
 // 2507:4E45: draw one lance-assignment button or the EXIT button.
 // VERIFIED against ASM 2507:4E45-5015.
 void DrawLanceAssignmentSlot(
-    word16 assignmentIndex,
-    word16 selected,
-    word16 drawExitSlot)
+    uint16_t assignmentIndex,
+    uint16_t selected,
+    uint16_t drawExitSlot)
 {
     RevengeUnitLanceAssignment *assignment;
-    int16 leftX;
-    int16 topY;
-    word16 width;
-    byte flags;
-    word16 textColor;
-    int16 pilotId;
-    int16 liveUnitIndex;
-    int16 unitTypeId;
+    int16_t leftX;
+    int16_t topY;
+    uint16_t width;
+    uint8_t flags;
+    uint16_t textColor;
+    int16_t pilotId;
+    int16_t liveUnitIndex;
+    int16_t unitTypeId;
     const char *text;
 
     if (drawExitSlot != FALSE)
         assignmentIndex = 0x000C;
 
     assignment = &LanceAssignments[assignmentIndex];
-    leftX = (int16) assignment->left;
-    topY = (int16) assignment->top;
+    leftX = (int16_t) assignment->left;
+    topY = (int16_t) assignment->top;
     width = assignment->width;
     flags = assignment->style;
     if (selected != FALSE)
@@ -1298,10 +1298,10 @@ void DrawLanceAssignmentSlot(
         DrawCenteredClippedText(
             UnitStatusExitLabel,
             0x0000,
-            (word16) leftX,
-            (word16) (topY + 0x0002),
+            (uint16_t) leftX,
+            (uint16_t) (topY + 0x0002),
             width,
-            (byte) textColor,
+            (uint8_t) textColor,
             0x00);
     }
     else
@@ -1313,10 +1313,10 @@ void DrawLanceAssignmentSlot(
             DrawCenteredClippedText(
                 text,
                 0x0000,
-                (word16) leftX,
-                (word16) (topY + 0x0002),
+                (uint16_t) leftX,
+                (uint16_t) (topY + 0x0002),
                 width,
-                (byte) textColor,
+                (uint8_t) textColor,
                 0x00);
         }
     }
@@ -1326,27 +1326,27 @@ void DrawLanceAssignmentSlot(
         DrawClippedRectangleOutline(
             leftX,
             topY,
-            (int16) (leftX + width),
-            (int16) (topY + 0x0017),
+            (int16_t) (leftX + width),
+            (int16_t) (topY + 0x0017),
             0x000F);
     }
     else
     {
         DrawClippedAxisAlignedLine(
-            leftX, topY, (int16) (leftX + width), topY, 0x000E);
+            leftX, topY, (int16_t) (leftX + width), topY, 0x000E);
         DrawClippedAxisAlignedLine(
-            leftX, topY, leftX, (int16) (topY + 0x0017), 0x000E);
+            leftX, topY, leftX, (int16_t) (topY + 0x0017), 0x000E);
         DrawClippedAxisAlignedLine(
-            (int16) (leftX + width),
-            (int16) (topY + 0x0001),
-            (int16) (leftX + width),
-            (int16) (topY + 0x0017),
+            (int16_t) (leftX + width),
+            (int16_t) (topY + 0x0001),
+            (int16_t) (leftX + width),
+            (int16_t) (topY + 0x0017),
             0x000D);
         DrawClippedAxisAlignedLine(
-            (int16) (leftX + 0x0001),
-            (int16) (topY + 0x0017),
-            (int16) (leftX + width),
-            (int16) (topY + 0x0017),
+            (int16_t) (leftX + 0x0001),
+            (int16_t) (topY + 0x0017),
+            (int16_t) (leftX + width),
+            (int16_t) (topY + 0x0017),
             0x000D);
     }
 
@@ -1360,11 +1360,11 @@ void DrawLanceAssignmentSlot(
         DrawCenteredClippedText(
             text,
             0x0000,
-            (word16) leftX,
-            (word16) (topY + ActiveFontLineHeight +
+            (uint16_t) leftX,
+            (uint16_t) (topY + ActiveFontLineHeight +
                 0x0004),
             width,
-            (byte) textColor,
+            (uint8_t) textColor,
             0x00);
     }
     ShowMouseCursorOverlay();

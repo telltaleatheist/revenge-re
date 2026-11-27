@@ -6,7 +6,7 @@
 
 // 0D73:1302: int16 RunCampaignStage11(void)
 // VERIFIED against 0D73:1302-13FF.
-int16 RunCampaignStage11(void)
+int16_t RunCampaignStage11(void)
 {
     PlayMusicResource(0x004D);
     PresentCampaignScene(0x000E, 0x0001, 0x0053);
@@ -47,7 +47,7 @@ int16 RunCampaignStage11(void)
 
 // 0D73:1400: int16 RunCampaignStage12(void)
 // VERIFIED against 0D73:1400-155E.
-int16 RunCampaignStage12(void)
+int16_t RunCampaignStage12(void)
 {
     InitializeTacticalScenario();
     if (PersistentUnitRoster[0x08].deploymentState == 0x00)
@@ -95,9 +95,9 @@ int16 RunCampaignStage12(void)
 
 // 0D73:155F: int16 RunCampaignStage13(void)
 // VERIFIED against 0D73:155F-171D.
-int16 RunCampaignStage13(void)
+int16_t RunCampaignStage13(void)
 {
-    word16 scenarioIndex;
+    uint16_t scenarioIndex;
 
     StopLoadedMusicTrack();
     if (TrainingSequenceFlag == FALSE)
@@ -132,7 +132,7 @@ int16 RunCampaignStage13(void)
     while (RunTrainingScenarioSelection() != FALSE);
     PresentStoryScreenAndMessage(
         0x001F,
-        (word16) (0x006A + ScenarioVariantIndex));
+        (uint16_t) (0x006A + ScenarioVariantIndex));
     InitializeTacticalScenario();
     HideMouseCursorOverlay();
     ClearActiveVideoBuffer();
@@ -160,7 +160,7 @@ int16 RunCampaignStage13(void)
 
 // 0D73:171E: int16 RunCampaignStage14(void)
 // VERIFIED against 0D73:171E-18F2.
-int16 RunCampaignStage14(void)
+int16_t RunCampaignStage14(void)
 {
     if (ReplayScenarioRequested == FALSE)
         ScenarioVariantIndex = 0x0000;
@@ -240,7 +240,7 @@ int16 RunCampaignStage14(void)
 
 // 0D73:18F3: int16 RunCampaignStage15(void)
 // VERIFIED against 0D73:18F3-1A9C.
-int16 RunCampaignStage15(void)
+int16_t RunCampaignStage15(void)
 {
     if (ReplayScenarioRequested == FALSE)
         ScenarioVariantIndex = 0x0000;
@@ -296,7 +296,7 @@ int16 RunCampaignStage15(void)
 
 // 0D73:1A9D: int16 RunCampaignStage16(void)
 // VERIFIED against 0D73:1A9D-1B79.
-int16 RunCampaignStage16(void)
+int16_t RunCampaignStage16(void)
 {
     ScenarioVariantIndex = 0x0000;
     StopLoadedMusicTrack();
@@ -338,9 +338,9 @@ int16 RunCampaignStage16(void)
 
 // 0D73:1B7A: int16 RunCampaignStage17(void)
 // VERIFIED against 0D73:1B7A-1C5A.
-int16 RunCampaignStage17(void)
+int16_t RunCampaignStage17(void)
 {
-    word16 scenarioVariant;
+    uint16_t scenarioVariant;
 
     StopLoadedMusicTrack();
     scenarioVariant = ScenarioVariantIndex;
@@ -376,7 +376,7 @@ int16 RunCampaignStage17(void)
 
 // 0D73:1C5B: int16 RunCampaignStage18(void)
 // VERIFIED against 0D73:1C5B-1D17.
-int16 RunCampaignStage18(void)
+int16_t RunCampaignStage18(void)
 {
     ScenarioVariantIndex = 0x0000;
     StopLoadedMusicTrack();
@@ -419,7 +419,7 @@ int16 RunCampaignStage18(void)
 
 // 0D73:1D18: int16 RunCampaignStage19(void)
 // VERIFIED against 0D73:1D18-1DAC.
-int16 RunCampaignStage19(void)
+int16_t RunCampaignStage19(void)
 {
     StopLoadedMusicTrack();
     RunLanceConfiguration(0x0004,
@@ -451,9 +451,9 @@ int16 RunCampaignStage19(void)
 
 // 0D73:1DAD: int16 RunCampaignStage20(void)
 // VERIFIED against 0D73:1DAD-2021.
-int16 RunCampaignStage20(void)
+int16_t RunCampaignStage20(void)
 {
-    word16 savedDismissTimeout;
+    uint16_t savedDismissTimeout;
 
     StopLoadedMusicTrack();
     RunLanceConfiguration(0x0006,
@@ -552,10 +552,10 @@ int16 RunCampaignStage20(void)
 
 // 0D73:2022: int16 RunCampaignStage21(void)
 // VERIFIED against 0D73:2022-2100.
-int16 RunCampaignStage21(void)
+int16_t RunCampaignStage21(void)
 {
-    word16 unitIndex;
-    int16 stageRunning;
+    uint16_t unitIndex;
+    int16_t stageRunning;
 
     SuppressPostStageMenu = TRUE;
     StopLoadedMusicTrack();

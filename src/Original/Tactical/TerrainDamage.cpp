@@ -9,9 +9,9 @@
 // destructible terrain types are queued as packed-byte/subcell pairs for the
 // staged updater at 2007:042A.
 void ApplyOrQueueTerrainDamage(
-    word16 packedByteIndex,
-    word16 subcellIndex,
-    word16 terrainType)
+    uint16_t packedByteIndex,
+    uint16_t subcellIndex,
+    uint16_t terrainType)
 {
     if (terrainType < DestructibleTerrainTypeBase ||
         terrainType > DestructibleTerrainTypeBase + 0x02)
@@ -39,15 +39,15 @@ void ApplyOrQueueTerrainDamage(
 // Convert a map coordinate to its packed two-bit terrain-damage field and
 // begin damage only when that field is still zero.
 void BeginTerrainDamageAtCell(
-    word16 mapX,
-    word16 mapY,
-    word16 terrainType)
+    uint16_t mapX,
+    uint16_t mapY,
+    uint16_t terrainType)
 {
-    word16 packedByteIndex =
+    uint16_t packedByteIndex =
         mapY * PackedTerrainDamageRowBytes +
-        (word16) ((int16) mapX >> 0x02);
-    word16 subcellIndex = mapX & 0x03;
-    byte occupiedMask = TerrainDamageQueueOccupiedMask[subcellIndex];
+        (uint16_t) ((int16_t) mapX >> 0x02);
+    uint16_t subcellIndex = mapX & 0x03;
+    uint8_t occupiedMask = TerrainDamageQueueOccupiedMask[subcellIndex];
 
     if ((PackedTerrainDamageMap[packedByteIndex] &
             occupiedMask) == 0x00)

@@ -6,12 +6,12 @@
 #include "revenge/original_data.h"
 
 /* 0D73:341F-347C */
-word16 PresentScreenAndMessage(
-    word16 screenResourceIndex,
-    word16 messageIndex)
+uint16_t PresentScreenAndMessage(
+    uint16_t screenResourceIndex,
+    uint16_t messageIndex)
 {
-    word16 dismissKey;
-    word16 skipWait;
+    uint16_t dismissKey;
+    uint16_t skipWait;
 
     dismissKey = 0x0000;
     skipWait = FALSE;

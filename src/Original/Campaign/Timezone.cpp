@@ -16,18 +16,18 @@
 void InitializeTimezoneFromEnvironment(void)
 {
     const char *timezone = GetEnvironmentVariable(TimezoneEnvironmentName);
-    word16 validTimezone = timezone != 0x00 && (word16) strlen(timezone) >= 0x04;
+    uint16_t validTimezone = timezone != 0x00 && (uint16_t) strlen(timezone) >= 0x04;
 
     if (validTimezone)
     {
-        word16 firstThreeAreLetters =
+        uint16_t firstThreeAreLetters =
             (CharacterClassTable[(unsigned char) timezone[0x00]] & 0x0C) != 0x00 &&
             (CharacterClassTable[(unsigned char) timezone[0x01]] & 0x0C) != 0x00 &&
             (CharacterClassTable[(unsigned char) timezone[0x02]] & 0x0C) != 0x00;
-        word16 offsetStartsWithDigit =
+        uint16_t offsetStartsWithDigit =
             (CharacterClassTable[(unsigned char) timezone[0x03]] & 0x02) != 0x00;
-        word16 offsetStartsWithSign = timezone[0x03] == '-' || timezone[0x03] == '+';
-        word16 signedOffsetHasDigit =
+        uint16_t offsetStartsWithSign = timezone[0x03] == '-' || timezone[0x03] == '+';
+        uint16_t signedOffsetHasDigit =
             (CharacterClassTable[(unsigned char) timezone[0x04]] & 0x02) != 0x00;
 
         validTimezone = firstThreeAreLetters &&
@@ -51,7 +51,7 @@ void InitializeTimezoneFromEnvironment(void)
 
     {
         long offsetSeconds = ParseSignedDecimalLong(timezone + 0x03) * 0x0E10L;
-        TimezoneOffsetLowWord = (word16) offsetSeconds;
+        TimezoneOffsetLowWord = (uint16_t) offsetSeconds;
         TimezoneOffsetHighWord = HIGH_WORD(offsetSeconds);
     }
 
@@ -62,7 +62,7 @@ void InitializeTimezoneFromEnvironment(void)
         {
             if ((CharacterClassTable[(unsigned char) timezone[index]] & 0x0C) != 0x00)
             {
-                if ((word16) strlen(timezone + index) >= 0x03 &&
+                if ((uint16_t) strlen(timezone + index) >= 0x03 &&
                     (CharacterClassTable[(unsigned char) timezone[index + 0x01]] & 0x0C) != 0x00 &&
                     (CharacterClassTable[(unsigned char) timezone[index + 0x02]] & 0x0C) != 0x00)
                 {
@@ -83,16 +83,16 @@ void InitializeTimezoneFromEnvironment(void)
 // Called from:
 //      CaptureLocalClockSnapshot
 //      ConvertLocalDateTimeToEpochSeconds
-word16 IsDaylightSavingTime(
-    word16 yearsSince1970,
-    word16 month,
-    word16 dayOrDayOfYear,
-    byte hour)
+uint16_t IsDaylightSavingTime(
+    uint16_t yearsSince1970,
+    uint16_t month,
+    uint16_t dayOrDayOfYear,
+    uint8_t hour)
 {
-    word16 resolvedMonth = month;
+    uint16_t resolvedMonth = month;
     if (month == 0x00)
     {
-        word16 normalizedDay = dayOrDayOfYear;
+        uint16_t normalizedDay = dayOrDayOfYear;
         if (dayOrDayOfYear >= 0x3B && ((yearsSince1970 + 0x46) & 0x03) == 0x00)
             normalizedDay = dayOrDayOfYear - 0x01;
         resolvedMonth = 0x00;
@@ -116,15 +116,15 @@ word16 IsDaylightSavingTime(
         if (resolvedMonth != 0x0A)
             return TRUE;
     }
-    word16 transitionDay;
+    uint16_t transitionDay;
     if (yearsSince1970 > 0x10 && resolvedMonth == 0x04)
         transitionDay = CalendarBoundaryTable[resolvedMonth - 0x01] + 0x07;
     else
         transitionDay = CalendarBoundaryTable[resolvedMonth];
-    if ((((byte) yearsSince1970 + 0xB2) & 0x03) != 0x00)
+    if ((((uint8_t) yearsSince1970 + 0xB2) & 0x03) != 0x00)
         --transitionDay;
-    transitionDay -= (uint16) ((uint32) (yearsSince1970 * 0x016D +
-                                   transitionDay + ((yearsSince1970 + 0x01) >> 0x02) + 0x04) %
+    transitionDay -= (uint16_t) ((uint32_t) (yearsSince1970 * 0x016D +
+                                     transitionDay + ((yearsSince1970 + 0x01) >> 0x02) + 0x04) %
         0x07);
     if (resolvedMonth == 0x04)
     {

@@ -8,22 +8,22 @@
 // 3386:0008: word16 DrawRepeatingFrameTileSequence(...)
 // Called from:
 //      DrawActiveTextWindowFrame
-word16 DrawRepeatingFrameTileSequence(
-    const word16 *frameDefinition,
-    word16 sequenceIndex,
-    int16 x,
-    int16 y,
-    word16 tileCount,
-    word16 horizontal)
+uint16_t DrawRepeatingFrameTileSequence(
+    const uint16_t *frameDefinition,
+    uint16_t sequenceIndex,
+    int16_t x,
+    int16_t y,
+    uint16_t tileCount,
+    uint16_t horizontal)
 {
-    byte tileShift = VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05;
-    word16 currentIndex = sequenceIndex;
-    word16 drawn;
+    uint8_t tileShift = VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05;
+    uint16_t currentIndex = sequenceIndex;
+    uint16_t drawn;
     for (drawn = 0x00; drawn < tileCount; ++drawn)
     {
-        const byte *tileAtlas = TacticalTileStrip;
+        const uint8_t *tileAtlas = TacticalTileStrip;
         Draw8x8VideoTile(
-            (const byte *) tileAtlas +
+            (const uint8_t *) tileAtlas +
                 (frameDefinition[currentIndex] << tileShift),
             x,
             y);

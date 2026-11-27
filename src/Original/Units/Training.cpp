@@ -15,9 +15,9 @@
 // VERIFIED against physical-alias ASM 24C5:0428-0475 (2507:0008-0055).
 void EnableTrainingUnitSelectionSlots(void)
 {
-    word16 pilotRow;
-    word16 lanceSlot;
-    word16 pilotId;
+    uint16_t pilotRow;
+    uint16_t lanceSlot;
+    uint16_t pilotId;
 
     for (pilotRow = 0x0002; pilotRow < 0x0005; ++pilotRow)
     {
@@ -32,25 +32,25 @@ void EnableTrainingUnitSelectionSlots(void)
 // 2507:16E9: draw one entry in the two-choice training category window.
 // Verified against 2507:16E9-1777.
 void DrawTrainingCategoryOption(
-    word16 optionIndex,
-    word16 selectedState)
+    uint16_t optionIndex,
+    uint16_t selectedState)
 {
-    word16 previousWindow = ActiveTextWindowIndex;
-    word16 leftX;
-    word16 topY;
-    word16 width;
+    uint16_t previousWindow = ActiveTextWindowIndex;
+    uint16_t leftX;
+    uint16_t topY;
+    uint16_t width;
     const char *label;
 
     SelectTextWindow(0x13);
     HideMouseCursorOverlay();
     leftX = ActiveTextWindowLeftTile << 0x03;
-    topY = (word16) ((ActiveTextWindowTopTile + 0x02) << 0x03);
-    topY = (word16) (topY + optionIndex * (ActiveFontLineHeight + 0x02));
+    topY = (uint16_t) ((ActiveTextWindowTopTile + 0x02) << 0x03);
+    topY = (uint16_t) (topY + optionIndex * (ActiveFontLineHeight + 0x02));
     width = ActiveTextWindowWidthTiles << 0x03;
     label = TrainingCategoryLabelTextTable[optionIndex];
     DrawCenteredClippedText(label, 0x00, leftX, topY, width,
-        (byte) LanceEditorLayout.TrainingCategoryTextColor[selectedState],
-        (byte) LanceEditorLayout.TrainingCategoryBackgroundColor[selectedState]);
+        (uint8_t) LanceEditorLayout.TrainingCategoryTextColor[selectedState],
+        (uint8_t) LanceEditorLayout.TrainingCategoryBackgroundColor[selectedState]);
     ShowMouseCursorOverlay();
     SelectTextWindow(previousWindow);
 }
@@ -58,51 +58,51 @@ void DrawTrainingCategoryOption(
 // 2507:1778: draw one entry in the six-choice training scenario window.
 // Verified against 2507:1778-1847.
 void DrawTrainingScenarioOption(
-    word16 scenarioIndex,
-    word16 selectedState)
+    uint16_t scenarioIndex,
+    uint16_t selectedState)
 {
-    word16 previousWindow = ActiveTextWindowIndex;
-    word16 leftX;
-    word16 topY;
-    word16 width;
+    uint16_t previousWindow = ActiveTextWindowIndex;
+    uint16_t leftX;
+    uint16_t topY;
+    uint16_t width;
     char *label;
 
     SelectTextWindow(0x14);
     HideMouseCursorOverlay();
-    leftX = (word16) (ActiveTextWindowLeftTile << 0x03);
-    leftX = (word16) (leftX +
+    leftX = (uint16_t) (ActiveTextWindowLeftTile << 0x03);
+    leftX = (uint16_t) (leftX +
         (scenarioIndex & 0x01) * (ActiveTextWindowWidthTiles << 0x02));
-    topY = (word16) ((ActiveTextWindowTopTile + 0x02) << 0x03);
-    topY = (word16) (topY + (scenarioIndex >> 0x01) * (ActiveFontLineHeight + 0x02));
+    topY = (uint16_t) ((ActiveTextWindowTopTile + 0x02) << 0x03);
+    topY = (uint16_t) (topY + (scenarioIndex >> 0x01) * (ActiveFontLineHeight + 0x02));
     width = ActiveTextWindowWidthTiles << 0x02;
     label = TrainingScenarioLabelTextTable[scenarioIndex];
     label[0x00] = TrainingScenarioAvailability[scenarioIndex] == 0x01 ? '*' : ' ';
     DrawCenteredClippedText(label, 0x00, leftX, topY, width,
-        (byte) LanceEditorLayout.TrainingScenarioTextColor[selectedState],
-        (byte) LanceEditorLayout.TrainingScenarioBackgroundColor[selectedState]);
+        (uint8_t) LanceEditorLayout.TrainingScenarioTextColor[selectedState],
+        (uint8_t) LanceEditorLayout.TrainingScenarioBackgroundColor[selectedState]);
     ShowMouseCursorOverlay();
     SelectTextWindow(previousWindow);
 }
 
 // 2507:0E04: select the training mode and, for normal training, its scenario.
 // Verified against 2507:0E04-1141.
-int16 RunTrainingScenarioSelection(void)
+int16_t RunTrainingScenarioSelection(void)
 {
-    word16 previousWindow;
-    word16 categoryIndex = 0x00;
-    word16 previousIndex = 0x00;
-    word16 accepted;
-    word16 chooseLance = FALSE;
-    word16 inputCode;
-    word16 mouseButtonState;
-    word16 mouseButtonEvent;
-    int16 mouseX;
-    int16 mouseY;
-    word16 entryIndex;
-    int16 leftX;
-    int16 topY;
-    int16 width;
-    int16 height;
+    uint16_t previousWindow;
+    uint16_t categoryIndex = 0x00;
+    uint16_t previousIndex = 0x00;
+    uint16_t accepted;
+    uint16_t chooseLance = FALSE;
+    uint16_t inputCode;
+    uint16_t mouseButtonState;
+    uint16_t mouseButtonEvent;
+    int16_t mouseX;
+    int16_t mouseY;
+    uint16_t entryIndex;
+    int16_t leftX;
+    int16_t topY;
+    int16_t width;
+    int16_t height;
 
     ReplayScenarioRequested = FALSE;
     SceneTransitionAbortFlag = FALSE;
@@ -118,11 +118,11 @@ int16 RunTrainingScenarioSelection(void)
     {
         if (ServiceMusicAndCheckKeyboardInput() != FALSE)
         {
-            inputCode = (word16) NormalizeNavigationKeyCode(
+            inputCode = (uint16_t) NormalizeNavigationKeyCode(
                 ReadTranslatedKeypress());
-            if ((int16) inputCode == TranslatedExtendedKey(KEY_UP))
+            if ((int16_t) inputCode == TranslatedExtendedKey(KEY_UP))
                 --categoryIndex;
-            else if ((int16) inputCode == TranslatedExtendedKey(KEY_DOWN))
+            else if ((int16_t) inputCode == TranslatedExtendedKey(KEY_DOWN))
                 ++categoryIndex;
             else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
             {
@@ -130,7 +130,7 @@ int16 RunTrainingScenarioSelection(void)
                     chooseLance = TRUE;
                 accepted = TRUE;
             }
-            if ((int16) categoryIndex < 0x00)
+            if ((int16_t) categoryIndex < 0x00)
                 categoryIndex = 0x01;
             if (categoryIndex > 0x01)
                 categoryIndex = 0x00;
@@ -138,18 +138,18 @@ int16 RunTrainingScenarioSelection(void)
         else if (MouseInputDisabled == FALSE)
         {
             mouseX = MouseCursorRequestedX;
-            mouseY = (int16) MouseY;
+            mouseY = (int16_t) MouseY;
             mouseButtonState = MouseButtonState;
             mouseButtonEvent = PendingMouseButtonEvent;
             PendingMouseButtonEvent = FALSE;
             for (entryIndex = 0x00; entryIndex < 0x02; ++entryIndex)
             {
-                leftX = (int16) ((ActiveTextWindowLeftTile << 0x03) +
+                leftX = (int16_t) ((ActiveTextWindowLeftTile << 0x03) +
                     LanceEditorLayout.TrainingCategoryRegionLeft[entryIndex]);
-                topY = (int16) ((ActiveTextWindowTopTile << 0x03) +
+                topY = (int16_t) ((ActiveTextWindowTopTile << 0x03) +
                     LanceEditorLayout.TrainingCategoryRegionTop[entryIndex]);
-                width = (int16) LanceEditorLayout.TrainingCategoryRegionWidth[entryIndex];
-                height = (int16) LanceEditorLayout.TrainingCategoryRegionHeight[entryIndex];
+                width = (int16_t) LanceEditorLayout.TrainingCategoryRegionWidth[entryIndex];
+                height = (int16_t) LanceEditorLayout.TrainingCategoryRegionHeight[entryIndex];
                 if (mouseX >= leftX && mouseX < leftX + width &&
                     mouseY >= topY && mouseY < topY + height)
                 {
@@ -174,7 +174,7 @@ int16 RunTrainingScenarioSelection(void)
 
     if (chooseLance == FALSE)
     {
-        word16 scenarioIndex = 0x00;
+        uint16_t scenarioIndex = 0x00;
         previousIndex = 0x00;
         SelectTextWindow(0x14);
         DrawTrainingScenarioOption(scenarioIndex, TRUE);
@@ -184,18 +184,18 @@ int16 RunTrainingScenarioSelection(void)
         {
             if (ServiceMusicAndCheckKeyboardInput() != FALSE)
             {
-                inputCode = (word16) NormalizeNavigationKeyCode(
+                inputCode = (uint16_t) NormalizeNavigationKeyCode(
                     ReadTranslatedKeypress());
-                if ((int16) inputCode == TranslatedExtendedKey(KEY_UP))
+                if ((int16_t) inputCode == TranslatedExtendedKey(KEY_UP))
                     scenarioIndex -= 0x02;
-                else if ((int16) inputCode == TranslatedExtendedKey(KEY_DOWN))
+                else if ((int16_t) inputCode == TranslatedExtendedKey(KEY_DOWN))
                     scenarioIndex += 0x02;
-                else if ((int16) inputCode == TranslatedExtendedKey(KEY_LEFT) ||
-                    (int16) inputCode == TranslatedExtendedKey(KEY_RIGHT))
+                else if ((int16_t) inputCode == TranslatedExtendedKey(KEY_LEFT) ||
+                    (int16_t) inputCode == TranslatedExtendedKey(KEY_RIGHT))
                     scenarioIndex ^= 0x01;
                 else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
                     accepted = TRUE;
-                if ((int16) scenarioIndex < 0x00)
+                if ((int16_t) scenarioIndex < 0x00)
                     scenarioIndex += 0x06;
                 if (scenarioIndex > 0x05)
                     scenarioIndex -= 0x06;
@@ -203,18 +203,18 @@ int16 RunTrainingScenarioSelection(void)
             else if (MouseInputDisabled == FALSE)
             {
                 mouseX = MouseCursorRequestedX;
-                mouseY = (int16) MouseY;
+                mouseY = (int16_t) MouseY;
                 mouseButtonState = MouseButtonState;
                 mouseButtonEvent = PendingMouseButtonEvent;
                 PendingMouseButtonEvent = FALSE;
                 for (entryIndex = 0x00; entryIndex < 0x06; ++entryIndex)
                 {
-                    leftX = (int16) ((ActiveTextWindowLeftTile << 0x03) +
+                    leftX = (int16_t) ((ActiveTextWindowLeftTile << 0x03) +
                         LanceEditorLayout.TrainingScenarioRegionLeft[entryIndex]);
-                    topY = (int16) ((ActiveTextWindowTopTile << 0x03) +
+                    topY = (int16_t) ((ActiveTextWindowTopTile << 0x03) +
                         LanceEditorLayout.TrainingScenarioRegionTop[entryIndex]);
-                    width = (int16) LanceEditorLayout.TrainingScenarioRegionWidth[entryIndex];
-                    height = (int16) LanceEditorLayout.TrainingScenarioRegionHeight[entryIndex];
+                    width = (int16_t) LanceEditorLayout.TrainingScenarioRegionWidth[entryIndex];
+                    height = (int16_t) LanceEditorLayout.TrainingScenarioRegionHeight[entryIndex];
                     if (mouseX >= leftX && mouseX < leftX + width &&
                         mouseY >= topY && mouseY < topY + height)
                     {
@@ -237,36 +237,36 @@ int16 RunTrainingScenarioSelection(void)
     SelectTextWindow(previousWindow);
     if (chooseLance != FALSE)
         PrepareLanceSelection(0x02, -0x01);
-    return (int16) chooseLance;
+    return (int16_t) chooseLance;
 }
 
 // 2507:1142: compose the training deployment/scenario selection screen.
 // Verified against 2507:1142-152D.
 void DrawTrainingScenarioSelectionScreen(void)
 {
-    word16 previousWindow = ActiveTextWindowIndex;
-    word16 leftX;
-    word16 topY;
-    word16 width;
-    word16 gridTopY;
-    word16 gridX;
-    word16 groupIndex;
-    word16 rowIndex;
-    word16 halfLineOffset;
-    word16 fullLineOffset;
-    word16 index;
+    uint16_t previousWindow = ActiveTextWindowIndex;
+    uint16_t leftX;
+    uint16_t topY;
+    uint16_t width;
+    uint16_t gridTopY;
+    uint16_t gridX;
+    uint16_t groupIndex;
+    uint16_t rowIndex;
+    uint16_t halfLineOffset;
+    uint16_t fullLineOffset;
+    uint16_t index;
     const char *label;
-    byte *displayBuffer = PrimaryScreenBuffer;
-    byte *videoBuffer = VideoFramebuffer;
+    uint8_t *displayBuffer = PrimaryScreenBuffer;
+    uint8_t *videoBuffer = VideoFramebuffer;
 
     HideMouseCursorOverlay();
     SetActiveRenderTarget(displayBuffer);
     SelectTextWindow(0x12);
     FillVideoRectangle(
-        (int16) (ActiveTextWindowLeftTile << 0x03),
-        (int16) (ActiveTextWindowTopTile << 0x03),
-        (int16) (((ActiveTextWindowLeftTile + ActiveTextWindowWidthTiles) << 0x03) - 0x01),
-        (int16) (((ActiveTextWindowTopTile + ActiveTextWindowHeightTiles) << 0x03) - 0x01),
+        (int16_t) (ActiveTextWindowLeftTile << 0x03),
+        (int16_t) (ActiveTextWindowTopTile << 0x03),
+        (int16_t) (((ActiveTextWindowLeftTile + ActiveTextWindowWidthTiles) << 0x03) - 0x01),
+        (int16_t) (((ActiveTextWindowTopTile + ActiveTextWindowHeightTiles) << 0x03) - 0x01),
         0x0C);
     leftX = ActiveTextWindowLeftTile << 0x03;
     topY = ActiveTextWindowTopTile << 0x03;
@@ -276,39 +276,39 @@ void DrawTrainingScenarioSelectionScreen(void)
         label = TrainingDeploymentRosterLabelTextTable[index];
         DrawCenteredClippedText(label, 0x00, leftX, topY, width,
             0x0F, 0x00);
-        topY = (word16) (topY +
+        topY = (uint16_t) (topY +
             (ActiveFontLineHeight << 0x01));
     }
-    gridTopY = (word16) (((ActiveTextWindowTopTile + 0x04) << 0x03) +
+    gridTopY = (uint16_t) (((ActiveTextWindowTopTile + 0x04) << 0x03) +
         ActiveFontLineHeight);
-    halfLineOffset = (word16) (((byte) ActiveFontLineHeight >> 0x01) - 0x02);
-    fullLineOffset = (word16) (ActiveFontLineHeight - 0x02);
+    halfLineOffset = (uint16_t) (((uint8_t) ActiveFontLineHeight >> 0x01) - 0x02);
+    fullLineOffset = (uint16_t) (ActiveFontLineHeight - 0x02);
     DrawClippedAxisAlignedLine(
-        (int16) LanceEditorLayout.TrainingDeploymentFrameLeft[0x00],
-        (int16) (gridTopY + halfLineOffset),
-        (int16) (LanceEditorLayout.TrainingDeploymentFrameLeft[0x02] + 0x01),
-        (int16) (gridTopY + halfLineOffset), 0x0D);
+        (int16_t) LanceEditorLayout.TrainingDeploymentFrameLeft[0x00],
+        (int16_t) (gridTopY + halfLineOffset),
+        (int16_t) (LanceEditorLayout.TrainingDeploymentFrameLeft[0x02] + 0x01),
+        (int16_t) (gridTopY + halfLineOffset), 0x0D);
     DrawClippedAxisAlignedLine(
-        (int16) LanceEditorLayout.TrainingDeploymentFrameLeft[0x00],
-        (int16) (gridTopY + halfLineOffset + 0x01),
-        (int16) (LanceEditorLayout.TrainingDeploymentFrameLeft[0x02] + 0x01),
-        (int16) (gridTopY + halfLineOffset + 0x01), 0x0D);
+        (int16_t) LanceEditorLayout.TrainingDeploymentFrameLeft[0x00],
+        (int16_t) (gridTopY + halfLineOffset + 0x01),
+        (int16_t) (LanceEditorLayout.TrainingDeploymentFrameLeft[0x02] + 0x01),
+        (int16_t) (gridTopY + halfLineOffset + 0x01), 0x0D);
     for (groupIndex = 0x00; groupIndex < 0x03; ++groupIndex)
     {
         gridX = LanceEditorLayout.TrainingDeploymentFrameLeft[groupIndex];
         topY = gridTopY;
         for (rowIndex = 0x00; rowIndex < 0x05; ++rowIndex)
         {
-            word16 lineTopY = topY;
+            uint16_t lineTopY = topY;
             if (rowIndex == 0x00 && groupIndex != 0x01)
-                lineTopY = (word16) (topY + halfLineOffset);
-            DrawClippedAxisAlignedLine((int16) gridX,
-                (int16) lineTopY, (int16) gridX,
-                (int16) (topY + fullLineOffset), 0x0D);
-            DrawClippedAxisAlignedLine((int16) (gridX + 0x01),
-                (int16) lineTopY, (int16) (gridX + 0x01),
-                (int16) (topY + fullLineOffset), 0x0D);
-            topY = (word16) (topY +
+                lineTopY = (uint16_t) (topY + halfLineOffset);
+            DrawClippedAxisAlignedLine((int16_t) gridX,
+                (int16_t) lineTopY, (int16_t) gridX,
+                (int16_t) (topY + fullLineOffset), 0x0D);
+            DrawClippedAxisAlignedLine((int16_t) (gridX + 0x01),
+                (int16_t) lineTopY, (int16_t) (gridX + 0x01),
+                (int16_t) (topY + fullLineOffset), 0x0D);
+            topY = (uint16_t) (topY +
                 (ActiveFontLineHeight *
                     (rowIndex == 0x00 ? 0x02 : 0x03)));
         }
@@ -318,10 +318,10 @@ void DrawTrainingScenarioSelectionScreen(void)
 
     SelectTextWindow(0x13);
     FillVideoRectangle(
-        (int16) (ActiveTextWindowLeftTile << 0x03),
-        (int16) (ActiveTextWindowTopTile << 0x03),
-        (int16) (((ActiveTextWindowLeftTile + ActiveTextWindowWidthTiles) << 0x03) - 0x01),
-        (int16) (((ActiveTextWindowTopTile + ActiveTextWindowHeightTiles) << 0x03) - 0x01),
+        (int16_t) (ActiveTextWindowLeftTile << 0x03),
+        (int16_t) (ActiveTextWindowTopTile << 0x03),
+        (int16_t) (((ActiveTextWindowLeftTile + ActiveTextWindowWidthTiles) << 0x03) - 0x01),
+        (int16_t) (((ActiveTextWindowTopTile + ActiveTextWindowHeightTiles) << 0x03) - 0x01),
         0x0C);
     label = TrainingCategoryHeadingText;
     DrawCenteredClippedText(label, 0x00,
@@ -333,10 +333,10 @@ void DrawTrainingScenarioSelectionScreen(void)
 
     SelectTextWindow(0x14);
     FillVideoRectangle(
-        (int16) (ActiveTextWindowLeftTile << 0x03),
-        (int16) (ActiveTextWindowTopTile << 0x03),
-        (int16) (((ActiveTextWindowLeftTile + ActiveTextWindowWidthTiles) << 0x03) - 0x01),
-        (int16) (((ActiveTextWindowTopTile + ActiveTextWindowHeightTiles) << 0x03) - 0x01),
+        (int16_t) (ActiveTextWindowLeftTile << 0x03),
+        (int16_t) (ActiveTextWindowTopTile << 0x03),
+        (int16_t) (((ActiveTextWindowLeftTile + ActiveTextWindowWidthTiles) << 0x03) - 0x01),
+        (int16_t) (((ActiveTextWindowTopTile + ActiveTextWindowHeightTiles) << 0x03) - 0x01),
         0x0C);
     label = TrainingScenarioHeadingText;
     DrawCenteredClippedText(label, 0x00,
@@ -358,22 +358,22 @@ void DrawTrainingScenarioSelectionScreen(void)
 // 2507:152E: draw one of the sixteen training deployment roster cells.
 // Verified against 2507:152E-16E8.
 void DrawTrainingDeploymentSlot(
-    word16 slotIndex,
-    word16 selectedState)
+    uint16_t slotIndex,
+    uint16_t selectedState)
 {
-    word16 previousWindow = ActiveTextWindowIndex;
-    word16 groupIndex;
-    word16 groupSlot;
-    word16 rosterIndex;
-    word16 leftX;
-    word16 topY;
-    word16 width;
+    uint16_t previousWindow = ActiveTextWindowIndex;
+    uint16_t groupIndex;
+    uint16_t groupSlot;
+    uint16_t rosterIndex;
+    uint16_t leftX;
+    uint16_t topY;
+    uint16_t width;
     const char *label;
     RevengeUnitRecord *unitRecord;
 
     SelectTextWindow(0x12);
     HideMouseCursorOverlay();
-    topY = (word16) ((ActiveTextWindowTopTile + 0x04) << 0x03);
+    topY = (uint16_t) ((ActiveTextWindowTopTile + 0x04) << 0x03);
     groupIndex = slotIndex / 0x05;
     groupSlot = slotIndex % 0x05;
     if (groupIndex == 0x03)
@@ -390,28 +390,28 @@ void DrawTrainingDeploymentSlot(
         width = LanceEditorLayout.TrainingRosterLabelWidth[groupIndex];
         if (groupSlot == 0x04)
         {
-            topY = (word16) (topY +
+            topY = (uint16_t) (topY +
                 (ActiveFontLineHeight << 0x01));
             label = UnitRosterColumnLabelTextTable[groupIndex];
         }
         else
         {
-            topY = (word16) (topY +
+            topY = (uint16_t) (topY +
                 (groupSlot * 0x03 + 0x04) *
                     ActiveFontLineHeight);
             rosterIndex = groupIndex * 0x04 + groupSlot;
             unitRecord = &LiveScenarioUnits[rosterIndex];
             label = PilotSurnameTextTable[unitRecord->pilotId];
             DrawCenteredClippedText(label, 0x00, leftX, topY, width,
-                (byte) LanceEditorLayout.TrainingDeploymentTextColor[selectedState],
-                (byte) LanceEditorLayout.TrainingDeploymentBackgroundColor[selectedState]);
-            topY = (word16) (topY + ActiveFontLineHeight);
+                (uint8_t) LanceEditorLayout.TrainingDeploymentTextColor[selectedState],
+                (uint8_t) LanceEditorLayout.TrainingDeploymentBackgroundColor[selectedState]);
+            topY = (uint16_t) (topY + ActiveFontLineHeight);
             label = UnitNameTable[unitRecord->unitTypeId];
         }
     }
     DrawCenteredClippedText(label, 0x00, leftX, topY, width,
-        (byte) LanceEditorLayout.TrainingDeploymentTextColor[selectedState],
-        (byte) LanceEditorLayout.TrainingDeploymentBackgroundColor[selectedState]);
+        (uint8_t) LanceEditorLayout.TrainingDeploymentTextColor[selectedState],
+        (uint8_t) LanceEditorLayout.TrainingDeploymentBackgroundColor[selectedState]);
     ShowMouseCursorOverlay();
     SelectTextWindow(previousWindow);
 }
@@ -419,61 +419,61 @@ void DrawTrainingDeploymentSlot(
 // 2507:0C70: draw the raised frame and centered label used by training choices.
 // Verified against 2507:0C70-0E03.
 void DrawTrainingChoiceButton(
-    word16 leftX,
-    word16 topY,
+    uint16_t leftX,
+    uint16_t topY,
     const char *label,
-    word16 width)
+    uint16_t width)
 {
-    word16 lineHeight = ActiveFontLineHeight;
+    uint16_t lineHeight = ActiveFontLineHeight;
 
     HideMouseCursorOverlay();
-    FillVideoRectangle((int16) (leftX - 0x02),
-        (int16) (topY - 0x02),
-        (int16) (leftX + width + 0x02),
-        (int16) (topY + lineHeight + 0x01), 0x0E);
+    FillVideoRectangle((int16_t) (leftX - 0x02),
+        (int16_t) (topY - 0x02),
+        (int16_t) (leftX + width + 0x02),
+        (int16_t) (topY + lineHeight + 0x01), 0x0E);
     DrawCenteredClippedText(label, 0x00, leftX, topY, width, 0x0F, 0x00);
-    DrawClippedAxisAlignedLine((int16) (leftX - 0x04),
-        (int16) (topY - 0x03), (int16) (leftX + width + 0x02),
-        (int16) (topY - 0x03), 0x0F);
-    DrawClippedAxisAlignedLine((int16) (leftX - 0x03),
-        (int16) (topY - 0x02), (int16) (leftX + width + 0x01),
-        (int16) (topY - 0x02), 0x0F);
-    DrawClippedAxisAlignedLine((int16) (leftX - 0x04),
-        (int16) (topY - 0x02), (int16) (leftX - 0x04),
-        (int16) (topY + lineHeight + 0x01), 0x0F);
-    DrawClippedAxisAlignedLine((int16) (leftX - 0x03),
-        (int16) (topY - 0x01), (int16) (leftX - 0x03),
-        (int16) (topY + lineHeight), 0x0F);
-    DrawClippedAxisAlignedLine((int16) (leftX + width + 0x02),
-        (int16) (topY + lineHeight + 0x02),
-        (int16) (leftX + width + 0x02),
-        (int16) (topY - 0x02), 0x0D);
-    DrawClippedAxisAlignedLine((int16) (leftX + width + 0x01),
-        (int16) (topY + lineHeight + 0x01),
-        (int16) (leftX + width + 0x01),
-        (int16) (topY - 0x01), 0x0D);
-    DrawClippedAxisAlignedLine((int16) (leftX - 0x02),
-        (int16) (topY + lineHeight + 0x01),
-        (int16) (leftX + width + 0x01),
-        (int16) (topY + lineHeight + 0x01), 0x0D);
-    DrawClippedAxisAlignedLine((int16) (leftX - 0x01),
-        (int16) (topY + lineHeight + 0x02),
-        (int16) (leftX + width + 0x02),
-        (int16) (topY + lineHeight + 0x02), 0x0D);
+    DrawClippedAxisAlignedLine((int16_t) (leftX - 0x04),
+        (int16_t) (topY - 0x03), (int16_t) (leftX + width + 0x02),
+        (int16_t) (topY - 0x03), 0x0F);
+    DrawClippedAxisAlignedLine((int16_t) (leftX - 0x03),
+        (int16_t) (topY - 0x02), (int16_t) (leftX + width + 0x01),
+        (int16_t) (topY - 0x02), 0x0F);
+    DrawClippedAxisAlignedLine((int16_t) (leftX - 0x04),
+        (int16_t) (topY - 0x02), (int16_t) (leftX - 0x04),
+        (int16_t) (topY + lineHeight + 0x01), 0x0F);
+    DrawClippedAxisAlignedLine((int16_t) (leftX - 0x03),
+        (int16_t) (topY - 0x01), (int16_t) (leftX - 0x03),
+        (int16_t) (topY + lineHeight), 0x0F);
+    DrawClippedAxisAlignedLine((int16_t) (leftX + width + 0x02),
+        (int16_t) (topY + lineHeight + 0x02),
+        (int16_t) (leftX + width + 0x02),
+        (int16_t) (topY - 0x02), 0x0D);
+    DrawClippedAxisAlignedLine((int16_t) (leftX + width + 0x01),
+        (int16_t) (topY + lineHeight + 0x01),
+        (int16_t) (leftX + width + 0x01),
+        (int16_t) (topY - 0x01), 0x0D);
+    DrawClippedAxisAlignedLine((int16_t) (leftX - 0x02),
+        (int16_t) (topY + lineHeight + 0x01),
+        (int16_t) (leftX + width + 0x01),
+        (int16_t) (topY + lineHeight + 0x01), 0x0D);
+    DrawClippedAxisAlignedLine((int16_t) (leftX - 0x01),
+        (int16_t) (topY + lineHeight + 0x02),
+        (int16_t) (leftX + width + 0x02),
+        (int16_t) (topY + lineHeight + 0x02), 0x0D);
     ShowMouseCursorOverlay();
 }
 
 // 2507:0AB1: draw or toggle one of twelve training unit choices.
 // Verified against 2507:0AB1-0BC2.
-void DrawTrainingUnitChoice(word16 choiceIndex, word16 selectedState)
+void DrawTrainingUnitChoice(uint16_t choiceIndex, uint16_t selectedState)
 {
-    word16 row = choiceIndex / 0x04;
-    word16 column = choiceIndex % 0x04;
-    word16 unitIndex = (word16) (UnitEditorAllegiance *
+    uint16_t row = choiceIndex / 0x04;
+    uint16_t column = choiceIndex % 0x04;
+    uint16_t unitIndex = (uint16_t) (UnitEditorAllegiance *
             0x0C +
         choiceIndex);
-    word16 leftX = LanceEditorLayout.TrainingDeploymentSlotLeft[row];
-    word16 topY = (word16) (((ActiveTextWindowTopTile + 0x07) << 0x03) +
+    uint16_t leftX = LanceEditorLayout.TrainingDeploymentSlotLeft[row];
+    uint16_t topY = (uint16_t) (((ActiveTextWindowTopTile + 0x07) << 0x03) +
         (ActiveFontLineHeight * (column * 0x03 + 0x05)) - 0x03);
     RevengeUnitRecord *unitRecord = &LiveScenarioUnits[unitIndex];
     const char *label;
@@ -489,9 +489,9 @@ void DrawTrainingUnitChoice(word16 choiceIndex, word16 selectedState)
     }
     else
     {
-        XorVideoRectangle((int16) leftX, (int16) topY,
-            (int16) (leftX + 0x4D),
-            (int16) (topY + ActiveFontLineHeight - 0x01),
+        XorVideoRectangle((int16_t) leftX, (int16_t) topY,
+            (int16_t) (leftX + 0x4D),
+            (int16_t) (topY + ActiveFontLineHeight - 0x01),
             0x01);
     }
     ShowMouseCursorOverlay();
@@ -499,12 +499,12 @@ void DrawTrainingUnitChoice(word16 choiceIndex, word16 selectedState)
 
 // 2507:0BC3: draw or toggle one of four training control choices.
 // Verified against 2507:0BC3-0C6F.
-void DrawTrainingControlChoice(word16 choiceIndex, word16 selectedState)
+void DrawTrainingControlChoice(uint16_t choiceIndex, uint16_t selectedState)
 {
-    word16 group = choiceIndex / 0x02;
-    word16 row = choiceIndex % 0x02;
-    word16 leftX = LanceEditorLayout.TrainingControlChoiceColumn[group];
-    word16 topY = (word16) (((ActiveTextWindowTopTile + 0x07) << 0x03) +
+    uint16_t group = choiceIndex / 0x02;
+    uint16_t row = choiceIndex % 0x02;
+    uint16_t leftX = LanceEditorLayout.TrainingControlChoiceColumn[group];
+    uint16_t topY = (uint16_t) (((ActiveTextWindowTopTile + 0x07) << 0x03) +
         (ActiveFontLineHeight * (row * 0x03 + 0x13)) - 0x03);
     const char *label = TrainingControlLabelTextTable[choiceIndex];
 
@@ -512,9 +512,9 @@ void DrawTrainingControlChoice(word16 choiceIndex, word16 selectedState)
     if (selectedState != FALSE)
         DrawTrainingChoiceButton(leftX, topY, label, 0x5A);
     else
-        XorVideoRectangle((int16) leftX, (int16) topY,
-            (int16) (leftX + 0x59),
-            (int16) (topY + ActiveFontLineHeight - 0x01),
+        XorVideoRectangle((int16_t) leftX, (int16_t) topY,
+            (int16_t) (leftX + 0x59),
+            (int16_t) (topY + ActiveFontLineHeight - 0x01),
             0x01);
     ShowMouseCursorOverlay();
 }
@@ -523,19 +523,19 @@ void DrawTrainingControlChoice(word16 choiceIndex, word16 selectedState)
 // Verified against 2507:0794-0AB0.
 void DrawTrainingDeploymentScreen(void)
 {
-    word16 index;
-    word16 leftX;
-    word16 topY;
-    word16 width;
-    word16 gridTopY;
-    word16 gridX;
-    word16 groupIndex;
-    word16 rowIndex;
-    word16 halfLineOffset;
-    word16 fullLineOffset;
+    uint16_t index;
+    uint16_t leftX;
+    uint16_t topY;
+    uint16_t width;
+    uint16_t gridTopY;
+    uint16_t gridX;
+    uint16_t groupIndex;
+    uint16_t rowIndex;
+    uint16_t halfLineOffset;
+    uint16_t fullLineOffset;
     const char *label;
-    byte *displayBuffer = PrimaryScreenBuffer;
-    byte *videoBuffer = VideoFramebuffer;
+    uint8_t *displayBuffer = PrimaryScreenBuffer;
+    uint8_t *videoBuffer = VideoFramebuffer;
 
     HideMouseCursorOverlay();
     SetActiveRenderTarget(displayBuffer);
@@ -548,49 +548,49 @@ void DrawTrainingDeploymentScreen(void)
         label = TrainingDeploymentLabelTextTable[index];
         DrawCenteredClippedText(label, 0x00, leftX, topY, width,
             0x0F, 0x00);
-        topY = (word16) (topY +
+        topY = (uint16_t) (topY +
             (ActiveFontLineHeight << 0x01));
     }
-    topY = (word16) ((ActiveTextWindowTopTile + 0x07) << 0x03);
+    topY = (uint16_t) ((ActiveTextWindowTopTile + 0x07) << 0x03);
     UnitEditorAllegiance = 0x00;
     DrawUnitAllegianceHeader(TRUE);
-    gridTopY = (word16) (topY +
+    gridTopY = (uint16_t) (topY +
         ActiveFontLineHeight);
-    halfLineOffset = (word16) (((byte) ActiveFontLineHeight >> 0x01) - 0x02);
-    fullLineOffset = (word16) (ActiveFontLineHeight - 0x02);
+    halfLineOffset = (uint16_t) (((uint8_t) ActiveFontLineHeight >> 0x01) - 0x02);
+    fullLineOffset = (uint16_t) (ActiveFontLineHeight - 0x02);
     DrawClippedAxisAlignedLine(
-        (int16) LanceEditorLayout.TrainingUnitGroupLeft[0x00],
-        (int16) (gridTopY + halfLineOffset),
-        (int16) (LanceEditorLayout.TrainingUnitGroupLeft[0x02] + 0x01),
-        (int16) (gridTopY + halfLineOffset), 0x0D);
+        (int16_t) LanceEditorLayout.TrainingUnitGroupLeft[0x00],
+        (int16_t) (gridTopY + halfLineOffset),
+        (int16_t) (LanceEditorLayout.TrainingUnitGroupLeft[0x02] + 0x01),
+        (int16_t) (gridTopY + halfLineOffset), 0x0D);
     DrawClippedAxisAlignedLine(
-        (int16) LanceEditorLayout.TrainingUnitGroupLeft[0x00],
-        (int16) (gridTopY + halfLineOffset + 0x01),
-        (int16) (LanceEditorLayout.TrainingUnitGroupLeft[0x02] + 0x01),
-        (int16) (gridTopY + halfLineOffset + 0x01), 0x0D);
+        (int16_t) LanceEditorLayout.TrainingUnitGroupLeft[0x00],
+        (int16_t) (gridTopY + halfLineOffset + 0x01),
+        (int16_t) (LanceEditorLayout.TrainingUnitGroupLeft[0x02] + 0x01),
+        (int16_t) (gridTopY + halfLineOffset + 0x01), 0x0D);
     for (groupIndex = 0x00; groupIndex < 0x03; ++groupIndex)
     {
         gridX = LanceEditorLayout.TrainingUnitGroupLabelLeft[groupIndex];
         width = LanceEditorLayout.TrainingUnitGroupLabelWidth[groupIndex];
         label = UnitRosterColumnLabelTextTable[groupIndex];
         DrawCenteredClippedText(label, 0x00, gridX,
-            (word16) (gridTopY +
+            (uint16_t) (gridTopY +
                 ActiveFontLineHeight),
             width, 0x0E, 0x0C);
         gridX = LanceEditorLayout.TrainingUnitGroupLeft[groupIndex];
         topY = gridTopY;
         for (rowIndex = 0x00; rowIndex < 0x05; ++rowIndex)
         {
-            word16 lineTopY = topY;
+            uint16_t lineTopY = topY;
             if (rowIndex == 0x00 && groupIndex != 0x01)
-                lineTopY = (word16) (topY + halfLineOffset);
-            DrawClippedAxisAlignedLine((int16) gridX,
-                (int16) lineTopY, (int16) gridX,
-                (int16) (topY + fullLineOffset), 0x0D);
-            DrawClippedAxisAlignedLine((int16) (gridX + 0x01),
-                (int16) lineTopY, (int16) (gridX + 0x01),
-                (int16) (topY + fullLineOffset), 0x0D);
-            topY = (word16) (topY +
+                lineTopY = (uint16_t) (topY + halfLineOffset);
+            DrawClippedAxisAlignedLine((int16_t) gridX,
+                (int16_t) lineTopY, (int16_t) gridX,
+                (int16_t) (topY + fullLineOffset), 0x0D);
+            DrawClippedAxisAlignedLine((int16_t) (gridX + 0x01),
+                (int16_t) lineTopY, (int16_t) (gridX + 0x01),
+                (int16_t) (topY + fullLineOffset), 0x0D);
+            topY = (uint16_t) (topY +
                 (ActiveFontLineHeight *
                     (rowIndex == 0x00 ? 0x02 : 0x03)));
         }
@@ -607,28 +607,28 @@ void DrawTrainingDeploymentScreen(void)
 
 // 2507:0057: configure the two twelve-unit training forces.
 // Verified against 2507:0057-0500.
-int16 PrepareTrainingDeployment(void)
+int16_t PrepareTrainingDeployment(void)
 {
-    word16 previousWindow;
-    word16 selectedChoice = 0x00;
-    word16 previousChoice = 0x00;
-    word16 row;
-    word16 column;
-    word16 activated;
-    word16 finished = FALSE;
-    word16 result = FALSE;
-    word16 inputCode;
-    word16 index;
-    word16 mouseButtonState;
-    word16 mouseButtonEvent;
-    int16 mouseX;
-    int16 mouseY;
-    int16 leftX;
-    int16 topY;
-    int16 width;
-    int16 height;
+    uint16_t previousWindow;
+    uint16_t selectedChoice = 0x00;
+    uint16_t previousChoice = 0x00;
+    uint16_t row;
+    uint16_t column;
+    uint16_t activated;
+    uint16_t finished = FALSE;
+    uint16_t result = FALSE;
+    uint16_t inputCode;
+    uint16_t index;
+    uint16_t mouseButtonState;
+    uint16_t mouseButtonEvent;
+    int16_t mouseX;
+    int16_t mouseY;
+    int16_t leftX;
+    int16_t topY;
+    int16_t width;
+    int16_t height;
     RevengeUnitRecord *unitRecord;
-    int16 unitType;
+    int16_t unitType;
 
     ReplayScenarioRequested = FALSE;
     SceneTransitionAbortFlag = FALSE;
@@ -641,11 +641,11 @@ int16 PrepareTrainingDeployment(void)
         activated = FALSE;
         if (ServiceMusicAndCheckKeyboardInput() != FALSE)
         {
-            inputCode = (word16) NormalizeNavigationKeyCode(
+            inputCode = (uint16_t) NormalizeNavigationKeyCode(
                 ReadTranslatedKeypress());
             row = selectedChoice / 0x04;
             column = selectedChoice % 0x04;
-            if ((int16) inputCode == TranslatedExtendedKey(KEY_UP))
+            if ((int16_t) inputCode == TranslatedExtendedKey(KEY_UP))
             {
                 if (row == 0x03)
                 {
@@ -661,7 +661,7 @@ int16 PrepareTrainingDeployment(void)
                 else
                     --selectedChoice;
             }
-            else if ((int16) inputCode == TranslatedExtendedKey(KEY_DOWN))
+            else if ((int16_t) inputCode == TranslatedExtendedKey(KEY_DOWN))
             {
                 if (row == 0x03)
                 {
@@ -677,15 +677,15 @@ int16 PrepareTrainingDeployment(void)
                 else
                     ++selectedChoice;
             }
-            else if ((int16) inputCode == TranslatedExtendedKey(KEY_LEFT) ||
-                (int16) inputCode == TranslatedExtendedKey(KEY_RIGHT))
+            else if ((int16_t) inputCode == TranslatedExtendedKey(KEY_LEFT) ||
+                (int16_t) inputCode == TranslatedExtendedKey(KEY_RIGHT))
             {
                 if (row == 0x03)
-                    selectedChoice = column < 0x02 ? (word16) (selectedChoice + 0x02) : (word16) (selectedChoice - 0x02);
-                else if ((int16) inputCode == TranslatedExtendedKey(KEY_LEFT))
-                    selectedChoice = row == 0x00 ? (word16) (selectedChoice + 0x08) : (word16) (selectedChoice - 0x04);
+                    selectedChoice = column < 0x02 ? (uint16_t) (selectedChoice + 0x02) : (uint16_t) (selectedChoice - 0x02);
+                else if ((int16_t) inputCode == TranslatedExtendedKey(KEY_LEFT))
+                    selectedChoice = row == 0x00 ? (uint16_t) (selectedChoice + 0x08) : (uint16_t) (selectedChoice - 0x04);
                 else
-                    selectedChoice = row == 0x02 ? (word16) (selectedChoice - 0x08) : (word16) (selectedChoice + 0x04);
+                    selectedChoice = row == 0x02 ? (uint16_t) (selectedChoice - 0x08) : (uint16_t) (selectedChoice + 0x04);
             }
             else if (inputCode == KEY_CARRIAGE_RETURN || inputCode == KEY_SPACE)
                 activated = TRUE;
@@ -698,14 +698,14 @@ int16 PrepareTrainingDeployment(void)
         else if (MouseInputDisabled == FALSE)
         {
             mouseX = MouseCursorRequestedX;
-            mouseY = (int16) MouseY;
+            mouseY = (int16_t) MouseY;
             mouseButtonState = MouseButtonState;
             mouseButtonEvent = PendingMouseButtonEvent;
             PendingMouseButtonEvent = FALSE;
             for (index = 0x00; index < 0x0C; ++index)
             {
-                leftX = (int16) LanceEditorLayout.TrainingUnitChoiceLeft[index];
-                topY = (int16) LanceEditorLayout.TrainingUnitChoiceTop[index];
+                leftX = (int16_t) LanceEditorLayout.TrainingUnitChoiceLeft[index];
+                topY = (int16_t) LanceEditorLayout.TrainingUnitChoiceTop[index];
                 if (mouseX >= leftX && mouseX < leftX + 0x4E &&
                     mouseY >= topY && mouseY < topY + ActiveFontLineHeight)
                 {
@@ -717,14 +717,14 @@ int16 PrepareTrainingDeployment(void)
             }
             for (index = 0x00; index < 0x04; ++index)
             {
-                leftX = (int16) LanceEditorLayout.TrainingControlChoiceLeft[index];
-                topY = (int16) LanceEditorLayout.TrainingControlChoiceTop[index];
+                leftX = (int16_t) LanceEditorLayout.TrainingControlChoiceLeft[index];
+                topY = (int16_t) LanceEditorLayout.TrainingControlChoiceTop[index];
                 width = 0x5A;
                 height = ActiveFontLineHeight;
                 if (mouseX >= leftX && mouseX < leftX + width &&
                     mouseY >= topY && mouseY < topY + height)
                 {
-                    selectedChoice = (word16) (index + 0x0C);
+                    selectedChoice = (uint16_t) (index + 0x0C);
                     if (mouseButtonEvent != FALSE &&
                         (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x00)
                         activated = TRUE;
@@ -738,12 +738,12 @@ int16 PrepareTrainingDeployment(void)
                 DrawTrainingUnitChoice(previousChoice, FALSE);
             else
                 DrawTrainingControlChoice(
-                    (word16) (previousChoice - 0x0C), FALSE);
+                    (uint16_t) (previousChoice - 0x0C), FALSE);
             if (selectedChoice < 0x0C)
                 DrawTrainingUnitChoice(selectedChoice, FALSE);
             else
                 DrawTrainingControlChoice(
-                    (word16) (selectedChoice - 0x0C), FALSE);
+                    (uint16_t) (selectedChoice - 0x0C), FALSE);
             previousChoice = selectedChoice;
         }
         if (activated == FALSE)
@@ -780,7 +780,7 @@ int16 PrepareTrainingDeployment(void)
             }
             else
             {
-                word16 previousTextMode = TextOutputMode;
+                uint16_t previousTextMode = TextOutputMode;
                 TextOutputMode = 0x03;
                 OpenModalTextWindow(0x0E, TRUE);
                 HideMouseCursorOverlay();
@@ -796,7 +796,7 @@ int16 PrepareTrainingDeployment(void)
         unitType = SelectUnitClass();
         unitRecord = &LiveScenarioUnits[UnitEditorAllegiance * 0x0C +
             selectedChoice];
-        unitRecord->unitTypeId = (byte) unitType;
+        unitRecord->unitTypeId = (uint8_t) unitType;
         DrawTrainingUnitChoice(selectedChoice, TRUE);
         DrawTrainingUnitChoice(selectedChoice, FALSE);
     }
@@ -816,19 +816,19 @@ int16 PrepareTrainingDeployment(void)
         }
     }
     SelectTextWindow(previousWindow);
-    return (int16) result;
+    return (int16_t) result;
 }
 
 // 2507:0501: select one of six unit classes, then a type from that class.
 // Returns the selected MECHTYPE.DAT type ID, or -1 for Cancel.
 // Verified against 2507:0501-0624.
-int16 SelectUnitClass(void)
+int16_t SelectUnitClass(void)
 {
     TextWindowContext *menuWindow =
         &TextWindowContexts[UNIT_SELECTION_TEXT_WINDOW_INDEX];
     OriginalUiRegionRecord *menuRegion =
         &UiRegionTable[UNIT_SELECTION_UI_REGION_INDEX];
-    word16 menuHeightTiles =
+    uint16_t menuHeightTiles =
         ((ActiveFontLineHeight * UNIT_CLASS_MENU_ENTRY_COUNT) +
             (TEXT_WINDOW_TILE_SIZE_PIXELS - 0x01)) >>
         0x03;
@@ -837,25 +837,25 @@ int16 SelectUnitClass(void)
         (VIDEO_SCREEN_HEIGHT / TEXT_WINDOW_TILE_SIZE_PIXELS - menuHeightTiles) >> 0x01;
     OpenModalTextWindow(UNIT_SELECTION_TEXT_WINDOW_INDEX, TRUE);
     HideMouseCursorOverlay();
-    word16 textWidth = menuWindow->widthTiles * TEXT_WINDOW_TILE_SIZE_PIXELS;
-    word16 textLeft = menuWindow->leftTile * TEXT_WINDOW_TILE_SIZE_PIXELS;
-    word16 textTop = menuWindow->topTile * TEXT_WINDOW_TILE_SIZE_PIXELS;
-    word16 classIndex;
+    uint16_t textWidth = menuWindow->widthTiles * TEXT_WINDOW_TILE_SIZE_PIXELS;
+    uint16_t textLeft = menuWindow->leftTile * TEXT_WINDOW_TILE_SIZE_PIXELS;
+    uint16_t textTop = menuWindow->topTile * TEXT_WINDOW_TILE_SIZE_PIXELS;
+    uint16_t classIndex;
     for (classIndex = 0x00; classIndex < UNIT_CLASS_MENU_ENTRY_COUNT; ++classIndex)
     {
         const char *label = UnitClassLabelTextTable[classIndex];
         DrawCenteredClippedText(
             label,
             0x00, textLeft, textTop, textWidth,
-            (byte) ActiveTextForegroundColor,
-            (byte) ActiveTextBackgroundColor);
+            (uint8_t) ActiveTextForegroundColor,
+            (uint8_t) ActiveTextBackgroundColor);
         textTop += ActiveFontLineHeight;
     }
     ShowMouseCursorOverlay();
     menuRegion->rowCount = UNIT_CLASS_MENU_ENTRY_COUNT;
     menuRegion->widthColumns = UNIT_SELECTION_TEXT_WINDOW_INDEX;
     FlushPendingInput();
-    int16 selectedMenuEntry;
+    int16_t selectedMenuEntry;
     do
     {
         selectedMenuEntry =
@@ -869,7 +869,7 @@ int16 SelectUnitClass(void)
         return -0x01;
     if (selectedMenuEntry >= 0x00 && selectedMenuEntry < UNIT_CLASS_COUNT)
     {
-        const byte *unitTypeList = UnitClassTypeLists[selectedMenuEntry];
+        const uint8_t *unitTypeList = UnitClassTypeLists[selectedMenuEntry];
         return SelectUnitTypeFromList(
             unitTypeList);
     }
@@ -879,7 +879,7 @@ int16 SelectUnitClass(void)
 // 2507:0647-065E: the list is the Omni one when its far address is DS:32D7,
 // the sixth class's list. The lists are the rules' (UnitClassTypeLists), so
 // that is the sixth list wherever the rules put it.
-bool IsOmniUnitTypeList(const byte *unitTypeIdList)
+bool IsOmniUnitTypeList(const uint8_t *unitTypeIdList)
 {
     return unitTypeIdList == UnitClassTypeLists[UNIT_CLASS_OMNI_INDEX];
 }
@@ -888,43 +888,43 @@ bool IsOmniUnitTypeList(const byte *unitTypeIdList)
 // Called from:
 //      SelectUnitClass
 // Verified against 2507:0625-0793.
-int16 SelectUnitTypeFromList(const byte *unitTypeIdList)
+int16_t SelectUnitTypeFromList(const uint8_t *unitTypeIdList)
 {
     // The FFh-terminated input contains MECHTYPE.DAT / UnitNameTable
     // type IDs. The Omni list ends with Elementals, which are offered only
     // while choosing an Enemy unit. Every displayed list ends with Cancel.
-    word16 unitTypeCount = 0x00;
+    uint16_t unitTypeCount = 0x00;
     while (unitTypeIdList[unitTypeCount] != 0xFF)
         ++unitTypeCount;
 
     bool isOmniUnitTypeList = IsOmniUnitTypeList(unitTypeIdList);
-    word16 selectableUnitTypeCount = unitTypeCount;
+    uint16_t selectableUnitTypeCount = unitTypeCount;
     if (isOmniUnitTypeList &&
         UnitEditorAllegiance != UNIT_ALLEGIANCE_ENEMY)
         --selectableUnitTypeCount;
-    word16 menuEntryCount = selectableUnitTypeCount + 0x01;
+    uint16_t menuEntryCount = selectableUnitTypeCount + 0x01;
 
     TextWindowContext *menuWindow =
         &TextWindowContexts[UNIT_SELECTION_TEXT_WINDOW_INDEX];
     OriginalUiRegionRecord *menuRegion =
         &UiRegionTable[UNIT_SELECTION_UI_REGION_INDEX];
-    int16 menuHeightTiles = (int16) (word16) ((word16) (ActiveFontLineHeight) *menuEntryCount + (TEXT_WINDOW_TILE_SIZE_PIXELS - 0x01));
-    menuHeightTiles = (int16) (((word16) menuHeightTiles >> 0x01) |
-        ((word16) menuHeightTiles & 0x8000));
-    menuHeightTiles = (int16) (((word16) menuHeightTiles >> 0x01) |
-        ((word16) menuHeightTiles & 0x8000));
-    menuHeightTiles = (int16) (((word16) menuHeightTiles >> 0x01) |
-        ((word16) menuHeightTiles & 0x8000));
+    int16_t menuHeightTiles = (int16_t) (uint16_t) ((uint16_t) (ActiveFontLineHeight) *menuEntryCount + (TEXT_WINDOW_TILE_SIZE_PIXELS - 0x01));
+    menuHeightTiles = (int16_t) (((uint16_t) menuHeightTiles >> 0x01) |
+        ((uint16_t) menuHeightTiles & 0x8000));
+    menuHeightTiles = (int16_t) (((uint16_t) menuHeightTiles >> 0x01) |
+        ((uint16_t) menuHeightTiles & 0x8000));
+    menuHeightTiles = (int16_t) (((uint16_t) menuHeightTiles >> 0x01) |
+        ((uint16_t) menuHeightTiles & 0x8000));
     menuWindow->heightTiles = menuHeightTiles;
-    menuWindow->topTile = (word16) ((int16) (VIDEO_SCREEN_HEIGHT / TEXT_WINDOW_TILE_SIZE_PIXELS -
-                                        menuHeightTiles) >>
+    menuWindow->topTile = (uint16_t) ((int16_t) (VIDEO_SCREEN_HEIGHT / TEXT_WINDOW_TILE_SIZE_PIXELS -
+                                          menuHeightTiles) >>
         0x01);
     OpenModalTextWindow(UNIT_SELECTION_TEXT_WINDOW_INDEX, TRUE);
     HideMouseCursorOverlay();
-    word16 textWidth = menuWindow->widthTiles * TEXT_WINDOW_TILE_SIZE_PIXELS;
-    word16 textLeft = menuWindow->leftTile * TEXT_WINDOW_TILE_SIZE_PIXELS;
-    word16 textTop = menuWindow->topTile * TEXT_WINDOW_TILE_SIZE_PIXELS;
-    word16 menuEntryIndex;
+    uint16_t textWidth = menuWindow->widthTiles * TEXT_WINDOW_TILE_SIZE_PIXELS;
+    uint16_t textLeft = menuWindow->leftTile * TEXT_WINDOW_TILE_SIZE_PIXELS;
+    uint16_t textTop = menuWindow->topTile * TEXT_WINDOW_TILE_SIZE_PIXELS;
+    uint16_t menuEntryIndex;
     for (menuEntryIndex = 0x00; menuEntryIndex < menuEntryCount; ++menuEntryIndex)
     {
         const char *label;
@@ -933,15 +933,15 @@ int16 SelectUnitTypeFromList(const byte *unitTypeIdList)
         else
             label = STORY_TEXT(SELECT_UNIT_TYPE_FROM_LIST_0); // TEXT DS:437E
         DrawCenteredClippedText(label, 0x00, textLeft, textTop, textWidth,
-            (byte) ActiveTextForegroundColor,
-            (byte) ActiveTextBackgroundColor);
+            (uint8_t) ActiveTextForegroundColor,
+            (uint8_t) ActiveTextBackgroundColor);
         textTop += ActiveFontLineHeight;
     }
     ShowMouseCursorOverlay();
     menuRegion->rowCount = menuEntryCount;
     menuRegion->widthColumns = UNIT_SELECTION_TEXT_WINDOW_INDEX;
     FlushPendingInput();
-    int16 selectedEntry;
+    int16_t selectedEntry;
     do
     {
         selectedEntry =
@@ -950,26 +950,26 @@ int16 SelectUnitTypeFromList(const byte *unitTypeIdList)
             ToggleActiveUiRegionHighlight();
     } while (selectedEntry == KEY_ESCAPE);
     RestoreModalTextWindow();
-    if ((int16) selectableUnitTypeCount <= selectedEntry)
+    if ((int16_t) selectableUnitTypeCount <= selectedEntry)
         return -0x01;
     return unitTypeIdList[selectedEntry];
 }
 
 // 2507:0A20: draw the active Friendly/Enemy heading for a unit-panel row.
 // VERIFIED against ASM 2507:0A20-0AB0.
-void DrawUnitAllegianceHeader(word16 headerColorIndex)
+void DrawUnitAllegianceHeader(uint16_t headerColorIndex)
 {
     char headerText[0x14];
-    int16 allegianceIndex;
-    word16 textLeft;
-    word16 textTop;
-    word16 textWidth;
+    int16_t allegianceIndex;
+    uint16_t textLeft;
+    uint16_t textTop;
+    uint16_t textWidth;
     const char *allegianceText;
     const char *suffixText;
 
-    textLeft = (word16) (ActiveTextWindowLeftTile << 0x03);
-    textTop = (word16) ((ActiveTextWindowTopTile + 0x07) << 0x03);
-    textWidth = (word16) (ActiveTextWindowWidthTiles << 0x03);
+    textLeft = (uint16_t) (ActiveTextWindowLeftTile << 0x03);
+    textTop = (uint16_t) ((ActiveTextWindowTopTile + 0x07) << 0x03);
+    textWidth = (uint16_t) (ActiveTextWindowWidthTiles << 0x03);
     allegianceIndex = UnitEditorAllegiance;
     allegianceText = UnitAllegianceLabelTextTable[allegianceIndex];
     suffixText = FriendlyEnemySuffixText;

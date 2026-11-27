@@ -6,19 +6,19 @@
 #include "revenge/original_data.h"
 #include "revenge/video.h"
 
-void AdvanceTerrainEffects(word16 advanceEffects);
+void AdvanceTerrainEffects(uint16_t advanceEffects);
 void RebuildTacticalViewport(void);
-void DrawTacticalCursorOutline(word16 outlineState);
+void DrawTacticalCursorOutline(uint16_t outlineState);
 void RefreshTacticalOverview(void);
 void DrawSelectedUnitStatusPanel(void);
 
 /* 2007:0DDB-0E18 */
 void DrawTacticalEffectSprite(
-    word16 spriteId,
-    int16 relativeX,
-    int16 relativeY)
+    uint16_t spriteId,
+    int16_t relativeX,
+    int16_t relativeY)
 {
-    byte *renderTarget;
+    uint8_t *renderTarget;
 
     if (TacticalOverviewActive != FALSE)
         return;
@@ -35,31 +35,31 @@ void DrawTacticalEffectSprite(
 
 /* 2007:0328-0429 */
 void DrawTacticalViewportCell(
-    int16 viewportColumn,
-    int16 viewportRow,
-    word16 viewportCellIndex)
+    int16_t viewportColumn,
+    int16_t viewportRow,
+    uint16_t viewportCellIndex)
 {
-    const byte *spritePage;
-    word16 destinationX;
-    word16 destinationY;
-    word16 terrainSpriteId;
-    word16 unitSpriteId;
-    byte terrainEffect;
+    const uint8_t *spritePage;
+    uint16_t destinationX;
+    uint16_t destinationY;
+    uint16_t terrainSpriteId;
+    uint16_t unitSpriteId;
+    uint8_t terrainEffect;
 
     unitSpriteId = TacticalCellSpriteMap[viewportCellIndex];
     terrainSpriteId = TacticalCellTerrainMap[viewportCellIndex];
     /* DS:7978 is the same E4h-byte array cleared at 0800:0999 and populated
 	 * at 2007:1219.  It is not a second display-side buffer. */
     terrainEffect = TacticalEffectOverlayMap[viewportCellIndex];
-    destinationX = (word16) (viewportColumn * 0x0002 + 0x0002);
-    destinationY = (word16) (viewportRow << 0x04);
+    destinationX = (uint16_t) (viewportColumn * 0x0002 + 0x0002);
+    destinationY = (uint16_t) (viewportRow << 0x04);
     spritePage = PlanarScreenBuffer;
 
     if (unitSpriteId != 0x0000)
     {
         DrawCompositeTacticalTile(
             unitSpriteId,
-            terrainEffect != 0x00 ? (word16) terrainEffect + 0x01F2 : terrainSpriteId,
+            terrainEffect != 0x00 ? (uint16_t) terrainEffect + 0x01F2 : terrainSpriteId,
             spritePage,
             destinationX,
             destinationY);
@@ -67,7 +67,7 @@ void DrawTacticalViewportCell(
     else if (terrainEffect != 0x00)
     {
         DrawCompositeTacticalTile(
-            (word16) terrainEffect + 0x01F2,
+            (uint16_t) terrainEffect + 0x01F2,
             terrainSpriteId,
             spritePage,
             destinationX,
@@ -85,10 +85,10 @@ void DrawTacticalViewportCell(
 
 /* 2007:1CBD-1D05 */
 void DrawTacticalTileSpriteForAdapter(
-    const byte *spritePage,
-    word16 spriteId,
-    word16 destinationX,
-    word16 destinationY)
+    const uint8_t *spritePage,
+    uint16_t spriteId,
+    uint16_t destinationX,
+    uint16_t destinationY)
 {
     /* The CGA's high sprite bank (2007:1CC4, 0800:0A2E) went with the CGA; the
 	 * rebuild is VGA only. */
@@ -97,7 +97,7 @@ void DrawTacticalTileSpriteForAdapter(
 }
 
 /* 2007:1D06-1D60 */
-void RefreshTacticalDisplay(word16 advanceEffects)
+void RefreshTacticalDisplay(uint16_t advanceEffects)
 {
     if (TacticalOverviewActive != FALSE)
     {

@@ -22,12 +22,12 @@ MIDISequenceState MIDISequence = {
 };
 /* DS:62B0-62B9, filled from the player's copy at start (original_import_pieces.txt). */
 MIDIParserState MIDIParser;
-byte MIDIChannelMap[0x10];
+uint8_t MIDIChannelMap[0x10];
 MIDISystemExclusiveState MIDISystemExclusive;
 SpeakerMIDIRuntimeState SpeakerMIDIRuntime;
 AdLibInstrumentPatch MIDIInstrumentPatches[0x20];
 RolandMPU401State RolandMPU401;
-const word16 SpeakerMIDIFrequencyDivisors[0x72] = {
+const uint16_t SpeakerMIDIFrequencyDivisors[0x72] = {
     0xFDF1, 0xEFB0, 0xE23D, 0xD58A, 0xC98E, 0xBE3E, 0xB390, 0xA97C,
     0x9FF9, 0x96FF, 0x8E85, 0x8685, 0x7EF9, 0x77D8, 0x711E, 0x6AC5,
     0x64C7, 0x5F1F, 0x59C8, 0x54BE, 0x4FFD, 0x4B7F, 0x4743, 0x4343,
@@ -53,20 +53,20 @@ DigitalSampleDescriptor DigitalSamplePlaybackDescriptorTable[0x0F];
 
 DigitalSampleDescriptor *ActiveDigitalSampleDescriptor;
 DigitalDriverQueue ActiveDigitalDriverQueue;
-word16 DigitalPlaybackRateHz;
-byte DigitalWeaponEffectRepeatCount;
-byte *DigitalWeaponSampleBuffer;
-byte *DigitalSoundBuffer;
-byte DigitalSoundDriverMutationGuard;
-word16 NarrationMode = 0x0002; /* Original data image: full voice. */
-word16 ActiveNarrationSubject;
-word16 NarrationEmphasis;
+uint16_t DigitalPlaybackRateHz;
+uint8_t DigitalWeaponEffectRepeatCount;
+uint8_t *DigitalWeaponSampleBuffer;
+uint8_t *DigitalSoundBuffer;
+uint8_t DigitalSoundDriverMutationGuard;
+uint16_t NarrationMode = 0x0002; /* Original data image: full voice. */
+uint16_t ActiveNarrationSubject;
+uint16_t NarrationEmphasis;
 
 /* DS:5642, the story's media, placed at start (original_import_pieces.txt). */
-byte PCSpeakerEffectStreamData[PC_SPEAKER_EFFECT_STREAM_BYTE_COUNT];
+uint8_t PCSpeakerEffectStreamData[PC_SPEAKER_EFFECT_STREAM_BYTE_COUNT];
 
 /* DS:58DB: each far pointer, DS:5642 plus the offset here. */
-const byte *const PCSpeakerEffectStreamPointerTable[PC_SPEAKER_EFFECT_COUNT] = {
+const uint8_t *const PCSpeakerEffectStreamPointerTable[PC_SPEAKER_EFFECT_COUNT] = {
     PCSpeakerEffectStreamData + 0x000, PCSpeakerEffectStreamData + 0x027,
     PCSpeakerEffectStreamData + 0x046, PCSpeakerEffectStreamData + 0x063,
     PCSpeakerEffectStreamData + 0x0A2, PCSpeakerEffectStreamData + 0x118,

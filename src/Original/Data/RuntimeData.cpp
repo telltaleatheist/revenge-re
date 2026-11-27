@@ -7,7 +7,7 @@
 #include "revenge/video.h"
 #include "REVENGE.h"
 
-const byte CharacterClassTable[0x100] = {
+const uint8_t CharacterClassTable[0x100] = {
     0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
     0x20, 0x21, 0x21, 0x21, 0x21, 0x21, 0x20, 0x20,
     0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
@@ -25,37 +25,37 @@ const byte CharacterClassTable[0x100] = {
     0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08,
     0x08, 0x08, 0x08, 0x40, 0x40, 0x40, 0x40, 0x20
 };
-const word16 VideoPixelAlignmentMasks[0x08] = {
+const uint16_t VideoPixelAlignmentMasks[0x08] = {
     0x0003, 0x0001, 0x0007, 0x0000,
     0x01FC, 0x01FE, 0x01F8, 0x01FF
 };
-const word16 PackedPixelShiftCounts[0x03] = {
+const uint16_t PackedPixelShiftCounts[0x03] = {
     0x0002, 0x0001, 0x0003
 };
 /* Filled at start from data/ui/screens.json (revenge/rules.h). */
-word16 TextWindowFrameDefinition[0x0C];
-const word16 *const TextWindowFrameDefinitionTable[0x01] = {
+uint16_t TextWindowFrameDefinition[0x0C];
+const uint16_t *const TextWindowFrameDefinitionTable[0x01] = {
     TextWindowFrameDefinition
 };
 
-byte *ActiveFontResource;
-byte MusicDriverIndex;
-int8 ActiveFontGlyphAdvanceX;
-int8 ActiveFontLineHeight;
-byte *TacticalTileStrip;
-int16 BusyWaitLoopCalibration;
-word16 ActiveUiHighlightXorColor;
-word16 ActiveUiHighlightHeight;
-word16 ActiveUiHighlightWidth;
-word16 ActiveUiHighlightLeft;
-word16 ActiveUiHighlightTop;
-byte *PrimaryScreenBuffer;
-word16 SecondaryResourceDriveEnabled;
-word16 ResourceDriveSelectionDisabled;
-byte SavedUiRegionSelectionRows[ORIGINAL_UI_REGION_COUNT];
-int16 ActiveUiRegionIndex;
-word16 ExpandFirstUiRowHighlight;
-word16 VideoAdapterType;
+uint8_t *ActiveFontResource;
+uint8_t MusicDriverIndex;
+int8_t ActiveFontGlyphAdvanceX;
+int8_t ActiveFontLineHeight;
+uint8_t *TacticalTileStrip;
+int16_t BusyWaitLoopCalibration;
+uint16_t ActiveUiHighlightXorColor;
+uint16_t ActiveUiHighlightHeight;
+uint16_t ActiveUiHighlightWidth;
+uint16_t ActiveUiHighlightLeft;
+uint16_t ActiveUiHighlightTop;
+uint8_t *PrimaryScreenBuffer;
+uint16_t SecondaryResourceDriveEnabled;
+uint16_t ResourceDriveSelectionDisabled;
+uint8_t SavedUiRegionSelectionRows[ORIGINAL_UI_REGION_COUNT];
+int16_t ActiveUiRegionIndex;
+uint16_t ExpandFirstUiRowHighlight;
+uint16_t VideoAdapterType;
 DosAddress CriticalErrorCallback;
 
-byte g_bFFFFF694 = 0x70; // 3184:F694
+uint8_t g_bFFFFF694 = 0x70; // 3184:F694

@@ -6,7 +6,7 @@
 // 3349:0009: void SelectAndClearTextWindow(word16 windowIndex)
 // Called from:
 //      RunGameOptionsMenu
-void SelectAndClearTextWindow(word16 windowIndex)
+void SelectAndClearTextWindow(uint16_t windowIndex)
 {
     SelectTextWindow(windowIndex);
     ClearActiveTextWindow();

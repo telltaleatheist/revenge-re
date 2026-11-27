@@ -10,27 +10,27 @@
 /* 0D73:4611-4865 */
 void ShowInvalidSaveVersionDialog(void)
 {
-    byte *backingBuffer;
-    uint32 backingSize;
-    word16 savedWindowIndex;
-    word16 allocatedHere;
-    word16 savedForegroundColor;
-    word16 savedBackgroundColor;
-    word16 dismissKey;
-    int16 leftX;
-    int16 topY;
-    int16 rightX;
-    int16 bottomY;
+    uint8_t *backingBuffer;
+    uint32_t backingSize;
+    uint16_t savedWindowIndex;
+    uint16_t allocatedHere;
+    uint16_t savedForegroundColor;
+    uint16_t savedBackgroundColor;
+    uint16_t dismissKey;
+    int16_t leftX;
+    int16_t topY;
+    int16_t rightX;
+    int16_t bottomY;
 
     savedWindowIndex = ActiveTextWindowIndex;
     SelectTextWindow(StartupResourceState);
     allocatedHere = FALSE;
     if (InvalidSaveDialogBacking == NULL)
     {
-        backingSize = (uint32) ActiveTextWindowWidthTiles *
+        backingSize = (uint32_t) ActiveTextWindowWidthTiles *
             ActiveTextWindowHeightTiles;
         backingSize <<= VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05;
-        backingBuffer = (byte *) Heap_Allocate(backingSize, "0D73:466E");
+        backingBuffer = (uint8_t *) Heap_Allocate(backingSize, "0D73:466E");
         InvalidSaveDialogBacking = backingBuffer;
         allocatedHere = TRUE;
     }
@@ -38,22 +38,22 @@ void ShowInvalidSaveVersionDialog(void)
 
     HideMouseCursorOverlay();
     CopyVideoRegionToBuffer(
-        (int16) ActiveTextWindowLeftTile,
+        (int16_t) ActiveTextWindowLeftTile,
         ActiveTextWindowTopTile,
         ActiveTextWindowWidthTiles,
         ActiveTextWindowHeightTiles,
         backingBuffer);
     ClearActiveTextWindow();
 
-    leftX = (int16) (ActiveTextWindowLeftTile << 0x03);
-    topY = (int16) (ActiveTextWindowTopTile << 0x03);
-    rightX = (int16) (((ActiveTextWindowLeftTile +
-                           ActiveTextWindowWidthTiles)
-                          << 0x03) -
+    leftX = (int16_t) (ActiveTextWindowLeftTile << 0x03);
+    topY = (int16_t) (ActiveTextWindowTopTile << 0x03);
+    rightX = (int16_t) (((ActiveTextWindowLeftTile +
+                             ActiveTextWindowWidthTiles)
+                            << 0x03) -
         0x01);
-    bottomY = (int16) (((ActiveTextWindowTopTile +
-                            ActiveTextWindowHeightTiles)
-                           << 0x03) -
+    bottomY = (int16_t) (((ActiveTextWindowTopTile +
+                              ActiveTextWindowHeightTiles)
+                             << 0x03) -
         0x01);
     DrawClippedAxisAlignedLine(leftX, topY, rightX, topY, 0x000F);
     DrawClippedAxisAlignedLine(leftX, bottomY, rightX, bottomY, 0x000F);
@@ -76,7 +76,7 @@ void ShowInvalidSaveVersionDialog(void)
     AdjustActiveTextWindowMargin(0x0001);
     HideMouseCursorOverlay();
     CopyBufferToVideoRegion(
-        (int16) ActiveTextWindowLeftTile,
+        (int16_t) ActiveTextWindowLeftTile,
         ActiveTextWindowTopTile,
         ActiveTextWindowWidthTiles,
         ActiveTextWindowHeightTiles,

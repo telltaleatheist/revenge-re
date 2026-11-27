@@ -10,34 +10,34 @@
 #include "revenge/platform_backend.h"
 #include "MIDIInternal.h"
 
-word16 NullMIDIDriverProbe(void) { return SOUND_HARDWARE_AVAILABLE; }
-void ActivateNullMIDIDriver(word16 activationArgument)
+uint16_t NullMIDIDriverProbe(void) { return SOUND_HARDWARE_AVAILABLE; }
+void ActivateNullMIDIDriver(uint16_t activationArgument)
 {
     (void) activationArgument;
 }
 void DeactivateNullMIDIDriver(void) {}
-word16 FilterNullMIDIByte(word16 midiByte)
+uint16_t FilterNullMIDIByte(uint16_t midiByte)
 {
     (void) midiByte;
     return 0x0000;
 }
 void NullMIDIVoiceOn(
-    word16 voiceRecordOffset,
-    word16 channelStateOffset,
-    word16 velocity)
+    uint16_t voiceRecordOffset,
+    uint16_t channelStateOffset,
+    uint16_t velocity)
 {
     (void) voiceRecordOffset;
     (void) channelStateOffset;
     (void) velocity;
 }
-void NullMIDIVoiceOff(word16 voiceRecordOffset)
+void NullMIDIVoiceOff(uint16_t voiceRecordOffset)
 {
     (void) voiceRecordOffset;
 }
 void ResetNullMIDIDriver(void) {}
 void LoadNullMIDIInstrument(
-    const byte *packedInstrument,
-    byte *decodedInstrument)
+    const uint8_t *packedInstrument,
+    uint8_t *decodedInstrument)
 {
     (void) packedInstrument;
     (void) decodedInstrument;
@@ -73,9 +73,9 @@ static const MIDIDriverHostDispatch NullMIDIDriverHostDispatch = {
     ServiceNullMIDIDriver
 };
 
-word16 SpeakerMIDIDriverProbe(void) { return SOUND_HARDWARE_AVAILABLE; }
+uint16_t SpeakerMIDIDriverProbe(void) { return SOUND_HARDWARE_AVAILABLE; }
 
-void ActivateSpeakerMIDIDriver(word16 activationArgument)
+void ActivateSpeakerMIDIDriver(uint16_t activationArgument)
 {
     (void) activationArgument;
     /* CLI/STI around this (3621:08BA, 08D1) go. */
@@ -93,20 +93,20 @@ void DeactivateSpeakerMIDIDriver(void)
     SDLBackend_SilencePCSpeaker();
 }
 
-word16 FilterSpeakerMIDIByte(word16 midiByte)
+uint16_t FilterSpeakerMIDIByte(uint16_t midiByte)
 {
     (void) midiByte;
     return 0x0000;
 }
 
 void SpeakerMIDIVoiceOn(
-    word16 voiceRecordOffset,
-    word16 channelStateOffset,
-    word16 velocity)
+    uint16_t voiceRecordOffset,
+    uint16_t channelStateOffset,
+    uint16_t velocity)
 {
     MIDIVoiceRecord *voiceRecord;
-    byte note;
-    word16 divisor;
+    uint8_t note;
+    uint16_t divisor;
 
     (void) channelStateOffset;
     (void) velocity;
@@ -118,15 +118,15 @@ void SpeakerMIDIVoiceOn(
     voiceRecord->Driver.Speaker.PITDivisor = divisor;
 }
 
-void SpeakerMIDIVoiceOff(word16 voiceRecordOffset)
+void SpeakerMIDIVoiceOff(uint16_t voiceRecordOffset)
 {
     MIDIVoiceRecordAt(voiceRecordOffset)->Driver.Speaker.PITDivisor = 0x0014;
 }
 
 void ResetSpeakerMIDIDriver(void)
 {
-    word16 voice;
-    byte count;
+    uint16_t voice;
+    uint8_t count;
 
     voice = SpeakerMIDIDriverDescriptor.VoiceRecordsOffset;
     SpeakerMIDIRuntime.ServiceVoiceOffset = voice;
@@ -145,8 +145,8 @@ void ResetSpeakerMIDIDriver(void)
 }
 
 void LoadSpeakerMIDIInstrument(
-    const byte *packedInstrument,
-    byte *decodedInstrument)
+    const uint8_t *packedInstrument,
+    uint8_t *decodedInstrument)
 {
     (void) packedInstrument;
     (void) decodedInstrument;
@@ -154,8 +154,8 @@ void LoadSpeakerMIDIInstrument(
 
 void ServiceSpeakerMIDIDriver(void)
 {
-    word16 voice;
-    word16 divisor;
+    uint16_t voice;
+    uint16_t divisor;
 
     if (SpeakerMIDIDriverDescriptor.ActiveVoiceCount == 0x00)
         return;
@@ -218,7 +218,7 @@ void ServiceRolandMIDIDriver(void);
 // 3621:0E60. The original reset the MPU-401 through ports 331h/330h and
 // succeeded only on its acknowledgement FEh; the rebuild's MIDI is the host's
 // music (SDLBackend_WriteMIDIByte), always there.
-word16 RolandMIDIDriverProbe(void)
+uint16_t RolandMIDIDriverProbe(void)
 {
     return SOUND_HARDWARE_AVAILABLE;
 }
@@ -227,7 +227,7 @@ word16 RolandMIDIDriverProbe(void)
 // handler on IRQ 2 (3621:0F60) and drained ten stale input bytes (port 330h);
 // the rebuild has no MPU-401 and takes no MIDI input. What stays is the empty
 // 100h-byte transmit queue.
-void ActivateRolandMIDIDriver(word16 activationArgument)
+void ActivateRolandMIDIDriver(uint16_t activationArgument)
 {
     (void) activationArgument;
     /* The STI after this (3621:0ED8) goes. */
@@ -246,15 +246,15 @@ void DeactivateRolandMIDIDriver(void)
         ServiceRolandMIDIDriver();
 }
 
-word16 FilterRolandMIDIByte(word16 midiByte)
+uint16_t FilterRolandMIDIByte(uint16_t midiByte)
 {
-    word16 writeIndex;
-    byte outputByte;
+    uint16_t writeIndex;
+    uint8_t outputByte;
 
-    outputByte = (byte) midiByte;
+    outputByte = (uint8_t) midiByte;
     if ((outputByte & 0x80) != 0x00 && outputByte < 0xF0)
     {
-        outputByte = (byte) ((outputByte & 0xF0) |
+        outputByte = (uint8_t) ((outputByte & 0xF0) |
             MIDIChannelMap[outputByte & 0x0F]);
     }
     while (RolandMPU401.ByteCount >= 0x0100)
@@ -281,7 +281,7 @@ void RolandMIDIDriverNoOp(void) {}
 
 void ServiceRolandMIDIDriver(void)
 {
-    word16 readIndex;
+    uint16_t readIndex;
 
     if (RolandMPU401.ByteCount == 0x0000)
         return;
@@ -319,10 +319,10 @@ static const MIDIDriverHostDispatch RolandMIDIDriverHostDispatch = {
     ActivateRolandMIDIDriver,
     DeactivateRolandMIDIDriver,
     FilterRolandMIDIByte,
-    (void (*)(word16, word16, word16)) RolandMIDIDriverNoOp,
-    (void (*)(word16)) RolandMIDIDriverNoOp,
+    (void (*)(uint16_t, uint16_t, uint16_t)) RolandMIDIDriverNoOp,
+    (void (*)(uint16_t)) RolandMIDIDriverNoOp,
     ResetRolandMIDIDriver,
-    (void (*)(const byte *, byte *)) RolandMIDIDriverNoOp,
+    (void (*)(const uint8_t *, uint8_t *)) RolandMIDIDriverNoOp,
     ServiceRolandMIDIDriver
 };
 

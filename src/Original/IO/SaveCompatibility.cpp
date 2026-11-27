@@ -4,14 +4,14 @@
 #include "REVENGE.h"
 
 /* 0D73:4572-4610 */
-int16 EnsureCompatibleSaveFile(
-    int16 fileHandle,
+int16_t EnsureCompatibleSaveFile(
+    int16_t fileHandle,
     char *savePath,
-    word16 openMode)
+    uint16_t openMode)
 {
-    int16 nextRecordOffset;
-    int16 saveVersion;
-    word16 searching;
+    int16_t nextRecordOffset;
+    int16_t saveVersion;
+    uint16_t searching;
 
     searching = TRUE;
     while (searching != FALSE)
@@ -21,7 +21,7 @@ int16 EnsureCompatibleSaveFile(
         ReadTrackedFile(fileHandle, &nextRecordOffset, 0x00000002UL);
         SeekTrackedFile(fileHandle, nextRecordOffset, 0x0000);
         ReadTrackedFile(fileHandle, &saveVersion, 0x00000002UL);
-        if (saveVersion >= (int16) 0x0097)
+        if (saveVersion >= (int16_t) 0x0097)
         {
             searching = FALSE;
         }

@@ -8,10 +8,10 @@
 #pragma pack(push, 1)
 typedef struct WestwoodCompressionHeader
 {
-    byte compressionType;          // +00: 0 raw, 1 LZW-12, 2 LZW-14, 3 RLE
-    byte reserved_01;
-    uint32 uncompressedByteCount;  // +02
-    word16 optionalHeaderByteCount;// +06; codec-specific header byte count
+    uint8_t compressionType;          // +00: 0 raw, 1 LZW-12, 2 LZW-14, 3 RLE
+    uint8_t reserved_01;
+    uint32_t uncompressedByteCount;  // +02
+    uint16_t optionalHeaderByteCount;// +06; codec-specific header byte count
 } WestwoodCompressionHeader;
 #pragma pack(pop)
 
@@ -21,35 +21,35 @@ static_assert(sizeof(WestwoodCompressionHeader) == 0x08,
 void CopyUncompressedFarBlock(
     const void *source,
     void *destination,
-    uint32 byteCount);
+    uint32_t byteCount);
 void DecodeRLEBlock(
-    const byte *compressedBlock,
-    byte *destination);
+    const uint8_t *compressedBlock,
+    uint8_t *destination);
 void DecodeWestwoodLzw12(
-    const byte *compressedBlock,
-    byte *destination,
-    byte *dictionary);
+    const uint8_t *compressedBlock,
+    uint8_t *destination,
+    uint8_t *dictionary);
 void DecodeWestwoodLzw14(
-    const byte *compressedBlock,
-    byte *destination,
-    byte *dictionary);
+    const uint8_t *compressedBlock,
+    uint8_t *destination,
+    uint8_t *dictionary);
 
 // 21E7:000C: word16 ReadWholeResourceFile(
 //     const char far *resourceName, void far *destination, word16 byteCount)
 // Called from:
 //      LoadScreenPalette
 //      LoadMusicResource
-word16 ReadWholeResourceFile(
+uint16_t ReadWholeResourceFile(
     const char *resourceName,
     void *destination,
-    word16 byteCount)
+    uint16_t byteCount)
 {
-    int16 fileHandle;
-    word16 bytesRead;
+    int16_t fileHandle;
+    uint16_t bytesRead;
 
     fileHandle = OpenTrackedFile((char *) resourceName, 0x01);
-    bytesRead = (word16) ReadTrackedFile(
-        fileHandle, destination, (uint32) byteCount);
+    bytesRead = (uint16_t) ReadTrackedFile(
+        fileHandle, destination, (uint32_t) byteCount);
     CloseTrackedFile(fileHandle);
     return bytesRead;
 }
@@ -60,15 +60,15 @@ word16 ReadWholeResourceFile(
 //      LoadScenarioDigitalSoundBank
 void ReadResourceFileSpan(
     const char *resourceName,
-    int32 fileOffset,
+    int32_t fileOffset,
     void *destination,
-    word16 byteCount)
+    uint16_t byteCount)
 {
-    int16 fileHandle;
+    int16_t fileHandle;
 
     fileHandle = OpenTrackedFile((char *) resourceName, 0x01);
     SeekTrackedFile(fileHandle, fileOffset, 0x00);
-    ReadTrackedFile(fileHandle, destination, (uint32) byteCount);
+    ReadTrackedFile(fileHandle, destination, (uint32_t) byteCount);
     CloseTrackedFile(fileHandle);
 }
 
@@ -83,13 +83,13 @@ void LoadAndDecodePackedResource(
     void *compressedBuffer,
     void *destination)
 {
-    word16 storedByteCount;
-    int16 fileHandle;
+    uint16_t storedByteCount;
+    int16_t fileHandle;
 
     fileHandle = OpenTrackedFile((char *) resourceName, 0x01);
     ReadTrackedFile(fileHandle, &storedByteCount, 0x02);
     ReadTrackedFile(
-        fileHandle, compressedBuffer, (uint32) storedByteCount);
+        fileHandle, compressedBuffer, (uint32_t) storedByteCount);
     CloseTrackedFile(fileHandle);
 
     DecodeWestwoodPackedResource(compressedBuffer, destination);
@@ -115,15 +115,15 @@ void DecodeWestwoodPackedResource(
     {
     case 0x00:
         CopyUncompressedFarBlock(
-            (const byte *) compressedBlock + 0x08,
+            (const uint8_t *) compressedBlock + 0x08,
             destination,
             header->uncompressedByteCount);
         break;
 
     case 0x01:
     {
-        byte *dictionary = (byte *) Heap_Allocate(0x3C00, "21E7:0163");
-        DecodeWestwoodLzw12((const byte *) compressedBlock, (byte *) destination,
+        uint8_t *dictionary = (uint8_t *) Heap_Allocate(0x3C00, "21E7:0163");
+        DecodeWestwoodLzw12((const uint8_t *) compressedBlock, (uint8_t *) destination,
             dictionary);
         Heap_Free(dictionary);
         break;
@@ -131,15 +131,15 @@ void DecodeWestwoodPackedResource(
 
     case 0x02:
     {
-        byte *dictionary = (byte *) Heap_Allocate(0xBD00, "21E7:01B8");
-        DecodeWestwoodLzw14((const byte *) compressedBlock, (byte *) destination,
+        uint8_t *dictionary = (uint8_t *) Heap_Allocate(0xBD00, "21E7:01B8");
+        DecodeWestwoodLzw14((const uint8_t *) compressedBlock, (uint8_t *) destination,
             dictionary);
         Heap_Free(dictionary);
         break;
     }
 
     case 0x03:
-        DecodeRLEBlock((const byte *) compressedBlock, (byte *) destination);
+        DecodeRLEBlock((const uint8_t *) compressedBlock, (uint8_t *) destination);
         break;
     }
 }

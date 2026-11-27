@@ -8,13 +8,13 @@
 
 /* 0D73:0387-0447 */
 void RebuildTacticalVideoResources(
-    word16 adapterType,
-    word16 showScenarioCompletion)
+    uint16_t adapterType,
+    uint16_t showScenarioCompletion)
 {
-    byte *primaryScreenBuffer;
-    byte *secondaryScreenBuffer;
-    byte *oldTileStrip;
-    byte *newTileStrip;
+    uint8_t *primaryScreenBuffer;
+    uint8_t *secondaryScreenBuffer;
+    uint8_t *oldTileStrip;
+    uint8_t *newTileStrip;
 
     SetVideoModeForAdapter(adapterType);
     LoadVideoPalette(VideoPaletteData);

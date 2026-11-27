@@ -7,12 +7,12 @@
 // 2D1B:2453: void DestroyScenarioUnit(word16 unitIndex)
 // Called from:
 //      ApplyWeaponDamage
-void DestroyScenarioUnit(word16 unitIndex)
+void DestroyScenarioUnit(uint16_t unitIndex)
 {
     RevengeUnitRecord *unit;
-    byte *destructionMarker;
-    word16 wasCurrentLanceLeader;
-    word16 attackerIndex;
+    uint8_t *destructionMarker;
+    uint16_t wasCurrentLanceLeader;
+    uint16_t attackerIndex;
 
     // Verified against 2D1B:2453-256A.
     wasCurrentLanceLeader = IsCurrentLanceLeader(unitIndex);
@@ -28,7 +28,7 @@ void DestroyScenarioUnit(word16 unitIndex)
         ++attackerIndex)
     {
         if (UnitAttackTarget[attackerIndex] ==
-            (int16) unitIndex)
+            (int16_t) unitIndex)
             UnitAttackTarget[attackerIndex] = TACTICAL_TARGET_NONE;
     }
 
@@ -41,7 +41,7 @@ void DestroyScenarioUnit(word16 unitIndex)
     NarrationMessageCategory = 0x0009;
     NarrationEmphasis = 0x0000;
     NarrationSourceUnit = unitIndex;
-    if ((int16) unitIndex < ENEMY_FORCE_FIRST_UNIT)
+    if ((int16_t) unitIndex < ENEMY_FORCE_FIRST_UNIT)
     {
         FriendlyUnitDestroyed = 0x0001;
         NarrationEmphasis = 0x0001;
@@ -71,18 +71,18 @@ void DestroyScenarioUnit(word16 unitIndex)
 // 2D1B:2A30: word16 FindOperationalLanceLeader(word16 unitIndex)
 // Called from:
 //      RebuildLanceFormationAfterLeaderLoss
-word16 FindOperationalLanceLeader(word16 unitIndex)
+uint16_t FindOperationalLanceLeader(uint16_t unitIndex)
 {
     // Verified against 2D1B:2A30-2AA5. The executable initializes its proposed
     // occupied-unit fallback to FFFFh but compares it with 00FFh, so that
     // fallback is never populated or returned. Preserve the resulting behavior:
     // return the first deployed, mobile member, or FFFFh.
-    word16 lanceBaseUnitIndex = unitIndex & 0x001C;
-    word16 lanceOffset;
+    uint16_t lanceBaseUnitIndex = unitIndex & 0x001C;
+    uint16_t lanceOffset;
 
     for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
     {
-        word16 candidateUnitIndex = lanceBaseUnitIndex + lanceOffset;
+        uint16_t candidateUnitIndex = lanceBaseUnitIndex + lanceOffset;
         RevengeUnitRecord *candidateUnit =
             &PersistentUnitRoster[candidateUnitIndex];
 
@@ -98,11 +98,11 @@ word16 FindOperationalLanceLeader(word16 unitIndex)
 // 2D1B:2CB4: word16 ShouldDestroyUnitAfterLegLoss(void)
 // Called from:
 //      ApplyWeaponDamage
-word16 ShouldDestroyUnitAfterLegLoss(void)
+uint16_t ShouldDestroyUnitAfterLegLoss(void)
 {
     // PROPOSED NAME: exact scenario-suffix predicate is verified, but why these
     // missions remove an immobilized unit immediately needs a scenario trace.
-    int16 scenarioSuffix = (int16) ScenarioFileSuffix;
+    int16_t scenarioSuffix = (int16_t) ScenarioFileSuffix;
     return (scenarioSuffix >= 0x36 && scenarioSuffix <= 0x39) ||
         (scenarioSuffix >= 0x42 && scenarioSuffix <= 0x43) ||
         scenarioSuffix == 0x45 ||
@@ -112,13 +112,13 @@ word16 ShouldDestroyUnitAfterLegLoss(void)
 // 2D1B:2604: rebuild arm-mounted weapon counts and the per-unit availability
 // mask, excluding destroyed equipment and ammunition weapons with no rounds.
 // Verified against 2D1B:2604-276E.
-void BuildArmWeaponAvailabilityMasks(word16 unitIndex)
+void BuildArmWeaponAvailabilityMasks(uint16_t unitIndex)
 {
     RevengeUnitRecord *unitRecord = &PersistentUnitRoster[unitIndex];
-    word16 *weaponCounts = WeaponCountScratch;
-    uint32 weaponBit = 0x00000001UL;
-    word16 slotIndex;
-    word16 weaponIndex;
+    uint16_t *weaponCounts = WeaponCountScratch;
+    uint32_t weaponBit = 0x00000001UL;
+    uint16_t slotIndex;
+    uint16_t weaponIndex;
 
     for (weaponIndex = 0x00; weaponIndex < WEAPON_DEFINITION_COUNT; ++weaponIndex)
         weaponCounts[weaponIndex] = 0x00;
@@ -127,8 +127,8 @@ void BuildArmWeaponAvailabilityMasks(word16 unitIndex)
     // right-arm equipment slots, rather than the complete unit record.
     for (slotIndex = 0x00; slotIndex < 0x08; ++slotIndex)
     {
-        byte leftWeapon = unitRecord->leftArmEquipment[slotIndex];
-        byte rightWeapon = unitRecord->rightArmEquipment[slotIndex];
+        uint8_t leftWeapon = unitRecord->leftArmEquipment[slotIndex];
+        uint8_t rightWeapon = unitRecord->rightArmEquipment[slotIndex];
         if (leftWeapon != EQUIPMENT_SLOT_EMPTY &&
             (leftWeapon & EQUIPMENT_DAMAGED_FLAG) == 0x00 &&
             leftWeapon <= WEAPON_DEFINITION_COUNT)
@@ -150,9 +150,9 @@ void BuildArmWeaponAvailabilityMasks(word16 unitIndex)
         {
             const RevengeWeaponDefinition *weaponDefinition =
                 &WeaponDefinitions[weaponIndex];
-            int16 ammunitionFamily =
+            int16_t ammunitionFamily =
                 weaponDefinition->ammunitionFamilyId;
-            word16 ammunitionRemaining = ammunitionFamily == AMMUNITION_NONE ? 0x01 : unitRecord->currentAmmunition[AMMUNITION_INDEX(ammunitionFamily)];
+            uint16_t ammunitionRemaining = ammunitionFamily == AMMUNITION_NONE ? 0x01 : unitRecord->currentAmmunition[AMMUNITION_INDEX(ammunitionFamily)];
 
             if (ammunitionRemaining != 0x00)
                 UnitWeaponAvailabilityMask[unitIndex] |= weaponBit;
@@ -165,22 +165,22 @@ void BuildArmWeaponAvailabilityMasks(word16 unitIndex)
 // Return one when the unit fails its heat shutdown check. Current heat is the
 // integer byte of the Q8.8 accumulator and is capped at 30 for this test.
 // Verified against 2D1B:256B-2603.
-byte UpdateUnitHeatShutdown(word16 unitIndex)
+uint8_t UpdateUnitHeatShutdown(uint16_t unitIndex)
 {
     RevengeUnitRecord *unitRecord = &PersistentUnitRoster[unitIndex];
-    word16 currentHeat = unitRecord->currentHeat;
+    uint16_t currentHeat = unitRecord->currentHeat;
     if (currentHeat > BATTLEMECH_MAXIMUM_HEAT)
         currentHeat = BATTLEMECH_MAXIMUM_HEAT;
 
-    word16 shutdownTriggered = TRUE;
+    uint16_t shutdownTriggered = TRUE;
     if (currentHeat < BATTLEMECH_SHUTDOWN_HEAT_MINIMUM)
         shutdownTriggered = FALSE;
     else
     {
-        word16 shutdownTarget =
+        uint16_t shutdownTarget =
             ((currentHeat - BATTLEMECH_SHUTDOWN_HEAT_MINIMUM) >> 0x01) +
             0x04;
-        if ((int16) Roll2D6() >= (int16) shutdownTarget)
+        if ((int16_t) Roll2D6() >= (int16_t) shutdownTarget)
             shutdownTriggered = FALSE;
         else
         {
@@ -202,7 +202,7 @@ byte UpdateUnitHeatShutdown(word16 unitIndex)
         NarrationMessageCategory = 0x01;
     }
 
-    return (byte) shutdownTriggered;
+    return (uint8_t) shutdownTriggered;
 }
 
 #define TERRAIN_IMPACT_RECORD_COUNT 0x5A
@@ -219,24 +219,24 @@ byte UpdateUnitHeatShutdown(word16 unitIndex)
 // the packed terrain state immediately afterward.
 // Verified against 2D1B:276F-296E.
 void ApplyTerrainImpact(
-    int16 mapX,
-    int16 mapY,
-    word16 advanceBeforeRecording,
-    word16 forceAnimationRecord)
+    int16_t mapX,
+    int16_t mapY,
+    uint16_t advanceBeforeRecording,
+    uint16_t forceAnimationRecord)
 {
     RevengeTerrainImpactAnimationRecord *impactRecords;
     RevengeTerrainImpactAnimationRecord *record;
-    int16 previousDamageState;
-    int16 recordIndex;
-    word16 collapsibleStructure;
-    word16 shouldRecordImpact;
-    word16 terrainType;
+    int16_t previousDamageState;
+    int16_t recordIndex;
+    uint16_t collapsibleStructure;
+    uint16_t shouldRecordImpact;
+    uint16_t terrainType;
 
-    previousDamageState = (int16) ReadTerrainDamageState(mapX, mapY);
+    previousDamageState = (int16_t) ReadTerrainDamageState(mapX, mapY);
     impactRecords = TerrainImpactAnimationRecords;
 
-    if (mapX < 0x0000 || mapX >= (int16) MapWidth ||
-        mapY < 0x0000 || mapY >= (int16) MapHeight ||
+    if (mapX < 0x0000 || mapX >= (int16_t) MapWidth ||
+        mapY < 0x0000 || mapY >= (int16_t) MapHeight ||
         previousDamageState >= 0x0003)
     {
         return;
@@ -245,7 +245,7 @@ void ApplyTerrainImpact(
     if (advanceBeforeRecording != FALSE)
         AdvanceTerrainDamageState(mapX, mapY, 0x03);
 
-    terrainType = TerrainTypeMap[(word16) mapY * MapWidth + (word16) mapX];
+    terrainType = TerrainTypeMap[(uint16_t) mapY * MapWidth + (uint16_t) mapX];
     shouldRecordImpact = FALSE;
     if (terrainType >= TerrainImpactAnimationTypeMinimum &&
         terrainType <= TerrainImpactAnimationTypeMaximum)
@@ -279,7 +279,7 @@ void ApplyTerrainImpact(
 
             record->mapX = mapX;
             record->mapY = mapY;
-            record->animationVariant = (byte) (GeneratePseudoRandomByte() % 0x03);
+            record->animationVariant = (uint8_t) (GeneratePseudoRandomByte() % 0x03);
             if (advanceBeforeRecording == FALSE)
                 AdvanceTerrainDamageState(mapX, mapY, 0x03);
             return;
@@ -318,15 +318,15 @@ void ApplyTerrainImpact(
 // impact visual, and destroy every deployed unit within one cell of each tile.
 // Verified against 2D1B:2AF3-2C22.
 void CollapseStructureAtMapCell(
-    int16 mapX,
-    int16 mapY,
-    word16 terrainType)
+    int16_t mapX,
+    int16_t mapY,
+    uint16_t terrainType)
 {
-    int16 footprintOriginX = mapX;
-    int16 footprintOriginY = mapY;
-    word16 footprintWidth;
-    word16 footprintHeight;
-    word16 row;
+    int16_t footprintOriginX = mapX;
+    int16_t footprintOriginY = mapY;
+    uint16_t footprintWidth;
+    uint16_t footprintHeight;
+    uint16_t row;
 
     if (TacticalTerrainEffectMode == 0x08)
     {
@@ -339,46 +339,46 @@ void CollapseStructureAtMapCell(
     }
     else
     {
-        int16 footprintCell =
-            (int16) (word16) (terrainType - 0x8C);
+        int16_t footprintCell =
+            (int16_t) (uint16_t) (terrainType - 0x8C);
         footprintWidth = 0x03;
         footprintHeight = 0x03;
         if (TacticalTerrainEffectMode == 0x05)
-            footprintCell = (int16) (word16) (footprintCell - 0x5A);
-        footprintOriginY = (int16) (word16) ((word16) footprintOriginY - (word16) (footprintCell / 0x03));
-        footprintOriginX = (int16) (word16) ((word16) footprintOriginX - (word16) (footprintCell % 0x03));
+            footprintCell = (int16_t) (uint16_t) (footprintCell - 0x5A);
+        footprintOriginY = (int16_t) (uint16_t) ((uint16_t) footprintOriginY - (uint16_t) (footprintCell / 0x03));
+        footprintOriginX = (int16_t) (uint16_t) ((uint16_t) footprintOriginX - (uint16_t) (footprintCell % 0x03));
     }
 
     for (row = 0x00; row < footprintHeight; ++row)
     {
-        word16 column;
-        int16 cellY = (int16) (word16) ((word16) footprintOriginY + row);
+        uint16_t column;
+        int16_t cellY = (int16_t) (uint16_t) ((uint16_t) footprintOriginY + row);
         for (column = 0x00; column < footprintWidth; ++column)
         {
-            int16 cellX = (int16) (word16) ((word16) footprintOriginX + column);
-            int16 minimumUnitX = (int16) (word16) ((word16) cellX - 0x01);
-            int16 maximumUnitX = (int16) (word16) ((word16) cellX + 0x01);
-            int16 minimumUnitY = (int16) (word16) ((word16) cellY - 0x01);
-            int16 maximumUnitY = (int16) (word16) ((word16) cellY + 0x01);
+            int16_t cellX = (int16_t) (uint16_t) ((uint16_t) footprintOriginX + column);
+            int16_t minimumUnitX = (int16_t) (uint16_t) ((uint16_t) cellX - 0x01);
+            int16_t maximumUnitX = (int16_t) (uint16_t) ((uint16_t) cellX + 0x01);
+            int16_t minimumUnitY = (int16_t) (uint16_t) ((uint16_t) cellY - 0x01);
+            int16_t maximumUnitY = (int16_t) (uint16_t) ((uint16_t) cellY + 0x01);
 
-            while ((int16) AdvanceTerrainDamageState(
+            while ((int16_t) AdvanceTerrainDamageState(
                        cellX, cellY, 0x03) < 0x03)
                 ApplyTerrainImpact(cellX, cellY, TRUE, TRUE);
             QueueTacticalImpactVisual(cellX, cellY, 0x01);
 
-            word16 unitIndex;
+            uint16_t unitIndex;
             for (unitIndex = 0x00; unitIndex < TACTICAL_UNIT_COUNT;
                 ++unitIndex)
             {
                 RevengeUnitRecord *unit = &PersistentUnitRoster[unitIndex];
                 if (unit->deploymentState != 0x00 &&
-                    (int16) ScenarioUnitMapX[unitIndex] >=
+                    (int16_t) ScenarioUnitMapX[unitIndex] >=
                         minimumUnitX &&
-                    (int16) ScenarioUnitMapX[unitIndex] <=
+                    (int16_t) ScenarioUnitMapX[unitIndex] <=
                         maximumUnitX &&
-                    (int16) ScenarioUnitMapY[unitIndex] >=
+                    (int16_t) ScenarioUnitMapY[unitIndex] >=
                         minimumUnitY &&
-                    (int16) ScenarioUnitMapY[unitIndex] <=
+                    (int16_t) ScenarioUnitMapY[unitIndex] <=
                         maximumUnitY)
                 {
                     DestroyScenarioUnit(unitIndex);
@@ -390,9 +390,9 @@ void CollapseStructureAtMapCell(
 
 // 2D1B:296F: queue narration category 07h for a friendly lance leader whose
 // current tactical order mode is not 02h. The category label remains proposed.
-void QueueLanceOrderNarration(word16 unitIndex)
+void QueueLanceOrderNarration(uint16_t unitIndex)
 {
-    if ((int16) unitIndex >= ENEMY_FORCE_FIRST_UNIT ||
+    if ((int16_t) unitIndex >= ENEMY_FORCE_FIRST_UNIT ||
         IsCurrentLanceLeader(unitIndex) == FALSE ||
         UnitTacticalOrderMode[unitIndex] ==
             TACTICAL_ORDER_SEEK_AND_DESTROY)
@@ -409,10 +409,10 @@ void QueueLanceOrderNarration(word16 unitIndex)
 // 2D1B:2C23: advance to the next of the first four route waypoints and copy
 // its X/Y coordinates into the unit's active route target.
 // Verified against 2D1B:2C23-2CB3, including the signed route-index tests.
-void AdvanceUnitRouteWaypoint(word16 unitIndex)
+void AdvanceUnitRouteWaypoint(uint16_t unitIndex)
 {
     SceneUnitRoute *route = &SceneUnitRoutes[unitIndex];
-    int8 routeIndex = route->waypointIndex;
+    int8_t routeIndex = route->waypointIndex;
 
     if (routeIndex >= 0x03)
         return;
@@ -426,9 +426,9 @@ void AdvanceUnitRouteWaypoint(word16 unitIndex)
 //     word16 referencePointIndex, word16 unitIndex)
 // Called from:
 //      DrawTacticalUnitControlPanel
-word16 HasTacticalReferencePointLineOfSightToUnit(
-    word16 referencePointIndex,
-    word16 unitIndex)
+uint16_t HasTacticalReferencePointLineOfSightToUnit(
+    uint16_t referencePointIndex,
+    uint16_t unitIndex)
 {
     // P: the four DS:865B/865F coordinate pairs are independently enabled by
     // DS:8657. Their campaign-facing meaning still needs a SCENE-opcode trace,

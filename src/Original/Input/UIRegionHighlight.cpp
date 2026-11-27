@@ -10,44 +10,44 @@
 // 3599:0009: void HighlightUiRegionSelection(int16 regionIndex)
 // Called from:
 //      RunSingleUiRegionSelection
-void HighlightUiRegionSelection(int16 regionIndex)
+void HighlightUiRegionSelection(int16_t regionIndex)
 {
     OriginalUiRegionRecord *region;
-    word16 selectedRow;
-    int16 glyphWidth;
-    int16 lineHeight;
-    word16 selectionLeft;
-    word16 selectionTop;
-    word16 selectionRight;
-    word16 selectionBottom;
+    uint16_t selectedRow;
+    int16_t glyphWidth;
+    int16_t lineHeight;
+    uint16_t selectionLeft;
+    uint16_t selectionTop;
+    uint16_t selectionRight;
+    uint16_t selectionBottom;
 
     region = &UiRegionTable[regionIndex];
     selectedRow = region->selectedRow;
 
     /* Invalid persisted selections, and either of the two modal UI reset
 	 * conditions, restart this region at its first row. */
-    if ((int16) selectedRow >= (int16) region->rowCount)
+    if ((int16_t) selectedRow >= (int16_t) region->rowCount)
         selectedRow = 0x00;
     if (UiSelectionResetFlagA != 0x00 ||
         UiSelectionResetFlagB != 0x00)
         selectedRow = 0x00;
     region->selectedRow = selectedRow;
-    SavedUiRegionSelectionRows[0x00] = (byte) selectedRow;
+    SavedUiRegionSelectionRows[0x00] = (uint8_t) selectedRow;
 
     glyphWidth = ActiveFontGlyphAdvanceX;
     lineHeight = ActiveFontLineHeight;
-    selectionLeft = (word16) ((ActiveTextWindowLeftTile << 0x03) +
+    selectionLeft = (uint16_t) ((ActiveTextWindowLeftTile << 0x03) +
         glyphWidth * region->leftColumn);
-    selectionTop = (word16) ((ActiveTextWindowTopTile << 0x03) +
+    selectionTop = (uint16_t) ((ActiveTextWindowTopTile << 0x03) +
         lineHeight * (region->topRow + selectedRow));
-    selectionRight = (word16) (selectionLeft +
+    selectionRight = (uint16_t) (selectionLeft +
         glyphWidth * region->widthColumns - 0x01);
-    selectionBottom = (word16) (selectionTop + lineHeight - 0x01);
+    selectionBottom = (uint16_t) (selectionTop + lineHeight - 0x01);
     XorVideoRectangle(
         selectionLeft,
         selectionTop,
         selectionRight,
         selectionBottom,
-        (byte) region->xorColor);
+        (uint8_t) region->xorColor);
     ActiveUiRegionIndex = regionIndex;
 }

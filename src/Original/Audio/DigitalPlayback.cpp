@@ -12,11 +12,11 @@
 #define ResolveDigitalPlaybackDescriptor \
     DigitalBridge_ResolvePlaybackDescriptor
 
-void WriteNullDigitalSample(byte sample);
-void WriteSoundBlasterDigitalSample(byte sample);
+void WriteNullDigitalSample(uint8_t sample);
+void WriteSoundBlasterDigitalSample(uint8_t sample);
 
 DigitalPlaybackWorkingSet DigitalPlaybackBuffers;
-static const word16 DigitalMixBiasOffsets[0x04] = {
+static const uint16_t DigitalMixBiasOffsets[0x04] = {
     0x0AF2, 0x0BF2, 0x0DF2, 0x10F2
 };
 
@@ -26,17 +26,17 @@ void InstallDigitalDriverQueueCallback(
     DigitalDriverQueue *queue);
 void InitializeDigitalSampleDescriptorCore(
     DigitalSampleDescriptor *descriptor,
-    word16 sampleLength,
-    word16 playbackScale,
-    word16 sourceRateHz,
-    const byte *sampleData);
+    uint16_t sampleLength,
+    uint16_t playbackScale,
+    uint16_t sourceRateHz,
+    const uint8_t *sampleData);
 void CalculateDigitalSampleStep(
     DigitalSampleDescriptor *descriptor,
-    word16 playbackScale);
-word16 SetDigitalSampleLoopRange(
+    uint16_t playbackScale);
+uint16_t SetDigitalSampleLoopRange(
     DigitalSampleDescriptor *descriptor,
-    word16 loopStart,
-    word16 loopEnd);
+    uint16_t loopStart,
+    uint16_t loopEnd);
 void SetDigitalSampleCompletionCallback(
     DigitalSampleDescriptor *descriptor,
     DigitalSampleDescriptor *argument,
@@ -52,18 +52,18 @@ void FinishDigitalSampleLoopCore(
     DigitalSampleDescriptor *descriptor);
 void StopDigitalSamplePlaybackCore(
     DigitalSampleDescriptor *descriptor);
-word16 ReadDigitalSamplePlaybackState(
+uint16_t ReadDigitalSamplePlaybackState(
     DigitalSampleDescriptor *descriptor);
-uint32 ApplyDigitalMixScale(uint16 timingScale);
-uint32 RebuildDigitalMixLookup(int16 mixScale);
+uint32_t ApplyDigitalMixScale(uint16_t timingScale);
+uint32_t RebuildDigitalMixLookup(int16_t mixScale);
 void ServiceDigitalAudioTick(void);
-word16 ProgramDigitalPlaybackTimerRate(uint16 playbackRateHz);
+uint16_t ProgramDigitalPlaybackTimerRate(uint16_t playbackRateHz);
 void HandleDigitalWeaponEffectCompletion(
     DigitalSampleDescriptor *descriptor);
 // 375F:063B: void InstallDigitalPlaybackTimer(Stack uint16 wArg04)
 // Called from:
 //      PlayScenarioDigitalSoundSequence
-void InstallDigitalPlaybackTimer(uint16 playbackRateHz)
+void InstallDigitalPlaybackTimer(uint16_t playbackRateHz)
 {
     InitializeDigitalDriverQueueCore(
         &DigitalPlaybackBuffers.PlaybackTimerQueue);
@@ -74,7 +74,7 @@ void InstallDigitalPlaybackTimer(uint16 playbackRateHz)
 	 * 375F:0A1D, keeping the old one in SavedSystemTimerVector. Host: the
 	 * game's clock calls the sample tick from the PIT's reprogramming on
 	 * (below). */
-    word16 systemTimerDivisor = ProgramDigitalPlaybackTimerRate(playbackRateHz);
+    uint16_t systemTimerDivisor = ProgramDigitalPlaybackTimerRate(playbackRateHz);
     DigitalPlaybackRuntime.SystemTimerDivisor = systemTimerDivisor;
     DigitalPlaybackRuntime.SystemTimerAccumulator = systemTimerDivisor - 0x01;
     SDLBackend_StartDigitalPlaybackClock(
@@ -84,9 +84,9 @@ void InstallDigitalPlaybackTimer(uint16 playbackRateHz)
 // 375F:0689: Register word16 ProgramDigitalPlaybackTimerRate(Register uint16 ax)
 // Called from:
 //      InstallDigitalPlaybackTimer
-word16 ProgramDigitalPlaybackTimerRate(uint16 playbackRateHz)
+uint16_t ProgramDigitalPlaybackTimerRate(uint16_t playbackRateHz)
 {
-    word16 pitDivisor = PITFrequencyToDivisor(playbackRateHz);
+    uint16_t pitDivisor = PITFrequencyToDivisor(playbackRateHz);
     DigitalPlaybackRuntime.PlaybackRateHz =
         PITFrequencyToDivisor(pitDivisor);
     DigitalPlaybackRuntime.DigitalTimerReloadMinusOne =
@@ -129,7 +129,7 @@ void InitializeDigitalDriverQueueCore(DigitalDriverQueue *queue)
 // 375F:06FA: reconstructed C signature follows.
 // Called from:
 //      PlayScenarioDigitalSoundSequence
-void AttachDigitalDriverQueue(word16 driverDescriptorOffset,
+void AttachDigitalDriverQueue(uint16_t driverDescriptorOffset,
     DigitalDriverQueue *queue)
 {
     InstallDigitalDriverQueueCallback(
@@ -158,8 +158,8 @@ void InstallDigitalDriverQueueCallback(
 // Called from:
 //      PlayScenarioDigitalSoundSequence
 void InitializeDigitalSampleDescriptor(DigitalSampleDescriptor *descriptor,
-    const byte *sampleData,
-    word16 sampleLength, word16 playbackRateHz, word16 formatScale)
+    const uint8_t *sampleData,
+    uint16_t sampleLength, uint16_t playbackRateHz, uint16_t formatScale)
 {
     InitializeDigitalSampleDescriptorCore(descriptor, sampleLength, formatScale, playbackRateHz,
         sampleData);
@@ -170,8 +170,8 @@ void InitializeDigitalSampleDescriptor(DigitalSampleDescriptor *descriptor,
 //      InitializeDigitalSampleDescriptor
 void InitializeDigitalSampleDescriptorCore(
     DigitalSampleDescriptor *descriptor,
-    word16 sampleLength, word16 playbackScale, word16 sourceRateHz,
-    const byte *sampleData)
+    uint16_t sampleLength, uint16_t playbackScale, uint16_t sourceRateHz,
+    const uint8_t *sampleData)
 {
     descriptor->SampleData = sampleData;
     descriptor->SampleLength = sampleLength;
@@ -191,7 +191,7 @@ void InitializeDigitalSampleDescriptorCore(
 // Called from:
 //      PlayScenarioDigitalSoundSequence
 void ConfigureDigitalSampleTiming(DigitalSampleDescriptor *descriptor,
-    word16 formatScale)
+    uint16_t formatScale)
 {
     CalculateDigitalSampleStep(descriptor, formatScale);
 }
@@ -200,26 +200,26 @@ void ConfigureDigitalSampleTiming(DigitalSampleDescriptor *descriptor,
 // Called from:
 //      ConfigureDigitalSampleTiming
 void CalculateDigitalSampleStep(DigitalSampleDescriptor *descriptor,
-    word16 playbackScale)
+    uint16_t playbackScale)
 {
-    uint16 timerScale = DigitalPlaybackRuntime.PlaybackRateHz;
-    uint32 sourceRate = descriptor->SourceRateHz;
-    uint16 descriptorScale = descriptor->PlaybackScale;
-    uint32 sourceRemainder = sourceRate % timerScale;
-    uint32 scaleRemainder = playbackScale % descriptorScale;
-    uint16 sourceFraction = (uint16) ((sourceRemainder << 0x10) / timerScale);
-    uint16 scaleFraction = (uint16) ((scaleRemainder << 0x10) / descriptorScale);
-    uint16 sourceWhole = (uint16) (sourceRate / timerScale);
-    uint16 scaleWhole = playbackScale / descriptorScale;
+    uint16_t timerScale = DigitalPlaybackRuntime.PlaybackRateHz;
+    uint32_t sourceRate = descriptor->SourceRateHz;
+    uint16_t descriptorScale = descriptor->PlaybackScale;
+    uint32_t sourceRemainder = sourceRate % timerScale;
+    uint32_t scaleRemainder = playbackScale % descriptorScale;
+    uint16_t sourceFraction = (uint16_t) ((sourceRemainder << 0x10) / timerScale);
+    uint16_t scaleFraction = (uint16_t) ((scaleRemainder << 0x10) / descriptorScale);
+    uint16_t sourceWhole = (uint16_t) (sourceRate / timerScale);
+    uint16_t scaleWhole = playbackScale / descriptorScale;
 
     // Multiply the two unsigned 16.16 ratios exactly as the four 16-bit MULs
     // at 375F:07C9..07DE. Keeping the partial products explicit avoids a
     // fictitious 64-bit type in this 16-bit DOS source model.
-    uint32 wholeProduct = (uint32) sourceWhole * scaleWhole;
-    uint32 crossProducts = (uint32) sourceWhole * scaleFraction +
-        (uint32) scaleWhole * sourceFraction;
-    uint32 fractionalProduct = (uint32) sourceFraction * scaleFraction;
-    uint32 fixedPointStep = (wholeProduct << 0x10) + crossProducts +
+    uint32_t wholeProduct = (uint32_t) sourceWhole * scaleWhole;
+    uint32_t crossProducts = (uint32_t) sourceWhole * scaleFraction +
+        (uint32_t) scaleWhole * sourceFraction;
+    uint32_t fractionalProduct = (uint32_t) sourceFraction * scaleFraction;
+    uint32_t fixedPointStep = (wholeProduct << 0x10) + crossProducts +
         (fractionalProduct >> 0x10);
     /* CLI (375F:07E4) goes. */
     descriptor->SourceStepWhole = HIGH_WORD(fixedPointStep);
@@ -228,7 +228,7 @@ void CalculateDigitalSampleStep(DigitalSampleDescriptor *descriptor,
 
 // 375F:07ED: stack-argument wrapper around the register-call loop-range core.
 void ConfigureDigitalSampleLoop(DigitalSampleDescriptor *descriptor,
-    word16 loopStart, word16 loopEnd)
+    uint16_t loopStart, uint16_t loopEnd)
 {
     SetDigitalSampleLoopRange(descriptor, loopStart, loopEnd);
 }
@@ -236,13 +236,13 @@ void ConfigureDigitalSampleLoop(DigitalSampleDescriptor *descriptor,
 // 375F:0805: reconstructed C signature follows.
 // Called from:
 //      InitializeDigitalSampleDescriptorCore
-word16 SetDigitalSampleLoopRange(DigitalSampleDescriptor *descriptor,
-    word16 loopStart, word16 loopEnd)
+uint16_t SetDigitalSampleLoopRange(DigitalSampleDescriptor *descriptor,
+    uint16_t loopStart, uint16_t loopEnd)
 {
     /* CLI (375F:0806) goes. */
     descriptor->LoopStart = loopStart;
     descriptor->LoopEnd = loopEnd;
-    word16 loopLength = loopEnd - loopStart;
+    uint16_t loopLength = loopEnd - loopStart;
     descriptor->LoopLength = loopLength;
     return loopLength;
 }
@@ -291,7 +291,7 @@ void LinkDigitalSampleDescriptor(DigitalDriverQueue *queue,
     {
         descriptor->OwnerQueue = queue;
         /* CLI (375F:0877) goes. */
-        word16 previousCount = queue->ActiveDescriptorCount;
+        uint16_t previousCount = queue->ActiveDescriptorCount;
         queue->ActiveDescriptorCount = previousCount + 0x01;
         queue->MixBias = DigitalMixBiasOffsets[previousCount];
         /* In front of the queue's first (its end while empty). */
@@ -323,7 +323,7 @@ void UnlinkDigitalSampleDescriptor(
         DigitalSampleLink *next = descriptor->Link.Next;
         DigitalSampleLink **previousLink = descriptor->Link.PreviousLink;
         DigitalDriverQueue *queue = descriptor->OwnerQueue;
-        word16 activeCount;
+        uint16_t activeCount;
 
         /* CLI (375F:08D3) goes. */
         next->PreviousLink = previousLink;
@@ -404,7 +404,7 @@ void StopDigitalSamplePlaybackCore(
 // 375F:0999: reconstructed C signature follows.
 // Called from:
 //      PlayScenarioDigitalSoundSequence
-word16 GetDigitalSamplePlaybackState(
+uint16_t GetDigitalSamplePlaybackState(
     DigitalSampleDescriptor *descriptor)
 {
     return ReadDigitalSamplePlaybackState(descriptor);
@@ -413,11 +413,11 @@ word16 GetDigitalSamplePlaybackState(
 // 375F:09A9: reconstructed C signature follows.
 // Called from:
 //      GetDigitalSamplePlaybackState
-word16 ReadDigitalSamplePlaybackState(
+uint16_t ReadDigitalSamplePlaybackState(
     DigitalSampleDescriptor *descriptor)
 {
-    word16 result = 0x00;
-    word16 handlerOffset = descriptor->PlaybackHandlerOffset;
+    uint16_t result = 0x00;
+    uint16_t handlerOffset = descriptor->PlaybackHandlerOffset;
     if (handlerOffset != DIGITAL_SAMPLE_HANDLER_IDLE)
     {
         result = 0x01;
@@ -435,13 +435,13 @@ word16 ReadDigitalSamplePlaybackState(
 // Called from:
 //      InitializeDigitalSoundDriver
 //      PlayScenarioDigitalSoundSequence
-uint32 SetDigitalPlaybackTimingScale(uint16 timingScale)
+uint32_t SetDigitalPlaybackTimingScale(uint16_t timingScale)
 {
-    word16 mixScale;
+    uint16_t mixScale;
 
     DigitalPlaybackRuntime.RequestedMixScale = timingScale;
-    mixScale = (word16) (((uint32) DigitalPlaybackRuntime.DriverMixScale *
-                             timingScale) >>
+    mixScale = (uint16_t) (((uint32_t) DigitalPlaybackRuntime.DriverMixScale *
+                               timingScale) >>
         0x08);
     return RebuildDigitalMixLookup(mixScale);
 }
@@ -449,13 +449,13 @@ uint32 SetDigitalPlaybackTimingScale(uint16 timingScale)
 // 375F:09CC: void ApplyDigitalMixScale(Register uint16 ax)
 // Called from:
 //      InstallDigitalDriverQueueCallback
-uint32 ApplyDigitalMixScale(uint16 timingScale)
+uint32_t ApplyDigitalMixScale(uint16_t timingScale)
 {
-    word16 mixScale;
+    uint16_t mixScale;
 
     DigitalPlaybackRuntime.RequestedMixScale = timingScale;
-    mixScale = (word16) (((uint32) DigitalPlaybackRuntime.DriverMixScale *
-                             timingScale) >>
+    mixScale = (uint16_t) (((uint32_t) DigitalPlaybackRuntime.DriverMixScale *
+                               timingScale) >>
         0x08);
     if (mixScale == DigitalPlaybackRuntime.ActiveMixScale)
         return 0x00000000;
@@ -466,20 +466,20 @@ uint32 ApplyDigitalMixScale(uint16 timingScale)
 // Called from:
 //      SetDigitalPlaybackTimingScale
 //      ApplyDigitalMixScale
-uint32 RebuildDigitalMixLookup(int16 mixScale)
+uint32_t RebuildDigitalMixLookup(int16_t mixScale)
 {
     DigitalPlaybackRuntime.ActiveMixScale = mixScale;
-    int32 accumulator = ((int32) 0x0100 - mixScale) << 0x07;
-    byte outputSample = 0x00;
-    for (word16 inputSample = 0x0000; inputSample < 0x0100; ++inputSample)
+    int32_t accumulator = ((int32_t) 0x0100 - mixScale) << 0x07;
+    uint8_t outputSample = 0x00;
+    for (uint16_t inputSample = 0x0000; inputSample < 0x0100; ++inputSample)
     {
-        int32 scaledSample = accumulator >> 0x08;
+        int32_t scaledSample = accumulator >> 0x08;
         if (scaledSample < 0x0000)
             outputSample = 0x00;
         else if (scaledSample > 0x00FF)
             outputSample = 0xFF;
         else
-            outputSample = (byte) scaledSample;
+            outputSample = (uint8_t) scaledSample;
         DigitalPlaybackRuntime.MixLookup[inputSample] = outputSample;
         accumulator += mixScale;
     }
@@ -488,8 +488,8 @@ uint32 RebuildDigitalMixLookup(int16 mixScale)
     // byte in DX:AX. The original's set-up (31FB:0049) took DX after a
     // zero-scale rebuild as the source rate of its silent calibration
     // descriptor; the rebuild has no calibration, and no caller reads it.
-    word16 axResult = MAKE_WORD(
-        (byte) (((uint32) accumulator >> 0x10) & 0x00FF),
+    uint16_t axResult = MAKE_WORD(
+        (uint8_t) (((uint32_t) accumulator >> 0x10) & 0x00FF),
         outputSample);
     return MAKE_DWORD(LOW_WORD(accumulator), axResult);
 }
@@ -506,7 +506,7 @@ uint32 RebuildDigitalMixLookup(int16 mixScale)
 void ServiceDigitalAudioTick(void)
 {
     DigitalDriverQueue *queue = DigitalPlaybackRuntime.ActiveDriverQueue;
-    word16 activeDescriptorCount = queue->ActiveDescriptorCount;
+    uint16_t activeDescriptorCount = queue->ActiveDescriptorCount;
     if (activeDescriptorCount == 0x0000)
     {
         /* STI (375F:0AE4) goes. */
@@ -518,24 +518,24 @@ void ServiceDigitalAudioTick(void)
     case 0x02F0: WriteNullDigitalSample(queue->OutputSample); break;
     case 0x032E: WriteSoundBlasterDigitalSample(queue->OutputSample); break;
     }
-    word16 mixTableOffset = queue->MixBias;
+    uint16_t mixTableOffset = queue->MixBias;
     DigitalSampleDescriptor *descriptor =
         (DigitalSampleDescriptor *) queue->First;
 
-    for (word16 descriptorIndex = 0x0000;
+    for (uint16_t descriptorIndex = 0x0000;
         descriptorIndex < activeDescriptorCount; ++descriptorIndex)
     {
-        word16 handlerOffset = descriptor->PlaybackHandlerOffset;
+        uint16_t handlerOffset = descriptor->PlaybackHandlerOffset;
         if (handlerOffset == DIGITAL_SAMPLE_HANDLER_IDLE)
             mixTableOffset += 0x0080;
         else if (handlerOffset == DIGITAL_SAMPLE_HANDLER_ONESHOT ||
             handlerOffset == DIGITAL_SAMPLE_HANDLER_LOOP)
         {
-            word16 sourceOffset = descriptor->SourceCursor;
-            const byte *source = descriptor->SampleData + sourceOffset;
-            uint32 remaining = MAKE_DWORD(descriptor->RemainingWhole,
+            uint16_t sourceOffset = descriptor->SourceCursor;
+            const uint8_t *source = descriptor->SampleData + sourceOffset;
+            uint32_t remaining = MAKE_DWORD(descriptor->RemainingWhole,
                 descriptor->RemainingFraction);
-            uint32 sourceStep = MAKE_DWORD(descriptor->SourceStepWhole,
+            uint32_t sourceStep = MAKE_DWORD(descriptor->SourceStepWhole,
                 descriptor->SourceStepFraction);
             bool exhausted = remaining < sourceStep;
             remaining -= sourceStep;
@@ -558,8 +558,8 @@ void ServiceDigitalAudioTick(void)
             }
 
             mixTableOffset += *source;
-            uint32 sourceCursor = MAKE_DWORD(sourceOffset,
-                                      descriptor->SourceCursorFraction) +
+            uint32_t sourceCursor = MAKE_DWORD(sourceOffset,
+                                        descriptor->SourceCursorFraction) +
                 sourceStep;
             descriptor->SourceCursor = HIGH_WORD(sourceCursor);
             descriptor->SourceCursorFraction = LOW_WORD(sourceCursor);
@@ -574,17 +574,17 @@ void ServiceDigitalAudioTick(void)
     }
 
     {
-        int32 mixedSample;
-        word16 sampleSum;
+        int32_t mixedSample;
+        uint16_t sampleSum;
 
         sampleSum = mixTableOffset - queue->MixBias;
-        mixedSample = (int32) sampleSum -
-            (int32) (activeDescriptorCount - 0x01) * 0x80;
+        mixedSample = (int32_t) sampleSum -
+            (int32_t) (activeDescriptorCount - 0x01) * 0x80;
         if (mixedSample < 0x00)
             mixedSample = 0x00;
         else if (mixedSample > 0xFF)
             mixedSample = 0xFF;
         queue->OutputSample =
-            DigitalPlaybackRuntime.MixLookup[(byte) mixedSample];
+            DigitalPlaybackRuntime.MixLookup[(uint8_t) mixedSample];
     }
 }

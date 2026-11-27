@@ -19,52 +19,52 @@
 
 // These callees are maintained in other segment files or will be promoted in
 // the following tactical pass. Their stack contracts are already unambiguous.
-void PlotPixel(word16 x, word16 y, byte color);
+void PlotPixel(uint16_t x, uint16_t y, uint8_t color);
 void ScrollTacticalViewportToCursor(void);
 void RedrawTacticalStatusPanel(void);
 void DrawTacticalOverviewViewportFrame(void);
-word16 GeneratePseudoRandomByte(void);
+uint16_t GeneratePseudoRandomByte(void);
 void BuildTacticalOverviewMapBuffer(
-    const byte *source,
-    byte *destination,
-    word16 width,
-    word16 height);
+    const uint8_t *source,
+    uint8_t *destination,
+    uint16_t width,
+    uint16_t height);
 void ShowTacticalModalMessage(const char *formattedText);
 void CopyVideoRegionToBuffer(
-    int16 xColumn,
-    word16 yCharacterRow,
-    word16 widthColumns,
-    word16 heightCharacterRows,
-    byte *destination);
+    int16_t xColumn,
+    uint16_t yCharacterRow,
+    uint16_t widthColumns,
+    uint16_t heightCharacterRows,
+    uint8_t *destination);
 void CopyBufferToVideoRegion(
-    int16 xColumn,
-    word16 yCharacterRow,
-    word16 widthColumns,
-    word16 heightCharacterRows,
-    const byte *source);
-void SelectAndClearTextWindow(word16 windowIndex);
-void DrawActiveTextWindowBorder(word16 color);
+    int16_t xColumn,
+    uint16_t yCharacterRow,
+    uint16_t widthColumns,
+    uint16_t heightCharacterRows,
+    const uint8_t *source);
+void SelectAndClearTextWindow(uint16_t windowIndex);
+void DrawActiveTextWindowBorder(uint16_t color);
 void RenderFormattedText(const char *formattedText);
-word16 WaitForDismissInput(void);
+uint16_t WaitForDismissInput(void);
 void HideMouseCursorOverlay(void);
 void ShowMouseCursorOverlay(void);
 void ClearActiveVideoBuffer(void);
-void RefreshTacticalDisplay(word16 advanceEffects);
+void RefreshTacticalDisplay(uint16_t advanceEffects);
 void DrawTacticalOverviewMap(void);
 void DrawClippedAxisAlignedLine(
-    int16 x1, int16 y1, int16 x2, int16 y2, word16 color);
+    int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 
 // 24C5:0002
 void EnterTacticalOverview(void)
 {
-    word16 showClockNotice;
-    byte *screenBuffer;
+    uint16_t showClockNotice;
+    uint8_t *screenBuffer;
 
     showClockNotice = FALSE;
     TacticalOverviewViewportDirty = FALSE;
     if (TacticalOverviewClockNoticeActive != FALSE &&
         CampaignClockState[0x01] ==
-            (int16) LastOverviewNoticeHour)
+            (int16_t) LastOverviewNoticeHour)
     {
         showClockNotice = TRUE;
     }
@@ -73,7 +73,7 @@ void EnterTacticalOverview(void)
     {
         TacticalOverviewClockNoticeActive = FALSE;
         if (CampaignClockState[0x01] !=
-                (int16) LastOverviewNoticeHour &&
+                (int16_t) LastOverviewNoticeHour &&
             GeneratePseudoRandomByte() >= TacticalOverviewNoticeChance)
         {
             showClockNotice = TRUE;
@@ -93,7 +93,7 @@ void EnterTacticalOverview(void)
         TacticalOverviewActive = TRUE;
         TacticalSelectedUnitIndex = 0xFFFF;
         TacticalOverviewScreenOriginX =
-            (word16) (((int16) 0x00A0 - (int16) MapWidth) >> 0x01);
+            (uint16_t) (((int16_t) 0x00A0 - (int16_t) MapWidth) >> 0x01);
         BuildTacticalOverviewMapBuffer(
             TerrainTypeMap,
             TacticalOverviewMapBuffer,
@@ -121,23 +121,23 @@ void EnterTacticalOverview(void)
 // 24C5:012E
 void RefreshTacticalOverview(void)
 {
-    word16 rowStride = (MapWidth + 0x07) & 0xFFF8;
-    word16 unitIndex;
-    int16 column;
-    int16 row;
-    byte opposingMarkerColor = OVERVIEW_OPPOSING_MARKER_COLOR;
-    byte *viewportTopRow;
+    uint16_t rowStride = (MapWidth + 0x07) & 0xFFF8;
+    uint16_t unitIndex;
+    int16_t column;
+    int16_t row;
+    uint8_t opposingMarkerColor = OVERVIEW_OPPOSING_MARKER_COLOR;
+    uint8_t *viewportTopRow;
 
     // Restore the terrain pixels under the markers drawn by the previous pass.
     for (unitIndex = 0x00; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
-        byte oldX = TacticalOverviewMarkerX[unitIndex];
-        byte oldY = TacticalOverviewMarkerY[unitIndex];
+        uint8_t oldX = TacticalOverviewMarkerX[unitIndex];
+        uint8_t oldY = TacticalOverviewMarkerY[unitIndex];
 
         if (oldX != OVERVIEW_INVALID_COORDINATE ||
             oldY != OVERVIEW_INVALID_COORDINATE)
         {
-            byte terrainColor = TACTICAL_OVERVIEW_MAP_BUFFER[(word16) (oldY * rowStride) + oldX];
+            uint8_t terrainColor = TACTICAL_OVERVIEW_MAP_BUFFER[(uint16_t) (oldY * rowStride) + oldX];
             PlotPixel(
                 TacticalOverviewScreenOriginX + oldX,
                 oldY,
@@ -151,7 +151,7 @@ void RefreshTacticalOverview(void)
 
     // Restore the terrain beneath the previous 19x12 viewport outline.
     viewportTopRow = TACTICAL_OVERVIEW_MAP_BUFFER +
-        (word16) (TacticalOverviewViewportY * rowStride) +
+        (uint16_t) (TacticalOverviewViewportY * rowStride) +
         TacticalOverviewViewportX;
     for (column = 0x00; column < OVERVIEW_VIEWPORT_WIDTH_CELLS; ++column)
     {
@@ -169,8 +169,8 @@ void RefreshTacticalOverview(void)
     }
     for (row = 0x01; row < OVERVIEW_VIEWPORT_HEIGHT_CELLS - 0x01; ++row)
     {
-        byte *mapRow = viewportTopRow +
-            (word16) ((word16) row * rowStride);
+        uint8_t *mapRow = viewportTopRow +
+            (uint16_t) ((uint16_t) row * rowStride);
         PlotPixel(
             TacticalOverviewScreenOriginX +
                 TacticalOverviewViewportX,
@@ -193,7 +193,7 @@ void RefreshTacticalOverview(void)
     {
         RevengeUnitRecord *unitRecord =
             &PersistentUnitRoster[unitIndex];
-        byte markerColor = OVERVIEW_FRIENDLY_MARKER_COLOR;
+        uint8_t markerColor = OVERVIEW_FRIENDLY_MARKER_COLOR;
         if (unitIndex >= FIRST_OPPOSING_UNIT_INDEX)
             markerColor = opposingMarkerColor;
 
@@ -215,10 +215,10 @@ void RefreshTacticalOverview(void)
 // 24C5:02F1
 void DrawTacticalOverviewViewportFrame(void)
 {
-    word16 left;
-    word16 top;
-    word16 right;
-    word16 bottom;
+    uint16_t left;
+    uint16_t top;
+    uint16_t right;
+    uint16_t bottom;
 
     // V: constrain the tactical camera origin before copying it into the
     // overview's previous-frame coordinates.
@@ -246,17 +246,17 @@ void DrawTacticalOverviewViewportFrame(void)
 // 24C5:037F
 void DrawTacticalOverviewMap(void)
 {
-    word16 rowStride = (MapWidth + 0x07) & 0xFFF8;
-    int16 mapX;
-    int16 mapY;
-    word16 unitIndex;
+    uint16_t rowStride = (MapWidth + 0x07) & 0xFFF8;
+    int16_t mapX;
+    int16_t mapY;
+    uint16_t unitIndex;
 
     ClearActiveVideoBuffer();
-    for (mapY = 0x00; mapY < (int16) MapHeight; ++mapY)
+    for (mapY = 0x00; mapY < (int16_t) MapHeight; ++mapY)
     {
-        byte *mapRow = TACTICAL_OVERVIEW_MAP_BUFFER +
-            (word16) ((word16) mapY * rowStride);
-        for (mapX = 0x00; mapX < (int16) rowStride; ++mapX)
+        uint8_t *mapRow = TACTICAL_OVERVIEW_MAP_BUFFER +
+            (uint16_t) ((uint16_t) mapY * rowStride);
+        for (mapX = 0x00; mapX < (int16_t) rowStride; ++mapX)
             PlotPixel(
                 TacticalOverviewScreenOriginX + mapX,
                 mapY,
@@ -276,7 +276,7 @@ void DrawTacticalOverviewMap(void)
 // 24C5:0401
 void ExitTacticalOverview(void)
 {
-    word16 runtimeSlot;
+    uint16_t runtimeSlot;
 
     TacticalOverviewActive = FALSE;
     ClearActiveVideoBuffer();

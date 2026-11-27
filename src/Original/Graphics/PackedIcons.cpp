@@ -8,13 +8,13 @@
 
 void LoadPackedIconResource(
     const char *resourcePath,
-    byte *packedDisplayBuffer);
+    uint8_t *packedDisplayBuffer);
 
 // 34DF:0003
 void LoadPackedIconPageDirect(
     const char *resourcePath,
-    byte *packedDisplayBuffer,
-    byte *iconPageDestination)
+    uint8_t *packedDisplayBuffer,
+    uint8_t *iconPageDestination)
 {
     LoadPackedIconResource(resourcePath, packedDisplayBuffer);
     /* The CGA's switch to the Tandy's decode and back, with its mask

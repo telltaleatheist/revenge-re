@@ -11,7 +11,7 @@
  * in CX and DX. Host: SDL's mouse events arrive here as the driver called it
  * (src/SDL/platform.cpp), from InitializeMouseSupport until
  * ShutdownMouseSupport. */
-void MouseEventCallback(word16 buttons, word16 x, word16 y)
+void MouseEventCallback(uint16_t buttons, uint16_t x, uint16_t y)
 {
     if (MouseInputDisabled != FALSE)
         return;
@@ -29,10 +29,10 @@ void MouseEventCallback(word16 buttons, word16 x, word16 y)
     MouseCursorUpdateLock = 0x0001;
     if (MouseDriverDoubleX == 0x0001)
         x >>= 0x01;
-    MouseCursorRequestedX = (int16) x;
+    MouseCursorRequestedX = (int16_t) x;
     MouseY = y;
     if (MouseCursorDisplayedX != MouseCursorRequestedX ||
-        MouseCursorDisplayedY != (int16) MouseY)
+        MouseCursorDisplayedY != (int16_t) MouseY)
     {
         HideMouseCursorOverlayUnlocked();
         ShowMouseCursorOverlayUnlocked();
@@ -42,9 +42,9 @@ void MouseEventCallback(word16 buttons, word16 x, word16 y)
 
 /* 0800:3665-36A5 */
 void ConfigureMouseCursorOverlay(
-    int16 hotspotX,
-    int16 hotspotY,
-    const byte *cursorBitmap)
+    int16_t hotspotX,
+    int16_t hotspotY,
+    const uint8_t *cursorBitmap)
 {
     while (MouseCursorUpdateLock != 0x0000);
     ++MouseCursorUpdateLock;
@@ -57,13 +57,13 @@ void ConfigureMouseCursorOverlay(
 }
 
 /* 0800:3825-387C */
-word16 IsMouseCursorInsideRectangle(
-    int16 left,
-    int16 top,
-    int16 right,
-    int16 bottom)
+uint16_t IsMouseCursorInsideRectangle(
+    int16_t left,
+    int16_t top,
+    int16_t right,
+    int16_t bottom)
 {
-    word16 isInside;
+    uint16_t isInside;
 
     while (MouseCursorUpdateLock != 0x0000);
     ++MouseCursorUpdateLock;
@@ -84,10 +84,10 @@ void HideMouseCursorOverlayUnlocked(void)
         return;
     if (MouseCursorHideDepth == 0x0000)
     {
-        int16 cursorLeft;
-        int16 cursorTop;
-        int16 tileLeft;
-        int16 tileTop;
+        int16_t cursorLeft;
+        int16_t cursorTop;
+        int16_t tileLeft;
+        int16_t tileTop;
 
         MouseCursorErasedX = MouseCursorDisplayedX;
         MouseCursorErasedY = MouseCursorDisplayedY;
@@ -113,10 +113,10 @@ void HideMouseCursorOverlayUnlocked(void)
                     MouseCursorRestoreTileBottom = VIDEO_SCREEN_HEIGHT / 0x0008;
                 CopyBufferToVideoRegion(
                     MouseCursorRestoreTileLeft,
-                    (word16) MouseCursorRestoreTileTop,
-                    (word16) (MouseCursorRestoreTileRight -
+                    (uint16_t) MouseCursorRestoreTileTop,
+                    (uint16_t) (MouseCursorRestoreTileRight -
                         MouseCursorRestoreTileLeft),
-                    (word16) (MouseCursorRestoreTileBottom -
+                    (uint16_t) (MouseCursorRestoreTileBottom -
                         MouseCursorRestoreTileTop),
                     MouseCursorBackground);
             }
@@ -137,7 +137,7 @@ void HideMouseCursorOverlay(void)
 }
 
 /* 0800:398C-39FA */
-void SetMouseCursorPositionUnlocked(int16 requestedX, int16 requestedY)
+void SetMouseCursorPositionUnlocked(int16_t requestedX, int16_t requestedY)
 {
     if (MouseInputDisabled != 0x0000)
         return;
@@ -152,7 +152,7 @@ void SetMouseCursorPositionUnlocked(int16 requestedX, int16 requestedY)
         requestedY = MouseCursorMinY;
     else if (requestedY > MouseCursorMaxY)
         requestedY = MouseCursorMaxY;
-    MouseY = (word16) requestedY;
+    MouseY = (uint16_t) requestedY;
 
     if (MouseDriverInstalled != 0x0000)
         SDLBackend_SetMousePosition(requestedX, requestedY);
@@ -166,7 +166,7 @@ void SetMouseCursorPositionUnlocked(int16 requestedX, int16 requestedY)
 }
 
 /* 0800:39FB-3A22 */
-void SetMouseCursorPosition(int16 x, int16 y)
+void SetMouseCursorPosition(int16_t x, int16_t y)
 {
     while (MouseCursorUpdateLock != 0x0000);
     ++MouseCursorUpdateLock;
@@ -175,23 +175,23 @@ void SetMouseCursorPosition(int16 x, int16 y)
 }
 
 /* 0800:3A23-3A52 */
-void MoveMouseCursorRelative(int16 deltaX, int16 deltaY)
+void MoveMouseCursorRelative(int16_t deltaX, int16_t deltaY)
 {
     while (MouseCursorUpdateLock != 0x0000);
     ++MouseCursorUpdateLock;
     SetMouseCursorPositionUnlocked(
-        (int16) (MouseCursorRequestedX + deltaX),
-        (int16) ((int16) MouseY + deltaY));
+        (int16_t) (MouseCursorRequestedX + deltaX),
+        (int16_t) ((int16_t) MouseY + deltaY));
     --MouseCursorUpdateLock;
 }
 
 /* 0800:3A53-3B79 */
 void ShowMouseCursorOverlayUnlocked(void)
 {
-    int16 drawLeft;
-    int16 drawTop;
-    int16 tileLeft;
-    int16 tileTop;
+    int16_t drawLeft;
+    int16_t drawTop;
+    int16_t tileLeft;
+    int16_t tileTop;
 
     if (MouseInputDisabled != 0x0000 ||
         MouseCursorHideDepth == 0x0000)
@@ -201,8 +201,8 @@ void ShowMouseCursorOverlayUnlocked(void)
         return;
     MouseCursorDisplayedX = MouseCursorRequestedX;
     MouseCursorDrawnX = MouseCursorRequestedX;
-    MouseCursorDisplayedY = (int16) MouseY;
-    MouseCursorDrawnY = (int16) MouseY;
+    MouseCursorDisplayedY = (int16_t) MouseY;
+    MouseCursorDrawnY = (int16_t) MouseY;
     drawLeft = MouseCursorDisplayedX - MouseCursorHotspotX;
     drawTop = MouseCursorDisplayedY - MouseCursorHotspotY;
     MouseCursorDrawLeft = drawLeft;
@@ -227,10 +227,10 @@ void ShowMouseCursorOverlayUnlocked(void)
         MouseCursorCaptureTileBottom = VIDEO_SCREEN_HEIGHT / 0x0008;
     CopyVideoRegionToBuffer(
         MouseCursorCaptureTileLeft,
-        (word16) MouseCursorCaptureTileTop,
-        (word16) (MouseCursorCaptureTileRight -
+        (uint16_t) MouseCursorCaptureTileTop,
+        (uint16_t) (MouseCursorCaptureTileRight -
             MouseCursorCaptureTileLeft),
-        (word16) (MouseCursorCaptureTileBottom -
+        (uint16_t) (MouseCursorCaptureTileBottom -
             MouseCursorCaptureTileTop),
         MouseCursorBackground);
     DrawClippedSprite(

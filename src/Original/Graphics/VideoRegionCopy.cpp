@@ -7,14 +7,14 @@
 #include "revenge/video.h"
 
 void CopyVideoRegion(
-    int16 sourceX,
-    int16 sourceY,
-    int16 destinationX,
-    int16 destinationY,
-    word16 width,
-    word16 height,
-    const byte *sourceBase,
-    byte *destinationBase);
+    int16_t sourceX,
+    int16_t sourceY,
+    int16_t destinationX,
+    int16_t destinationY,
+    uint16_t width,
+    uint16_t height,
+    const uint8_t *sourceBase,
+    uint8_t *destinationBase);
 
 // 3329:000E
 // Clip a region copy to 40 eight-pixel columns by 200 scanlines.
@@ -26,8 +26,8 @@ void CopyClippedVideoRegion(
     short destinationY,
     unsigned short widthColumns,
     unsigned short heightPixels,
-    const byte *source,
-    byte *destination)
+    const uint8_t *source,
+    uint8_t *destination)
 {
     if (widthColumns > VIDEO_SCREEN_8PX_COLUMN_COUNT)
         widthColumns = VIDEO_SCREEN_8PX_COLUMN_COUNT;

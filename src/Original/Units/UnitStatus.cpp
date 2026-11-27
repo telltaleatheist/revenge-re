@@ -20,44 +20,44 @@ enum
 };
 
 void CountUnitWeaponsByType(const RevengeUnitRecord *unitRecord);
-word16 CountOrRemoveUnitHeatSinks(RevengeUnitRecord *unitRecord, word16 removeInstalledHeatSinks);
-word16 CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord);
+uint16_t CountOrRemoveUnitHeatSinks(RevengeUnitRecord *unitRecord, uint16_t removeInstalledHeatSinks);
+uint16_t CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord);
 void RecalculateUnitCombatRatings(
     RevengeUnitRecord *unitRecord,
-    word16 unitSlot,
-    word16 rebuildWeaponCounts,
-    word16 advanceRecovery);
-word16 HasUnitLineOfSight(
-    int16 sourceUnitIndex,
-    int16 targetUnitIndex);
-word16 IsCurrentLanceLeader(word16 unitIndex);
-void DrawTacticalUnitControlPanel(word16 unitIndex);
-word16 PrepareDisplayedUnitCombatRatings(word16 unitIndex);
-void BuildDamagedWeaponRangeFlags(word16 unitIndex);
+    uint16_t unitSlot,
+    uint16_t rebuildWeaponCounts,
+    uint16_t advanceRecovery);
+uint16_t HasUnitLineOfSight(
+    int16_t sourceUnitIndex,
+    int16_t targetUnitIndex);
+uint16_t IsCurrentLanceLeader(uint16_t unitIndex);
+void DrawTacticalUnitControlPanel(uint16_t unitIndex);
+uint16_t PrepareDisplayedUnitCombatRatings(uint16_t unitIndex);
+void BuildDamagedWeaponRangeFlags(uint16_t unitIndex);
 void DrawCombatRatingDescription(
-    int16 combatRating,
-    word16 x,
-    word16 y,
-    byte foregroundColor,
-    byte backgroundColor);
+    int16_t combatRating,
+    uint16_t x,
+    uint16_t y,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor);
 void HideMouseCursorOverlay(void);
 void ShowMouseCursorOverlay(void);
-void SelectAndClearTextWindow(word16 windowIndex);
-void SelectTextWindow(word16 windowIndex);
-void DrawActiveTextWindowBorder(word16 color);
+void SelectAndClearTextWindow(uint16_t windowIndex);
+void SelectTextWindow(uint16_t windowIndex);
+void DrawActiveTextWindowBorder(uint16_t color);
 void SelectTacticalTextForegroundColor(void);
 void DrawTileAlignedText(
     const char *text,
-    word16 tileX,
-    word16 tileY,
-    byte foregroundColor,
-    byte backgroundColor);
-int16 UpdateUnitEnemyProximityState(word16 unitIndex);
-int16 UpdateUnitEnemyVisibility(word16 unitIndex);
-word16 HasTacticalReferencePointLineOfSightToUnit(
-    word16 referencePointIndex, word16 unitIndex);
+    uint16_t tileX,
+    uint16_t tileY,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor);
+int16_t UpdateUnitEnemyProximityState(uint16_t unitIndex);
+int16_t UpdateUnitEnemyVisibility(uint16_t unitIndex);
+uint16_t HasTacticalReferencePointLineOfSightToUnit(
+    uint16_t referencePointIndex, uint16_t unitIndex);
 char *IntegerToString(
-    int16 value, char *destination, word16 radix);
+    int16_t value, char *destination, uint16_t radix);
 
 // 2B34:04B5: render the shared formatted-text line-break command at DS:38BE.
 // Called from the tactical command and game-options panels in REVENGE_2208_TACTICAL_INTERACTION.c.
@@ -69,25 +69,25 @@ void RenderFormattedLineBreak(void)
 // 2B34:04C2: draw the complete tactical detail/control panel for one unit.
 // Verified against ASM 2B34:04C2-0FDA. It deliberately retains the
 // original DS tables, visibility tests, integer arithmetic and render order.
-void DrawTacticalUnitControlPanel(word16 unitIndex)
+void DrawTacticalUnitControlPanel(uint16_t unitIndex)
 {
-    word16 lateCampaignVariant;
-    word16 enemyUnit;
-    word16 firstDetailRow;
-    word16 friendlyHasLineOfSight;
-    word16 revealEnemyDamage;
-    word16 concealEnemyDamage;
-    word16 panelSuppressed;
-    word16 candidateIndex;
+    uint16_t lateCampaignVariant;
+    uint16_t enemyUnit;
+    uint16_t firstDetailRow;
+    uint16_t friendlyHasLineOfSight;
+    uint16_t revealEnemyDamage;
+    uint16_t concealEnemyDamage;
+    uint16_t panelSuppressed;
+    uint16_t candidateIndex;
     RevengeUnitRecord *unitRecord;
-    word16 unitType;
-    word16 damageModel;
-    word16 currentDurability;
-    word16 maximumDurability;
-    word16 durabilityBand;
-    word16 conditionPercent;
-    word16 movementDescription;
-    word16 textColor;
+    uint16_t unitType;
+    uint16_t damageModel;
+    uint16_t currentDurability;
+    uint16_t maximumDurability;
+    uint16_t durabilityBand;
+    uint16_t conditionPercent;
+    uint16_t movementDescription;
+    uint16_t textColor;
 
     lateCampaignVariant =
         ScenarioFileSuffix >= 0x46 &&
@@ -176,7 +176,7 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
             (char *) UnitStatusRatingLabels,
             ActiveTextWindowLeftTile,
             ActiveTextWindowTopTile + firstDetailRow + 0x02,
-            ((byte) ActiveTextForegroundColor), 0x00);
+            ((uint8_t) ActiveTextForegroundColor), 0x00);
         if (concealEnemyDamage != FALSE)
         {
             if (UpdateUnitEnemyProximityState(unitIndex) != FALSE)
@@ -185,17 +185,17 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
                     (char *) UnitStatusDamageLabel,
                     ActiveTextWindowLeftTile,
                     ActiveTextWindowTopTile + 0x08,
-                    ((byte) ActiveTextForegroundColor), 0x00);
+                    ((uint8_t) ActiveTextForegroundColor), 0x00);
             }
         }
         else
         {
-            word16 heatScale;
+            uint16_t heatScale;
             DrawTileAlignedText(
                 (char *) UnitStatusHeatDetailLabel,
                 ActiveTextWindowLeftTile,
                 ActiveTextWindowTopTile + 0x09,
-                ((byte) ActiveTextForegroundColor), 0x00);
+                ((uint8_t) ActiveTextForegroundColor), 0x00);
             heatScale = unitRecord->currentHeat / BATTLEMECH_HEAT_SCALE;
             if (heatScale > 0x05)
                 heatScale = 0x05;
@@ -215,7 +215,7 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
             UnitCombatRatings[unitIndex].longFirepower,
             (ActiveTextWindowLeftTile + 0x04) << 0x03,
             (ActiveTextWindowTopTile + firstDetailRow + 0x02) << 0x03,
-            (byte) textColor, 0x00);
+            (uint8_t) textColor, 0x00);
         textColor = DamagedWeaponRangeFlags[0x01] == 0x00 ? 0x0F : 0x0E;
         if (revealEnemyDamage == FALSE)
             textColor = 0x0F;
@@ -223,7 +223,7 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
             UnitCombatRatings[unitIndex].mediumFirepower,
             (ActiveTextWindowLeftTile + 0x04) << 0x03,
             (ActiveTextWindowTopTile + firstDetailRow + 0x03) << 0x03,
-            (byte) textColor, 0x00);
+            (uint8_t) textColor, 0x00);
         textColor = DamagedWeaponRangeFlags[0x02] == 0x00 ? 0x0F : 0x0E;
         if (revealEnemyDamage == FALSE)
             textColor = 0x0F;
@@ -231,7 +231,7 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
             UnitCombatRatings[unitIndex].closeFirepower,
             (ActiveTextWindowLeftTile + 0x04) << 0x03,
             (ActiveTextWindowTopTile + firstDetailRow + 0x04) << 0x03,
-            (byte) textColor, 0x00);
+            (uint8_t) textColor, 0x00);
 
         currentDurability = 0x00;
         maximumDurability = 0x00;
@@ -249,8 +249,8 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
                 maximumDurability += unitRecord->maximumArmor[candidateIndex];
             }
         }
-        durabilityBand = (word16) ((int16) maximumDurability / 0x46);
-        if ((int16) durabilityBand > 0x03)
+        durabilityBand = (uint16_t) ((int16_t) maximumDurability / 0x46);
+        if ((int16_t) durabilityBand > 0x03)
             durabilityBand = 0x03;
         DrawTileAlignedText(
             (char *) DurabilityDescriptionTable[durabilityBand],
@@ -259,18 +259,18 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
             0x0F, 0x00);
         if (concealEnemyDamage != FALSE)
         {
-            conditionPercent = (word16) (((int32) (currentDurability * 0x0A) /
-                                             (int16) maximumDurability) *
+            conditionPercent = (uint16_t) (((int32_t) (currentDurability * 0x0A) /
+                                               (int16_t) maximumDurability) *
                 0x0A);
         }
         else
         {
-            conditionPercent = (word16) ((int32) (currentDurability * 0x64) /
-                (int16) maximumDurability);
+            conditionPercent = (uint16_t) ((int32_t) (currentDurability * 0x64) /
+                (int16_t) maximumDurability);
         }
         SharedNumericTextBuffer[0x00] = 0x28;
         IntegerToString(
-            (int16) conditionPercent,
+            (int16_t) conditionPercent,
             (char *) &SharedNumericTextBuffer[0x01], 0x0A);
         strcat(
             (char *) SharedNumericTextBuffer,
@@ -281,14 +281,14 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
             DrawTileAlignedText(
                 (char *) SharedNumericTextBuffer,
                 ActiveTextWindowLeftTile + 0x05 +
-                    (word16) strlen(DurabilityDescriptionTable[durabilityBand]),
+                    (uint16_t) strlen(DurabilityDescriptionTable[durabilityBand]),
                 ActiveTextWindowTopTile + firstDetailRow + 0x05,
                 0x0F, 0x00);
         }
         if (concealEnemyDamage != FALSE &&
             UpdateUnitEnemyProximityState(unitIndex) != FALSE)
         {
-            word16 conditionBand = conditionPercent / 0x14;
+            uint16_t conditionBand = conditionPercent / 0x14;
             DrawTileAlignedText(
                 (char *) ConditionDescriptionTable[conditionBand],
                 ActiveTextWindowLeftTile + 0x04,
@@ -302,15 +302,15 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
             (char *) MovementDescriptionTable[movementDescription],
             ActiveTextWindowLeftTile + 0x04,
             ActiveTextWindowTopTile + firstDetailRow + 0x06,
-            (byte) textColor, 0x00);
+            (uint8_t) textColor, 0x00);
         if (unitRecord->jumpMovement != 0x00)
         {
             DrawTileAlignedText(
                 (char *) JumpEquipmentSuffix,
                 ActiveTextWindowLeftTile + 0x04 +
-                    (word16) strlen(MovementDescriptionTable[movementDescription]),
+                    (uint16_t) strlen(MovementDescriptionTable[movementDescription]),
                 ActiveTextWindowTopTile + firstDetailRow + 0x06,
-                (byte) textColor, 0x00);
+                (uint8_t) textColor, 0x00);
         }
 
         if (enemyUnit != FALSE)
@@ -357,8 +357,8 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
         if (enemyUnit != FALSE && concealEnemyDamage != FALSE &&
             UpdateUnitEnemyProximityState(unitIndex) != FALSE)
         {
-            int16 assessmentIndex = 0x06;
-            int16 renderedAssessment;
+            int16_t assessmentIndex = 0x06;
+            int16_t renderedAssessment;
             ActiveTextCursorColumn = 0x00;
             ActiveTextCursorRow = 0x0A;
             if (conditionPercent != 0x64)
@@ -389,16 +389,16 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
                     assessmentIndex = 0x0D;
                 if (assessmentIndex == 0x07)
                 {
-                    word16 currentArmor =
+                    uint16_t currentArmor =
                         unitRecord->currentArmor[BATTLEMECH_ARMOR_LEFT_LEG] +
                         unitRecord->currentArmor[BATTLEMECH_ARMOR_RIGHT_LEG];
-                    word16 maximumArmor =
+                    uint16_t maximumArmor =
                         unitRecord->maximumArmor[BATTLEMECH_ARMOR_LEFT_LEG] +
                         unitRecord->maximumArmor[BATTLEMECH_ARMOR_RIGHT_LEG];
                     if (currentArmor != maximumArmor)
                     {
                         assessmentIndex = 0x08;
-                        if ((word16) (currentArmor << 0x01) < maximumArmor)
+                        if ((uint16_t) (currentArmor << 0x01) < maximumArmor)
                             assessmentIndex = 0x09;
                     }
                     if (assessmentIndex == 0x07)
@@ -411,7 +411,7 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
                                      unitRecord->currentInternal[BATTLEMECH_LOCATION_RIGHT_ARM] != 0x00) ||
                             damageModel != UNIT_DAMAGE_MODEL_BATTLEMECH)
                         {
-                            word16 weaponDamageFlags = 0x00;
+                            uint16_t weaponDamageFlags = 0x00;
                             for (candidateIndex = 0x00;
                                 candidateIndex < AMMUNITION_FAMILY_COUNT;
                                 ++candidateIndex)
@@ -475,21 +475,21 @@ void DrawTacticalUnitControlPanel(word16 unitIndex)
 // Borland stack even though the renderer consumes their low bytes.
 void DrawCenteredTextInActiveWindow(
     const char *text,
-    word16 rowOffset,
-    word16 foregroundColor,
-    word16 backgroundColor)
+    uint16_t rowOffset,
+    uint16_t foregroundColor,
+    uint16_t backgroundColor)
 {
-    word16 textLength = (word16) strlen(text);
-    word16 tileX = ActiveTextWindowLeftTile +
+    uint16_t textLength = (uint16_t) strlen(text);
+    uint16_t tileX = ActiveTextWindowLeftTile +
         ((ActiveTextWindowWidthTiles - textLength) >> 0x01);
-    word16 tileY = ActiveTextWindowTopTile + rowOffset;
+    uint16_t tileY = ActiveTextWindowTopTile + rowOffset;
 
     DrawTileAlignedText(
         (char *) text,
         tileX,
         tileY,
-        (byte) foregroundColor,
-        (byte) backgroundColor);
+        (uint8_t) foregroundColor,
+        (uint8_t) backgroundColor);
 }
 
 // 2B2D:0077: word16 CountOrRemoveUnitHeatSinks(
@@ -499,12 +499,12 @@ void DrawCenteredTextInActiveWindow(
 //      RecalculateUnitCombatRatings
 // Verified against the aliased entry 2B34:0007-0120
 // (logical address 2B2D:0077).
-word16 CountOrRemoveUnitHeatSinks(
+uint16_t CountOrRemoveUnitHeatSinks(
     RevengeUnitRecord *unitRecord,
-    word16 removeInstalledHeatSinks)
+    uint16_t removeInstalledHeatSinks)
 {
-    word16 heatSinkCount = unitRecord->engineHeatSinkCapacity;
-    word16 equipmentSlot;
+    uint16_t heatSinkCount = unitRecord->engineHeatSinkCapacity;
+    uint16_t equipmentSlot;
 
     for (equipmentSlot = 0x00;
         equipmentSlot < sizeof(unitRecord->equipmentSlots);
@@ -525,11 +525,11 @@ word16 CountOrRemoveUnitHeatSinks(
 // Called from:
 //      DrawUnitStatusScreen
 // Verified against 2B2D:0191-021A.
-word16 CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord)
+uint16_t CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord)
 {
-    int16 calculatedHeat;
-    word16 weaponIndex;
-    word16 heatScaleIndex;
+    int16_t calculatedHeat;
+    uint16_t weaponIndex;
+    uint16_t heatScaleIndex;
 
     CountUnitWeaponsByType(unitRecord);
 
@@ -537,8 +537,8 @@ word16 CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord)
 
     for (weaponIndex = 0x00; weaponIndex < WEAPON_DEFINITION_COUNT; ++weaponIndex)
     {
-        int16 weaponHeat = WeaponDefinitions[weaponIndex].heat;
-        word16 equippedCount = WeaponCountScratch[weaponIndex];
+        int16_t weaponHeat = WeaponDefinitions[weaponIndex].heat;
+        uint16_t equippedCount = WeaponCountScratch[weaponIndex];
         calculatedHeat += weaponHeat * equippedCount;
     }
 
@@ -548,7 +548,7 @@ word16 CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord)
     else if (calculatedHeat > BATTLEMECH_MAXIMUM_HEAT)
         calculatedHeat = BATTLEMECH_MAXIMUM_HEAT;
 
-    heatScaleIndex = (word16) (calculatedHeat / 0x04);
+    heatScaleIndex = (uint16_t) (calculatedHeat / 0x04);
     if (heatScaleIndex > 0x05)
         heatScaleIndex = 0x05;
 
@@ -560,15 +560,15 @@ word16 CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord)
 //     Stack word16 removeWeapon)
 // Called from the original assembly implementation of:
 //      CountUnitWeaponsByType
-int16 FindUnitWeaponByOrdinal(
+int16_t FindUnitWeaponByOrdinal(
     RevengeUnitRecord *unitRecord,
-    word16 weaponOccurrence,
-    word16 removeWeapon)
+    uint16_t weaponOccurrence,
+    uint16_t removeWeapon)
 {
     // V: scan one-based weapon equipment IDs 01h..17h in the eight stored
     // location groups. Vehicle records reuse the groups, but their exact
     // front/side/rear/turret projection still requires UI/damage evidence.
-    byte *locationEquipment[BATTLEMECH_LOCATION_COUNT] = {
+    uint8_t *locationEquipment[BATTLEMECH_LOCATION_COUNT] = {
         &unitRecord->headEquipment,
         unitRecord->leftArmEquipment,
         unitRecord->leftTorsoEquipment,
@@ -578,7 +578,7 @@ int16 FindUnitWeaponByOrdinal(
         unitRecord->leftLegEquipment,
         unitRecord->rightLegEquipment
     };
-    static const byte locationLengths[BATTLEMECH_LOCATION_COUNT] = {
+    static const uint8_t locationLengths[BATTLEMECH_LOCATION_COUNT] = {
         BATTLEMECH_HEAD_EQUIPMENT_SLOT_COUNT,
         BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT,
         BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT,
@@ -588,22 +588,22 @@ int16 FindUnitWeaponByOrdinal(
         BATTLEMECH_LEG_EQUIPMENT_SLOT_COUNT,
         BATTLEMECH_LEG_EQUIPMENT_SLOT_COUNT
     };
-    word16 locationIndex;
-    word16 matchingWeaponIndex = 0x00;
+    uint16_t locationIndex;
+    uint16_t matchingWeaponIndex = 0x00;
 
     // Verified against 2B34:01AB-0374.
     for (locationIndex = 0x00;
         locationIndex < BATTLEMECH_LOCATION_COUNT;
         ++locationIndex)
     {
-        word16 slotIndex;
+        uint16_t slotIndex;
         for (slotIndex = 0x00;
             slotIndex < locationLengths[locationIndex];
             ++slotIndex)
         {
-            byte equipmentId = locationEquipment[locationIndex][slotIndex];
-            word16 weaponIndex;
-            byte ammunitionFamily;
+            uint8_t equipmentId = locationEquipment[locationIndex][slotIndex];
+            uint16_t weaponIndex;
+            uint8_t ammunitionFamily;
 
             if (equipmentId < WEAPON_EQUIPMENT_ID(WEAPON_SMALL_LASER) ||
                 equipmentId > WEAPON_EQUIPMENT_ID(WEAPON_SRM_6))
@@ -642,15 +642,15 @@ int16 FindUnitWeaponByOrdinal(
 // Called from:
 //      DrawUnitStatusScreen
 void DrawCombatRatingDescription(
-    int16 combatRating,
-    uint16 x,
-    uint16 y,
-    byte foregroundColor,
-    byte backgroundColor)
+    int16_t combatRating,
+    uint16_t x,
+    uint16_t y,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor)
 {
     // V: DS:40CF is a seven-entry far-pointer table of combat rating
     // descriptions: six from the lowest rating up, then the one for no rating.
-    uint16 descriptionIndex;
+    uint16_t descriptionIndex;
     if (combatRating == 0x00)
         descriptionIndex = 0x06;
     else
@@ -678,9 +678,9 @@ void DrawCombatRatingDescription(
 //      RecalculateUnitCombatRatings
 void CountUnitWeaponsByType(const RevengeUnitRecord *unitRecord)
 {
-    word16 weaponTypeIndex;
-    word16 weaponOccurrence = 0x00;
-    int16 equipmentId;
+    uint16_t weaponTypeIndex;
+    uint16_t weaponOccurrence = 0x00;
+    int16_t equipmentId;
 
     for (weaponTypeIndex = 0x00;
         weaponTypeIndex < WEAPON_DEFINITION_COUNT;
@@ -696,7 +696,7 @@ void CountUnitWeaponsByType(const RevengeUnitRecord *unitRecord)
             weaponOccurrence++, FALSE);
         if (equipmentId == -0x01)
             break;
-        ++WeaponCountScratch[WEAPON_INDEX_FROM_EQUIPMENT_ID((word16) equipmentId)];
+        ++WeaponCountScratch[WEAPON_INDEX_FROM_EQUIPMENT_ID((uint16_t) equipmentId)];
     }
 }
 
@@ -705,20 +705,20 @@ void CountUnitWeaponsByType(const RevengeUnitRecord *unitRecord)
 // Called from:
 //      BuildDamagedWeaponRangeFlags
 void FlagDamagedWeaponRanges(
-    const byte *equipmentSlots,
-    word16 slotCount)
+    const uint8_t *equipmentSlots,
+    uint16_t slotCount)
 {
     // V: DS:99C2..99C4 are long-, medium-, and close-range flags. Only
     // equipment entries carrying the damage bit participate in the status-panel
     // summary; the remaining seven bits contain the one-based weapon ID.
-    byte *damagedRangeFlags =
-        (byte *) DamagedWeaponRangeFlags;
-    word16 slotIndex;
+    uint8_t *damagedRangeFlags =
+        (uint8_t *) DamagedWeaponRangeFlags;
+    uint16_t slotIndex;
 
     for (slotIndex = 0x00; slotIndex < slotCount; ++slotIndex)
     {
-        byte equipmentId = equipmentSlots[slotIndex];
-        word16 rangeClass;
+        uint8_t equipmentId = equipmentSlots[slotIndex];
+        uint16_t rangeClass;
 
         if ((equipmentId & EQUIPMENT_DAMAGED_FLAG) == 0x00)
             continue;
@@ -762,9 +762,9 @@ void FlagDamagedWeaponRanges(
 // 2B34:130C: void BuildDamagedWeaponRangeFlags(word16 unitIndex)
 // Called from:
 //      DrawTacticalUnitControlPanel
-void BuildDamagedWeaponRangeFlags(word16 unitIndex)
+void BuildDamagedWeaponRangeFlags(uint16_t unitIndex)
 {
-    static const byte equipmentGroupLengths[BATTLEMECH_LOCATION_COUNT] = {
+    static const uint8_t equipmentGroupLengths[BATTLEMECH_LOCATION_COUNT] = {
         BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT,
         BATTLEMECH_ARM_EQUIPMENT_SLOT_COUNT,
         BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT,
@@ -775,9 +775,9 @@ void BuildDamagedWeaponRangeFlags(word16 unitIndex)
         BATTLEMECH_HEAD_EQUIPMENT_SLOT_COUNT
     };
     RevengeUnitRecord *unitRecord = &PersistentUnitRoster[unitIndex];
-    byte *damagedRangeFlags =
-        (byte *) DamagedWeaponRangeFlags;
-    byte *equipmentGroups[BATTLEMECH_LOCATION_COUNT] = {
+    uint8_t *damagedRangeFlags =
+        (uint8_t *) DamagedWeaponRangeFlags;
+    uint8_t *equipmentGroups[BATTLEMECH_LOCATION_COUNT] = {
         unitRecord->leftArmEquipment,
         unitRecord->rightArmEquipment,
         unitRecord->leftTorsoEquipment,
@@ -787,7 +787,7 @@ void BuildDamagedWeaponRangeFlags(word16 unitIndex)
         unitRecord->rightLegEquipment,
         &unitRecord->headEquipment
     };
-    word16 groupIndex;
+    uint16_t groupIndex;
 
     // The assembly uses DI=0..2. Reko's generated 6641h upper bound was a
     // malformed reconstruction of that three-byte clear.
@@ -810,12 +810,12 @@ void BuildDamagedWeaponRangeFlags(word16 unitIndex)
 // Called from:
 //      PrepareDisplayedUnitCombatRatings
 //      CalculateLanceAverageCombatRatings
-void BuildUndamagedUnitCombatEstimate(word16 unitIndex)
+void BuildUndamagedUnitCombatEstimate(uint16_t unitIndex)
 {
     RevengeUnitRecord *sourceUnit = &PersistentUnitRoster[unitIndex];
     RevengeUnitRecord *estimatedUnit =
         (RevengeUnitRecord *) &EstimatedUnitRecord;
-    word16 fieldIndex;
+    uint16_t fieldIndex;
 
     // V: construct the information-safe enemy estimate consumed by the combat
     // rating calculator. Maximum armor becomes displayed current armor, weapon
@@ -867,18 +867,18 @@ void BuildUndamagedUnitCombatEstimate(word16 unitIndex)
 // Called from:
 //      PrepareDisplayedUnitCombatRatings
 void CalculateLanceAverageCombatRatings(
-    word16 leaderUnitIndex,
-    word16 useActualUnitData)
+    uint16_t leaderUnitIndex,
+    uint16_t useActualUnitData)
 {
     RevengeTacticalCombatRatings *averageRatings =
         &DisplayedUnitCombatRatings;
-    word16 lanceEndUnitIndex = (leaderUnitIndex + 0x04) & 0x00FC;
-    word16 includedUnitCount = 0x00;
-    word16 ratingIndex;
-    word16 unitIndex;
+    uint16_t lanceEndUnitIndex = (leaderUnitIndex + 0x04) & 0x00FC;
+    uint16_t includedUnitCount = 0x00;
+    uint16_t ratingIndex;
+    uint16_t unitIndex;
 
     for (ratingIndex = 0x00; ratingIndex < 0x06; ++ratingIndex)
-        ((int16 *) averageRatings)[ratingIndex] = 0x00;
+        ((int16_t *) averageRatings)[ratingIndex] = 0x00;
 
     for (unitIndex = leaderUnitIndex;
         unitIndex < lanceEndUnitIndex;
@@ -907,8 +907,8 @@ void CalculateLanceAverageCombatRatings(
 
         unitRatings = &UnitCombatRatings[unitIndex];
         for (ratingIndex = 0x00; ratingIndex < 0x06; ++ratingIndex)
-            ((int16 *) averageRatings)[ratingIndex] +=
-                ((int16 *) unitRatings)[ratingIndex];
+            ((int16_t *) averageRatings)[ratingIndex] +=
+                ((int16_t *) unitRatings)[ratingIndex];
         ++includedUnitCount;
     }
 
@@ -918,21 +918,21 @@ void CalculateLanceAverageCombatRatings(
     if (includedUnitCount != 0x00)
     {
         for (ratingIndex = 0x00; ratingIndex < 0x06; ++ratingIndex)
-            ((int16 *) averageRatings)[ratingIndex] /= (int16) includedUnitCount;
+            ((int16_t *) averageRatings)[ratingIndex] /= (int16_t) includedUnitCount;
     }
 }
 
 // 2B34:1014: word16 PrepareDisplayedUnitCombatRatings(word16 unitIndex)
 // Called from:
 //      DrawTacticalUnitControlPanel
-word16 PrepareDisplayedUnitCombatRatings(word16 unitIndex)
+uint16_t PrepareDisplayedUnitCombatRatings(uint16_t unitIndex)
 {
-    word16 concealEnemyDamage = unitIndex >= ENEMY_FORCE_FIRST_UNIT;
-    word16 unitIsLanceLeader;
+    uint16_t concealEnemyDamage = unitIndex >= ENEMY_FORCE_FIRST_UNIT;
+    uint16_t unitIsLanceLeader;
 
     if (concealEnemyDamage != FALSE)
     {
-        word16 friendlyUnitIndex;
+        uint16_t friendlyUnitIndex;
         for (friendlyUnitIndex = 0x00;
             friendlyUnitIndex < TACTICAL_FORCE_UNIT_COUNT;
             ++friendlyUnitIndex)

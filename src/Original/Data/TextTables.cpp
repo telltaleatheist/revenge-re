@@ -69,7 +69,7 @@ const char *const UnitStatusSeparator = STORY_TEXT(UNIT_STATUS_SEPARATOR);
 
 const char *UnitStatHeaderTextTable[0x06];
 
-const byte *UnitClassTypeLists[0x07];
+const uint8_t *UnitClassTypeLists[0x07];
 
 const char *UnitClassLabelTextTable[0x07];
 

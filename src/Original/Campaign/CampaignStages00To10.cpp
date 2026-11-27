@@ -9,9 +9,9 @@
 // First campaign-stage handler selected through DS:24F4.
 // VERIFIED [SDL] against ASM 0D73:0448-0632. SDLBackend_ServiceTimers
 // cooperatively supplies the asynchronous IRQ0 progress of the DOS waits.
-int16 RunCampaignStage00(void)
+int16_t RunCampaignStage00(void)
 {
-    word16 savedDismissTimeout;
+    uint16_t savedDismissTimeout;
     REVENGE_PRESERVATION_TRACE("stage00: mission date 0\n");
 
     DisplayMissionDate(0x0000, 0x0000, 0x0000, 0x0001, 0x0000);
@@ -100,7 +100,7 @@ int16 RunCampaignStage00(void)
 
 // 0D73:0633: int16 RunCampaignStage01(void)
 // VERIFIED against 0D73:0633-0719.
-int16 RunCampaignStage01(void)
+int16_t RunCampaignStage01(void)
 {
     if (ScenarioUnitZeroAvailable != 0x0000)
         ScenarioUnitZeroAvailable = 0x0001;
@@ -140,7 +140,7 @@ int16 RunCampaignStage01(void)
 
 // 0D73:071A: int16 RunCampaignStage02(void)
 // VERIFIED against 0D73:071A-07F8.
-int16 RunCampaignStage02(void)
+int16_t RunCampaignStage02(void)
 {
     StopLoadedMusicTrack();
     PresentAnimatedScreenAndMessage(0x0021, 0x0012);
@@ -186,7 +186,7 @@ int16 RunCampaignStage02(void)
 
 // 0D73:07F9: int16 RunCampaignStage03(void)
 // VERIFIED against 0D73:07F9-0882.
-int16 RunCampaignStage03(void)
+int16_t RunCampaignStage03(void)
 {
     CampaignScenarioState = 0x0000;
     InitializeTacticalScenario();
@@ -216,7 +216,7 @@ int16 RunCampaignStage03(void)
 
 // 0D73:0883: int16 RunCampaignStage04(void)
 // VERIFIED against 0D73:0883-092D.
-int16 RunCampaignStage04(void)
+int16_t RunCampaignStage04(void)
 {
     LrmShipmentLoaded = 0x0000;
     SrmShipmentLoaded = 0x0000;
@@ -247,7 +247,7 @@ int16 RunCampaignStage04(void)
 
 // 0D73:092E: int16 RunCampaignStage05(void)
 // VERIFIED against 0D73:092E-0B14.
-int16 RunCampaignStage05(void)
+int16_t RunCampaignStage05(void)
 {
     StopLoadedMusicTrack();
     PresentMissionBriefing(0x000B, 0x0002, 0x0023);
@@ -313,9 +313,9 @@ int16 RunCampaignStage05(void)
 
 // 0D73:0B15: int16 RunCampaignStage06(void)
 // VERIFIED against 0D73:0B15-0BC7.
-int16 RunCampaignStage06(void)
+int16_t RunCampaignStage06(void)
 {
-    word16 scenarioVariant;
+    uint16_t scenarioVariant;
 
     scenarioVariant = ScenarioVariantIndex;
     InitializeTacticalScenario();
@@ -343,7 +343,7 @@ int16 RunCampaignStage06(void)
 
 // 0D73:0BC8: int16 RunCampaignStage07(void)
 // VERIFIED against 0D73:0BC8-0C2A.
-int16 RunCampaignStage07(void)
+int16_t RunCampaignStage07(void)
 {
     ScenarioVariantIndex = 0x0000;
     InitializeTacticalScenario();
@@ -365,9 +365,9 @@ int16 RunCampaignStage07(void)
 
 // 0D73:0C2B: int16 RunCampaignStage08(void)
 // VERIFIED against 0D73:0C2B-1098.
-int16 RunCampaignStage08(void)
+int16_t RunCampaignStage08(void)
 {
-    word16 unitIndex;
+    uint16_t unitIndex;
 
     PlayMusicResource(0x004E);
     PresentScreenAndMessage(0x0001, 0x003E);
@@ -498,9 +498,9 @@ int16 RunCampaignStage08(void)
 
 // 0D73:1099: int16 RunCampaignStage09(void)
 // VERIFIED against 0D73:1099-1211.
-int16 RunCampaignStage09(void)
+int16_t RunCampaignStage09(void)
 {
-    word16 unitIndex;
+    uint16_t unitIndex;
 
     ScenarioVariantIndex = 0x0000;
     StopLoadedMusicTrack();
@@ -561,7 +561,7 @@ int16 RunCampaignStage09(void)
 
 // 0D73:1212: int16 RunCampaignStage10(void)
 // VERIFIED against 0D73:1212-1301.
-int16 RunCampaignStage10(void)
+int16_t RunCampaignStage10(void)
 {
     StopLoadedMusicTrack();
     PresentStoryScreenAndMessage(0x0022, 0x004F);

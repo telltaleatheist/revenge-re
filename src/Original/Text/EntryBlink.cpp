@@ -15,8 +15,8 @@
 void UpdateTextEntryCursorBlink(void)
 {
     LocalClockSnapshot clockSnapshot;
-    word16 savedCursorColumn;
-    word16 savedCursorRow;
+    uint16_t savedCursorColumn;
+    uint16_t savedCursorRow;
     char cursorText[0x02];
 
     CaptureLocalClockSnapshot(&clockSnapshot);

@@ -18,23 +18,23 @@
 // Called from:
 //      CopyClippedVideoRegion
 void CopyVideoRegion(
-    int16 sourceX,
-    int16 sourceY,
-    int16 destinationX,
-    int16 destinationY,
-    word16 width,
-    word16 height,
-    const byte *sourceBase,
-    byte *destinationBase)
+    int16_t sourceX,
+    int16_t sourceY,
+    int16_t destinationX,
+    int16_t destinationY,
+    uint16_t width,
+    uint16_t height,
+    const uint8_t *sourceBase,
+    uint8_t *destinationBase)
 {
     // V: Copy a rectangular region between two FAR video buffers. The first
     // coordinate pair is the source origin, followed by width and height, then
     // source offset/segment and destination offset/segment.
-    byte adapterType = (byte) ActiveVideoAdapterType;
-    byte hostIndexedCopy = FALSE;
-    word16 sourceXByte;
-    word16 destinationXByte;
-    word16 rowByteCount;
+    uint8_t adapterType = (uint8_t) ActiveVideoAdapterType;
+    uint8_t hostIndexedCopy = FALSE;
+    uint16_t sourceXByte;
+    uint16_t destinationXByte;
+    uint16_t rowByteCount;
 
     /* The VGA's page is A000:0000; at the hardware boundary it is the SDL
 	 * indexed framebuffer. The EGA's A200 shadow page and the CGA's, the
@@ -56,19 +56,19 @@ void CopyVideoRegion(
 
     if (hostIndexedCopy != FALSE)
     {
-        word16 row;
-        word16 pixelWidth = width << 0x03;
-        word16 sourcePixelX = (word16) sourceX << 0x03;
-        word16 destinationPixelX = (word16) destinationX << 0x03;
+        uint16_t row;
+        uint16_t pixelWidth = width << 0x03;
+        uint16_t sourcePixelX = (uint16_t) sourceX << 0x03;
+        uint16_t destinationPixelX = (uint16_t) destinationX << 0x03;
 
         /* 0800:2C1C-2C2A: each row by rep movsb, SI and DI 16-bit, so an
 		 * offset past FFFFh carries on at the start of the segment, and a
 		 * row past row 200 of A000 is video memory off the screen. */
         for (row = 0x0000; row < height; ++row)
         {
-            word16 destinationOffset = (word16) ((word16) (destinationY + row) * VIDEO_SCREEN_WIDTH + destinationPixelX);
-            word16 sourceOffset = (word16) ((word16) (sourceY + row) * VIDEO_SCREEN_WIDTH + sourcePixelX);
-            word16 count;
+            uint16_t destinationOffset = (uint16_t) ((uint16_t) (destinationY + row) * VIDEO_SCREEN_WIDTH + destinationPixelX);
+            uint16_t sourceOffset = (uint16_t) ((uint16_t) (sourceY + row) * VIDEO_SCREEN_WIDTH + sourcePixelX);
+            uint16_t count;
 
             for (count = 0x0000; count < pixelWidth; ++count)
                 destinationBase[destinationOffset++] = sourceBase[sourceOffset++];
@@ -80,19 +80,19 @@ void CopyVideoRegion(
     destinationXByte = destinationX << 0x03;
     rowByteCount = width << 0x03;
 
-    for (word16 row = 0x00; row < height; ++row)
+    for (uint16_t row = 0x00; row < height; ++row)
     {
-        word16 sourcePixelY = sourceY + row;
-        word16 destinationPixelY = destinationY + row;
-        word16 sourceScanlineOffset;
-        word16 destinationScanlineOffset;
+        uint16_t sourcePixelY = sourceY + row;
+        uint16_t destinationPixelY = destinationY + row;
+        uint16_t sourceScanlineOffset;
+        uint16_t destinationScanlineOffset;
 
         sourceScanlineOffset = sourcePixelY * VGA_BYTES_PER_SCANLINE + sourceXByte;
         destinationScanlineOffset = destinationPixelY * VGA_BYTES_PER_SCANLINE + destinationXByte;
 
-        const byte *sourceRow = sourceBase + sourceScanlineOffset;
-        byte *destinationRow = destinationBase + destinationScanlineOffset;
-        for (word16 columnByte = 0x00;
+        const uint8_t *sourceRow = sourceBase + sourceScanlineOffset;
+        uint8_t *destinationRow = destinationBase + destinationScanlineOffset;
+        for (uint16_t columnByte = 0x00;
             columnByte < rowByteCount;
             ++columnByte)
         {
@@ -104,24 +104,24 @@ void CopyVideoRegion(
 
 
 void FillVideoTileRectangle(
-    int16 x,
-    word16 y,
-    word16 width,
-    word16 height,
-    byte color)
+    int16_t x,
+    uint16_t y,
+    uint16_t width,
+    uint16_t height,
+    uint8_t color)
 {
     // Verified against 0800:2DB0-2EC7.
     // Fill the rectangle (X, Y, width, height) with the supplied logical
     // color. The CGA's, the Tandy's and the EGA's colour packing and layouts
     // (in 0800:2DB0-2EC7) went with them; the rebuild is VGA only.
-    word16 xByte;
-    word16 rowByteCount;
-    word16 firstPixelY = y << 0x03;
-    word16 scanlineCount = height << 0x03;
-    byte packedColor = (byte) color;
-    byte *videoBase = Video_ResolveIndexedRenderTarget(ActiveRenderTarget);
-    word16 pixelX;
-    word16 pixelWidth;
+    uint16_t xByte;
+    uint16_t rowByteCount;
+    uint16_t firstPixelY = y << 0x03;
+    uint16_t scanlineCount = height << 0x03;
+    uint8_t packedColor = (uint8_t) color;
+    uint8_t *videoBase = Video_ResolveIndexedRenderTarget(ActiveRenderTarget);
+    uint16_t pixelX;
+    uint16_t pixelWidth;
 
     /* The original procedure below addresses packed or planar adapter bytes.
 	 * SDL exposes the equivalent visible page as one indexed byte per pixel,
@@ -129,20 +129,20 @@ void FillVideoTileRectangle(
 	 * X/width and Y/height remain the original 8-pixel tile units. */
     if (videoBase != NULL)
     {
-        pixelX = (word16) x << 0x03;
+        pixelX = (uint16_t) x << 0x03;
         pixelWidth = width << 0x03;
 
-        for (word16 row = 0x00; row < scanlineCount; ++row)
+        for (uint16_t row = 0x00; row < scanlineCount; ++row)
         {
-            if ((word16) (firstPixelY + row) >= VIDEO_SCREEN_HEIGHT)
+            if ((uint16_t) (firstPixelY + row) >= VIDEO_SCREEN_HEIGHT)
                 break;
             if (pixelX < VIDEO_SCREEN_WIDTH)
             {
-                word16 visibleWidth = pixelWidth;
-                if ((uint32) pixelX + visibleWidth > VIDEO_SCREEN_WIDTH)
+                uint16_t visibleWidth = pixelWidth;
+                if ((uint32_t) pixelX + visibleWidth > VIDEO_SCREEN_WIDTH)
                     visibleWidth = VIDEO_SCREEN_WIDTH - pixelX;
                 memset(videoBase +
-                        (uint32) (firstPixelY + row) * VIDEO_SCREEN_WIDTH + pixelX,
+                        (uint32_t) (firstPixelY + row) * VIDEO_SCREEN_WIDTH + pixelX,
                     packedColor, visibleWidth);
             }
         }
@@ -152,15 +152,15 @@ void FillVideoTileRectangle(
     xByte = x << 0x03;
     rowByteCount = width << 0x03;
 
-    for (word16 row = 0x00; row < scanlineCount; ++row)
+    for (uint16_t row = 0x00; row < scanlineCount; ++row)
     {
-        word16 pixelY = firstPixelY + row;
-        word16 scanlineOffset;
+        uint16_t pixelY = firstPixelY + row;
+        uint16_t scanlineOffset;
 
         scanlineOffset = pixelY * VGA_BYTES_PER_SCANLINE + xByte;
 
-        byte *videoRow = videoBase + scanlineOffset;
-        for (word16 columnByte = 0x00;
+        uint8_t *videoRow = videoBase + scanlineOffset;
+        for (uint16_t columnByte = 0x00;
             columnByte < rowByteCount;
             ++columnByte)
         {
@@ -176,30 +176,30 @@ void FillVideoTileRectangle(
 //      DrawActiveTextWindowFrame
 //      DrawRepeatingFrameTileSequence
 void Draw8x8VideoTile(
-    const byte *tilePixels,
-    int16 x,
-    word16 y)
+    const uint8_t *tilePixels,
+    int16_t x,
+    uint16_t y)
 {
     // V: Draw one adapter-formatted 8x8 tile from the FAR source at (X,Y).
     // The CGA's, the Tandy's and the EGA's tile layouts and the EGA's plane
     // writes (in 0800:2F05-3037) went with them; the rebuild is VGA only.
-    word16 xByte;
-    word16 firstPixelY = y << 0x03;
-    word16 bytesPerSourceRow;
-    byte *videoBase = SDLBackend_GetIndexedFramebuffer();
+    uint16_t xByte;
+    uint16_t firstPixelY = y << 0x03;
+    uint16_t bytesPerSourceRow;
+    uint8_t *videoBase = SDLBackend_GetIndexedFramebuffer();
 
     xByte = x << 0x03;
     bytesPerSourceRow = 0x08;
 
-    for (word16 row = 0x00; row < 0x08; ++row)
+    for (uint16_t row = 0x00; row < 0x08; ++row)
     {
-        word16 pixelY = firstPixelY + row;
-        word16 scanlineOffset;
+        uint16_t pixelY = firstPixelY + row;
+        uint16_t scanlineOffset;
 
         scanlineOffset = pixelY * VGA_BYTES_PER_SCANLINE + xByte;
 
-        byte *videoRow = videoBase + scanlineOffset;
-        for (word16 columnByte = 0x00;
+        uint8_t *videoRow = videoBase + scanlineOffset;
+        for (uint16_t columnByte = 0x00;
             columnByte < bytesPerSourceRow;
             ++columnByte)
         {
@@ -213,27 +213,27 @@ void Draw8x8VideoTile(
 
 // 0800:33D6: decode the signed-run stream into 7D00h linear bytes.
 void DecodeLinearRleScreen(
-    const byte *compressedData,
-    byte *destination)
+    const uint8_t *compressedData,
+    uint8_t *destination)
 {
-    word16 remainingBytes = 0x7D00;
+    uint16_t remainingBytes = 0x7D00;
 
     while (remainingBytes != 0x00)
     {
-        byte control = *compressedData++;
-        word16 runLength;
-        word16 runIndex;
-        word16 repeatRun = control == 0x00 || control >= 0x80;
-        byte repeatedValue;
+        uint8_t control = *compressedData++;
+        uint16_t runLength;
+        uint16_t runIndex;
+        uint16_t repeatRun = control == 0x00 || control >= 0x80;
+        uint8_t repeatedValue;
 
         if (control == 0x00)
         {
             // The stream's word, little-endian at any byte.
-            runLength = (word16) (compressedData[0x00] | compressedData[0x01] << 0x08);
+            runLength = (uint16_t) (compressedData[0x00] | compressedData[0x01] << 0x08);
             compressedData += 0x02;
         }
         else if (control >= 0x80)
-            runLength = (byte) -control;
+            runLength = (uint8_t) -control;
         else
             runLength = control;
         repeatedValue = repeatRun ? *compressedData : 0x00;
@@ -250,27 +250,27 @@ void DecodeLinearRleScreen(
 // 0800:342D: decode the same stream down 200-pixel columns in a
 // 160-byte-stride 320x200 packed page.
 void DecodeColumnMajorRleScreen(
-    const byte *compressedData,
-    byte *destination)
+    const uint8_t *compressedData,
+    uint8_t *destination)
 {
-    word16 outputIndex = 0x00;
+    uint16_t outputIndex = 0x00;
 
     while (outputIndex < 0x7D00)
     {
-        byte control = *compressedData++;
-        word16 runLength;
-        word16 runIndex;
-        word16 repeatRun = control == 0x00 || control >= 0x80;
-        byte repeatedValue;
+        uint8_t control = *compressedData++;
+        uint16_t runLength;
+        uint16_t runIndex;
+        uint16_t repeatRun = control == 0x00 || control >= 0x80;
+        uint8_t repeatedValue;
 
         if (control == 0x00)
         {
             // The stream's word, little-endian at any byte.
-            runLength = (word16) (compressedData[0x00] | compressedData[0x01] << 0x08);
+            runLength = (uint16_t) (compressedData[0x00] | compressedData[0x01] << 0x08);
             compressedData += 0x02;
         }
         else if (control >= 0x80)
-            runLength = (byte) -control;
+            runLength = (uint8_t) -control;
         else
             runLength = control;
         repeatedValue = repeatRun ? *compressedData : 0x00;
@@ -278,8 +278,8 @@ void DecodeColumnMajorRleScreen(
         for (runIndex = 0x00; runIndex < runLength && outputIndex < 0x7D00;
             ++runIndex, ++outputIndex)
         {
-            word16 column = outputIndex / 0x00C8;
-            word16 row = outputIndex % 0x00C8;
+            uint16_t column = outputIndex / 0x00C8;
+            uint16_t row = outputIndex % 0x00C8;
             destination[row * 0x00A0 + column] =
                 repeatRun ? repeatedValue : *compressedData++;
         }
@@ -294,15 +294,15 @@ void DecodeColumnMajorRleScreen(
 //     Stack uint32 weaponMask, Stack const byte *weaponCounts)
 // Called from:
 //      RecalculateUnitCombatRatings
-uint32 CalculateSelectedWeaponRating(
-    uint32 weaponMask,
-    const uint16 *weaponCounts)
+uint32_t CalculateSelectedWeaponRating(
+    uint32_t weaponMask,
+    const uint16_t *weaponCounts)
 {
-    uint32 rating;
-    word16 weaponIndex;
-    word16 maskLow = LOW_WORD(weaponMask);
-    word16 maskHigh = HIGH_WORD(weaponMask);
-    word16 selected;
+    uint32_t rating;
+    uint16_t weaponIndex;
+    uint16_t maskLow = LOW_WORD(weaponMask);
+    uint16_t maskHigh = HIGH_WORD(weaponMask);
+    uint16_t selected;
 
     rating = 0x00000000UL;
     for (weaponIndex = 0x0000;
@@ -317,12 +317,12 @@ uint32 CalculateSelectedWeaponRating(
 
         /* SHR BP,1 then RCR BX,1: the 32-bit shift, its low bit the weapon's. */
         selected = maskLow & 0x0001;
-        maskLow = (word16) ((maskLow >> 0x01) | ((maskHigh & 0x0001) << 0x0F));
+        maskLow = (uint16_t) ((maskLow >> 0x01) | ((maskHigh & 0x0001) << 0x0F));
         maskHigh >>= 0x01;
         if (selected != 0x0000)
         {
-            rating += (uint32) WeaponCombatRatingByType[weaponIndex] *
-                (byte) weaponCounts[weaponIndex];
+            rating += (uint32_t) WeaponCombatRatingByType[weaponIndex] *
+                (uint8_t) weaponCounts[weaponIndex];
         }
     }
 
@@ -335,7 +335,7 @@ uint32 CalculateSelectedWeaponRating(
  * BuildScenarioTerrainDamageCapabilityMap writes whole for each scenario.
  * Nothing reads either before it is written, so the port's own storage
  * stands for it, not the program image. */
-static byte TerrainDamageTables[0x0400];
+static uint8_t TerrainDamageTables[0x0400];
 
 void InstallDamagedTerrainSpriteLookup(void)
 {
@@ -349,30 +349,30 @@ void InstallDamagedTerrainSpriteLookup(void)
 
 /* 4184:0E48 -- the generator's three-byte shift-register state, which
  * nothing seeds: every run draws the same sequence. */
-byte PseudoRandomState[0x03] = { 0x34, 0x12, 0x76 };
+uint8_t PseudoRandomState[0x03] = { 0x34, 0x12, 0x76 };
 
-word16 GeneratePseudoRandomByte(void)
+uint16_t GeneratePseudoRandomByte(void)
 {
     /* 0800:4D46 -- three-byte Borland-era shift-register state. */
-    byte *state = PseudoRandomState;
-    byte accumulator;
-    byte carry;
-    byte nextCarry;
+    uint8_t *state = PseudoRandomState;
+    uint8_t accumulator;
+    uint8_t carry;
+    uint8_t nextCarry;
 
     accumulator = state[0x00];
     accumulator >>= 0x01;
     carry = accumulator & 0x01;
     accumulator >>= 0x01;
     nextCarry = state[0x02] >> 0x07;
-    state[0x02] = (byte) (state[0x02] << 0x01) | carry;
+    state[0x02] = (uint8_t) (state[0x02] << 0x01) | carry;
     carry = nextCarry;
     nextCarry = state[0x01] >> 0x07;
-    state[0x01] = (byte) (state[0x01] << 0x01) | carry;
+    state[0x01] = (uint8_t) (state[0x01] << 0x01) | carry;
     carry = nextCarry == 0x00;
-    accumulator = (byte) (accumulator - state[0x00] - carry);
+    accumulator = (uint8_t) (accumulator - state[0x00] - carry);
     carry = accumulator & 0x01;
-    state[0x00] = (byte) (state[0x00] >> 0x01) | (byte) (carry << 0x07);
-    return (word16) (state[0x00] ^ state[0x01]);
+    state[0x00] = (uint8_t) (state[0x00] >> 0x01) | (uint8_t) (carry << 0x07);
+    return (uint16_t) (state[0x00] ^ state[0x01]);
 }
 
 /* 0800:3B9E (NormalizeFarPointer) has no caller left, and 0800:2EC8
@@ -381,31 +381,31 @@ word16 GeneratePseudoRandomByte(void)
  * Every copy was between two different objects, so the original's forward
  * copy and memcpy never differ. */
 
-word16 EncodeDisplayBackingRows(
-    const byte *source,
-    byte *destination,
-    word16 groupsPerRow,
-    byte rowCount,
-    int16 sourceRowSkip)
+uint16_t EncodeDisplayBackingRows(
+    const uint8_t *source,
+    uint8_t *destination,
+    uint16_t groupsPerRow,
+    uint8_t rowCount,
+    int16_t sourceRowSkip)
 {
-    byte *destinationStart = destination;
-    byte row;
+    uint8_t *destinationStart = destination;
+    uint8_t row;
 
     /* The CGA's single bytes (0800:11BD-11C2, 11DA-11ED) and the EGA's
 	 * sparse colour masks (0800:11B2-11B7, 11EE-129D, and 129E) went with
 	 * those adapters; the rebuild is VGA only. */
     for (row = 0x00; row < rowCount; ++row)
     {
-        word16 group;
+        uint16_t group;
 
-        for (group = 0x0000; group < (byte) groupsPerRow; ++group)
+        for (group = 0x0000; group < (uint8_t) groupsPerRow; ++group)
         {
             *destination++ = *source++;
             *destination++ = *source++;
         }
         source += sourceRowSkip;
     }
-    return (word16) (destination - destinationStart);
+    return (uint16_t) (destination - destinationStart);
 }
 
 /* 0800:5445 (DivideUnsignedLong) is Replaced: its one caller divides by
@@ -450,7 +450,7 @@ void InitializeMouseSupport(void)
 	 * one pixel a unit (the doubling test at 372A-373F), hidden by the
 	 * reset; the handler's installation (AX=0Ch, 375B-3767) routes SDL's
 	 * mouse events to MouseEventCallback (0800:3772). */
-    MouseCursorBackground = (byte *) Heap_Allocate(0x0240, "0800:36C0");
+    MouseCursorBackground = (uint8_t *) Heap_Allocate(0x0240, "0800:36C0");
     if (MouseCursorBackground == NULL)
     {
         MouseDriverInstalled = FALSE;
@@ -472,26 +472,26 @@ void InitializeMouseSupport(void)
 }
 
 void CopyBufferToVideoRegion(
-    int16 xColumn,
-    word16 yCharacterRow,
-    word16 widthColumns,
-    word16 heightCharacterRows,
-    const byte *source)
+    int16_t xColumn,
+    uint16_t yCharacterRow,
+    uint16_t widthColumns,
+    uint16_t heightCharacterRows,
+    const uint8_t *source)
 {
-    word16 row;
-    word16 pixelWidth;
-    word16 pixelHeight;
-    word16 leftX;
-    word16 topY;
-    byte *framebuffer;
+    uint16_t row;
+    uint16_t pixelWidth;
+    uint16_t pixelHeight;
+    uint16_t leftX;
+    uint16_t topY;
+    uint8_t *framebuffer;
 
     if (xColumn < 0x0000 || xColumn >= VIDEO_SCREEN_8PX_COLUMN_COUNT ||
         yCharacterRow >= VIDEO_SCREEN_HEIGHT / 0x0008 ||
         widthColumns == 0x0000 || heightCharacterRows == 0x0000)
         return;
-    pixelWidth = (word16) (widthColumns << 0x03);
-    pixelHeight = (word16) (heightCharacterRows << 0x03);
-    leftX = (word16) xColumn << 0x03;
+    pixelWidth = (uint16_t) (widthColumns << 0x03);
+    pixelHeight = (uint16_t) (heightCharacterRows << 0x03);
+    leftX = (uint16_t) xColumn << 0x03;
     topY = yCharacterRow << 0x03;
     if (leftX + pixelWidth > VIDEO_SCREEN_WIDTH)
         pixelWidth = VIDEO_SCREEN_WIDTH - leftX;
@@ -500,33 +500,33 @@ void CopyBufferToVideoRegion(
     framebuffer = SDLBackend_GetIndexedFramebuffer();
     for (row = 0x0000; row < pixelHeight; ++row)
     {
-        memcpy(framebuffer + (uint32) (topY + row) * VIDEO_SCREEN_WIDTH + leftX,
+        memcpy(framebuffer + (uint32_t) (topY + row) * VIDEO_SCREEN_WIDTH + leftX,
             source, pixelWidth);
         source += pixelWidth;
     }
 }
 
 void CopyVideoRegionToBuffer(
-    int16 xColumn,
-    word16 yCharacterRow,
-    word16 widthColumns,
-    word16 heightCharacterRows,
-    byte *destination)
+    int16_t xColumn,
+    uint16_t yCharacterRow,
+    uint16_t widthColumns,
+    uint16_t heightCharacterRows,
+    uint8_t *destination)
 {
-    word16 row;
-    word16 pixelWidth;
-    word16 pixelHeight;
-    word16 leftX;
-    word16 topY;
-    byte *framebuffer;
+    uint16_t row;
+    uint16_t pixelWidth;
+    uint16_t pixelHeight;
+    uint16_t leftX;
+    uint16_t topY;
+    uint8_t *framebuffer;
 
     if (xColumn < 0x0000 || xColumn >= VIDEO_SCREEN_8PX_COLUMN_COUNT ||
         yCharacterRow >= VIDEO_SCREEN_HEIGHT / 0x0008 ||
         widthColumns == 0x0000 || heightCharacterRows == 0x0000)
         return;
-    pixelWidth = (word16) (widthColumns << 0x03);
-    pixelHeight = (word16) (heightCharacterRows << 0x03);
-    leftX = (word16) xColumn << 0x03;
+    pixelWidth = (uint16_t) (widthColumns << 0x03);
+    pixelHeight = (uint16_t) (heightCharacterRows << 0x03);
+    leftX = (uint16_t) xColumn << 0x03;
     topY = yCharacterRow << 0x03;
     if (leftX + pixelWidth > VIDEO_SCREEN_WIDTH)
         pixelWidth = VIDEO_SCREEN_WIDTH - leftX;
@@ -536,7 +536,7 @@ void CopyVideoRegionToBuffer(
     for (row = 0x0000; row < pixelHeight; ++row)
     {
         memcpy(destination,
-            framebuffer + (uint32) (topY + row) * VIDEO_SCREEN_WIDTH + leftX,
+            framebuffer + (uint32_t) (topY + row) * VIDEO_SCREEN_WIDTH + leftX,
             pixelWidth);
         destination += pixelWidth;
     }
@@ -550,19 +550,19 @@ void ShutdownMouseSupport(void)
         SDLBackend_SetMouseEventHandler(0x0000);
 }
 
-uint16 DOS_PrintCharacter(char character)
+uint16_t DOS_PrintCharacter(char character)
 {
     /* 0800:3BBF -- DOS INT 21h/AH=06h. */
-    return SDLBackend_DirectConsoleIO((byte) character);
+    return SDLBackend_DirectConsoleIO((uint8_t) character);
 }
 
-void VGA_LoadPalette(const byte *paletteRgbTriplets)
+void VGA_LoadPalette(const uint8_t *paletteRgbTriplets)
 {
     /* 0800:0974 -- BIOS INT 10h/AX=1012h. */
     SDLBackend_LoadVgaPalette(paletteRgbTriplets);
 }
 
-void SetVideoAdapterType(uint16 adapterType)
+void SetVideoAdapterType(uint16_t adapterType)
 {
     /* 0800:4DE7 -- original assignment to 4184:0E4C. */
     ActiveVideoAdapterType = adapterType;
@@ -572,7 +572,7 @@ void SetVideoAdapterType(uint16 adapterType)
  * is Replaced: its one caller, CalibrateVideoTiming (34B8:00B9), no longer
  * samples the retrace. */
 
-void WaitForVerticalRetraceEdge(byte waitForRetraceStart)
+void WaitForVerticalRetraceEdge(uint8_t waitForRetraceStart)
 {
     /* 0800:4EC2 -- input-status port 03DAh polling loops. */
     SDLBackend_WaitVerticalRetrace(waitForRetraceStart);
@@ -587,13 +587,13 @@ void ClearActiveVideoBuffer(void)
 }
 
 void DrawVerticalSpan(
-    word16 x,
-    word16 yStart,
-    word16 yEnd,
-    word16 color)
+    uint16_t x,
+    uint16_t yStart,
+    uint16_t yEnd,
+    uint16_t color)
 {
-    word16 y;
-    byte pixelColor = (byte) color;
+    uint16_t y;
+    uint8_t pixelColor = (uint8_t) color;
 
     /* The CGA's, the Tandy's and the EGA's colour masks (in 0800:4EF3)
 	 * went with them; the rebuild is VGA only. */
@@ -602,15 +602,15 @@ void DrawVerticalSpan(
 }
 
 void DrawHorizontalVideoRun(
-    int16 x,
-    word16 y,
-    word16 nativeRunLength,
-    word16 color)
+    int16_t x,
+    uint16_t y,
+    uint16_t nativeRunLength,
+    uint16_t color)
 {
-    word16 pixelsPerNativeByte;
-    word16 pixelCount;
-    word16 pixel;
-    byte pixelColor = (byte) color;
+    uint16_t pixelsPerNativeByte;
+    uint16_t pixelCount;
+    uint16_t pixel;
+    uint8_t pixelColor = (uint8_t) color;
 
     /* The VGA's run is one pixel a byte. The CGA's, the Tandy's and the
 	 * EGA's packing (in 0800:29D5-2AFF) went with them. */
@@ -619,19 +619,19 @@ void DrawHorizontalVideoRun(
     pixelCount = nativeRunLength * pixelsPerNativeByte;
     for (pixel = 0x00; pixel < pixelCount; ++pixel)
         Video_DrawIndexedPixelToActiveTarget(
-            (word16) (x + pixel), y, pixelColor);
+            (uint16_t) (x + pixel), y, pixelColor);
 }
 
 void XorVideoRectangle(
-    int16 leftX,
-    int16 topY,
-    int16 rightX,
-    int16 bottomY,
-    byte color)
+    int16_t leftX,
+    int16_t topY,
+    int16_t rightX,
+    int16_t bottomY,
+    uint8_t color)
 {
-    int16 x;
-    int16 y;
-    byte pixelColor = color;
+    int16_t x;
+    int16_t y;
+    uint8_t pixelColor = color;
 
     if (leftX < VIDEO_SCREEN_MIN_X)
         leftX = VIDEO_SCREEN_MIN_X;
@@ -652,13 +652,13 @@ void XorVideoRectangle(
 
     if (leftX > rightX)
     {
-        int16 swap = leftX;
+        int16_t swap = leftX;
         leftX = rightX;
         rightX = swap;
     }
     if (topY > bottomY)
     {
-        int16 swap = topY;
+        int16_t swap = topY;
         topY = bottomY;
         bottomY = swap;
     }
@@ -669,15 +669,15 @@ void XorVideoRectangle(
     {
         for (x = leftX; x <= rightX; ++x)
         {
-            byte *framebuffer = Video_ResolveIndexedRenderTarget(
+            uint8_t *framebuffer = Video_ResolveIndexedRenderTarget(
                 ActiveRenderTarget);
-            uint32 offset = (uint32) y * VIDEO_SCREEN_WIDTH + x;
+            uint32_t offset = (uint32_t) y * VIDEO_SCREEN_WIDTH + x;
 
             if (framebuffer == NULL)
                 framebuffer = SDLBackend_GetIndexedFramebuffer();
             Video_DrawIndexedPixelToActiveTarget(
-                (word16) x, (word16) y,
-                (byte) (framebuffer[offset] ^ pixelColor));
+                (uint16_t) x, (uint16_t) y,
+                (uint8_t) (framebuffer[offset] ^ pixelColor));
         }
     }
 }

@@ -16,7 +16,7 @@ void ShowMouseCursorOverlay(void);
 //      RunGameOptionsMenu
 void ToggleActiveUiRegionHighlight(void)
 {
-    word16 cursorHideDepth;
+    uint16_t cursorHideDepth;
 
     cursorHideDepth = MouseCursorHideDepth;
     if (cursorHideDepth == 0x00)
@@ -24,11 +24,11 @@ void ToggleActiveUiRegionHighlight(void)
     XorVideoRectangle(
         ActiveUiHighlightLeft,
         ActiveUiHighlightTop,
-        (word16) (ActiveUiHighlightLeft +
+        (uint16_t) (ActiveUiHighlightLeft +
             ActiveUiHighlightWidth - 0x01),
-        (word16) (ActiveUiHighlightTop +
+        (uint16_t) (ActiveUiHighlightTop +
             ActiveUiHighlightHeight - 0x01),
-        (byte) ActiveUiHighlightXorColor);
+        (uint8_t) ActiveUiHighlightXorColor);
     if (cursorHideDepth == 0x00)
         ShowMouseCursorOverlay();
 }

@@ -21,22 +21,22 @@
 
 void InstallGameClockTimer(void);
 void RestoreGameClockTimer(void);
-word16 LoadMediaConfiguration(void);
-word16 ApplyVideoConfigOption(void);
-word16 ApplyMusicConfigOption(void);
-word16 ApplySoundConfigOption(void);
-word16 ApplyInputDeviceConfigOption(void);
-word16 ParseHexValue(const char *text);
+uint16_t LoadMediaConfiguration(void);
+uint16_t ApplyVideoConfigOption(void);
+uint16_t ApplyMusicConfigOption(void);
+uint16_t ApplySoundConfigOption(void);
+uint16_t ApplyInputDeviceConfigOption(void);
+uint16_t ParseHexValue(const char *text);
 char *IntegerToString(
-    int16 value, char *destination, word16 radix);
+    int16_t value, char *destination, uint16_t radix);
 void RightAlignStringField(
-    char *text, word16 fieldWidth);
+    char *text, uint16_t fieldWidth);
 void TranslateCharactersInPlace(
     char *text,
     const char *sourceAlphabet,
     const char *replacementAlphabet);
-word16 WaitForDismissInputOrTimeout(word16 timeoutRetraces);
-void LoadVideoPalette(const byte *paletteData);
+uint16_t WaitForDismissInputOrTimeout(uint16_t timeoutRetraces);
+void LoadVideoPalette(const uint8_t *paletteData);
 void InitializeMouseSupport(void);
 void ShutdownMouseSupport(void);
 void InitializeDigitalSoundDriver(void);
@@ -89,11 +89,11 @@ int main(void)
 //      main
 void InitializeGame(void)
 {
-    byte *font6;
-    byte *font8;
-    byte *primaryScreenBuffer;
-    byte *secondaryBuffer;
-    word16 startupChecksPassed;
+    uint8_t *font6;
+    uint8_t *font8;
+    uint8_t *primaryScreenBuffer;
+    uint8_t *secondaryBuffer;
+    uint16_t startupChecksPassed;
     char versionText[0x0A];
 
     // V: Complete startup path. It switches temporarily to BIOS mode 07h via
@@ -149,7 +149,7 @@ void InitializeGame(void)
 
     SetVideoModeForAdapter(VideoAdapterType);
     SetActiveFontResource(Font8Resource);
-    primaryScreenBuffer = (byte *) Heap_Allocate(0x0001FD00, "2C7F:0203");
+    primaryScreenBuffer = (uint8_t *) Heap_Allocate(0x0001FD00, "2C7F:0203");
     PrimaryScreenBuffer = primaryScreenBuffer;
     secondaryBuffer = primaryScreenBuffer + 0x00010000UL;
     SecondaryScreenBuffer = secondaryBuffer;
@@ -159,7 +159,7 @@ void InitializeGame(void)
 	 * the VGA; the rebuild is VGA only. */
     /* The page's far address as the pointer: the hardware boundary draws it
 	 * to the SDL framebuffer (Video_ResolveIndexedRenderTarget). */
-    VideoFramebuffer = (byte *) (uintptr_t)
+    VideoFramebuffer = (uint8_t *) (uintptr_t)
         MAKE_DWORD(VIDEO_MEMORY_SEGMENT_VGA, 0x00);
     ActiveRenderTarget = VideoFramebuffer;
 
@@ -204,15 +204,15 @@ void ShutdownGame(void)
 }
 
 // 2C7F:032B: return the active BIOS video mode from INT 10h/AH=0Fh.
-word16 GetCurrentBIOSVideoMode(void)
+uint16_t GetCurrentBIOSVideoMode(void)
 {
-    return (word16) SDLBackend_GetVideoMode();
+    return (uint16_t) SDLBackend_GetVideoMode();
 }
 
 // 2C7F:0350: select the BIOS video mode for an adapter table slot.
-void SetVideoModeForAdapter(word16 adapterOrRestoreSlot)
+void SetVideoModeForAdapter(uint16_t adapterOrRestoreSlot)
 {
-    word16 requestedVideoMode;
+    uint16_t requestedVideoMode;
 
     if (adapterOrRestoreSlot < 0x06)
     {
@@ -227,7 +227,7 @@ void SetVideoModeForAdapter(word16 adapterOrRestoreSlot)
     if (BIOSVideoModeByAdapter[adapterOrRestoreSlot] !=
         SavedBIOSVideoMode)
     {
-        SDLBackend_SetVideoMode((byte) requestedVideoMode);
+        SDLBackend_SetVideoMode((uint8_t) requestedVideoMode);
     }
 }
 
@@ -237,14 +237,14 @@ void SetVideoModeForAdapter(word16 adapterOrRestoreSlot)
 //      WaitForKeyboardOrMouseInput
 //      FlushPendingInput
 //      PollUiRegionSelection
-word16 ServiceMusicAndCheckKeyboardInput(void)
+uint16_t ServiceMusicAndCheckKeyboardInput(void)
 {
     // V: Apply pending music enable/disable state, then perform a non-consuming
     // keyboard availability check. The actual translated key is consumed by
     // ReadTranslatedKeypress.
     if (SoundEffectsEnabled == FALSE)
         RequestPCSpeakerEffectStop();
-    uint16 requestedMusicState = RequestedMusicEnabled;
+    uint16_t requestedMusicState = RequestedMusicEnabled;
     if (AppliedMusicEnabled != requestedMusicState)
     {
         if (requestedMusicState == FALSE)
@@ -253,7 +253,7 @@ word16 ServiceMusicAndCheckKeyboardInput(void)
             EnableMusicPlayback();
         AppliedMusicEnabled = requestedMusicState;
     }
-    word16 inputPending = KeyboardInputPending();
+    uint16_t inputPending = KeyboardInputPending();
     return inputPending;
 }
 
@@ -265,7 +265,7 @@ word16 ServiceMusicAndCheckKeyboardInput(void)
 //      InitializeGame
 //      LoadMediaConfiguration
 //      PollUiRegionSelection
-int16 ReadTranslatedKeypress(void)
+int16_t ReadTranslatedKeypress(void)
 {
     // ANNOTATION: read, translate, and sign-extend a keyboard event to a WORD.
     return TranslateKeyCode();
@@ -274,19 +274,19 @@ int16 ReadTranslatedKeypress(void)
 // 2C7F:047A: uint16 LoadMediaConfiguration(void)
 // Called from:
 //      InitializeGame
-word16 LoadMediaConfiguration(void)
+uint16_t LoadMediaConfiguration(void)
 {
     // V: Load MEDIA.CFG (maximum C8h bytes), split it into lines, uppercase
     // each key, and dispatch VIDEO, MUSIC, SOUND, and INPUTDEVICE values
     // through the four callbacks in ConfigOptionHandlerTable.
     char configLine[0x28];
-    word16 configurationValid = TRUE;
+    uint16_t configurationValid = TRUE;
     /* MEDIA.CFG as the DOS installer wrote it, built from the player's
 	 * settings (src/SDL/settings.cpp, revenge/media_settings.h) rather than read
 	 * from the install: the same bytes, at most C8h of them, through the
 	 * same parse. */
     char configText[0xC8];
-    word16 configTextLength = MediaSettings_InstallerText(
+    uint16_t configTextLength = MediaSettings_InstallerText(
         HostSettings_MediaChoices(), configText, sizeof(configText));
     if (configTextLength == 0x00)
     {
@@ -298,25 +298,25 @@ word16 LoadMediaConfiguration(void)
         /* One byte more than the text: the loop below reads a byte past
 		 * the end before it stops (the original reads whatever follows the
 		 * buffer and drops it). */
-        byte *configBuffer = (byte *) Heap_Allocate((uint32) configTextLength + 0x01, "2C7F:04F1");
-        word16 bytesRemaining = configTextLength;
-        byte *readCursor = configBuffer;
+        uint8_t *configBuffer = (uint8_t *) Heap_Allocate((uint32_t) configTextLength + 0x01, "2C7F:04F1");
+        uint16_t bytesRemaining = configTextLength;
+        uint8_t *readCursor = configBuffer;
 
         memcpy(configBuffer, configText, configTextLength);
         configBuffer[configTextLength] = '\0';
-        word16 continueParsing = TRUE;
+        uint16_t continueParsing = TRUE;
         while (continueParsing != FALSE)
         {
-            int16 lineLength = 0x00;
+            int16_t lineLength = 0x00;
             while (TRUE)
             {
                 if (lineLength >= 0x28 || continueParsing == FALSE)
                     break;
-                int16 character = (int16) *readCursor++;
+                int16_t character = (int16_t) *readCursor++;
                 /* 2C7F:055F-0567: the count is tested before the decrement,
 				 * so the last line's newline is read and that line applied;
 				 * the parse stops on the read after it. */
-                word16 bytesBefore = bytesRemaining--;
+                uint16_t bytesBefore = bytesRemaining--;
                 if (bytesBefore == 0x00)
                     continueParsing = FALSE;
                 else if (character == '\n')
@@ -325,7 +325,7 @@ word16 LoadMediaConfiguration(void)
                     lineLength = 0x28;
                 }
                 else
-                    configLine[lineLength] = (byte) character;
+                    configLine[lineLength] = (uint8_t) character;
                 ++lineLength;
             }
             if (continueParsing != FALSE)
@@ -333,8 +333,8 @@ word16 LoadMediaConfiguration(void)
                 char *optionName = strtok(
                     configLine, MediaConfigAssignmentDelimiter);
                 UppercaseStringInPlace(optionName);
-                int16 handlerIndex = 0x00;
-                word16 searchingForHandler = TRUE;
+                int16_t handlerIndex = 0x00;
+                uint16_t searchingForHandler = TRUE;
                 while (searchingForHandler != FALSE && handlerIndex < 0x04)
                 {
                     const char *tableName =
@@ -374,15 +374,15 @@ word16 LoadMediaConfiguration(void)
 // 2C7F:0669: Register uint16 ApplyVideoConfigOption(void)
 // Called from:
 //      LoadMediaConfiguration
-uint16 ApplyVideoConfigOption(void)
+uint16_t ApplyVideoConfigOption(void)
 {
     // V: VIDEO handler from ConfigOptionHandlerTable.
     char *optionValue = strtok(
         NULL, VideoConfigTokenDelimiters);
     UppercaseStringInPlace(optionValue);
-    uint16 optionAccepted = TRUE;
-    word16 optionIndex = 0x00;
-    word16 searchingForMatch = TRUE;
+    uint16_t optionAccepted = TRUE;
+    uint16_t optionIndex = 0x00;
+    uint16_t searchingForMatch = TRUE;
     while (searchingForMatch != FALSE && optionIndex < 0x05)
     {
         if (strcmp(
@@ -412,15 +412,15 @@ uint16 ApplyVideoConfigOption(void)
 // 2C7F:072D: Register uint16 ApplyMusicConfigOption(void)
 // Called from:
 //      LoadMediaConfiguration
-uint16 ApplyMusicConfigOption(void)
+uint16_t ApplyMusicConfigOption(void)
 {
     // V: MUSIC handler from ConfigOptionHandlerTable.
     char *optionValue = strtok(
         NULL, MusicConfigTokenDelimiters);
     UppercaseStringInPlace(optionValue);
-    uint16 optionAccepted = TRUE;
-    word16 optionIndex = 0x00;
-    word16 searchingForMatch = TRUE;
+    uint16_t optionAccepted = TRUE;
+    uint16_t optionIndex = 0x00;
+    uint16_t searchingForMatch = TRUE;
     while (searchingForMatch != FALSE && optionIndex < 0x07)
     {
         if (strcmp(
@@ -446,16 +446,16 @@ uint16 ApplyMusicConfigOption(void)
 // 2C7F:07CE: Register uint16 ApplySoundConfigOption(void)
 // Called from:
 //      LoadMediaConfiguration
-uint16 ApplySoundConfigOption(void)
+uint16_t ApplySoundConfigOption(void)
 {
     // V: SOUND handler from ConfigOptionHandlerTable. Some drivers carry
     // a following hexadecimal hardware parameter; drivers without one use 1.
     char *optionValue = strtok(
         NULL, SoundConfigTokenDelimiters);
     UppercaseStringInPlace(optionValue);
-    uint16 optionAccepted = TRUE;
-    word16 optionIndex = 0x00;
-    word16 searchingForMatch = TRUE;
+    uint16_t optionAccepted = TRUE;
+    uint16_t optionIndex = 0x00;
+    uint16_t searchingForMatch = TRUE;
     while (searchingForMatch != FALSE && optionIndex < 0x09)
     {
         if (strcmp(
@@ -491,15 +491,15 @@ uint16 ApplySoundConfigOption(void)
 // 2C7F:08CA: Register uint16 ApplyInputDeviceConfigOption(void)
 // Called from:
 //      LoadMediaConfiguration
-uint16 ApplyInputDeviceConfigOption(void)
+uint16_t ApplyInputDeviceConfigOption(void)
 {
     // V: INPUTDEVICE handler from ConfigOptionHandlerTable.
     char *optionValue = strtok(
         NULL, InputConfigTokenDelimiters);
     UppercaseStringInPlace(optionValue);
-    uint16 optionAccepted = TRUE;
-    word16 optionIndex = 0x00;
-    word16 searchingForMatch = TRUE;
+    uint16_t optionAccepted = TRUE;
+    uint16_t optionIndex = 0x00;
+    uint16_t searchingForMatch = TRUE;
     while (searchingForMatch != FALSE && optionIndex < 0x02)
     {
         if (strcmp(
@@ -525,11 +525,11 @@ uint16 ApplyInputDeviceConfigOption(void)
 // 2C7F:096C: uint16 ParseHexValue(const char *text)
 // Called from:
 //      ApplySoundConfigOption
-uint16 ParseHexValue(const char *text)
+uint16_t ParseHexValue(const char *text)
 {
     // V: Parse upper-case hexadecimal digits. Non-hex characters are skipped,
     // matching the original routine rather than terminating the conversion.
-    uint16 value = 0x00;
+    uint16_t value = 0x00;
     while (*text != '\0')
     {
         char digit = *text++;

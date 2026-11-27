@@ -10,28 +10,28 @@ enum
     TACTICAL_ORDER_SEEK_AND_DESTROY = 0x02
 };
 
-void LoadUnitTemplateRecord(int16 unitType);
-void UpdateUnitSpriteForFacing(word16 unitIndex, word16 facing);
+void LoadUnitTemplateRecord(int16_t unitType);
+void UpdateUnitSpriteForFacing(uint16_t unitIndex, uint16_t facing);
 void RecalculateUnitCombatRatings(
     RevengeUnitRecord *unitRecord,
-    word16 unitIndex,
-    word16 rebuildWeaponCounts,
-    word16 advanceRecovery);
+    uint16_t unitIndex,
+    uint16_t rebuildWeaponCounts,
+    uint16_t advanceRecovery);
 
 /* 2208:2472-2587 */
 void InitializeScenarioUnitFromTemplate(
-    word16 unitType,
-    word16 unitIndex)
+    uint16_t unitType,
+    uint16_t unitIndex)
 {
     RevengeUnitRecord *unitRecord;
-    byte preservedAllegiance;
-    word16 tacticalSpriteBase;
+    uint8_t preservedAllegiance;
+    uint16_t tacticalSpriteBase;
 
     unitRecord = &PersistentUnitRoster[unitIndex];
     preservedAllegiance = unitRecord->allegiance;
     if (unitType != 0xFFFF)
     {
-        LoadUnitTemplateRecord((int16) unitType);
+        LoadUnitTemplateRecord((int16_t) unitType);
         *unitRecord = EstimatedUnitRecord;
         unitRecord->deploymentState = 0x01;
         unitRecord->allegiance = preservedAllegiance;

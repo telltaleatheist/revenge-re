@@ -11,7 +11,7 @@
 // Called from:
 //      RunInGameMenu
 //      RunTitleAndMainMenu
-word16 ConfirmExitToDos(void)
+uint16_t ConfirmExitToDos(void)
 {
     /* DS:0822: the confirmation's region (7) starts on its second row. */
     UiRegionTable[0x07].selectedRow = 0x0001;
@@ -24,9 +24,9 @@ word16 ConfirmExitToDos(void)
 // Called from:
 //      ConfirmExitToDos
 //      ConfirmRestartGame
-word16 ShowConfirmationDialog(const char *message)
+uint16_t ShowConfirmationDialog(const char *message)
 {
-    word16 selection;
+    uint16_t selection;
 
     OpenModalTextWindow(0x0E, 0x01);
     HideMouseCursorOverlay();
@@ -51,7 +51,7 @@ void RunCampaignPathSelectionCallback(void)
     RunTwoOptionMenuSelection(
         CampaignPathMenuTextTable);
     CampaignRestartState =
-        (byte) (ActiveUiRegionIndex - 0x0008);
+        (uint8_t) (ActiveUiRegionIndex - 0x0008);
 }
 
 // 0D73:24B3: callback that runs the DS:25D5 two-option menu and stores its
@@ -62,7 +62,7 @@ void RunScenarioVariantSelectionCallback(void)
     RunTwoOptionMenuSelection(
         ScenarioVariantMenuTextTable);
     ScenarioVariantIndex =
-        (word16) (ActiveUiRegionIndex - 0x0008);
+        (uint16_t) (ActiveUiRegionIndex - 0x0008);
 }
 
 // 0D73:24C9: callback that runs the DS:25DD two-option menu and stores its
@@ -73,7 +73,7 @@ void RunAlternateScenarioVariantSelectionCallback(void)
     RunTwoOptionMenuSelection(
         AlternateScenarioMenuTextTable);
     ScenarioVariantIndex =
-        (word16) (ActiveUiRegionIndex - 0x0008);
+        (uint16_t) (ActiveUiRegionIndex - 0x0008);
 }
 
 // 0D73:24DF: void ShowMainMenu(void)
@@ -84,42 +84,42 @@ void ShowMainMenu(void)
     RunMainMenuSelection(
         MainMenuTextTable);
     ScenarioVariantIndex =
-        (word16) (ActiveUiRegionIndex - 0x0008);
+        (uint16_t) (ActiveUiRegionIndex - 0x0008);
 }
 
 // 0D73:24F5: draw and select from a two-option far-string table.
 // VERIFIED against 0D73:24F5-25F4.
-word16 RunTwoOptionMenuSelection(
+uint16_t RunTwoOptionMenuSelection(
     const char *const menuOptionText[0x02])
 {
-    int16 menuRow;
-    int16 secondColumn;
-    int16 glyphWidth;
-    word16 firstLength;
-    word16 secondLength;
-    word16 selection;
+    int16_t menuRow;
+    int16_t secondColumn;
+    int16_t glyphWidth;
+    uint16_t firstLength;
+    uint16_t secondLength;
+    uint16_t selection;
 
     HideMouseCursorOverlay();
-    menuRow = (int16) ((ActiveTextWindowHeightTiles << 0x03) /
+    menuRow = (int16_t) ((ActiveTextWindowHeightTiles << 0x03) /
                   ActiveFontLineHeight) -
         0x0002;
     glyphWidth = ActiveFontGlyphAdvanceX;
 
     const char *firstText = menuOptionText[0x00];
     const char *secondText = menuOptionText[0x01];
-    firstLength = (word16) strlen(firstText);
+    firstLength = (uint16_t) strlen(firstText);
     DrawBeveledMenuButton(0x0005, menuRow,
         firstText,
-        (word16) (glyphWidth * firstLength));
+        (uint16_t) (glyphWidth * firstLength));
     UiRegionTable[0x08].leftColumn = 0x0005;
     UiRegionTable[0x08].topRow = menuRow;
-    UiRegionTable[0x08].widthColumns = (word16) strlen(firstText);
+    UiRegionTable[0x08].widthColumns = (uint16_t) strlen(firstText);
 
-    secondLength = (word16) strlen(secondText);
-    secondColumn = (int16) (0x0108 / glyphWidth) - secondLength;
+    secondLength = (uint16_t) strlen(secondText);
+    secondColumn = (int16_t) (0x0108 / glyphWidth) - secondLength;
     DrawBeveledMenuButton(secondColumn, menuRow,
         secondText,
-        (word16) (glyphWidth * secondLength));
+        (uint16_t) (glyphWidth * secondLength));
     UiRegionTable[0x09].leftColumn = secondColumn;
     UiRegionTable[0x09].topRow = menuRow;
     UiRegionTable[0x09].widthColumns = secondLength;
@@ -138,47 +138,47 @@ word16 RunTwoOptionMenuSelection(
 // 0D73:25F5: word16 RunMainMenuSelection(const far-pointer table menuOptionText)
 // Called from:
 //      ShowMainMenu
-word16 RunMainMenuSelection(const char *const menuOptionText[0x03])
+uint16_t RunMainMenuSelection(const char *const menuOptionText[0x03])
 {
-    int16 menuRow;
-    int16 glyphWidth;
-    int16 secondColumn;
-    int16 thirdColumn;
-    word16 firstLength;
-    word16 secondLength;
-    word16 thirdLength;
-    word16 selection;
+    int16_t menuRow;
+    int16_t glyphWidth;
+    int16_t secondColumn;
+    int16_t thirdColumn;
+    uint16_t firstLength;
+    uint16_t secondLength;
+    uint16_t thirdLength;
+    uint16_t selection;
 
     // Verified against 0D73:25F5-274C.
     HideMouseCursorOverlay();
-    menuRow = (int16) ((ActiveTextWindowHeightTiles << 0x03) /
+    menuRow = (int16_t) ((ActiveTextWindowHeightTiles << 0x03) /
                   ActiveFontLineHeight) -
         0x02;
     glyphWidth = ActiveFontGlyphAdvanceX;
     const char *firstText = menuOptionText[0x00];
     const char *secondText = menuOptionText[0x01];
     const char *thirdText = menuOptionText[0x02];
-    firstLength = (word16) strlen(firstText);
+    firstLength = (uint16_t) strlen(firstText);
     DrawBeveledMenuButton(0x03, menuRow, firstText,
-        (word16) (glyphWidth * firstLength));
+        (uint16_t) (glyphWidth * firstLength));
     UiRegionTable[0x08].leftColumn = 0x03;
     UiRegionTable[0x08].topRow = menuRow;
-    firstLength = (word16) strlen(firstText);
+    firstLength = (uint16_t) strlen(firstText);
     UiRegionTable[0x08].widthColumns = firstLength;
 
-    secondLength = (word16) strlen(secondText);
-    secondColumn = (int16) ((0x0130 / glyphWidth) - secondLength);
+    secondLength = (uint16_t) strlen(secondText);
+    secondColumn = (int16_t) ((0x0130 / glyphWidth) - secondLength);
     secondColumn >>= 0x01;
     DrawBeveledMenuButton(secondColumn, menuRow, secondText,
-        (word16) (secondLength * glyphWidth));
+        (uint16_t) (secondLength * glyphWidth));
     UiRegionTable[0x09].leftColumn = secondColumn;
     UiRegionTable[0x09].topRow = menuRow;
     UiRegionTable[0x09].widthColumns = secondLength;
 
-    thirdLength = (word16) strlen(thirdText);
-    thirdColumn = (int16) ((0x0130 / glyphWidth) - thirdLength);
+    thirdLength = (uint16_t) strlen(thirdText);
+    thirdColumn = (int16_t) ((0x0130 / glyphWidth) - thirdLength);
     DrawBeveledMenuButton(thirdColumn, menuRow, thirdText,
-        (word16) (thirdLength * glyphWidth));
+        (uint16_t) (thirdLength * glyphWidth));
     UiRegionTable[0x0A].leftColumn = thirdColumn;
     UiRegionTable[0x0A].topRow = menuRow;
     UiRegionTable[0x0A].widthColumns = thirdLength;
@@ -197,16 +197,16 @@ word16 RunMainMenuSelection(const char *const menuOptionText[0x03])
 // Called from:
 //      RunCampaignLoop
 // VERIFIED against 0D73:274D-2A5C.
-int16 RunInGameMenu(int16 firstMenuOption)
+int16_t RunInGameMenu(int16_t firstMenuOption)
 {
-    int16 actionResult;
-    int16 result;
-    word16 index;
-    word16 menuWindowTop;
-    word16 menuItemCount;
-    word16 menuY;
-    word16 optionIndex;
-    word16 selection;
+    int16_t actionResult;
+    int16_t result;
+    uint16_t index;
+    uint16_t menuWindowTop;
+    uint16_t menuItemCount;
+    uint16_t menuY;
+    uint16_t optionIndex;
+    uint16_t selection;
 
     result = -0x0001;
 
@@ -221,14 +221,14 @@ int16 RunInGameMenu(int16 firstMenuOption)
         menuItemCount = 0x05;
     }
     TextWindowContexts[0x11].topTile = menuWindowTop;
-    TextWindowContexts[0x11].heightTiles = (word16) ((menuItemCount *
-                                                             ActiveFontLineHeight +
-                                                         0x0007) >>
+    TextWindowContexts[0x11].heightTiles = (uint16_t) ((menuItemCount *
+                                                               ActiveFontLineHeight +
+                                                           0x0007) >>
         0x03);
     OpenModalTextWindow(0x11, 0x01);
     HideMouseCursorOverlay();
     menuY = TextWindowContexts[0x11].topTile << 0x03;
-    for (optionIndex = (word16) firstMenuOption;
+    for (optionIndex = (uint16_t) firstMenuOption;
         optionIndex < 0x0009;
         ++optionIndex)
     {
@@ -238,9 +238,9 @@ int16 RunInGameMenu(int16 firstMenuOption)
             TextWindowContexts[0x11].leftTile << 0x03,
             menuY,
             TextWindowContexts[0x11].widthTiles << 0x03,
-            (byte) ActiveTextForegroundColor,
-            (byte) ActiveTextBackgroundColor); // TABLE DS:25F9: MenuOptionTextTable entry 5 onward
-        menuY += (int16) ActiveFontLineHeight;
+            (uint8_t) ActiveTextForegroundColor,
+            (uint8_t) ActiveTextBackgroundColor); // TABLE DS:25F9: MenuOptionTextTable entry 5 onward
+        menuY += (int16_t) ActiveFontLineHeight;
     }
     ShowMouseCursorOverlay();
     UiRegionTable[0x0B].rowCount = menuItemCount;
@@ -276,7 +276,7 @@ int16 RunInGameMenu(int16 firstMenuOption)
     }
     case IN_GAME_MENU_SAVE_CONTINUE:
     {
-        actionResult = (int16) SaveGame();
+        actionResult = (int16_t) SaveGame();
         result = actionResult == 0x0000 ? -0x0001 : actionResult;
         if (actionResult < 0x0000)
             result = ConfirmExitToDos() ? 0x0000 : -0x0001;
@@ -284,7 +284,7 @@ int16 RunInGameMenu(int16 firstMenuOption)
     }
     case IN_GAME_MENU_SAVE_QUIT:
     {
-        actionResult = (int16) SaveGame();
+        actionResult = (int16_t) SaveGame();
         result = actionResult == 0x0001 ? 0x0000 : (actionResult == 0x0000 ? -0x0001 : actionResult);
         if (actionResult < 0x0000)
             result = ConfirmExitToDos() ? 0x0000 : -0x0001;
@@ -292,7 +292,7 @@ int16 RunInGameMenu(int16 firstMenuOption)
     }
     case IN_GAME_MENU_LOAD:
     {
-        actionResult = (int16) LoadGame();
+        actionResult = (int16_t) LoadGame();
         result = actionResult == 0x0000 ? -0x0001 : actionResult;
         if (actionResult < 0x0000)
             result = ConfirmExitToDos() ? 0x0000 : -0x0001;
@@ -359,11 +359,11 @@ int16 RunInGameMenu(int16 firstMenuOption)
 // Called from:
 //      RunCampaignLoop
 // Verified against 0D73:309C-324D.
-int16 RunTitleAndMainMenu(void)
+int16_t RunTitleAndMainMenu(void)
 {
-    int16 selectedGameMode = 0x00;
-    word16 transitionPending;
-    word16 showTitle;
+    int16_t selectedGameMode = 0x00;
+    uint16_t transitionPending;
+    uint16_t showTitle;
 
     SelectTextWindow(0x00);
     LoadScenarioDigitalSoundBank(-0x01);
@@ -381,7 +381,7 @@ int16 RunTitleAndMainMenu(void)
     showTitle = TRUE;
     while (showTitle != FALSE)
     {
-        word16 titleCompleted;
+        uint16_t titleCompleted;
         if (SceneTransitionAbortFlag == 0x00 && transitionPending == 0x00)
         {
             titleCompleted = PlayTitleTextSequence();
@@ -408,7 +408,7 @@ int16 RunTitleAndMainMenu(void)
             }
             else if (ScenarioVariantIndex == 0x01)
             {
-                int16 loadResult = (int16) LoadGame();
+                int16_t loadResult = (int16_t) LoadGame();
                 selectedGameMode = loadResult;
                 if (loadResult == 0x00)
                     showTitle = TRUE;

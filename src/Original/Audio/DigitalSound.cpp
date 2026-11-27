@@ -38,7 +38,7 @@
 
 void HandleDigitalWeaponEffectCompletion(
     DigitalSampleDescriptor *descriptor);
-void PlayDigitalWeaponEffect(word16 weaponEffectId);
+void PlayDigitalWeaponEffect(uint16_t weaponEffectId);
 
 // 31FB:00B3: void LoadDigitalWeaponEffectBank(void)
 // Called from:
@@ -49,32 +49,32 @@ void LoadDigitalWeaponEffectBank(void)
     if (SoundDriverIndex < 0x01)
         return;
 
-    word16 effectIndex;
+    uint16_t effectIndex;
     for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
     {
         DigitalWeaponEffectRecord *effect =
             &DigitalWeaponEffectTable()[effectIndex];
-        if ((int16) effect->ResourceIndex >= 0x00)
+        if ((int16_t) effect->ResourceIndex >= 0x00)
             effect->LoadState = 0x00;
     }
 
-    word16 packedBytes = 0x00;
+    uint16_t packedBytes = 0x00;
     for (effectIndex = 0x00; effectIndex < 0x10; ++effectIndex)
     {
         DigitalWeaponEffectRecord *effect =
             &DigitalWeaponEffectTable()[effectIndex];
-        if ((int16) effect->ResourceIndex < 0x00 ||
+        if ((int16_t) effect->ResourceIndex < 0x00 ||
             effect->LoadState != 0x00)
             continue;
 
-        word16 sampleLength = (word16)
-                                  CachedFileDescriptors[effect->ResourceIndex]
-                                      .fileLength;
+        uint16_t sampleLength = (uint16_t)
+                                    CachedFileDescriptors[effect->ResourceIndex]
+                                        .fileLength;
         effect->PackedBufferOffset = packedBytes;
         effect->SampleLength = sampleLength;
         effect->LoadState = 0x01;
 
-        word16 aliasIndex;
+        uint16_t aliasIndex;
         for (aliasIndex = effectIndex + 0x01; aliasIndex < 0x10; ++aliasIndex)
         {
             DigitalWeaponEffectRecord *alias =
@@ -89,7 +89,7 @@ void LoadDigitalWeaponEffectBank(void)
         packedBytes += sampleLength;
     }
 
-    DigitalWeaponSampleBuffer = (byte *) Heap_Allocate(packedBytes, "31FB:01D5");
+    DigitalWeaponSampleBuffer = (uint8_t *) Heap_Allocate(packedBytes, "31FB:01D5");
     REVENGE_PRESERVATION_TRACE("audio: weapon bank driver=%u bytes=%u buffer=%p\n",
         SoundDriverIndex, packedBytes,
         (void *) DigitalWeaponSampleBuffer);
@@ -98,7 +98,7 @@ void LoadDigitalWeaponEffectBank(void)
     {
         DigitalWeaponEffectRecord *effect =
             &DigitalWeaponEffectTable()[effectIndex];
-        if ((int16) effect->ResourceIndex >= 0x00 &&
+        if ((int16_t) effect->ResourceIndex >= 0x00 &&
             effect->LoadState == 0x01)
         {
             const CachedFileDescriptor *resource;
@@ -123,7 +123,7 @@ void ReleaseDigitalWeaponEffectBank(void)
 
 // 31FB:0567: choose the digital PCM path when one is configured, except effect
 // 03h, whose table record is the FFFFh sentinel and always uses PC speaker.
-void DispatchWeaponEffect(int16 weaponEffectId)
+void DispatchWeaponEffect(int16_t weaponEffectId)
 {
     REVENGE_PRESERVATION_TRACE(
         "audio: dispatch effect=%d driver=%u enabled=%u busy=%u bank=%p rate=%u\n",
@@ -138,7 +138,7 @@ void DispatchWeaponEffect(int16 weaponEffectId)
 }
 
 // 31FB:058D: configure and queue one digital weapon-effect sample.
-void PlayDigitalWeaponEffect(word16 weaponEffectId)
+void PlayDigitalWeaponEffect(uint16_t weaponEffectId)
 {
     // Verified against 31FB:058D-06E8.
     if (SoundEffectsEnabled == FALSE)
@@ -214,7 +214,7 @@ void HandleDigitalWeaponEffectCompletion(
     AudioLog_PcmDone();
     DigitalSoundDriverMutationGuard = TRUE;
     RemoveDigitalSampleDescriptor(descriptor);
-    word16 playbackDescriptorOffset =
+    uint16_t playbackDescriptorOffset =
         DigitalSoundDriverDescriptorOffsets()[SoundDriverIndex];
     ReleaseDigitalPlaybackDriver(playbackDescriptorOffset);
     RestoreDigitalPlaybackTimer();
@@ -249,10 +249,10 @@ void InitializeDigitalSoundDriver(void)
 // Called from:
 //      LoadScenarioDigitalSoundBank
 //      PlayScenarioDigitalSoundSequence
-int16 FindDigitalSoundEntryByCode(byte soundCode)
+int16_t FindDigitalSoundEntryByCode(uint8_t soundCode)
 {
-    int16 foundIndex = -0x01;
-    int16 entryIndex = 0x00;
+    int16_t foundIndex = -0x01;
+    int16_t entryIndex = 0x00;
     while (entryIndex < DIGITAL_SOUND_ENTRY_COUNT && foundIndex < 0x00)
     {
         // DigitalSoundEntries +00 is the one-byte lookup code.
@@ -266,7 +266,7 @@ int16 FindDigitalSoundEntryByCode(byte soundCode)
 // 31FB:0297: void LoadScenarioDigitalSoundBank(int8 scenarioCode)
 // Called from:
 //      RunTitleAndMainMenu
-void LoadScenarioDigitalSoundBank(int8 scenarioCode)
+void LoadScenarioDigitalSoundBank(int8_t scenarioCode)
 {
     // DS:5DEE-5E6D is a table of NUL-terminated lists. Every byte is a
     // lookup key in DigitalSoundEntries; punctuation is sample data,
@@ -311,15 +311,15 @@ void LoadScenarioDigitalSoundBank(int8 scenarioCode)
             strcpy(soundCodes, DigitalSoundString(0x5E62));
         break;
     }
-    word16 packedBufferSize = 0x00;
-    word16 soundIndex = 0x00;
+    uint16_t packedBufferSize = 0x00;
+    uint16_t soundIndex = 0x00;
     while (soundIndex < 0x0F && soundCodes[soundIndex] != 0x00)
     {
-        int16 entryIndex = FindDigitalSoundEntryByCode(soundCodes[soundIndex]);
+        int16_t entryIndex = FindDigitalSoundEntryByCode(soundCodes[soundIndex]);
         if (entryIndex >= 0x00)
         {
             DigitalSoundEntryRecord *entry;
-            word16 sampleLength;
+            uint16_t sampleLength;
 
             entry = &DigitalSoundEntries()[entryIndex];
             sampleLength = entry->SampleLength;
@@ -328,11 +328,11 @@ void LoadScenarioDigitalSoundBank(int8 scenarioCode)
         }
         ++soundIndex;
     }
-    DigitalSoundBuffer = (byte *) Heap_Allocate(packedBufferSize, "31FB:049D");
+    DigitalSoundBuffer = (uint8_t *) Heap_Allocate(packedBufferSize, "31FB:049D");
     soundIndex = 0x00;
     while (soundIndex < 0x0F && soundCodes[soundIndex] != 0x00)
     {
-        int16 entryIndex = FindDigitalSoundEntryByCode(soundCodes[soundIndex]);
+        int16_t entryIndex = FindDigitalSoundEntryByCode(soundCodes[soundIndex]);
         if (entryIndex >= 0x00)
         {
             DigitalSoundEntryRecord *entry;
@@ -342,7 +342,7 @@ void LoadScenarioDigitalSoundBank(int8 scenarioCode)
             resource = &CachedFileDescriptors[entry->ResourceIndex];
             ReadResourceFileSpan(
                 resource->fileName,
-                (int32) entry->SourceFileOffset,
+                (int32_t) entry->SourceFileOffset,
                 DigitalSoundBuffer + entry->PackedBufferOffset,
                 entry->SampleLength);
         }
@@ -357,7 +357,7 @@ void LoadScenarioDigitalSoundBank(int8 scenarioCode)
 // 31FB:0742: void PlayScenarioDigitalSoundSequence(signed char scenarioCode)
 // Called from:
 //      RunTitleAndMainMenu
-void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
+void PlayScenarioDigitalSoundSequence(int8_t scenarioCode)
 {
     // Verified against 31FB:0742-12A6.
     // Verified [SDL]: cooperative timer service replaces asynchronous IRQ0
@@ -644,12 +644,12 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
                 RemoveDigitalSampleDescriptor(ActiveDigitalSampleDescriptor);
             DigitalSoundDriverMutationGuard = 0x00;
         }
-        word16 descriptorCount = 0x0000;
-        int16 descriptorEntries[0x10];
-        int16 soundCodeIndex = 0x0000;
+        uint16_t descriptorCount = 0x0000;
+        int16_t descriptorEntries[0x10];
+        int16_t soundCodeIndex = 0x0000;
         while (soundCodeIndex < 0x0F && soundCodes[soundCodeIndex] != 0x00)
         {
-            int16 soundEntryIndex = FindDigitalSoundEntryByCode(soundCodes[soundCodeIndex]);
+            int16_t soundEntryIndex = FindDigitalSoundEntryByCode(soundCodes[soundCodeIndex]);
             if (soundEntryIndex >= 0x00)
             {
                 DigitalSoundEntryRecord *entry;
@@ -666,7 +666,7 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
             }
             ++soundCodeIndex;
         }
-        word16 descriptorIndex = 0x0000;
+        uint16_t descriptorIndex = 0x0000;
         while (descriptorIndex < descriptorCount)
         {
             DigitalSampleDescriptor *descriptor =

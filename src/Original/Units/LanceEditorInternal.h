@@ -31,119 +31,119 @@ enum
     UNIT_ROSTER_TEXT_WIDTH_PIXELS = 0x009E
 };
 
-int16 RandomInRangeInclusive(word16 minimum, word16 maximum);
-int16 PopRandomUnitType(void);
-int16 PopRandomPilotId(void);
-int16 SelectUnitClass(void);
-int16 SelectUnitTypeFromList(const byte *unitTypeIdList);
-bool IsOmniUnitTypeList(const byte *unitTypeIdList);
-word16 ServiceMusicAndCheckKeyboardInput(void);
-word16 RunGameOptionsMenu(word16 embeddedMode);
-void DrawUnitAllegianceHeader(word16 headerColorIndex);
+int16_t RandomInRangeInclusive(uint16_t minimum, uint16_t maximum);
+int16_t PopRandomUnitType(void);
+int16_t PopRandomPilotId(void);
+int16_t SelectUnitClass(void);
+int16_t SelectUnitTypeFromList(const uint8_t *unitTypeIdList);
+bool IsOmniUnitTypeList(const uint8_t *unitTypeIdList);
+uint16_t ServiceMusicAndCheckKeyboardInput(void);
+uint16_t RunGameOptionsMenu(uint16_t embeddedMode);
+void DrawUnitAllegianceHeader(uint16_t headerColorIndex);
 void RenderFormattedText(const char *text);
-word16 ValidatePilotConfiguration(word16 selectionFamily);
-word16 ValidateLanceConfiguration(word16 selectionFamily);
+uint16_t ValidatePilotConfiguration(uint16_t selectionFamily);
+uint16_t ValidateLanceConfiguration(uint16_t selectionFamily);
 void ShowNoSelectionOptions(void);
-void RunPilotSelection(word16 selectionFamily, int16 selectionMode);
-void PrepareLanceSelection(word16 firstRosterIndex, int16 selectionMode);
+void RunPilotSelection(uint16_t selectionFamily, int16_t selectionMode);
+void PrepareLanceSelection(uint16_t firstRosterIndex, int16_t selectionMode);
 void PresentStoryScreenAndMessage(
-    word16 screenResourceIndex,
-    word16 messageIndex);
-void ShowStoryMessage(word16 messageIndex);
+    uint16_t screenResourceIndex,
+    uint16_t messageIndex);
+void ShowStoryMessage(uint16_t messageIndex);
 void DrawUnitRosterScreen(
-    word16 useAlternateAssignmentLayout,
-    word16 textColor);
-void DrawRangeAndSpeedStatHeaders(word16 topY);
-void DrawExperienceAndGunneryHeaders(word16 topY);
-void LoadScreenPalette(word16 paletteIndex);
-byte *BuildDisplayBackingBuffer(
-    word16 sourceTileX,
-    word16 sourcePixelY,
-    word16 widthTiles,
-    word16 heightPixels);
+    uint16_t useAlternateAssignmentLayout,
+    uint16_t textColor);
+void DrawRangeAndSpeedStatHeaders(uint16_t topY);
+void DrawExperienceAndGunneryHeaders(uint16_t topY);
+void LoadScreenPalette(uint16_t paletteIndex);
+uint8_t *BuildDisplayBackingBuffer(
+    uint16_t sourceTileX,
+    uint16_t sourcePixelY,
+    uint16_t widthTiles,
+    uint16_t heightPixels);
 void LoadGraphicsResourceToBuffers(
-    word16 resourceIndex,
-    byte *decodeBuffer,
-    byte *displayBuffer);
+    uint16_t resourceIndex,
+    uint8_t *decodeBuffer,
+    uint8_t *displayBuffer);
 void LoadGraphicsBufferRange(
-    int16 firstBufferIndex,
-    int16 lastBufferIndex);
-void LoadUnitTemplateRecord(int16 unitType);
+    int16_t firstBufferIndex,
+    int16_t lastBufferIndex);
+void LoadUnitTemplateRecord(int16_t unitType);
 void InitializeLanceAssignments(
-    word16 firstRosterIndex,
-    int16 selectionMode);
+    uint16_t firstRosterIndex,
+    int16_t selectionMode);
 void SnapshotLateCampaignLanceUnits(void);
-int16 RunLanceConfigurationEditor(
-    word16 selectionFamily,
-    word16 scenarioVariantIndex);
+int16_t RunLanceConfigurationEditor(
+    uint16_t selectionFamily,
+    uint16_t scenarioVariantIndex);
 void PrepareLanceSelectionRecords(
-    word16 firstRosterIndex,
-    int16 selectionMode,
-    word16 loadPresentationResources);
-void RunUnitAssignmentEditor(word16 firstRosterIndex);
+    uint16_t firstRosterIndex,
+    int16_t selectionMode,
+    uint16_t loadPresentationResources);
+void RunUnitAssignmentEditor(uint16_t firstRosterIndex);
 void DrawSelectionScreenBackground(void);
-void DrawLanceSelectionScreen(word16 configurationIndex);
+void DrawLanceSelectionScreen(uint16_t configurationIndex);
 void RefreshLanceSelectionSlots(
-    word16 scenarioGroupIndex,
-    word16 lanceGroupIndex,
-    word16 showSelectionContents);
-int16 DrawUnitEditorSectionMenu(word16 configurationIndex);
+    uint16_t scenarioGroupIndex,
+    uint16_t lanceGroupIndex,
+    uint16_t showSelectionContents);
+int16_t DrawUnitEditorSectionMenu(uint16_t configurationIndex);
 void ClearUnitEditorSectionPanel(void);
 void DrawLanceAssignmentSlot(
-    word16 assignmentIndex,
-    word16 selected,
-    word16 drawExitSlot);
+    uint16_t assignmentIndex,
+    uint16_t selected,
+    uint16_t drawExitSlot);
 void PreparePilotSelectionRecords(
-    word16 selectionFamily,
-    int16 selectionMode,
-    word16 loadPresentationResources);
-void RunPilotAssignmentEditor(word16 selectionFamily);
-void DrawPilotSelectionScreen(word16 selectionFamily);
+    uint16_t selectionFamily,
+    int16_t selectionMode,
+    uint16_t loadPresentationResources);
+void RunPilotAssignmentEditor(uint16_t selectionFamily);
+void DrawPilotSelectionScreen(uint16_t selectionFamily);
 void DrawPilotSelectionSlot(
-    word16 pilotRecordIndex,
-    word16 redrawBackground,
-    int16 displayMode);
+    uint16_t pilotRecordIndex,
+    uint16_t redrawBackground,
+    int16_t displayMode);
 void RefreshPilotAssignmentSlots(
-    word16 selectionFamily,
-    word16 showPilotCards);
+    uint16_t selectionFamily,
+    uint16_t showPilotCards);
 void FreeGraphicsBufferRange(
-    int16 firstBufferIndex,
-    int16 lastBufferIndex);
+    int16_t firstBufferIndex,
+    int16_t lastBufferIndex);
 void LoadScenarioVariantGraphicsBuffers(void);
 void LoadLanceConfigurationGraphicsBuffers(void);
-void ShowLanceConfigurationBriefing(word16 configurationIndex);
+void ShowLanceConfigurationBriefing(uint16_t configurationIndex);
 void RunUnitAssignmentGrid(
-    word16 scenarioGroupIndex,
-    word16 lanceGroupIndex,
-    word16 useSeparateScenarioGroups);
-void RunPilotAssignmentGrid(word16 lanceGroupIndex);
+    uint16_t scenarioGroupIndex,
+    uint16_t lanceGroupIndex,
+    uint16_t useSeparateScenarioGroups);
+void RunPilotAssignmentGrid(uint16_t lanceGroupIndex);
 void DrawUnitStatusScreen(
-    uint16 statusPanelIndex,
-    word16 redrawBackground,
-    word16 displayMode,
-    word16 showDetailedStats);
+    uint16_t statusPanelIndex,
+    uint16_t redrawBackground,
+    uint16_t displayMode,
+    uint16_t showDetailedStats);
 void CountUnitWeaponsByType(const RevengeUnitRecord *unitRecord);
-word16 CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord);
-void OpenModalTextWindow(word16 windowIndex, word16 saveBackground);
+uint16_t CalculateUnitWeaponHeatScale(RevengeUnitRecord *unitRecord);
+void OpenModalTextWindow(uint16_t windowIndex, uint16_t saveBackground);
 void RestoreModalTextWindow(void);
 void DrawTrainingCategoryOption(
-    word16 optionIndex,
-    word16 selectedState);
+    uint16_t optionIndex,
+    uint16_t selectedState);
 void DrawTrainingScenarioOption(
-    word16 scenarioIndex,
-    word16 selectedState);
+    uint16_t scenarioIndex,
+    uint16_t selectedState);
 void DrawTrainingScenarioSelectionScreen(void);
 void DrawTrainingDeploymentSlot(
-    word16 slotIndex,
-    word16 selectedState);
+    uint16_t slotIndex,
+    uint16_t selectedState);
 void DrawTrainingDeploymentScreen(void);
-void DrawTrainingUnitChoice(word16 choiceIndex, word16 selectedState);
-void DrawTrainingControlChoice(word16 choiceIndex, word16 selectedState);
+void DrawTrainingUnitChoice(uint16_t choiceIndex, uint16_t selectedState);
+void DrawTrainingControlChoice(uint16_t choiceIndex, uint16_t selectedState);
 void DrawTrainingChoiceButton(
-    word16 leftX,
-    word16 topY,
+    uint16_t leftX,
+    uint16_t topY,
     const char *label,
-    word16 width);
+    uint16_t width);
 
 
 /* A selection card's sprite, for drawing. The editor points every card it
@@ -152,6 +152,6 @@ void DrawTrainingChoiceButton(
  * pointer the saving program had, unchanged by the load, so a card drawn
  * before the editor rebuilds it would point at nothing of ours: that is a
  * fault naming the card's pointer. */
-const byte *LanceEditorCardSprite(const UnitSelectionCard *card);
+const uint8_t *LanceEditorCardSprite(const UnitSelectionCard *card);
 
 #endif

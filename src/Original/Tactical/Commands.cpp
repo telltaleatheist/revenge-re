@@ -14,17 +14,17 @@
 // 2208:000B: void RunTacticalUnitCommandMenu(word16 unitIndex)
 // Verified against ASM 2208:000B-060C. The original eight-entry
 // command table at 2208:033A dispatches values 00h-06h and Escape.
-void RunTacticalUnitCommandMenu(word16 unitIndex)
+void RunTacticalUnitCommandMenu(uint16_t unitIndex)
 {
-    word16 savedWindowLeft;
-    word16 savedWindowRight;
-    word16 hasLanceFollowers;
-    word16 menuStateChanged;
-    word16 movementCommandAccepted;
-    word16 exitMenu;
-    byte savedLanceMapX;
-    byte savedLanceMapY;
-    word16 damageModel;
+    uint16_t savedWindowLeft;
+    uint16_t savedWindowRight;
+    uint16_t hasLanceFollowers;
+    uint16_t menuStateChanged;
+    uint16_t movementCommandAccepted;
+    uint16_t exitMenu;
+    uint8_t savedLanceMapX;
+    uint8_t savedLanceMapY;
+    uint16_t damageModel;
 
     TacticalMenuInputState = 0x00;
     TacticalInteractionLocked = 0x01;
@@ -60,18 +60,18 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
     TacticalMenuSelectedOption = 0x00;
     while (exitMenu == FALSE)
     {
-        word16 selectedOption;
-        word16 specialAttackAvailable = FALSE;
-        int16 attackTarget;
-        int16 movementHeatExponent =
-            (int8) UnitMovementHeatExponent[unitIndex];
+        uint16_t selectedOption;
+        uint16_t specialAttackAvailable = FALSE;
+        int16_t attackTarget;
+        int16_t movementHeatExponent =
+            (int8_t) UnitMovementHeatExponent[unitIndex];
 
         REVENGE_PRESERVATION_TRACE(
             "tactical: command unit=%u damage=%u movement=%d raw=%02X order=%u target=%d\n",
             unitIndex, damageModel, movementHeatExponent,
             UnitMovementHeatExponent[unitIndex],
             UnitTacticalOrderMode[unitIndex],
-            (int16) UnitAttackTarget[unitIndex]);
+            (int16_t) UnitAttackTarget[unitIndex]);
 
         RedrawTacticalStatusPanel();
         HideMouseCursorOverlay();
@@ -108,7 +108,7 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
         }
         else if (attackTarget < TACTICAL_TARGET_MAP_CELL)
         {
-            word16 targetType =
+            uint16_t targetType =
                 PersistentUnitRoster[attackTarget].unitTypeId;
             strncpy(
                 (char *) SharedNumericTextBuffer,
@@ -154,7 +154,7 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
         RenderFormattedText(DoneText);
         ShowMouseCursorOverlay();
 
-        selectedOption = (word16) RunOptionsMenuSelection(0x01);
+        selectedOption = (uint16_t) RunOptionsMenuSelection(0x01);
         HideMouseCursorOverlay();
         switch (selectedOption)
         {
@@ -257,10 +257,10 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
 
         if (ValidatePrimaryLanceLeader(unitIndex) != FALSE)
         {
-            word16 preserveFollowers = unitIndex == 0x00 ? FirstLanceOrdersEnabled : 0x01;
+            uint16_t preserveFollowers = unitIndex == 0x00 ? FirstLanceOrdersEnabled : 0x01;
             if (preserveFollowers == FALSE && unitIndex == 0x00)
             {
-                word16 followerIndex;
+                uint16_t followerIndex;
                 for (followerIndex = 0x01; followerIndex < 0x04;
                     ++followerIndex)
                 {
@@ -277,8 +277,8 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
             }
             else
             {
-                word16 followerIndex;
-                word16 lanceEnd = (unitIndex + 0x04) & 0x00FC;
+                uint16_t followerIndex;
+                uint16_t lanceEnd = (unitIndex + 0x04) & 0x00FC;
                 for (followerIndex = unitIndex + 0x01;
                     followerIndex < lanceEnd; ++followerIndex)
                 {
@@ -326,8 +326,8 @@ void RunTacticalUnitCommandMenu(word16 unitIndex)
 // options panel, not the DropShip-control abstraction retained in Rejected.
 void RunTacticalGameOptionsMenu(void)
 {
-    word16 exitMenu = FALSE;
-    word16 unitIndex;
+    uint16_t exitMenu = FALSE;
+    uint16_t unitIndex;
 
     TacticalInteractionLocked = 0x01;
     TacticalMenuInputState = 0x00;
@@ -341,7 +341,7 @@ void RunTacticalGameOptionsMenu(void)
 
     while (exitMenu == FALSE)
     {
-        int16 selectedOption;
+        int16_t selectedOption;
 
         RedrawTacticalStatusPanel();
         HideMouseCursorOverlay();

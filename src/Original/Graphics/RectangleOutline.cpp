@@ -10,7 +10,7 @@
 // Called from:
 //      DrawUnitStatusScreen
 void DrawClippedRectangleOutline(
-    int16 left, int16 top, int16 right, int16 bottom, uint16 color)
+    int16_t left, int16_t top, int16_t right, int16_t bottom, uint16_t color)
 {
     if (left < VIDEO_SCREEN_MIN_X)
         left = VIDEO_SCREEN_MIN_X;

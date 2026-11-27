@@ -4,14 +4,14 @@
 #include "REVENGE.h"
 
 // 34C6:0008: int16 RandomInRangeInclusive(uint16 minimum, uint16 maximum)
-int16 RandomInRangeInclusive(uint16 minimum, uint16 maximum)
+int16_t RandomInRangeInclusive(uint16_t minimum, uint16_t maximum)
 {
-    int16 range;
-    int16 randomValue;
-    int16 remainder;
+    int16_t range;
+    int16_t randomValue;
+    int16_t remainder;
 
-    range = (int16) (maximum - minimum + 0x01);
-    randomValue = (int16) GeneratePseudoRandomByte();
+    range = (int16_t) (maximum - minimum + 0x01);
+    randomValue = (int16_t) GeneratePseudoRandomByte();
     remainder = randomValue % range;
-    return (int16) (remainder + (int16) minimum);
+    return (int16_t) (remainder + (int16_t) minimum);
 }

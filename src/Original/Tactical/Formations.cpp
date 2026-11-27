@@ -9,13 +9,13 @@
 // Called from:
 //      ApplyWeaponDamage
 //      DestroyScenarioUnit
-word16 IsCurrentLanceLeader(word16 unitIndex)
+uint16_t IsCurrentLanceLeader(uint16_t unitIndex)
 {
     // Test whether this unit is the first deployed, mobile member of its lance;
     // primary-lance formation state 01h also identifies the current leader.
-    word16 isCurrentLeader = 0x00;
-    word16 lanceBaseUnitIndex = unitIndex & 0x00FC;
-    word16 lanceEndUnitIndex = (unitIndex + 0x04) & 0x00FC;
+    uint16_t isCurrentLeader = 0x00;
+    uint16_t lanceBaseUnitIndex = unitIndex & 0x00FC;
+    uint16_t lanceEndUnitIndex = (unitIndex + 0x04) & 0x00FC;
 
     if (unitIndex < 0x04 &&
         UnitLanceFormationState[unitIndex] == 0x01)
@@ -23,7 +23,7 @@ word16 IsCurrentLanceLeader(word16 unitIndex)
         isCurrentLeader = 0x01;
     }
 
-    word16 candidateUnitIndex;
+    uint16_t candidateUnitIndex;
     for (candidateUnitIndex = lanceBaseUnitIndex;
         candidateUnitIndex < lanceEndUnitIndex;
         ++candidateUnitIndex)
@@ -46,19 +46,19 @@ word16 IsCurrentLanceLeader(word16 unitIndex)
 
 // 2208:1CCC: int16 UpdateUnitEnemyVisibility(word16 unitIndex)
 // Called once per unit by RunTacticalInteractionLoop.
-int16 UpdateUnitEnemyVisibility(word16 unitIndex)
+int16_t UpdateUnitEnemyVisibility(uint16_t unitIndex)
 {
     RevengeUnitRecord *unitRecord;
     RevengeUnitRecord *candidateRecord;
     RevengeUnitRecord *speakerRecord;
-    word16 opposingBase;
-    int16 opposingOffset;
-    word16 candidateIndex;
-    word16 hasVisibleEnemy;
-    word16 visibleEnemyIndex;
-    word16 narrationSubject;
-    int16 hadContact;
-    int16 orderMode;
+    uint16_t opposingBase;
+    int16_t opposingOffset;
+    uint16_t candidateIndex;
+    uint16_t hasVisibleEnemy;
+    uint16_t visibleEnemyIndex;
+    uint16_t narrationSubject;
+    int16_t hadContact;
+    int16_t orderMode;
 
     // Verified against 2208:1CCC-1E42.
     UnitEnemyVisible[unitIndex] = FALSE;
@@ -69,13 +69,13 @@ int16 UpdateUnitEnemyVisibility(word16 unitIndex)
     unitRecord = &PersistentUnitRoster[unitIndex];
     if (unitRecord->deploymentState != 0x00)
     {
-        if ((int16) unitIndex < TACTICAL_FORCE_UNIT_COUNT)
+        if ((int16_t) unitIndex < TACTICAL_FORCE_UNIT_COUNT)
             opposingBase = TACTICAL_FORCE_UNIT_COUNT;
         for (opposingOffset = TACTICAL_FORCE_LAST_UNIT_OFFSET;
             opposingOffset >= 0x00;
             --opposingOffset)
         {
-            candidateIndex = (word16) (opposingBase + opposingOffset);
+            candidateIndex = (uint16_t) (opposingBase + opposingOffset);
             candidateRecord = &PersistentUnitRoster[candidateIndex];
             if (candidateRecord->deploymentState != 0x00 &&
                 HasUnitLineOfSight(unitIndex, candidateIndex) != FALSE)
@@ -93,7 +93,7 @@ int16 UpdateUnitEnemyVisibility(word16 unitIndex)
     // narration categories according to the contacted unit's order mode.
     if (hasVisibleEnemy != FALSE &&
         hadContact == FALSE &&
-        (int16) unitIndex >= TACTICAL_FORCE_UNIT_COUNT)
+        (int16_t) unitIndex >= TACTICAL_FORCE_UNIT_COUNT)
     {
         PendingNarrationDelay = NARRATION_DELAY_MS;
         NarrationEmphasis = TRUE;
@@ -118,8 +118,8 @@ int16 UpdateUnitEnemyVisibility(word16 unitIndex)
         NarrationSourceUnit = unitIndex;
 
         narrationSubject = visibleEnemyIndex;
-        if ((int16) narrationSubject >= NARRATION_LEADER_SUBSTITUTION_FIRST_UNIT &&
-            (int16) narrationSubject < TACTICAL_FORCE_UNIT_COUNT &&
+        if ((int16_t) narrationSubject >= NARRATION_LEADER_SUBSTITUTION_FIRST_UNIT &&
+            (int16_t) narrationSubject < TACTICAL_FORCE_UNIT_COUNT &&
             IsCurrentLanceLeader(narrationSubject) == FALSE)
         {
             narrationSubject = FindOperationalLanceLeader(narrationSubject);
@@ -157,21 +157,21 @@ int16 UpdateUnitEnemyVisibility(word16 unitIndex)
 // Once contact has been established, test whether any deployed opposing unit
 // is closer than the 14h/0Ah/00h range indexed by that opposing record's
 // zero/one/two sensor hits at +89h.
-int16 UpdateUnitEnemyProximityState(word16 unitIndex)
+int16_t UpdateUnitEnemyProximityState(uint16_t unitIndex)
 {
     RevengeUnitRecord *candidateRecord;
-    word16 opposingBase;
-    word16 opposingOffset;
-    word16 candidateIndex;
-    int16 separation;
-    int16 proximityRange;
-    int16 result;
+    uint16_t opposingBase;
+    uint16_t opposingOffset;
+    uint16_t candidateIndex;
+    int16_t separation;
+    int16_t proximityRange;
+    int16_t result;
 
     // Verified against 2208:1E43-1F0B.
     UnitEnemyInProximityRange[unitIndex] = FALSE;
     result = FALSE;
     opposingBase = TACTICAL_FORCE_FIRST_UNIT_OFFSET;
-    if ((int16) unitIndex < TACTICAL_FORCE_UNIT_COUNT)
+    if ((int16_t) unitIndex < TACTICAL_FORCE_UNIT_COUNT)
         opposingBase = TACTICAL_FORCE_UNIT_COUNT;
 
     if (UnitEnemyContactEstablished[unitIndex] == FALSE)
@@ -181,12 +181,12 @@ int16 UpdateUnitEnemyProximityState(word16 unitIndex)
         opposingOffset < TACTICAL_FORCE_UNIT_COUNT;
         ++opposingOffset)
     {
-        candidateIndex = (word16) (opposingBase + opposingOffset);
+        candidateIndex = (uint16_t) (opposingBase + opposingOffset);
         candidateRecord = &PersistentUnitRoster[candidateIndex];
         if (candidateRecord->deploymentState == 0x00)
             continue;
 
-        separation = (int16) CalculateApproximateMapDistance(
+        separation = (int16_t) CalculateApproximateMapDistance(
             ScenarioUnitMapX[candidateIndex],
             ScenarioUnitMapY[candidateIndex],
             ScenarioUnitMapX[unitIndex],
@@ -209,12 +209,12 @@ int16 UpdateUnitEnemyProximityState(word16 unitIndex)
 // 2208:18A1: void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
 // Called from:
 //      DestroyScenarioUnit
-void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
+void RebuildLanceFormationAfterLeaderLoss(uint16_t lanceBaseUnitIndex)
 {
     // Verified against 2208:18A1-1B32: select the surviving mobile lance leader,
     // copy its tactical order state to active followers, and rebuild follower
     // route points from FormationOffsetTable.
-    word16 leaderUnitIndex = FindOperationalLanceLeader(lanceBaseUnitIndex);
+    uint16_t leaderUnitIndex = FindOperationalLanceLeader(lanceBaseUnitIndex);
     /* ASM compares only with 00FFh. FindOperationalLanceLeader returns
 	 * FFFFh for an empty lance, after which 16-bit DGROUP indexing wraps at
 	 * each subsequent array access. Separate host C arrays cannot reproduce
@@ -223,24 +223,24 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
     if (leaderUnitIndex == 0x00FF || leaderUnitIndex == 0xFFFF)
         return;
 
-    int16 greatestActiveOrderValue = 0x00;
-    word16 lanceOffset;
+    int16_t greatestActiveOrderValue = 0x00;
+    uint16_t lanceOffset;
     for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
     {
-        word16 unitIndex = lanceBaseUnitIndex + lanceOffset;
+        uint16_t unitIndex = lanceBaseUnitIndex + lanceOffset;
         if (UnitWasAttackedThisTick[unitIndex] != 0x00 &&
-            (int16) UnitConsecutiveAttackTicks[unitIndex] >
+            (int16_t) UnitConsecutiveAttackTicks[unitIndex] >
                 greatestActiveOrderValue)
         {
             greatestActiveOrderValue =
-                (int16) UnitConsecutiveAttackTicks[unitIndex];
+                (int16_t) UnitConsecutiveAttackTicks[unitIndex];
         }
     }
 
     if (greatestActiveOrderValue > 0x03)
     {
-        int16 linkedUnitIndex = UnitTacticalTarget[leaderUnitIndex];
-        int16 linkedUnitDistance = (int16) CalculateApproximateMapDistance(
+        int16_t linkedUnitIndex = UnitTacticalTarget[leaderUnitIndex];
+        int16_t linkedUnitDistance = (int16_t) CalculateApproximateMapDistance(
             ScenarioUnitMapX[leaderUnitIndex],
             ScenarioUnitMapY[leaderUnitIndex],
             ScenarioUnitMapX[linkedUnitIndex],
@@ -251,14 +251,14 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
         {
             for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
             {
-                word16 unitIndex = lanceBaseUnitIndex + lanceOffset;
+                uint16_t unitIndex = lanceBaseUnitIndex + lanceOffset;
                 if (unitIndex != leaderUnitIndex)
                     UnitLanceFormationState[unitIndex] = 0x02;
             }
         }
     }
 
-    word16 facingBand = ScenarioUnitFacing[leaderUnitIndex];
+    uint16_t facingBand = ScenarioUnitFacing[leaderUnitIndex];
     if (facingBand >= 0x01 && facingBand <= 0x03)
         facingBand = 0x0A;
     else if (facingBand == 0x04)
@@ -266,12 +266,12 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
     else if (facingBand > 0x04)
         facingBand = 0x1E;
 
-    word16 leaderFormationMode = UnitFormationMode[leaderUnitIndex] & 0x007F;
-    word16 formationIndex = facingBand + leaderFormationMode;
-    word16 formationSlot = 0x00;
+    uint16_t leaderFormationMode = UnitFormationMode[leaderUnitIndex] & 0x007F;
+    uint16_t formationIndex = facingBand + leaderFormationMode;
+    uint16_t formationSlot = 0x00;
     for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
     {
-        word16 followerUnitIndex = lanceBaseUnitIndex + lanceOffset;
+        uint16_t followerUnitIndex = lanceBaseUnitIndex + lanceOffset;
         if (followerUnitIndex == leaderUnitIndex ||
             UnitLanceFormationState[followerUnitIndex] != 0x00)
         {
@@ -299,10 +299,10 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
             ScenarioUnitMapY[leaderUnitIndex] ==
                 UnitRouteTargetMapY[leaderUnitIndex])
         {
-            int16 xOffset = FormationOffsetTable[REVENGE_INDEX(
+            int16_t xOffset = FormationOffsetTable[REVENGE_INDEX(
                 FormationOffsetTable,
                 formationIndex * 0x06 + formationSlot)];
-            int16 yOffset = FormationOffsetTable[REVENGE_INDEX(
+            int16_t yOffset = FormationOffsetTable[REVENGE_INDEX(
                 FormationOffsetTable,
                 formationIndex * 0x06 + formationSlot + 0x03)];
             if (leaderFormationMode != 0x01 && leaderFormationMode != 0x08)
@@ -311,8 +311,8 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
                 yOffset *= 0x03;
             }
 
-            int16 followerX = ScenarioUnitMapX[leaderUnitIndex] + xOffset;
-            int16 followerY = ScenarioUnitMapY[leaderUnitIndex] + yOffset;
+            int16_t followerX = ScenarioUnitMapX[leaderUnitIndex] + xOffset;
+            int16_t followerY = ScenarioUnitMapY[leaderUnitIndex] + yOffset;
             if (followerX < 0x00)
                 followerX = 0x00;
             else if (followerX >= MapWidth)
@@ -322,8 +322,8 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
             else if (followerY >= MapHeight)
                 followerY = MapHeight - 0x01;
 
-            UnitRouteTargetMapX[followerUnitIndex] = (byte) followerX;
-            UnitRouteTargetMapY[followerUnitIndex] = (byte) followerY;
+            UnitRouteTargetMapX[followerUnitIndex] = (uint8_t) followerX;
+            UnitRouteTargetMapY[followerUnitIndex] = (uint8_t) followerY;
         }
 
         ++formationSlot;
@@ -339,17 +339,17 @@ void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
 // Verified against 2208:1B33-1CCB. Lance profile values are constrained by the
 // game to 00h-03h; the original leaves its table pointer undefined otherwise.
 void SelectLanceFormationMode(
-    word16 leaderUnitIndex,
-    word16 randomizeFormation)
+    uint16_t leaderUnitIndex,
+    uint16_t randomizeFormation)
 {
-    word16 lanceEndUnitIndex = (leaderUnitIndex + 0x04) & 0x00FC;
-    word16 deployedUnitCount = 0x01;
-    word16 followerUnitIndex;
-    word16 maximumFormationId;
+    uint16_t lanceEndUnitIndex = (leaderUnitIndex + 0x04) & 0x00FC;
+    uint16_t deployedUnitCount = 0x01;
+    uint16_t followerUnitIndex;
+    uint16_t maximumFormationId;
     RevengeUnitRecord *leaderRecord;
-    byte lanceProfile;
-    int16 formationCandidate;
-    const byte *formationTable;
+    uint8_t lanceProfile;
+    int16_t formationCandidate;
+    const uint8_t *formationTable;
 
     for (followerUnitIndex = leaderUnitIndex + 0x01;
         followerUnitIndex < lanceEndUnitIndex;
@@ -413,7 +413,7 @@ void SelectLanceFormationMode(
 
     for (; formationCandidate >= 0x00; --formationCandidate)
     {
-        byte formationId = formationTable[formationCandidate];
+        uint8_t formationId = formationTable[formationCandidate];
         if (formationId <= maximumFormationId)
         {
             UnitFormationMode[leaderUnitIndex] = formationId;
@@ -424,15 +424,15 @@ void SelectLanceFormationMode(
 
 // 2208:26B1: compare the five aggregate combat-rating fields of two lances.
 // Verified against 2208:26B1-2828.
-int16 CompareLanceCombatRatings(
-    word16 firstUnitIndex,
-    int16 secondUnitIndex)
+int16_t CompareLanceCombatRatings(
+    uint16_t firstUnitIndex,
+    int16_t secondUnitIndex)
 {
-    int16 *firstTotals = (int16 *) &DisplayedUnitCombatRatings;
-    int16 *secondTotals = (int16 *) &ComparedUnitCombatRatings;
-    int16 comparisonScore = 0x00;
-    word16 lanceOffset;
-    word16 ratingIndex;
+    int16_t *firstTotals = (int16_t *) &DisplayedUnitCombatRatings;
+    int16_t *secondTotals = (int16_t *) &ComparedUnitCombatRatings;
+    int16_t comparisonScore = 0x00;
+    uint16_t lanceOffset;
+    uint16_t ratingIndex;
 
     if (secondUnitIndex < 0x00 || secondUnitIndex >= 0x18)
         return 0x00;
@@ -444,14 +444,14 @@ int16 CompareLanceCombatRatings(
 
     for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
     {
-        word16 firstIndex = (firstUnitIndex & 0x00FC) + lanceOffset;
-        word16 secondIndex = ((word16) secondUnitIndex & 0x00FC) + lanceOffset;
+        uint16_t firstIndex = (firstUnitIndex & 0x00FC) + lanceOffset;
+        uint16_t secondIndex = ((uint16_t) secondUnitIndex & 0x00FC) + lanceOffset;
         RevengeUnitRecord *firstUnit = &PersistentUnitRoster[firstIndex];
         RevengeUnitRecord *secondUnit = &PersistentUnitRoster[secondIndex];
 
         if (firstUnit->deploymentState != 0x00)
         {
-            int16 *ratings = (int16 *) &UnitCombatRatings[firstIndex];
+            int16_t *ratings = (int16_t *) &UnitCombatRatings[firstIndex];
             RecalculateUnitCombatRatings(
                 firstUnit,
                 firstIndex, TRUE, FALSE);
@@ -460,7 +460,7 @@ int16 CompareLanceCombatRatings(
         }
         if (secondUnit->deploymentState != 0x00)
         {
-            int16 *ratings = (int16 *) &UnitCombatRatings[secondIndex];
+            int16_t *ratings = (int16_t *) &UnitCombatRatings[secondIndex];
             RecalculateUnitCombatRatings(
                 secondUnit,
                 secondIndex, TRUE, FALSE);
@@ -483,27 +483,27 @@ int16 CompareLanceCombatRatings(
 
 // 2208:2829: advance the low-seven-bit lance formation mode modulo ten and
 // set its high-bit changed/active flag.
-void AdvanceLanceFormation(word16 unitIndex)
+void AdvanceLanceFormation(uint16_t unitIndex)
 {
-    word16 formationMode;
+    uint16_t formationMode;
 
     formationMode =
         (UnitFormationMode[unitIndex] & 0x7F) + 0x01;
     if (formationMode >= 0x0A)
         formationMode = 0x00;
     UnitFormationMode[unitIndex] =
-        (byte) (formationMode | 0x80);
+        (uint8_t) (formationMode | 0x80);
 }
 
 // 2208:28A9: prompt for and apply a tactical movement destination. The
 // selected coordinates are produced by 2208:0EBC in DS:8340/838E.
-word16 SelectTacticalMoveDestination(
-    word16 unitIndex, word16 selectionMode)
+uint16_t SelectTacticalMoveDestination(
+    uint16_t unitIndex, uint16_t selectionMode)
 {
-    word16 selectionAccepted;
-    byte savedRouteX;
-    byte savedRouteY;
-    word16 unitType;
+    uint16_t selectionAccepted;
+    uint8_t savedRouteX;
+    uint8_t savedRouteY;
+    uint16_t unitType;
 
     SceneUnitRoutes[0x00] = SavedTacticalRoute;
     savedRouteX = UnitRouteTargetMapX[0x00];
@@ -536,7 +536,7 @@ word16 SelectTacticalMoveDestination(
     {
         if (unitIndex == 0x00 && FirstLanceOrdersEnabled == 0x00)
         {
-            word16 followerIndex;
+            uint16_t followerIndex;
             for (followerIndex = 0x01; followerIndex < 0x04;
                 ++followerIndex)
             {
@@ -565,7 +565,7 @@ word16 SelectTacticalMoveDestination(
                 NarrationMessageCategory = 0x11;
                 PendingNarrationDelay = NARRATION_DELAY_MS;
             }
-            ScenarioUnitFacing[unitIndex] = (byte)
+            ScenarioUnitFacing[unitIndex] = (uint8_t)
                 DetermineRelativeAttackDirection(
                     ScenarioUnitMapX[unitIndex],
                     ScenarioUnitMapY[unitIndex],
@@ -575,11 +575,11 @@ word16 SelectTacticalMoveDestination(
 
         if (ValidatePrimaryLanceLeader(unitIndex) != FALSE)
         {
-            word16 propagateFormation = unitIndex == 0x00 ? FirstLanceOrdersEnabled : 0x01;
+            uint16_t propagateFormation = unitIndex == 0x00 ? FirstLanceOrdersEnabled : 0x01;
             if (propagateFormation != FALSE)
             {
-                word16 followerIndex;
-                word16 lanceEnd = (unitIndex + 0x04) & 0x00FC;
+                uint16_t followerIndex;
+                uint16_t lanceEnd = (unitIndex + 0x04) & 0x00FC;
                 for (followerIndex = unitIndex + 0x01;
                     followerIndex < lanceEnd; ++followerIndex)
                 {
@@ -602,11 +602,11 @@ word16 SelectTacticalMoveDestination(
 // 2208:2853: test whether a selected leader has another deployed member in
 // the remainder of its four-record lance. The first lance has an additional
 // DS:B5D8 enable gate whose broader owner remains to be traced.
-word16 HasActiveLanceFollowers(word16 unitIndex)
+uint16_t HasActiveLanceFollowers(uint16_t unitIndex)
 {
-    word16 hasActiveFollower = FALSE;
-    word16 candidateUnitIndex;
-    word16 lanceEndUnitIndex;
+    uint16_t hasActiveFollower = FALSE;
+    uint16_t candidateUnitIndex;
+    uint16_t lanceEndUnitIndex;
 
     if (IsCurrentLanceLeader(unitIndex) != FALSE)
     {
@@ -633,10 +633,10 @@ word16 HasActiveLanceFollowers(word16 unitIndex)
 // deployed, mobile member of the player's primary four-unit lance. Unit zero
 // receives the same test when it has lost all walking movement. The original
 // returns the Boolean in AX; Reko's earlier void signature discarded it.
-word16 ValidatePrimaryLanceLeader(word16 unitIndex)
+uint16_t ValidatePrimaryLanceLeader(uint16_t unitIndex)
 {
-    word16 isValidLeader = IsCurrentLanceLeader(unitIndex);
-    word16 candidateUnitIndex;
+    uint16_t isValidLeader = IsCurrentLanceLeader(unitIndex);
+    uint16_t candidateUnitIndex;
 
     if (isValidLeader != FALSE && unitIndex > 0x00 && unitIndex < 0x04)
     {

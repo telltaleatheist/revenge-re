@@ -8,7 +8,7 @@
 // Select one of the 23 persistent text-window contexts. The geometry is fixed
 // in the context table; the four mutable drawing fields are saved whenever the
 // caller changes windows, then restored with the selected window.
-void SelectTextWindow(word16 windowIndex)
+void SelectTextWindow(uint16_t windowIndex)
 {
     TextWindowContext *previous;
     TextWindowContext *selected;

@@ -6,5 +6,5 @@
 
 SceneFileBuffer LoadedSceneFile;
 SceneUnitRoute SceneUnitRoutes[SCENE_ROUTE_COUNT];
-word16 SceneInstructionBaseOffset;
-byte *SceneInstructionCursor;
+uint16_t SceneInstructionBaseOffset;
+uint8_t *SceneInstructionCursor;

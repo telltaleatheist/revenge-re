@@ -9,28 +9,28 @@
 
 /* DS:05AA and DS:05BA, the story's media, placed at start
  * (original_import_pieces.txt). */
-byte CompressedTextFirstByteTable[0x10];
-byte CompressedTextSecondByteTable[0x80];
-word16 CgaNarrowStrideMode;
-word16 UiSelectionResetFlagA;
-word16 UiSelectionResetFlagB;
-word16 ActiveTextWindowLeftTile;
-word16 ActiveTextWindowTopTile;
+uint8_t CompressedTextFirstByteTable[0x10];
+uint8_t CompressedTextSecondByteTable[0x80];
+uint16_t CgaNarrowStrideMode;
+uint16_t UiSelectionResetFlagA;
+uint16_t UiSelectionResetFlagB;
+uint16_t ActiveTextWindowLeftTile;
+uint16_t ActiveTextWindowTopTile;
 /* Filled at start from data/ui/windows.json (revenge/rules.h). */
 TextWindowContext TextWindowContexts[ORIGINAL_TEXT_WINDOW_COUNT];
-word16 ActiveTextWindowIndex;
-word16 ActiveTextWindowWidthTiles;
-word16 ActiveTextWindowHeightTiles;
-word16 ActiveTextForegroundColor;
-word16 ActiveTextBackgroundColor;
-word16 ActiveTextCursorColumn;
-word16 ActiveTextCursorRow;
-word16 TextWindowStateInitialized;
+uint16_t ActiveTextWindowIndex;
+uint16_t ActiveTextWindowWidthTiles;
+uint16_t ActiveTextWindowHeightTiles;
+uint16_t ActiveTextForegroundColor;
+uint16_t ActiveTextBackgroundColor;
+uint16_t ActiveTextCursorColumn;
+uint16_t ActiveTextCursorRow;
+uint16_t TextWindowStateInitialized;
 /* Filled at start from data/ui/windows.json (revenge/rules.h). */
-word16 UiNavigationUpKey;
-word16 UiNavigationDownKey;
-word16 UiPreviousRegionKey;
-word16 UiNextRegionKey;
+uint16_t UiNavigationUpKey;
+uint16_t UiNavigationDownKey;
+uint16_t UiPreviousRegionKey;
+uint16_t UiNextRegionKey;
 OriginalUiRegionRecord UiRegionTable[ORIGINAL_UI_REGION_COUNT];
 PITCalibrationState PITCalibration;
-word16 VerticalRetraceEdgeMode = 0x0001;
+uint16_t VerticalRetraceEdgeMode = 0x0001;

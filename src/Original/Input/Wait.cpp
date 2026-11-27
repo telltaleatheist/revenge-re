@@ -8,7 +8,7 @@
 // 0D73:3C7C: word16 FlushInputAndWait(word16 timeoutRetraces)
 // Called from:
 //      PresentScreenAndMessage
-word16 FlushInputAndWait(word16 timeoutRetraces)
+uint16_t FlushInputAndWait(uint16_t timeoutRetraces)
 {
     FlushPendingInput();
     return WaitForDismissInputOrTimeout(timeoutRetraces);

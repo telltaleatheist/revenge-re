@@ -23,14 +23,14 @@
 #define TacticalStatusHeaderSpriteId   PrimaryLanceResourceCode
 
 void ApplyTerrainImpact(
-    int16 mapX, int16 mapY,
-    word16 advanceBeforeRecording, word16 forceAnimationRecord);
+    int16_t mapX, int16_t mapY,
+    uint16_t advanceBeforeRecording, uint16_t forceAnimationRecord);
 void ApplyAreaTerrainAndUnitDamage(
-    int16 mapX, int16 mapY, word16 visualEffectType, int16 weaponIndex);
+    int16_t mapX, int16_t mapY, uint16_t visualEffectType, int16_t weaponIndex);
 void ApplyWeaponDamage(
-    int16 attackerUnitIndex, int16 weaponIndex, int16 targetUnitIndex);
-word16 AdvanceTerrainDamageState(
-    int16 mapX, int16 mapY, word16 requestedDamageState);
+    int16_t attackerUnitIndex, int16_t weaponIndex, int16_t targetUnitIndex);
+uint16_t AdvanceTerrainDamageState(
+    int16_t mapX, int16_t mapY, uint16_t requestedDamageState);
 // 2007:1AE3 advances and removes the four-word map-edge effect records at
 // DS:A800, occasionally emitting secondary impact visuals along their path.
 void AdvanceMapEdgeEffects(void);
@@ -42,46 +42,46 @@ void ClearTacticalEffectOverlayMap(void);
 // target cells, applies damage on arrival, queues an impact and compacts them.
 void AdvanceTacticalProjectiles(void);
 void QueueTacticalImpactVisual(
-    int16 mapX, int16 mapY, word16 impactClass);
-uint16 DetermineRelativeAttackDirection(
-    int16 sourceX, int16 sourceY, int16 targetX, int16 targetY);
-word16 GeneratePseudoRandomByte(void);
-word16 DetermineOctant(int16 deltaY, int16 deltaX);
+    int16_t mapX, int16_t mapY, uint16_t impactClass);
+uint16_t DetermineRelativeAttackDirection(
+    int16_t sourceX, int16_t sourceY, int16_t targetX, int16_t targetY);
+uint16_t GeneratePseudoRandomByte(void);
+uint16_t DetermineOctant(int16_t deltaY, int16_t deltaX);
 void DrawClippedAxisAlignedLine(
-    int16 x1, int16 y1, int16 x2, int16 y2, word16 color);
-void DrawClippedPixel(int16 x, int16 y, word16 color);
+    int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
+void DrawClippedPixel(int16_t x, int16_t y, uint16_t color);
 void DrawTacticalClippedSprite(
-    byte *renderTarget,
-    const byte *encodedSprite,
-    int16 relativeX,
-    int16 relativeY,
-    word16 textWindowIndex);
+    uint8_t *renderTarget,
+    const uint8_t *encodedSprite,
+    int16_t relativeX,
+    int16_t relativeY,
+    uint16_t textWindowIndex);
 void DrawTacticalTileSprite(
-    const byte *spritePage, word16 spriteId,
-    word16 destinationX, word16 destinationY);
+    const uint8_t *spritePage, uint16_t spriteId,
+    uint16_t destinationX, uint16_t destinationY);
 void DrawCompositeTacticalTile(
-    word16 firstSpriteId, word16 secondSpriteId,
-    const byte *spritePage,
-    word16 destinationX, word16 destinationY);
+    uint16_t firstSpriteId, uint16_t secondSpriteId,
+    const uint8_t *spritePage,
+    uint16_t destinationX, uint16_t destinationY);
 void BuildTacticalTerrainCellMaps(
-    const byte *terrainTypeMap,
-    word16 *tacticalCellSpriteMap,
-    word16 viewportX,
-    word16 viewportY);
+    const uint8_t *terrainTypeMap,
+    uint16_t *tacticalCellSpriteMap,
+    uint16_t viewportX,
+    uint16_t viewportY);
 void DrawTacticalTileSpriteForAdapter(
-    const byte *spritePage,
-    word16 spriteId,
-    word16 destinationX,
-    word16 destinationY);
+    const uint8_t *spritePage,
+    uint16_t spriteId,
+    uint16_t destinationX,
+    uint16_t destinationY);
 void DrawSelectedUnitStatusPanel(void);
 void RedrawTacticalViewport(void);
 void DrawCampaignClock(void);
-void FormatUnitDurabilityPercentage(int16 unitIndex);
+void FormatUnitDurabilityPercentage(int16_t unitIndex);
 void DrawCampaignClockSeparator(void);
-int16 MapUnitToTacticalStatusSlot(word16 unitIndex);
-word16 IsCurrentLanceLeader(word16 unitIndex);
-void PlayScenarioDigitalSoundSequence(int8 scenarioCode);
-void DispatchWeaponEffect(int16 weaponEffectId);
+int16_t MapUnitToTacticalStatusSlot(uint16_t unitIndex);
+uint16_t IsCurrentLanceLeader(uint16_t unitIndex);
+void PlayScenarioDigitalSoundSequence(int8_t scenarioCode);
+void DispatchWeaponEffect(int16_t weaponEffectId);
 void RefreshTacticalOverview(void);
 
 /* 2007:0328 is reconstructed in Tactical/Display.cpp. */
@@ -93,22 +93,22 @@ void RefreshTacticalOverview(void);
 // to adjacent cells or expire. The queue stores word pairs: packed damage-map
 // byte index followed by the two-bit subcell index.
 // Verified against 2007:042A-064F.
-void AdvanceTerrainEffects(word16 advanceEffects)
+void AdvanceTerrainEffects(uint16_t advanceEffects)
 {
     if (advanceEffects != FALSE)
     {
-        int16 queueEntryIndex;
+        int16_t queueEntryIndex;
         for (queueEntryIndex = 0x00;
-            queueEntryIndex < (int16) (TerrainDamageQueueWordCount >> 0x01);
+            queueEntryIndex < (int16_t) (TerrainDamageQueueWordCount >> 0x01);
             ++queueEntryIndex)
         {
             RevengeTerrainDamageQueueEntry *entry =
                 &TerrainDamageQueue[queueEntryIndex];
-            word16 packedByteIndex = entry->packedByteIndex;
-            word16 subcellIndex = entry->subcellIndex;
-            byte occupiedMask = TerrainDamageCellOccupiedMask[subcellIndex];
-            byte increment = TerrainDamageStageIncrement[subcellIndex];
-            byte *packedDamageByte =
+            uint16_t packedByteIndex = entry->packedByteIndex;
+            uint16_t subcellIndex = entry->subcellIndex;
+            uint8_t occupiedMask = TerrainDamageCellOccupiedMask[subcellIndex];
+            uint8_t increment = TerrainDamageStageIncrement[subcellIndex];
+            uint8_t *packedDamageByte =
                 &PackedTerrainDamageMap[packedByteIndex];
 
             if ((*packedDamageByte & occupiedMask) != occupiedMask)
@@ -120,10 +120,10 @@ void AdvanceTerrainEffects(word16 advanceEffects)
             // The queued cell reached its terminal staged value. Toggle the
             // occupied bits and remove this word pair without leaving a gap.
             *packedDamageByte ^= occupiedMask;
-            int16 sourceEntryIndex;
+            int16_t sourceEntryIndex;
             for (sourceEntryIndex = queueEntryIndex + 0x01;
                 sourceEntryIndex <
-                (int16) (TerrainDamageQueueWordCount >> 0x01);
+                (int16_t) (TerrainDamageQueueWordCount >> 0x01);
                 ++sourceEntryIndex)
             {
                 TerrainDamageQueue[sourceEntryIndex - 0x01] =
@@ -141,12 +141,12 @@ void AdvanceTerrainEffects(word16 advanceEffects)
     {
         RevengeTerrainImpactAnimationRecord *records =
             TerrainImpactAnimationRecords;
-        word16 recordIndex;
+        uint16_t recordIndex;
         for (recordIndex = 0x00; recordIndex < 0x5A; ++recordIndex)
         {
             RevengeTerrainImpactAnimationRecord *record =
                 &records[recordIndex];
-            word16 randomDirection;
+            uint16_t randomDirection;
             if (record->mapX == -0x01)
                 continue;
 
@@ -188,13 +188,13 @@ void AdvanceTerrainEffects(word16 advanceEffects)
 //     int16 mapX, int16 mapY, word16 impactClass)
 // Verified against 2007:0846-08D4 and all executable call sites.
 void QueueTacticalImpactVisual(
-    int16 mapX,
-    int16 mapY,
-    word16 impactClass)
+    int16_t mapX,
+    int16_t mapY,
+    uint16_t impactClass)
 {
-    word16 impactSpriteId;
-    word16 soundEffectId;
-    word16 queueIndex = TacticalImpactQueueCount;
+    uint16_t impactSpriteId;
+    uint16_t soundEffectId;
+    uint16_t queueIndex = TacticalImpactQueueCount;
     RevengeTacticalImpactRecord *record;
 
     if (queueIndex >= 0x50)
@@ -233,12 +233,12 @@ void QueueTacticalImpactVisual(
 // 2007:08D5: void QueueMapEdgeEffect(
 //     short mapX, short mapY, word16 baseSpriteId, word16 edgeDirection)
 void QueueMapEdgeEffect(
-    int16 mapX,
-    int16 mapY,
-    word16 baseSpriteId,
-    word16 edgeDirection)
+    int16_t mapX,
+    int16_t mapY,
+    uint16_t baseSpriteId,
+    uint16_t edgeDirection)
 {
-    word16 queueCount = MapEdgeEffectCount;
+    uint16_t queueCount = MapEdgeEffectCount;
     if (queueCount >= 0x03)
         return;
 
@@ -255,20 +255,20 @@ void QueueMapEdgeEffect(
 //     short mapX, short mapY, word16 visualEffectType, short weaponIndex)
 // Verified against 2007:0CFB-0D8F.
 void ApplyAreaTerrainAndUnitDamage(
-    int16 mapX,
-    int16 mapY,
-    word16 visualEffectType,
-    int16 weaponIndex)
+    int16_t mapX,
+    int16_t mapY,
+    uint16_t visualEffectType,
+    int16_t weaponIndex)
 {
-    word16 impactMapX = (word16) mapX;
-    word16 impactMapY = (word16) mapY;
-    word16 adjacentMapX = impactMapX + 0x01;
-    word16 adjacentMapY = impactMapY + 0x01;
+    uint16_t impactMapX = (uint16_t) mapX;
+    uint16_t impactMapY = (uint16_t) mapY;
+    uint16_t adjacentMapX = impactMapX + 0x01;
+    uint16_t adjacentMapY = impactMapY + 0x01;
 
     QueueTacticalImpactVisual(mapX, mapY, visualEffectType);
     AdvanceTerrainDamageState(mapX, mapY, 0x03);
 
-    word16 unitIndex;
+    uint16_t unitIndex;
     for (unitIndex = 0x00; unitIndex < 0x18; ++unitIndex)
     {
         RevengeUnitRecord *unitRecord =
@@ -276,8 +276,8 @@ void ApplyAreaTerrainAndUnitDamage(
         if (unitRecord->deploymentState == 0x00)
             continue;
 
-        word16 unitX = ScenarioUnitMapX[unitIndex];
-        word16 unitY = ScenarioUnitMapY[unitIndex];
+        uint16_t unitX = ScenarioUnitMapX[unitIndex];
+        uint16_t unitY = ScenarioUnitMapY[unitIndex];
         if ((unitX == impactMapX || unitX == adjacentMapX) &&
             (unitY == impactMapY || unitY == adjacentMapY))
         {
@@ -290,22 +290,22 @@ void ApplyAreaTerrainAndUnitDamage(
 
 // 2007:1D61: format the selected unit's remaining durability percentage in
 // the shared text buffer. Opposing units deliberately expose only 10% steps.
-void FormatUnitDurabilityPercentage(int16 unitIndex)
+void FormatUnitDurabilityPercentage(int16_t unitIndex)
 {
     RevengeUnitRecord *unitRecord =
         &PersistentUnitRoster[unitIndex];
-    word16 percentage;
+    uint16_t percentage;
 
     CalculateUnitDurabilityTotals(unitRecord);
     if (unitIndex >= 0x0C)
     {
-        percentage = (word16) (((uint32) CurrentUnitDurabilityTotal * 0x0A) /
+        percentage = (uint16_t) (((uint32_t) CurrentUnitDurabilityTotal * 0x0A) /
                          MaximumUnitDurabilityTotal) *
             0x0A;
     }
     else
     {
-        percentage = (word16) (((uint32) CurrentUnitDurabilityTotal * 0x64) /
+        percentage = (uint16_t) (((uint32_t) CurrentUnitDurabilityTotal * 0x64) /
             MaximumUnitDurabilityTotal);
     }
 
@@ -321,7 +321,7 @@ void FormatUnitDurabilityPercentage(int16 unitIndex)
 // 2007:1DCC: void DrawCampaignClockSeparator(void)
 void DrawCampaignClockSeparator(void)
 {
-    byte separatorColor = (LOW_WORD(GameAnimationTicks) & 0x10) != 0x00 ? 0x0F : 0x0C;
+    uint8_t separatorColor = (LOW_WORD(GameAnimationTicks) & 0x10) != 0x00 ? 0x0F : 0x0C;
     HideMouseCursorOverlay();
     DrawTileAlignedText(
         CampaignClockSeparatorText,
@@ -337,8 +337,8 @@ void DrawCampaignClockSeparator(void)
 void DrawCampaignClock(void)
 {
     char *clockText;
-    int16 clockValue;
-    word16 firstDigitOffset;
+    int16_t clockValue;
+    uint16_t firstDigitOffset;
 
     if (SuppressCampaignClock != 0x00 ||
         TacticalOverviewActive != 0x00)
@@ -385,16 +385,16 @@ void DrawCampaignClock(void)
 // Called from:
 //      RunMainMenuSelection
 void DrawBeveledMenuButton(
-    word16 textColumn,
-    word16 textRow,
+    uint16_t textColumn,
+    uint16_t textRow,
     const char *text,
-    word16 widthPixels)
+    uint16_t widthPixels)
 {
-    word16 fontHeight = ActiveFontLineHeight;
-    word16 glyphAdvance = ActiveFontGlyphAdvanceX;
-    word16 leftX = (ActiveTextWindowLeftTile << 0x03) +
+    uint16_t fontHeight = ActiveFontLineHeight;
+    uint16_t glyphAdvance = ActiveFontGlyphAdvanceX;
+    uint16_t leftX = (ActiveTextWindowLeftTile << 0x03) +
         textColumn * glyphAdvance;
-    word16 topY = (ActiveTextWindowTopTile << 0x03) +
+    uint16_t topY = (ActiveTextWindowTopTile << 0x03) +
         textRow * fontHeight;
 
     // Verified against 2007:132C-14DE.
@@ -423,27 +423,27 @@ void DrawBeveledMenuButton(
 }
 
 // 2007:0A4D: uint16 DetermineOctant(int16 deltaY, int16 deltaX)
-uint16 DetermineOctant(int16 deltaY, int16 deltaX)
+uint16_t DetermineOctant(int16_t deltaY, int16_t deltaX)
 {
-    int16 negativeX;
-    int16 negativeY;
+    int16_t negativeX;
+    int16_t negativeY;
 
     if (deltaY < 0x00)
     {
         if (deltaX > 0x00)
         {
-            negativeY = (int16) (0x0000u - (uint16) deltaY);
+            negativeY = (int16_t) (0x0000u - (uint16_t) deltaY);
             return negativeY > deltaX ? 0x03 : 0x02;
         }
-        negativeX = (int16) (0x0000u - (uint16) deltaX);
-        negativeY = (int16) (0x0000u - (uint16) deltaY);
+        negativeX = (int16_t) (0x0000u - (uint16_t) deltaX);
+        negativeY = (int16_t) (0x0000u - (uint16_t) deltaY);
         return negativeX > negativeY ? 0x05 : 0x04;
     }
 
     if (deltaX > 0x00)
         return deltaX > deltaY ? 0x01 : 0x00;
 
-    negativeX = (int16) (0x0000u - (uint16) deltaX);
+    negativeX = (int16_t) (0x0000u - (uint16_t) deltaX);
     return negativeX < deltaY ? 0x07 : 0x06;
 }
 
@@ -452,34 +452,34 @@ uint16 DetermineOctant(int16 deltaY, int16 deltaX)
 //     Stack int16 targetX, Stack int16 targetY)
 // Called from:
 //      ResolveWeaponAttack
-uint16 CalculateApproximateMapDistance(
-    int16 sourceX,
-    int16 sourceY,
-    int16 targetX,
-    int16 targetY)
+uint16_t CalculateApproximateMapDistance(
+    int16_t sourceX,
+    int16_t sourceY,
+    int16_t targetX,
+    int16_t targetY)
 {
-    int16 deltaX;
-    int16 deltaY;
-    int16 distance;
+    int16_t deltaX;
+    int16_t deltaY;
+    int16_t distance;
 
-    deltaX = (int16) ((uint16) sourceX - (uint16) targetX);
-    deltaY = (int16) ((uint16) sourceY - (uint16) targetY);
+    deltaX = (int16_t) ((uint16_t) sourceX - (uint16_t) targetX);
+    deltaY = (int16_t) ((uint16_t) sourceY - (uint16_t) targetY);
     if (deltaX < 0x00)
-        deltaX = (int16) (0x0000u - (uint16) deltaX);
+        deltaX = (int16_t) (0x0000u - (uint16_t) deltaX);
     if (deltaY < 0x00)
-        deltaY = (int16) (0x0000u - (uint16) deltaY);
+        deltaY = (int16_t) (0x0000u - (uint16_t) deltaY);
 
     if (deltaX > deltaY)
-        distance = (int16) (deltaX + (deltaY >> 0x01));
+        distance = (int16_t) (deltaX + (deltaY >> 0x01));
     else
-        distance = (int16) (deltaY + (deltaX >> 0x01));
-    return (uint16) distance;
+        distance = (int16_t) (deltaY + (deltaX >> 0x01));
+    return (uint16_t) distance;
 }
 
 /* Host: the game clock's tick at the previous draw, and the ms the
  * narration countdown lost then (NARRATION_DELAY_MS in original_data.h). */
-static uint32 narrationClockTick;
-static word16 narrationLastStepMs;
+static uint32_t narrationClockTick;
+static uint16_t narrationLastStepMs;
 
 // 2007:0E19: resolve the selected or cursor-contact unit, populate tactical
 // text window 6, maintain both status-row highlights, and service the pending
@@ -488,23 +488,23 @@ static word16 narrationLastStepMs;
 // Host: the countdown is battle time in ms, not draws (original_data.h).
 void DrawSelectedUnitStatusPanel(void)
 {
-    word16 narrationStatusRow;
-    word16 displayedStatusRow;
-    word16 selectedUnitIndex;
-    word16 cursorSpriteId = 0x0000;
-    word16 drawUnitDetails;
-    word16 heatScaleIndex;
-    word16 textLength;
-    word16 narrationColor;
-    word16 viewportCellIndex;
-    word16 mapX;
-    word16 mapY;
-    word16 unitIndex;
-    int16 blinkCountdown;
-    byte unitTypeId;
+    uint16_t narrationStatusRow;
+    uint16_t displayedStatusRow;
+    uint16_t selectedUnitIndex;
+    uint16_t cursorSpriteId = 0x0000;
+    uint16_t drawUnitDetails;
+    uint16_t heatScaleIndex;
+    uint16_t textLength;
+    uint16_t narrationColor;
+    uint16_t viewportCellIndex;
+    uint16_t mapX;
+    uint16_t mapY;
+    uint16_t unitIndex;
+    int16_t blinkCountdown;
+    uint8_t unitTypeId;
     RevengeUnitRecord *unitRecord;
     char *statusText;
-    word16 narrationStepMs;
+    uint16_t narrationStepMs;
 
     /* At most one tick a draw: a longer gap is a wait outside the battle
 	 * loop (a message, a menu), when the original drew nothing. */
@@ -520,16 +520,16 @@ void DrawSelectedUnitStatusPanel(void)
     selectedUnitIndex = TacticalSelectedUnitIndex;
     if (selectedUnitIndex == 0xFFFF)
     {
-        viewportCellIndex = (word16) (TacticalCursorViewportY *
+        viewportCellIndex = (uint16_t) (TacticalCursorViewportY *
                 TACTICAL_VIEWPORT_WIDTH_CELLS +
             TacticalCursorViewportX);
         cursorSpriteId =
             TacticalCellSpriteMap[viewportCellIndex];
         if (cursorSpriteId != 0x0000)
         {
-            mapX = (word16) (TacticalViewportMapX +
+            mapX = (uint16_t) (TacticalViewportMapX +
                 TacticalCursorViewportX);
-            mapY = (word16) (TacticalViewportMapY +
+            mapY = (uint16_t) (TacticalViewportMapY +
                 TacticalCursorViewportY);
             for (unitIndex = 0x0000;
                 unitIndex < 0x0018 && selectedUnitIndex == 0xFFFF;
@@ -615,7 +615,7 @@ void DrawSelectedUnitStatusPanel(void)
                 statusText,
                 UnitHeatStatusPrefix);
             heatScaleIndex =
-                (word16) (unitRecord->currentHeat / BATTLEMECH_HEAT_SCALE);
+                (uint16_t) (unitRecord->currentHeat / BATTLEMECH_HEAT_SCALE);
             if (heatScaleIndex > 0x0005)
                 heatScaleIndex = 0x0005;
             if (UnitShutdownState[selectedUnitIndex] != 0x00)
@@ -624,14 +624,14 @@ void DrawSelectedUnitStatusPanel(void)
                 statusText,
                 (const char *) HeatScaleDescriptionTable[heatScaleIndex]);
 
-            textLength = (word16) strlen(statusText);
-            while ((word16) (textLength +
+            textLength = (uint16_t) strlen(statusText);
+            while ((uint16_t) (textLength +
                        ActiveTextCursorColumn) < 0x001B)
             {
                 statusText[textLength] = ' ';
                 ++textLength;
             }
-            statusText[(word16) (0x001B -
+            statusText[(uint16_t) (0x001B -
                 ActiveTextCursorColumn)] = '\0';
             RenderFormattedText(statusText);
 
@@ -652,8 +652,8 @@ void DrawSelectedUnitStatusPanel(void)
         }
     }
 
-    blinkCountdown = (int16) (word16) (TacticalStatusBlinkCountdown - 0x0001);
-    TacticalStatusBlinkCountdown = (word16) blinkCountdown;
+    blinkCountdown = (int16_t) (uint16_t) (TacticalStatusBlinkCountdown - 0x0001);
+    TacticalStatusBlinkCountdown = (uint16_t) blinkCountdown;
     if (blinkCountdown <= 0x0000)
     {
         TacticalStatusBlinkCountdown = 0x000A;
@@ -683,7 +683,7 @@ void DrawSelectedUnitStatusPanel(void)
                 ActiveNarrationSubject != 0x0000)
             {
                 PlayScenarioDigitalSoundSequence(
-                    (int8) ScenarioFileSuffix);
+                    (int8_t) ScenarioFileSuffix);
             }
         }
 
@@ -693,7 +693,7 @@ void DrawSelectedUnitStatusPanel(void)
             narrationColor = NarrationEmphasis != 0x0000 ? 0x0008 : 0x000A;
             DrawTileAlignedText(
                 TacticalNarrationLabel,
-                0x001B, 0x0018, (byte) narrationColor, 0x0C);
+                0x001B, 0x0018, (uint8_t) narrationColor, 0x0C);
             SecondaryStatusHighlightColor = narrationColor;
             if (narrationStatusRow != 0xFFFF)
                 UpdateSecondaryUnitStatusRowHighlight(
@@ -729,7 +729,7 @@ void DrawSelectedUnitStatusPanel(void)
 // 2007:159F: draw the eight tactical game-speed bars when the overview is off.
 void RedrawTacticalViewport(void)
 {
-    word16 speedIndex;
+    uint16_t speedIndex;
 
     if (TacticalOverviewActive != FALSE)
         return;
@@ -737,7 +737,7 @@ void RedrawTacticalViewport(void)
     HideMouseCursorOverlay();
     for (speedIndex = 0x00; speedIndex < 0x08; ++speedIndex)
     {
-        word16 color = 0x03;
+        uint16_t color = 0x03;
         /* The CGA's colour step (2007:15BD) went with the CGA. */
         if (speedIndex == TacticalGameSpeedIndex)
             color = 0x04;
@@ -754,7 +754,7 @@ void RedrawTacticalViewport(void)
 // 2007:16BA: void RedrawTacticalStatusPanel(void)
 void RedrawTacticalStatusPanel(void)
 {
-    word16 previousTextWindow = ActiveTextWindowIndex;
+    uint16_t previousTextWindow = ActiveTextWindowIndex;
 
     HideMouseCursorOverlay();
     SelectAndClearTextWindow(0x06);

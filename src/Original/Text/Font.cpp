@@ -9,48 +9,48 @@
 
 // 3477:000B: unsigned char *LoadFontResource(
 //     const char *fileName)
-byte *LoadFontResource(const char *fileName)
+uint8_t *LoadFontResource(const char *fileName)
 {
-    word16 totalFileSize = 0x00;
-    byte dimensions[0x02];
-    byte *fontResource = NULL;
-    int16 fileHandle = GameFile_Open(fileName, GAME_FILE_READ); /* 8001h */
+    uint16_t totalFileSize = 0x00;
+    uint8_t dimensions[0x02];
+    uint8_t *fontResource = NULL;
+    int16_t fileHandle = GameFile_Open(fileName, GAME_FILE_READ); /* 8001h */
 
     if (fileHandle != -0x01)
     {
-        word16 headerBytesRead = GameFile_Read(
+        uint16_t headerBytesRead = GameFile_Read(
             fileHandle,
-            (byte *) &totalFileSize,
+            (uint8_t *) &totalFileSize,
             0x02);
-        totalFileSize = (word16) (totalFileSize + 0x02);
+        totalFileSize = (uint16_t) (totalFileSize + 0x02);
         if (headerBytesRead == 0x02 && totalFileSize > 0x0104)
         {
-            int32 physicalFileLength = GameFile_Length(fileHandle);
+            int32_t physicalFileLength = GameFile_Length(fileHandle);
             if (HIGH_WORD(physicalFileLength) == 0x00 &&
                 LOW_WORD(physicalFileLength) == totalFileSize)
             {
-                int32 seekPosition = GameFile_Seek(
+                int32_t seekPosition = GameFile_Seek(
                     fileHandle, 0x0102L, GAME_FILE_FROM_START);
                 if (seekPosition == 0x0102L)
                 {
-                    word16 dimensionsRead = GameFile_Read(
+                    uint16_t dimensionsRead = GameFile_Read(
                         fileHandle,
                         dimensions,
                         0x02);
                     if (dimensionsRead == 0x02)
                     {
-                        int16 glyphHeight = (int8) dimensions[0x00];
-                        int16 bytesPerGlyphRow =
-                            ((int8) dimensions[0x01] + 0x07) / 0x08;
-                        word16 glyphDataSize = (word16) ((word16) glyphHeight *
-                                (word16) bytesPerGlyphRow
+                        int16_t glyphHeight = (int8_t) dimensions[0x00];
+                        int16_t bytesPerGlyphRow =
+                            ((int8_t) dimensions[0x01] + 0x07) / 0x08;
+                        uint16_t glyphDataSize = (uint16_t) ((uint16_t) glyphHeight *
+                                (uint16_t) bytesPerGlyphRow
                             << 0x07);
-                        word16 allocationSize =
-                            (word16) (glyphDataSize + 0x0104);
+                        uint16_t allocationSize =
+                            (uint16_t) (glyphDataSize + 0x0104);
 
                         if (allocationSize == totalFileSize)
                         {
-                            fontResource = (byte *)
+                            fontResource = (uint8_t *)
                                 Heap_Allocate(allocationSize, "3477:00FF");
                             if (fontResource != NULL)
                             {
@@ -59,7 +59,7 @@ byte *LoadFontResource(const char *fileName)
                                         0x00L,
                                         GAME_FILE_FROM_START) == 0x00L)
                                 {
-                                    word16 fontBytesRead =
+                                    uint16_t fontBytesRead =
                                         GameFile_Read(
                                             fileHandle,
                                             fontResource,
@@ -87,18 +87,18 @@ byte *LoadFontResource(const char *fileName)
 }
 
 // 3477:018F: void SetActiveFontResource(byte *fontResource)
-void SetActiveFontResource(byte *fontResource)
+void SetActiveFontResource(uint8_t *fontResource)
 {
     ActiveFontResource = fontResource;
-    ActiveFontGlyphAdvanceX = (int8) fontResource[0x0103];
-    ActiveFontLineHeight = (int8) fontResource[0x0102];
+    ActiveFontGlyphAdvanceX = (int8_t) fontResource[0x0103];
+    ActiveFontLineHeight = (int8_t) fontResource[0x0102];
 }
 
 // 3477:01B5: uint16 MeasureTextWidth(const char *text)
-uint16 MeasureTextWidth(const char *text)
+uint16_t MeasureTextWidth(const char *text)
 {
-    const byte *activeFont = ActiveFontResource;
-    int16 glyphAdvance = (int8) activeFont[0x0103];
+    const uint8_t *activeFont = ActiveFontResource;
+    int16_t glyphAdvance = (int8_t) activeFont[0x0103];
 
-    return (word16) ((word16) strlen(text) * glyphAdvance);
+    return (uint16_t) ((uint16_t) strlen(text) * glyphAdvance);
 }

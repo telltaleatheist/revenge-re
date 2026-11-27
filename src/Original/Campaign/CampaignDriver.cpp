@@ -28,10 +28,10 @@ static const CampaignStageHandler CampaignStageHandlers[0x16] = {
 void RunCampaignLoop(void)
 {
     CampaignStageHandler stageHandlerEntry;
-    byte *titleTileStrip;
-    int16 campaignRunning;
-    int16 stageResult;
-    word16 stateIndex;
+    uint8_t *titleTileStrip;
+    int16_t campaignRunning;
+    int16_t stageResult;
+    uint16_t stateIndex;
 
     if (MouseDriverInstalled != FALSE)
     {
@@ -170,18 +170,18 @@ void RunCampaignLoop(void)
 // serviced cooperatively by the hosted timer boundary.
 void InitializeTacticalScenario(void)
 {
-    byte scenarioOrdinal;
-    byte scenarioSuffix;
-    byte campaignStateIndex;
-    byte *tacticalIconBuffer;
+    uint8_t scenarioOrdinal;
+    uint8_t scenarioSuffix;
+    uint8_t campaignStateIndex;
+    uint8_t *tacticalIconBuffer;
 
     SetActiveFontResource(Font8Resource);
 
     scenarioOrdinal =
         ScenarioOrdinalBaseByCampaignStage[CampaignStageIndex] +
-        (byte) ScenarioVariantIndex;
+        (uint8_t) ScenarioVariantIndex;
     if (CampaignStageIndex == 0x08)
-        scenarioOrdinal -= (byte) ScenarioVariantIndex;
+        scenarioOrdinal -= (uint8_t) ScenarioVariantIndex;
 
     // [V] Ordinals 0..8 map to '1'..'9'; 9 and above map to 'A' onward.
     scenarioSuffix = scenarioOrdinal < 0x09 ? scenarioOrdinal + '1' : scenarioOrdinal + '8';

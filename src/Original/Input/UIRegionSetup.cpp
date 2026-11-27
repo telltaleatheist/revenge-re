@@ -10,33 +10,33 @@
 // 35AB:000B: void BeginUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
 // Called from:
 //      RunUiRegionSelectionLoop
-void BeginUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
+void BeginUiRegionSelection(int16_t firstRegionIndex, uint16_t regionCount)
 {
     OriginalUiRegionRecord *firstRegion;
-    word16 glyphWidth;
-    word16 lineHeight;
-    word16 selectionLeft;
-    word16 selectionTop;
-    word16 selectedRowHeight;
-    int16 relativeRegionIndex;
+    uint16_t glyphWidth;
+    uint16_t lineHeight;
+    uint16_t selectionLeft;
+    uint16_t selectionTop;
+    uint16_t selectedRowHeight;
+    int16_t relativeRegionIndex;
 
     firstRegion = &UiRegionTable[firstRegionIndex];
     glyphWidth = ActiveFontGlyphAdvanceX;
     lineHeight = ActiveFontLineHeight;
-    selectionLeft = (word16) ((ActiveTextWindowLeftTile << 0x03) +
+    selectionLeft = (uint16_t) ((ActiveTextWindowLeftTile << 0x03) +
         glyphWidth * firstRegion->leftColumn);
-    selectionTop = (word16) ((ActiveTextWindowTopTile << 0x03) +
+    selectionTop = (uint16_t) ((ActiveTextWindowTopTile << 0x03) +
         lineHeight * firstRegion->topRow);
 
     for (relativeRegionIndex = 0x00;
-        relativeRegionIndex < (int16) regionCount;
+        relativeRegionIndex < (int16_t) regionCount;
         ++relativeRegionIndex)
     {
         SavedUiRegionSelectionRows[relativeRegionIndex] =
-            (byte) UiRegionTable[firstRegionIndex + relativeRegionIndex].selectedRow;
+            (uint8_t) UiRegionTable[firstRegionIndex + relativeRegionIndex].selectedRow;
     }
 
-    if ((int16) firstRegion->selectedRow >= (int16) firstRegion->rowCount)
+    if ((int16_t) firstRegion->selectedRow >= (int16_t) firstRegion->rowCount)
         firstRegion->selectedRow = 0x00;
     if (UiSelectionResetFlagA != 0x00 ||
         UiSelectionResetFlagB != 0x00)
@@ -48,11 +48,11 @@ void BeginUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
         selectedRowHeight = firstRegion->rowCount;
     XorVideoRectangle(
         selectionLeft,
-        (word16) (selectionTop + firstRegion->selectedRow * lineHeight),
-        (word16) (selectionLeft +
+        (uint16_t) (selectionTop + firstRegion->selectedRow * lineHeight),
+        (uint16_t) (selectionLeft +
             glyphWidth * firstRegion->widthColumns - 0x01),
-        (word16) (selectionTop +
+        (uint16_t) (selectionTop +
             (firstRegion->selectedRow + selectedRowHeight) * lineHeight - 0x01),
-        (byte) firstRegion->xorColor);
+        (uint8_t) firstRegion->xorColor);
     ActiveUiRegionIndex = firstRegionIndex;
 }

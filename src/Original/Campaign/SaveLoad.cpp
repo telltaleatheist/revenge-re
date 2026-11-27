@@ -16,14 +16,14 @@
 // Called from:
 //      RunInGameMenu
 // VERIFIED against 0D73:4866-4A7D.
-word16 SaveGame(void)
+uint16_t SaveGame(void)
 {
     RevengeCampaignSnapshot *snapshot;
-    word16 lanceIndex;
-    word16 menuAction;
-    word16 pilotIndex;
-    word16 scenarioRecordIndex;
-    word16 unitIndex;
+    uint16_t lanceIndex;
+    uint16_t menuAction;
+    uint16_t pilotIndex;
+    uint16_t scenarioRecordIndex;
+    uint16_t unitIndex;
 
     OpenModalTextWindow(0x0016, 0x0001);
     snapshot = &SaveCampaignSnapshot;
@@ -31,7 +31,7 @@ word16 SaveGame(void)
     while (menuAction == UI_SELECTION_PENDING)
     {
         menuAction = RunSaveLoadMenu(SAVE_LOAD_MODE_SAVE);
-        if ((int16) menuAction > 0x0000)
+        if ((int16_t) menuAction > 0x0000)
         {
             ActiveTextCursorRow = 0x000A;
             HideMouseCursorOverlay();
@@ -107,7 +107,7 @@ word16 SaveGame(void)
             }
             WriteSaveSlot(
                 0x0044,
-                (int16) SelectedSaveSlotIndex + 0x0001);
+                (int16_t) SelectedSaveSlotIndex + 0x0001);
             HideMouseCursorOverlay();
             RenderFormattedText(STORY_TEXT(SAVE_GAME_1)); // TEXT DS:2630
             ShowMouseCursorOverlay();
@@ -124,13 +124,13 @@ word16 SaveGame(void)
 // Called from:
 //      SaveGame
 //      ShowSaveLoadMenu
-word16 WriteSaveSlot(word16 cachedFileIndex, int16 saveSlot)
+uint16_t WriteSaveSlot(uint16_t cachedFileIndex, int16_t saveSlot)
 {
-    word16 slotEndOffset;
-    word16 slotStartOffset;
-    word16 slotByteCount;
-    int16 directoryOffset;
-    int16 fileHandle;
+    uint16_t slotEndOffset;
+    uint16_t slotStartOffset;
+    uint16_t slotByteCount;
+    int16_t directoryOffset;
+    int16_t fileHandle;
 
     // Verified against 0D73:4A7E-4B85.
     // Write either the save index (slot zero) or a selected serialized game slot.
@@ -140,23 +140,23 @@ word16 WriteSaveSlot(word16 cachedFileIndex, int16 saveSlot)
             0x03),
         CACHED_FILE_NAME(cachedFileIndex),
         0x03);
-    directoryOffset = (int16) ((word16) (saveSlot + 0x01) << 0x01);
-    SeekTrackedFile(fileHandle, (word32) (int32) directoryOffset, 0x00);
+    directoryOffset = (int16_t) ((uint16_t) (saveSlot + 0x01) << 0x01);
+    SeekTrackedFile(fileHandle, (uint32_t) (int32_t) directoryOffset, 0x00);
     ReadTrackedFile(fileHandle, &slotStartOffset, 0x02);
     ReadTrackedFile(fileHandle, &slotEndOffset, 0x02);
     SeekTrackedFile(
-        fileHandle, (word32) (int32) (int16) slotStartOffset, 0x00);
+        fileHandle, (uint32_t) (int32_t) (int16_t) slotStartOffset, 0x00);
     slotByteCount = slotEndOffset - slotStartOffset;
     if (saveSlot == 0x00)
     {
         WriteTrackedFile(fileHandle, SaveDirectory.raw,
-            (word32) (int32) (int16) slotByteCount);
+            (uint32_t) (int32_t) (int16_t) slotByteCount);
     }
     else
     {
         WriteTrackedFile(fileHandle, &SaveCampaignSnapshot, REVENGE_CAMPAIGN_SNAPSHOT_SIZE);
         WriteTrackedFile(fileHandle, LiveScenarioUnits,
-            (word32) (int32) (int16) (slotByteCount - REVENGE_CAMPAIGN_SNAPSHOT_SIZE));
+            (uint32_t) (int32_t) (int16_t) (slotByteCount - REVENGE_CAMPAIGN_SNAPSHOT_SIZE));
     }
     CloseTrackedFile(fileHandle);
     return 0x01;
@@ -167,16 +167,16 @@ word16 WriteSaveSlot(word16 cachedFileIndex, int16 saveSlot)
 //      RunInGameMenu
 //      RunTitleAndMainMenu
 // VERIFIED against 0D73:4B86-4D8E.
-word16 LoadGame(void)
+uint16_t LoadGame(void)
 {
     RevengeCampaignSnapshot *snapshot;
-    byte stateValue;
-    word16 lanceIndex;
-    word16 menuAction;
-    word16 pilotIndex;
-    word16 scenarioRecordIndex;
-    word16 stateIndex;
-    word16 unitIndex;
+    uint8_t stateValue;
+    uint16_t lanceIndex;
+    uint16_t menuAction;
+    uint16_t pilotIndex;
+    uint16_t scenarioRecordIndex;
+    uint16_t stateIndex;
+    uint16_t unitIndex;
 
     OpenModalTextWindow(0x0016, 0x0001);
     snapshot = &SaveCampaignSnapshot;
@@ -184,7 +184,7 @@ word16 LoadGame(void)
     while (menuAction == UI_SELECTION_PENDING)
     {
         menuAction = RunSaveLoadMenu(SAVE_LOAD_MODE_LOAD);
-        if ((int16) menuAction > 0x0000)
+        if ((int16_t) menuAction > 0x0000)
         {
             if (menuAction == SAVE_LOAD_ACTION_TRAINING &&
                 SaveTransferState == 0x8000)
@@ -303,14 +303,14 @@ word16 LoadGame(void)
 // Called from:
 //      LoadGame
 //      RunSaveLoadMenu
-word16 ReadSaveSlot(word16 cachedFileIndex, int16 saveSlot)
+uint16_t ReadSaveSlot(uint16_t cachedFileIndex, int16_t saveSlot)
 {
-    word16 slotEndOffset;
-    word16 slotStartOffset;
-    word16 slotByteCount;
-    word16 readResult;
-    int16 directoryOffset;
-    int16 fileHandle;
+    uint16_t slotEndOffset;
+    uint16_t slotStartOffset;
+    uint16_t slotByteCount;
+    uint16_t readResult;
+    int16_t directoryOffset;
+    int16_t fileHandle;
 
     // Verified against 0D73:4D8F-4E9C.
     // Read either the save index (slot zero) or a selected serialized game slot.
@@ -320,17 +320,17 @@ word16 ReadSaveSlot(word16 cachedFileIndex, int16 saveSlot)
             0x01),
         CACHED_FILE_NAME(cachedFileIndex),
         0x01);
-    directoryOffset = (int16) ((word16) (saveSlot + 0x01) << 0x01);
-    SeekTrackedFile(fileHandle, (word32) (int32) directoryOffset, 0x00);
+    directoryOffset = (int16_t) ((uint16_t) (saveSlot + 0x01) << 0x01);
+    SeekTrackedFile(fileHandle, (uint32_t) (int32_t) directoryOffset, 0x00);
     ReadTrackedFile(fileHandle, &slotStartOffset, 0x02);
     ReadTrackedFile(fileHandle, &slotEndOffset, 0x02);
     SeekTrackedFile(
-        fileHandle, (word32) (int32) (int16) slotStartOffset, 0x00);
+        fileHandle, (uint32_t) (int32_t) (int16_t) slotStartOffset, 0x00);
     slotByteCount = slotEndOffset - slotStartOffset;
     if (saveSlot == 0x00)
     {
         ReadTrackedFile(fileHandle, SaveDirectory.raw,
-            (word32) (int32) (int16) slotByteCount);
+            (uint32_t) (int32_t) (int16_t) slotByteCount);
         readResult = SavedSaveTransferState;
         SaveTransferState = readResult;
     }
@@ -338,7 +338,7 @@ word16 ReadSaveSlot(word16 cachedFileIndex, int16 saveSlot)
     {
         ReadTrackedFile(fileHandle, &SaveCampaignSnapshot, REVENGE_CAMPAIGN_SNAPSHOT_SIZE);
         ReadTrackedFile(fileHandle, LiveScenarioUnits,
-            (word32) (int32) (int16) (slotByteCount - REVENGE_CAMPAIGN_SNAPSHOT_SIZE));
+            (uint32_t) (int32_t) (int16_t) (slotByteCount - REVENGE_CAMPAIGN_SNAPSHOT_SIZE));
     }
     CloseTrackedFile(fileHandle);
     return 0x01;
@@ -349,9 +349,9 @@ word16 ReadSaveSlot(word16 cachedFileIndex, int16 saveSlot)
 //      SaveGame
 //      LoadGame
 // VERIFIED against 0D73:4E9D-4EC6.
-int16 RunSaveLoadMenu(word16 menuMode)
+int16_t RunSaveLoadMenu(uint16_t menuMode)
 {
-    int16 menuAction;
+    int16_t menuAction;
 
     menuAction = ReadSaveSlot(0x0044, 0x0000);
     if (menuAction == TRUE)
@@ -363,23 +363,23 @@ int16 RunSaveLoadMenu(word16 menuMode)
 // Called from:
 //      RunSaveLoadMenu
 // VERIFIED against 0D73:4EC7-51F8.
-int16 ShowSaveLoadMenu(word16 menuMode)
+int16_t ShowSaveLoadMenu(uint16_t menuMode)
 {
     RevengeSaveSlotDescriptor *selectedSlot;
     char previousSlotName[0x16];
-    byte previousDefaultSelection;
-    int16 menuAction;
-    int16 promptX;
-    int16 promptY;
-    int16 selectedMenuItem;
-    word16 cancelItemIndex;
-    word16 directoryChanged;
-    word16 exitDosItemIndex;
-    word16 menuItemCount;
-    word16 previousBackground;
-    word16 renameItemIndex;
-    word16 slotIndex;
-    int16 trainingItemIndex;
+    uint8_t previousDefaultSelection;
+    int16_t menuAction;
+    int16_t promptX;
+    int16_t promptY;
+    int16_t selectedMenuItem;
+    uint16_t cancelItemIndex;
+    uint16_t directoryChanged;
+    uint16_t exitDosItemIndex;
+    uint16_t menuItemCount;
+    uint16_t previousBackground;
+    uint16_t renameItemIndex;
+    uint16_t slotIndex;
+    int16_t trainingItemIndex;
 
     directoryChanged = FALSE;
     menuAction = SAVE_LOAD_ACTION_CANCEL;
@@ -425,10 +425,10 @@ int16 ShowSaveLoadMenu(word16 menuMode)
     FlushPendingInput();
     selectedMenuItem = RunSingleUiRegionSelection(0x0C);
 
-    if (selectedMenuItem < (int16) renameItemIndex)
+    if (selectedMenuItem < (int16_t) renameItemIndex)
     {
         selectedSlot = &SaveDirectory.slots[selectedMenuItem];
-        SelectedSaveSlotIndex = (byte) selectedMenuItem;
+        SelectedSaveSlotIndex = (uint8_t) selectedMenuItem;
         if (menuMode == SAVE_LOAD_MODE_LOAD && !selectedSlot->occupied)
         {
             HideMouseCursorOverlay();
@@ -453,16 +453,16 @@ int16 ShowSaveLoadMenu(word16 menuMode)
                     previousBackground =
                         ActiveTextBackgroundColor;
                     ActiveTextBackgroundColor = 0x0C;
-                    promptX = (int16) (ActiveTextWindowLeftTile << 0x03);
-                    promptY = (int16) ((ActiveTextWindowTopTile << 0x03) +
+                    promptX = (int16_t) (ActiveTextWindowLeftTile << 0x03);
+                    promptY = (int16_t) ((ActiveTextWindowTopTile << 0x03) +
                         0x0009 * ActiveFontGlyphAdvanceX);
                     RenderFormattedText(STORY_TEXT(SHOW_SAVE_LOAD_MENU_7)); // TEXT DS:26BC
                     XorVideoRectangle(promptX, promptY,
-                        (word16) (promptX +
+                        (uint16_t) (promptX +
                             ActiveFontGlyphAdvanceX *
-                                (word16) strlen(STORY_TEXT(SHOW_SAVE_LOAD_MENU_7)) -
+                                (uint16_t) strlen(STORY_TEXT(SHOW_SAVE_LOAD_MENU_7)) -
                             0x0001),
-                        (word16) (promptY +
+                        (uint16_t) (promptY +
                             ActiveFontLineHeight - 0x0001),
                         0x0001);
                     ActiveTextBackgroundColor = previousBackground;
@@ -479,16 +479,16 @@ int16 ShowSaveLoadMenu(word16 menuMode)
                 selectedSlot->occupied = TRUE;
         }
     }
-    if (selectedMenuItem == (int16) renameItemIndex)
+    if (selectedMenuItem == (int16_t) renameItemIndex)
     {
         directoryChanged = RenameSaveSlot(SAVE_LOAD_ACTION_REOPEN_MENU);
         menuAction = SAVE_LOAD_ACTION_REOPEN_MENU;
     }
-    if (selectedMenuItem == (int16) exitDosItemIndex)
+    if (selectedMenuItem == (int16_t) exitDosItemIndex)
         menuAction = SAVE_LOAD_ACTION_EXIT_DOS;
     if (selectedMenuItem == trainingItemIndex)
         menuAction = SAVE_LOAD_ACTION_TRAINING;
-    if (selectedMenuItem == (int16) cancelItemIndex)
+    if (selectedMenuItem == (int16_t) cancelItemIndex)
         menuAction = SAVE_LOAD_ACTION_CANCEL;
     if (directoryChanged != FALSE)
         WriteSaveSlot(0x0044, 0x0000);
@@ -500,14 +500,14 @@ int16 ShowSaveLoadMenu(word16 menuMode)
 // Called from:
 //      ShowSaveLoadMenu
 // VERIFIED against 0D73:51F9-5232.
-word16 IsBlankSaveSlotName(const char *slotName)
+uint16_t IsBlankSaveSlotName(const char *slotName)
 {
-    int16 characterIndex;
-    int16 nameLength;
-    word16 isBlank;
+    int16_t characterIndex;
+    int16_t nameLength;
+    uint16_t isBlank;
 
     isBlank = TRUE;
-    nameLength = (int16) strlen(slotName);
+    nameLength = (int16_t) strlen(slotName);
     for (characterIndex = 0x0000;
         characterIndex < nameLength;
         ++characterIndex)
@@ -522,13 +522,13 @@ word16 IsBlankSaveSlotName(const char *slotName)
 // Called from:
 //      ShowSaveLoadMenu
 // VERIFIED against 0D73:5233-53E0.
-word16 RenameSaveSlot(int16 slotIndex)
+uint16_t RenameSaveSlot(int16_t slotIndex)
 {
     RevengeSaveSlotDescriptor *slot;
-    int16 promptX;
-    int16 promptY;
-    word16 previousBackground;
-    word16 wasRenamed;
+    int16_t promptX;
+    int16_t promptY;
+    uint16_t previousBackground;
+    uint16_t wasRenamed;
 
     previousBackground = ActiveTextBackgroundColor;
     ActiveTextBackgroundColor = 0x0C;
@@ -536,10 +536,10 @@ word16 RenameSaveSlot(int16 slotIndex)
     {
         ActiveTextCursorColumn = 0x0005;
         ActiveTextCursorRow = SaveLoadMenuDefaultSelection;
-        promptX = (int16) ((ActiveTextWindowLeftTile << 0x03) +
+        promptX = (int16_t) ((ActiveTextWindowLeftTile << 0x03) +
             ActiveTextCursorColumn *
                 ActiveFontGlyphAdvanceX);
-        promptY = (int16) ((ActiveTextWindowTopTile << 0x03) +
+        promptY = (int16_t) ((ActiveTextWindowTopTile << 0x03) +
             ActiveTextCursorRow *
                 ActiveFontGlyphAdvanceX);
         HideMouseCursorOverlay();
@@ -547,11 +547,11 @@ word16 RenameSaveSlot(int16 slotIndex)
         XorVideoRectangle(
             promptX,
             promptY,
-            (word16) (promptX +
+            (uint16_t) (promptX +
                 ActiveFontGlyphAdvanceX *
-                    (word16) strlen(STORY_TEXT(RENAME_SAVE_SLOT_0)) -
+                    (uint16_t) strlen(STORY_TEXT(RENAME_SAVE_SLOT_0)) -
                 0x0001),
-            (word16) (promptY +
+            (uint16_t) (promptY +
                 ActiveFontLineHeight -
                 0x0001),
             0x0001); // TEXT DS:267D
@@ -569,10 +569,10 @@ word16 RenameSaveSlot(int16 slotIndex)
     slot = &SaveDirectory.slots[slotIndex];
     ActiveTextCursorColumn = 0x0005;
     ActiveTextCursorRow = SaveLoadMenuDefaultSelection;
-    promptX = (int16) ((ActiveTextWindowLeftTile << 0x03) +
+    promptX = (int16_t) ((ActiveTextWindowLeftTile << 0x03) +
         ActiveTextCursorColumn *
             ActiveFontGlyphAdvanceX);
-    promptY = (int16) ((ActiveTextWindowTopTile << 0x03) +
+    promptY = (int16_t) ((ActiveTextWindowTopTile << 0x03) +
         ActiveTextCursorRow *
             ActiveFontGlyphAdvanceX);
     HideMouseCursorOverlay();
@@ -580,11 +580,11 @@ word16 RenameSaveSlot(int16 slotIndex)
     XorVideoRectangle(
         promptX,
         promptY,
-        (word16) (promptX +
+        (uint16_t) (promptX +
             ActiveFontGlyphAdvanceX *
-                (word16) strlen(STORY_TEXT(RENAME_SAVE_SLOT_1)) -
+                (uint16_t) strlen(STORY_TEXT(RENAME_SAVE_SLOT_1)) -
             0x0001),
-        (word16) (promptY +
+        (uint16_t) (promptY +
             ActiveFontLineHeight -
             0x0001),
         0x0001); // TEXT DS:2696
@@ -606,26 +606,26 @@ word16 RenameSaveSlot(int16 slotIndex)
 // VERIFIED against 0D73:53E1-546E.
 void WaitForAcknowledgement(void)
 {
-    word16 bottomY;
-    word16 leftX;
-    word16 rightX;
-    word16 topY;
+    uint16_t bottomY;
+    uint16_t leftX;
+    uint16_t rightX;
+    uint16_t topY;
 
     HideMouseCursorOverlay();
     if (ActiveTextCursorColumn != 0x0000)
         RenderFormattedText("\r"); // TEXT DS:47B4: CR before unit-name table; Locust starts at DS:47B6
-    leftX = (word16) ((ActiveTextWindowLeftTile << 0x03) +
+    leftX = (uint16_t) ((ActiveTextWindowLeftTile << 0x03) +
         ActiveTextCursorColumn *
             ActiveFontGlyphAdvanceX);
-    topY = (word16) ((ActiveTextWindowTopTile << 0x03) +
+    topY = (uint16_t) ((ActiveTextWindowTopTile << 0x03) +
         ActiveTextCursorRow *
             ActiveFontGlyphAdvanceX);
     RenderFormattedText(STORY_TEXT(WAIT_FOR_ACKNOWLEDGEMENT_0)); // TEXT DS:26DB
-    rightX = (word16) (leftX +
+    rightX = (uint16_t) (leftX +
         ActiveFontGlyphAdvanceX *
-            (word16) strlen(STORY_TEXT(WAIT_FOR_ACKNOWLEDGEMENT_0)) -
+            (uint16_t) strlen(STORY_TEXT(WAIT_FOR_ACKNOWLEDGEMENT_0)) -
         0x0001);
-    bottomY = (word16) (topY +
+    bottomY = (uint16_t) (topY +
         ActiveFontLineHeight -
         0x0001);
     XorVideoRectangle(
@@ -643,7 +643,7 @@ void WaitForAcknowledgement(void)
 // Called from:
 //      ShowSaveLoadMenu
 // VERIFIED against 0D73:546F-54B8.
-int16 PromptYesNo(word16 initialSelection)
+int16_t PromptYesNo(uint16_t initialSelection)
 {
     HideMouseCursorOverlay();
     if (ActiveTextCursorColumn != 0x00)

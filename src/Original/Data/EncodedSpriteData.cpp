@@ -4,7 +4,7 @@
 
 #include "revenge/original_data.h"
 
-word16 EncodedSpriteVisibleWidth;
-word16 EncodedSpriteSourceWidth;
-byte EncodedSpriteHorizontalPhase;
-word16 EncodedSpriteClipWidthTiles;
+uint16_t EncodedSpriteVisibleWidth;
+uint16_t EncodedSpriteSourceWidth;
+uint8_t EncodedSpriteHorizontalPhase;
+uint16_t EncodedSpriteClipWidthTiles;

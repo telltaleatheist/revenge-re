@@ -8,13 +8,13 @@
 // 0D73:418E: void RightAlignStringField(char far *text, word16 fieldWidth)
 // Called from:
 //      InitializeGame
-void RightAlignStringField(char *text, word16 fieldWidth)
+void RightAlignStringField(char *text, uint16_t fieldWidth)
 {
-    word16 textLength = (word16) strlen(text);
+    uint16_t textLength = (uint16_t) strlen(text);
     if (textLength >= fieldWidth)
         return;
-    word16 leadingSpaces = fieldWidth - textLength;
-    int16 index;
+    uint16_t leadingSpaces = fieldWidth - textLength;
+    int16_t index;
 
     // The original moves the NUL and one following byte, preserving the
     // double-NUL convention used by the startup version buffer.
@@ -32,12 +32,12 @@ void TranslateCharactersInPlace(
     const char *sourceAlphabet,
     const char *replacementAlphabet)
 {
-    word16 textLength = (word16) strlen(text);
-    word16 alphabetLength = (word16) strlen(sourceAlphabet);
-    word16 textIndex;
+    uint16_t textLength = (uint16_t) strlen(text);
+    uint16_t alphabetLength = (uint16_t) strlen(sourceAlphabet);
+    uint16_t textIndex;
     for (textIndex = 0x00; textIndex < textLength; ++textIndex)
     {
-        word16 alphabetIndex;
+        uint16_t alphabetIndex;
         for (alphabetIndex = 0x00; alphabetIndex < alphabetLength; ++alphabetIndex)
         {
             if (text[textIndex] == sourceAlphabet[alphabetIndex])

@@ -12,7 +12,7 @@
 // The table contains four-byte far pointers to the proprietary PC-speaker
 // streams consumed by StartPCSpeakerEffectStream. The index is the same
 // WeaponDefinition.effectId dispatched by 31FB:0567.
-void PlayPCSpeakerEffectByIndex(word16 effectId)
+void PlayPCSpeakerEffectByIndex(uint16_t effectId)
 {
     if (SoundEffectsEnabled != FALSE)
     {

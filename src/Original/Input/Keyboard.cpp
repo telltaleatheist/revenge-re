@@ -49,15 +49,15 @@ enum
     KEY_ID_CTRL_ALT_DELETE = 0x064C
 };
 
-static const byte KeyBitMasks[0x08] = {
+static const uint8_t KeyBitMasks[0x08] = {
     0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
 };
 
-static const byte CtrlTranslationBitmap[0x08] = {
+static const uint8_t CtrlTranslationBitmap[0x08] = {
     0x00, 0x00, 0xFE, 0x87, 0xFF, 0xC0, 0x1F, 0x00
 };
 
-static const byte AsciiTranslationTable[0x3E] = {
+static const uint8_t AsciiTranslationTable[0x3E] = {
     0x00, 0x60, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36,
     0x37, 0x38, 0x39, 0x30, 0x2D, 0x3D, 0x00, 0x08,
     0x09, 0x71, 0x77, 0x65, 0x72, 0x74, 0x79, 0x75,
@@ -68,7 +68,7 @@ static const byte AsciiTranslationTable[0x3E] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x20
 };
 
-static const byte ShiftedAsciiTranslationTable[0x3E] = {
+static const uint8_t ShiftedAsciiTranslationTable[0x3E] = {
     0x00, 0x7E, 0x21, 0x40, 0x23, 0x24, 0x25, 0x5E,
     0x26, 0x2A, 0x28, 0x29, 0x5F, 0x2B, 0x00, 0x08,
     0x09, 0x51, 0x57, 0x45, 0x52, 0x54, 0x59, 0x55,
@@ -79,7 +79,7 @@ static const byte ShiftedAsciiTranslationTable[0x3E] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x20
 };
 
-static const byte ExtendedTranslationTable[0x23] = {
+static const uint8_t ExtendedTranslationTable[0x23] = {
     0xAE, 0xAD, 0x00, 0x00, 0xB5, 0xB9, 0xB1, 0x00,
     0xB8, 0xB0, 0xB7, 0xAF, 0x00, 0x00, 0xB3, 0x00,
     0xB9, 0xB5, 0xB1, 0x00, 0x2F, 0xB8, 0x00, 0xB0,
@@ -87,7 +87,7 @@ static const byte ExtendedTranslationTable[0x23] = {
     0x00, 0x0D, 0x00
 };
 
-static const byte NumericKeypadTranslationTable[0x14] = {
+static const uint8_t NumericKeypadTranslationTable[0x14] = {
     0x00, 0x37, 0x34, 0x31, 0x00, 0x2F, 0x38, 0x35,
     0x32, 0x30, 0x2A, 0x39, 0x36, 0x33, 0x2E, 0x2D,
     0x2B, 0x00, 0x0D, 0x00
@@ -96,11 +96,11 @@ static const byte NumericKeypadTranslationTable[0x14] = {
 #pragma pack(push, 1)
 typedef struct KeyboardRuntime
 {
-    word16 events[KEYBOARD_EVENT_COUNT]; /* CS:007C */
-    word16 readOffset; /* CS:00FC */
-    word16 writeOffset; /* CS:00FE */
-    word16 translationMode; /* CS:0100 */
-    word16 modeFlags; /* CS:0102 */
+    uint16_t events[KEYBOARD_EVENT_COUNT]; /* CS:007C */
+    uint16_t readOffset; /* CS:00FC */
+    uint16_t writeOffset; /* CS:00FE */
+    uint16_t translationMode; /* CS:0100 */
+    uint16_t modeFlags; /* CS:0102 */
 } KeyboardRuntime;
 #pragma pack(pop)
 
@@ -125,17 +125,17 @@ static KeyboardRuntime Keyboard = {
  * (the grey keys as the keypad's, the right Ctrl and Alt as the left). The
  * 17th entry of CS:005C is the first of CS:006C; E0h 3Eh, which no keyboard
  * sends and the host never does, would read the ring for its queued id. */
-static const byte ExtendedScanCodes[KEYBOARD_EXTENDED_KEY_COUNT] = {
+static const uint8_t ExtendedScanCodes[KEYBOARD_EXTENDED_KEY_COUNT] = {
     0x38, 0x1D, 0x52, 0x53, 0x4B, 0x47, 0x4F, 0x48,
     0x50, 0x49, 0x51, 0x4D, 0x35, 0x1C, 0x37, 0x46, 0x3E
 };
 
-static const byte ExtendedKeyIds[KEYBOARD_EXTENDED_KEY_COUNT] = {
+static const uint8_t ExtendedKeyIds[KEYBOARD_EXTENDED_KEY_COUNT] = {
     0x3E, 0x40, 0x4B, 0x4C, 0x4F, 0x50, 0x51, 0x53,
     0x54, 0x55, 0x56, 0x59, 0x5F, 0x6C, 0x7C, 0x00, 0x3C
 };
 
-static const byte ExtendedQueuedKeyIds[KEYBOARD_EXTENDED_KEY_COUNT - 0x01] = {
+static const uint8_t ExtendedQueuedKeyIds[KEYBOARD_EXTENDED_KEY_COUNT - 0x01] = {
     0x3C, 0x3A, 0x63, 0x68, 0x5C, 0x5B, 0x5D, 0x60,
     0x62, 0x65, 0x67, 0x66, 0x37, 0x2B, 0x7C, 0x00
 };
@@ -143,7 +143,7 @@ static const byte ExtendedQueuedKeyIds[KEYBOARD_EXTENDED_KEY_COUNT - 0x01] = {
 /* CS:0104: a scan code's key id, for codes 00h-58h. The host's keyboard
  * sends no other code (src/SDL/platform.cpp); the handler indexes it without
  * a bound. */
-static const byte ScanCodeKeyIds[0x59] = {
+static const uint8_t ScanCodeKeyIds[0x59] = {
     0x7F, 0x6E, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
     0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0F, 0x10,
     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
@@ -161,7 +161,7 @@ static const byte ScanCodeKeyIds[0x59] = {
 /* CS:0197: the keys the BIOS's handler also took, so that its shift and
  * lock flags followed them: Caps Lock, both Shifts, both Ctrls, both Alts,
  * Num Lock, and 80h. */
-static const byte BiosKeyIds[KEYBOARD_BIOS_KEY_COUNT] = {
+static const uint8_t BiosKeyIds[KEYBOARD_BIOS_KEY_COUNT] = {
     0x1E, 0x2C, 0x39, 0x3A, 0x3C, 0x3E, 0x40, 0x5A, 0x80
 };
 
@@ -169,9 +169,9 @@ static const byte BiosKeyIds[KEYBOARD_BIOS_KEY_COUNT] = {
  * left Shift (2Ch), byte 7 bits 1, 2, 4 and 6 the right Shift, the left
  * Ctrl, the left Alt and the right Alt (39h, 3Ah, 3Ch, 3Eh), byte 8 bit 0 the
  * right Ctrl (40h). */
-static byte KeyDownBits[0x10];
-static byte ExtendedPrefixPending; /* CS:018D */
-static byte PausePrefixRemaining; /* CS:018E */
+static uint8_t KeyDownBits[0x10];
+static uint8_t ExtendedPrefixPending; /* CS:018D */
+static uint8_t PausePrefixRemaining; /* CS:018E */
 
 // 3037:0510: the keyboard's interrupt handler, for one byte from the
 // keyboard controller (port 60h). Host: SDL's key events arrive here a byte
@@ -180,23 +180,23 @@ static byte PausePrefixRemaining; /* CS:018E */
 // CS:018F) or by acknowledging it (port 61h, the BIOS status byte 0040:0096
 // and the end of interrupt), the host just returns: the BIOS's handler is
 // not the host's, and SDL keeps the shift and lock state.
-void KeyboardInterruptHandler(byte scanCode)
+void KeyboardInterruptHandler(uint8_t scanCode)
 {
-    byte keyId = scanCode;
-    byte modifiers = 0x00;
-    byte makeBit = 0x01;
-    byte keepBits;
-    byte wasDown;
-    byte shiftFlags;
-    byte extendedKey = FALSE; /* CS:075F */
-    word16 extendedIndex = 0x0000; /* CS:0760 */
-    word16 mode;
-    word16 bitIndex;
-    word16 keyword;
-    word16 nextWriteOffset;
-    word16 index;
+    uint8_t keyId = scanCode;
+    uint8_t modifiers = 0x00;
+    uint8_t makeBit = 0x01;
+    uint8_t keepBits;
+    uint8_t wasDown;
+    uint8_t shiftFlags;
+    uint8_t extendedKey = FALSE; /* CS:075F */
+    uint16_t extendedIndex = 0x0000; /* CS:0760 */
+    uint16_t mode;
+    uint16_t bitIndex;
+    uint16_t keyword;
+    uint16_t nextWriteOffset;
+    uint16_t index;
 
-    Keyboard.modeFlags &= ~(word16) 0x0003;
+    Keyboard.modeFlags &= ~(uint16_t) 0x0003;
     shiftFlags = SDLBackend_ReadBiosKeyboardFlags(BIOS_SHIFT_FLAGS);
     if ((shiftFlags & 0x40) != 0x00)
         Keyboard.modeFlags |= 0x0001;
@@ -222,7 +222,7 @@ void KeyboardInterruptHandler(byte scanCode)
     if ((keyId & SCAN_BREAK_FLAG) != 0x00)
     {
         makeBit = 0x00;
-        keyId &= (byte) ~SCAN_BREAK_FLAG;
+        keyId &= (uint8_t) ~SCAN_BREAK_FLAG;
     }
     if (ExtendedPrefixPending != 0x00)
     {
@@ -240,8 +240,8 @@ void KeyboardInterruptHandler(byte scanCode)
         keyId = ScanCodeKeyIds[keyId];
 
     bitIndex = keyId >> 0x03;
-    makeBit = (byte) (makeBit << (keyId & 0x07));
-    keepBits = (byte) ~(0x01 << (keyId & 0x07));
+    makeBit = (uint8_t) (makeBit << (keyId & 0x07));
+    keepBits = (uint8_t) ~(0x01 << (keyId & 0x07));
     wasDown = KeyDownBits[bitIndex] & makeBit;
     KeyDownBits[bitIndex] &= keepBits;
     KeyDownBits[bitIndex] |= makeBit;
@@ -271,7 +271,7 @@ void KeyboardInterruptHandler(byte scanCode)
 
     if ((mode & KEYBOARD_MODE_REPEAT) == 0x0000 && wasDown != 0x00)
         return;
-    keyword = (word16) ((modifiers << 0x08) | keyId);
+    keyword = (uint16_t) ((modifiers << 0x08) | keyId);
     if (keyword == KEY_ID_CTRL_ALT_KEYPAD_DELETE ||
         keyword == KEY_ID_CTRL_ALT_DELETE)
         return;
@@ -295,7 +295,7 @@ void KeyboardInterruptHandler(byte scanCode)
         RequestedMusicEnabled ^= 0x0001;
     else if (keyword == KEY_ID_NARRATION_CYCLE)
     {
-        word16 narrationMode = NarrationMode + 0x0001;
+        uint16_t narrationMode = NarrationMode + 0x0001;
 
         if (narrationMode > 0x0002)
             narrationMode = 0x0000;
@@ -311,7 +311,7 @@ void KeyboardInterruptHandler(byte scanCode)
 // 3037:01A0. Host: SDLBackend_PollInput first delivers what the keyboard
 // and the mouse sent since the last pass, as their interrupts would have
 // (src/SDL/platform.cpp).
-word16 KeyboardInputPending(void)
+uint16_t KeyboardInputPending(void)
 {
     SDLBackend_PollInput();
     return Keyboard.readOffset ^ Keyboard.writeOffset;
@@ -321,10 +321,10 @@ word16 KeyboardInputPending(void)
 // the mouse's input, as KeyboardInputPending does; passes after the first
 // wait briefly for it (SDLBackend_WaitInput). The harness and REVSNAP
 // (tools/capture/revsnap.asm) count every pass as a poll.
-word16 ReadRawKeypress(void)
+uint16_t ReadRawKeypress(void)
 {
-    word16 readOffset;
-    word16 rawKeypress;
+    uint16_t readOffset;
+    uint16_t rawKeypress;
 
     SDLBackend_PollInput();
     for (;;)
@@ -341,19 +341,19 @@ word16 ReadRawKeypress(void)
 }
 
 // 3037:01D7
-int8 TranslateKeyCode(void)
+int8_t TranslateKeyCode(void)
 {
-    word16 rawKeypress = ReadRawKeypress();
-    byte keyId = LOW_BYTE(rawKeypress);
-    byte modifierFlags = HIGH_BYTE(rawKeypress);
-    int8 translatedKeyCode;
+    uint16_t rawKeypress = ReadRawKeypress();
+    uint8_t keyId = LOW_BYTE(rawKeypress);
+    uint8_t modifierFlags = HIGH_BYTE(rawKeypress);
+    int8_t translatedKeyCode;
 
     if (keyId == KEY_ID_ESCAPE)
         return KEY_ESCAPE;
     if (keyId < KEY_ID_ASCII_TABLE_LIMIT)
     {
-        word16 tableIndex = keyId & 0x3F;
-        translatedKeyCode = (int8) ((modifierFlags & KEY_MODIFIER_SHIFT) == 0x00 ? AsciiTranslationTable[tableIndex] : ShiftedAsciiTranslationTable[tableIndex]);
+        uint16_t tableIndex = keyId & 0x3F;
+        translatedKeyCode = (int8_t) ((modifierFlags & KEY_MODIFIER_SHIFT) == 0x00 ? AsciiTranslationTable[tableIndex] : ShiftedAsciiTranslationTable[tableIndex]);
         if ((modifierFlags & KEY_MODIFIER_CTRL) != 0x00 &&
             (CtrlTranslationBitmap[tableIndex >> 0x03] &
                 KeyBitMasks[tableIndex & 0x07]) != 0x00)
@@ -362,16 +362,16 @@ int8 TranslateKeyCode(void)
     }
     if (keyId >= KEY_ID_EXTENDED_LOOKUP_FIRST && keyId < KEY_ID_ESCAPE)
     {
-        word16 translationIndex = keyId - KEY_ID_EXTENDED_LOOKUP_FIRST;
+        uint16_t translationIndex = keyId - KEY_ID_EXTENDED_LOOKUP_FIRST;
         if ((Keyboard.translationMode &
                 KEYBOARD_MODE_FORCE_EXTENDED_TABLE) == 0x00 &&
             (Keyboard.modeFlags & KEYBOARD_LOCK_NUM) != 0x00)
-            return (int8) NumericKeypadTranslationTable[translationIndex - 0x0F];
-        return (int8) ExtendedTranslationTable[translationIndex];
+            return (int8_t) NumericKeypadTranslationTable[translationIndex - 0x0F];
+        return (int8_t) ExtendedTranslationTable[translationIndex];
     }
     if (keyId >= KEY_SCAN_F1 && keyId <= KEY_SCAN_F10)
     {
-        byte functionKeyCode = KEYCODE_F1_BASE;
+        uint8_t functionKeyCode = KEYCODE_F1_BASE;
         if ((modifierFlags & KEY_MODIFIER_ANY_MASK) != 0x00)
         {
             functionKeyCode = KEYCODE_ALT_F1_BASE;
@@ -382,9 +382,9 @@ int8 TranslateKeyCode(void)
                     functionKeyCode = KEYCODE_SHIFT_F1_BASE;
             }
         }
-        return (int8) (functionKeyCode - (keyId - KEY_SCAN_F1));
+        return (int8_t) (functionKeyCode - (keyId - KEY_SCAN_F1));
     }
-    return (int8) (keyId | KEY_EXTENDED_OUTPUT_FLAG);
+    return (int8_t) (keyId | KEY_EXTENDED_OUTPUT_FLAG);
 }
 
 // 3037:0468. The BIOS's keyboard bytes (0040:0017, 0018 and 0096) seed the
@@ -396,8 +396,8 @@ int8 TranslateKeyCode(void)
 // IRET; the host has no Ctrl+Break to catch.
 void InstallKeyboardHandlers(void)
 {
-    byte flags = SDLBackend_ReadBiosKeyboardFlags(BIOS_SHIFT_FLAGS);
-    byte heldModifiers;
+    uint8_t flags = SDLBackend_ReadBiosKeyboardFlags(BIOS_SHIFT_FLAGS);
+    uint8_t heldModifiers;
 
     if ((flags & 0x40) != 0x00)
         Keyboard.modeFlags |= 0x0001;
@@ -405,9 +405,9 @@ void InstallKeyboardHandlers(void)
         Keyboard.modeFlags |= KEYBOARD_LOCK_NUM;
     if ((flags & 0x02) != 0x00)
         KeyDownBits[0x05] |= 0x10;
-    heldModifiers = (byte) ((flags & 0x01) << 0x01);
+    heldModifiers = (uint8_t) ((flags & 0x01) << 0x01);
     flags = SDLBackend_ReadBiosKeyboardFlags(BIOS_EXTENDED_SHIFT_FLAGS);
-    heldModifiers |= (byte) ((flags << 0x02) & 0x0C);
+    heldModifiers |= (uint8_t) ((flags << 0x02) & 0x0C);
     flags = SDLBackend_ReadBiosKeyboardFlags(BIOS_KEYBOARD_STATUS);
     if ((flags & 0x08) != 0x00)
         heldModifiers |= 0x40;

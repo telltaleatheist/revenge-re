@@ -30,65 +30,65 @@
     (&UnitCombatRatings[(unitIndex)])
 
 void SelectUnitTacticalTargets(void);
-void AdvanceUnitTacticalMovement(word16 unitIndex);
-word16 ExecuteUnitWeaponAI(word16 unitIndex);
+void AdvanceUnitTacticalMovement(uint16_t unitIndex);
+uint16_t ExecuteUnitWeaponAI(uint16_t unitIndex);
 void MoveUnitTowardMapCell(
-    word16 unitIndex, word16 destinationX, word16 destinationY);
-void UpdateUnitSpriteForFacing(word16 unitIndex, word16 facing);
-void AdvanceUnitRouteWaypoint(word16 unitIndex);
-void QueueLanceOrderNarration(word16 unitIndex);
+    uint16_t unitIndex, uint16_t destinationX, uint16_t destinationY);
+void UpdateUnitSpriteForFacing(uint16_t unitIndex, uint16_t facing);
+void AdvanceUnitRouteWaypoint(uint16_t unitIndex);
+void QueueLanceOrderNarration(uint16_t unitIndex);
 void SelectLanceFormationMode(
-    word16 leaderUnitIndex, word16 randomizeFormation);
+    uint16_t leaderUnitIndex, uint16_t randomizeFormation);
 void BeginTerrainDamageAtCell(
-    word16 mapX, word16 mapY, word16 terrainType);
+    uint16_t mapX, uint16_t mapY, uint16_t terrainType);
 void CollapseStructureAtMapCell(
-    int16 mapX, int16 mapY, word16 terrainType);
+    int16_t mapX, int16_t mapY, uint16_t terrainType);
 void ApplyTerrainImpact(
-    int16 mapX, int16 mapY,
-    word16 advanceBeforeRecording, word16 forceAnimationRecord);
-word16 GeneratePseudoRandomByte(void);
-void BuildArmWeaponAvailabilityMasks(word16 unitIndex);
-int16 ResolveWeaponAttack(
-    int16 attackerUnitIndex, int16 weaponIndex, int16 targetUnitIndex);
+    int16_t mapX, int16_t mapY,
+    uint16_t advanceBeforeRecording, uint16_t forceAnimationRecord);
+uint16_t GeneratePseudoRandomByte(void);
+void BuildArmWeaponAvailabilityMasks(uint16_t unitIndex);
+int16_t ResolveWeaponAttack(
+    int16_t attackerUnitIndex, int16_t weaponIndex, int16_t targetUnitIndex);
 void QueueTacticalProjectile(
-    word16 attackerUnitIndex,
-    byte weaponIndex,
-    word16 targetUnitIndex,
-    word16 shotHit);
+    uint16_t attackerUnitIndex,
+    uint8_t weaponIndex,
+    uint16_t targetUnitIndex,
+    uint16_t shotHit);
 void DrawWeaponAttackTrace(
-    word16 attackerUnitIndex,
-    int16 targetMapX,
-    int16 targetMapY,
-    word16 offsetEndpoints,
-    word16 shotHit,
-    word16 weaponIndex);
+    uint16_t attackerUnitIndex,
+    int16_t targetMapX,
+    int16_t targetMapY,
+    uint16_t offsetEndpoints,
+    uint16_t shotHit,
+    uint16_t weaponIndex);
 void CountUnitWeaponsByType(const RevengeUnitRecord *unitRecord);
-word16 CountOrRemoveUnitHeatSinks(
-    RevengeUnitRecord *unitRecord, word16 removeInstalledHeatSinks);
-uint32 CalculateSelectedWeaponRating(
-    uint32 weaponMask, const uint16 *weaponCounts);
-uint16 DetermineRelativeAttackDirection(
-    int16 sourceX, int16 sourceY, int16 targetX, int16 targetY);
-uint16 CalculateApproximateMapDistance(
-    int16 sourceX, int16 sourceY, int16 targetX, int16 targetY);
-word16 TraceMapLineOfSight(
-    int16 sourceX, int16 sourceY, int16 targetX, int16 targetY,
-    const byte *terrainTypeMap,
-    byte specialTerrainMinimum, byte specialTerrainMaximum,
-    byte blockingTerrainThreshold, byte maximumSteps);
-uint16 Roll2D6(void);
-word16 ReadTerrainDamageState(int16 mapX, int16 mapY);
-void DispatchWeaponEffect(int16 weaponEffectId);
+uint16_t CountOrRemoveUnitHeatSinks(
+    RevengeUnitRecord *unitRecord, uint16_t removeInstalledHeatSinks);
+uint32_t CalculateSelectedWeaponRating(
+    uint32_t weaponMask, const uint16_t *weaponCounts);
+uint16_t DetermineRelativeAttackDirection(
+    int16_t sourceX, int16_t sourceY, int16_t targetX, int16_t targetY);
+uint16_t CalculateApproximateMapDistance(
+    int16_t sourceX, int16_t sourceY, int16_t targetX, int16_t targetY);
+uint16_t TraceMapLineOfSight(
+    int16_t sourceX, int16_t sourceY, int16_t targetX, int16_t targetY,
+    const uint8_t *terrainTypeMap,
+    uint8_t specialTerrainMinimum, uint8_t specialTerrainMaximum,
+    uint8_t blockingTerrainThreshold, uint8_t maximumSteps);
+uint16_t Roll2D6(void);
+uint16_t ReadTerrainDamageState(int16_t mapX, int16_t mapY);
+void DispatchWeaponEffect(int16_t weaponEffectId);
 void QueueTacticalImpactVisual(
-    int16 mapX, int16 mapY, word16 impactClass);
+    int16_t mapX, int16_t mapY, uint16_t impactClass);
 void ApplyWeaponDamage(
-    int16 attackerUnitIndex, int16 weaponIndex, int16 targetUnitIndex);
-void DestroyScenarioUnit(word16 unitIndex);
-word16 FindOperationalLanceLeader(word16 unitIndex);
-word16 ShouldDestroyUnitAfterLegLoss(void);
-void RebuildLanceFormationAfterLeaderLoss(word16 firstUnitIndex);
-word16 AdvanceTerrainDamageState(
-    int16 mapX, int16 mapY, word16 maximumDamageState);
+    int16_t attackerUnitIndex, int16_t weaponIndex, int16_t targetUnitIndex);
+void DestroyScenarioUnit(uint16_t unitIndex);
+uint16_t FindOperationalLanceLeader(uint16_t unitIndex);
+uint16_t ShouldDestroyUnitAfterLegLoss(void);
+void RebuildLanceFormationAfterLeaderLoss(uint16_t firstUnitIndex);
+uint16_t AdvanceTerrainDamageState(
+    int16_t mapX, int16_t mapY, uint16_t maximumDamageState);
 
 
 #endif

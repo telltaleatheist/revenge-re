@@ -10,8 +10,8 @@
 
 #include <string.h>
 
-void AdvanceCampaignClock(byte hours, byte minutes);
-void ResetLiveUnitState(uint16 unitIndex);
+void AdvanceCampaignClock(uint8_t hours, uint8_t minutes);
+void ResetLiveUnitState(uint16_t unitIndex);
 void UpdatePilotAvailability(void);
 void InvalidateEmptyRosterSlots(void);
 void CompactScenarioLances(void);
@@ -22,11 +22,11 @@ void CompactScenarioLances(void);
 #define INVALID_ROSTER_INDEX       0xFF
 
 #define PILOT_ROSTER_RECORD(index) \
-    (&PilotRoster[(word16) (index)])
+    (&PilotRoster[(uint16_t) (index)])
 #define PILOT_STATE_RECORD(index) \
-    (&PilotRoster[(word16) (index)].availability)
+    (&PilotRoster[(uint16_t) (index)].availability)
 #define LANCE_ASSIGNMENT_RECORD(index) \
-    (&LanceAssignments[(word16) (index)])
+    (&LanceAssignments[(uint16_t) (index)])
 
 // ANNOTATION: campaign/scenario unit-roster preparation. MECHTYPE.DAT is exactly
 // 89 * 0x96 bytes; the dominant 0x96-byte copies below therefore move complete
@@ -37,7 +37,7 @@ void CompactScenarioLances(void);
 // active units' live records from their roster records.
 static void CopyActiveUnitsToLiveRecords(void)
 {
-    uint16 rosterIndex;
+    uint16_t rosterIndex;
 
     for (rosterIndex = 0x00; rosterIndex < ACTIVE_CAMPAIGN_UNIT_COUNT; ++rosterIndex)
         LiveScenarioUnits[rosterIndex] = PersistentUnitRoster[rosterIndex];
@@ -57,7 +57,7 @@ void PrepareScenarioUnitRosters(void)
     // [P] DS:8562/857B are parallel 24-byte per-unit map X/Y arrays. Preserve
     // them at DS:197B/1993 before rebuilding the scenario roster. Winning saves
     // contain coordinate-like pairs indexed like the 24 live-unit slots.
-    uint16 unitIndex = 0x00;
+    uint16_t unitIndex = 0x00;
     while (unitIndex < TACTICAL_UNIT_COUNT)
     {
         SavedScenarioUnitMapX[unitIndex] = ScenarioUnitMapX[unitIndex];
@@ -68,24 +68,24 @@ void PrepareScenarioUnitRosters(void)
     // scenario-specific changes below: DS:8337 the hour, DS:8338 the minute,
     // DS:8339 the battle's subtick.
     memcpy(SavedCampaignClockState, CampaignClockState, 0x03);
-    uint16 sceneSuffix = ScenarioFileSuffix;
-    uint16 rosterIndex36;
-    uint16 rosterIndex37;
-    uint16 rosterIndex38;
-    uint16 rosterIndex39;
-    uint16 rosterIndex42;
-    uint16 reserveIndex42;
-    uint16 rosterIndex44;
-    uint16 liveIndex45;
-    uint16 rosterIndex4C;
-    uint16 liveIndex4C;
-    uint16 rosterIndex4D;
-    uint16 rosterIndex4E;
-    uint16 lanceSlot4F;
-    uint16 lanceSlot50;
-    uint16 primaryUnitIndex51;
-    uint16 reserveUnitIndex51;
-    uint16 rosterIndex52;
+    uint16_t sceneSuffix = ScenarioFileSuffix;
+    uint16_t rosterIndex36;
+    uint16_t rosterIndex37;
+    uint16_t rosterIndex38;
+    uint16_t rosterIndex39;
+    uint16_t rosterIndex42;
+    uint16_t reserveIndex42;
+    uint16_t rosterIndex44;
+    uint16_t liveIndex45;
+    uint16_t rosterIndex4C;
+    uint16_t liveIndex4C;
+    uint16_t rosterIndex4D;
+    uint16_t rosterIndex4E;
+    uint16_t lanceSlot4F;
+    uint16_t lanceSlot50;
+    uint16_t primaryUnitIndex51;
+    uint16_t reserveUnitIndex51;
+    uint16_t rosterIndex52;
     if (sceneSuffix <= 0x54)
     {
         switch (sceneSuffix)
@@ -95,17 +95,17 @@ void PrepareScenarioUnitRosters(void)
             LiveScenarioUnits[0x05] =
                 BlankUnitRecord;
             ScenarioUnitZeroAvailable = 0x00;
-            if ((word16) (PersistentUnitRoster[0x00].deploymentState |
-                    ((word16) PersistentUnitRoster[0x00].unitTypeId << 0x08)) != 0x00 &&
-                (word16) (PersistentUnitRoster[0x00].walkMovement |
-                    ((word16) PersistentUnitRoster[0x00].jumpMovement << 0x08)) != 0x00)
+            if ((uint16_t) (PersistentUnitRoster[0x00].deploymentState |
+                    ((uint16_t) PersistentUnitRoster[0x00].unitTypeId << 0x08)) != 0x00 &&
+                (uint16_t) (PersistentUnitRoster[0x00].walkMovement |
+                    ((uint16_t) PersistentUnitRoster[0x00].jumpMovement << 0x08)) != 0x00)
             {
                 LiveScenarioUnits[0x05] =
                     PersistentUnitRoster[0x00];
                 LiveScenarioUnits[0x05].deploymentState = 0x00;
                 ScenarioUnitZeroAvailable = 0x01;
             }
-            ScenarioUnitFifteenState = (int16)
+            ScenarioUnitFifteenState = (int16_t)
                                            PersistentUnitRoster[0x0F]
                                                .deploymentState;
             if ((CampaignUnitFifteenOverrideFlag & 0x80) != 0x00)
@@ -415,13 +415,13 @@ void PrepareScenarioUnitRosters(void)
 // Called from:
 //      PrepareScenarioUnitRosters
 // Verified against 30F1:0878-0A3E.
-void ResetLiveUnitState(uint16 unitIndex)
+void ResetLiveUnitState(uint16_t unitIndex)
 {
     // V: Restore one live unit from its immutable maxima, clear equipment
     // damage bits and runtime engine/heat state, and refill ammunition from
     // the fourteen weapon-family counts and DS:058E capacity multipliers.
     RevengeUnitRecord *unitRecord = &LiveScenarioUnits[unitIndex];
-    uint16 fieldIndex;
+    uint16_t fieldIndex;
     for (fieldIndex = 0x00; fieldIndex < AMMUNITION_FAMILY_COUNT; ++fieldIndex)
     {
         if (fieldIndex < BATTLEMECH_LOCATION_COUNT)
@@ -435,11 +435,11 @@ void ResetLiveUnitState(uint16 unitIndex)
             unitRecord->currentArmor[fieldIndex] =
                 unitRecord->maximumArmor[fieldIndex];
 
-        word16 ammunitionCapacity =
+        uint16_t ammunitionCapacity =
             AmmoCapacityMultiplierTable[fieldIndex];
-        word16 weaponFamilyCount = unitRecord->weaponFamilyCounts[fieldIndex];
-        unitRecord->currentAmmunition[fieldIndex] = (word16) ((uint32) ammunitionCapacity *
-            (uint32) weaponFamilyCount);
+        uint16_t weaponFamilyCount = unitRecord->weaponFamilyCounts[fieldIndex];
+        unitRecord->currentAmmunition[fieldIndex] = (uint16_t) ((uint32_t) ammunitionCapacity *
+            (uint32_t) weaponFamilyCount);
 
         if (fieldIndex < BATTLEMECH_TORSO_EQUIPMENT_SLOT_COUNT)
         {
@@ -472,16 +472,16 @@ void UpdatePilotAvailability(void)
     // distinguish availability, survival, ownership, and selection state.
     // ANNOTATION: walk the first 12 persistent records and update the first
     // byte of each four-byte DS:1D4F pilot-state entry.
-    word16 unitIndex;
+    uint16_t unitIndex;
     for (unitIndex = 0x0000; unitIndex < ACTIVE_CAMPAIGN_UNIT_COUNT; ++unitIndex)
     {
         RevengeUnitRecord *unitRecord = &PersistentUnitRoster[unitIndex];
         if (unitRecord->tonnage != 0x00)
         {
-            int16 pilotId = unitRecord->pilotId;
+            int16_t pilotId = unitRecord->pilotId;
             if (pilotId < PILOT_STATE_COUNT)
             {
-                byte *pilotState = PILOT_STATE_RECORD(pilotId);
+                uint8_t *pilotState = PILOT_STATE_RECORD(pilotId);
                 if (unitRecord->deploymentState != 0x00)
                     pilotState[0x00] = 0x01;
                 else
@@ -498,8 +498,8 @@ void UpdatePilotAvailability(void)
 // Slot FF, which a scene's deploy passes (1A1F:339F), is the entry 0x3FC
 // bytes on from DS:1D4C, past the roster: DS:2148, PilotRosterRecordPastEnd.
 void AssignPilotRosterEntryToUnit(
-    word16 unitIndex,
-    word16 rosterSlot)
+    uint16_t unitIndex,
+    uint16_t rosterSlot)
 {
     RevengeUnitRecord *unitRecord = &PersistentUnitRoster[unitIndex];
     RevengePilotRosterRecord *pilotRecord =
@@ -514,15 +514,15 @@ void AssignPilotRosterEntryToUnit(
 //     word16 scenarioAllegianceIndex)
 // Called from:
 //      LoadTacticalScenarioResources
-byte AssignScenarioLanceAllegiances(word16 scenarioAllegianceIndex)
+uint8_t AssignScenarioLanceAllegiances(uint16_t scenarioAllegianceIndex)
 {
     // V: DS:5928 is a table of three allegiance bytes per scenario entry. Each
     // byte is copied to one four-unit group among the first twelve persistent
     // unit records. AX happens to retain the final assigned value on return.
-    const byte *scenarioAllegiances = ScenarioLanceAllegianceTable[REVENGE_INDEX(
+    const uint8_t *scenarioAllegiances = ScenarioLanceAllegianceTable[REVENGE_INDEX(
         ScenarioLanceAllegianceTable, scenarioAllegianceIndex)];
-    byte assignedAllegiance = 0x00;
-    word16 unitIndex;
+    uint8_t assignedAllegiance = 0x00;
+    uint16_t unitIndex;
 
     for (unitIndex = 0x00;
         unitIndex < ACTIVE_CAMPAIGN_UNIT_COUNT;
@@ -542,7 +542,7 @@ byte AssignScenarioLanceAllegiances(word16 scenarioAllegianceIndex)
 void InvalidateEmptyRosterSlots(void)
 {
     // Invalidate each 0x96-byte persistent record whose walk movement is zero.
-    uint16 unitIndex;
+    uint16_t unitIndex;
     for (unitIndex = 0x00; unitIndex < CAMPAIGN_UNIT_COUNT; ++unitIndex)
     {
         RevengeUnitRecord *unitRecord = &PersistentUnitRoster[unitIndex];
@@ -563,13 +563,13 @@ void CompactScenarioLances(void)
     // below operate on complete 0x96-byte unit records. DS:1CCA record +07 is
     // the assigned persistent slot, +08 is the live/display slot, and +09 is
     // the pilot ID; the latter two are verified in DrawUnitRosterScreen.
-    uint16 lanceIndex;
+    uint16_t lanceIndex;
     for (lanceIndex = 0x00; lanceIndex < 0x02; ++lanceIndex)
     {
-        uint16 destinationSlot = lanceIndex << 0x02;
-        uint16 sourceSlot = lanceIndex << 0x02;
-        uint16 assignmentIndexOffset = 0x00;
-        word16 mirrorLiveRecords = FALSE;
+        uint16_t destinationSlot = lanceIndex << 0x02;
+        uint16_t sourceSlot = lanceIndex << 0x02;
+        uint16_t assignmentIndexOffset = 0x00;
+        uint16_t mirrorLiveRecords = FALSE;
         if (ScenarioFileSuffix >= 0x4F &&
             ScenarioFileSuffix <= 0x50)
         {
@@ -579,7 +579,7 @@ void CompactScenarioLances(void)
                 assignmentIndexOffset = 0x04;
         }
 
-        uint16 lanceSlot;
+        uint16_t lanceSlot;
         for (lanceSlot = 0x00; lanceSlot < LANCE_UNIT_COUNT; ++lanceSlot)
         {
             RevengeUnitRecord *sourceUnit =
@@ -622,7 +622,7 @@ void CompactScenarioLances(void)
             ++sourceSlot;
         }
 
-        uint16 assignmentSlot = lanceIndex << 0x02;
+        uint16_t assignmentSlot = lanceIndex << 0x02;
         for (lanceSlot = 0x00; lanceSlot < LANCE_UNIT_COUNT; ++lanceSlot)
         {
             RevengeUnitLanceAssignment *assignment = LANCE_ASSIGNMENT_RECORD(
@@ -641,10 +641,10 @@ void CompactScenarioLances(void)
 // VERIFIED against ASM 30F1:0DE3-0E95.
 void SnapshotLateCampaignLanceUnits(void)
 {
-    word16 unitIndex;
-    int16 campaignStage;
+    uint16_t unitIndex;
+    int16_t campaignStage;
 
-    campaignStage = (int16) CampaignStageIndex;
+    campaignStage = (int16_t) CampaignStageIndex;
     if (campaignStage >= 0x0010 && campaignStage <= 0x0011)
     {
         for (unitIndex = 0x0000; unitIndex < 0x0004; ++unitIndex)
@@ -676,14 +676,14 @@ void PromoteReserveUnitsForCampaignStage(void)
     // groups at 0-3/0-7 and 8-11, then invalidate the corresponding 1CCA UI
     // rows when a unit is empty or its pilot-state byte is zero. A gameplay
     // trace must confirm the player's terminology for these reserve groups.
-    uint16 reserveIndex;
+    uint16_t reserveIndex;
     if (CampaignStageIndex >= 0x10 &&
         CampaignStageIndex <= 0x11)
     {
         for (reserveIndex = 0x00; reserveIndex < 0x04; ++reserveIndex)
         {
-            uint16 firstDestination = reserveIndex;
-            uint16 secondDestination = reserveIndex + 0x08;
+            uint16_t firstDestination = reserveIndex;
+            uint16_t secondDestination = reserveIndex + 0x08;
             RevengeUnitRecord *firstUnit;
             RevengeUnitRecord *secondUnit;
             RevengeUnitLanceAssignment *assignment;

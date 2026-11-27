@@ -8,15 +8,15 @@
 
 /* 0D73:566E-57AA */
 void DrawClippedSprite(
-    byte *destination,
-    const byte *encodedSprite,
-    int16 x,
-    int16 y,
-    word16 clippingRegionIndex)
+    uint8_t *destination,
+    const uint8_t *encodedSprite,
+    int16_t x,
+    int16_t y,
+    uint16_t clippingRegionIndex)
 {
     TextWindowContext *clippingRegion;
-    int16 clippedX;
-    int16 clippedY;
+    int16_t clippedX;
+    int16_t clippedY;
 
     if (SpriteDrawBusy != FALSE)
         return;
@@ -34,8 +34,8 @@ void DrawClippedSprite(
         (clippingRegion->heightTiles << 0x03);
     SpriteClipBottomPixelMirror = EncodedSpriteClipBottomPixel;
 
-    clippedX = x + (int16) (EncodedSpriteClipLeftTile << 0x03);
-    clippedY = y + (int16) SpriteClipTopPixel;
+    clippedX = x + (int16_t) (EncodedSpriteClipLeftTile << 0x03);
+    clippedY = y + (int16_t) SpriteClipTopPixel;
     if (encodedSprite != NULL)
     {
         /* The CGA's and the Tandy's decoder (0D73:5743, 0800:14B7) and the

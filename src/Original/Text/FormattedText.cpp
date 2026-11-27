@@ -43,22 +43,22 @@ void RenderFormattedText(const char *formattedText)
     char tokenBuffer[0x52];
     // V: 35CE:0031 explicitly writes this terminator; Reko omitted it.
     composedLine[0x00] = '\0';
-    word16 allowLeadingSpace = 0x01;
-    word16 reachedEnd = 0x00;
-    word16 hasPendingExpandedByte = 0x00;
-    byte pendingExpandedByte = 0x00;
-    word16 tokenLength = 0x00;
-    word16 textOffset = 0x00;
-    word16 lineColumn = ActiveTextCursorColumn;
-    word16 requestedColumn;
-    word16 paddingTargetColumn;
-    word16 remainingPaddingColumns;
+    uint16_t allowLeadingSpace = 0x01;
+    uint16_t reachedEnd = 0x00;
+    uint16_t hasPendingExpandedByte = 0x00;
+    uint8_t pendingExpandedByte = 0x00;
+    uint16_t tokenLength = 0x00;
+    uint16_t textOffset = 0x00;
+    uint16_t lineColumn = ActiveTextCursorColumn;
+    uint16_t requestedColumn;
+    uint16_t paddingTargetColumn;
+    uint16_t remainingPaddingColumns;
     while (reachedEnd == 0x00)
     {
-        byte formatByte;
+        uint8_t formatByte;
         if (hasPendingExpandedByte == 0x00)
         {
-            formatByte = (byte) formattedText[textOffset];
+            formatByte = (uint8_t) formattedText[textOffset];
             ++textOffset;
         }
         else
@@ -68,8 +68,8 @@ void RenderFormattedText(const char *formattedText)
         }
         if ((formatByte & 0x80) != 0x00)
         {
-            byte dictionaryIndex = (byte) (((int16) formatByte & 0x7F) >> 0x03);
-            pendingExpandedByte = CompressedTextSecondByteTable[(word16) dictionaryIndex * 0x08 + (formatByte & 0x07)];
+            uint8_t dictionaryIndex = (uint8_t) (((int16_t) formatByte & 0x7F) >> 0x03);
+            pendingExpandedByte = CompressedTextSecondByteTable[(uint16_t) dictionaryIndex * 0x08 + (formatByte & 0x07)];
             formatByte = CompressedTextFirstByteTable[dictionaryIndex];
             hasPendingExpandedByte = 0x01;
         }
@@ -112,7 +112,7 @@ void RenderFormattedText(const char *formattedText)
             }
             lineColumn = ActiveTextCursorColumn;
             ActiveTextBackgroundColor =
-                (word16) (int8) formattedText[textOffset];
+                (uint16_t) (int8_t) formattedText[textOffset];
             tokenLength = 0x00;
             ++textOffset;
             break;
@@ -132,7 +132,7 @@ void RenderFormattedText(const char *formattedText)
             }
             lineColumn = ActiveTextCursorColumn;
             ActiveTextForegroundColor =
-                (word16) (int8) formattedText[textOffset];
+                (uint16_t) (int8_t) formattedText[textOffset];
             tokenLength = 0x00;
             ++textOffset;
             break;
@@ -150,7 +150,7 @@ void RenderFormattedText(const char *formattedText)
                 RenderTextToActiveWindow(composedLine, 0x01);
                 RenderTextToActiveWindow(tokenBuffer, 0x00);
             }
-            requestedColumn = (word16) (int8) formattedText[textOffset];
+            requestedColumn = (uint16_t) (int8_t) formattedText[textOffset];
             ActiveTextCursorColumn = requestedColumn;
             tokenLength = 0x00;
             lineColumn = requestedColumn;
@@ -164,18 +164,18 @@ void RenderFormattedText(const char *formattedText)
             }
             break;
         case FORMATTED_TEXT_PAD_TO_COLUMN:
-            paddingTargetColumn = (word16) (int8) formattedText[textOffset];
+            paddingTargetColumn = (uint16_t) (int8_t) formattedText[textOffset];
             remainingPaddingColumns = paddingTargetColumn;
             ++textOffset;
-            if ((int16) ActiveTextCursorColumn < (int16) paddingTargetColumn)
+            if ((int16_t) ActiveTextCursorColumn < (int16_t) paddingTargetColumn)
             {
                 for (;
-                    (int16) ActiveTextCursorColumn <
-                    (int16) remainingPaddingColumns;
+                    (int16_t) ActiveTextCursorColumn <
+                    (int16_t) remainingPaddingColumns;
                     --remainingPaddingColumns)
                 {
                     tokenBuffer[tokenLength] = 0x20;
-                    tokenLength = (word16) tokenLength + 0x01;
+                    tokenLength = (uint16_t) tokenLength + 0x01;
                 }
                 tokenBuffer[tokenLength] = 0x00;
                 strcat(composedLine, tokenBuffer);
@@ -194,7 +194,7 @@ void RenderFormattedText(const char *formattedText)
                     (tokenLength + lineColumn != 0x00 || allowLeadingSpace != 0x00))
                 {
                     tokenBuffer[tokenLength] = 0x20;
-                    tokenLength = (word16) tokenLength + 0x01;
+                    tokenLength = (uint16_t) tokenLength + 0x01;
                 }
                 tokenBuffer[tokenLength] = 0x00;
                 strcat(composedLine, tokenBuffer);
@@ -202,12 +202,12 @@ void RenderFormattedText(const char *formattedText)
             else
             {
                 if (ActiveFontGlyphAdvanceX *
-                            ((word16) tokenLength + 0x01) <=
+                            ((uint16_t) tokenLength + 0x01) <=
                         ActiveTextWindowWidthTiles << 0x03 &&
                     tokenLength != 0x00)
                 {
                     tokenBuffer[tokenLength] = 0x20;
-                    tokenLength = (word16) tokenLength + 0x01;
+                    tokenLength = (uint16_t) tokenLength + 0x01;
                 }
                 tokenBuffer[tokenLength] = 0x00;
                 RenderTextToActiveWindow(composedLine, 0x01);
@@ -234,7 +234,7 @@ void RenderFormattedText(const char *formattedText)
             else
             {
                 tokenBuffer[tokenLength] = formatByte;
-                tokenLength = (word16) tokenLength + 0x01;
+                tokenLength = (uint16_t) tokenLength + 0x01;
             }
             break;
         }

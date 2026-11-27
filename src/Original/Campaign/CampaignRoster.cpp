@@ -6,11 +6,11 @@
 
 // 0D73:2101: byte PrepareActivePilotList(void)
 // VERIFIED against 0D73:2101-214A.
-byte PrepareActivePilotList(void)
+uint8_t PrepareActivePilotList(void)
 {
-    word16 pilotSlot;
-    word16 lineCount;
-    word16 windowHeight;
+    uint16_t pilotSlot;
+    uint16_t lineCount;
+    uint16_t windowHeight;
 
     lineCount = 0x0003;
     for (pilotSlot = 0x0000; pilotSlot < 0x0025; ++pilotSlot)
@@ -20,18 +20,18 @@ byte PrepareActivePilotList(void)
             ++lineCount;
         }
     }
-    windowHeight = (word16) ((ActiveFontLineHeight * lineCount +
-                                 0x0007) >>
+    windowHeight = (uint16_t) ((ActiveFontLineHeight * lineCount +
+                                   0x0007) >>
         0x03);
-    ActivePilotListWindowHeight = (byte) windowHeight;
-    return (byte) windowHeight;
+    ActivePilotListWindowHeight = (uint8_t) windowHeight;
+    return (uint8_t) windowHeight;
 }
 
 // 0D73:214B: void RenderActivePilotList(void)
 // VERIFIED against 0D73:214B-21A4.
 void RenderActivePilotList(void)
 {
-    word16 pilotSlot;
+    uint16_t pilotSlot;
 
     HideMouseCursorOverlay();
     RenderFormattedText(PilotRosterHeadingText);
@@ -49,12 +49,12 @@ void RenderActivePilotList(void)
 
 // 0D73:21A5: byte PrepareSurvivingCommanderList(void)
 // VERIFIED against 0D73:21A5-223C.
-byte PrepareSurvivingCommanderList(void)
+uint8_t PrepareSurvivingCommanderList(void)
 {
-    word16 firstUnitIndex;
-    word16 unitSlot;
-    word16 lineCount;
-    word16 windowHeight;
+    uint16_t firstUnitIndex;
+    uint16_t unitSlot;
+    uint16_t lineCount;
+    uint16_t windowHeight;
 
     lineCount = 0x0003;
     for (firstUnitIndex = 0x0000;
@@ -72,19 +72,19 @@ byte PrepareSurvivingCommanderList(void)
             }
         }
     }
-    windowHeight = (word16) ((ActiveFontLineHeight * lineCount +
-                                 0x0007) >>
+    windowHeight = (uint16_t) ((ActiveFontLineHeight * lineCount +
+                                   0x0007) >>
         0x03);
-    CommanderListWindowHeight = (byte) windowHeight;
-    return (byte) windowHeight;
+    CommanderListWindowHeight = (uint8_t) windowHeight;
+    return (uint8_t) windowHeight;
 }
 
 // 0D73:223D: void RenderSurvivingCommanderList(void)
 // VERIFIED against 0D73:223D-22E7.
 void RenderSurvivingCommanderList(void)
 {
-    word16 firstUnitIndex;
-    word16 unitSlot;
+    uint16_t firstUnitIndex;
+    uint16_t unitSlot;
 
     HideMouseCursorOverlay();
     RenderFormattedText(PilotRosterHeadingText);
@@ -109,9 +109,9 @@ void RenderSurvivingCommanderList(void)
 
 // 0D73:22E8: word16 HasFallenPilots(void)
 // VERIFIED against 0D73:22E8-2316.
-word16 HasFallenPilots(void)
+uint16_t HasFallenPilots(void)
 {
-    word16 pilotSlot;
+    uint16_t pilotSlot;
 
     for (pilotSlot = 0x0000; pilotSlot < 0x0025; ++pilotSlot)
     {
@@ -125,11 +125,11 @@ word16 HasFallenPilots(void)
 
 // 0D73:2317: byte PrepareFallenPilotList(void)
 // VERIFIED against 0D73:2317-2360.
-byte PrepareFallenPilotList(void)
+uint8_t PrepareFallenPilotList(void)
 {
-    word16 pilotSlot;
-    word16 lineCount;
-    word16 windowHeight;
+    uint16_t pilotSlot;
+    uint16_t lineCount;
+    uint16_t windowHeight;
 
     lineCount = 0x0002;
     for (pilotSlot = 0x0000; pilotSlot < 0x0025; ++pilotSlot)
@@ -139,18 +139,18 @@ byte PrepareFallenPilotList(void)
             ++lineCount;
         }
     }
-    windowHeight = (word16) ((ActiveFontLineHeight * lineCount +
-                                 0x0007) >>
+    windowHeight = (uint16_t) ((ActiveFontLineHeight * lineCount +
+                                   0x0007) >>
         0x03);
-    FallenPilotListWindowHeight = (byte) windowHeight;
-    return (byte) windowHeight;
+    FallenPilotListWindowHeight = (uint8_t) windowHeight;
+    return (uint8_t) windowHeight;
 }
 
 // 0D73:2361: void RenderFallenPilotList(void)
 // VERIFIED against 0D73:2361-23BA.
 void RenderFallenPilotList(void)
 {
-    word16 pilotSlot;
+    uint16_t pilotSlot;
 
     HideMouseCursorOverlay();
     RenderFormattedText(PilotRosterHeadingText);

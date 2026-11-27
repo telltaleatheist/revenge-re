@@ -7,10 +7,10 @@
 // 34B3:0008
 void LoadPackedIconResource(
     const char *resourcePath,
-    byte *packedDisplayBuffer)
+    uint8_t *packedDisplayBuffer)
 {
-    word16 packedByteCount;
-    int16 fileHandle;
+    uint16_t packedByteCount;
+    int16_t fileHandle;
 
     fileHandle = OpenTrackedFile((char *) resourcePath, 0x0001);
     ReadTrackedFile(fileHandle, &packedByteCount, 0x00000002U);

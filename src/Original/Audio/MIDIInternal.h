@@ -6,16 +6,16 @@
 
 typedef struct MIDIDriverHostDispatch
 {
-    word16 (*probe)(void);
-    void (*activate)(word16 activationArgument);
+    uint16_t (*probe)(void);
+    void (*activate)(uint16_t activationArgument);
     void (*deactivate)(void);
-    uint16 (*filterByte)(uint16 midiByte);
-    void (*startVoice)(word16 voiceRecordOffset,
-        word16 channelStateOffset, word16 velocity);
-    void (*releaseVoice)(word16 voiceRecordOffset);
+    uint16_t (*filterByte)(uint16_t midiByte);
+    void (*startVoice)(uint16_t voiceRecordOffset,
+        uint16_t channelStateOffset, uint16_t velocity);
+    void (*releaseVoice)(uint16_t voiceRecordOffset);
     void (*reset)(void);
-    void (*loadInstrument)(const byte *packedInstrument,
-        byte *decodedInstrument);
+    void (*loadInstrument)(const uint8_t *packedInstrument,
+        uint8_t *decodedInstrument);
     void (*service)(void);
 } MIDIDriverHostDispatch;
 

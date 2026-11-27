@@ -27,49 +27,49 @@ enum
 
 // 0800:06D1: uint16 DetermineRelativeAttackDirection(
 //     int16 sourceX, int16 sourceY, int16 targetX, int16 targetY)
-uint16 DetermineRelativeAttackDirection(
-    int16 sourceX,
-    int16 sourceY,
-    int16 targetX,
-    int16 targetY)
+uint16_t DetermineRelativeAttackDirection(
+    int16_t sourceX,
+    int16_t sourceY,
+    int16_t targetX,
+    int16_t targetY)
 {
-    int16 deltaY;
-    int16 deltaX;
-    int16 absoluteY;
-    int16 absoluteX;
-    int16 doubledDelta;
-    word16 comparisonMask;
+    int16_t deltaY;
+    int16_t deltaX;
+    int16_t absoluteY;
+    int16_t absoluteX;
+    int16_t doubledDelta;
+    uint16_t comparisonMask;
 
-    deltaY = (int16) ((uint16) sourceY - (uint16) targetY);
-    deltaX = (int16) ((uint16) targetX - (uint16) sourceX);
+    deltaY = (int16_t) ((uint16_t) sourceY - (uint16_t) targetY);
+    deltaX = (int16_t) ((uint16_t) targetX - (uint16_t) sourceX);
     absoluteY = deltaY;
     if (absoluteY < 0x0000)
     {
-        absoluteY = (int16) (0x0000 - (uint16) absoluteY);
+        absoluteY = (int16_t) (0x0000 - (uint16_t) absoluteY);
     }
     absoluteX = deltaX;
     if (absoluteX < 0x0000)
     {
-        absoluteX = (int16) (0x0000 - (uint16) absoluteX);
+        absoluteX = (int16_t) (0x0000 - (uint16_t) absoluteX);
     }
 
     comparisonMask = 0x0000;
-    doubledDelta = (int16) ((uint16) deltaY << 0x01);
+    doubledDelta = (int16_t) ((uint16_t) deltaY << 0x01);
     if (doubledDelta >= absoluteX)
     {
         comparisonMask |= 0x0008;
     }
-    doubledDelta = (int16) (0x0000 - (uint16) doubledDelta);
+    doubledDelta = (int16_t) (0x0000 - (uint16_t) doubledDelta);
     if (doubledDelta >= absoluteX)
     {
         comparisonMask |= 0x0004;
     }
-    doubledDelta = (int16) ((uint16) deltaX << 0x01);
+    doubledDelta = (int16_t) ((uint16_t) deltaX << 0x01);
     if (doubledDelta >= absoluteY)
     {
         comparisonMask |= 0x0002;
     }
-    doubledDelta = (int16) (0x0000 - (uint16) doubledDelta);
+    doubledDelta = (int16_t) (0x0000 - (uint16_t) doubledDelta);
     if (doubledDelta >= absoluteY)
     {
         comparisonMask |= 0x0001;
@@ -84,29 +84,29 @@ uint16 DetermineRelativeAttackDirection(
 // the special-terrain range, or at the first terrain ID at/above the blocking
 // threshold.
 // Verified against 0800:078C-0929.
-word16 TraceMapLineOfSight(
-    int16 sourceX,
-    int16 sourceY,
-    int16 targetX,
-    int16 targetY,
-    const byte *terrainTypeMap,
-    byte specialTerrainMinimum,
-    byte specialTerrainMaximum,
-    byte blockingTerrainThreshold,
-    byte maximumSteps)
+uint16_t TraceMapLineOfSight(
+    int16_t sourceX,
+    int16_t sourceY,
+    int16_t targetX,
+    int16_t targetY,
+    const uint8_t *terrainTypeMap,
+    uint8_t specialTerrainMinimum,
+    uint8_t specialTerrainMaximum,
+    uint8_t blockingTerrainThreshold,
+    uint8_t maximumSteps)
 {
-    int16 verticalDelta;
-    int16 horizontalDelta;
-    int16 absoluteVerticalDelta;
-    int16 absoluteHorizontalDelta;
-    int16 majorDelta;
-    int16 minorDelta;
-    int16 error;
-    int16 currentX;
-    int16 currentY;
-    word16 terrainOffset;
-    word16 direction;
-    byte specialTerrainRemaining;
+    int16_t verticalDelta;
+    int16_t horizontalDelta;
+    int16_t absoluteVerticalDelta;
+    int16_t absoluteHorizontalDelta;
+    int16_t majorDelta;
+    int16_t minorDelta;
+    int16_t error;
+    int16_t currentX;
+    int16_t currentY;
+    uint16_t terrainOffset;
+    uint16_t direction;
+    uint8_t specialTerrainRemaining;
 
     currentX = sourceX;
     currentY = sourceY;
@@ -115,20 +115,20 @@ word16 TraceMapLineOfSight(
 	 * between source and target, so every cell it reads is inside the map
 	 * (at most 4E20h bytes, 1A1F's TACTICAL_OVERVIEW_MAP_OFFSET): the sum
 	 * never wraps, and the offset here starts at the map's first byte. */
-    terrainOffset = (word16) ((word16) sourceX +
-        (word16) ((byte) sourceY *
-            (byte) LinePrimaryRowOffset[0x03]));
-    verticalDelta = (int16) ((word16) sourceY - (word16) targetY);
-    horizontalDelta = (int16) ((word16) targetX - (word16) sourceX);
+    terrainOffset = (uint16_t) ((uint16_t) sourceX +
+        (uint16_t) ((uint8_t) sourceY *
+            (uint8_t) LinePrimaryRowOffset[0x03]));
+    verticalDelta = (int16_t) ((uint16_t) sourceY - (uint16_t) targetY);
+    horizontalDelta = (int16_t) ((uint16_t) targetX - (uint16_t) sourceX);
     absoluteVerticalDelta = verticalDelta;
     if (absoluteVerticalDelta < 0x00)
     {
-        absoluteVerticalDelta = (int16) (0x00 - (word16) absoluteVerticalDelta);
+        absoluteVerticalDelta = (int16_t) (0x00 - (uint16_t) absoluteVerticalDelta);
     }
     absoluteHorizontalDelta = horizontalDelta;
     if (absoluteHorizontalDelta < 0x00)
     {
-        absoluteHorizontalDelta = (int16) (0x00 - (word16) absoluteHorizontalDelta);
+        absoluteHorizontalDelta = (int16_t) (0x00 - (uint16_t) absoluteHorizontalDelta);
     }
     majorDelta = absoluteVerticalDelta;
     minorDelta = absoluteHorizontalDelta;
@@ -143,7 +143,7 @@ word16 TraceMapLineOfSight(
         if (horizontalDelta >= 0x01)
         {
             direction = 0x02;
-            if ((int16) (0x00 - (word16) verticalDelta) >
+            if ((int16_t) (0x00 - (uint16_t) verticalDelta) >
                 horizontalDelta)
             {
                 ++direction;
@@ -152,8 +152,8 @@ word16 TraceMapLineOfSight(
         else
         {
             direction = 0x04;
-            if ((int16) (0x00 - (word16) horizontalDelta) >
-                (int16) (0x00 - (word16) verticalDelta))
+            if ((int16_t) (0x00 - (uint16_t) horizontalDelta) >
+                (int16_t) (0x00 - (uint16_t) verticalDelta))
             {
                 ++direction;
             }
@@ -171,18 +171,18 @@ word16 TraceMapLineOfSight(
     {
         direction = 0x06;
         if (verticalDelta >
-            (int16) (0x00 - (word16) horizontalDelta))
+            (int16_t) (0x00 - (uint16_t) horizontalDelta))
         {
             ++direction;
         }
     }
 
-    error = (int16) ((word16) majorDelta >> 0x01);
+    error = (int16_t) ((uint16_t) majorDelta >> 0x01);
     specialTerrainRemaining = 0x03;
     for (;;)
     {
-        byte terrainType;
-        const byte *terrainCell;
+        uint8_t terrainType;
+        const uint8_t *terrainCell;
 
         --maximumSteps;
         if (maximumSteps == 0x00)
@@ -212,38 +212,38 @@ word16 TraceMapLineOfSight(
 
         if (currentX != targetX)
         {
-            currentX = (int16) ((word16) currentX +
-                (word16) LinePrimaryXStep[direction]);
-            terrainOffset = (word16) (terrainOffset +
-                (word16) LinePrimaryXStep[direction]);
+            currentX = (int16_t) ((uint16_t) currentX +
+                (uint16_t) LinePrimaryXStep[direction]);
+            terrainOffset = (uint16_t) (terrainOffset +
+                (uint16_t) LinePrimaryXStep[direction]);
         }
         if (currentY != targetY)
         {
-            currentY = (int16) ((word16) currentY +
-                (word16) LinePrimaryYStep[direction]);
-            terrainOffset = (word16) (terrainOffset +
-                (word16) LinePrimaryRowOffset[direction]);
+            currentY = (int16_t) ((uint16_t) currentY +
+                (uint16_t) LinePrimaryYStep[direction]);
+            terrainOffset = (uint16_t) (terrainOffset +
+                (uint16_t) LinePrimaryRowOffset[direction]);
         }
 
-        error = (int16) ((word16) error - (word16) minorDelta);
+        error = (int16_t) ((uint16_t) error - (uint16_t) minorDelta);
         if (error >= 0x00)
         {
             continue;
         }
-        error = (int16) ((word16) error + (word16) majorDelta);
+        error = (int16_t) ((uint16_t) error + (uint16_t) majorDelta);
         if (currentX != targetX)
         {
-            currentX = (int16) ((word16) currentX +
-                (word16) LineSecondaryXStep[direction]);
-            terrainOffset = (word16) (terrainOffset +
-                (word16) LineSecondaryXStep[direction]);
+            currentX = (int16_t) ((uint16_t) currentX +
+                (uint16_t) LineSecondaryXStep[direction]);
+            terrainOffset = (uint16_t) (terrainOffset +
+                (uint16_t) LineSecondaryXStep[direction]);
         }
         if (currentY != targetY)
         {
-            currentY = (int16) ((word16) currentY +
-                (word16) LineSecondaryYStep[direction]);
-            terrainOffset = (word16) (terrainOffset +
-                (word16) LineSecondaryRowOffset[direction]);
+            currentY = (int16_t) ((uint16_t) currentY +
+                (uint16_t) LineSecondaryYStep[direction]);
+            terrainOffset = (uint16_t) (terrainOffset +
+                (uint16_t) LineSecondaryRowOffset[direction]);
         }
     }
 }
@@ -251,34 +251,34 @@ word16 TraceMapLineOfSight(
 // 0800:092A: int16 InterpolateLineCoordinate(int16 clipCoordinate,
 //     int16 lineStartCoordinate, int16 otherStartCoordinate,
 //     int16 otherEndCoordinate, int16 lineEndCoordinate)
-int16 InterpolateLineCoordinate(
-    int16 clipCoordinate,
-    int16 lineStartCoordinate,
-    int16 otherStartCoordinate,
-    int16 otherEndCoordinate,
-    int16 lineEndCoordinate)
+int16_t InterpolateLineCoordinate(
+    int16_t clipCoordinate,
+    int16_t lineStartCoordinate,
+    int16_t otherStartCoordinate,
+    int16_t otherEndCoordinate,
+    int16_t lineEndCoordinate)
 {
-    int16 boundaryDelta;
-    int16 otherDelta;
-    int16 lineDelta;
-    int32 numerator;
-    int16 interpolatedDelta;
+    int16_t boundaryDelta;
+    int16_t otherDelta;
+    int16_t lineDelta;
+    int32_t numerator;
+    int16_t interpolatedDelta;
 
     if (lineEndCoordinate == lineStartCoordinate)
     {
         return clipCoordinate;
     }
 
-    boundaryDelta = (int16) ((uint16) clipCoordinate -
-        (uint16) lineStartCoordinate);
-    otherDelta = (int16) ((uint16) otherStartCoordinate -
-        (uint16) otherEndCoordinate);
-    lineDelta = (int16) ((uint16) lineEndCoordinate -
-        (uint16) lineStartCoordinate);
-    numerator = (int32) boundaryDelta * (int32) otherDelta;
-    interpolatedDelta = (int16) (numerator / lineDelta);
-    return (int16) ((uint16) interpolatedDelta +
-        (uint16) otherEndCoordinate);
+    boundaryDelta = (int16_t) ((uint16_t) clipCoordinate -
+        (uint16_t) lineStartCoordinate);
+    otherDelta = (int16_t) ((uint16_t) otherStartCoordinate -
+        (uint16_t) otherEndCoordinate);
+    lineDelta = (int16_t) ((uint16_t) lineEndCoordinate -
+        (uint16_t) lineStartCoordinate);
+    numerator = (int32_t) boundaryDelta * (int32_t) otherDelta;
+    interpolatedDelta = (int16_t) (numerator / lineDelta);
+    return (int16_t) ((uint16_t) interpolatedDelta +
+        (uint16_t) otherEndCoordinate);
 }
 
 
@@ -286,12 +286,12 @@ int16 InterpolateLineCoordinate(
 // display colors and pad each destination row to an eight-byte boundary.
 // The four color bands are the literal CS:04C9 translation table used by XLAT.
 void BuildTacticalOverviewMapBuffer(
-    const byte *source,
-    byte *destination,
-    word16 width,
-    word16 height)
+    const uint8_t *source,
+    uint8_t *destination,
+    uint16_t width,
+    uint16_t height)
 {
-    static const byte overviewPixelTranslation[0x0100] = {
+    static const uint8_t overviewPixelTranslation[0x0100] = {
         0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77,
         0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77,
         0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77, 0x77,
@@ -326,16 +326,16 @@ void BuildTacticalOverviewMapBuffer(
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00
     };
-    word16 paddedWidth;
-    word16 row;
-    word16 column;
+    uint16_t paddedWidth;
+    uint16_t row;
+    uint16_t column;
 
     paddedWidth = (width + 0x0007) & 0xFFF8;
     for (row = 0x0000; row < height; ++row)
     {
         for (column = 0x0000; column < width; ++column)
         {
-            byte terrainType = *source++;
+            uint8_t terrainType = *source++;
 
             if (terrainType < 0x80)
                 *destination++ = 0x77;
@@ -370,7 +370,7 @@ void BuildTacticalOverviewMapBuffer(
 // terrain-impact sprites. DS:7978 and 4184:07D8 are physical aliases.
 void ClearTacticalEffectOverlayMap(void)
 {
-    word16 cellIndex;
+    uint16_t cellIndex;
     for (cellIndex = 0x00;
         cellIndex < TACTICAL_VIEWPORT_CELL_COUNT;
         ++cellIndex)
@@ -383,41 +383,41 @@ void ClearTacticalEffectOverlayMap(void)
 // Called from:
 //      RebuildTacticalViewport
 void BuildTacticalTerrainCellMaps(
-    const byte *terrainTypeMap,
-    word16 *tacticalCellSpriteMap,
-    word16 viewportX,
-    word16 viewportY)
+    const uint8_t *terrainTypeMap,
+    uint16_t *tacticalCellSpriteMap,
+    uint16_t viewportX,
+    uint16_t viewportY)
 {
-    const byte *damagedTerrainSpriteLookup;
-    const byte *packedDamageRow;
-    const byte *packedDamage;
-    const byte *terrainRow;
-    word16 *terrainCellMap;
-    word16 mapWidth;
-    word16 packedRowStride;
-    word16 terrainRowOffset;
-    word16 packedDamageRowOffset;
-    word16 cellIndex;
-    word16 row;
-    word16 column;
-    byte damageMask;
-    byte damageState;
-    byte shift;
-    byte terrainType;
-    word16 terrainSprite;
+    const uint8_t *damagedTerrainSpriteLookup;
+    const uint8_t *packedDamageRow;
+    const uint8_t *packedDamage;
+    const uint8_t *terrainRow;
+    uint16_t *terrainCellMap;
+    uint16_t mapWidth;
+    uint16_t packedRowStride;
+    uint16_t terrainRowOffset;
+    uint16_t packedDamageRowOffset;
+    uint16_t cellIndex;
+    uint16_t row;
+    uint16_t column;
+    uint8_t damageMask;
+    uint8_t damageState;
+    uint8_t shift;
+    uint8_t terrainType;
+    uint16_t terrainSprite;
 
     // Verified against 0800:05D3-06D0. The original byte MUL operations
     // deliberately use only the low bytes of viewportY and the row strides.
-    mapWidth = (word16) LinePrimaryRowOffset[0x03];
-    packedRowStride = (word16) (((mapWidth + 0x03) & 0x01FC) >> 0x02);
+    mapWidth = (uint16_t) LinePrimaryRowOffset[0x03];
+    packedRowStride = (uint16_t) (((mapWidth + 0x03) & 0x01FC) >> 0x02);
     // The original adds the map's far offset (8) in 16 bits too. Neither sum
     // can wrap: at most 8 + FFh + FFh * FFh = FF08h for the terrain row, and
     // 8 + A000h + 3Fh + FFh * 40h = E007h for the damage row.
-    terrainRowOffset = (word16) (viewportX +
-        (byte) viewportY * (byte) mapWidth);
-    packedDamageRowOffset = (word16) (PACKED_TERRAIN_DAMAGE_MAP_OFFSET +
+    terrainRowOffset = (uint16_t) (viewportX +
+        (uint8_t) viewportY * (uint8_t) mapWidth);
+    packedDamageRowOffset = (uint16_t) (PACKED_TERRAIN_DAMAGE_MAP_OFFSET +
         (viewportX >> 0x02) +
-        (byte) viewportY * (byte) packedRowStride);
+        (uint8_t) viewportY * (uint8_t) packedRowStride);
     terrainRow = terrainTypeMap + terrainRowOffset;
     packedDamageRow = terrainTypeMap + packedDamageRowOffset;
     terrainCellMap = tacticalCellSpriteMap + TACTICAL_VIEWPORT_CELL_COUNT;
@@ -433,7 +433,7 @@ void BuildTacticalTerrainCellMaps(
     for (row = 0x00; row < TACTICAL_VIEWPORT_HEIGHT_CELLS; ++row)
     {
         packedDamage = packedDamageRow;
-        damageMask = (byte) (0xC0 >> ((viewportX & 0x03) << 0x01));
+        damageMask = (uint8_t) (0xC0 >> ((viewportX & 0x03) << 0x01));
         for (column = 0x00;
             column < TACTICAL_VIEWPORT_WIDTH_CELLS;
             ++column)
@@ -444,10 +444,10 @@ void BuildTacticalTerrainCellMaps(
 
             if (damageState != 0x00)
             {
-                shift = (byte) (0x06 - (((viewportX + column) & 0x03) << 0x01));
-                damageState = (byte) (damageState >> shift);
+                shift = (uint8_t) (0x06 - (((viewportX + column) & 0x03) << 0x01));
+                damageState = (uint8_t) (damageState >> shift);
                 terrainSprite = DAMAGED_TERRAIN_SPRITE_FLAG |
-                    damagedTerrainSpriteLookup[((word16) (damageState - 0x01) << 0x08) +
+                    damagedTerrainSpriteLookup[((uint16_t) (damageState - 0x01) << 0x08) +
                         terrainType];
             }
             terrainCellMap[row * TACTICAL_VIEWPORT_WIDTH_CELLS + column] =

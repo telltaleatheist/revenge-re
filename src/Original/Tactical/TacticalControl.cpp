@@ -10,16 +10,16 @@
 
 // 1A1F:5755: translate pending mouse input into a tactical input code.
 // Verified against 1A1F:5755-5961.
-int16 TranslateTacticalMouseInput(int16 inputAction)
+int16_t TranslateTacticalMouseInput(int16_t inputAction)
 {
-    word16 mouseButtonState;
-    int16 mouseX;
-    int16 mouseY;
-    int16 mouseCellX;
-    int16 mouseCellY;
-    word16 edgeMask;
-    int16 maximumViewportX;
-    int16 maximumViewportY;
+    uint16_t mouseButtonState;
+    int16_t mouseX;
+    int16_t mouseY;
+    int16_t mouseCellX;
+    int16_t mouseCellY;
+    uint16_t edgeMask;
+    int16_t maximumViewportX;
+    int16_t maximumViewportY;
 
     if (MouseInputDisabled != 0x00)
         return inputAction;
@@ -48,8 +48,8 @@ int16 TranslateTacticalMouseInput(int16 inputAction)
     }
 
     edgeMask = 0x00;
-    mouseX = (int16) (word16) MouseCursorRequestedX;
-    mouseY = (int16) MouseY;
+    mouseX = (int16_t) (uint16_t) MouseCursorRequestedX;
+    mouseY = (int16_t) MouseY;
     mouseCellX = mouseX - 0x10;
     if (mouseCellX < 0x00)
         mouseCellX = 0x00;
@@ -69,15 +69,15 @@ int16 TranslateTacticalMouseInput(int16 inputAction)
         PreviousMouseCellX = 0xFFFF;
         mouseCellX = 0x12;
     }
-    if (mouseCellX == (int16) PreviousMouseCellX &&
-        mouseCellY == (int16) PreviousMouseCellY)
+    if (mouseCellX == (int16_t) PreviousMouseCellX &&
+        mouseCellY == (int16_t) PreviousMouseCellY)
     {
         return inputAction;
     }
 
     TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
-    TacticalCursorViewportX = (word16) mouseCellX;
-    TacticalCursorViewportY = (word16) mouseCellY;
+    TacticalCursorViewportX = (uint16_t) mouseCellX;
+    TacticalCursorViewportY = (uint16_t) mouseCellY;
     if (mouseCellY == 0x00 && mouseY < 0x06)
         edgeMask |= 0x08;
     if (mouseCellX >= 0x12 && mouseX >= 0x013A)
@@ -92,42 +92,42 @@ int16 TranslateTacticalMouseInput(int16 inputAction)
     if (TacticalOverviewActive != FALSE &&
         TacticalOverviewZoomed == FALSE)
     {
-        TacticalViewportMapX = (word16) (((int32) (int16) MapWidth * mouseX) / 0x0140);
-        if ((int16) TacticalViewportMapX < 0x00)
+        TacticalViewportMapX = (uint16_t) (((int32_t) (int16_t) MapWidth * mouseX) / 0x0140);
+        if ((int16_t) TacticalViewportMapX < 0x00)
             TacticalViewportMapX = 0x00;
-        maximumViewportX = (int16) MapWidth -
+        maximumViewportX = (int16_t) MapWidth -
             TACTICAL_VIEWPORT_WIDTH_CELLS;
         if (maximumViewportX <=
-            (int16) TacticalViewportMapX)
+            (int16_t) TacticalViewportMapX)
         {
-            TacticalViewportMapX = (word16) maximumViewportX;
+            TacticalViewportMapX = (uint16_t) maximumViewportX;
         }
 
-        TacticalViewportMapY = (word16) (((int32) (int16) MapHeight * mouseY) / 0x00C8);
-        if ((int16) TacticalViewportMapY < 0x00)
+        TacticalViewportMapY = (uint16_t) (((int32_t) (int16_t) MapHeight * mouseY) / 0x00C8);
+        if ((int16_t) TacticalViewportMapY < 0x00)
             TacticalViewportMapY = 0x00;
-        maximumViewportY = (int16) MapHeight -
+        maximumViewportY = (int16_t) MapHeight -
             TACTICAL_VIEWPORT_HEIGHT_CELLS;
         if (maximumViewportY <=
-            (int16) TacticalViewportMapY)
+            (int16_t) TacticalViewportMapY)
         {
-            TacticalViewportMapY = (word16) maximumViewportY;
+            TacticalViewportMapY = (uint16_t) maximumViewportY;
         }
         inputAction = 0x00;
         TacticalCursorViewportX = 0x00;
         TacticalCursorViewportY = 0x00;
     }
 
-    PreviousMouseCellX = (word16) mouseCellX;
-    PreviousMouseCellY = (word16) mouseCellY;
+    PreviousMouseCellX = (uint16_t) mouseCellX;
+    PreviousMouseCellY = (uint16_t) mouseCellY;
     return inputAction;
 }
 
-void PrepareUnitTypeResources(word16 unitIndex)
+void PrepareUnitTypeResources(uint16_t unitIndex)
 {
-    word16 resourceSlot = 0x00FF;
-    byte resourceCode = 0xFF;
-    byte unitRecordType;
+    uint16_t resourceSlot = 0x00FF;
+    uint8_t resourceCode = 0xFF;
+    uint8_t unitRecordType;
 
     if (unitIndex < 0x04)
         resourceSlot = unitIndex;
@@ -375,40 +375,40 @@ void PrepareUnitTypeResources(word16 unitIndex)
 // 1A1F:0C50: word16 AdvanceTerrainDamageState(
 //     int16 mapX, int16 mapY, word16 maximumDamageState)
 // Verified against 1A1F:0C50-0CF8.
-word16 AdvanceTerrainDamageState(
-    int16 mapX,
-    int16 mapY,
-    word16 maximumDamageState)
+uint16_t AdvanceTerrainDamageState(
+    int16_t mapX,
+    int16_t mapY,
+    uint16_t maximumDamageState)
 {
-    word16 mapCellIndex;
-    word16 terrainType;
-    word16 destructibleTerrainTypeMaximum;
-    word16 damageState;
+    uint16_t mapCellIndex;
+    uint16_t terrainType;
+    uint16_t destructibleTerrainTypeMaximum;
+    uint16_t damageState;
 
     // V: each map cell has a two-bit damage state. Invalid coordinates and the
     // three special destructible terrain IDs return state 3.
-    if (mapX < 0x00 || mapX >= (int16) MapWidth ||
-        mapY < 0x00 || mapY >= (int16) MapHeight)
+    if (mapX < 0x00 || mapX >= (int16_t) MapWidth ||
+        mapY < 0x00 || mapY >= (int16_t) MapHeight)
     {
         return 0x03;
     }
 
-    mapCellIndex = (word16) ((word16) mapY *
+    mapCellIndex = (uint16_t) ((uint16_t) mapY *
             MapWidth +
-        (word16) mapX);
+        (uint16_t) mapX);
     terrainType = TerrainTypeMap[mapCellIndex];
     destructibleTerrainTypeMaximum =
         DestructibleTerrainTypeBase + 0x02;
-    if ((int16) terrainType >=
-            (int16) DestructibleTerrainTypeBase &&
-        (int16) terrainType <= (int16) destructibleTerrainTypeMaximum)
+    if ((int16_t) terrainType >=
+            (int16_t) DestructibleTerrainTypeBase &&
+        (int16_t) terrainType <= (int16_t) destructibleTerrainTypeMaximum)
     {
         BeginTerrainDamageAtCell(mapX, mapY, terrainType);
         return 0x03;
     }
 
     damageState = ReadTerrainDamageState(mapX, mapY);
-    if ((int16) damageState < (int16) maximumDamageState &&
+    if ((int16_t) damageState < (int16_t) maximumDamageState &&
         TerrainDamageCapabilityTable[terrainType] != 0x00)
     {
         *ActiveTerrainDamageByte +=
@@ -420,17 +420,17 @@ word16 AdvanceTerrainDamageState(
 }
 
 // 1A1F:0CF9: word16 ReadTerrainDamageState(int16 mapX, int16 mapY)
-word16 ReadTerrainDamageState(int16 mapX, int16 mapY)
+uint16_t ReadTerrainDamageState(int16_t mapX, int16_t mapY)
 {
     // V: four two-bit damage states are packed into each byte. The original
     // routine also caches the selected far byte at DS:B047/B049 for mutation.
-    word16 packedByteIndex =
+    uint16_t packedByteIndex =
         mapY * PackedTerrainDamageRowBytes + (mapX >> 0x02);
     ActiveTerrainDamageByte =
         PackedTerrainDamageMap + packedByteIndex;
 
-    byte packedDamageStates = *ActiveTerrainDamageByte;
-    byte columnWithinByte = (byte) (mapX & 0x03);
+    uint8_t packedDamageStates = *ActiveTerrainDamageByte;
+    uint8_t columnWithinByte = (uint8_t) (mapX & 0x03);
     return (packedDamageStates &
                TerrainDamageExtractMask[columnWithinByte]) >>
         TerrainDamageShift[columnWithinByte];
@@ -439,7 +439,7 @@ word16 ReadTerrainDamageState(int16 mapX, int16 mapY)
 // 1A1F:52F2: void AdvanceTacticalCampaignClock(void)
 void AdvanceTacticalCampaignClock(void)
 {
-    int16 slotIndex;
+    int16_t slotIndex;
 
     TacticalClockSubtick += 0x02;
     if (TacticalClockSubtick < 0x3C)
@@ -468,7 +468,7 @@ void AdvanceTacticalCampaignClock(void)
 // below is exact, but the map-state globals need a future tracing pass.
 void UpdateUnitHeatAccumulators(void)
 {
-    word16 unitIndex;
+    uint16_t unitIndex;
 
     // Verified against 1A1F:533A-5475.
     for (unitIndex = 0x00; unitIndex < 0x18; ++unitIndex)
@@ -478,16 +478,16 @@ void UpdateUnitHeatAccumulators(void)
         if (unitRecord->deploymentState == 0x00)
             continue;
 
-        int16 effectiveHeatSinkCount = UnitHeatSinkCount[unitIndex];
+        int16_t effectiveHeatSinkCount = UnitHeatSinkCount[unitIndex];
         if (TacticalClockDivider == 0x0080)
         {
-            word16 terrainType = UnitTerrainType[unitIndex];
+            uint16_t terrainType = UnitTerrainType[unitIndex];
             if (effectiveHeatSinkCount < 0x1D &&
                 terrainType >= DestructibleTerrainTypeBase &&
-                terrainType <= (word16) (DestructibleTerrainTypeBase + 0x02))
+                terrainType <= (uint16_t) (DestructibleTerrainTypeBase + 0x02))
                 effectiveHeatSinkCount += 0x02;
 
-            word16 mapRecordIndex;
+            uint16_t mapRecordIndex;
             for (mapRecordIndex = 0x00; mapRecordIndex < 0x5A; ++mapRecordIndex)
             {
                 if (TerrainImpactAnimationRecords[mapRecordIndex].mapX ==
@@ -495,31 +495,31 @@ void UpdateUnitHeatAccumulators(void)
                     TerrainImpactAnimationRecords[mapRecordIndex].mapY ==
                         ScenarioUnitMapY[unitIndex])
                 {
-                    unitRecord->currentHeat = (byte) (unitRecord->currentHeat + 0x0A);
+                    unitRecord->currentHeat = (uint8_t) (unitRecord->currentHeat + 0x0A);
                     break;
                 }
             }
         }
 
-        int16 heatAccumulator = (int16) unitRecord->heatAccumulatorQ8_8;
-        heatAccumulator -= (int16)
+        int16_t heatAccumulator = (int16_t) unitRecord->heatAccumulatorQ8_8;
+        heatAccumulator -= (int16_t)
             HeatDissipationBySinkCountQ8_8[REVENGE_INDEX(
                 HeatDissipationBySinkCountQ8_8, effectiveHeatSinkCount)];
         if (heatAccumulator < 0x00)
             heatAccumulator = 0x00;
-        unitRecord->heatAccumulatorQ8_8 = (word16) heatAccumulator;
+        unitRecord->heatAccumulatorQ8_8 = (uint16_t) heatAccumulator;
     }
 }
 
 // 1A1F:5577: void BuildScenarioTerrainDamageCapabilityMap(
 //     word16 terrainEffectMode)
 // Verified against 1A1F:5577-5754.
-void BuildScenarioTerrainDamageCapabilityMap(word16 terrainEffectMode)
+void BuildScenarioTerrainDamageCapabilityMap(uint16_t terrainEffectMode)
 {
-    byte *terrainCapabilityMap = (byte *) TerrainToHitModifier;
-    byte *damagedTerrainSpriteMap =
+    uint8_t *terrainCapabilityMap = (uint8_t *) TerrainToHitModifier;
+    uint8_t *damagedTerrainSpriteMap =
         TerrainDamageCapabilityTable + 0x0300;
-    word16 terrainType;
+    uint16_t terrainType;
 
     switch (terrainEffectMode)
     {
@@ -629,14 +629,14 @@ void BuildScenarioTerrainDamageCapabilityMap(word16 terrainEffectMode)
 //      RunInGameMenu
 //      RunTitleAndMainMenu
 // Verified against 1A1F:417F-4446.
-word16 RunGameOptionsMenu(word16 embeddedMode)
+uint16_t RunGameOptionsMenu(uint16_t embeddedMode)
 {
-    int16 menuAction = 0x00;
-    int16 menuEntryCount;
-    int16 menuHeightTiles;
-    word16 labelIndex;
-    int16 selectedOption;
-    word16 menuOpen = TRUE;
+    int16_t menuAction = 0x00;
+    int16_t menuEntryCount;
+    int16_t menuHeightTiles;
+    uint16_t labelIndex;
+    int16_t selectedOption;
+    uint16_t menuOpen = TRUE;
 
     // V: The menu cannot safely reconfigure sound while a digitized effect is
     // active. The original busy-waits here before constructing the window.
@@ -646,18 +646,18 @@ word16 RunGameOptionsMenu(word16 embeddedMode)
     while (DigitalSoundBusy != 0x00)
         SDLBackend_ServiceTimers();
 
-    menuEntryCount = (int16) (embeddedMode + 0x06);
-    menuHeightTiles = (int16) (word16) ((word16) (ActiveFontLineHeight) *
-            (word16) menuEntryCount +
+    menuEntryCount = (int16_t) (embeddedMode + 0x06);
+    menuHeightTiles = (int16_t) (uint16_t) ((uint16_t) (ActiveFontLineHeight) *
+            (uint16_t) menuEntryCount +
         0x07);
-    menuHeightTiles = (int16) (((word16) menuHeightTiles >> 0x01) |
-        ((word16) menuHeightTiles & 0x8000));
-    menuHeightTiles = (int16) (((word16) menuHeightTiles >> 0x01) |
-        ((word16) menuHeightTiles & 0x8000));
-    menuHeightTiles = (int16) (((word16) menuHeightTiles >> 0x01) |
-        ((word16) menuHeightTiles & 0x8000));
-    GameOptionsMenuHeight = (word16) menuHeightTiles;
-    GameOptionsMenuEntryCount = (word16) menuEntryCount;
+    menuHeightTiles = (int16_t) (((uint16_t) menuHeightTiles >> 0x01) |
+        ((uint16_t) menuHeightTiles & 0x8000));
+    menuHeightTiles = (int16_t) (((uint16_t) menuHeightTiles >> 0x01) |
+        ((uint16_t) menuHeightTiles & 0x8000));
+    menuHeightTiles = (int16_t) (((uint16_t) menuHeightTiles >> 0x01) |
+        ((uint16_t) menuHeightTiles & 0x8000));
+    GameOptionsMenuHeight = (uint16_t) menuHeightTiles;
+    GameOptionsMenuEntryCount = (uint16_t) menuEntryCount;
     CampaignMenuRequested = 0x00;
 
     while (menuOpen != FALSE)
@@ -799,12 +799,12 @@ word16 RunGameOptionsMenu(word16 embeddedMode)
             menuOpen = TRUE;
         }
     }
-    return (word16) menuAction;
+    return (uint16_t) menuAction;
 }
 // 1A1F:5D30: void AdvanceCampaignClock(byte hoursToAdvance, byte minutesToAdvance)
 // Called from:
 //      PrepareScenarioUnitRosters
-void AdvanceCampaignClock(byte hoursToAdvance, byte minutesToAdvance)
+void AdvanceCampaignClock(uint8_t hoursToAdvance, uint8_t minutesToAdvance)
 {
     // V: Add elapsed scenario time to the campaign time-of-day. Carry one full
     // hour when minutes reach 60, then wrap the hour at 24. The assembly does
@@ -825,12 +825,12 @@ void AdvanceCampaignClock(byte hoursToAdvance, byte minutesToAdvance)
 // 1A1F:5D5E: int16 RunOptionsMenuSelection(int16 firstRegionIndex)
 // Called from:
 //      RunGameOptionsMenu
-int16 RunOptionsMenuSelection(int16 firstRegionIndex)
+int16_t RunOptionsMenuSelection(int16_t firstRegionIndex)
 {
-    int16 selectedOption = RunSingleUiRegionSelection(firstRegionIndex);
+    int16_t selectedOption = RunSingleUiRegionSelection(firstRegionIndex);
     if (MouseInputDisabled == 0x00)
     {
-        word16 pressedMouseButtons = MouseButtonState;
+        uint16_t pressedMouseButtons = MouseButtonState;
         do
         {
             (void) ServiceMusicAndCheckKeyboardInput();
@@ -842,10 +842,10 @@ int16 RunOptionsMenuSelection(int16 firstRegionIndex)
 // 1A1F:182E: void ScrollTacticalViewportToCursor(void)
 void ScrollTacticalViewportToCursor(void)
 {
-    int16 cursorX = TacticalCursorViewportX;
-    int16 cursorY = TacticalCursorViewportY;
-    int16 viewportX = (int16) TacticalViewportMapX;
-    int16 viewportY = (int16) TacticalViewportMapY;
+    int16_t cursorX = TacticalCursorViewportX;
+    int16_t cursorY = TacticalCursorViewportY;
+    int16_t viewportX = (int16_t) TacticalViewportMapX;
+    int16_t viewportY = (int16_t) TacticalViewportMapY;
 
     // V: keep the cursor in the 19x12 tactical viewport, scrolling the map
     // origin by the exact overflow and clamping it to the map bounds.
@@ -859,8 +859,8 @@ void ScrollTacticalViewportToCursor(void)
     if (cursorX >= 0x13)
     {
         viewportX += cursorX - 0x12;
-        if (viewportX >= (int16) MapWidth - 0x13)
-            viewportX = (int16) MapWidth - 0x13;
+        if (viewportX >= (int16_t) MapWidth - 0x13)
+            viewportX = (int16_t) MapWidth - 0x13;
         cursorX = 0x12;
     }
     if (cursorY < 0x00)
@@ -873,25 +873,25 @@ void ScrollTacticalViewportToCursor(void)
     if (cursorY >= 0x0C)
     {
         viewportY += cursorY - 0x0B;
-        if (viewportY >= (int16) MapHeight - 0x0C)
-            viewportY = (int16) MapHeight - 0x0C;
+        if (viewportY >= (int16_t) MapHeight - 0x0C)
+            viewportY = (int16_t) MapHeight - 0x0C;
         cursorY = 0x0B;
     }
 
     TacticalCursorViewportX = cursorX;
     TacticalCursorViewportY = cursorY;
-    TacticalViewportMapX = (word16) viewportX;
-    TacticalViewportMapY = (word16) viewportY;
+    TacticalViewportMapX = (uint16_t) viewportX;
+    TacticalViewportMapY = (uint16_t) viewportY;
 }
 
 // 1A1F:4C3D: set the tactical update delay selected by number keys 1-9.
-void SetTacticalGameSpeed(word16 digitKey)
+void SetTacticalGameSpeed(uint16_t digitKey)
 {
-    static const word16 updateDelayBySpeed[0x08] = {
+    static const uint16_t updateDelayBySpeed[0x08] = {
         0x0050, 0x0032, 0x0023, 0x0019,
         0x000F, 0x0009, 0x0005, 0x0002
     };
-    word16 speedIndex;
+    uint16_t speedIndex;
 
     if (digitKey < KEY_ONE || digitKey > KEY_NINE)
         return;
@@ -905,11 +905,11 @@ void SetTacticalGameSpeed(word16 digitKey)
 
 // 1A1F:4CC6: dispatch F1-F10 after Revenge's keyboard translation layer.
 // Verified against 1A1F:4CC6-4FA5.
-void HandleTacticalFunctionKey(word16 inputAction)
+void HandleTacticalFunctionKey(uint16_t inputAction)
 {
-    word16 functionIndex = (word16) (-(int16) inputAction - 0x003B);
-    word16 unitIndex;
-    word16 searchComplete;
+    uint16_t functionIndex = (uint16_t) (-(int16_t) inputAction - 0x003B);
+    uint16_t unitIndex;
+    uint16_t searchComplete;
     RevengeUnitRecord *unitRecord;
 
     if (functionIndex > 0x09)
@@ -926,7 +926,7 @@ void HandleTacticalFunctionKey(word16 inputAction)
     }
     if (functionIndex >= 0x04 && functionIndex <= 0x06)
     {
-        word16 firstUnit = (functionIndex - 0x04) * 0x04;
+        uint16_t firstUnit = (functionIndex - 0x04) * 0x04;
         if (functionIndex == 0x04 && UnitTypeResourceCode[0x04] == FALSE)
             return;
         FirstLanceOrdersEnabled = functionIndex == 0x04;
@@ -947,9 +947,9 @@ void HandleTacticalFunctionKey(word16 inputAction)
         return; // F8 is deliberately unassigned.
     if (functionIndex == 0x08)
     {
-        word16 rememberedUnit = EnemyCycleUnitIndex;
-        word16 selectedUnit = TacticalSelectedUnitIndex;
-        word16 rememberedUnitSelected = FALSE;
+        uint16_t rememberedUnit = EnemyCycleUnitIndex;
+        uint16_t selectedUnit = TacticalSelectedUnitIndex;
+        uint16_t rememberedUnitSelected = FALSE;
 
         if (selectedUnit != TACTICAL_UNIT_NONE &&
             GetPersistentUnitRecord(selectedUnit)->deploymentState == 0x00)
@@ -1023,7 +1023,7 @@ void HandleTacticalFunctionKey(word16 inputAction)
             }
         }
 
-        if ((int16) TacticalSelectedUnitIndex >=
+        if ((int16_t) TacticalSelectedUnitIndex >=
             TACTICAL_ENEMY_FIRST_UNIT)
             FirstLanceOrdersEnabled = FALSE;
         return;
@@ -1044,11 +1044,11 @@ void HandleTacticalFunctionKey(word16 inputAction)
 // Verified against 1A1F:5154-51BF.
 void OpenSelectedTacticalUnitPanel(void)
 {
-    word16 unitIndex = TacticalSelectedUnitIndex;
-    int16 unitMapX;
-    int16 unitMapY;
-    int16 viewportMapX;
-    int16 viewportMapY;
+    uint16_t unitIndex = TacticalSelectedUnitIndex;
+    int16_t unitMapX;
+    int16_t unitMapY;
+    int16_t viewportMapX;
+    int16_t viewportMapY;
 
     if (unitIndex != TACTICAL_UNIT_NONE)
     {
@@ -1063,8 +1063,8 @@ void OpenSelectedTacticalUnitPanel(void)
     FirstLanceOrdersEnabled = FALSE;
     unitMapX = ScenarioUnitMapX[unitIndex];
     unitMapY = ScenarioUnitMapY[unitIndex];
-    viewportMapX = (int16) TacticalViewportMapX;
-    viewportMapY = (int16) TacticalViewportMapY;
+    viewportMapX = (int16_t) TacticalViewportMapX;
+    viewportMapY = (int16_t) TacticalViewportMapY;
     if (unitMapX < viewportMapX ||
         unitMapX >= viewportMapX + 0x13 ||
         unitMapY < viewportMapY ||
@@ -1075,11 +1075,11 @@ void OpenSelectedTacticalUnitPanel(void)
 
 // 1A1F:4A9E: top-level tactical keyboard/action dispatcher.
 // Verified against 1A1F:4A9E-4C3C.
-void HandleTacticalInput(word16 inputAction)
+void HandleTacticalInput(uint16_t inputAction)
 {
-    word16 previousSelection;
-    word16 narrationUnit;
-    word16 narrationAvailable;
+    uint16_t previousSelection;
+    uint16_t narrationUnit;
+    uint16_t narrationAvailable;
 
     if (inputAction == '-' || inputAction == '+')
     {
@@ -1094,7 +1094,7 @@ void HandleTacticalInput(word16 inputAction)
         HandleTacticalFunctionKey(inputAction);
 
     narrationUnit = ActiveNarrationSubject;
-    if ((int16) narrationUnit < 0x00 || narrationUnit >= 0x0C)
+    if ((int16_t) narrationUnit < 0x00 || narrationUnit >= 0x0C)
         PendingNarrationDelay = FALSE;
     if (PendingNarrationDelay != FALSE)
     {
@@ -1146,14 +1146,14 @@ void HandleTacticalInput(word16 inputAction)
 void ShowPendingNarrationPrompt(void)
 {
     TextWindowContext *narrationWindow;
-    byte *backingBuffer;
+    uint8_t *backingBuffer;
     const char *focusLabel;
     const char *continueLabel;
-    word16 focusLabelWidth;
-    word16 continueLabelWidth;
-    word16 narrationUnit;
-    int16 selection;
-    word16 focusRequested;
+    uint16_t focusLabelWidth;
+    uint16_t continueLabelWidth;
+    uint16_t narrationUnit;
+    int16_t selection;
+    uint16_t focusRequested;
 
     if (PendingNarrationDelay == FALSE)
     {
@@ -1164,17 +1164,17 @@ void ShowPendingNarrationPrompt(void)
     backingBuffer = PrimaryScreenBuffer;
     HideMouseCursorOverlay();
     CopyVideoRegionToBuffer(
-        (int16) (narrationWindow->leftTile - 0x01),
-        (word16) (narrationWindow->topTile - 0x01),
-        (word16) (narrationWindow->widthTiles + 0x01),
-        (word16) (narrationWindow->heightTiles + 0x01),
+        (int16_t) (narrationWindow->leftTile - 0x01),
+        (uint16_t) (narrationWindow->topTile - 0x01),
+        (uint16_t) (narrationWindow->widthTiles + 0x01),
+        (uint16_t) (narrationWindow->heightTiles + 0x01),
         backingBuffer);
     SelectAndClearTextWindow(0x0D);
     DrawActiveTextWindowBorder(0x0E);
     RenderPendingNarration();
 
     narrationUnit = ActiveNarrationSubject;
-    if ((int16) narrationUnit > 0x04)
+    if ((int16_t) narrationUnit > 0x04)
     {
         narrationUnit = FindOperationalLanceLeader(narrationUnit);
     }
@@ -1188,13 +1188,13 @@ void ShowPendingNarrationPrompt(void)
     {
         focusLabel = FocusUnitText;
     }
-    focusLabelWidth = (word16) ((word16) strlen(focusLabel) *
+    focusLabelWidth = (uint16_t) ((uint16_t) strlen(focusLabel) *
         ActiveFontGlyphAdvanceX);
     DrawBeveledMenuButton(
         0x18, 0x05, focusLabel, focusLabelWidth);
 
     continueLabel = ContinueText;
-    continueLabelWidth = (word16) ((word16) strlen(continueLabel) *
+    continueLabelWidth = (uint16_t) ((uint16_t) strlen(continueLabel) *
         ActiveFontGlyphAdvanceX);
     DrawBeveledMenuButton(
         0x04, 0x05, continueLabel, continueLabelWidth);
@@ -1216,10 +1216,10 @@ void ShowPendingNarrationPrompt(void)
 
     HideMouseCursorOverlay();
     CopyBufferToVideoRegion(
-        (int16) (narrationWindow->leftTile - 0x01),
-        (word16) (narrationWindow->topTile - 0x01),
-        (word16) (narrationWindow->widthTiles + 0x01),
-        (word16) (narrationWindow->heightTiles + 0x01),
+        (int16_t) (narrationWindow->leftTile - 0x01),
+        (uint16_t) (narrationWindow->topTile - 0x01),
+        (uint16_t) (narrationWindow->widthTiles + 0x01),
+        (uint16_t) (narrationWindow->heightTiles + 0x01),
         backingBuffer);
     ShowMouseCursorOverlay();
 
@@ -1230,7 +1230,7 @@ void ShowPendingNarrationPrompt(void)
             ExitTacticalOverview();
         }
         FirstLanceOrdersEnabled = FALSE;
-        if ((int16) ActiveNarrationSubject < 0x04 &&
+        if ((int16_t) ActiveNarrationSubject < 0x04 &&
             HasActiveLanceFollowers(ActiveNarrationSubject) != FALSE)
         {
             FirstLanceOrdersEnabled = TRUE;

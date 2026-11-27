@@ -9,11 +9,11 @@
 #include <string.h>
 
 /* 0D73:54B9-5507 */
-byte *BuildDisplayBackingBuffer(
-    word16 sourceTileX,
-    word16 sourcePixelY,
-    word16 widthTiles,
-    word16 heightPixels)
+uint8_t *BuildDisplayBackingBuffer(
+    uint16_t sourceTileX,
+    uint16_t sourcePixelY,
+    uint16_t widthTiles,
+    uint16_t heightPixels)
 {
     if (VideoAdapterType == VIDEO_ADAPTER_VGA)
     {
@@ -25,27 +25,27 @@ byte *BuildDisplayBackingBuffer(
 }
 
 /* 0D73:5508-566D */
-byte *BuildVgaDisplayBackingBuffer(
-    word16 sourceTileX,
-    word16 sourcePixelY,
-    word16 widthTiles,
-    word16 heightPixels)
+uint8_t *BuildVgaDisplayBackingBuffer(
+    uint16_t sourceTileX,
+    uint16_t sourcePixelY,
+    uint16_t widthTiles,
+    uint16_t heightPixels)
 {
-    byte *encodedBuffer;
-    byte *output;
-    byte *framebuffer;
-    byte *sourceRow;
-    uint32 encodedByteCount;
-    word16 rowsRemaining;
-    byte *allocation;
+    uint8_t *encodedBuffer;
+    uint8_t *output;
+    uint8_t *framebuffer;
+    uint8_t *sourceRow;
+    uint32_t encodedByteCount;
+    uint16_t rowsRemaining;
+    uint8_t *allocation;
 
     encodedBuffer = PlanarScreenBuffer;
     output = encodedBuffer;
     encodedByteCount = 0x00000004UL;
     *output++ = 0x00;
-    *output++ = (byte) heightPixels - 0x01;
-    *output++ = (byte) widthTiles;
-    *output++ = (byte) heightPixels - 0x01;
+    *output++ = (uint8_t) heightPixels - 0x01;
+    *output++ = (uint8_t) widthTiles;
+    *output++ = (uint8_t) heightPixels - 0x01;
 
     framebuffer = PrimaryScreenBuffer;
     sourceRow = framebuffer + sourcePixelY * 0x0140 +
@@ -53,8 +53,8 @@ byte *BuildVgaDisplayBackingBuffer(
     rowsRemaining = heightPixels;
     while (rowsRemaining-- != 0x0000)
     {
-        byte *source = sourceRow;
-        word16 sourceBytesRemaining = widthTiles << 0x03;
+        uint8_t *source = sourceRow;
+        uint16_t sourceBytesRemaining = widthTiles << 0x03;
 
         while (sourceBytesRemaining != 0x0000)
         {
@@ -66,7 +66,7 @@ byte *BuildVgaDisplayBackingBuffer(
             }
             else
             {
-                word16 zeroRunLength = 0x0001;
+                uint16_t zeroRunLength = 0x0001;
 
                 *output++ = 0x00;
                 ++encodedByteCount;
@@ -77,7 +77,7 @@ byte *BuildVgaDisplayBackingBuffer(
                     ++zeroRunLength;
                 }
                 source += zeroRunLength;
-                *output++ = (byte) zeroRunLength;
+                *output++ = (uint8_t) zeroRunLength;
                 ++encodedByteCount;
                 sourceBytesRemaining -= zeroRunLength;
             }
@@ -85,7 +85,7 @@ byte *BuildVgaDisplayBackingBuffer(
         sourceRow += 0x0140;
     }
 
-    allocation = (byte *) Heap_Allocate(encodedByteCount, "0D73:562F");
+    allocation = (uint8_t *) Heap_Allocate(encodedByteCount, "0D73:562F");
     if (allocation != NULL)
     {
         memcpy(allocation, encodedBuffer, encodedByteCount);

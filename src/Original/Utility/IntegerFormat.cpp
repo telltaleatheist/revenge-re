@@ -10,16 +10,16 @@
 //      IntegerToString
 //      LongToString
 char *FormatLongInteger(
-    byte alphabeticDigitBase,
-    byte signedConversion,
-    uint16 radix,
+    uint8_t alphabeticDigitBase,
+    uint8_t signedConversion,
+    uint16_t radix,
     char *destination,
-    uint32 value)
+    uint32_t value)
 {
     char *result;
-    byte reversedDigits[0x22];
-    uint16 digitCount;
-    uint32 magnitude;
+    uint8_t reversedDigits[0x22];
+    uint16_t digitCount;
+    uint32_t magnitude;
 
     result = destination;
     digitCount = 0x00;
@@ -31,7 +31,7 @@ char *FormatLongInteger(
     }
 
     magnitude = value;
-    if (signedConversion != 0x00 && (int32) value < 0x00)
+    if (signedConversion != 0x00 && (int32_t) value < 0x00)
     {
         *destination++ = '-';
         magnitude = 0x00UL - value;
@@ -39,13 +39,13 @@ char *FormatLongInteger(
 
     do
     {
-        reversedDigits[digitCount++] = (byte) (magnitude % radix);
+        reversedDigits[digitCount++] = (uint8_t) (magnitude % radix);
         magnitude /= radix;
     } while (magnitude != 0x00);
 
     while (digitCount != 0x00)
     {
-        byte digit;
+        uint8_t digit;
 
         digit = reversedDigits[--digitCount];
         if (digit < 0x0A)
@@ -62,16 +62,16 @@ char *FormatLongInteger(
 //     Stack int16 value, Stack far pointer destination, Stack uint16 radix)
 // Called from mission-date, campaign-clock, unit-status, and startup rendering.
 char *IntegerToString(
-    int16 value,
+    int16_t value,
     char *destination,
-    uint16 radix)
+    uint16_t radix)
 {
-    uint32 extendedValue;
+    uint32_t extendedValue;
 
     if (radix == 0x0A)
-        extendedValue = (uint32) (int32) value;
+        extendedValue = (uint32_t) (int32_t) value;
     else
-        extendedValue = (uint16) value;
+        extendedValue = (uint16_t) value;
 
     return FormatLongInteger(
         'a',
@@ -85,14 +85,14 @@ char *IntegerToString(
 //     Stack int32 value, Stack far pointer destination, Stack uint16 radix)
 // Called from:
 char *LongToString(
-    int32 value,
+    int32_t value,
     char *destination,
-    uint16 radix)
+    uint16_t radix)
 {
     return FormatLongInteger(
         'a',
         radix == 0x0A,
         radix,
         destination,
-        (uint32) value);
+        (uint32_t) value);
 }

@@ -6,7 +6,7 @@
 #include "revenge/original_data.h"
 
 /* 34C8:0003: int16 NormalizeNavigationKeyCode(int16 keyCode) */
-int16 NormalizeNavigationKeyCode(int16 keyCode)
+int16_t NormalizeNavigationKeyCode(int16_t keyCode)
 {
     /* The first switch represents the parallel CS tables at 34C8:0021 and
 	 * 34C8:003D. */

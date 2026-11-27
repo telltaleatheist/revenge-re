@@ -8,4 +8,4 @@
 #include "REVENGE.h"
 
 /* The story's media video_palette, placed at start (original_import_pieces.txt). */
-byte VideoPaletteData[0x0310];
+uint8_t VideoPaletteData[0x0310];

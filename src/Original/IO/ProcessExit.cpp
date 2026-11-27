@@ -4,7 +4,7 @@
 #include "REVENGE.h"
 #include "revenge/original_data.h"
 
-void DOS_TerminateProcess(word16 exitCode);
+void DOS_TerminateProcess(uint16_t exitCode);
 
 // 38C6:000F: void RuntimeExitStepStub(void)
 // The C library's stand-in for its three exit steps, the far pointers at
@@ -27,9 +27,9 @@ OriginalExitHandler RuntimeExitHook3 = RuntimeExitStepStub;
 // Called from:
 //      ShowInvalidSaveVersionDialog
 //      ShutdownAndExit
-void RunExitHandlersAndTerminate(word16 exitCode)
+void RunExitHandlersAndTerminate(uint16_t exitCode)
 {
-    word16 previousHandlerCount;
+    uint16_t previousHandlerCount;
 
     do
     {

@@ -14,9 +14,9 @@
 // Called from:
 //      ProgramDigitalPlaybackTimerRate
 //      RestoreDigitalPlaybackTimer
-word16 SetPITChannel0Divisor(word16 divisor)
+uint16_t SetPITChannel0Divisor(uint16_t divisor)
 {
-    word16 previousDivisor;
+    uint16_t previousDivisor;
 
     // The CLI and the OUT 43h,36h with the divisor's two bytes to port 40h
     // (38AE:002B-0039) go: there is no PIT. The game's clock takes the rate
@@ -29,9 +29,9 @@ word16 SetPITChannel0Divisor(word16 divisor)
 // 38AE:0046: Register uint16 PITFrequencyToDivisor(Register uint16 frequencyHz)
 // Called from:
 //      ProgramDigitalPlaybackTimerRate
-uint16 PITFrequencyToDivisor(uint16 frequencyHz)
+uint16_t PITFrequencyToDivisor(uint16_t frequencyHz)
 {
     if (frequencyHz <= 0x12)
         return 0x00;
-    return (uint16) (0x1234DEUL / frequencyHz);
+    return (uint16_t) (0x1234DEUL / frequencyHz);
 }

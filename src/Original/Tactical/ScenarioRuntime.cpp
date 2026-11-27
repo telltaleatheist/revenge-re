@@ -6,7 +6,7 @@
 #include "revenge/original/campaign_data.h"
 
 // 1A1F:1C27
-word16 IsTacticalFunctionKey(int16 inputAction)
+uint16_t IsTacticalFunctionKey(int16_t inputAction)
 {
     if (TacticalOverviewActive != FALSE)
         return FALSE;
@@ -18,22 +18,22 @@ word16 IsTacticalFunctionKey(int16 inputAction)
 // Verified against ASM 1A1F:1C48-2A4D. The two scenario
 // switches, cursor advances, unit-record copies, and DGROUP side effects are
 // intentionally kept in this original executable boundary.
-void LoadTacticalScenarioResources(byte scenarioCode)
+void LoadTacticalScenarioResources(uint8_t scenarioCode)
 {
     SceneFileHeader *sceneHeader;
-    byte *scenarioData;
-    byte *cursor;
+    uint8_t *scenarioData;
+    uint8_t *cursor;
     char *scenarioPath;
     SceneUnitRoute *routeRecord;
     RevengeUnitRecord *unitRecord;
-    int16 fileHandle;
-    int16 scenarioSize;
-    word16 unitIndex;
-    word16 recordIndex;
-    word16 scenarioCase;
-    word16 spriteFacing;
-    byte terrainEffectMode;
-    byte value;
+    int16_t fileHandle;
+    int16_t scenarioSize;
+    uint16_t unitIndex;
+    uint16_t recordIndex;
+    uint16_t scenarioCase;
+    uint16_t spriteFacing;
+    uint8_t terrainEffectMode;
+    uint8_t value;
 
 #define COPY_SCENARIO_RECORD(sourceIndex, destinationIndex) \
     (PersistentUnitRoster[(destinationIndex)] = \
@@ -107,8 +107,8 @@ void LoadTacticalScenarioResources(byte scenarioCode)
     fileHandle = OpenTrackedFile(scenarioPath, 0x0001);
     scenarioData = LoadedSceneFile.raw;
     ReadTrackedFile(fileHandle, scenarioData, 0x00000002UL);
-    scenarioSize = (int16) (word16) (scenarioData[0x00] |
-        ((word16) scenarioData[0x01] << 0x08));
+    scenarioSize = (int16_t) (uint16_t) (scenarioData[0x00] |
+        ((uint16_t) scenarioData[0x01] << 0x08));
     if (scenarioSize > 0x07FE)
     {
         DrawTileAlignedText(
@@ -116,12 +116,12 @@ void LoadTacticalScenarioResources(byte scenarioCode)
         ReadTranslatedKeypress();
         scenarioSize = 0x07FE;
     }
-    ReadTrackedFile(fileHandle, scenarioData + 0x02, (uint32) (int32) scenarioSize);
+    ReadTrackedFile(fileHandle, scenarioData + 0x02, (uint32_t) (int32_t) scenarioSize);
     CloseTrackedFile(fileHandle);
 
     sceneHeader = &LoadedSceneFile.header;
     SceneInstructionBaseOffset =
-        (word16) (sceneHeader->instructionBlockOffset + 0x0002);
+        (uint16_t) (sceneHeader->instructionBlockOffset + 0x0002);
     for (recordIndex = 0x0000; recordIndex < SCENE_LANCE_COUNT; ++recordIndex)
         TacticalScenarioLanceEnabled[recordIndex] =
             sceneHeader->lanceEnabled[recordIndex];
@@ -146,7 +146,7 @@ void LoadTacticalScenarioResources(byte scenarioCode)
         LanceFormationProfile[recordIndex] =
             sceneHeader->lanceFormationProfile[recordIndex];
 
-    scenarioCase = (word16) (ScenarioFileSuffix - 0x0032);
+    scenarioCase = (uint16_t) (ScenarioFileSuffix - 0x0032);
     switch (scenarioCase)
     {
     case 0x0000:
@@ -254,7 +254,7 @@ void LoadTacticalScenarioResources(byte scenarioCode)
             InitializeScenarioUnitFromTemplate(0xFFFF, unitIndex);
     }
 
-    scenarioCase = (word16) (ScenarioFileSuffix - 0x0031);
+    scenarioCase = (uint16_t) (ScenarioFileSuffix - 0x0031);
     switch (scenarioCase)
     {
     case 0x0000:
@@ -295,7 +295,7 @@ void LoadTacticalScenarioResources(byte scenarioCode)
             LiveScenarioUnits[0x0E] = BlankUnitRecord;
             COPY_SCENARIO_RECORD(0x0E, 0x0E);
         }
-        if ((word16) ScenarioUnitFifteenState != 0x0000)
+        if ((uint16_t) ScenarioUnitFifteenState != 0x0000)
         {
             PersistentUnitRoster[0x0F].deploymentState = 0x01;
             InitializeScenarioUnitFromTemplate(0xFFFF, 0x000F);
@@ -407,7 +407,7 @@ void LoadTacticalScenarioResources(byte scenarioCode)
     {
         for (unitIndex = 0x0000; unitIndex < 0x000C; ++unitIndex)
         {
-            value = (byte) (UnitRouteTargetMapY[unitIndex] + 0xCC);
+            value = (uint8_t) (UnitRouteTargetMapY[unitIndex] + 0xCC);
             UnitRouteTargetMapY[unitIndex] = value;
             ScenarioUnitMapY[unitIndex] = value;
             routeRecord = &SceneUnitRoutes[unitIndex];
@@ -416,7 +416,7 @@ void LoadTacticalScenarioResources(byte scenarioCode)
             routeRecord->waypointMapY[0x01] = value;
             routeRecord->waypointMapY[0x00] = value;
             routeRecord->activeMapY = value;
-            value = (byte) (UnitRouteTargetMapX[unitIndex] + 0x0D);
+            value = (uint8_t) (UnitRouteTargetMapX[unitIndex] + 0x0D);
             UnitRouteTargetMapX[unitIndex] = value;
             ScenarioUnitMapX[unitIndex] = value;
             routeRecord->waypointMapX[0x03] = value;
@@ -439,7 +439,7 @@ void LoadTacticalScenarioResources(byte scenarioCode)
     }
     for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
         UnitLanceFormationState[unitIndex] =
-            (byte) IsCurrentLanceLeader(unitIndex);
+            (uint8_t) IsCurrentLanceLeader(unitIndex);
     SuppressCampaignClock = 0x0000;
     for (unitIndex = 0x0000; unitIndex < 0x0004; ++unitIndex)
     {
@@ -467,7 +467,7 @@ void LoadTacticalScenarioResources(byte scenarioCode)
         {
             for (unitIndex = 0x0036; unitIndex <= 0x0037; ++unitIndex)
             {
-                word16 damagePass;
+                uint16_t damagePass;
                 for (damagePass = 0x0000; damagePass < 0x0003; ++damagePass)
                     AdvanceTerrainDamageState(
                         unitIndex, recordIndex, 0x0003);

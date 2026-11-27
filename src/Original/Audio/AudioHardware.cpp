@@ -19,17 +19,17 @@ DigitalPlaybackDescriptor NullDigitalPlayback = { 0x6D28, 0x02EE, 0x02EF, 0x02F0
 DigitalPlaybackDescriptor SoundBlasterPlayback = { 0x6DC2, 0x032C, 0x032D, 0x032E, 0x0070, 0x0000 };
 
 // 375F:02EE: the null output's initialize (RET); the host takes the rate.
-void InitializeNullDigitalOutput(word16 playbackRateHz)
+void InitializeNullDigitalOutput(uint16_t playbackRateHz)
 {
     SDLBackend_SetDigitalOutputRate(playbackRateHz);
 }
 // 375F:02EF: the null output's release (RET).
 void ReleaseNullDigitalOutput(void) {}
 // 375F:02F0: the null output's writer (RET).
-void WriteNullDigitalSample(byte sample) { (void) sample; }
+void WriteNullDigitalSample(uint8_t sample) { (void) sample; }
 
 // 375F:032C: the samples output's initialize (RET); the host takes the rate.
-void InitializeSoundBlasterDigitalOutput(word16 playbackRateHz)
+void InitializeSoundBlasterDigitalOutput(uint16_t playbackRateHz)
 {
     SDLBackend_SetDigitalOutputRate(playbackRateHz);
 }
@@ -38,7 +38,7 @@ void ReleaseSoundBlasterDigitalOutput(void) {}
 // 375F:032E: the samples output's writer. The original sent the byte to the
 // Sound Blaster's DSP as a direct-DAC command (10h, then the byte, through
 // 375F:00F8 and 0100); the host plays it.
-void WriteSoundBlasterDigitalSample(byte sample)
+void WriteSoundBlasterDigitalSample(uint8_t sample)
 {
     SDLBackend_WriteUnsigned8Sample(sample);
 }
@@ -49,8 +49,8 @@ void WriteSoundBlasterDigitalSample(byte sample)
 // 375F:02C2: reconstructed C signature follows.
 // Called from:
 //      PlayScenarioDigitalSoundSequence
-void AcquireDigitalPlaybackDriver(word16 driverDescriptorOffset,
-    uint16 playbackRateHz)
+void AcquireDigitalPlaybackDriver(uint16_t driverDescriptorOffset,
+    uint16_t playbackRateHz)
 {
     DigitalPlaybackDescriptor *driver;
 
@@ -69,14 +69,14 @@ void AcquireDigitalPlaybackDriver(word16 driverDescriptorOffset,
 // 375F:02D9: reconstructed C signature follows.
 // Called from:
 //      PlayScenarioDigitalSoundSequence
-void ReleaseDigitalPlaybackDriver(word16 driverDescriptorOffset)
+void ReleaseDigitalPlaybackDriver(uint16_t driverDescriptorOffset)
 {
     DigitalPlaybackDescriptor *driver;
 
     driver = ResolveDigitalPlaybackDescriptor(driverDescriptorOffset);
     if (driver->ReferenceCount != 0x00)
     {
-        word16 referenceCount = --driver->ReferenceCount;
+        uint16_t referenceCount = --driver->ReferenceCount;
         if (referenceCount == 0x00)
         {
             switch (driver->ReleaseCallbackOffset)

@@ -7,14 +7,14 @@
 // 2507:5016: prepare pilot-selection records and portrait buffers.
 // VERIFIED against ASM 2507:5016-5116.
 void PreparePilotSelectionRecords(
-    word16 selectionFamily,
-    int16 selectionMode,
-    word16 loadPresentationResources)
+    uint16_t selectionFamily,
+    int16_t selectionMode,
+    uint16_t loadPresentationResources)
 {
-    word16 pilotRecordIndex;
+    uint16_t pilotRecordIndex;
     UnitSelectionCard *pilotRecord;
     RevengePilotId pilotId;
-    word16 portraitBufferIndex;
+    uint16_t portraitBufferIndex;
 
     if (loadPresentationResources != FALSE)
     {
@@ -37,7 +37,7 @@ void PreparePilotSelectionRecords(
     }
 
     for (pilotRecordIndex = 0x0000;
-        (int16) pilotRecordIndex < (int16) UnitEditorPilotCardCount;
+        (int16_t) pilotRecordIndex < (int16_t) UnitEditorPilotCardCount;
         ++pilotRecordIndex)
     {
         pilotRecord = &UnitSelectionCards[pilotRecordIndex];
@@ -65,8 +65,8 @@ void PreparePilotSelectionRecords(
 // 2507:5117: prepare, display, and edit one pilot-selection family.
 // VERIFIED against ASM 2507:5117-5151.
 void RunPilotSelection(
-    word16 selectionFamily,
-    int16 selectionMode)
+    uint16_t selectionFamily,
+    int16_t selectionMode)
 {
     SceneTransitionAbortFlag = FALSE;
     PreparePilotSelectionRecords(
@@ -80,12 +80,12 @@ void RunPilotSelection(
 
 // 2507:5152: validate pilot assignments for one selection family.
 // VERIFIED against ASM 2507:5152-51EB.
-word16 ValidatePilotConfiguration(word16 selectionFamily)
+uint16_t ValidatePilotConfiguration(uint16_t selectionFamily)
 {
-    word16 configurationValid;
-    word16 lanceGroup;
-    word16 unassignedPilotCount;
-    word16 pilotRecordIndex;
+    uint16_t configurationValid;
+    uint16_t lanceGroup;
+    uint16_t unassignedPilotCount;
+    uint16_t pilotRecordIndex;
 
     configurationValid = TRUE;
     lanceGroup = 0x0000;
@@ -97,8 +97,8 @@ word16 ValidatePilotConfiguration(word16 selectionFamily)
             {
                 unassignedPilotCount = UnitEditorPilotCardCount;
                 for (pilotRecordIndex = 0x0000;
-                    (int16) pilotRecordIndex <
-                    (int16) UnitEditorPilotCardCount;
+                    (int16_t) pilotRecordIndex <
+                    (int16_t) UnitEditorPilotCardCount;
                     ++pilotRecordIndex)
                 {
                     if ((UnitSelectionCards[pilotRecordIndex].state & 0x01) == 0x00)
@@ -108,7 +108,7 @@ word16 ValidatePilotConfiguration(word16 selectionFamily)
                 }
 
                 if (unassignedPilotCount != 0x0000 &&
-                    (int16) UnitEditorLanceSlotCount[lanceGroup] <
+                    (int16_t) UnitEditorLanceSlotCount[lanceGroup] <
                         0x0004)
                 {
                     configurationValid = FALSE;
@@ -119,30 +119,30 @@ word16 ValidatePilotConfiguration(word16 selectionFamily)
     }
 
     UnitEditorSectionEnabled[selectionFamily * LANCE_EDITOR_SECTION_COUNT + 0x03] =
-        (byte) configurationValid;
+        (uint8_t) configurationValid;
     return configurationValid;
 }
 
 // 2507:51EC: select a lance section and enter its pilot-assignment grid.
 // VERIFIED against ASM 2507:51EC-55C5.
-void RunPilotAssignmentEditor(word16 selectionFamily)
+void RunPilotAssignmentEditor(uint16_t selectionFamily)
 {
-    word16 configurationIndex;
-    word16 selectedSection;
-    word16 previousSection;
-    word16 sectionBeforeInput;
-    word16 sectionIndex;
-    word16 activateSection;
-    word16 finished;
-    word16 mouseButtonState;
-    word16 mouseButtonEvent;
-    int16 inputCode;
-    int16 mouseX;
-    int16 mouseY;
-    int16 textLeftColumn;
-    int16 sectionRow;
-    int16 fontWidth;
-    int16 fontHeight;
+    uint16_t configurationIndex;
+    uint16_t selectedSection;
+    uint16_t previousSection;
+    uint16_t sectionBeforeInput;
+    uint16_t sectionIndex;
+    uint16_t activateSection;
+    uint16_t finished;
+    uint16_t mouseButtonState;
+    uint16_t mouseButtonEvent;
+    int16_t inputCode;
+    int16_t mouseX;
+    int16_t mouseY;
+    int16_t textLeftColumn;
+    int16_t sectionRow;
+    int16_t fontWidth;
+    int16_t fontHeight;
 
     configurationIndex = selectionFamily + 0x0001;
     selectedSection = 0x0000;
@@ -156,13 +156,13 @@ void RunPilotAssignmentEditor(word16 selectionFamily)
     fontWidth = ActiveFontGlyphAdvanceX;
     fontHeight = ActiveFontLineHeight;
 
-    sectionRow = (int16) LanceEditorLayout.PilotEditorSectionRows[selectedSection];
+    sectionRow = (int16_t) LanceEditorLayout.PilotEditorSectionRows[selectedSection];
     HideMouseCursorOverlay();
     XorVideoRectangle(
-        (int16) (textLeftColumn * fontWidth),
-        (int16) (sectionRow * fontHeight),
-        (int16) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
-        (int16) ((sectionRow + 0x0001) * fontHeight - 0x0001),
+        (int16_t) (textLeftColumn * fontWidth),
+        (int16_t) (sectionRow * fontHeight),
+        (int16_t) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
+        (int16_t) ((sectionRow + 0x0001) * fontHeight - 0x0001),
         0x01);
     ShowMouseCursorOverlay();
     FlushPendingInput();
@@ -186,7 +186,7 @@ void RunPilotAssignmentEditor(word16 selectionFamily)
             {
                 do
                 {
-                    if ((int16) --selectedSection < 0x0000)
+                    if ((int16_t) --selectedSection < 0x0000)
                         selectedSection = 0x0003;
                 } while (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + selectedSection] == 0x00 &&
                     selectedSection != sectionBeforeInput);
@@ -210,8 +210,8 @@ void RunPilotAssignmentEditor(word16 selectionFamily)
         }
         else if (MouseInputDisabled == 0x0000)
         {
-            mouseX = (int16) MouseCursorRequestedX;
-            mouseY = (int16) MouseY;
+            mouseX = (int16_t) MouseCursorRequestedX;
+            mouseY = (int16_t) MouseY;
             mouseButtonState = MouseButtonState;
             mouseButtonEvent = PendingMouseButtonEvent;
             PendingMouseButtonEvent = 0x0000;
@@ -229,7 +229,7 @@ void RunPilotAssignmentEditor(word16 selectionFamily)
                 {
                     if (UnitEditorSectionEnabled[configurationIndex * LANCE_EDITOR_SECTION_COUNT + sectionIndex] == 0x00)
                         continue;
-                    sectionRow = (int16) LanceEditorLayout.PilotEditorSectionRows[sectionIndex];
+                    sectionRow = (int16_t) LanceEditorLayout.PilotEditorSectionRows[sectionIndex];
                     if (mouseX >= textLeftColumn * fontWidth &&
                         mouseX < (textLeftColumn + 0x0007) * fontWidth &&
                         mouseY >= sectionRow * fontHeight &&
@@ -252,20 +252,20 @@ void RunPilotAssignmentEditor(word16 selectionFamily)
         if (selectedSection != sectionBeforeInput)
         {
             HideMouseCursorOverlay();
-            sectionRow = (int16) LanceEditorLayout.PilotEditorSectionRows[sectionBeforeInput];
+            sectionRow = (int16_t) LanceEditorLayout.PilotEditorSectionRows[sectionBeforeInput];
             XorVideoRectangle(
-                (int16) (textLeftColumn * fontWidth),
-                (int16) (sectionRow * fontHeight),
-                (int16) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
-                (int16) ((sectionRow + 0x0001) * fontHeight - 0x0001),
+                (int16_t) (textLeftColumn * fontWidth),
+                (int16_t) (sectionRow * fontHeight),
+                (int16_t) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
+                (int16_t) ((sectionRow + 0x0001) * fontHeight - 0x0001),
                 0x01);
             WaitVerticalRetraces(0x0002);
-            sectionRow = (int16) LanceEditorLayout.PilotEditorSectionRows[selectedSection];
+            sectionRow = (int16_t) LanceEditorLayout.PilotEditorSectionRows[selectedSection];
             XorVideoRectangle(
-                (int16) (textLeftColumn * fontWidth),
-                (int16) (sectionRow * fontHeight),
-                (int16) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
-                (int16) ((sectionRow + 0x0001) * fontHeight - 0x0001),
+                (int16_t) (textLeftColumn * fontWidth),
+                (int16_t) (sectionRow * fontHeight),
+                (int16_t) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
+                (int16_t) ((sectionRow + 0x0001) * fontHeight - 0x0001),
                 0x01);
             ShowMouseCursorOverlay();
         }
@@ -286,12 +286,12 @@ void RunPilotAssignmentEditor(word16 selectionFamily)
             (void) ValidatePilotConfiguration(configurationIndex);
             (void) DrawUnitEditorSectionMenu(configurationIndex);
             HideMouseCursorOverlay();
-            sectionRow = (int16) LanceEditorLayout.PilotEditorSectionRows[selectedSection];
+            sectionRow = (int16_t) LanceEditorLayout.PilotEditorSectionRows[selectedSection];
             XorVideoRectangle(
-                (int16) (textLeftColumn * fontWidth),
-                (int16) (sectionRow * fontHeight),
-                (int16) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
-                (int16) ((sectionRow + 0x0001) * fontHeight - 0x0001),
+                (int16_t) (textLeftColumn * fontWidth),
+                (int16_t) (sectionRow * fontHeight),
+                (int16_t) ((textLeftColumn + 0x0007) * fontWidth - 0x0001),
+                (int16_t) ((sectionRow + 0x0001) * fontHeight - 0x0001),
                 0x01);
             ShowMouseCursorOverlay();
             FlushPendingInput();
@@ -301,28 +301,28 @@ void RunPilotAssignmentEditor(word16 selectionFamily)
 
 // 2507:55C6: assign the remaining pilot cards to one lance's unit slots.
 // VERIFIED against ASM 2507:55C6-5C25.
-void RunPilotAssignmentGrid(word16 lanceGroupIndex)
+void RunPilotAssignmentGrid(uint16_t lanceGroupIndex)
 {
-    word16 selectedLanceSlot;
-    word16 previousLanceSlot;
-    word16 selectedAssignmentIndex;
-    word16 previousAssignmentIndex;
-    word16 assignmentGroupBase;
-    word16 selectedPilotRecord;
-    word16 previousPilotRecord;
-    word16 sourcePilotRecord;
-    word16 destinationPilotRecord;
-    word16 actionRequested;
-    word16 finished;
-    word16 mouseButtonState;
-    word16 mouseButtonEvent;
+    uint16_t selectedLanceSlot;
+    uint16_t previousLanceSlot;
+    uint16_t selectedAssignmentIndex;
+    uint16_t previousAssignmentIndex;
+    uint16_t assignmentGroupBase;
+    uint16_t selectedPilotRecord;
+    uint16_t previousPilotRecord;
+    uint16_t sourcePilotRecord;
+    uint16_t destinationPilotRecord;
+    uint16_t actionRequested;
+    uint16_t finished;
+    uint16_t mouseButtonState;
+    uint16_t mouseButtonEvent;
     RevengeUnitLanceAssignment *assignment;
     UnitSelectionCard *pilotCard;
     UnitSelectionCard *sourcePilotCard;
     UnitSelectionCard *destinationPilotCard;
-    int16 inputCode;
-    int16 mouseX;
-    int16 mouseY;
+    int16_t inputCode;
+    int16_t mouseX;
+    int16_t mouseY;
 
     selectedLanceSlot = 0x0000;
     previousLanceSlot = selectedLanceSlot;
@@ -379,17 +379,17 @@ void RunPilotAssignmentGrid(word16 lanceGroupIndex)
                 selectedLanceSlot = 0x0000;
             if (selectedLanceSlot > UnitEditorLanceSlotCount[lanceGroupIndex])
                 selectedLanceSlot = 0x0004;
-            if ((int16) selectedLanceSlot < 0x0000)
+            if ((int16_t) selectedLanceSlot < 0x0000)
                 selectedLanceSlot = 0x0004;
             if (selectedPilotRecord >= UnitEditorPilotCardCount)
                 selectedPilotRecord = 0x0000;
-            if ((int16) selectedPilotRecord < 0x0000)
+            if ((int16_t) selectedPilotRecord < 0x0000)
                 selectedPilotRecord = UnitEditorPilotCardCount - 0x0001;
         }
         else if (MouseInputDisabled == 0x0000)
         {
-            mouseX = (int16) MouseCursorRequestedX;
-            mouseY = (int16) MouseY;
+            mouseX = (int16_t) MouseCursorRequestedX;
+            mouseY = (int16_t) MouseY;
             mouseButtonState = MouseButtonState;
             mouseButtonEvent = PendingMouseButtonEvent;
             PendingMouseButtonEvent = 0x0000;
@@ -406,10 +406,10 @@ void RunPilotAssignmentGrid(word16 lanceGroupIndex)
                     ++sourcePilotRecord)
                 {
                     sourcePilotCard = &UnitSelectionCards[sourcePilotRecord];
-                    if (mouseX >= (int16) (sourcePilotCard->left + 0x0001) &&
-                        mouseX < (int16) (sourcePilotCard->left + 0x003F) &&
-                        mouseY >= (int16) (sourcePilotCard->top + 0x0001) &&
-                        mouseY < (int16) (sourcePilotCard->top + 0x0037))
+                    if (mouseX >= (int16_t) (sourcePilotCard->left + 0x0001) &&
+                        mouseX < (int16_t) (sourcePilotCard->left + 0x003F) &&
+                        mouseY >= (int16_t) (sourcePilotCard->top + 0x0001) &&
+                        mouseY < (int16_t) (sourcePilotCard->top + 0x0037))
                     {
                         selectedPilotRecord = sourcePilotRecord;
                         if (mouseButtonEvent != 0x0000 &&
@@ -428,10 +428,10 @@ void RunPilotAssignmentGrid(word16 lanceGroupIndex)
                     ++sourcePilotRecord)
                 {
                     assignment = &LanceAssignments[assignmentGroupBase + sourcePilotRecord];
-                    if (mouseX >= (int16) assignment->left &&
-                        mouseX < (int16) (assignment->left + 0x0054) &&
-                        mouseY >= (int16) assignment->top &&
-                        mouseY < (int16) (assignment->top + 0x0018))
+                    if (mouseX >= (int16_t) assignment->left &&
+                        mouseX < (int16_t) (assignment->left + 0x0054) &&
+                        mouseY >= (int16_t) assignment->top &&
+                        mouseY < (int16_t) (assignment->top + 0x0018))
                     {
                         if (mouseButtonEvent != 0x0000 &&
                             (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x0000 &&
@@ -441,10 +441,10 @@ void RunPilotAssignmentGrid(word16 lanceGroupIndex)
                     }
                 }
 
-                if (mouseX >= (int16) UnitEditorExitButtonLeft &&
-                    mouseX < (int16) (UnitEditorExitButtonLeft + 0x0054) &&
-                    mouseY >= (int16) UnitEditorExitButtonTop &&
-                    mouseY < (int16) (UnitEditorExitButtonTop + 0x0018))
+                if (mouseX >= (int16_t) UnitEditorExitButtonLeft &&
+                    mouseX < (int16_t) (UnitEditorExitButtonLeft + 0x0054) &&
+                    mouseY >= (int16_t) UnitEditorExitButtonTop &&
+                    mouseY < (int16_t) (UnitEditorExitButtonTop + 0x0018))
                 {
                     if (mouseButtonEvent != 0x0000 &&
                         (mouseButtonState & MOUSE_BUTTON_LEFT) != 0x0000)
@@ -513,7 +513,7 @@ void RunPilotAssignmentGrid(word16 lanceGroupIndex)
         pilotCard->alternateId = REVENGE_PILOT_ID_NONE;
         ++UnitEditorLanceSlotCount[lanceGroupIndex];
         --UnitEditorPilotCardCount;
-        if ((int16) UnitEditorPilotCardCount <= 0x0000)
+        if ((int16_t) UnitEditorPilotCardCount <= 0x0000)
         {
             UnitEditorPilotCardCount = 0x0000;
             finished = TRUE;
@@ -577,10 +577,10 @@ void RunPilotAssignmentGrid(word16 lanceGroupIndex)
 
 // 2507:5C26: draw the complete pilot-selection screen and active family.
 // VERIFIED against ASM 2507:5C26-5CE6.
-void DrawPilotSelectionScreen(word16 selectionFamily)
+void DrawPilotSelectionScreen(uint16_t selectionFamily)
 {
-    int16 selectedLanceGroup;
-    word16 pilotSlot;
+    int16_t selectedLanceGroup;
+    uint16_t pilotSlot;
 
     HideMouseCursorOverlay();
     SetActiveRenderTarget(PrimaryScreenBuffer);
@@ -591,7 +591,7 @@ void DrawPilotSelectionScreen(word16 selectionFamily)
 
     for (pilotSlot = 0x0000; pilotSlot < 0x0006; ++pilotSlot)
     {
-        if ((int16) pilotSlot >= (int16) UnitEditorPilotCardCount)
+        if ((int16_t) pilotSlot >= (int16_t) UnitEditorPilotCardCount)
         {
             DrawPilotSelectionSlot(
                 pilotSlot,
@@ -615,22 +615,22 @@ void DrawPilotSelectionScreen(word16 selectionFamily)
         VideoFramebuffer);
     ShowMouseCursorOverlay();
     RefreshPilotAssignmentSlots(
-        (word16) selectedLanceGroup,
+        (uint16_t) selectedLanceGroup,
         TRUE);
 }
 
 // 2507:5CE7: redraw pilot cards and the assignment slots for one family.
 // VERIFIED against ASM 2507:5CE7-5DBD.
 void RefreshPilotAssignmentSlots(
-    word16 selectionFamily,
-    word16 showPilotCards)
+    uint16_t selectionFamily,
+    uint16_t showPilotCards)
 {
-    word16 pilotRecordIndex;
-    word16 assignmentIndex;
-    word16 lastAssignmentIndex;
+    uint16_t pilotRecordIndex;
+    uint16_t assignmentIndex;
+    uint16_t lastAssignmentIndex;
 
     for (pilotRecordIndex = 0x0000;
-        (int16) pilotRecordIndex < (int16) UnitEditorPilotCardCount;
+        (int16_t) pilotRecordIndex < (int16_t) UnitEditorPilotCardCount;
         ++pilotRecordIndex)
     {
         UnitSelectionCards[pilotRecordIndex].state &= 0xFD;
@@ -643,7 +643,7 @@ void RefreshPilotAssignmentSlots(
     assignmentIndex = selectionFamily * 0x0004;
     lastAssignmentIndex = assignmentIndex +
         UnitEditorLanceSlotCount[selectionFamily];
-    while ((int16) assignmentIndex < (int16) lastAssignmentIndex)
+    while ((int16_t) assignmentIndex < (int16_t) lastAssignmentIndex)
     {
         LanceAssignments[assignmentIndex].style &= 0xFE;
         DrawLanceAssignmentSlot(
@@ -659,21 +659,21 @@ void RefreshPilotAssignmentSlots(
 // 2507:5DBE: draw one pilot portrait card and its identifying text.
 // VERIFIED against ASM 2507:5DBE-6092.
 void DrawPilotSelectionSlot(
-    word16 pilotRecordIndex,
-    word16 redrawBackground,
-    int16 displayMode)
+    uint16_t pilotRecordIndex,
+    uint16_t redrawBackground,
+    int16_t displayMode)
 {
-    byte *savedRenderTarget;
+    uint8_t *savedRenderTarget;
     UnitSelectionCard *pilotRecord;
     RevengePilotRosterRecord *pilot;
-    int16 leftX;
-    int16 topY;
-    word16 width;
-    byte flags;
-    word16 textColor;
-    int16 pilotId;
-    int16 identityIndex;
-    int16 labelIndex;
+    int16_t leftX;
+    int16_t topY;
+    uint16_t width;
+    uint8_t flags;
+    uint16_t textColor;
+    int16_t pilotId;
+    int16_t identityIndex;
+    int16_t labelIndex;
     const char *text;
 
     HideMouseCursorOverlay();
@@ -681,17 +681,17 @@ void DrawPilotSelectionSlot(
     SetActiveRenderTarget(PrimaryScreenBuffer);
 
     pilotRecord = &UnitSelectionCards[pilotRecordIndex];
-    leftX = (int16) pilotRecord->left;
-    topY = (int16) pilotRecord->top;
+    leftX = (int16_t) pilotRecord->left;
+    topY = (int16_t) pilotRecord->top;
     width = pilotRecord->width;
     flags = pilotRecord->state;
     if (displayMode == -0x0001)
     {
         FillVideoRectangle(
-            (int16) (leftX + 0x0002),
-            (int16) (topY + 0x0002),
-            (int16) (leftX + 0x003D),
-            (int16) (topY + 0x0035),
+            (int16_t) (leftX + 0x0002),
+            (int16_t) (topY + 0x0002),
+            (int16_t) (leftX + 0x003D),
+            (int16_t) (topY + 0x0035),
             0x000C);
     }
     else
@@ -705,50 +705,50 @@ void DrawPilotSelectionSlot(
     }
 
     DrawClippedAxisAlignedLine(
-        leftX, topY, (int16) (leftX + 0x003F), topY, 0x000E);
+        leftX, topY, (int16_t) (leftX + 0x003F), topY, 0x000E);
     if ((flags & 0xFE) != 0x00)
     {
         DrawClippedRectangleOutline(
-            (int16) (leftX + 0x0001),
-            (int16) (topY + 0x0001),
-            (int16) (leftX + 0x003E),
-            (int16) (topY + 0x0036),
+            (int16_t) (leftX + 0x0001),
+            (int16_t) (topY + 0x0001),
+            (int16_t) (leftX + 0x003E),
+            (int16_t) (topY + 0x0036),
             0x000F);
     }
     else
     {
         DrawClippedAxisAlignedLine(
-            (int16) (leftX + 0x0001),
-            (int16) (topY + 0x0001),
-            (int16) (leftX + 0x0001),
-            (int16) (topY + 0x0036),
+            (int16_t) (leftX + 0x0001),
+            (int16_t) (topY + 0x0001),
+            (int16_t) (leftX + 0x0001),
+            (int16_t) (topY + 0x0036),
             0x000C);
         DrawClippedAxisAlignedLine(
-            (int16) (leftX + 0x0001),
-            (int16) (topY + 0x0001),
-            (int16) (leftX + 0x003E),
-            (int16) (topY + 0x0001),
+            (int16_t) (leftX + 0x0001),
+            (int16_t) (topY + 0x0001),
+            (int16_t) (leftX + 0x003E),
+            (int16_t) (topY + 0x0001),
             0x000C);
         DrawClippedAxisAlignedLine(
-            (int16) (leftX + 0x003E),
-            (int16) (topY + 0x0001),
-            (int16) (leftX + 0x003E),
-            (int16) (topY + 0x0036),
+            (int16_t) (leftX + 0x003E),
+            (int16_t) (topY + 0x0001),
+            (int16_t) (leftX + 0x003E),
+            (int16_t) (topY + 0x0036),
             0x000E);
         DrawClippedAxisAlignedLine(
-            (int16) (leftX + 0x0001),
-            (int16) (topY + 0x0036),
-            (int16) (leftX + 0x003E),
-            (int16) (topY + 0x0036),
+            (int16_t) (leftX + 0x0001),
+            (int16_t) (topY + 0x0036),
+            (int16_t) (leftX + 0x003E),
+            (int16_t) (topY + 0x0036),
             0x000E);
     }
 
     if (redrawBackground != FALSE)
     {
         CopyClippedVideoRegion(
-            (int16) (leftX >> 0x03),
+            (int16_t) (leftX >> 0x03),
             topY,
-            (int16) (leftX >> 0x03),
+            (int16_t) (leftX >> 0x03),
             topY,
             0x0008,
             0x0038,
@@ -771,65 +771,65 @@ void DrawPilotSelectionSlot(
     DrawCenteredClippedText(
         text,
         0x0000,
-        (word16) (leftX - 0x0001),
-        (word16) (topY + 0x0038),
+        (uint16_t) (leftX - 0x0001),
+        (uint16_t) (topY + 0x0038),
         width,
-        (byte) textColor,
+        (uint8_t) textColor,
         0x00);
 
-    topY = (int16) (topY + ActiveFontLineHeight);
+    topY = (int16_t) (topY + ActiveFontLineHeight);
     text = PilotSurnameTextTable[identityIndex];
     DrawCenteredClippedText(
         text,
         0x0000,
-        (word16) (leftX - 0x0001),
-        (word16) (topY + 0x0038),
+        (uint16_t) (leftX - 0x0001),
+        (uint16_t) (topY + 0x0038),
         width,
-        (byte) textColor,
+        (uint8_t) textColor,
         0x00);
 
-    topY = (int16) (topY + 0x0047 -
+    topY = (int16_t) (topY + 0x0047 -
         ActiveFontLineHeight);
     labelIndex = pilot->experienceIndex;
     text = PilotExperienceLabelTextTable[labelIndex];
     DrawLeftAlignedClippedText(
         text,
-        (word16) leftX,
-        (word16) topY,
+        (uint16_t) leftX,
+        (uint16_t) topY,
         width,
-        (byte) textColor,
+        (uint8_t) textColor,
         0x00);
 
-    topY = (int16) (topY + 0x0009);
+    topY = (int16_t) (topY + 0x0009);
     labelIndex = pilot->gunneryIndex - 0x0002;
     text = PilotGunneryLabelTextTable[labelIndex];
     DrawLeftAlignedClippedText(
         text,
-        (word16) leftX,
-        (word16) topY,
+        (uint16_t) leftX,
+        (uint16_t) topY,
         width,
-        (byte) textColor,
+        (uint8_t) textColor,
         0x00);
     ShowMouseCursorOverlay();
 }
 
 // 2507:6093: remove and return one random pilot ID from DS:1BAD.
 // VERIFIED against ASM 2507:6093-60D1.
-int16 PopRandomPilotId(void)
+int16_t PopRandomPilotId(void)
 {
-    word16 selectedIndex;
-    int16 pilotId;
-    word16 randomPilotCount;
+    uint16_t selectedIndex;
+    int16_t pilotId;
+    uint16_t randomPilotCount;
 
     randomPilotCount = RandomSelectionPoolCount;
-    selectedIndex = (word16) RandomInRangeInclusive(
+    selectedIndex = (uint16_t) RandomInRangeInclusive(
         0x0000,
-        (word16) (randomPilotCount - 0x0001));
+        (uint16_t) (randomPilotCount - 0x0001));
     pilotId = RandomPilotPool[selectedIndex];
     RandomPilotPool[selectedIndex] =
         RandomPilotPool[randomPilotCount - 0x0001];
     RandomPilotPool[randomPilotCount - 0x0001] =
-        (byte) REVENGE_PILOT_ID_NONE;
+        (uint8_t) REVENGE_PILOT_ID_NONE;
     --RandomSelectionPoolCount;
     return pilotId;
 }

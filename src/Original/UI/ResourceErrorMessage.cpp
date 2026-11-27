@@ -16,16 +16,16 @@
 // hide and show.
 void ShowResourceErrorMessage(void)
 {
-    byte *backingBuffer;
-    uint32 backingSize;
-    word16 savedWindowIndex;
-    word16 allocatedHere;
-    word16 savedForegroundColor;
-    word16 savedBackgroundColor;
-    int16 leftX;
-    int16 topY;
-    int16 rightX;
-    int16 bottomY;
+    uint8_t *backingBuffer;
+    uint32_t backingSize;
+    uint16_t savedWindowIndex;
+    uint16_t allocatedHere;
+    uint16_t savedForegroundColor;
+    uint16_t savedBackgroundColor;
+    int16_t leftX;
+    int16_t topY;
+    int16_t rightX;
+    int16_t bottomY;
 
     savedWindowIndex = ActiveTextWindowIndex;
     SelectTextWindow(StartupResourceState);
@@ -33,30 +33,30 @@ void ShowResourceErrorMessage(void)
     if (InvalidSaveDialogBacking == NULL)
     {
         /* 0746-074D: the 16-bit product, sign-extended (cwd). */
-        backingSize = (uint32) (int32) (int16) (word16) (ActiveTextWindowWidthTiles * ActiveTextWindowHeightTiles);
+        backingSize = (uint32_t) (int32_t) (int16_t) (uint16_t) (ActiveTextWindowWidthTiles * ActiveTextWindowHeightTiles);
         backingSize <<= VideoAdapterType == VIDEO_ADAPTER_VGA ? 0x06 : 0x05;
-        InvalidSaveDialogBacking = (byte *) Heap_Allocate(backingSize, "3390:077F");
+        InvalidSaveDialogBacking = (uint8_t *) Heap_Allocate(backingSize, "3390:077F");
         allocatedHere = TRUE;
     }
     backingBuffer = InvalidSaveDialogBacking;
 
     CopyVideoRegionToBuffer(
-        (int16) ActiveTextWindowLeftTile,
+        (int16_t) ActiveTextWindowLeftTile,
         ActiveTextWindowTopTile,
         ActiveTextWindowWidthTiles,
         ActiveTextWindowHeightTiles,
         backingBuffer);
     ClearActiveTextWindow();
 
-    leftX = (int16) (ActiveTextWindowLeftTile << 0x03);
-    topY = (int16) (ActiveTextWindowTopTile << 0x03);
-    rightX = (int16) (((ActiveTextWindowLeftTile +
-                           ActiveTextWindowWidthTiles)
-                          << 0x03) -
+    leftX = (int16_t) (ActiveTextWindowLeftTile << 0x03);
+    topY = (int16_t) (ActiveTextWindowTopTile << 0x03);
+    rightX = (int16_t) (((ActiveTextWindowLeftTile +
+                             ActiveTextWindowWidthTiles)
+                            << 0x03) -
         0x01);
-    bottomY = (int16) (((ActiveTextWindowTopTile +
-                            ActiveTextWindowHeightTiles)
-                           << 0x03) -
+    bottomY = (int16_t) (((ActiveTextWindowTopTile +
+                              ActiveTextWindowHeightTiles)
+                             << 0x03) -
         0x01);
     DrawClippedAxisAlignedLine(leftX, topY, rightX, topY, 0x000F);
     DrawClippedAxisAlignedLine(leftX, bottomY, rightX, bottomY, 0x000F);
@@ -78,7 +78,7 @@ void ShowResourceErrorMessage(void)
 
     AdjustActiveTextWindowMargin(0x0001);
     CopyBufferToVideoRegion(
-        (int16) ActiveTextWindowLeftTile,
+        (int16_t) ActiveTextWindowLeftTile,
         ActiveTextWindowTopTile,
         ActiveTextWindowWidthTiles,
         ActiveTextWindowHeightTiles,

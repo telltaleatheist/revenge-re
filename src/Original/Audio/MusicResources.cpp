@@ -36,7 +36,7 @@ void EnableMusicPlayback(void)
 // Verified against 3014:0038-0116.
 void InitializeMusicDriver(void)
 {
-    word16 musicDriverIndex;
+    uint16_t musicDriverIndex;
 
     AllocateMusicStagingBuffer();
     musicDriverIndex = MusicDriverIndex;
@@ -70,9 +70,9 @@ void InitializeMusicDriver(void)
 //      InitializeMusicDriver
 void AllocateMusicStagingBuffer(void)
 {
-    byte *musicDriverBuffer;
+    uint8_t *musicDriverBuffer;
 
-    musicDriverBuffer = (byte *) Heap_Allocate(0x30D4, "3014:011E");
+    musicDriverBuffer = (uint8_t *) Heap_Allocate(0x30D4, "3014:011E");
     MusicStagingBuffer = musicDriverBuffer;
     CachedMusicResourceIndex = 0xFFFF;
 }
@@ -109,7 +109,7 @@ void ShutdownMusicDriver(void)
 //      PlayMusicResource
 void StartLoadedMusicTrack(void)
 {
-    word16 startResult;
+    uint16_t startResult;
 
     if (MusicDriverIndex == 0x00)
         StartPCSpeakerFixedTone();
@@ -141,15 +141,15 @@ void StopLoadedMusicTrack(void)
 // Called from:
 //      PlayMusicResource
 // Verified against 3014:0197-01F4.
-void LoadMusicResource(word16 resourceIndex)
+void LoadMusicResource(uint16_t resourceIndex)
 {
     if (RequestedMusicEnabled != 0x00)
     {
         const CachedFileDescriptor *descriptor;
-        int16 resourceLength;
+        int16_t resourceLength;
 
         descriptor = &CachedFileDescriptors[resourceIndex];
-        resourceLength = (int16) descriptor->fileLength;
+        resourceLength = (int16_t) descriptor->fileLength;
 
         if (resourceLength <= 0x30D4 &&
             CachedMusicResourceIndex != resourceIndex)
@@ -160,7 +160,7 @@ void LoadMusicResource(word16 resourceIndex)
             ReadWholeResourceFile(
                 resourceName,
                 MusicStagingBuffer,
-                (word16) resourceLength);
+                (uint16_t) resourceLength);
             CachedMusicResourceIndex = resourceIndex;
         }
     }
@@ -170,9 +170,9 @@ void LoadMusicResource(word16 resourceIndex)
 // Called from:
 //      RunTitleAndMainMenu
 // Verified against 3014:01F5-0239.
-void PlayMusicResource(word16 resourceIndex)
+void PlayMusicResource(uint16_t resourceIndex)
 {
-    word16 compatibleResourceIndex;
+    uint16_t compatibleResourceIndex;
 
     compatibleResourceIndex = resourceIndex;
     REVENGE_PRESERVATION_TRACE("music: request=%04X driver=%04X enabled=%04X abort=%04X\n",

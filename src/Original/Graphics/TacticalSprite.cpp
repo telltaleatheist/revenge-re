@@ -8,15 +8,15 @@
 
 // 3005:0008
 void DrawTacticalClippedSprite(
-    byte *renderTarget,
-    const byte *encodedSprite,
-    int16 relativeX,
-    int16 relativeY,
-    word16 textWindowIndex)
+    uint8_t *renderTarget,
+    const uint8_t *encodedSprite,
+    int16_t relativeX,
+    int16_t relativeY,
+    uint16_t textWindowIndex)
 {
     TextWindowContext *textWindow;
-    int16 screenX;
-    int16 screenY;
+    int16_t screenX;
+    int16_t screenY;
 
     if (SpriteDrawBusy != FALSE)
         return;

@@ -7,18 +7,18 @@
 #include "revenge/video.h"
 
 void DecodeLinearRleScreen(
-    const byte *compressedData,
-    byte *destination);
+    const uint8_t *compressedData,
+    uint8_t *destination);
 void DecodeColumnMajorRleScreen(
-    const byte *compressedData,
-    byte *destination);
+    const uint8_t *compressedData,
+    uint8_t *destination);
 // 35C2:000B
 void CopyDecodedIconPage(
-    const byte *packedDisplayBuffer,
-    byte *iconPageDestination)
+    const uint8_t *packedDisplayBuffer,
+    uint8_t *iconPageDestination)
 {
-    byte layoutType;
-    const byte *compressedData;
+    uint8_t layoutType;
+    const uint8_t *compressedData;
 
     layoutType = packedDisplayBuffer[0x00];
     compressedData = packedDisplayBuffer + 0x01;

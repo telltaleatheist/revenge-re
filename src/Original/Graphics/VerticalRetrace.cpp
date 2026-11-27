@@ -12,10 +12,10 @@
 //      AnimateTitleTextLine
 //      WaitForDismissInputOrTimeout
 //      ShutdownGame
-void WaitVerticalRetraces(word16 retraceCount)
+void WaitVerticalRetraces(uint16_t retraceCount)
 {
     while (retraceCount-- != 0x0000)
     {
-        WaitForVerticalRetraceEdge((byte) VerticalRetraceEdgeMode);
+        WaitForVerticalRetraceEdge((uint8_t) VerticalRetraceEdgeMode);
     }
 }

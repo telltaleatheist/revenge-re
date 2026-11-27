@@ -19,18 +19,18 @@ void AbortRuntimeWithMessage(const char *errorText)
 }
 
 // 3390:0024
-void ShutdownAndExit(word16 exitCode)
+void ShutdownAndExit(uint16_t exitCode)
 {
     ShutdownGame();
     RunExitHandlersAndTerminate(exitCode);
 }
 
 // 3390:0037
-int16 OpenTrackedFile(char *path, word16 openMode)
+int16_t OpenTrackedFile(char *path, uint16_t openMode)
 {
     GameFileAccess access;
-    int16 trackedHandle;
-    int16 handleSlot;
+    int16_t trackedHandle;
+    int16_t handleSlot;
 
     if (openMode == 0x0001)
     {
@@ -69,10 +69,10 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 
     if (IsResourceCached(path) != FALSE)
     {
-        word16 resourceIndex = FindResourceDescriptorIndex(path);
+        uint16_t resourceIndex = FindResourceDescriptorIndex(path);
 
         CachedFileDescriptors[resourceIndex].currentPosition = 0x00000000UL;
-        trackedHandle = (int16) (resourceIndex | ORIGINAL_TRACKED_FILE_CACHED);
+        trackedHandle = (int16_t) (resourceIndex | ORIGINAL_TRACKED_FILE_CACHED);
     }
     else
     {
@@ -85,7 +85,7 @@ int16 OpenTrackedFile(char *path, word16 openMode)
     }
 
     handleSlot = ORIGINAL_TRACKED_FILE_COUNT;
-    for (int16 slot = 0x0000; slot < ORIGINAL_TRACKED_FILE_COUNT; ++slot)
+    for (int16_t slot = 0x0000; slot < ORIGINAL_TRACKED_FILE_COUNT; ++slot)
     {
         if (ResourceFiles.trackedHandles[slot] == ORIGINAL_TRACKED_FILE_UNUSED)
         {
@@ -99,97 +99,97 @@ int16 OpenTrackedFile(char *path, word16 openMode)
         ResourceErrorDisplayCallback();
         ResourceErrorDismissCallback();
         /* DS:B64E immediately follows the ten-entry table in the executable. */
-        ResourceFiles.preloadFiles = (word16) trackedHandle;
+        ResourceFiles.preloadFiles = (uint16_t) trackedHandle;
     }
     else
     {
-        ResourceFiles.trackedHandles[handleSlot] = (word16) trackedHandle;
+        ResourceFiles.trackedHandles[handleSlot] = (uint16_t) trackedHandle;
     }
     return handleSlot;
 }
 
 // 3390:0244
-void CloseTrackedFile(int16 handleSlot)
+void CloseTrackedFile(int16_t handleSlot)
 {
-    word16 trackedHandle = ResourceFiles.trackedHandles[handleSlot];
+    uint16_t trackedHandle = ResourceFiles.trackedHandles[handleSlot];
 
     if (trackedHandle == ORIGINAL_TRACKED_FILE_UNUSED)
         AbortRuntimeWithMessage(ResourceCloseUnopenedErrorText);
     if ((trackedHandle & ORIGINAL_TRACKED_FILE_CACHED) == 0x0000)
-        GameFile_Close((int16) trackedHandle);
+        GameFile_Close((int16_t) trackedHandle);
     ResourceFiles.trackedHandles[handleSlot] = ORIGINAL_TRACKED_FILE_UNUSED;
 }
 
 // 3390:028C
-uint32 ReadTrackedFile(int16 handleSlot, void *destination, uint32 byteCount)
+uint32_t ReadTrackedFile(int16_t handleSlot, void *destination, uint32_t byteCount)
 {
-    word16 trackedHandle = ResourceFiles.trackedHandles[handleSlot];
-    uint32 totalBytesRead = 0x00000000UL;
+    uint16_t trackedHandle = ResourceFiles.trackedHandles[handleSlot];
+    uint32_t totalBytesRead = 0x00000000UL;
 
     if (trackedHandle == ORIGINAL_TRACKED_FILE_UNUSED)
         AbortRuntimeWithMessage(ResourceReadUnopenedErrorText);
     if ((trackedHandle & ORIGINAL_TRACKED_FILE_CACHED) != 0x0000)
         return ReadCachedResource(trackedHandle & 0x7FFF, destination, byteCount);
 
-    while ((int16) HIGH_WORD(byteCount) > 0x0000 ||
+    while ((int16_t) HIGH_WORD(byteCount) > 0x0000 ||
         (HIGH_WORD(byteCount) == 0x0000 && LOW_WORD(byteCount) > 0xFA00))
     {
-        int16 chunkBytesRead = GameFile_Read(
-            (int16) trackedHandle, destination, 0xFA00);
+        int16_t chunkBytesRead = GameFile_Read(
+            (int16_t) trackedHandle, destination, 0xFA00);
 
         byteCount -= 0x0000FA00UL;
         if (chunkBytesRead == -0x01)
             return 0x00000000UL;
-        totalBytesRead += (word16) chunkBytesRead;
+        totalBytesRead += (uint16_t) chunkBytesRead;
     }
 
     {
-        int16 finalBytesRead = GameFile_Read(
-            (int16) trackedHandle, destination, LOW_WORD(byteCount));
+        int16_t finalBytesRead = GameFile_Read(
+            (int16_t) trackedHandle, destination, LOW_WORD(byteCount));
 
         if (finalBytesRead == -0x01)
             return 0x00000000UL;
-        return totalBytesRead + (word16) finalBytesRead;
+        return totalBytesRead + (uint16_t) finalBytesRead;
     }
 }
 
 // 3390:0372
-uint32 WriteTrackedFile(int16 handleSlot, const void *source, uint32 byteCount)
+uint32_t WriteTrackedFile(int16_t handleSlot, const void *source, uint32_t byteCount)
 {
-    word16 trackedHandle = ResourceFiles.trackedHandles[handleSlot];
-    uint32 totalBytesWritten = 0x00000000UL;
+    uint16_t trackedHandle = ResourceFiles.trackedHandles[handleSlot];
+    uint32_t totalBytesWritten = 0x00000000UL;
 
     if (trackedHandle == ORIGINAL_TRACKED_FILE_UNUSED)
         AbortRuntimeWithMessage(ResourceWriteUnopenedErrorText);
     if ((trackedHandle & ORIGINAL_TRACKED_FILE_CACHED) != 0x0000)
         AbortRuntimeWithMessage(ResourceWriteCachedErrorText);
 
-    while ((int16) HIGH_WORD(byteCount) > 0x0000 ||
+    while ((int16_t) HIGH_WORD(byteCount) > 0x0000 ||
         (HIGH_WORD(byteCount) == 0x0000 && LOW_WORD(byteCount) > 0xFA00))
     {
-        int16 chunkBytesWritten = GameFile_Write(
-            (int16) trackedHandle, source, 0xFA00);
+        int16_t chunkBytesWritten = GameFile_Write(
+            (int16_t) trackedHandle, source, 0xFA00);
 
         if (chunkBytesWritten == -0x01)
             return 0x00000000UL;
         byteCount -= 0x0000FA00UL;
-        totalBytesWritten += (word16) chunkBytesWritten;
+        totalBytesWritten += (uint16_t) chunkBytesWritten;
     }
 
     {
-        int16 finalBytesWritten = GameFile_Write(
-            (int16) trackedHandle, source, LOW_WORD(byteCount));
+        int16_t finalBytesWritten = GameFile_Write(
+            (int16_t) trackedHandle, source, LOW_WORD(byteCount));
 
         if (finalBytesWritten == -0x01)
             return 0x00000000UL;
-        return totalBytesWritten + (word16) finalBytesWritten;
+        return totalBytesWritten + (uint16_t) finalBytesWritten;
     }
 }
 
 // 3390:0441
-void SeekTrackedFile(int16 handleSlot, int32 distance, word16 origin)
+void SeekTrackedFile(int16_t handleSlot, int32_t distance, uint16_t origin)
 {
-    word16 trackedHandle = ResourceFiles.trackedHandles[handleSlot];
+    uint16_t trackedHandle = ResourceFiles.trackedHandles[handleSlot];
 
     if (trackedHandle == ORIGINAL_TRACKED_FILE_UNUSED)
         AbortRuntimeWithMessage(ResourceSeekUnopenedErrorText);
@@ -198,25 +198,25 @@ void SeekTrackedFile(int16 handleSlot, int32 distance, word16 origin)
 
     if ((trackedHandle & ORIGINAL_TRACKED_FILE_CACHED) == 0x0000)
     {
-        (void) GameFile_Seek((int16) trackedHandle, distance, (GameFileOrigin) origin);
+        (void) GameFile_Seek((int16_t) trackedHandle, distance, (GameFileOrigin) origin);
     }
     else
     {
         CachedFileDescriptor *resource =
             &CachedFileDescriptors[trackedHandle & 0x7FFF];
-        int32 basePosition;
-        int32 newPosition;
+        int32_t basePosition;
+        int32_t newPosition;
 
         if (origin == 0x0000)
         {
-            int16 lengthHigh = (int16) HIGH_WORD(resource->fileLength);
-            int16 distanceHigh = (int16) HIGH_WORD((uint32) distance);
+            int16_t lengthHigh = (int16_t) HIGH_WORD(resource->fileLength);
+            int16_t distanceHigh = (int16_t) HIGH_WORD((uint32_t) distance);
 
             if (lengthHigh > distanceHigh ||
                 (lengthHigh == distanceHigh &&
-                    LOW_WORD(resource->fileLength) >= LOW_WORD((uint32) distance)))
+                    LOW_WORD(resource->fileLength) >= LOW_WORD((uint32_t) distance)))
             {
-                resource->currentPosition = (uint32) distance;
+                resource->currentPosition = (uint32_t) distance;
             }
             else
             {
@@ -225,23 +225,23 @@ void SeekTrackedFile(int16 handleSlot, int32 distance, word16 origin)
             return;
         }
         if (origin == 0x0001)
-            basePosition = (int32) resource->currentPosition;
+            basePosition = (int32_t) resource->currentPosition;
         else
-            basePosition = (int32) resource->fileLength;
+            basePosition = (int32_t) resource->fileLength;
 
         newPosition = basePosition + distance;
         if (newPosition < 0x00000000L)
             newPosition = 0x00000000L;
-        if ((uint32) newPosition > resource->fileLength)
-            newPosition = (int32) resource->fileLength;
-        resource->currentPosition = (uint32) newPosition;
+        if ((uint32_t) newPosition > resource->fileLength)
+            newPosition = (int32_t) resource->fileLength;
+        resource->currentPosition = (uint32_t) newPosition;
     }
 }
 
 // 3390:061F
-word16 CanOpenFileForRead(const char *path)
+uint16_t CanOpenFileForRead(const char *path)
 {
-    int16 fileHandle = GameFile_Open(path, GAME_FILE_READ); /* 8001h */
+    int16_t fileHandle = GameFile_Open(path, GAME_FILE_READ); /* 8001h */
 
     if (fileHandle == -0x01)
         return FALSE;
@@ -256,9 +256,9 @@ void DeleteFileIgnoringErrors(char *filePath)
 }
 
 // 3390:0668
-word16 CanOpenFileForWrite(const char *path)
+uint16_t CanOpenFileForWrite(const char *path)
 {
-    int16 fileHandle = GameFile_Open(path, GAME_FILE_CREATE); /* 8102h */
+    int16_t fileHandle = GameFile_Open(path, GAME_FILE_CREATE); /* 8102h */
 
     if (fileHandle == -0x01)
         return FALSE;
@@ -267,9 +267,9 @@ word16 CanOpenFileForWrite(const char *path)
 }
 
 // 3390:069C
-word16 GetResourceDriveMask(char *path)
+uint16_t GetResourceDriveMask(char *path)
 {
-    word16 resourceIndex = 0x0000;
+    uint16_t resourceIndex = 0x0000;
     char *normalizedPath = UppercaseStringInPlace(path);
 
     while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
@@ -289,8 +289,8 @@ word16 GetResourceDriveMask(char *path)
 // 3390:098C
 void ReleaseCachedResources(void)
 {
-    word16 resourceIndex = 0x0000;
-    int16 handleSlot;
+    uint16_t resourceIndex = 0x0000;
+    int16_t handleSlot;
 
     while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
     {
@@ -321,25 +321,25 @@ enum
 // 3390:0A22
 void InitializeResourceCache(void)
 {
-    int16 remainingConventionalMemoryKB;
-    word16 resourceIndex;
-    int16 handleSlot;
+    int16_t remainingConventionalMemoryKB;
+    uint16_t resourceIndex;
+    int16_t handleSlot;
 
     /* The names and lengths the image holds at DS:10B0. */
     OriginalData_InitializeResourceDescriptorPointers();
     for (handleSlot = 0x0000; handleSlot < ORIGINAL_TRACKED_FILE_COUNT; ++handleSlot)
         ResourceFiles.trackedHandles[handleSlot] = ORIGINAL_TRACKED_FILE_UNUSED;
 
-    remainingConventionalMemoryKB = (int16) (HostConventionalMemoryKB - ReservedConventionalMemoryKB);
+    remainingConventionalMemoryKB = (int16_t) (HostConventionalMemoryKB - ReservedConventionalMemoryKB);
     ResourceFiles.availableDriveMask = 0x0000;
     resourceIndex = 0x0000;
     while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
     {
         CachedFileDescriptor *resource = &CachedFileDescriptors[resourceIndex];
-        word16 allocationKB;
-        byte *cachedData;
-        int16 fileHandle;
-        int32 bytesRead;
+        uint16_t allocationKB;
+        uint8_t *cachedData;
+        int16_t fileHandle;
+        int32_t bytesRead;
 
         ResourceFiles.availableDriveMask |= resource->resourceDriveMask;
         if (ResourceFiles.preloadFiles == FALSE)
@@ -349,10 +349,10 @@ void InitializeResourceCache(void)
         }
 
         resource->fileName = UppercaseStringInPlace(resource->fileName);
-        allocationKB = (word16) (resource->fileLength / 0x00000400UL) + 0x0001;
+        allocationKB = (uint16_t) (resource->fileLength / 0x00000400UL) + 0x0001;
         cachedData = NULL;
-        if (remainingConventionalMemoryKB >= (int16) allocationKB)
-            cachedData = (byte *) Heap_Allocate(resource->fileLength, "3390:0AF1");
+        if (remainingConventionalMemoryKB >= (int16_t) allocationKB)
+            cachedData = (uint8_t *) Heap_Allocate(resource->fileLength, "3390:0AF1");
         if (cachedData == NULL)
         {
             ++resourceIndex;
@@ -369,11 +369,11 @@ void InitializeResourceCache(void)
 
         bytesRead = GameFile_Read(
             fileHandle, cachedData, LOW_WORD(resource->fileLength));
-        if ((uint32) bytesRead == resource->fileLength)
+        if ((uint32_t) bytesRead == resource->fileLength)
         {
             resource->cachedData = cachedData;
             GameFile_Close(fileHandle);
-            remainingConventionalMemoryKB -= (int16) allocationKB;
+            remainingConventionalMemoryKB -= (int16_t) allocationKB;
         }
         else
         {
@@ -385,9 +385,9 @@ void InitializeResourceCache(void)
 }
 
 // 3390:0BFF
-word16 IsResourceCached(char *path)
+uint16_t IsResourceCached(char *path)
 {
-    word16 resourceIndex = 0x0000;
+    uint16_t resourceIndex = 0x0000;
     char *normalizedPath = UppercaseStringInPlace(path);
 
     while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
@@ -404,9 +404,9 @@ word16 IsResourceCached(char *path)
 }
 
 // 3390:0C86
-word16 FindResourceDescriptorIndex(char *path)
+uint16_t FindResourceDescriptorIndex(char *path)
 {
-    word16 resourceIndex = 0x0000;
+    uint16_t resourceIndex = 0x0000;
     char *normalizedPath = UppercaseStringInPlace(path);
 
     while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
@@ -422,13 +422,13 @@ word16 FindResourceDescriptorIndex(char *path)
 }
 
 // 3390:0CF7
-word16 ReadCachedResource(
-    word16 resourceIndex,
+uint16_t ReadCachedResource(
+    uint16_t resourceIndex,
     void *destination,
-    uint32 requestedBytes)
+    uint32_t requestedBytes)
 {
     CachedFileDescriptor *resource = &CachedFileDescriptors[resourceIndex];
-    uint32 bytesToRead = requestedBytes;
+    uint32_t bytesToRead = requestedBytes;
 
     if (resource->currentPosition + bytesToRead > resource->fileLength)
         bytesToRead = resource->fileLength - resource->currentPosition;
@@ -444,7 +444,7 @@ word16 ReadCachedResource(
 
 // 3390:0DFC: expand the active text window equally on all four sides.
 // Verified against 3390:0DFC-0E1C.
-void AdjustActiveTextWindowMargin(word16 marginTiles)
+void AdjustActiveTextWindowMargin(uint16_t marginTiles)
 {
     ActiveTextWindowLeftTile -= marginTiles;
     ActiveTextWindowTopTile -= marginTiles;

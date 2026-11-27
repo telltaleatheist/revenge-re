@@ -23,19 +23,19 @@
 typedef int8_t int8;
 typedef uint8_t uint8;
 typedef uint32_t word32;
-typedef uint8 ui8;
-typedef uint16 ui16;
-typedef const uint8 cu8;
-typedef const uint16 cui16;
-typedef const int16 ci16;
+typedef uint8_t ui8;
+typedef uint16_t ui16;
+typedef const uint8_t cu8;
+typedef const uint16_t cui16;
+typedef const int16_t ci16;
 
 #pragma pack(push, 1)
 typedef struct LocalClockSnapshot
 {
-    uint32 epochSeconds;
-    word16 milliseconds;
-    int16 timezoneOffsetMinutes;
-    word16 daylightSavingActive;
+    uint32_t epochSeconds;
+    uint16_t milliseconds;
+    int16_t timezoneOffsetMinutes;
+    uint16_t daylightSavingActive;
 } LocalClockSnapshot;
 #pragma pack(pop)
 
@@ -65,23 +65,23 @@ struct DigitalSampleDescriptor
 {
     DigitalSampleLink Link;                 /* +00 next, +04 previous link */
     DigitalDriverQueue *OwnerQueue;         /* +08 */
-    const byte *SampleData;                 /* +0C */
-    word16 SampleLength;
-    word16 LoopStart;
-    word16 LoopEnd;
-    word16 LoopLength;
-    word16 SourceRateHz;
-    word16 PlaybackScale;
-    word16 SourceStepFraction;
-    word16 SourceStepWhole;
-    word16 PlaybackHandlerOffset;
-    word16 SourceCursorFraction;
+    const uint8_t *SampleData;                 /* +0C */
+    uint16_t SampleLength;
+    uint16_t LoopStart;
+    uint16_t LoopEnd;
+    uint16_t LoopLength;
+    uint16_t SourceRateHz;
+    uint16_t PlaybackScale;
+    uint16_t SourceStepFraction;
+    uint16_t SourceStepWhole;
+    uint16_t PlaybackHandlerOffset;
+    uint16_t SourceCursorFraction;
     /* +24/+26: the cursor's offset and segment. Here, bytes from SampleData:
 	 * the original's offset began at the sample's own (normalized, under
 	 * 10h), so the two wrap alike for any sample under FFF0h bytes. */
-    word16 SourceCursor;
-    word16 RemainingFraction;
-    word16 RemainingWhole;
+    uint16_t SourceCursor;
+    uint16_t RemainingFraction;
+    uint16_t RemainingWhole;
     DigitalSampleCompletion Completion;     /* +2C */
     DigitalSampleDescriptor *CompletionArgument; /* +30 */
 };
@@ -92,10 +92,10 @@ struct DigitalDriverQueue
 {
     DigitalSampleLink *First;
     DigitalSampleLink End;
-    word16 ActiveDescriptorCount;
-    word16 MixBias;
-    byte OutputSample;
-    byte ReservedOutputByte;
+    uint16_t ActiveDescriptorCount;
+    uint16_t MixBias;
+    uint8_t OutputSample;
+    uint8_t ReservedOutputByte;
 };
 
 /* The CS:04BC-05D5 digital playback timer/mixer state. CS:04BC, the IRQ0
@@ -103,17 +103,17 @@ struct DigitalDriverQueue
  * (375F:0A1D is Replaced). */
 typedef struct DigitalPlaybackRuntimeState
 {
-    word16 SystemTimerDivisor;
-    word16 SystemTimerAccumulator;
-    word16 InterruptNestingGuard;
-    word16 DigitalTimerReloadMinusOne;
-    uint16 PlaybackRateHz;
-    word16 WriteSampleCallbackOffset;
+    uint16_t SystemTimerDivisor;
+    uint16_t SystemTimerAccumulator;
+    uint16_t InterruptNestingGuard;
+    uint16_t DigitalTimerReloadMinusOne;
+    uint16_t PlaybackRateHz;
+    uint16_t WriteSampleCallbackOffset;
     DigitalDriverQueue *ActiveDriverQueue;  /* CS:04CE */
-    uint16 RequestedMixScale;
-    uint16 DriverMixScale;
-    word16 ActiveMixScale;
-    byte MixLookup[0x0100];
+    uint16_t RequestedMixScale;
+    uint16_t DriverMixScale;
+    uint16_t ActiveMixScale;
+    uint8_t MixLookup[0x0100];
 } DigitalPlaybackRuntimeState;
 
 /* The DS:6F4C-6FA3 queues and calibration descriptor (the second queue at
@@ -131,42 +131,42 @@ typedef struct DigitalPlaybackWorkingSet
 
 typedef struct DigitalPlaybackDescriptor
 {
-    word16 HardwareDescriptorOffset;
-    word16 AcquireCallbackOffset;
-    word16 ReleaseCallbackOffset;
-    word16 WriteSampleCallbackOffset;
-    word16 MixScale;
-    word16 ReferenceCount;
+    uint16_t HardwareDescriptorOffset;
+    uint16_t AcquireCallbackOffset;
+    uint16_t ReleaseCallbackOffset;
+    uint16_t WriteSampleCallbackOffset;
+    uint16_t MixScale;
+    uint16_t ReferenceCount;
 } DigitalPlaybackDescriptor;
 
 typedef struct DigitalWeaponEffectRecord
 {
-    word16 ResourceIndex;
-    word16 PlaybackScale;
-    word16 PackedBufferOffset;
-    word16 SampleLength;
-    word16 LoadState;
+    uint16_t ResourceIndex;
+    uint16_t PlaybackScale;
+    uint16_t PackedBufferOffset;
+    uint16_t SampleLength;
+    uint16_t LoadState;
 } DigitalWeaponEffectRecord;
 
 typedef struct DigitalSoundEntryRecord
 {
-    byte SoundCode;
-    word16 ResourceIndex;
-    uint32 SourceFileOffset;
-    word16 SampleLength;
-    word16 PackedBufferOffset;
+    uint8_t SoundCode;
+    uint16_t ResourceIndex;
+    uint32_t SourceFileOffset;
+    uint16_t SampleLength;
+    uint16_t PackedBufferOffset;
 } DigitalSoundEntryRecord;
 
 typedef struct DigitalSoundDataLayout
 {
-    word16 DriverDescriptorOffsets[0x09];
+    uint16_t DriverDescriptorOffsets[0x09];
     /* DS:5950: the original's 0Fh sample descriptors, 34h bytes each. The
 	 * port's are DigitalSamplePlaybackDescriptorTable, typed; these bytes
 	 * stay as the story's media gives them. */
-    byte SampleDescriptorPlaces[0x0F][0x34];
+    uint8_t SampleDescriptorPlaces[0x0F][0x34];
     DigitalWeaponEffectRecord WeaponEffects[0x10];
     DigitalSoundEntryRecord SoundEntries[0x16];
-    byte ScenarioCodeStrings[0x017D];
+    uint8_t ScenarioCodeStrings[0x017D];
 } DigitalSoundDataLayout;
 #pragma pack(pop)
 
@@ -190,7 +190,7 @@ static_assert(sizeof(DigitalSoundDataLayout) == 0x062D,
 typedef union DigitalSoundDataImage
 {
     DigitalSoundDataLayout Layout;
-    byte Bytes[0x062D];
+    uint8_t Bytes[0x062D];
 } DigitalSoundDataImage;
 
 extern DigitalPlaybackDescriptor NullDigitalPlayback;
@@ -210,25 +210,25 @@ extern DigitalSoundDataImage DigitalSoundData;
 extern DigitalSampleDescriptor DigitalSamplePlaybackDescriptorTable[0x0F];
 extern DigitalSampleDescriptor *ActiveDigitalSampleDescriptor;
 extern DigitalDriverQueue ActiveDigitalDriverQueue;
-extern word16 DigitalPlaybackRateHz;
-extern byte DigitalWeaponEffectRepeatCount;
-extern byte *DigitalWeaponSampleBuffer;
-extern byte *DigitalSoundBuffer;
-extern byte DigitalSoundDriverMutationGuard;
-extern word16 NarrationMode;
-extern word16 ActiveNarrationSubject;
-extern word16 NarrationEmphasis;
+extern uint16_t DigitalPlaybackRateHz;
+extern uint8_t DigitalWeaponEffectRepeatCount;
+extern uint8_t *DigitalWeaponSampleBuffer;
+extern uint8_t *DigitalSoundBuffer;
+extern uint8_t DigitalSoundDriverMutationGuard;
+extern uint16_t NarrationMode;
+extern uint16_t ActiveNarrationSubject;
+extern uint16_t NarrationEmphasis;
 
-#define LOW_BYTE(value)  ((byte) ((uint32) (value) & 0x00FFU))
-#define HIGH_BYTE(value) ((byte) (((uint32) (value) >> 0x08) & 0x00FFU))
-#define LOW_WORD(value)  ((word16) ((uint32) (value) & 0xFFFFU))
-#define HIGH_WORD(value) ((word16) (((uint32) (value) >> 0x10) & 0xFFFFU))
+#define LOW_BYTE(value)  ((uint8_t) ((uint32_t) (value) & 0x00FFU))
+#define HIGH_BYTE(value) ((uint8_t) (((uint32_t) (value) >> 0x08) & 0x00FFU))
+#define LOW_WORD(value)  ((uint16_t) ((uint32_t) (value) & 0xFFFFU))
+#define HIGH_WORD(value) ((uint16_t) (((uint32_t) (value) >> 0x10) & 0xFFFFU))
 #define MAKE_WORD(highByte, lowByte) \
-    ((word16) (((word16) (byte) (highByte) << 0x08) | \
-        (byte) (lowByte)))
+    ((uint16_t) (((uint16_t) (uint8_t) (highByte) << 0x08) | \
+        (uint8_t) (lowByte)))
 #define MAKE_DWORD(highWord, lowWord) \
-    ((uint32) (((uint32) (word16) (highWord) << 0x10) | \
-        (word16) (lowWord)))
+    ((uint32_t) (((uint32_t) (uint16_t) (highWord) << 0x10) | \
+        (uint16_t) (lowWord)))
 #define MAKE_FAR_POINTER(segment, offset) MAKE_DWORD((segment), (offset))
 
 enum
@@ -241,160 +241,160 @@ enum
 };
 
 /* Verified DOS and BIOS boundary contracts. */
-void SetVideoAdapterType(word16 adapterType);
-word16 GetCurrentBIOSVideoMode(void);
-void SetVideoModeForAdapter(word16 adapterOrRestoreSlot);
+void SetVideoAdapterType(uint16_t adapterType);
+uint16_t GetCurrentBIOSVideoMode(void);
+void SetVideoModeForAdapter(uint16_t adapterOrRestoreSlot);
 void RebuildTacticalVideoResources(
-    word16 adapterType,
-    word16 showScenarioCompletion);
-word16 ConfirmRestartGame(void);
-word16 ShowConfirmationDialog(const char *message);
-void ShowScenarioMessage(word16 messageIndex);
-void ShowMissionFollowupMessage(word16 messageIndex);
-void LoadAndPresentScreen(word16 resourceIndex);
-word16 PresentScreenAndMessage(
-    word16 screenResourceIndex,
-    word16 messageIndex);
+    uint16_t adapterType,
+    uint16_t showScenarioCompletion);
+uint16_t ConfirmRestartGame(void);
+uint16_t ShowConfirmationDialog(const char *message);
+void ShowScenarioMessage(uint16_t messageIndex);
+void ShowMissionFollowupMessage(uint16_t messageIndex);
+void LoadAndPresentScreen(uint16_t resourceIndex);
+uint16_t PresentScreenAndMessage(
+    uint16_t screenResourceIndex,
+    uint16_t messageIndex);
 void DrawMissionHeaderFrame(void);
 void UpdateTextEntryCursorBlink(void);
-word16 EditTextField(
-    word16 maximumLength,
+uint16_t EditTextField(
+    uint16_t maximumLength,
     const char *initialText,
-    byte allowedCharacterClasses);
+    uint8_t allowedCharacterClasses);
 void CaptureLocalClockSnapshot(LocalClockSnapshot *snapshot);
 void InvokePresentationCallback(void);
-int16 EnsureCompatibleSaveFile(
-    int16 fileHandle,
+int16_t EnsureCompatibleSaveFile(
+    int16_t fileHandle,
     char *savePath,
-    word16 openMode);
+    uint16_t openMode);
 void ShowInvalidSaveVersionDialog(void);
 void DrawCenteredClippedText(
     const char *sourceText,
-    word16 splitIndex,
-    word16 leftX,
-    word16 y,
-    word16 maximumWidth,
-    byte foregroundColor,
-    byte backgroundColor);
-void WaitVerticalRetraces(word16 retraceCount);
-void WaitForVerticalRetraceEdge(byte waitForRetraceStart);
+    uint16_t splitIndex,
+    uint16_t leftX,
+    uint16_t y,
+    uint16_t maximumWidth,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor);
+void WaitVerticalRetraces(uint16_t retraceCount);
+void WaitForVerticalRetraceEdge(uint8_t waitForRetraceStart);
 void CalibrateVideoTiming(void);
 
 /* Programmable-timer contracts (segment 38AE). */
-word16 SetPITChannel0Divisor(word16 divisor);
-word16 PITFrequencyToDivisor(word16 frequencyHz);
+uint16_t SetPITChannel0Divisor(uint16_t divisor);
+uint16_t PITFrequencyToDivisor(uint16_t frequencyHz);
 
 /* Verified input and utility contracts used across original segment files. */
-word16 GeneratePseudoRandomByte(void);
-word16 KeyboardInputPending(void);
-word16 ReadRawKeypress(void);
-int8 TranslateKeyCode(void);
-int16 ReadTranslatedKeypress(void);
-int16 NormalizeNavigationKeyCode(int16 keyCode);
-int16 RandomInRangeInclusive(word16 minimum, word16 maximum);
-byte *AdvanceFarPointerBy32K(byte *pointer);
-word16 EncodeDisplayBackingRows(
-    const byte *source,
-    byte *destination,
-    word16 groupsPerRow,
-    byte rowCount,
-    int16 sourceRowSkip);
+uint16_t GeneratePseudoRandomByte(void);
+uint16_t KeyboardInputPending(void);
+uint16_t ReadRawKeypress(void);
+int8_t TranslateKeyCode(void);
+int16_t ReadTranslatedKeypress(void);
+int16_t NormalizeNavigationKeyCode(int16_t keyCode);
+int16_t RandomInRangeInclusive(uint16_t minimum, uint16_t maximum);
+uint8_t *AdvanceFarPointerBy32K(uint8_t *pointer);
+uint16_t EncodeDisplayBackingRows(
+    const uint8_t *source,
+    uint8_t *destination,
+    uint16_t groupsPerRow,
+    uint8_t rowCount,
+    int16_t sourceRowSkip);
 void BuildTacticalOverviewMapBuffer(
-    const byte *source,
-    byte *destination,
-    word16 width,
-    word16 height);
+    const uint8_t *source,
+    uint8_t *destination,
+    uint16_t width,
+    uint16_t height);
 void InstallDamagedTerrainSpriteLookup(void);
 void ClearTacticalEffectOverlayMap(void);
 void ClearActiveVideoBuffer(void);
 void DrawVerticalSpan(
-    word16 x,
-    word16 yStart,
-    word16 yEnd,
-    word16 color);
+    uint16_t x,
+    uint16_t yStart,
+    uint16_t yEnd,
+    uint16_t color);
 void DrawHorizontalVideoRun(
-    int16 x,
-    word16 y,
-    word16 packedWidth,
-    word16 color);
+    int16_t x,
+    uint16_t y,
+    uint16_t packedWidth,
+    uint16_t color);
 void Draw8x8VideoTile(
-    const byte *tilePixels,
-    int16 tileX,
-    word16 tileY);
+    const uint8_t *tilePixels,
+    int16_t tileX,
+    uint16_t tileY);
 void ConfigureMouseCursorOverlay(
-    int16 hotspotX,
-    int16 hotspotY,
-    const byte *cursorBitmap);
-word16 IsMouseCursorInsideRectangle(
-    int16 left,
-    int16 top,
-    int16 right,
-    int16 bottom);
+    int16_t hotspotX,
+    int16_t hotspotY,
+    const uint8_t *cursorBitmap);
+uint16_t IsMouseCursorInsideRectangle(
+    int16_t left,
+    int16_t top,
+    int16_t right,
+    int16_t bottom);
 void HideMouseCursorOverlay(void);
-void SetMouseCursorPositionUnlocked(int16 x, int16 y);
-void SetMouseCursorPosition(int16 x, int16 y);
-void MoveMouseCursorRelative(int16 deltaX, int16 deltaY);
+void SetMouseCursorPositionUnlocked(int16_t x, int16_t y);
+void SetMouseCursorPosition(int16_t x, int16_t y);
+void MoveMouseCursorRelative(int16_t deltaX, int16_t deltaY);
 void ShowMouseCursorOverlay(void);
 void HideMouseCursorOverlayUnlocked(void);
 void ShowMouseCursorOverlayUnlocked(void);
 void CopyBufferToVideoRegion(
-    int16 xColumn,
-    word16 yCharacterRow,
-    word16 widthColumns,
-    word16 heightCharacterRows,
-    const byte *source);
+    int16_t xColumn,
+    uint16_t yCharacterRow,
+    uint16_t widthColumns,
+    uint16_t heightCharacterRows,
+    const uint8_t *source);
 void CopyVideoRegionToBuffer(
-    int16 xColumn,
-    word16 yCharacterRow,
-    word16 widthColumns,
-    word16 heightCharacterRows,
-    byte *destination);
+    int16_t xColumn,
+    uint16_t yCharacterRow,
+    uint16_t widthColumns,
+    uint16_t heightCharacterRows,
+    uint8_t *destination);
 void DrawClippedSprite(
-    byte *destination,
-    const byte *encodedSprite,
-    int16 x,
-    int16 y,
-    word16 preserveExistingPixels);
+    uint8_t *destination,
+    const uint8_t *encodedSprite,
+    int16_t x,
+    int16_t y,
+    uint16_t preserveExistingPixels);
 char *UppercaseStringInPlace(char *text);
 char *FormatLongInteger(
-    byte alphabeticDigitBase,
-    byte signedConversion,
-    uint16 radix,
+    uint8_t alphabeticDigitBase,
+    uint8_t signedConversion,
+    uint16_t radix,
     char *destination,
-    uint32 value);
+    uint32_t value);
 char *IntegerToString(
-    int16 value,
+    int16_t value,
     char *destination,
-    uint16 radix);
+    uint16_t radix);
 char *LongToString(
-    int32 value,
+    int32_t value,
     char *destination,
-    uint16 radix);
-void LoadVideoPalette(const byte *paletteData);
+    uint16_t radix);
+void LoadVideoPalette(const uint8_t *paletteData);
 void InstallVgaPaletteBankAnchors(void);
-word16 FlushInputAndWait(word16 timeoutRetraces);
-word16 WaitForDismissInputOrTimeout(word16 timeoutRetraces);
-byte *BuildDisplayBackingBuffer(
-    word16 sourceTileX,
-    word16 sourcePixelY,
-    word16 widthTiles,
-    word16 heightPixels);
-byte *BuildVgaDisplayBackingBuffer(
-    word16 sourceTileX,
-    word16 sourcePixelY,
-    word16 widthTiles,
-    word16 heightPixels);
-byte *BuildPlanarDisplayBackingBuffer(
-    word16 sourceTileX,
-    word16 sourcePixelY,
-    word16 widthTiles,
-    word16 heightPixels);
+uint16_t FlushInputAndWait(uint16_t timeoutRetraces);
+uint16_t WaitForDismissInputOrTimeout(uint16_t timeoutRetraces);
+uint8_t *BuildDisplayBackingBuffer(
+    uint16_t sourceTileX,
+    uint16_t sourcePixelY,
+    uint16_t widthTiles,
+    uint16_t heightPixels);
+uint8_t *BuildVgaDisplayBackingBuffer(
+    uint16_t sourceTileX,
+    uint16_t sourcePixelY,
+    uint16_t widthTiles,
+    uint16_t heightPixels);
+uint8_t *BuildPlanarDisplayBackingBuffer(
+    uint16_t sourceTileX,
+    uint16_t sourcePixelY,
+    uint16_t widthTiles,
+    uint16_t heightPixels);
 void RebuildMouseCursorBackingBuffer(void);
 void LoadGraphicsResourceToBuffers(
-    word16 resourceIndex,
-    byte *decodeBuffer,
-    byte *displayBuffer);
-void LoadScreenAssetToWorkBuffer(word16 resourceIndex);
+    uint16_t resourceIndex,
+    uint8_t *decodeBuffer,
+    uint8_t *displayBuffer);
+void LoadScreenAssetToWorkBuffer(uint16_t resourceIndex);
 void ShowScenarioCompletionStatus(void);
 void RequestPCSpeakerEffectStop(void);
 void AllocateMusicStagingBuffer(void);
@@ -402,33 +402,33 @@ void ReleaseMusicDriverBuffer(void);
 void InitializeMusicDriver(void);
 void ShutdownMusicDriver(void);
 void StartLoadedMusicTrack(void);
-void LoadMusicResource(word16 resourceIndex);
-void PlayMusicResource(word16 resourceIndex);
+void LoadMusicResource(uint16_t resourceIndex);
+void PlayMusicResource(uint16_t resourceIndex);
 void InstallMusicTimer(void);
 void RestoreSystemTimer(void);
-void PlayPCSpeakerEffectByIndex(word16 effectId);
+void PlayPCSpeakerEffectByIndex(uint16_t effectId);
 void AcquireDigitalPlaybackDriver(
-    word16 driverDescriptorOffset,
-    word16 playbackRateHz);
-void ReleaseDigitalPlaybackDriver(word16 driverDescriptorOffset);
-void InstallDigitalPlaybackTimer(word16 playbackRateHz);
+    uint16_t driverDescriptorOffset,
+    uint16_t playbackRateHz);
+void ReleaseDigitalPlaybackDriver(uint16_t driverDescriptorOffset);
+void InstallDigitalPlaybackTimer(uint16_t playbackRateHz);
 void RestoreDigitalPlaybackTimer(void);
 void InitializeDigitalDriverQueue(DigitalDriverQueue *queue);
 void InstallDigitalDriverQueueCallback(
     DigitalPlaybackDescriptor *playbackDescriptor,
     DigitalDriverQueue *queue);
 void AttachDigitalDriverQueue(
-    word16 driverDescriptorOffset,
+    uint16_t driverDescriptorOffset,
     DigitalDriverQueue *queue);
 void InitializeDigitalSampleDescriptor(
     DigitalSampleDescriptor *descriptor,
-    const byte *sampleData,
-    word16 sampleLength,
-    word16 playbackRateHz,
-    word16 playbackScale);
+    const uint8_t *sampleData,
+    uint16_t sampleLength,
+    uint16_t playbackRateHz,
+    uint16_t playbackScale);
 void ConfigureDigitalSampleTiming(
     DigitalSampleDescriptor *descriptor,
-    word16 playbackScale);
+    uint16_t playbackScale);
 void ConfigureDigitalSampleCompletion(
     DigitalSampleDescriptor *descriptor,
     DigitalSampleCompletion completion,
@@ -440,9 +440,9 @@ void RemoveDigitalSampleDescriptor(
     DigitalSampleDescriptor *descriptor);
 void PrepareDigitalSamplePlayback(
     DigitalSampleDescriptor *descriptor);
-word16 GetDigitalSamplePlaybackState(
+uint16_t GetDigitalSamplePlaybackState(
     DigitalSampleDescriptor *descriptor);
-uint32 SetDigitalPlaybackTimingScale(word16 timingScale);
+uint32_t SetDigitalPlaybackTimingScale(uint16_t timingScale);
 void ServiceDigitalAudioTick(void);
 void InstallGameClockTimer(void);
 void RestoreGameClockTimer(void);
@@ -450,16 +450,16 @@ void GameClockInt1CHandler(void);
 void CopyUncompressedFarBlock(
     const void *source,
     void *destination,
-    uint32 byteCount);
-word16 ReadWholeResourceFile(
+    uint32_t byteCount);
+uint16_t ReadWholeResourceFile(
     const char *resourceName,
     void *destination,
-    word16 byteCount);
+    uint16_t byteCount);
 void ReadResourceFileSpan(
     const char *resourceName,
-    int32 fileOffset,
+    int32_t fileOffset,
     void *destination,
-    word16 byteCount);
+    uint16_t byteCount);
 void LoadAndDecodePackedResource(
     const char *resourceName,
     void *compressedBuffer,
@@ -468,230 +468,230 @@ void DecodeWestwoodPackedResource(
     const void *compressedBlock,
     void *destination);
 void RuntimeExitStepStub(void);
-void RunExitHandlersAndTerminate(word16 exitCode);
+void RunExitHandlersAndTerminate(uint16_t exitCode);
 void RuntimeTerminationStub(void);
-void DOS_TerminateProcess(word16 exitCode);
+void DOS_TerminateProcess(uint16_t exitCode);
 
 /* Verified resource-stream contracts from segment 3390. */
 void AbortRuntimeWithMessage(const char *errorText);
-void ShutdownAndExit(word16 exitCode);
+void ShutdownAndExit(uint16_t exitCode);
 void ShowResourceErrorMessage(void);
 void ShowFatalDiskErrorMessage(void);
-int16 OpenTrackedFile(char *path, word16 openMode);
-void CloseTrackedFile(int16 handleSlot);
-uint32 ReadTrackedFile(
-    int16 handleSlot,
+int16_t OpenTrackedFile(char *path, uint16_t openMode);
+void CloseTrackedFile(int16_t handleSlot);
+uint32_t ReadTrackedFile(
+    int16_t handleSlot,
     void *destination,
-    uint32 byteCount);
-uint32 WriteTrackedFile(
-    int16 handleSlot,
+    uint32_t byteCount);
+uint32_t WriteTrackedFile(
+    int16_t handleSlot,
     const void *source,
-    uint32 byteCount);
-void SeekTrackedFile(int16 handleSlot, int32 distance, word16 origin);
-word16 CanOpenFileForRead(const char *path);
+    uint32_t byteCount);
+void SeekTrackedFile(int16_t handleSlot, int32_t distance, uint16_t origin);
+uint16_t CanOpenFileForRead(const char *path);
 void DeleteFileIgnoringErrors(char *filePath);
-word16 CanOpenFileForWrite(const char *path);
-word16 GetResourceDriveMask(char *path);
+uint16_t CanOpenFileForWrite(const char *path);
+uint16_t GetResourceDriveMask(char *path);
 void ReleaseCachedResources(void);
 void InitializeResourceCache(void);
-word16 IsResourceCached(char *path);
-word16 FindResourceDescriptorIndex(char *path);
-word16 ReadCachedResource(
-    word16 resourceIndex,
+uint16_t IsResourceCached(char *path);
+uint16_t FindResourceDescriptorIndex(char *path);
+uint16_t ReadCachedResource(
+    uint16_t resourceIndex,
     void *destination,
-    uint32 requestedBytes);
-void AdjustActiveTextWindowMargin(word16 marginTiles);
+    uint32_t requestedBytes);
+void AdjustActiveTextWindowMargin(uint16_t marginTiles);
 
 /* Verified text and primitive drawing contracts. */
 void DrawTextString(
     const char *text,
-    word16 x,
-    word16 y,
-    byte foregroundColor,
-    byte backgroundColor);
-word16 MeasureTextWidth(const char *text);
-void DrawClippedPixel(int16 x, int16 y, word16 color);
+    uint16_t x,
+    uint16_t y,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor);
+uint16_t MeasureTextWidth(const char *text);
+void DrawClippedPixel(int16_t x, int16_t y, uint16_t color);
 void DrawHorizontalSpan(
-    int16 y, int16 startX, int16 endX, word16 color);
+    int16_t y, int16_t startX, int16_t endX, uint16_t color);
 void DrawClippedAxisAlignedLine(
-    int16 x1,
-    int16 y1,
-    int16 x2,
-    int16 y2,
-    word16 color);
-word16 DrawRepeatingFrameTileSequence(
-    const word16 *frameDefinition,
-    word16 sequenceIndex,
-    int16 x,
-    int16 y,
-    word16 tileCount,
-    word16 horizontal);
-void DrawActiveTextWindowFrame(word16 frameStyleIndex);
+    int16_t x1,
+    int16_t y1,
+    int16_t x2,
+    int16_t y2,
+    uint16_t color);
+uint16_t DrawRepeatingFrameTileSequence(
+    const uint16_t *frameDefinition,
+    uint16_t sequenceIndex,
+    int16_t x,
+    int16_t y,
+    uint16_t tileCount,
+    uint16_t horizontal);
+void DrawActiveTextWindowFrame(uint16_t frameStyleIndex);
 long ParseSignedDecimalLong(const char *text);
 char *GetEnvironmentVariable(const char *name);
 void InitializeTimezoneFromEnvironment(void);
-word16 IsDaylightSavingTime(
-    word16 yearsSince1970,
-    word16 month,
-    word16 dayOrDayOfYear,
-    byte hour);
-uint32 ConvertLocalDateTimeToEpochSeconds(
+uint16_t IsDaylightSavingTime(
+    uint16_t yearsSince1970,
+    uint16_t month,
+    uint16_t dayOrDayOfYear,
+    uint8_t hour);
+uint32_t ConvertLocalDateTimeToEpochSeconds(
     const DOS_Date *date,
     const DOS_Time *time);
 void DrawCombatRatingDescription(
-    int16 combatRating,
-    word16 x,
-    word16 y,
-    byte foregroundColor,
-    byte backgroundColor);
-void DrawTacticalUnitControlPanel(word16 unitIndex);
+    int16_t combatRating,
+    uint16_t x,
+    uint16_t y,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor);
+void DrawTacticalUnitControlPanel(uint16_t unitIndex);
 void PrepareScenarioUnitRosters(void);
-byte AssignScenarioLanceAllegiances(word16 scenarioAllegianceIndex);
+uint8_t AssignScenarioLanceAllegiances(uint16_t scenarioAllegianceIndex);
 void InitializeScenarioUnitFromTemplate(
-    word16 unitType,
-    word16 unitIndex);
-void PrepareUnitTypeResources(word16 unitIndex);
-void SelectTacticalMapCoordinate(word16 unitIndex);
+    uint16_t unitType,
+    uint16_t unitIndex);
+void PrepareUnitTypeResources(uint16_t unitIndex);
+void SelectTacticalMapCoordinate(uint16_t unitIndex);
 void RefreshTacticalCoordinateSelection(
-    word16 unitIndex,
-    word16 selectionMode,
-    word16 savedCursorColumn);
+    uint16_t unitIndex,
+    uint16_t selectionMode,
+    uint16_t savedCursorColumn);
 void CycleTacticalEnemyTarget(void);
-word16 SelectTacticalMoveDestinationInput(
-    word16 unitIndex,
-    word16 mode);
-word16 SelectTacticalMoveDestination(
-    word16 unitIndex,
-    word16 selectionMode);
-int16 RunOptionsMenuSelection(int16 firstRegionIndex);
-void RunTacticalUnitCommandMenu(word16 unitIndex);
+uint16_t SelectTacticalMoveDestinationInput(
+    uint16_t unitIndex,
+    uint16_t mode);
+uint16_t SelectTacticalMoveDestination(
+    uint16_t unitIndex,
+    uint16_t selectionMode);
+int16_t RunOptionsMenuSelection(int16_t firstRegionIndex);
+void RunTacticalUnitCommandMenu(uint16_t unitIndex);
 void SelectStrafingArea(void);
 void RunTacticalGameOptionsMenu(void);
 void RunTacticalInteractionLoop(void);
 void CalculateUnitDurabilityTotals(RevengeUnitRecord *unitRecord);
-void FormatUnitDurabilityPercentage(int16 unitIndex);
-word16 IsCurrentLanceLeader(word16 unitIndex);
-word16 ValidatePrimaryLanceLeader(word16 unitIndex);
+void FormatUnitDurabilityPercentage(int16_t unitIndex);
+uint16_t IsCurrentLanceLeader(uint16_t unitIndex);
+uint16_t ValidatePrimaryLanceLeader(uint16_t unitIndex);
 void LoadTacticalIconResource(
     const char *resourcePath,
-    word16 destinationPage);
-word16 HasNarrationMessage(
-    word16 narrationSubject,
-    word16 messageCategory);
-void QueueLinkedUnitStatusNarration(word16 unitIndex);
+    uint16_t destinationPage);
+uint16_t HasNarrationMessage(
+    uint16_t narrationSubject,
+    uint16_t messageCategory);
+void QueueLinkedUnitStatusNarration(uint16_t unitIndex);
 void FlagDamagedWeaponRanges(
-    const byte *equipmentSlots,
-    word16 slotCount);
-void BuildDamagedWeaponRangeFlags(word16 unitIndex);
+    const uint8_t *equipmentSlots,
+    uint16_t slotCount);
+void BuildDamagedWeaponRangeFlags(uint16_t unitIndex);
 void DrawTacticalClippedSprite(
-    byte *renderTarget,
-    const byte *encodedSprite,
-    int16 relativeX,
-    int16 relativeY,
-    word16 textWindowIndex);
+    uint8_t *renderTarget,
+    const uint8_t *encodedSprite,
+    int16_t relativeX,
+    int16_t relativeY,
+    uint16_t textWindowIndex);
 void DrawTacticalEffectSprite(
-    word16 spriteId,
-    int16 relativeX,
-    int16 relativeY);
+    uint16_t spriteId,
+    int16_t relativeX,
+    int16_t relativeY);
 void DrawTacticalViewportCell(
-    int16 viewportColumn,
-    int16 viewportRow,
-    word16 viewportCellIndex);
+    int16_t viewportColumn,
+    int16_t viewportRow,
+    uint16_t viewportCellIndex);
 void DrawTacticalTileSpriteForAdapter(
-    const byte *spritePage,
-    word16 spriteId,
-    word16 destinationX,
-    word16 destinationY);
-void RefreshTacticalDisplay(word16 advanceEffects);
+    const uint8_t *spritePage,
+    uint16_t spriteId,
+    uint16_t destinationX,
+    uint16_t destinationY);
+void RefreshTacticalDisplay(uint16_t advanceEffects);
 void RecalculateUnitCombatRatings(
     RevengeUnitRecord *unitRecord,
-    word16 unitIndex,
-    word16 rebuildWeaponCounts,
-    word16 advanceRecovery);
-word16 HasUnitLineOfSight(
-    int16 sourceUnitIndex,
-    int16 targetUnitIndex);
-void BuildUndamagedUnitCombatEstimate(word16 unitIndex);
+    uint16_t unitIndex,
+    uint16_t rebuildWeaponCounts,
+    uint16_t advanceRecovery);
+uint16_t HasUnitLineOfSight(
+    int16_t sourceUnitIndex,
+    int16_t targetUnitIndex);
+void BuildUndamagedUnitCombatEstimate(uint16_t unitIndex);
 void CalculateLanceAverageCombatRatings(
-    word16 leaderUnitIndex,
-    word16 useActualUnitData);
-word16 PrepareDisplayedUnitCombatRatings(word16 unitIndex);
+    uint16_t leaderUnitIndex,
+    uint16_t useActualUnitData);
+uint16_t PrepareDisplayedUnitCombatRatings(uint16_t unitIndex);
 void DrawClippedRectangleOutline(
-    int16 left,
-    int16 top,
-    int16 right,
-    int16 bottom,
-    word16 color);
+    int16_t left,
+    int16_t top,
+    int16_t right,
+    int16_t bottom,
+    uint16_t color);
 void FillVideoRectangle(
-    int16 leftX,
-    int16 topY,
-    int16 rightX,
-    int16 bottomY,
-    word16 color);
+    int16_t leftX,
+    int16_t topY,
+    int16_t rightX,
+    int16_t bottomY,
+    uint16_t color);
 void Capture8x8VideoTile(
-    byte *framebuffer,
-    byte *destination,
-    int16 tileX,
-    word16 tileY);
+    uint8_t *framebuffer,
+    uint8_t *destination,
+    int16_t tileX,
+    uint16_t tileY);
 void LoadPackedIconResource(
     const char *resourcePath,
-    byte *packedDisplayBuffer);
+    uint8_t *packedDisplayBuffer);
 void LoadPackedIconPageDirect(
     const char *resourcePath,
-    byte *packedDisplayBuffer,
-    byte *iconPageDestination);
+    uint8_t *packedDisplayBuffer,
+    uint8_t *iconPageDestination);
 void InstallDefaultCriticalErrorHandler(void);
 void InstallCriticalErrorHandler(void *criticalErrorCallback);
-byte *CaptureVideoTileStrip(
-    byte *source,
-    int16 startTileX,
-    word16 startTileY,
-    int16 tileCount);
+uint8_t *CaptureVideoTileStrip(
+    uint8_t *source,
+    int16_t startTileX,
+    uint16_t startTileY,
+    int16_t tileCount);
 void CopyDecodedIconPage(
-    const byte *packedDisplayBuffer,
-    byte *iconPageDestination);
-int16 RunSingleUiRegionSelection(int16 regionIndex);
-void HighlightUiRegionSelection(int16 regionIndex);
+    const uint8_t *packedDisplayBuffer,
+    uint8_t *iconPageDestination);
+int16_t RunSingleUiRegionSelection(int16_t regionIndex);
+void HighlightUiRegionSelection(int16_t regionIndex);
 void BeginUiRegionSelection(
-    int16 firstRegionIndex, uint16 regionCount);
+    int16_t firstRegionIndex, uint16_t regionCount);
 void ToggleActiveUiRegionHighlight(void);
-int16 RunUiRegionSelectionLoop(
-    int16 firstRegionIndex, uint16 regionCount);
-int16 PollUiRegionSelection(
-    int16 firstRegionIndex, uint16 regionCount);
-void SelectTextWindow(word16 windowIndex);
-void SelectAndClearTextWindow(word16 windowIndex);
+int16_t RunUiRegionSelectionLoop(
+    int16_t firstRegionIndex, uint16_t regionCount);
+int16_t PollUiRegionSelection(
+    int16_t firstRegionIndex, uint16_t regionCount);
+void SelectTextWindow(uint16_t windowIndex);
+void SelectAndClearTextWindow(uint16_t windowIndex);
 void ClearActiveTextWindow(void);
-byte *LoadFontResource(const char *fileName);
-void SetActiveFontResource(byte *fontResource);
-word16 MeasureTextWidth(const char *text);
+uint8_t *LoadFontResource(const char *fileName);
+void SetActiveFontResource(uint8_t *fontResource);
+uint16_t MeasureTextWidth(const char *text);
 void RenderTextToActiveWindow(
-    char *text, word16 advanceToNextLine);
-void SetActiveRenderTarget(byte *renderTarget);
+    char *text, uint16_t advanceToNextLine);
+void SetActiveRenderTarget(uint8_t *renderTarget);
 
 /* Verified original game lifetime. The preserved source owns main(). */
 void InitializeGame(void);
 void ShutdownGame(void);
 void RunCampaignLoop(void);
-void RunTacticalBattle(word16 scenarioCode);
+void RunTacticalBattle(uint16_t scenarioCode);
 void SelectTacticalTextForegroundColor(void);
 void SetTacticalSlotSpriteState(
-    word16 slotIndex,
-    word16 requestedState);
+    uint16_t slotIndex,
+    uint16_t requestedState);
 void DrawCampaignClockSeparator(void);
 void RenderFormattedLineBreak(void);
 void ShowTacticalModalMessage(const char *formattedText);
-void QueueRandomMapEdgeEffect(int16 centerX, int16 centerY);
+void QueueRandomMapEdgeEffect(int16_t centerX, int16_t centerY);
 void QueueMapEdgeEffect(
-    int16 mapX,
-    int16 mapY,
-    word16 baseSpriteId,
-    word16 edgeDirection);
+    int16_t mapX,
+    int16_t mapY,
+    uint16_t baseSpriteId,
+    uint16_t edgeDirection);
 void DrawTacticalCellOutline(
-    int16 leftX,
-    int16 topY,
-    word16 color);
-void UpdatePrimaryUnitStatusRowHighlight(word16 rowIndex);
-void UpdateSecondaryUnitStatusRowHighlight(word16 rowIndex);
+    int16_t leftX,
+    int16_t topY,
+    uint16_t color);
+void UpdatePrimaryUnitStatusRowHighlight(uint16_t rowIndex);
+void UpdateSecondaryUnitStatusRowHighlight(uint16_t rowIndex);
 
 #endif

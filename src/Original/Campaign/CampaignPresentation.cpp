@@ -19,7 +19,7 @@
 //      SaveGame
 //      LoadGame
 //      RunGameOptionsMenu
-void OpenModalTextWindow(word16 windowIndex, word16 clearAndFrame)
+void OpenModalTextWindow(uint16_t windowIndex, uint16_t clearAndFrame)
 {
     ModalSavedTextWindow = ActiveTextWindowIndex;
     SelectTextWindow(windowIndex);
@@ -27,9 +27,9 @@ void OpenModalTextWindow(word16 windowIndex, word16 clearAndFrame)
     ModalBackingX = ActiveTextWindowLeftTile - 0x01;
     ModalBackingY =
         (ActiveTextWindowTopTile - 0x01) << 0x03;
-    ModalBackingWidth = (word16) ActiveTextWindowWidthTiles + 0x02;
+    ModalBackingWidth = (uint16_t) ActiveTextWindowWidthTiles + 0x02;
     ModalBackingHeight =
-        ((word16) ActiveTextWindowHeightTiles + 0x02) << 0x03;
+        ((uint16_t) ActiveTextWindowHeightTiles + 0x02) << 0x03;
     HideMouseCursorOverlay();
     CopyClippedVideoRegion(ModalBackingX, ModalBackingY, ModalBackingX, ModalBackingY, ModalBackingWidth, ModalBackingHeight, VideoFramebuffer, PrimaryScreenBuffer);
     if (clearAndFrame != 0x00)
@@ -60,14 +60,14 @@ void RestoreModalTextWindow(void)
 // then display the associated indexed story message.
 // Verified against 0D73:2B33-2D00.
 void PresentAnimatedScreenAndMessage(
-    word16 screenResourceIndex,
-    word16 messageIndex)
+    uint16_t screenResourceIndex,
+    uint16_t messageIndex)
 {
-    word16 passIndex;
-    byte *workBuffer;
-    byte *renderTarget;
-    const byte *portraitSprite;
-    const byte *foregroundSprite;
+    uint16_t passIndex;
+    uint8_t *workBuffer;
+    uint8_t *renderTarget;
+    const uint8_t *portraitSprite;
+    const uint8_t *foregroundSprite;
 
     if ((PresentationCallbackOffset | PresentationCallbackSegment) != 0x00)
         SceneTransitionAbortFlag = FALSE;
@@ -125,7 +125,7 @@ void PresentAnimatedScreenAndMessage(
 
 // 0D73:2D01: display one indexed story message in a saved modal window.
 // Verified against 0D73:2D01-2D9A.
-void ShowStoryMessageAndWait(word16 messageIndex)
+void ShowStoryMessageAndWait(uint16_t messageIndex)
 {
     if ((PresentationCallbackOffset | PresentationCallbackSegment) != 0x00)
         SceneTransitionAbortFlag = FALSE;
@@ -159,8 +159,8 @@ void ShowStoryMessageAndWait(word16 messageIndex)
 // 0D73:2D9B: present an indexed story screen with its captured portrait.
 // Verified against 0D73:2D9B-2E2D.
 void PresentStoryScreenAndMessage(
-    word16 graphicsResourceIndex,
-    word16 messageIndex)
+    uint16_t graphicsResourceIndex,
+    uint16_t messageIndex)
 {
     if ((PresentationCallbackOffset | PresentationCallbackSegment) != 0x00)
         SceneTransitionAbortFlag = FALSE;
@@ -188,7 +188,7 @@ void PresentStoryScreenAndMessage(
 
 // 0D73:2E2E: draw one indexed story message in text window 10h and wait.
 // Verified against 0D73:2E2E-2E7B.
-void ShowStoryMessage(word16 messageIndex)
+void ShowStoryMessage(uint16_t messageIndex)
 {
     if (SceneTransitionAbortFlag != FALSE || messageIndex == 0x00)
         return;
@@ -208,10 +208,10 @@ void ShowStoryMessage(word16 messageIndex)
 // Called from:
 //      RunTitleAndMainMenu
 // Verified against 0D73:2F16-2F5E.
-word16 PlayTitleTextSequence(void)
+uint16_t PlayTitleTextSequence(void)
 {
-    word16 continueSequence = TRUE;
-    word16 titleLineIndex = 0x0000;
+    uint16_t continueSequence = TRUE;
+    uint16_t titleLineIndex = 0x0000;
     while (titleLineIndex < 0x0012 && continueSequence != FALSE)
     {
         const char *text =
@@ -230,23 +230,23 @@ word16 PlayTitleTextSequence(void)
  * starts one past the four fade colours, as the original does: its first step
  * is the byte after them in the data segment (DS:271C), the low byte of
  * MissionBlinkRectX[0], read as it stands then. */
-byte MissionFadeColor(word16 fadeIndex)
+uint8_t MissionFadeColor(uint16_t fadeIndex)
 {
     if (fadeIndex < sizeof(MissionFadeColorTable))
         return MissionFadeColorTable[fadeIndex];
-    return (byte) (MissionBlinkRectX[0x00] & 0x00FF);
+    return (uint8_t) (MissionBlinkRectX[0x00] & 0x00FF);
 }
 
 // 0D73:2F5F: Register word16 AnimateTitleTextLine(Stack const char * dwArg04)
 // Called from:
 //      PlayTitleTextSequence
-word16 AnimateTitleTextLine(const char *text)
+uint16_t AnimateTitleTextLine(const char *text)
 {
-    int16 fontLineHeight = ActiveFontLineHeight;
-    word16 windowHeightPixels =
+    int16_t fontLineHeight = ActiveFontLineHeight;
+    uint16_t windowHeightPixels =
         ActiveTextWindowHeightTiles << 0x03;
-    word16 textY = (word16) (((int16) windowHeightPixels / fontLineHeight -
-                                 0x01) *
+    uint16_t textY = (uint16_t) (((int16_t) windowHeightPixels / fontLineHeight -
+                                     0x01) *
             fontLineHeight -
         0x02);
 
@@ -256,8 +256,8 @@ word16 AnimateTitleTextLine(const char *text)
         VideoFramebuffer,
         PrimaryScreenBuffer);
     ShowMouseCursorOverlay();
-    word16 completed = TRUE;
-    word16 fadeIndex;
+    uint16_t completed = TRUE;
+    uint16_t fadeIndex;
     for (fadeIndex = 0x00; fadeIndex < 0x04; ++fadeIndex)
     {
         HideMouseCursorOverlay();
@@ -270,7 +270,7 @@ word16 AnimateTitleTextLine(const char *text)
         completed = FALSE;
     if (completed != FALSE)
     {
-        for (fadeIndex = 0x04; (int16) fadeIndex >= 0x00; --fadeIndex)
+        for (fadeIndex = 0x04; (int16_t) fadeIndex >= 0x00; --fadeIndex)
         {
             HideMouseCursorOverlay();
             DrawCenteredClippedText(text, 0x00, 0x00, textY, 0x0140,
@@ -290,14 +290,14 @@ word16 AnimateTitleTextLine(const char *text)
 // 0D73:324E: void LoadScreenPalette(word16 screenResourceIndex)
 // Called from:
 //      LoadAndPresentScreen
-void LoadScreenPalette(word16 screenResourceIndex)
+void LoadScreenPalette(uint16_t screenResourceIndex)
 {
     if (VideoAdapterType == VIDEO_ADAPTER_VGA)
     {
-        int16 paletteResourceIndex =
+        int16_t paletteResourceIndex =
             ScreenPaletteResourceByScreen[REVENGE_INDEX(
                 ScreenPaletteResourceByScreen,
-                (word16) (screenResourceIndex - 0x0001))];
+                (uint16_t) (screenResourceIndex - 0x0001))];
         ReadWholeResourceFile(
             CACHED_FILE_NAME(paletteResourceIndex),
             VideoPaletteData, VGA_DAC_PALETTE_BYTE_COUNT);
@@ -314,7 +314,7 @@ void LoadScreenPalette(word16 screenResourceIndex)
 // Called from:
 //      RunCampaignLoop
 //      LoadAndPresentScreen
-void LoadScreenAssetToWorkBuffer(word16 resourceIndex)
+void LoadScreenAssetToWorkBuffer(uint16_t resourceIndex)
 {
     // Verified against 0D73:32F4-33C0.
     if (VideoAdapterType == VIDEO_ADAPTER_VGA)
@@ -330,7 +330,7 @@ void LoadScreenAssetToWorkBuffer(word16 resourceIndex)
 // 0D73:33C1: void LoadAndPresentScreen(word16 resourceIndex)
 // Called from:
 //      PresentScreenAndMessage
-void LoadAndPresentScreen(word16 resourceIndex)
+void LoadAndPresentScreen(uint16_t resourceIndex)
 {
     LoadScreenAssetToWorkBuffer(resourceIndex);
     /* The EGA's planar conversion (0D73:33CC-33ED, 0800:3498) went with
@@ -348,9 +348,9 @@ void LoadAndPresentScreen(word16 resourceIndex)
 // 0D73:347D: present a campaign scene with its optional indexed message.
 // VERIFIED against 0D73:347D-350F.
 void PresentCampaignScene(
-    word16 graphicsResourceIndex,
-    word16 spriteLayoutIndex,
-    word16 messageIndex)
+    uint16_t graphicsResourceIndex,
+    uint16_t spriteLayoutIndex,
+    uint16_t messageIndex)
 {
     if ((PresentationCallbackOffset | PresentationCallbackSegment) != 0x0000)
         SceneTransitionAbortFlag = FALSE;
@@ -379,7 +379,7 @@ void PresentCampaignScene(
 // 0D73:3510: display one indexed campaign message and wait or invoke the
 // installed presentation callback.
 // VERIFIED against 0D73:3510-35A9.
-void ShowCampaignMessageAndWait(word16 messageIndex)
+void ShowCampaignMessageAndWait(uint16_t messageIndex)
 {
     if ((PresentationCallbackOffset | PresentationCallbackSegment) != 0x0000)
         SceneTransitionAbortFlag = FALSE;
@@ -413,7 +413,7 @@ void ShowCampaignMessageAndWait(word16 messageIndex)
 // Called from:
 //      DisplayMissionDate
 // Verified against 0D73:35AA-365B.
-void PrepareMissionDateScreen(int16 presentationMode)
+void PrepareMissionDateScreen(int16_t presentationMode)
 {
     if (presentationMode >= 0x02)
     {
@@ -427,7 +427,7 @@ void PrepareMissionDateScreen(int16 presentationMode)
     }
     if (presentationMode < 0x02 || presentationMode == 0x04)
     {
-        word16 screenResourceIndex;
+        uint16_t screenResourceIndex;
         if (presentationMode < 0x02)
             screenResourceIndex = presentationMode + 0x16;
         else
@@ -453,24 +453,24 @@ void PrepareMissionDateScreen(int16 presentationMode)
 
 // 0D73:376C: animate the indexed campaign date and optional map highlight.
 void DisplayMissionDate(
-    int16 presentationMode,
-    int16 blinkRegionIndex,
-    word16 dateEntryIndex,
-    word16 followupMessageIndex,
-    word16 redrawPresentation)
+    int16_t presentationMode,
+    int16_t blinkRegionIndex,
+    uint16_t dateEntryIndex,
+    uint16_t followupMessageIndex,
+    uint16_t redrawPresentation)
 {
-    int16 animatedMonth;
-    int16 currentMonth;
-    int16 rectangleExtent;
-    word16 animatedYear;
-    word16 currentYear;
-    word16 monthsRemaining;
-    word16 previousMonthsRemaining;
-    word16 previousWaitTicks;
-    word16 textColor;
-    word16 waitTicks;
-    word16 leftX;
-    word16 topY;
+    int16_t animatedMonth;
+    int16_t currentMonth;
+    int16_t rectangleExtent;
+    uint16_t animatedYear;
+    uint16_t currentYear;
+    uint16_t monthsRemaining;
+    uint16_t previousMonthsRemaining;
+    uint16_t previousWaitTicks;
+    uint16_t textColor;
+    uint16_t waitTicks;
+    uint16_t leftX;
+    uint16_t topY;
     char dateText[0x1A];
     char yearText[0x0A];
 
@@ -486,7 +486,7 @@ void DisplayMissionDate(
         currentYear = MissionDateYear[dateEntryIndex];
         monthsRemaining = MissionDateAdvanceMonths[REVENGE_INDEX(
             MissionDateAdvanceMonths, dateEntryIndex)];
-        strcpy(dateText, MonthNameTextTable[(word16) currentMonth]);
+        strcpy(dateText, MonthNameTextTable[(uint16_t) currentMonth]);
         strcat(dateText, DateCommaSpaceText);
         IntegerToString(currentYear, yearText, 0x0A);
         RemoveLeadingSpacesFrom(yearText, 0x01);
@@ -537,13 +537,13 @@ void DisplayMissionDate(
                     }
                 }
                 HideMouseCursorOverlay();
-                strcpy(dateText, MonthNameTextTable[(word16) animatedMonth]);
+                strcpy(dateText, MonthNameTextTable[(uint16_t) animatedMonth]);
                 strcat(dateText, DateSpaceText);
                 IntegerToString(animatedYear, yearText, 0x0A);
                 RemoveLeadingSpacesFrom(yearText, 0x01);
                 TrimTrailingEncodedSpaces(yearText);
                 strcat(dateText, yearText);
-                DrawCenteredClippedText(dateText, 0x00, 0x00, 0x18, 0x0140, (byte) textColor, 0x0D);
+                DrawCenteredClippedText(dateText, 0x00, 0x00, 0x18, 0x0140, (uint8_t) textColor, 0x0D);
                 ShowMouseCursorOverlay();
                 previousMonthsRemaining = monthsRemaining;
                 --monthsRemaining;
@@ -555,8 +555,8 @@ void DisplayMissionDate(
             PrepareMissionDateScreen(presentationMode);
             HideMouseCursorOverlay();
             DrawCenteredClippedText(MissionDateLabelTextTable[dateEntryIndex],
-                0x00, 0x00, 0x10, 0x0140, (byte) textColor, 0x0D);
-            DrawCenteredClippedText(dateText, 0x00, 0x00, 0x18, 0x0140, (byte) textColor, 0x0D);
+                0x00, 0x00, 0x10, 0x0140, (uint8_t) textColor, 0x0D);
+            DrawCenteredClippedText(dateText, 0x00, 0x00, 0x18, 0x0140, (uint8_t) textColor, 0x0D);
             ShowMouseCursorOverlay();
         }
         if (SceneTransitionAbortFlag == FALSE)
@@ -598,9 +598,9 @@ void DisplayMissionDate(
 // 0D73:3B7E: present a framed mission briefing and its indexed message.
 // VERIFIED against 0D73:3B7E-3C7B.
 void PresentMissionBriefing(
-    word16 graphicsResourceIndex,
-    word16 spriteLayoutIndex,
-    word16 messageIndex)
+    uint16_t graphicsResourceIndex,
+    uint16_t spriteLayoutIndex,
+    uint16_t messageIndex)
 {
     if ((PresentationCallbackOffset | PresentationCallbackSegment) != 0x0000)
         SceneTransitionAbortFlag = FALSE;
@@ -639,13 +639,13 @@ void PresentMissionBriefing(
 //      RunTitleAndMainMenu
 //      FlushInputAndWait
 //      InitializeGame
-word16 WaitForDismissInputOrTimeout(word16 timeoutRetraces)
+uint16_t WaitForDismissInputOrTimeout(uint16_t timeoutRetraces)
 {
-    word16 dismissKey = 0x00;
+    uint16_t dismissKey = 0x00;
     while (timeoutRetraces-- != 0x00)
     {
         WaitVerticalRetraces(0x01);
-        word16 keypress = ServiceMusicAndCheckKeyboardInput();
+        uint16_t keypress = ServiceMusicAndCheckKeyboardInput();
         if (keypress != 0x00)
         {
             keypress = ReadTranslatedKeypress();
@@ -655,7 +655,7 @@ word16 WaitForDismissInputOrTimeout(word16 timeoutRetraces)
         }
         if (MouseInputDisabled == 0x00)
         {
-            word16 mouseButtonState = MouseButtonState;
+            uint16_t mouseButtonState = MouseButtonState;
             if (PendingMouseButtonEvent != FALSE && mouseButtonState != 0x00)
             {
                 PendingMouseButtonEvent = FALSE;
@@ -677,14 +677,14 @@ word16 WaitForDismissInputOrTimeout(word16 timeoutRetraces)
 //      ShowScenarioMessage
 //      ShowInvalidSaveVersionDialog
 //      WaitForAcknowledgement
-word16 WaitForDismissInput(void)
+uint16_t WaitForDismissInput(void)
 {
     // V: Wait for Escape, Enter, or Space (including mouse events translated
     // to Enter/Escape). Other keyboard events are consumed and ignored.
-    word16 dismissKey = 0x00;
+    uint16_t dismissKey = 0x00;
     while (dismissKey == 0x00)
     {
-        word16 inputKey = WaitForKeyboardOrMouseInput();
+        uint16_t inputKey = WaitForKeyboardOrMouseInput();
         dismissKey = inputKey;
         if (inputKey != KEY_ESCAPE && (inputKey != KEY_CARRIAGE_RETURN && inputKey != KEY_SPACE))
             dismissKey = 0x00;
@@ -696,19 +696,19 @@ word16 WaitForDismissInput(void)
 // Called from:
 //      WaitForDismissInput
 //      EditTextField
-word16 WaitForKeyboardOrMouseInput(void)
+uint16_t WaitForKeyboardOrMouseInput(void)
 {
     // V: Block until a translated keyboard event or mouse-button event arrives.
     // Mouse button bit 0 maps to Enter; the other button maps to Escape. While
     // idle, service the active scrolling-text state through UpdateTextEntryCursorBlink.
-    word16 keypress = 0x00;
+    uint16_t keypress = 0x00;
     while (keypress == 0x00)
     {
         if (ServiceMusicAndCheckKeyboardInput() != 0x00)
             keypress = ReadTranslatedKeypress();
         if (MouseInputDisabled == 0x00)
         {
-            word16 mouseButtonState = MouseButtonState;
+            uint16_t mouseButtonState = MouseButtonState;
             if (keypress == 0x00 && (PendingMouseButtonEvent != FALSE && mouseButtonState != 0x00))
             {
                 PendingMouseButtonEvent = FALSE;
@@ -743,7 +743,7 @@ word16 WaitForKeyboardOrMouseInput(void)
 //      LoadMediaConfiguration
 void FlushPendingInput(void)
 {
-    uint16 inputPending;
+    uint16_t inputPending;
 
     PendingMouseButtonEvent = FALSE;
     for (;;)
@@ -762,36 +762,36 @@ void FlushPendingInput(void)
 //      DrawBeveledMenuButton
 void DrawCenteredClippedText(
     const char *sourceText,
-    word16 splitIndex,
-    uint16 leftX,
-    uint16 y,
-    uint16 maximumWidth,
-    byte foregroundColor,
-    byte backgroundColor)
+    uint16_t splitIndex,
+    uint16_t leftX,
+    uint16_t y,
+    uint16_t maximumWidth,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor)
 {
     char text[0x34];
-    int16 centeredOffset;
+    int16_t centeredOffset;
 
     // Verified against 0D73:3E35-3F56.
     strncpy(text, sourceText, 0x32);
     RemoveLeadingSpacesFrom(text, 0x01);
     TrimTrailingEncodedSpaces(text);
-    word16 textWidth = MeasureTextWidth(text);
+    uint16_t textWidth = MeasureTextWidth(text);
     if (textWidth > maximumWidth)
     {
         if (splitIndex != 0x00)
         {
             text[splitIndex] = 0x00;
             textWidth = MeasureTextWidth(text);
-            centeredOffset = (int16) (word16) (maximumWidth - textWidth);
+            centeredOffset = (int16_t) (uint16_t) (maximumWidth - textWidth);
             centeredOffset >>= 0x01;
-            DrawTextString(text, (word16) (leftX + centeredOffset), y,
+            DrawTextString(text, (uint16_t) (leftX + centeredOffset), y,
                 foregroundColor, backgroundColor);
-            y = (word16) (y + ActiveFontLineHeight);
+            y = (uint16_t) (y + ActiveFontLineHeight);
             strncpy(text, sourceText + splitIndex, 0x32);
             textWidth = MeasureTextWidth(text);
         }
-        word16 textLength = (word16) strlen(text);
+        uint16_t textLength = (uint16_t) strlen(text);
         while (textWidth > maximumWidth)
         {
             text[textLength] = 0x00;
@@ -799,9 +799,9 @@ void DrawCenteredClippedText(
             textWidth = MeasureTextWidth(text);
         }
     }
-    centeredOffset = (int16) (word16) (maximumWidth - textWidth);
+    centeredOffset = (int16_t) (uint16_t) (maximumWidth - textWidth);
     centeredOffset >>= 0x01;
-    DrawTextString(text, (word16) (leftX + centeredOffset), y,
+    DrawTextString(text, (uint16_t) (leftX + centeredOffset), y,
         foregroundColor, backgroundColor);
 }
 
@@ -811,20 +811,20 @@ void DrawCenteredClippedText(
 // Verified against 0D73:3F57-3FF1.
 void DrawLeftAlignedClippedText(
     const char *sourceText,
-    word16 x,
-    word16 y,
-    word16 maximumWidth,
-    byte foregroundColor,
-    byte backgroundColor)
+    uint16_t x,
+    uint16_t y,
+    uint16_t maximumWidth,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor)
 {
     char renderText[0x34];
     strncpy(renderText, sourceText, 0x32);
     RemoveLeadingSpacesFrom(renderText, 0x01);
     TrimTrailingEncodedSpaces(renderText);
-    word16 textWidth = MeasureTextWidth(renderText);
+    uint16_t textWidth = MeasureTextWidth(renderText);
     if (textWidth > maximumWidth)
     {
-        word16 textLength = (word16) strlen(renderText);
+        uint16_t textLength = (uint16_t) strlen(renderText);
         while (textWidth > maximumWidth)
         {
             renderText[textLength] = '\0';
@@ -841,20 +841,20 @@ void DrawLeftAlignedClippedText(
 // Verified against 0D73:3FF2-4098.
 void DrawRightAlignedClippedText(
     const char *sourceText,
-    word16 leftX,
-    word16 y,
-    word16 maximumWidth,
-    byte foregroundColor,
-    byte backgroundColor)
+    uint16_t leftX,
+    uint16_t y,
+    uint16_t maximumWidth,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor)
 {
     char renderText[0x34];
     strncpy(renderText, sourceText, 0x32);
     RemoveLeadingSpacesFrom(renderText, 0x01);
     TrimTrailingEncodedSpaces(renderText);
-    word16 textWidth = MeasureTextWidth(renderText);
+    uint16_t textWidth = MeasureTextWidth(renderText);
     if (textWidth > maximumWidth)
     {
-        word16 textLength = (word16) strlen(renderText);
+        uint16_t textLength = (uint16_t) strlen(renderText);
         while (textWidth > maximumWidth)
         {
             renderText[textLength] = '\0';
@@ -897,9 +897,9 @@ void DrawRightAlignedClippedText(
 // 0D73:4155: capture one indexed rectangle from graphics resource 18h.
 // Called from:
 //      PrepareMissionDateScreen
-void BuildMissionSpriteBackingBuffer(word16 spriteLayoutIndex)
+void BuildMissionSpriteBackingBuffer(uint16_t spriteLayoutIndex)
 {
-    byte *allocation = BuildDisplayBackingBuffer(
+    uint8_t *allocation = BuildDisplayBackingBuffer(
         MissionSpriteSourceTileX[spriteLayoutIndex],
         MissionSpriteSourcePixelY[spriteLayoutIndex],
         MissionSpriteWidthTiles[spriteLayoutIndex],

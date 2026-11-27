@@ -16,12 +16,12 @@ void InstallVgaPaletteBankAnchors(void)
     if (VideoAdapterType != VIDEO_ADAPTER_VGA)
         return;
 
-    byte *palette = VideoPaletteData;
-    word16 baseColor;
+    uint8_t *palette = VideoPaletteData;
+    uint16_t baseColor;
     for (baseColor = 0x00; baseColor < 0x10; ++baseColor)
     {
-        word16 source = baseColor * 0x03;
-        word16 destination = baseColor * 0x30;
+        uint16_t source = baseColor * 0x03;
+        uint16_t destination = baseColor * 0x30;
         palette[destination] = palette[source];
         palette[destination + 0x01] = palette[source + 0x01];
         palette[destination + 0x02] = palette[source + 0x02];

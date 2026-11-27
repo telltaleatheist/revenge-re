@@ -10,28 +10,28 @@
 
 void HideMouseCursorOverlay(void);
 void ShowMouseCursorOverlay(void);
-word16 IsMouseCursorInsideRectangle(
-    int16 left, int16 top, int16 right, int16 bottom);
-word16 ServiceMusicAndCheckKeyboardInput(void);
+uint16_t IsMouseCursorInsideRectangle(
+    int16_t left, int16_t top, int16_t right, int16_t bottom);
+uint16_t ServiceMusicAndCheckKeyboardInput(void);
 
 // 34E6:0003: int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
 // Called from:
 //      RunUiRegionSelectionLoop
 //      RunSingleUiRegionSelection
 // Verified against 34E6:0003-0826.
-int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
+int16_t PollUiRegionSelection(int16_t firstRegionIndex, uint16_t regionCount)
 {
     /* Poll mouse and translated keyboard input for a consecutive group of
 	 * UI-region records. */
     OriginalUiRegionRecord *regions = UiRegionTable;
-    int16 activeRegionIndex = ActiveUiRegionIndex;
-    int16 originalRegionIndex = activeRegionIndex;
-    int16 selectedRow = regions[activeRegionIndex].selectedRow;
-    uint16 selectedRowHeight = 0x01;
-    uint16 inputKey = 0x00;
-    uint16 mouseKey = 0x00;
-    int16 glyphWidth = ActiveFontGlyphAdvanceX;
-    int16 lineHeight = ActiveFontLineHeight;
+    int16_t activeRegionIndex = ActiveUiRegionIndex;
+    int16_t originalRegionIndex = activeRegionIndex;
+    int16_t selectedRow = regions[activeRegionIndex].selectedRow;
+    uint16_t selectedRowHeight = 0x01;
+    uint16_t inputKey = 0x00;
+    uint16_t mouseKey = 0x00;
+    int16_t glyphWidth = ActiveFontGlyphAdvanceX;
+    int16_t lineHeight = ActiveFontLineHeight;
 
     if (selectedRow == 0x00 && ExpandFirstUiRowHighlight != 0x00)
         selectedRowHeight = regions[activeRegionIndex].rowCount;
@@ -39,8 +39,8 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
     ShowMouseCursorOverlay();
     if (MouseInputDisabled == 0x00)
     {
-        uint16 mouseButtonState;
-        uint16 pendingMouseButtonEvent;
+        uint16_t mouseButtonState;
+        uint16_t pendingMouseButtonEvent;
 
         /* 34E6:005C and 0073 called DisableHardwareInterrupts and
 		 * EnableHardwareInterrupts (0800:34F6, 34F4) around this; the
@@ -57,43 +57,43 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
             mouseKey = KEY_ESCAPE;
         }
 
-        for (int16 relativeRegionIndex = 0x00;
-            relativeRegionIndex < (int16) regionCount;
+        for (int16_t relativeRegionIndex = 0x00;
+            relativeRegionIndex < (int16_t) regionCount;
             ++relativeRegionIndex)
         {
-            int16 candidateRegionIndex = firstRegionIndex + relativeRegionIndex;
+            int16_t candidateRegionIndex = firstRegionIndex + relativeRegionIndex;
             OriginalUiRegionRecord *candidateRegion = &regions[candidateRegionIndex];
-            uint16 candidateLeft =
+            uint16_t candidateLeft =
                 (ActiveTextWindowLeftTile << 0x03) +
                 glyphWidth * candidateRegion->leftColumn;
-            uint16 candidateTop =
+            uint16_t candidateTop =
                 (ActiveTextWindowTopTile << 0x03) +
                 lineHeight * candidateRegion->topRow;
-            uint16 candidateRight = candidateLeft +
+            uint16_t candidateRight = candidateLeft +
                 glyphWidth * candidateRegion->widthColumns - 0x01;
-            uint16 candidateBottom = candidateTop +
+            uint16_t candidateBottom = candidateTop +
                 lineHeight * candidateRegion->rowCount - 0x01;
 
             /* 34E6:0143 called DisableHardwareInterrupts (0800:34F6) here, and
 			 * 34E6:0169 and 0392 EnableHardwareInterrupts on the two ways out:
 			 * not made. */
-            int16 mouseY = (int16) MouseY;
+            int16_t mouseY = (int16_t) MouseY;
             if (IsMouseCursorInsideRectangle(
                     candidateLeft, candidateTop, candidateRight, candidateBottom) != 0x00)
             {
-                int16 hoveredRow = (int16) ((mouseY -
-                                                (int16) candidateTop) /
+                int16_t hoveredRow = (int16_t) ((mouseY -
+                                                    (int16_t) candidateTop) /
                     lineHeight);
                 if (selectedRow != hoveredRow || activeRegionIndex != candidateRegionIndex)
                 {
                     OriginalUiRegionRecord *oldRegion = &regions[activeRegionIndex];
-                    uint16 oldLeft =
+                    uint16_t oldLeft =
                         (ActiveTextWindowLeftTile << 0x03) +
                         glyphWidth * oldRegion->leftColumn;
-                    uint16 oldTop =
+                    uint16_t oldTop =
                         (ActiveTextWindowTopTile << 0x03) +
                         lineHeight * oldRegion->topRow;
-                    uint16 oldRowHeight = 0x01;
+                    uint16_t oldRowHeight = 0x01;
                     if (selectedRow == 0x00 &&
                         ExpandFirstUiRowHighlight != 0x00)
                         oldRowHeight = oldRegion->rowCount;
@@ -104,7 +104,7 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
                         oldTop + selectedRow * lineHeight,
                         oldLeft + glyphWidth * oldRegion->widthColumns - 0x01,
                         oldTop + (selectedRow + oldRowHeight) * lineHeight - 0x01,
-                        (byte) oldRegion->xorColor);
+                        (uint8_t) oldRegion->xorColor);
                     ShowMouseCursorOverlay();
 
                     activeRegionIndex = candidateRegionIndex;
@@ -122,7 +122,7 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
                         candidateTop + hoveredRow * lineHeight,
                         candidateRight,
                         candidateTop + (hoveredRow + selectedRowHeight) * lineHeight - 0x01,
-                        (byte) candidateRegion->xorColor);
+                        (uint8_t) candidateRegion->xorColor);
                     ShowMouseCursorOverlay();
                 }
 
@@ -143,30 +143,30 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
         else
             inputKey = mouseKey;
 
-        word16 isNavigationKey =
+        uint16_t isNavigationKey =
             inputKey == UiNavigationUpKey ||
             inputKey == UiNavigationDownKey ||
             inputKey == UiPreviousRegionKey ||
             inputKey == UiNextRegionKey ||
             inputKey == KEY_ESCAPE ||
-            inputKey == (word16) TranslatedExtendedKey(KEY_HOME) ||
-            inputKey == (word16) TranslatedExtendedKey(KEY_PAGE_UP) ||
-            inputKey == (word16) TranslatedExtendedKey(KEY_END) ||
-            inputKey == (word16) TranslatedExtendedKey(KEY_PAGE_DOWN) ||
+            inputKey == (uint16_t) TranslatedExtendedKey(KEY_HOME) ||
+            inputKey == (uint16_t) TranslatedExtendedKey(KEY_PAGE_UP) ||
+            inputKey == (uint16_t) TranslatedExtendedKey(KEY_END) ||
+            inputKey == (uint16_t) TranslatedExtendedKey(KEY_PAGE_DOWN) ||
             inputKey == KEY_TAB;
         if (isNavigationKey)
         {
             OriginalUiRegionRecord *activeRegion = &regions[activeRegionIndex];
-            int16 nextRow = selectedRow;
+            int16_t nextRow = selectedRow;
             selectedRowHeight = 0x01;
             if (selectedRow == 0x00 &&
                 ExpandFirstUiRowHighlight != 0x00)
                 selectedRowHeight = activeRegion->rowCount;
 
-            uint16 regionLeft =
+            uint16_t regionLeft =
                 (ActiveTextWindowLeftTile << 0x03) +
                 glyphWidth * activeRegion->leftColumn;
-            uint16 regionTop =
+            uint16_t regionTop =
                 (ActiveTextWindowTopTile << 0x03) +
                 lineHeight * activeRegion->topRow;
             HideMouseCursorOverlay();
@@ -175,14 +175,14 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
                 regionTop + selectedRow * lineHeight,
                 regionLeft + glyphWidth * activeRegion->widthColumns - 0x01,
                 regionTop + (selectedRow + selectedRowHeight) * lineHeight - 0x01,
-                (byte) activeRegion->xorColor);
+                (uint8_t) activeRegion->xorColor);
             ShowMouseCursorOverlay();
 
             if (inputKey == KEY_ESCAPE)
             {
                 ActiveUiRegionIndex = originalRegionIndex;
-                for (int16 restoreIndex = 0x00;
-                    restoreIndex < (int16) regionCount;
+                for (int16_t restoreIndex = 0x00;
+                    restoreIndex < (int16_t) regionCount;
                     ++restoreIndex)
                     regions[firstRegionIndex + restoreIndex].selectedRow =
                         SavedUiRegionSelectionRows[restoreIndex];
@@ -197,7 +197,7 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
                 activeRegion->selectedRow = nextRow;
                 ++activeRegionIndex;
                 if (activeRegionIndex >=
-                    (int16) (firstRegionIndex + regionCount))
+                    (int16_t) (firstRegionIndex + regionCount))
                     activeRegionIndex = firstRegionIndex;
                 ActiveUiRegionIndex = activeRegionIndex;
                 activeRegion = &regions[activeRegionIndex];
@@ -217,11 +217,11 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
                 if (nextRow >= activeRegion->rowCount)
                     nextRow = -0x01;
             }
-            if (inputKey == (word16) TranslatedExtendedKey(KEY_END) ||
-                inputKey == (word16) TranslatedExtendedKey(KEY_PAGE_DOWN))
+            if (inputKey == (uint16_t) TranslatedExtendedKey(KEY_END) ||
+                inputKey == (uint16_t) TranslatedExtendedKey(KEY_PAGE_DOWN))
                 nextRow = -0x01;
-            if (inputKey == (word16) TranslatedExtendedKey(KEY_HOME) ||
-                inputKey == (word16) TranslatedExtendedKey(KEY_PAGE_UP))
+            if (inputKey == (uint16_t) TranslatedExtendedKey(KEY_HOME) ||
+                inputKey == (uint16_t) TranslatedExtendedKey(KEY_PAGE_UP))
                 nextRow = 0x00;
             if (nextRow < 0x00)
                 nextRow = activeRegion->rowCount - 0x01;
@@ -245,7 +245,7 @@ int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount)
                 regionTop + selectedRow * lineHeight,
                 regionLeft + glyphWidth * activeRegion->widthColumns - 0x01,
                 regionTop + (selectedRow + selectedRowHeight) * lineHeight - 0x01,
-                (byte) activeRegion->xorColor);
+                (uint8_t) activeRegion->xorColor);
             ShowMouseCursorOverlay();
             activeRegion->selectedRow = selectedRow;
         }

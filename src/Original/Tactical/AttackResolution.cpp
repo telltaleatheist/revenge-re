@@ -6,10 +6,10 @@
 // 2D1B:1854: int16 ResolveWeaponAttack(
 //     Stack int16 attackerUnitIndex, Stack int16 weaponIndex,
 //     Stack int16 targetUnitIndex)
-int16 ResolveWeaponAttack(
-    int16 attackerUnitIndex,
-    int16 weaponIndex,
-    int16 targetUnitIndex)
+int16_t ResolveWeaponAttack(
+    int16_t attackerUnitIndex,
+    int16_t weaponIndex,
+    int16_t targetUnitIndex)
 {
     // P: complete assembly-led translation of the attack gate, to-hit roll,
     // ammunition/heat/recovery updates, presentation, and damage dispatch.
@@ -18,15 +18,15 @@ int16 ResolveWeaponAttack(
     RevengeUnitRecord *attackerUnit;
     RevengeUnitRecord *targetUnit = 0;
     const RevengeWeaponDefinition *weaponDefinition;
-    uint16 targetX;
-    uint16 targetY;
-    uint16 distance;
-    word16 hasLineOfSight;
-    int16 toHitModifier = 0x00;
-    int16 toHitTarget;
-    word16 ammunitionFamily;
-    word16 shotHit;
-    word16 attackWasAccepted = 0x00;
+    uint16_t targetX;
+    uint16_t targetY;
+    uint16_t distance;
+    uint16_t hasLineOfSight;
+    int16_t toHitModifier = 0x00;
+    int16_t toHitTarget;
+    uint16_t ammunitionFamily;
+    uint16_t shotHit;
+    uint16_t attackWasAccepted = 0x00;
 
     if (targetUnitIndex == TACTICAL_TARGET_NONE)
         return 0x00;
@@ -47,7 +47,7 @@ int16 ResolveWeaponAttack(
             TerrainTypeMap,
             TerrainImpactAnimationTypeMinimum,
             TerrainImpactAnimationTypeMaximum,
-            (byte) TerrainLineOfSightBlockingThreshold,
+            (uint8_t) TerrainLineOfSightBlockingThreshold,
             TerrainLineOfSightMaximumSteps);
         toHitModifier = -0x04;
     }
@@ -67,11 +67,11 @@ int16 ResolveWeaponAttack(
         // P: LRMs may use another active unit on the attacker's side as a
         // spotter. Record +8Eh gates that capability; Rifleman+ is the only
         // immutable template that starts with it enabled.
-        int16 sideStart = attackerUnitIndex >= ENEMY_FORCE_FIRST_UNIT ? ENEMY_FORCE_FIRST_UNIT : FRIENDLY_FORCE_FIRST_UNIT;
-        int16 sideUnit;
+        int16_t sideStart = attackerUnitIndex >= ENEMY_FORCE_FIRST_UNIT ? ENEMY_FORCE_FIRST_UNIT : FRIENDLY_FORCE_FIRST_UNIT;
+        int16_t sideUnit;
         for (sideUnit = 0x00; sideUnit < TACTICAL_FORCE_UNIT_COUNT; ++sideUnit)
         {
-            int16 spotterIndex = sideStart + sideUnit;
+            int16_t spotterIndex = sideStart + sideUnit;
             RevengeUnitRecord *spotter = &PersistentUnitRoster[spotterIndex];
             if (spotter->deploymentState != 0x00 &&
                 spotter->indirectFireSpotter != 0x00 &&
@@ -94,12 +94,12 @@ int16 ResolveWeaponAttack(
         targetX,
         targetY);
     toHitTarget = toHitModifier +
-        (int16) (byte) attackerUnit->gunneryTargetNumber;
+        (int16_t) (uint8_t) attackerUnit->gunneryTargetNumber;
 
     if (targetUnitIndex != TACTICAL_TARGET_MAP_CELL)
     {
         toHitTarget +=
-            (int16) (byte) targetUnit->targetMovementModifier;
+            (int16_t) (uint8_t) targetUnit->targetMovementModifier;
         if (targetUnit->walkMovement == 0x00)
             toHitTarget -= 0x04;
     }
@@ -153,13 +153,13 @@ int16 ResolveWeaponAttack(
         --attackerUnit->currentAmmunition[AMMUNITION_INDEX(ammunitionFamily)];
     }
 
-    shotHit = (int16) Roll2D6() >= toHitTarget;
+    shotHit = (int16_t) Roll2D6() >= toHitTarget;
     if (targetUnitIndex == TACTICAL_TARGET_MAP_CELL && shotHit != 0x00)
     {
         ApplyTerrainImpact(targetX, targetY, TRUE, FALSE);
         if (ReadTerrainDamageState(targetX, targetY) == 0x03)
         {
-            int16 unitIndex;
+            int16_t unitIndex;
             for (unitIndex = 0x00; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
             {
                 RevengeUnitRecord *unit = &PersistentUnitRoster[unitIndex];
@@ -197,7 +197,7 @@ int16 ResolveWeaponAttack(
         }
         QueueTacticalProjectile(
             attackerUnitIndex,
-            (byte) weaponIndex,
+            (uint8_t) weaponIndex,
             targetUnitIndex,
             shotHit);
         shotHit = 0x00;
@@ -206,7 +206,7 @@ int16 ResolveWeaponAttack(
     DispatchWeaponEffect(weaponDefinition->effectId);
     if (shotHit != 0x00)
     {
-        word16 impactScale =
+        uint16_t impactScale =
             weaponDefinition->damage > HEAVY_WEAPON_DAMAGE_THRESHOLD ? 0x01 : 0x0A;
         QueueTacticalImpactVisual(targetX, targetY, impactScale);
         if (targetUnitIndex >= 0x00 && targetUnitIndex < TACTICAL_UNIT_COUNT)
@@ -222,18 +222,18 @@ int16 ResolveWeaponAttack(
 // 2D1B:1DA6: word16 HasUnitLineOfSight(
 //     Stack int16 sourceUnitIndex, Stack int16 targetUnitIndex)
 // Verified against 2D1B:1DA6-1DF3.
-word16 HasUnitLineOfSight(
-    int16 sourceUnitIndex,
-    int16 targetUnitIndex)
+uint16_t HasUnitLineOfSight(
+    int16_t sourceUnitIndex,
+    int16_t targetUnitIndex)
 {
     return TraceMapLineOfSight(
-        ScenarioUnitMapX[(word16) sourceUnitIndex],
-        ScenarioUnitMapY[(word16) sourceUnitIndex],
-        ScenarioUnitMapX[(word16) targetUnitIndex],
-        ScenarioUnitMapY[(word16) targetUnitIndex],
+        ScenarioUnitMapX[(uint16_t) sourceUnitIndex],
+        ScenarioUnitMapY[(uint16_t) sourceUnitIndex],
+        ScenarioUnitMapX[(uint16_t) targetUnitIndex],
+        ScenarioUnitMapY[(uint16_t) targetUnitIndex],
         TerrainTypeMap,
         TerrainImpactAnimationTypeMinimum,
         TerrainImpactAnimationTypeMaximum,
-        (byte) TerrainLineOfSightBlockingThreshold,
+        (uint8_t) TerrainLineOfSightBlockingThreshold,
         TerrainLineOfSightMaximumSteps);
 }

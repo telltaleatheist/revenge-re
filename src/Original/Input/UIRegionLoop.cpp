@@ -8,16 +8,16 @@
 
 void HideMouseCursorOverlay(void);
 void ShowMouseCursorOverlay(void);
-int16 PollUiRegionSelection(int16 firstRegionIndex, uint16 regionCount);
+int16_t PollUiRegionSelection(int16_t firstRegionIndex, uint16_t regionCount);
 
 // 3568:0007: int16 RunUiRegionSelectionLoop(
 //     int16 firstRegionIndex, uint16 regionCount)
 // Called from:
 //      RunMainMenuSelection
-int16 RunUiRegionSelectionLoop(int16 firstRegionIndex, uint16 regionCount)
+int16_t RunUiRegionSelectionLoop(int16_t firstRegionIndex, uint16_t regionCount)
 {
-    word16 savedCursorHideDepth;
-    int16 selectionResult;
+    uint16_t savedCursorHideDepth;
+    int16_t selectionResult;
 
     savedCursorHideDepth = MouseCursorHideDepth;
     if (savedCursorHideDepth == 0x00)

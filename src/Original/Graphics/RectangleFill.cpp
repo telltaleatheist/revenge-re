@@ -7,20 +7,20 @@
 #include "revenge/video.h"
 
 void DrawHorizontalSpan(
-    int16 y, int16 leftX, int16 rightX, word16 color);
+    int16_t y, int16_t leftX, int16_t rightX, uint16_t color);
 // 3471:000E: void FillVideoRectangle(
 //     int16 leftX, int16 topY, int16 rightX, int16 bottomY, uint16 color)
 // Called from:
 //      DrawBeveledMenuButton
 //      RenderTextToActiveWindow
 void FillVideoRectangle(
-    int16 leftX,
-    int16 topY,
-    int16 rightX,
-    int16 bottomY,
-    uint16 color)
+    int16_t leftX,
+    int16_t topY,
+    int16_t rightX,
+    int16_t bottomY,
+    uint16_t color)
 {
-    int16 y;
+    int16_t y;
 
     /* The Tandy's packed fill (3471:0026-002B, 004B-0066, 0800:3327)
 	 * went with the Tandy; the rebuild is VGA only. */

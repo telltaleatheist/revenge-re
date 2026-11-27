@@ -4,8 +4,8 @@
 #include "REVENGE.h"
 #include "revenge/original_data.h"
 
-word16 IsDaylightSavingTime(
-    word16 yearsSince1970, word16 month, word16 dayOrDayOfYear, byte hour);
+uint16_t IsDaylightSavingTime(
+    uint16_t yearsSince1970, uint16_t month, uint16_t dayOrDayOfYear, uint8_t hour);
 
 #define SECONDS_PER_MINUTE      0x0000003CUL
 #define SECONDS_PER_HOUR        0x00000E10UL
@@ -16,28 +16,28 @@ word16 IsDaylightSavingTime(
 
 // 3A07:0001: convert the DOS local date/time fields to the runtime's signed-
 // timezone-adjusted Unix epoch value. The original returns this in DX:AX.
-uint32 ConvertLocalDateTimeToEpochSeconds(
+uint32_t ConvertLocalDateTimeToEpochSeconds(
     const DOS_Date *date,
     const DOS_Time *time)
 {
-    int16 yearsSince1980;
-    word16 remainingYears;
-    word16 monthIndex;
-    word16 dayOfYear;
-    word16 hourOfYear;
-    int32 timezoneOffsetSeconds;
-    uint32 epochSeconds;
+    int16_t yearsSince1980;
+    uint16_t remainingYears;
+    uint16_t monthIndex;
+    uint16_t dayOfYear;
+    uint16_t hourOfYear;
+    int32_t timezoneOffsetSeconds;
+    uint32_t epochSeconds;
 
     InitializeTimezoneFromEnvironment();
-    timezoneOffsetSeconds = (int32) MAKE_DWORD(
+    timezoneOffsetSeconds = (int32_t) MAKE_DWORD(
         TimezoneOffsetHighWord,
         TimezoneOffsetLowWord);
-    epochSeconds = (uint32) (timezoneOffsetSeconds + EPOCH_SECONDS_AT);
+    epochSeconds = (uint32_t) (timezoneOffsetSeconds + EPOCH_SECONDS_AT);
 
-    yearsSince1980 = (int16) date->year - 0x07BC;
-    epochSeconds += (uint32) (yearsSince1980 >> 0x02) * SECONDS_PER_FOUR_YEARS;
+    yearsSince1980 = (int16_t) date->year - 0x07BC;
+    epochSeconds += (uint32_t) (yearsSince1980 >> 0x02) * SECONDS_PER_FOUR_YEARS;
     remainingYears = yearsSince1980 & 0x03;
-    epochSeconds += (uint32) remainingYears * SECONDS_PER_COMMON_YEAR;
+    epochSeconds += (uint32_t) remainingYears * SECONDS_PER_COMMON_YEAR;
     if (remainingYears != 0x00)
         epochSeconds += SECONDS_PER_DAY;
 
@@ -54,8 +54,8 @@ uint32 ConvertLocalDateTimeToEpochSeconds(
             date->year - 0x07B2, 0x00, dayOfYear, time->hour) != FALSE)
         --hourOfYear;
 
-    epochSeconds += (uint32) hourOfYear * SECONDS_PER_HOUR;
-    epochSeconds += (uint32) time->minute * SECONDS_PER_MINUTE;
+    epochSeconds += (uint32_t) hourOfYear * SECONDS_PER_HOUR;
+    epochSeconds += (uint32_t) time->minute * SECONDS_PER_MINUTE;
     epochSeconds += time->second;
     return epochSeconds;
 }

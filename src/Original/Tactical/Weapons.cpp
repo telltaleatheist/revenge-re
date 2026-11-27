@@ -10,17 +10,17 @@
 // original's bytes on to DS:04E0, the most an experience byte plus one
 // reaches, but for the two variables among them, read live: the overview
 // map's mode (DS:03E5-03E6) and the battle's lances (DS:03EA-03EC).
-static byte WeaponAIHeatLimit(word16 index)
+static uint8_t WeaponAIHeatLimit(uint16_t index)
 {
-    constexpr word16 TABLE_COUNT = 0x05;
-    constexpr word16 OVERVIEW_MAP_MODE_AT = 0x05;  // DS:03E5
-    constexpr word16 SCENARIO_LANCES_AT = 0x0A;    // DS:03EA
+    constexpr uint16_t TABLE_COUNT = 0x05;
+    constexpr uint16_t OVERVIEW_MAP_MODE_AT = 0x05;  // DS:03E5
+    constexpr uint16_t SCENARIO_LANCES_AT = 0x0A;    // DS:03EA
 
     if (index < TABLE_COUNT)
         return WeaponAIHeatLimitByExperience[index];
     if (index >= OVERVIEW_MAP_MODE_AT &&
         index < OVERVIEW_MAP_MODE_AT + sizeof(TacticalOverviewMapMode))
-        return (byte) (TacticalOverviewMapMode >> (0x08 * (index - OVERVIEW_MAP_MODE_AT)));
+        return (uint8_t) (TacticalOverviewMapMode >> (0x08 * (index - OVERVIEW_MAP_MODE_AT)));
     if (index >= SCENARIO_LANCES_AT &&
         index < SCENARIO_LANCES_AT + sizeof(TacticalScenarioLanceEnabled))
         return TacticalScenarioLanceEnabled[index - SCENARIO_LANCES_AT];
@@ -31,11 +31,11 @@ static byte WeaponAIHeatLimit(word16 index)
 // Classify range, heat, and attack direction, select the first ready weapon
 // from the appropriate priority profile, and return whether an attack occurred.
 // Verified against 2D1B:14A4-1803.
-word16 ExecuteUnitWeaponAI(word16 unitIndex)
+uint16_t ExecuteUnitWeaponAI(uint16_t unitIndex)
 {
     RevengeUnitRecord *unitRecord = &PersistentUnitRoster[unitIndex];
-    word16 mayAttack = FALSE;
-    word16 attackOccurred = FALSE;
+    uint16_t mayAttack = FALSE;
+    uint16_t attackOccurred = FALSE;
 
     if (UnitTacticalOrderMode[unitIndex] ==
             TACTICAL_ORDER_SEEK_AND_DESTROY ||
@@ -54,7 +54,7 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
         }
         else
         {
-            word16 heatLimitIndex =
+            uint16_t heatLimitIndex =
                 unitRecord->pilotExperience + 0x01;
             if (UnitOverburnOrCloseAssaultEnabled[unitIndex] != 0x00)
                 --heatLimitIndex;
@@ -69,7 +69,7 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
     if (mayAttack == FALSE)
         return FALSE;
 
-    int16 targetIndex = UnitTacticalTarget[unitIndex];
+    int16_t targetIndex = UnitTacticalTarget[unitIndex];
     if (targetIndex != TACTICAL_TARGET_MAP_CELL &&
         (targetIndex < 0x00 || targetIndex >= TACTICAL_TARGET_MAP_CELL ||
             PersistentUnitRoster[targetIndex].deploymentState == 0x00))
@@ -77,8 +77,8 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
         return FALSE;
     }
 
-    word16 targetX;
-    word16 targetY;
+    uint16_t targetX;
+    uint16_t targetY;
     if (targetIndex == TACTICAL_TARGET_MAP_CELL)
     {
         targetX = UnitTargetMapX[unitIndex];
@@ -90,7 +90,7 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
         targetY = ScenarioUnitMapY[targetIndex];
     }
 
-    word16 distance = CalculateApproximateMapDistance(
+    uint16_t distance = CalculateApproximateMapDistance(
         ScenarioUnitMapX[unitIndex],
         ScenarioUnitMapY[unitIndex],
         targetX,
@@ -98,7 +98,7 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
     if (distance > WEAPON_AI_MAXIMUM_ATTACK_DISTANCE)
         return FALSE;
 
-    word16 selectionMask = 0x00;
+    uint16_t selectionMask = 0x00;
     if (distance < WEAPON_AI_LONG_RANGE_DISTANCE)
         selectionMask |= 0x40;
     if (distance < WEAPON_AI_MEDIUM_RANGE_DISTANCE)
@@ -106,7 +106,7 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
     if (distance < WEAPON_AI_CLOSE_RANGE_DISTANCE)
         selectionMask |= 0x10;
 
-    word16 currentHeat = unitRecord->currentHeat;
+    uint16_t currentHeat = unitRecord->currentHeat;
     if (currentHeat == 0x00)
         selectionMask |= 0x01;
     else if (currentHeat < WEAPON_AI_LOW_HEAT_LIMIT)
@@ -119,9 +119,9 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
     // Preserve the original ground-target quirk: direction classification uses
     // pseudo-slot 18h at the byte immediately after each 24-entry coordinate
     // array rather than UnitTargetMapX/Y, although distance used the latter.
-    word16 directionTargetX = targetIndex < TACTICAL_UNIT_COUNT ? ScenarioUnitMapX[targetIndex] : DropShipMapX;
-    word16 directionTargetY = targetIndex < TACTICAL_UNIT_COUNT ? ScenarioUnitMapY[targetIndex] : DropShipMapY;
-    int16 attackDirection = DetermineRelativeAttackDirection(
+    uint16_t directionTargetX = targetIndex < TACTICAL_UNIT_COUNT ? ScenarioUnitMapX[targetIndex] : DropShipMapX;
+    uint16_t directionTargetY = targetIndex < TACTICAL_UNIT_COUNT ? ScenarioUnitMapY[targetIndex] : DropShipMapY;
+    int16_t attackDirection = DetermineRelativeAttackDirection(
         ScenarioUnitMapX[unitIndex],
         ScenarioUnitMapY[unitIndex],
         directionTargetX,
@@ -129,38 +129,38 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
     if (attackDirection < 0x00 || attackDirection >= BATTLETECH_DIRECTION_COUNT)
         attackDirection = 0x00;
 
-    word16 arcDirection = ScenarioUnitFacing[unitIndex] + 0x03;
-    word16 arcStep;
-    word16 inRestrictedArc = FALSE;
+    uint16_t arcDirection = ScenarioUnitFacing[unitIndex] + 0x03;
+    uint16_t arcStep;
+    uint16_t inRestrictedArc = FALSE;
     for (arcStep = 0x00; arcStep < 0x03 && inRestrictedArc == FALSE; ++arcStep)
     {
         if ((arcDirection++ & (BATTLETECH_DIRECTION_COUNT - 0x01)) ==
-            (word16) attackDirection)
+            (uint16_t) attackDirection)
             inRestrictedArc = TRUE;
     }
     if (inRestrictedArc != FALSE)
         BuildArmWeaponAvailabilityMasks(unitIndex);
 
-    word16 priorityProfile =
+    uint16_t priorityProfile =
         WeaponPriorityProfileByRangeHeat[selectionMask];
-    word16 priorityCount = WeaponPriorityCountTable[priorityProfile];
+    uint16_t priorityCount = WeaponPriorityCountTable[priorityProfile];
     DosAddress priorityListPointer =
         WeaponPriorityListPointers[priorityProfile];
-    const uint32 *priorityTable =
-        &WeaponPriorityData.entries[(priorityListPointer.offset - 0x09C6) / sizeof(uint32)];
-    uint32 availability = UnitWeaponAvailabilityMask[unitIndex];
-    word16 priorityIndex;
-    word16 selectedWeaponId = 0x00;
+    const uint32_t *priorityTable =
+        &WeaponPriorityData.entries[(priorityListPointer.offset - 0x09C6) / sizeof(uint32_t)];
+    uint32_t availability = UnitWeaponAvailabilityMask[unitIndex];
+    uint16_t priorityIndex;
+    uint16_t selectedWeaponId = 0x00;
 
     for (priorityIndex = 0x00;
         priorityIndex < priorityCount && selectedWeaponId == 0x00;
         ++priorityIndex)
     {
-        uint32 priorityMask = priorityTable[priorityIndex];
+        uint32_t priorityMask = priorityTable[priorityIndex];
         if ((priorityMask & availability) != 0x00)
         {
             selectedWeaponId =
-                (word16) priorityTable[priorityCount + priorityIndex];
+                (uint16_t) priorityTable[priorityCount + priorityIndex];
         }
     }
 

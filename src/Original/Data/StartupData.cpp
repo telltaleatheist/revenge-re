@@ -8,15 +8,15 @@
 #include "REVENGE.h"
 #include "revenge/story_text.h"
 
-byte VideoPathUnavailable;
-word16 MapWidth;
-word16 MapHeight;
-word16 SavedBIOSVideoMode;
-word16 GameInitialized;
-word16 StartupResourceState; /* DS:5FCE: 0 in the image; startup sets it */
-byte *InvalidSaveDialogBacking;
+uint8_t VideoPathUnavailable;
+uint16_t MapWidth;
+uint16_t MapHeight;
+uint16_t SavedBIOSVideoMode;
+uint16_t GameInitialized;
+uint16_t StartupResourceState; /* DS:5FCE: 0 in the image; startup sets it */
+uint8_t *InvalidSaveDialogBacking;
 
-const word16 BIOSVideoModeByAdapter[0x07] = {
+const uint16_t BIOSVideoModeByAdapter[0x07] = {
     0x0004, 0x0009, 0x000D, 0x0013, 0x0007, 0x0002, 0x0000
 };
 
@@ -53,23 +53,23 @@ const char SoundConfigTokenDelimiters[] = " \n\r";
 const char SoundParameterTokenDelimiters[] = " \n\r";
 const char InputConfigTokenDelimiters[] = " \n\r";
 
-word16 NumericKeypadNavigationEnabled;
-word16 StartupInputMode;
-word16 SoundEffectsEnabled;
-word16 DigitalSoundBusy;
-word16 AppliedMusicEnabled;
-word16 SoundDriverNumericParameter;
-word16 InputDeviceType;
-int8 SoundDriverIndex;
-byte *Font6Resource;
-byte *Font8Resource;
-byte *SecondaryScreenBuffer;
-byte *PlanarScreenBuffer;
+uint16_t NumericKeypadNavigationEnabled;
+uint16_t StartupInputMode;
+uint16_t SoundEffectsEnabled;
+uint16_t DigitalSoundBusy;
+uint16_t AppliedMusicEnabled;
+uint16_t SoundDriverNumericParameter;
+uint16_t InputDeviceType;
+int8_t SoundDriverIndex;
+uint8_t *Font6Resource;
+uint8_t *Font8Resource;
+uint8_t *SecondaryScreenBuffer;
+uint8_t *PlanarScreenBuffer;
 /* Initial values recovered from REVENGE.EXE DS:277B-2782. */
-word16 MouseCursorBackingSourceTileX = 0x0000;
-word16 MouseCursorBackingSourcePixelY = 0x0008;
-word16 MouseCursorBackingWidthTiles = 0x0002;
-word16 MouseCursorBackingHeightPixels = 0x0010;
-byte *SharedGraphicsBackingBuffers[0x26];
-byte *VideoFramebuffer;
-word16 ResourceRuntimeInitialized;
+uint16_t MouseCursorBackingSourceTileX = 0x0000;
+uint16_t MouseCursorBackingSourcePixelY = 0x0008;
+uint16_t MouseCursorBackingWidthTiles = 0x0002;
+uint16_t MouseCursorBackingHeightPixels = 0x0010;
+uint8_t *SharedGraphicsBackingBuffers[0x26];
+uint8_t *VideoFramebuffer;
+uint16_t ResourceRuntimeInitialized;

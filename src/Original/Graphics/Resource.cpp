@@ -8,9 +8,9 @@
 
 /* 0D73:4099-4125 */
 void LoadGraphicsResourceToBuffers(
-    word16 resourceIndex,
-    byte *decodeBuffer,
-    byte *displayBuffer)
+    uint16_t resourceIndex,
+    uint8_t *decodeBuffer,
+    uint8_t *displayBuffer)
 {
     const char *resourceName = CachedFileDescriptors[resourceIndex].fileName;
 

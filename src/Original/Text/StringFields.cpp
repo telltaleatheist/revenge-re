@@ -11,11 +11,11 @@
 // 0D73:41E8: void RemoveLeadingSpacesFrom(char far *text, word16 oneBasedStart)
 // Called from:
 //      DrawCenteredClippedText
-void RemoveLeadingSpacesFrom(char *text, word16 oneBasedStart)
+void RemoveLeadingSpacesFrom(char *text, uint16_t oneBasedStart)
 {
-    word16 textLength = (word16) strlen(text);
-    word16 sourceIndex = oneBasedStart - 0x01;
-    word16 destinationIndex = sourceIndex;
+    uint16_t textLength = (uint16_t) strlen(text);
+    uint16_t sourceIndex = oneBasedStart - 0x01;
+    uint16_t destinationIndex = sourceIndex;
 
     while (sourceIndex < textLength && text[sourceIndex] == ' ')
         ++sourceIndex;
@@ -29,8 +29,8 @@ void RemoveLeadingSpacesFrom(char *text, word16 oneBasedStart)
 //      EditTextField
 void TrimTrailingEncodedSpaces(char *text)
 {
-    int16 index;
-    for (index = (word16) strlen(text) - 0x01; index >= 0x00; --index)
+    int16_t index;
+    for (index = (uint16_t) strlen(text) - 0x01; index >= 0x00; --index)
     {
         if ((text[index] & 0x3F) != ' ')
         {
@@ -44,9 +44,9 @@ void TrimTrailingEncodedSpaces(char *text)
 // 0D73:42E4: void PadStringToWidth(char far *text, word16 width)
 // Called from:
 //      EditTextField
-void PadStringToWidth(char *text, word16 width)
+void PadStringToWidth(char *text, uint16_t width)
 {
-    word16 index = (word16) strlen(text);
+    uint16_t index = (uint16_t) strlen(text);
     while (index < width)
         text[index++] = ' ';
     text[width] = '\0';
@@ -55,9 +55,9 @@ void PadStringToWidth(char *text, word16 width)
 // 0D73:454A: void FillTextEntryBuffer(word16 length, byte fillCharacter)
 // Called from:
 //      EditTextField
-void FillTextEntryBuffer(word16 length, byte fillCharacter)
+void FillTextEntryBuffer(uint16_t length, uint8_t fillCharacter)
 {
-    word16 index;
+    uint16_t index;
     for (index = 0x00; index < length; ++index)
         TextEntryBuffer[index] = fillCharacter;
     TextEntryBuffer[index++] = '\0';

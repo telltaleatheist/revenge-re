@@ -14,59 +14,59 @@
 #include "revenge/video.h"
 
 
-word16 ReadTerrainDamageState(int16 mapX, int16 mapY);
+uint16_t ReadTerrainDamageState(int16_t mapX, int16_t mapY);
 void BeginTerrainDamageAtCell(
-    word16 mapX, word16 mapY, word16 terrainType);
+    uint16_t mapX, uint16_t mapY, uint16_t terrainType);
 
-int16 ResolveUnitAtTacticalCursor(void);
-void MoveTacticalCursorByInput(int16 inputCode);
-uint16 DetermineOctant(int16 deltaY, int16 deltaX);
-int16 InterpolateLineCoordinate(
-    int16 clipCoordinate,
-    int16 targetCoordinate,
-    int16 sourceValue,
-    int16 targetValue,
-    int16 sourceCoordinate);
-uint16 DetermineRelativeAttackDirection(
-    int16 sourceX,
-    int16 sourceY,
-    int16 targetX,
-    int16 targetY);
+int16_t ResolveUnitAtTacticalCursor(void);
+void MoveTacticalCursorByInput(int16_t inputCode);
+uint16_t DetermineOctant(int16_t deltaY, int16_t deltaX);
+int16_t InterpolateLineCoordinate(
+    int16_t clipCoordinate,
+    int16_t targetCoordinate,
+    int16_t sourceValue,
+    int16_t targetValue,
+    int16_t sourceCoordinate);
+uint16_t DetermineRelativeAttackDirection(
+    int16_t sourceX,
+    int16_t sourceY,
+    int16_t targetX,
+    int16_t targetY);
 void OffsetWeaponTraceEndpoint(
-    int16 *sourceX, int16 *sourceY,
-    int16 *targetX, int16 *targetY);
+    int16_t *sourceX, int16_t *sourceY,
+    int16_t *targetX, int16_t *targetY);
 void AdvanceScenarioAreaEffects(void);
-int16 MapUnitToTacticalStatusSlot(word16 unitIndex);
+int16_t MapUnitToTacticalStatusSlot(uint16_t unitIndex);
 void KeepTacticalCursorOnSelectedUnit(void);
 void RefreshTacticalStatusSlotStates(void);
 void AdvanceTacticalCampaignClock(void);
-void BuildScenarioTerrainDamageCapabilityMap(word16 terrainEffectMode);
+void BuildScenarioTerrainDamageCapabilityMap(uint16_t terrainEffectMode);
 void ApplyScenarioMissileUpgradeAvailability(void);
-int16 TranslateTacticalMouseInput(int16 inputAction);
+int16_t TranslateTacticalMouseInput(int16_t inputAction);
 void DrawClippedWeaponTraceLine(
-    int16 startX, int16 startY,
-    int16 endX, int16 endY,
-    word16 color, word16 dashedTrace);
+    int16_t startX, int16_t startY,
+    int16_t endX, int16_t endY,
+    uint16_t color, uint16_t dashedTrace);
 void DrawTileAlignedText(
     const char *text,
-    word16 tileX,
-    word16 tileY,
-    byte foregroundColor,
-    byte backgroundColor);
-void LoadTacticalMap(word16 mapNumber);
-void LoadTacticalIconSetResources(word16 iconSetNumber);
+    uint16_t tileX,
+    uint16_t tileY,
+    uint8_t foregroundColor,
+    uint8_t backgroundColor);
+void LoadTacticalMap(uint16_t mapNumber);
+void LoadTacticalIconSetResources(uint16_t iconSetNumber);
 void ExecuteSceneInstructions(void);
-word16 AdvanceTerrainDamageState(
-    int16 mapX, int16 mapY, word16 maximumDamageState);
-void UpdateUnitSpriteForFacing(word16 unitIndex, word16 facing);
+uint16_t AdvanceTerrainDamageState(
+    int16_t mapX, int16_t mapY, uint16_t maximumDamageState);
+void UpdateUnitSpriteForFacing(uint16_t unitIndex, uint16_t facing);
 void DrawTacticalOverviewMap(void);
-word16 RunGameOptionsMenu(word16 embeddedMode);
+uint16_t RunGameOptionsMenu(uint16_t embeddedMode);
 void UpdateUnitHeatAccumulators(void);
 void ApplyAreaTerrainAndUnitDamage(
-    int16 mapX, int16 mapY, word16 visualEffectType, int16 weaponIndex);
-void OpenModalTextWindow(word16 windowIndex, word16 clearAndFrame);
+    int16_t mapX, int16_t mapY, uint16_t visualEffectType, int16_t weaponIndex);
+void OpenModalTextWindow(uint16_t windowIndex, uint16_t clearAndFrame);
 void RestoreModalTextWindow(void);
-word16 ConfirmExitToDos(void);
+uint16_t ConfirmExitToDos(void);
 void DisableMusicPlayback(void);
 void EnableMusicPlayback(void);
 
@@ -113,57 +113,57 @@ void EnableMusicPlayback(void);
 #define UNIT_UPGRADE_CAMPAIGN_AWARD        0x04
 
 void AssignPilotRosterEntryToUnit(
-    word16 unitIndex,
-    word16 rosterSlot);
-void AdvanceUnitSceneRoute(word16 unitIndex);
-void SwapUnitRouteWaypoint(word16 unitIndex, word16 waypointIndex);
+    uint16_t unitIndex,
+    uint16_t rosterSlot);
+void AdvanceUnitSceneRoute(uint16_t unitIndex);
+void SwapUnitRouteWaypoint(uint16_t unitIndex, uint16_t waypointIndex);
 void InstallUnitEquipmentInFirstFreeSlot(
-    word16 unitIndex,
-    byte equipmentId);
-int16 FindUnitWeaponByOrdinal(
+    uint16_t unitIndex,
+    uint8_t equipmentId);
+int16_t FindUnitWeaponByOrdinal(
     RevengeUnitRecord *unitRecord,
-    word16 weaponOccurrence,
-    word16 removeWeapon);
-word16 FindOperationalLanceLeader(word16 unitIndex);
+    uint16_t weaponOccurrence,
+    uint16_t removeWeapon);
+uint16_t FindOperationalLanceLeader(uint16_t unitIndex);
 void RenderFormattedText(const char *formattedText);
-word16 WaitForDismissInput(void);
-word16 ServiceMusicAndCheckKeyboardInput(void);
+uint16_t WaitForDismissInput(void);
+uint16_t ServiceMusicAndCheckKeyboardInput(void);
 void DrawCampaignClock(void);
-void RefreshAllUnitCombatState(word16 rebuildWeaponCounts);
-int16 UpdateUnitEnemyVisibility(word16 unitIndex);
-int16 UpdateUnitEnemyProximityState(word16 unitIndex);
-void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex);
-word16 ExecuteUnitWeaponAI(word16 unitIndex);
-byte UpdateUnitHeatShutdown(word16 unitIndex);
+void RefreshAllUnitCombatState(uint16_t rebuildWeaponCounts);
+int16_t UpdateUnitEnemyVisibility(uint16_t unitIndex);
+int16_t UpdateUnitEnemyProximityState(uint16_t unitIndex);
+void RebuildLanceFormationAfterLeaderLoss(uint16_t lanceBaseUnitIndex);
+uint16_t ExecuteUnitWeaponAI(uint16_t unitIndex);
+uint8_t UpdateUnitHeatShutdown(uint16_t unitIndex);
 void RedrawTacticalStatusPanel(void);
 
 // Assembly-verified tactical icon resource helpers.
 void RebuildTacticalViewport(void);
-void UpdateTacticalFrame(word16 inputAction, word16 advanceUnits);
+void UpdateTacticalFrame(uint16_t inputAction, uint16_t advanceUnits);
 void InitializeTacticalUnitRuntime(void);
-void LoadTacticalScenarioResources(byte scenarioCode);
+void LoadTacticalScenarioResources(uint8_t scenarioCode);
 void RedrawTacticalViewport(void);
-void DrawTacticalCursorOutline(word16 color);
+void DrawTacticalCursorOutline(uint16_t color);
 void DrawSelectedUnitStatusPanel(void);
-void AdvanceUnitTacticalMovement(word16 unitIndex);
+void AdvanceUnitTacticalMovement(uint16_t unitIndex);
 void ScrollTacticalViewportToCursor(void);
-void HandleTacticalInput(word16 inputAction);
-word16 HasActiveLanceFollowers(word16 unitIndex);
-void HighlightLanceFollowers(word16 leaderUnitIndex);
+void HandleTacticalInput(uint16_t inputAction);
+uint16_t HasActiveLanceFollowers(uint16_t unitIndex);
+void HighlightLanceFollowers(uint16_t leaderUnitIndex);
 
 void ShowPendingNarrationPrompt(void);
 void ExitTacticalOverview(void);
-void FocusTacticalViewOnUnit(word16 unitIndex);
-word16 SelectNextUnitAtCursor(void);
-word16 SelectPreviousUnitAtCursor(void);
-word16 FindUnitAtTacticalCursor(void);
-void OpenTacticalUnitControlPanel(word16 unitIndex);
-word16 IsTacticalFunctionKey(int16 inputAction);
+void FocusTacticalViewOnUnit(uint16_t unitIndex);
+uint16_t SelectNextUnitAtCursor(void);
+uint16_t SelectPreviousUnitAtCursor(void);
+uint16_t FindUnitAtTacticalCursor(void);
+void OpenTacticalUnitControlPanel(uint16_t unitIndex);
+uint16_t IsTacticalFunctionKey(int16_t inputAction);
 void RenderPendingNarration(void);
 void CreateRandomAreaImpact(
-    int16 centerX,
-    int16 centerY,
-    word16 chanceDenominator);
+    int16_t centerX,
+    int16_t centerY,
+    uint16_t chanceDenominator);
 
 #define TACTICAL_UNIT_NONE                   0xFFFF
 #define TACTICAL_ENEMY_FIRST_UNIT            0x000C
@@ -179,25 +179,25 @@ void CreateRandomAreaImpact(
 /* The next byte of the loaded scene's instructions. The cursor stays inside
  * the scene buffer (DS:71A8, SCENE_FILE_BUFFER_SIZE bytes); past it is a
  * fault. */
-static inline byte NextSceneByte(void)
+static inline uint8_t NextSceneByte(void)
 {
-    byte *cursor = SceneInstructionCursor++;
+    uint8_t *cursor = SceneInstructionCursor++;
 
     return LoadedSceneFile.raw[REVENGE_INDEX(LoadedSceneFile.raw,
         (size_t) (cursor - LoadedSceneFile.raw))];
 }
 #define NEXT_SCENE_BYTE() NextSceneByte()
-RevengeUnitRecord *GetPersistentUnitRecord(word16 unitIndex);
+RevengeUnitRecord *GetPersistentUnitRecord(uint16_t unitIndex);
 #define GetUnitRouteRecord(unitIndex) (&SceneUnitRoutes[(unitIndex)])
 #define ReadSceneByte()               NEXT_SCENE_BYTE()
 /* Low byte first, as the original reads them. Two increments of the cursor
  * in one expression would leave their order to the compiler. */
-static inline word16 ReadSceneWordLowFirst(void)
+static inline uint16_t ReadSceneWordLowFirst(void)
 {
-    word16 low = NEXT_SCENE_BYTE();
-    word16 high = NEXT_SCENE_BYTE();
+    uint16_t low = NEXT_SCENE_BYTE();
+    uint16_t high = NEXT_SCENE_BYTE();
 
-    return (word16) (low | (word16) (high << 0x08));
+    return (uint16_t) (low | (uint16_t) (high << 0x08));
 }
 #define ReadSceneWord() ReadSceneWordLowFirst()
 /* The target is taken before the cursor moves: an operand read through the
@@ -207,13 +207,13 @@ static inline word16 ReadSceneWordLowFirst(void)
 #define JumpToSceneOffset(sceneOffset) \
     do \
     { \
-        word16 jumpTarget = (word16) (sceneOffset); \
+        uint16_t jumpTarget = (uint16_t) (sceneOffset); \
         SceneInstructionCursor = LoadedSceneFile.raw + SceneInstructionBaseOffset + jumpTarget; \
     } while (0)
 #define BranchOrSkipSceneWord(takeBranch) \
     do \
     { \
-        word16 branchOffset = ReadSceneWord(); \
+        uint16_t branchOffset = ReadSceneWord(); \
         if ((takeBranch) != 0x00) \
             JumpToSceneOffset(branchOffset); \
     } while (0)

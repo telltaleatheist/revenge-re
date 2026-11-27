@@ -9,24 +9,24 @@
 // Called from:
 //      OpenModalTextWindow
 //      RunGameOptionsMenu
-void DrawActiveTextWindowFrame(word16 frameStyleIndex)
+void DrawActiveTextWindowFrame(uint16_t frameStyleIndex)
 {
-    byte tileShift = 0x05;
+    uint8_t tileShift = 0x05;
     if (VideoAdapterType == VIDEO_ADAPTER_VGA)
         tileShift = 0x06;
-    const word16 *frameDefinition =
+    const uint16_t *frameDefinition =
         TextWindowFrameDefinitionTable[frameStyleIndex];
-    const byte *tileAtlas = TacticalTileStrip;
-    int16 left = ActiveTextWindowLeftTile;
-    int16 top = ActiveTextWindowTopTile;
-    word16 width = ActiveTextWindowWidthTiles;
-    word16 height = ActiveTextWindowHeightTiles;
-    Draw8x8VideoTile((const byte *) tileAtlas + (frameDefinition[0x00] << tileShift), left - 0x01, top - 0x01);
-    Draw8x8VideoTile((const byte *) tileAtlas + (frameDefinition[0x01] << tileShift), left + width, top - 0x01);
-    Draw8x8VideoTile((const byte *) tileAtlas + (frameDefinition[0x02] << tileShift), left - 0x01, top + height);
-    Draw8x8VideoTile((const byte *) tileAtlas + (frameDefinition[0x03] << tileShift), left + width, top + height);
+    const uint8_t *tileAtlas = TacticalTileStrip;
+    int16_t left = ActiveTextWindowLeftTile;
+    int16_t top = ActiveTextWindowTopTile;
+    uint16_t width = ActiveTextWindowWidthTiles;
+    uint16_t height = ActiveTextWindowHeightTiles;
+    Draw8x8VideoTile((const uint8_t *) tileAtlas + (frameDefinition[0x00] << tileShift), left - 0x01, top - 0x01);
+    Draw8x8VideoTile((const uint8_t *) tileAtlas + (frameDefinition[0x01] << tileShift), left + width, top - 0x01);
+    Draw8x8VideoTile((const uint8_t *) tileAtlas + (frameDefinition[0x02] << tileShift), left - 0x01, top + height);
+    Draw8x8VideoTile((const uint8_t *) tileAtlas + (frameDefinition[0x03] << tileShift), left + width, top + height);
 
-    word16 edgeSequenceIndex = 0x04;
+    uint16_t edgeSequenceIndex = 0x04;
     edgeSequenceIndex = DrawRepeatingFrameTileSequence(frameDefinition, edgeSequenceIndex, left, top - 0x01, width, TRUE);
     edgeSequenceIndex = DrawRepeatingFrameTileSequence(frameDefinition, edgeSequenceIndex, left - 0x01, top, height, FALSE);
     edgeSequenceIndex = DrawRepeatingFrameTileSequence(frameDefinition, edgeSequenceIndex, left + width, top, height, FALSE);

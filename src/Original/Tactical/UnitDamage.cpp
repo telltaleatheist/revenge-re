@@ -9,21 +9,21 @@
 // equipment and the unit's ratings are recomputed.
 static void ApplyInternalStructureDamage(
     RevengeUnitRecord *targetUnit,
-    int16 attackerUnitIndex,
-    int16 targetUnitIndex,
-    word16 internalLocation,
-    int16 damageRemaining)
+    int16_t attackerUnitIndex,
+    int16_t targetUnitIndex,
+    uint16_t internalLocation,
+    int16_t damageRemaining)
 {
-    word16 equipmentSlotCount;
-    word16 removeDestroyedUnit;
-    byte *destroyedLocationEquipment;
+    uint16_t equipmentSlotCount;
+    uint16_t removeDestroyedUnit;
+    uint8_t *destroyedLocationEquipment;
 
     if (internalLocation == BATTLEMECH_LOCATION_HEAD &&
         Roll2D6() >= BATTLETECH_2D6_CRITICAL_TARGET)
     {
         // V: head criticals select either one of two sensor hits or a
         // catastrophic cockpit/location result.
-        if (((byte) GeneratePseudoRandomByte() & 0x01) != 0x00)
+        if (((uint8_t) GeneratePseudoRandomByte() & 0x01) != 0x00)
         {
             if (targetUnit->sensorHits < BATTLEMECH_MAX_SENSOR_HITS)
                 ++targetUnit->sensorHits;
@@ -48,7 +48,7 @@ static void ApplyInternalStructureDamage(
         damageRemaining)
     {
         targetUnit->currentInternal[internalLocation] -=
-            (byte) damageRemaining;
+            (uint8_t) damageRemaining;
         return;
     }
 
@@ -107,8 +107,8 @@ static void ApplyInternalStructureDamage(
 
     if (destroyedLocationEquipment != 0)
     {
-        word16 equipmentIndex;
-        byte firstEquipmentId = destroyedLocationEquipment[0x00];
+        uint16_t equipmentIndex;
+        uint8_t firstEquipmentId = destroyedLocationEquipment[0x00];
 
         for (equipmentIndex = 0x00;
             equipmentIndex < equipmentSlotCount;
@@ -118,7 +118,7 @@ static void ApplyInternalStructureDamage(
             // firstEquipmentId + equipmentIndex, rather than testing each slot.
             // A later behavioral pass should determine whether this is an
             // original-game defect or a packed-location convention.
-            if ((int16) firstEquipmentId + equipmentIndex != 0x00)
+            if ((int16_t) firstEquipmentId + equipmentIndex != 0x00)
                 destroyedLocationEquipment[equipmentIndex] |=
                     EQUIPMENT_DAMAGED_FLAG;
         }
@@ -134,23 +134,23 @@ static void ApplyInternalStructureDamage(
 // Called from:
 //      ResolveWeaponAttack
 void ApplyWeaponDamage(
-    int16 attackerUnitIndex,
-    int16 weaponIndex,
-    int16 targetUnitIndex)
+    int16_t attackerUnitIndex,
+    int16_t weaponIndex,
+    int16_t targetUnitIndex)
 {
     // P: complete assembly-led translation. The overall attack/damage behavior
     // is established; a few global event flags and the special missile mode
     // remain named conservatively pending their controlling UI/state paths.
     RevengeUnitRecord *targetUnit;
     RevengeUnitRecord *attackerUnit;
-    int16 damageRemaining;
-    word16 durabilityBeforeHit = 0x00;
-    word16 maximumDurabilityBeforeHit = 0x00;
-    word16 relativeDirection;
-    word16 hitTableSelector;
-    word16 hitLocationCode;
-    word16 internalLocation;
-    word16 penetratedArmor;
+    int16_t damageRemaining;
+    uint16_t durabilityBeforeHit = 0x00;
+    uint16_t maximumDurabilityBeforeHit = 0x00;
+    uint16_t relativeDirection;
+    uint16_t hitTableSelector;
+    uint16_t hitLocationCode;
+    uint16_t internalLocation;
+    uint16_t penetratedArmor;
 
     if (targetUnitIndex == 0x00 && ProtectUnitZero != 0x00)
         return;
@@ -170,13 +170,13 @@ void ApplyWeaponDamage(
         maximumDurabilityBeforeHit = MaximumUnitDurabilityTotal;
     }
 
-    damageRemaining = (int16) (byte) WeaponDefinitions[weaponIndex].damage;
+    damageRemaining = (int16_t) (uint8_t) WeaponDefinitions[weaponIndex].damage;
     if (weaponIndex >= WEAPON_LRM_5 &&
         attackerUnit->missileUpgradeState != 0x00)
     {
         // P: the shared upgrade byte means Improved Missiles for normal units;
         // infantry interpret it as Inferno Rockets in ResolveWeaponAttack.
-        damageRemaining += (int16) (byte)
+        damageRemaining += (int16_t) (uint8_t)
             ImprovedMissileDamageBonusTable[REVENGE_INDEX(
                 ImprovedMissileDamageBonusTable,
                 weaponIndex - WEAPON_LRM_5)]; // P: ImprovedMissileDamageBonusTable
@@ -199,7 +199,7 @@ void ApplyWeaponDamage(
     // 08h and above normalize to their shared internal location with -06h.
     do
     {
-        const word16 *hitLocations =
+        const uint16_t *hitLocations =
             HitLocationTable[hitTableSelector];
         hitLocationCode = hitLocations[Roll2D6() - BATTLETECH_2D6_MINIMUM];
         internalLocation = hitLocationCode >= BATTLEMECH_LOCATION_COUNT ? hitLocationCode - 0x06 : hitLocationCode;
@@ -211,7 +211,7 @@ void ApplyWeaponDamage(
     penetratedArmor = 0x01;
     if (targetUnit->currentArmor[hitLocationCode] != 0x00)
     {
-        byte armorBeforeHit =
+        uint8_t armorBeforeHit =
             targetUnit->currentArmor[hitLocationCode];
         penetratedArmor = 0x00;
 
@@ -224,7 +224,7 @@ void ApplyWeaponDamage(
         else
         {
             targetUnit->currentArmor[hitLocationCode] -=
-                (byte) damageRemaining;
+                (uint8_t) damageRemaining;
         }
 
         // V: the original grants a location-destroying result on a natural 12
