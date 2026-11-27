@@ -1,8 +1,8 @@
 // 356D: text window clear
 // Reconstructed original active text-window clear procedure (segment 356D).
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TextIOData.h"
+#include "Text/Text.h"
 #include "revenge/video.h"
 
 // 356D:0006: void ClearActiveTextWindow(void)

@@ -1,9 +1,8 @@
 // 0D73: string fields
 /* Fixed-width string procedures from original segment 0D73. */
 
-#include "REVENGE.h"
+#include "Data/CampaignData.h"
 
-#include "revenge/original_data.h"
 #include "revenge/text.h"
 
 #include <string.h>

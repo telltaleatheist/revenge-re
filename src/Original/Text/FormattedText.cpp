@@ -5,8 +5,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Data/TextIOData.h"
+#include "Text/Text.h"
 
 #include <string.h>
 

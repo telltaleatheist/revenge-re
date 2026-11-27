@@ -1,13 +1,15 @@
 // 356F: text render
 // Reconstructed original active text-window string renderer (segment 356F).
 
-#include "REVENGE.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "Text/Text.h"
 #include "revenge/debug.h"
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 #include <string.h>
-
 
 // 356F:000B
 // Draw a mutable string in the active text window. When its cursor is below the

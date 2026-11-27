@@ -1,11 +1,14 @@
 // 0D73: scenario messages
 /* Indexed scenario-message procedures from original segment 0D73. */
 
-#include "REVENGE.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
+#include "Input/Input.h"
+#include "Text/Text.h"
+#include "revenge/presentation_callback_bridge.h"
 
 #include "revenge/input.h"
 #include "revenge/debug.h"
-#include "revenge/original_data.h"
 #include "revenge/original/campaign_data.h"
 
 void OpenModalTextWindow(uint16_t windowIndex, uint16_t clearAndFrame);

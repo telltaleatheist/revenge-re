@@ -1,7 +1,7 @@
 // 0D73: startup text
 /* Startup string procedures from original segment 0D73. */
 
-#include "REVENGE.h"
+#include "revenge/types.h"
 
 #include <string.h>
 

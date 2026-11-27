@@ -1,8 +1,8 @@
 // 3338: text window select
 // Reconstructed original text-window context selector (segment 3338).
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TextIOData.h"
+#include "Text/Text.h"
 
 // 3338:0009
 // Select one of the 23 persistent text-window contexts. The geometry is fixed

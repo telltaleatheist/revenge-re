@@ -5,10 +5,13 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE.h"
+#include "Data/CampaignData.h"
+#include "Data/RuntimeData.h"
+#include "Data/TextIOData.h"
+#include "Input/Input.h"
+#include "Text/Text.h"
 
 #include "revenge/input.h"
-#include "revenge/original_data.h"
 #include "revenge/text.h"
 
 #include <string.h>
