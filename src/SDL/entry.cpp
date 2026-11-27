@@ -1,4 +1,7 @@
-#include "revenge/original_data.h"
+#include "Campaign/Campaign.h"
+#include "Data/StartupData.h"
+#include "IO/IO.h"
+#include "Runtime/Runtime.h"
 #include "revenge/audio_log.h"
 #include "revenge/platform_backend.h"
 #include "revenge/debug.h"

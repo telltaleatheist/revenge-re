@@ -3,7 +3,6 @@
 #endif
 
 #include "revenge/platform_backend.h"
-#include "revenge/original_data.h"
 #include "revenge/original_import.h"
 #include "harness.h"
 #include "revenge/original/campaign_data.h"

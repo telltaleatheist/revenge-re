@@ -3,7 +3,8 @@
 #include "revenge/debug.h"
 #include "revenge/heap.h"
 #include "revenge/input.h"
-#include "revenge/original_data.h"
+#include "Audio/Audio.h"
+#include "Resources/Resources.h"
 #include "revenge/video.h"
 #include "harness.h"
 
