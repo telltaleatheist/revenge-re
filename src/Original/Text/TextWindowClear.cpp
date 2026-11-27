@@ -1,3 +1,4 @@
+// 356D: text window clear
 // Reconstructed original active text-window clear procedure (segment 356D).
 
 #include "REVENGE.h"

@@ -202,7 +202,7 @@ void ShowStoryMessage(word16 messageIndex)
     WaitForDismissInput();
 }
 
-/* 0D73:2E7C is reconstructed in Text/REVENGE_0D73_SCENARIO_MESSAGES.cpp. */
+/* 0D73:2E7C is reconstructed in Text/ScenarioMessages.cpp. */
 
 // 0D73:2F16: Register word16 PlayTitleTextSequence()
 // Called from:
@@ -593,7 +593,7 @@ void DisplayMissionDate(
 }
 
 
-/* 0D73:3AE4 is reconstructed in Text/REVENGE_0D73_SCENARIO_MESSAGES.cpp. */
+/* 0D73:3AE4 is reconstructed in Text/ScenarioMessages.cpp. */
 
 // 0D73:3B7E: present a framed mission briefing and its indexed message.
 // VERIFIED against 0D73:3B7E-3C7B.
@@ -726,7 +726,7 @@ word16 WaitForKeyboardOrMouseInput(void)
     return keypress;
 }
 
-/* 0D73:3DA9 is reconstructed in Text/REVENGE_0D73_ENTRY_BLINK.cpp. */
+/* 0D73:3DA9 is reconstructed in Text/EntryBlink.cpp. */
 
 // 0D73:3E1E: void FlushPendingInput()
 // Called from:
@@ -876,19 +876,19 @@ void DrawRightAlignedClippedText(
 //      RunCampaignLoop
 /* 0D73:4099-4154 are reconstructed in Graphics/REVENGE_0D73_VIDEO.c. */
 
-/* 0D73:418E is reconstructed in Text/REVENGE_0D73_STARTUP_TEXT.cpp. */
+/* 0D73:418E is reconstructed in Text/StartupText.cpp. */
 
-/* 0D73:41E8 is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.cpp. */
+/* 0D73:41E8 is reconstructed in Text/StringFields.cpp. */
 
-/* 0D73:4238 is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.cpp. */
+/* 0D73:4238 is reconstructed in Text/StringFields.cpp. */
 
-/* 0D73:4288 is reconstructed in Text/REVENGE_0D73_STARTUP_TEXT.cpp. */
+/* 0D73:4288 is reconstructed in Text/StartupText.cpp. */
 
-/* 0D73:42E4 is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.cpp. */
+/* 0D73:42E4 is reconstructed in Text/StringFields.cpp. */
 
-/* 0D73:4317 is reconstructed in Text/REVENGE_0D73_TEXT_EDITOR.cpp. */
+/* 0D73:4317 is reconstructed in Text/TextEditor.cpp. */
 
-/* 0D73:454A is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.cpp. */
+/* 0D73:454A is reconstructed in Text/StringFields.cpp. */
 
 /* 0D73:4572 is reconstructed in IO/SaveCompatibility.cpp. */
 

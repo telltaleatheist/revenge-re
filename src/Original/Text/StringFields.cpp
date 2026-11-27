@@ -1,3 +1,4 @@
+// 0D73: string fields
 /* Fixed-width string procedures from original segment 0D73. */
 
 #include "REVENGE.h"

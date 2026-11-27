@@ -1,3 +1,4 @@
+// 0800: font raster
 /* Font raster procedures from REVENGE_0800. */
 
 #include "revenge/original_data.h"

@@ -1,3 +1,4 @@
+// 0D73: entry blink
 /* Preserved text-entry cursor blink from REVENGE_0D73. */
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)

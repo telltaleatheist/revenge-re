@@ -512,7 +512,7 @@ if(BUILD_TESTING)
 
     add_executable(test_formatted_text
         tests/test_formatted_text.cpp
-        src/Original/Text/REVENGE_35CE_FORMATTED_TEXT.cpp
+        src/Original/Text/FormattedText.cpp
         ${CHR_3A6A_DATA_SOURCES}
         ${CHR_STORY_SOURCES}
         src/Support/debug.cpp)

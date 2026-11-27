@@ -1,3 +1,4 @@
+// 35CE: formatted text
 // Reconstructed original formatted text interpreter (segment 35CE).
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)

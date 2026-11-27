@@ -1,3 +1,4 @@
+// 0D73: scenario messages
 /* Indexed scenario-message procedures from original segment 0D73. */
 
 #include "REVENGE.h"

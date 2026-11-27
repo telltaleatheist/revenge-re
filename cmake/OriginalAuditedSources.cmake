@@ -55,8 +55,8 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Input/Keyboard.cpp
     src/Original/IO/DOSConsole.cpp
     src/Original/Graphics/VideoRegionCopy.cpp
-    src/Original/Text/REVENGE_3338_TEXT_WINDOW_SELECT.cpp
-    src/Original/Text/REVENGE_3349_TEXT_WINDOW_RESET.cpp
+    src/Original/Text/TextWindowSelect.cpp
+    src/Original/Text/TextWindowReset.cpp
     src/Original/Graphics/VerticalRetrace.cpp
     src/Original/Graphics/TextWindowFrame.cpp
     src/Original/Graphics/ClippedPrimitives.cpp
@@ -65,7 +65,7 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Resources/ResourceStream.cpp
     src/Original/UI/REVENGE_3390_RESOURCE_ERROR_MESSAGE.cpp
     src/Original/Graphics/RectangleFill.cpp
-    src/Original/Text/REVENGE_3477_FONT.cpp
+    src/Original/Text/Font.cpp
 	src/Original/Audio/AudioHardware.cpp
 	src/Original/Audio/DigitalPlayback.cpp
 	src/Original/Audio/PITTimer.cpp
@@ -81,10 +81,10 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Graphics/IconPageDecode.cpp
     src/Original/Input/UIRegionSetup.cpp
     src/Original/UI/REVENGE_35CA_UI_REGION_HIGHLIGHT.cpp
-    src/Original/Text/REVENGE_35CE_FORMATTED_TEXT.cpp
+    src/Original/Text/FormattedText.cpp
     src/Original/Input/UIRegionLoop.cpp
-    src/Original/Text/REVENGE_356D_TEXT_WINDOW_CLEAR.cpp
-    src/Original/Text/REVENGE_356F_TEXT_RENDER.cpp
+    src/Original/Text/TextWindowClear.cpp
+    src/Original/Text/TextRender.cpp
     src/Original/Input/SingleUIRegion.cpp
     src/Original/Graphics/RenderTarget.cpp
     src/Original/Input/UIRegionHighlight.cpp
@@ -99,7 +99,7 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Campaign/Timezone.cpp
     src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.cpp
     src/Original/Input/Cursor.cpp
-    src/Original/Text/REVENGE_0800_FONT_RASTER.cpp)
+    src/Original/Text/FontRaster.cpp)
 
 list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Units/REVENGE_2B34_UNIT_STATUS.cpp
@@ -131,17 +131,17 @@ list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Graphics/Sprite.cpp
 	src/Original/Graphics/PaletteBankAnchors.cpp
 	src/Original/Input/Wait.cpp
-	src/Original/Text/REVENGE_0D73_STARTUP_TEXT.cpp
-	src/Original/Text/REVENGE_0D73_STRING_FIELDS.cpp
-	src/Original/Text/REVENGE_0D73_ENTRY_BLINK.cpp
-	src/Original/Text/REVENGE_0D73_TEXT_EDITOR.cpp
+	src/Original/Text/StartupText.cpp
+	src/Original/Text/StringFields.cpp
+	src/Original/Text/EntryBlink.cpp
+	src/Original/Text/TextEditor.cpp
 	src/Original/IO/SaveCompatibility.cpp
 	src/Original/UI/REVENGE_0D73_INVALID_SAVE_DIALOG.cpp
 	src/Original/UI/REVENGE_0D73_CONFIRMATION.cpp
 	src/Original/Campaign/Presentation.cpp
 	src/Original/Graphics/MissionHeader.cpp
 	src/Original/Graphics/TacticalVideo.cpp
-	src/Original/Text/REVENGE_0D73_SCENARIO_MESSAGES.cpp)
+	src/Original/Text/ScenarioMessages.cpp)
 
 list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Data/TacticalGraphicsData.cpp

@@ -1,3 +1,4 @@
+// 3477: font
 // Reconstructed original font resource loader and metrics (segment 3477).
 
 #include "REVENGE.h"
