@@ -100,9 +100,11 @@ target_sources(chr_original_runtime PRIVATE
 	src/Support/tactical_panel_data.cpp
 	${CHR_STORY_SOURCES}
 	${CHR_RULES_SOURCES})
+# src/Original holds the headers beside the code that defines what they
+# declare (docs/SOURCE_LAYOUT.md), so it is public: "Tactical/Tactical.h".
 target_include_directories(chr_original_runtime
-    PUBLIC include
-    PRIVATE src/Original src/SDL)
+    PUBLIC include src/Original
+    PRIVATE src/SDL)
 target_link_libraries(chr_original_runtime PUBLIC chr_json)
 target_compile_definitions(chr_original_runtime PRIVATE REVENGE_NO_DOS_MAIN)
 if(CHR_PRESERVATION_INSTRUMENTATION)
@@ -861,11 +863,8 @@ if(CHR_BUILD_SDL)
         src/SDL/platform.cpp
         src/SDL/system.cpp
         src/SDL/map_dump.cpp)
-    target_include_directories(chr_sdl_backend PUBLIC src/SDL include)
-    # The object dump names the game's data, some of it declared beside the
-    # preserved source.
-    set_source_files_properties(src/SDL/map_dump.cpp PROPERTIES
-        INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/Original")
+    # The backend names the game's data, declared beside the preserved source.
+    target_include_directories(chr_sdl_backend PUBLIC src/SDL include PRIVATE src/Original)
     target_link_libraries(chr_sdl_backend PUBLIC ${CHR_SDL_TARGET} chr_audio)
     chr_strict(chr_sdl_backend)
     # The backend names the runtime's data objects (map_dump.cpp), and the
