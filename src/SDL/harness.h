@@ -33,6 +33,7 @@
  *   mode, else 256), NAME.save (the block a save
  *   would write now) and NAME.state (the named state, one fact a line) to the
  *   output folder, and appends NAME to snaps.txt there.
+ * - destroy:N, after a steps:N wait, ends battle unit N (Harness_DestroyUnit).
  * - when the script is done, the next wait writes done.txt and ends the run.
  */
 
@@ -49,6 +50,14 @@ void HostClock_DelayMS(uint64_t milliseconds);
 void HostClock_Step(void);
 /* The calendar time the game is told: local time when the harness is off. */
 int HostClock_CalendarTime(struct tm *out, uint32_t *hundredths);
+
+/* A script's destroy:N item: unit N ended by the game's own path
+ * (DestroyScenarioUnit, 2D1B:2453), as the hit that ends it would. It makes a
+ * test save at a point no script plays to (tools/trace/README.md); a player
+ * can't reach it. 1 when done; 0, nothing changed, unless the harness is on,
+ * the battle has stepped since the script's previous item and has no result,
+ * and the unit is deployed. */
+int Harness_DestroyUnit(word16 unitIndex);
 
 /* One keyboard poll: 1 when the script's next key is due now. */
 int Harness_KeyPending(void);

@@ -8,6 +8,7 @@
 #include "map_dump.h"
 
 #include "revenge/audio_log.h"
+#include "revenge/battletech.h"
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
 #include "revenge/original/campaign_data.h"
@@ -28,6 +29,7 @@ enum
 	ITEM_MOUSE,
 	ITEM_QUIT,
 	ITEM_FAIL,
+	ITEM_DESTROY,
 	POLLS_PER_WAIT = 4,
 	NAME_CAPACITY = 48,
 	PATH_CAPACITY = 1024,
@@ -47,6 +49,7 @@ typedef struct HarnessItem
 	byte buttons;
 	char name[NAME_CAPACITY];   /* ITEM_SNAP */
 	int failure;                /* ITEM_FAIL: HARNESS_FAIL_* */
+	word16 unit;                /* ITEM_DESTROY */
 } HarnessItem;
 
 static int state;               /* 0 not read, 1 on, -1 off */
@@ -61,6 +64,10 @@ static uint64_t pollsSinceItem;
 static unsigned stepsSinceItem; /* battle steps seen since the last key or snap */
 static byte lastSubtick;        /* TacticalClockSubtick at the previous poll */
 static uint64_t pollsStill;     /* polls since the last step, key or snap */
+
+/* 2D1B:2453 (src/Original/Tactical/REVENGE_2D1B_DAMAGE.c): a unit's end, as
+ * the hit that ends it calls it. */
+void DestroyScenarioUnit(word16 unitIndex);
 
 static void Stop(const char *what, const char *detail)
 {
@@ -206,6 +213,19 @@ static void ReadScript(const char *path)
 		{
 			item.kind = ITEM_FAIL;
 			item.failure = strcmp(token, "fail:allocation") == 0 ? HARNESS_FAIL_ALLOCATION : HARNESS_FAIL_ABORT;
+		}
+		else if (strncmp(token, "destroy:", 8) == 0)
+		{
+			unsigned unit;
+			char extra;
+
+			if (sscanf(token + 8, "%u%c", &unit, &extra) != 1 || unit >= TACTICAL_UNIT_COUNT)
+				Stop("a bad unit (destroy:N, N below 24)", token);
+			/* A battle step since the previous item: the battle is running. */
+			if (steps == 0)
+				Stop("destroy:N needs steps:N before it, in a battle", token);
+			item.kind = ITEM_DESTROY;
+			item.unit = (word16) unit;
 		}
 		else if (strncmp(token, "mouse:", 6) == 0)
 		{
@@ -548,11 +568,27 @@ int Harness_KeyPending(void)
 			Platform_RequestHarnessFailure(item->failure);
 			return 0;
 		}
+		if (item->kind == ITEM_DESTROY)
+		{
+			if (!Harness_DestroyUnit(item->unit))
+				Stop("destroy: the unit isn't in a running battle", NULL);
+			ItemTaken();
+			return 0;
+		}
 		Platform_SendHarnessMouse(item->x, item->y, item->buttons);
 	}
 	if (pollsSinceItem >= POLLS_PER_WAIT)
 		Finish();
 	return 0;
+}
+
+int Harness_DestroyUnit(word16 unitIndex)
+{
+	if (!Harness_Active() || stepsSinceItem == 0 || TacticalBattleResult != 0x0000
+		|| unitIndex >= TACTICAL_UNIT_COUNT || PersistentUnitRoster[unitIndex].deploymentState == 0x00)
+		return 0;
+	DestroyScenarioUnit(unitIndex);
+	return 1;
 }
 
 void Harness_ReadKey(int *scancode, byte *modifiers)

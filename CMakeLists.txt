@@ -856,6 +856,13 @@ if(CHR_BUILD_SDL)
         ${CHR_RUNTIME_WITH_BACKEND})
     chr_strict(RevengeDiagnostic)
 
+    # The harness's destroy:N item, for made test saves, refused with the
+    # harness off, as in play.
+    add_executable(test_harness_destroy tests/test_harness_destroy.cpp)
+    target_link_libraries(test_harness_destroy PRIVATE ${CHR_RUNTIME_WITH_BACKEND})
+    chr_strict(test_harness_destroy)
+    add_test(NAME trace.harness_destroy COMMAND test_harness_destroy)
+
     # The music soundfont: the programs data/music/soundfont_programs.txt
     # lists, cut from FluidR3 GM by tools/soundfont/subset.py and refused
     # unless it hashes as data/music/soundfont_subset.sha256 says. Its source
