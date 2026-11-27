@@ -779,12 +779,23 @@ if(CHR_BUILD_SDL)
         INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/Original")
     target_link_libraries(chr_sdl_backend PUBLIC ${CHR_SDL_TARGET})
     chr_strict(chr_sdl_backend)
+    # The backend names the runtime's data objects (map_dump.c), and the
+    # runtime calls the backend, so a program links the two as one group:
+    # GNU ld reads each archive once, in order, and would leave the objects
+    # only map_dump.c names undefined. Apple's and MSVC's linkers search every
+    # archive as needed, and CMake has no group for them.
+    if(CMAKE_LINK_GROUP_USING_RESCAN_SUPPORTED OR CMAKE_C_LINK_GROUP_USING_RESCAN_SUPPORTED
+       OR CMAKE_CXX_LINK_GROUP_USING_RESCAN_SUPPORTED)
+        set(CHR_RUNTIME_WITH_BACKEND
+            "$<LINK_GROUP:RESCAN,chr_original_runtime,chr_sdl_backend>")
+    else()
+        set(CHR_RUNTIME_WITH_BACKEND chr_original_runtime chr_sdl_backend)
+    endif()
 
     # The diagnostic still consumes the retired host-side CPS adapter.
     add_executable(RevengeDiagnostic EXCLUDE_FROM_ALL src/SDL/diagnostic.c)
     target_link_libraries(RevengeDiagnostic PRIVATE
-        chr_original_runtime
-        chr_sdl_backend)
+        ${CHR_RUNTIME_WITH_BACKEND})
     chr_strict(RevengeDiagnostic)
 
     # The preserved Original source owns main() and all game flow. SDL only
@@ -795,8 +806,7 @@ if(CHR_BUILD_SDL)
     target_compile_definitions(Revenge PRIVATE
         CHR_VERSION="${PROJECT_VERSION}")
     target_link_libraries(Revenge PRIVATE
-        chr_original_runtime
-        chr_sdl_backend)
+        ${CHR_RUNTIME_WITH_BACKEND})
     chr_strict(Revenge)
     add_custom_command(TARGET Revenge POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -854,8 +864,7 @@ if(CHR_BUILD_SDL)
 
         add_executable(test_sdl_dos_io tests/test_sdl_dos_io.c)
         target_link_libraries(test_sdl_dos_io PRIVATE
-            chr_original_runtime
-            chr_sdl_backend)
+            ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_sdl_dos_io)
         add_test(NAME platform.sdl_dos_file_semantics COMMAND test_sdl_dos_io)
         # Tests that write files keep them in the build folder, never in the
@@ -865,8 +874,7 @@ if(CHR_BUILD_SDL)
 
         add_executable(test_sdl_game_paths tests/test_sdl_game_paths.c)
         target_link_libraries(test_sdl_game_paths PRIVATE
-            chr_original_runtime
-            chr_sdl_backend)
+            ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_sdl_game_paths)
         add_test(NAME platform.sdl_game_paths COMMAND test_sdl_game_paths)
 
@@ -874,13 +882,12 @@ if(CHR_BUILD_SDL)
         add_executable(test_settings tests/test_settings.c)
         target_include_directories(test_settings PRIVATE src/Original src/SDL tests)
         target_link_libraries(test_settings PRIVATE
-            chr_original_runtime
-            chr_sdl_backend)
+            ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_settings)
         # The story: the texts the import took, the story file, and its faults.
         add_executable(test_story tests/test_story.cpp)
         target_include_directories(test_story PRIVATE src/Import tests)
-        target_link_libraries(test_story PRIVATE chr_original_runtime chr_sdl_backend)
+        target_link_libraries(test_story PRIVATE ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_story)
         foreach(mode match state refuse twice stray absent long)
             add_test(NAME import.story_${mode} COMMAND test_story ${mode})
@@ -899,8 +906,7 @@ if(CHR_BUILD_SDL)
         add_executable(test_tracked_file_fault tests/test_tracked_file_fault.c)
         target_include_directories(test_tracked_file_fault PRIVATE src/Original tests)
         target_link_libraries(test_tracked_file_fault PRIVATE
-            chr_original_runtime
-            chr_sdl_backend)
+            ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_tracked_file_fault)
         add_test(NAME resources.tracked_file_read COMMAND test_tracked_file_fault read)
         add_test(NAME resources.tracked_file_make COMMAND test_tracked_file_fault make)
@@ -921,8 +927,7 @@ if(CHR_BUILD_SDL)
         add_executable(test_initial_data_image tests/test_initial_data_image.c)
         target_include_directories(test_initial_data_image PRIVATE src/Original tests)
         target_link_libraries(test_initial_data_image PRIVATE
-            chr_original_runtime
-            chr_sdl_backend)
+            ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_initial_data_image)
         add_test(NAME import.original_initial_data_image COMMAND test_initial_data_image)
         set_tests_properties(import.original_initial_data_image PROPERTIES SKIP_RETURN_CODE 77)
@@ -932,8 +937,7 @@ if(CHR_BUILD_SDL)
         add_executable(test_lance_editor_cards tests/test_lance_editor_cards.c)
         target_include_directories(test_lance_editor_cards PRIVATE src/Original tests)
         target_link_libraries(test_lance_editor_cards PRIVATE
-            chr_original_runtime
-            chr_sdl_backend)
+            ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_lance_editor_cards)
         add_test(NAME units.lance_editor_cards COMMAND test_lance_editor_cards)
         add_test(NAME units.lance_editor_cards_stale COMMAND test_lance_editor_cards stale)
@@ -942,17 +946,8 @@ if(CHR_BUILD_SDL)
             PASS_REGULAR_EXPRESSION "fault: a selection card's sprite pointer 7929:0008|skipped")
 
         add_executable(test_sdl_renderer_fallback tests/test_sdl_renderer_fallback.c)
-        # The runtime and the host call each other, and this test calls only
-        # the host. GNU ld reads each static library once, in order, so it is
-        # told to read the pair again until nothing is missing.
-        if(CMAKE_LINK_GROUP_USING_RESCAN_SUPPORTED OR CMAKE_C_LINK_GROUP_USING_RESCAN_SUPPORTED)
-            target_link_libraries(test_sdl_renderer_fallback PRIVATE
-                "$<LINK_GROUP:RESCAN,chr_original_runtime,chr_sdl_backend>")
-        else()
-            target_link_libraries(test_sdl_renderer_fallback PRIVATE
-                chr_original_runtime
-                chr_sdl_backend)
-        endif()
+        target_link_libraries(test_sdl_renderer_fallback PRIVATE
+            ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_sdl_renderer_fallback)
         add_test(NAME platform.sdl_renderer_fallback COMMAND test_sdl_renderer_fallback)
     endif()
