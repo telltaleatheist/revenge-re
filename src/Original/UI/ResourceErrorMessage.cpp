@@ -1,4 +1,5 @@
-// REVENGE_3390_RESOURCE_ERROR_MESSAGE.cpp
+// 3390: resource error message
+// ResourceErrorMessage.cpp
 // The resource layer's error messages (3390:071E-098B), the two callbacks
 // AbortRuntimeWithMessage and OpenTrackedFile's errors call.
 

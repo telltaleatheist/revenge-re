@@ -1,3 +1,4 @@
+// 0D73: confirmation
 /* Restart-confirmation procedure from original segment 0D73. */
 
 #include "REVENGE.h"

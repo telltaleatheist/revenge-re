@@ -18,7 +18,7 @@ word16 ConfirmExitToDos(void)
     return ShowConfirmationDialog(ExitToDosPrompt) == 0x00;
 }
 
-/* 0D73:242E is reconstructed in UI/REVENGE_0D73_CONFIRMATION.cpp. */
+/* 0D73:242E is reconstructed in UI/Confirmation.cpp. */
 
 // 0D73:2448: word16 ShowConfirmationDialog(const char far *message)
 // Called from:

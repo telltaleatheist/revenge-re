@@ -122,3 +122,7 @@ file	src/Original/Text/REVENGE_3477_FONT.cpp	src/Original/Text/Font.cpp	3477	fon
 file	src/Original/Text/REVENGE_356D_TEXT_WINDOW_CLEAR.cpp	src/Original/Text/TextWindowClear.cpp	356D	text window clear
 file	src/Original/Text/REVENGE_356F_TEXT_RENDER.cpp	src/Original/Text/TextRender.cpp	356F	text render
 file	src/Original/Text/REVENGE_35CE_FORMATTED_TEXT.cpp	src/Original/Text/FormattedText.cpp	35CE	formatted text
+file	src/Original/UI/REVENGE_0D73_CONFIRMATION.cpp	src/Original/UI/Confirmation.cpp	0D73	confirmation
+file	src/Original/UI/REVENGE_0D73_INVALID_SAVE_DIALOG.cpp	src/Original/UI/InvalidSaveDialog.cpp	0D73	invalid save dialog
+file	src/Original/UI/REVENGE_3390_RESOURCE_ERROR_MESSAGE.cpp	src/Original/UI/ResourceErrorMessage.cpp	3390	resource error message
+file	src/Original/UI/REVENGE_35CA_UI_REGION_HIGHLIGHT.cpp	src/Original/UI/UIRegionHighlight.cpp	35CA	UI region highlight

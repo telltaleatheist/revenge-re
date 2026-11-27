@@ -892,7 +892,7 @@ void DrawRightAlignedClippedText(
 
 /* 0D73:4572 is reconstructed in IO/SaveCompatibility.cpp. */
 
-/* 0D73:4611 is reconstructed in UI/REVENGE_0D73_INVALID_SAVE_DIALOG.cpp. */
+/* 0D73:4611 is reconstructed in UI/InvalidSaveDialog.cpp. */
 
 // 0D73:4155: capture one indexed rectangle from graphics resource 18h.
 // Called from:

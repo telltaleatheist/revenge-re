@@ -63,7 +63,7 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Graphics/RectangleOutline.cpp
     src/Original/Graphics/FrameTiles.cpp
     src/Original/Resources/ResourceStream.cpp
-    src/Original/UI/REVENGE_3390_RESOURCE_ERROR_MESSAGE.cpp
+    src/Original/UI/ResourceErrorMessage.cpp
     src/Original/Graphics/RectangleFill.cpp
     src/Original/Text/Font.cpp
 	src/Original/Audio/AudioHardware.cpp
@@ -80,7 +80,7 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Input/UIRegionPoll.cpp
     src/Original/Graphics/IconPageDecode.cpp
     src/Original/Input/UIRegionSetup.cpp
-    src/Original/UI/REVENGE_35CA_UI_REGION_HIGHLIGHT.cpp
+    src/Original/UI/UIRegionHighlight.cpp
     src/Original/Text/FormattedText.cpp
     src/Original/Input/UIRegionLoop.cpp
     src/Original/Text/TextWindowClear.cpp
@@ -136,8 +136,8 @@ list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Text/EntryBlink.cpp
 	src/Original/Text/TextEditor.cpp
 	src/Original/IO/SaveCompatibility.cpp
-	src/Original/UI/REVENGE_0D73_INVALID_SAVE_DIALOG.cpp
-	src/Original/UI/REVENGE_0D73_CONFIRMATION.cpp
+	src/Original/UI/InvalidSaveDialog.cpp
+	src/Original/UI/Confirmation.cpp
 	src/Original/Campaign/Presentation.cpp
 	src/Original/Graphics/MissionHeader.cpp
 	src/Original/Graphics/TacticalVideo.cpp

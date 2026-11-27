@@ -1,3 +1,4 @@
+// 0D73: invalid save dialog
 /* Preserved invalid-save-version dialog from REVENGE_0D73. */
 
 #include "REVENGE.h"
