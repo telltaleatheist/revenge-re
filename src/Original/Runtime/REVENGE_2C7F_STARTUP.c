@@ -8,8 +8,11 @@
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
 #include "revenge/original_import.h"
+#include "revenge/media_settings.h"
 
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 void InstallGameClockTimer(void);
 void RestoreGameClockTimer(void);
@@ -70,10 +73,11 @@ static MediaConfigurationHandler const ConfigOptionHandlers[0x04] =
 };
 
 /* The names in MEDIA.CFG's option records (DS:3A91, 16 bytes apart). */
-static const char *const ConfigOptionNames[0x04] =
+const char *const ConfigOptionNames[MEDIA_OPTION_COUNT] =
 {
 	ORIGINAL_TEXT(0x3A91), ORIGINAL_TEXT(0x3AA1), ORIGINAL_TEXT(0x3AB1), ORIGINAL_TEXT(0x3AC1)
 };
+
 
 // 2C7F:000F: int main(void)
 #if !defined(REVENGE_NO_DOS_MAIN)
@@ -324,99 +328,81 @@ word16 LoadMediaConfiguration(void)
 	// through the four callbacks in ConfigOptionHandlerTable.
 	char configLine[0x28];
 	word16 configurationValid = TRUE;
-	word16 configFileHandle = (word16) CRT_OpenFile(
-		MediaConfigurationFileName, 0x8001, 0x00);
-	if (configFileHandle == 0xFFFF)
+	/* MEDIA.CFG as the DOS installer wrote it, built from the player's
+	 * settings (src/SDL/settings.c, revenge/media_settings.h) rather than read
+	 * from the install: the same bytes, at most C8h of them, through the
+	 * same parse. */
+	char configText[0xC8];
+	word16 configTextLength = MediaSettings_InstallerText(
+		HostSettings_MediaChoices(), configText, sizeof(configText));
+	if (configTextLength == 0x00)
 	{
 		DOS_PrintString(MediaConfigurationErrorText); // TEXT DS:3C05
 		configurationValid = FALSE;
 	}
 	else
 	{
-		uint32 configFileLength = GetFileLength(configFileHandle);
-		word16 configFileLengthLow = LOW_WORD(configFileLength);
-		word16 configFileLengthHigh = HIGH_WORD(configFileLength);
-		if (configFileLengthHigh != 0x00 || configFileLengthLow > 0xC8)
+		byte *configBuffer = AllocateFarMemory((uint32) configTextLength);
+		word16 bytesRemaining = configTextLength;
+		byte *readCursor = configBuffer;
+
+		memcpy(configBuffer, configText, configTextLength);
+		/* DOS can address this SS buffer directly. Register its complete
+		 * extent while the preserved far strtok cursor traverses it. */
+		HostFarPointer_Register(configLine, sizeof(configLine));
+		word16 continueParsing = TRUE;
+		while (continueParsing != FALSE)
 		{
-			CRT_CloseFile(configFileHandle);
-			DOS_PrintString(MediaConfigurationErrorText); // TEXT DS:3C05
-			configurationValid = FALSE;
-		}
-		else
-		{
-			byte *configBuffer = AllocateFarMemory(
-				((uint32) configFileLengthHigh << 0x10) | configFileLengthLow);
-			word16 bytesRead = ReadFileWithTextTranslation(
-				configFileHandle, configBuffer, configFileLengthLow);
-			word16 bytesRemaining = configFileLengthLow;
-			byte *readCursor = configBuffer;
-			if (bytesRead != configFileLengthLow)
+			int16 lineLength = 0x00;
+			while (TRUE)
 			{
-				CRT_CloseFile(configFileHandle);
-				DOS_PrintString(MediaConfigurationErrorText); // TEXT DS:3C05
-				configurationValid = FALSE;
-			}
-			else
-			{
-				CRT_CloseFile(configFileHandle);
-				/* DOS can address this SS buffer directly. Register its complete
-				 * extent while the preserved far strtok cursor traverses it. */
-				HostFarPointer_Register(configLine, sizeof(configLine));
-				word16 continueParsing = TRUE;
-				while (continueParsing != FALSE)
+				if (lineLength >= 0x28 || continueParsing == FALSE)
+					break;
+				int16 character = (int16) *readCursor++;
+				--bytesRemaining;
+				if (bytesRemaining == 0x00)
+					continueParsing = FALSE;
+				else if (character == '\n')
 				{
-					int16 lineLength = 0x00;
-					while (TRUE)
-					{
-						if (lineLength >= 0x28 || continueParsing == FALSE)
-							break;
-						int16 character = (int16) *readCursor++;
-						--bytesRemaining;
-						if (bytesRemaining == 0x00)
-							continueParsing = FALSE;
-						else if (character == '\n')
-						{
-							configLine[lineLength] = '\0';
-							lineLength = 0x28;
-						}
-						else
-							configLine[lineLength] = (byte) character;
-						++lineLength;
-					}
-					if (continueParsing != FALSE)
-					{
-						char *optionName = FarStringTokenize(
-							configLine, MediaConfigAssignmentDelimiter);
-						UppercaseStringInPlace(optionName);
-						int16 handlerIndex = 0x00;
-						word16 searchingForHandler = TRUE;
-						while (searchingForHandler != FALSE && handlerIndex < 0x04)
-						{
-							const char *tableName =
-								ConfigOptionNames[handlerIndex];
-							if (FarStringCompare(tableName, optionName) == 0x00)
-							{
-								// ASM 2C7F:05F8 calls the far callback at +0Ch in the selected 10h-byte configuration record.
-								configurationValid =
-									ConfigOptionHandlers[handlerIndex]();
-								continueParsing = configurationValid;
-								searchingForHandler = FALSE;
-							}
-							else
-								++handlerIndex;
-						}
-						if (handlerIndex == 0x04)
-						{
-							DOS_PrintString(MediaConfigurationErrorText); // TEXT DS:3C05
-							configurationValid = FALSE;
-							continueParsing = FALSE;
-						}
-					}
+					configLine[lineLength] = '\0';
+					lineLength = 0x28;
 				}
-				HostFarPointer_Unregister(configLine);
+				else
+					configLine[lineLength] = (byte) character;
+				++lineLength;
 			}
-			FreeFarMemory(configBuffer);
+			if (continueParsing != FALSE)
+			{
+				char *optionName = FarStringTokenize(
+					configLine, MediaConfigAssignmentDelimiter);
+				UppercaseStringInPlace(optionName);
+				int16 handlerIndex = 0x00;
+				word16 searchingForHandler = TRUE;
+				while (searchingForHandler != FALSE && handlerIndex < 0x04)
+				{
+					const char *tableName =
+						ConfigOptionNames[handlerIndex];
+					if (FarStringCompare(tableName, optionName) == 0x00)
+					{
+						// ASM 2C7F:05F8 calls the far callback at +0Ch in the selected 10h-byte configuration record.
+						configurationValid =
+							ConfigOptionHandlers[handlerIndex]();
+						continueParsing = configurationValid;
+						searchingForHandler = FALSE;
+					}
+					else
+						++handlerIndex;
+				}
+				if (handlerIndex == 0x04)
+				{
+					DOS_PrintString(MediaConfigurationErrorText); // TEXT DS:3C05
+					configurationValid = FALSE;
+					continueParsing = FALSE;
+				}
+			}
 		}
+		HostFarPointer_Unregister(configLine);
+		FreeFarMemory(configBuffer);
 	}
 	ResourceRuntimeInitialized = 0x01;
 	SecondaryResourceDriveEnabled = FALSE;

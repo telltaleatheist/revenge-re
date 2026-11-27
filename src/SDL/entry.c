@@ -5,6 +5,7 @@
 #include "host_config.h"
 #include "revenge/original_import.h"
 #include "game_paths.h"
+#include "settings.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -42,6 +43,9 @@ int main(int argc, char **argv)
 	RevengeInstallCrashDiagnostics();
 	RevengeTrace("entry: initialize\n");
 	SDLBackend_InitializeDOSMemoryArena();
+	/* The player's settings stand for MEDIA.CFG from here on. */
+	if (!HostSettings_Prepare())
+		return 0x01;
 	ResourceFiles.preloadFiles = FALSE;
 	StartupResourceState = 0x01;
 	NumericKeypadNavigationEnabled = FALSE;

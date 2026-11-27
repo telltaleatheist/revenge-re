@@ -43,6 +43,7 @@ include(cmake/OriginalAuditedSources.cmake)
 add_library(chr_original_runtime STATIC ${CHR_ORIGINAL_SOURCES})
 target_sources(chr_original_runtime PRIVATE
 	src/Support/debug.c
+	src/Support/media_settings.c
     src/Support/far_memory.c
     src/Support/host_dispatch.c
     src/Support/digital_bridge.c
@@ -751,6 +752,7 @@ if(CHR_BUILD_SDL)
         src/SDL/host_config.c
         src/SDL/io.c
         src/SDL/game_paths.c
+        src/SDL/settings.c
         src/SDL/harness.c
         src/SDL/platform.c
         src/SDL/system.c
@@ -852,6 +854,20 @@ if(CHR_BUILD_SDL)
             chr_sdl_backend)
         chr_strict(test_sdl_game_paths)
         add_test(NAME platform.sdl_game_paths COMMAND test_sdl_game_paths)
+
+        # The player's settings file, made once from the install's MEDIA.CFG.
+        add_executable(test_settings tests/test_settings.c)
+        target_include_directories(test_settings PRIVATE src/SDL tests)
+        target_link_libraries(test_settings PRIVATE
+            chr_original_runtime
+            chr_sdl_backend)
+        chr_strict(test_settings)
+        foreach(mode first none own bad)
+            add_test(NAME platform.settings_${mode} COMMAND test_settings ${mode})
+            set_tests_properties(platform.settings_${mode} PROPERTIES SKIP_RETURN_CODE 77)
+        endforeach()
+        set_tests_properties(platform.settings_bad PROPERTIES PASS_REGULAR_EXPRESSION
+            "fault: .*settings.txt:3: music can.t be .loud.|skipped")
 
         # The objects the source places in the data segment, as the program
         # starts them, against the player's copy's load image.

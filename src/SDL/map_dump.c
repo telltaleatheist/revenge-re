@@ -3,6 +3,7 @@
 #include "REVENGE.h"
 #include "revenge/audio.h"
 #include "revenge/combat_data.h"
+#include "revenge/media_settings.h"
 #include "revenge/original/audio_data.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/input_data.h"
@@ -36,6 +37,7 @@ static const MapDumpObject objects[] =
 	{ "RolandMIDIDriverDescriptor", &RolandMIDIDriverDescriptor, sizeof(RolandMIDIDriverDescriptor) },
 	{ "PCSpeakerErrorDiffusionCoefficients", &PCSpeakerErrorDiffusionCoefficients, sizeof(PCSpeakerErrorDiffusionCoefficients) },
 	{ "WeaponDefinitions", &WeaponDefinitions, sizeof(WeaponDefinitions) },
+	{ "ConfigOptionNames", &ConfigOptionNames, sizeof(ConfigOptionNames) },
 	{ "Seg426B", &Seg426B, sizeof(Seg426B) },
 	{ "PCSpeakerSampleConversion", &PCSpeakerSampleConversion, sizeof(PCSpeakerSampleConversion) },
 	{ "PCSpeakerEffectStreamData", &PCSpeakerEffectStreamData, sizeof(PCSpeakerEffectStreamData) },

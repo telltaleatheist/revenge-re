@@ -1,4 +1,5 @@
 #include "fake_backend.h"
+#include "revenge/media_settings.h"
 #include "revenge/platform_backend.h"
 #include "revenge/interrupts.h"
 
@@ -517,4 +518,13 @@ void SDLBackend_WriteUnsigned8Sample(byte sample)
 
 void SDLBackend_ServiceTimers(void)
 {
+}
+
+/* The host's settings (src/SDL/settings.c): the install's MEDIA.CFG choices
+ * the trace copy has, VGA and the speaker. */
+const RevengeMediaChoices *HostSettings_MediaChoices(void)
+{
+	static const RevengeMediaChoices speaker = { { 0x0000, 0x0006, 0x0008, 0x0001 }, "" };
+
+	return &speaker;
 }
