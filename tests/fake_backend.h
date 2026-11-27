@@ -49,13 +49,6 @@ typedef struct FakeBackendState
 	uint16 musicVoiceStartCount;
 	uint16 musicVoiceStopCount;
 	uint16 musicVoiceResetCount;
-    const byte *pcmSampleData;
-    uint16 pcmByteCount;
-    uint16 pcmSourceRateHz;
-    uint16 pcmPlaybackScale;
-    uint16 pcmRepeatCount;
-    uint16 pcmPlayCount;
-    uint16 pcmWaitCount;
 } FakeBackendState;
 
 extern FakeBackendState fakeBackend;

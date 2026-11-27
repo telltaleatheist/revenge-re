@@ -93,22 +93,16 @@ void SDLBackend_SetMousePosition(int16 logicalX, int16 logicalY);
 
 int SDLBackend_OpenAudio(void);
 void SDLBackend_CloseAudio(void);
+/* Renders the sound due by the host clock (src/Audio) into the stream. */
+void SDLBackend_AdvanceAudio(void);
 byte SDLBackend_EnablePCSpeaker(void);
 void SDLBackend_SilencePCSpeaker(void);
 void SDLBackend_WritePCSpeakerPITDivisor(uint16 divisor);
-void SDLBackend_SetPCSpeakerSampleRate(uint16 sampleRateHz);
 void SDLBackend_BeginPCSpeakerTimedOutput(word16 delayScale);
 void SDLBackend_WritePCSpeakerBitstream(
 	const byte *sampleData,
 	word16 byteCount);
 word16 SDLBackend_EndPCSpeakerTimedOutput(void);
-void SDLBackend_PlayUnsigned8PCM(
-	const byte *sampleData,
-	uint16 byteCount,
-	uint16 sourceRateHz,
-	uint16 playbackScale,
-	uint16 repeatCount);
-void SDLBackend_WaitForUnsigned8PCM(void);
 void SDLBackend_WriteMIDIByte(byte midiByte);
 void SDLBackend_StartMusicVoice(
 	word16 voiceId,

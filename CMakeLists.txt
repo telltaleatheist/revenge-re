@@ -846,6 +846,16 @@ if(CHR_BUILD_SDL)
 
     set(CHR_SDL_TARGET SDL3::SDL3-static)
 
+    # Our sound (src/Audio/audio_mix.h): voices and the mixer, no device.
+    add_library(chr_audio STATIC
+        src/Audio/LegacySynth.cpp
+        src/Audio/Mixer.cpp
+        src/Audio/PcmVoice.cpp
+        src/Audio/ToneVoice.cpp)
+    target_include_directories(chr_audio PUBLIC src/Audio)
+    target_compile_features(chr_audio PUBLIC cxx_std_20)
+    chr_strict(chr_audio)
+
     add_library(chr_sdl_backend STATIC
         src/SDL/audio.c
         src/SDL/host_config.c
@@ -861,7 +871,7 @@ if(CHR_BUILD_SDL)
     # preserved source.
     set_source_files_properties(src/SDL/map_dump.c PROPERTIES
         INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/src/Original")
-    target_link_libraries(chr_sdl_backend PUBLIC ${CHR_SDL_TARGET})
+    target_link_libraries(chr_sdl_backend PUBLIC ${CHR_SDL_TARGET} chr_audio)
     chr_strict(chr_sdl_backend)
     # The backend names the runtime's data objects (map_dump.c), and the
     # runtime calls the backend, so a program links the two as one group:

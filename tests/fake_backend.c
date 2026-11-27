@@ -412,9 +412,8 @@ void SDLBackend_WritePCSpeakerPITDivisor(uint16 divisor)
     fakeBackend.firstWord = divisor;
 }
 
-void SDLBackend_SetPCSpeakerSampleRate(uint16 sampleRateHz)
+void SDLBackend_AdvanceAudio(void)
 {
-    fakeBackend.firstWord = sampleRateHz;
 }
 
 void SDLBackend_BeginPCSpeakerTimedOutput(word16 delayScale)
@@ -435,26 +434,6 @@ word16 SDLBackend_EndPCSpeakerTimedOutput(void)
 {
     return (word16)((uint32)fakeBackend.firstWord
         * fakeBackend.secondWord * 0x08);
-}
-
-void SDLBackend_PlayUnsigned8PCM(
-    const byte *sampleData,
-    uint16 byteCount,
-    uint16 sourceRateHz,
-    uint16 playbackScale,
-    uint16 repeatCount)
-{
-    ++fakeBackend.pcmPlayCount;
-    fakeBackend.pcmSampleData = sampleData;
-    fakeBackend.pcmByteCount = byteCount;
-    fakeBackend.pcmSourceRateHz = sourceRateHz;
-    fakeBackend.pcmPlaybackScale = playbackScale;
-    fakeBackend.pcmRepeatCount = repeatCount;
-}
-
-void SDLBackend_WaitForUnsigned8PCM(void)
-{
-    ++fakeBackend.pcmWaitCount;
 }
 
 void SDLBackend_WriteMIDIByte(byte midiByte)

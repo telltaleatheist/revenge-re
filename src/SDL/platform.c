@@ -156,6 +156,7 @@ void SDLBackend_ServiceTimers(void)
         SDLBackend_DispatchInterrupt(0x1C);
         nextGameClockTick += gameClockPeriod;
     }
+    SDLBackend_AdvanceAudio();
 }
 
 static void StoreRgba(uint32_t *pixel, byte red, byte green, byte blue)
