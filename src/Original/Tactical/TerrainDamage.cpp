@@ -1,6 +1,7 @@
+// 2D1B: terrain damage
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
-#include "REVENGE_2D1B_INTERNAL.h"
+#include "CombatInternal.h"
 
 // 2D1B:23F8: void ApplyOrQueueTerrainDamage(
 //     word16 packedByteIndex, word16 subcellIndex, word16 terrainType)

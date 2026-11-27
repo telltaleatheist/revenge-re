@@ -25,19 +25,19 @@ set(CHR_3A6A_DATA_SOURCES
 set(CHR_ORIGINAL_SOURCES
 	src/Original/Graphics/GraphicsRuntime.cpp
 	src/Original/Resources/ResourceCodecs.cpp
-	src/Original/Tactical/REVENGE_0800_TACTICAL_GEOMETRY.cpp
+	src/Original/Tactical/TacticalGeometry.cpp
     src/Original/Graphics/EncodedSprites.cpp
     src/Original/Graphics/TacticalRaster.cpp
 	${CHR_3A6A_DATA_SOURCES}
     src/Original/Resources/PackedResources.cpp
 	src/Original/Graphics/AdapterPalette.cpp
-	src/Original/Tactical/REVENGE_2D1B_UNIT_STATE.cpp
-	src/Original/Tactical/REVENGE_2D1B_WEAPONS.cpp
-	src/Original/Tactical/REVENGE_2D1B_ATTACK_RESOLUTION.cpp
-	src/Original/Tactical/REVENGE_2D1B_DICE.cpp
-	src/Original/Tactical/REVENGE_2D1B_UNIT_DAMAGE.cpp
-	src/Original/Tactical/REVENGE_2D1B_TERRAIN_DAMAGE.cpp
-	src/Original/Tactical/REVENGE_2D1B_DAMAGE.cpp
+	src/Original/Tactical/UnitState.cpp
+	src/Original/Tactical/Weapons.cpp
+	src/Original/Tactical/AttackResolution.cpp
+	src/Original/Tactical/Dice.cpp
+	src/Original/Tactical/UnitDamage.cpp
+	src/Original/Tactical/TerrainDamage.cpp
+	src/Original/Tactical/Damage.cpp
 	src/Original/Units/REVENGE_2507_TRAINING.cpp
 	src/Original/Units/REVENGE_2507_LANCE_CONFIGURATION.cpp
 	src/Original/Units/REVENGE_2507_UNIT_ASSIGNMENT.cpp
@@ -103,19 +103,19 @@ set(CHR_ORIGINAL_SOURCES
 
 list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Units/REVENGE_2B34_UNIT_STATUS.cpp
-	src/Original/Tactical/REVENGE_2007_TACTICAL_EFFECTS.cpp
-	src/Original/Tactical/REVENGE_2007_TACTICAL_STATUS.cpp
-	src/Original/Tactical/REVENGE_2007_DISPLAY.cpp
-	src/Original/Tactical/REVENGE_2208_TARGETING.cpp
-	src/Original/Tactical/REVENGE_2208_COMMANDS.cpp
-	src/Original/Tactical/REVENGE_2208_FORMATIONS.cpp
+	src/Original/Tactical/TacticalEffects.cpp
+	src/Original/Tactical/TacticalStatus.cpp
+	src/Original/Tactical/Display.cpp
+	src/Original/Tactical/Targeting.cpp
+	src/Original/Tactical/Commands.cpp
+	src/Original/Tactical/Formations.cpp
 	src/Original/Units/REVENGE_2208_INITIALIZATION.cpp
-	src/Original/Tactical/REVENGE_24C5_OVERVIEW_MAP.cpp
-	src/Original/Tactical/REVENGE_1A1F_TACTICAL_VIEW.cpp
-	src/Original/Tactical/REVENGE_1A1F_SCENARIO_RUNTIME.cpp
-	src/Original/Tactical/REVENGE_1A1F_BATTLE_RUNTIME.cpp
-	src/Original/Tactical/REVENGE_1A1F_SCENE_INTERPRETER.cpp
-	src/Original/Tactical/REVENGE_1A1F_TACTICAL_CONTROL.cpp)
+	src/Original/Tactical/OverviewMap.cpp
+	src/Original/Tactical/TacticalView.cpp
+	src/Original/Tactical/ScenarioRuntime.cpp
+	src/Original/Tactical/BattleRuntime.cpp
+	src/Original/Tactical/SceneInterpreter.cpp
+	src/Original/Tactical/TacticalControl.cpp)
 
 list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Campaign/CampaignDriver.cpp

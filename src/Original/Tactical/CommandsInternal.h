@@ -1,5 +1,6 @@
-#ifndef REVENGE_2208_INTERNAL_H
-#define REVENGE_2208_INTERNAL_H
+// 2208: tactical command, formation and targeting declarations
+#ifndef REVENGE_TACTICAL_COMMANDS_INTERNAL_H
+#define REVENGE_TACTICAL_COMMANDS_INTERNAL_H
 
 // Tactical input, command, formation, and intelligence procedures reconstructed
 // from REVENGE.EXE and the Revenge annotation project.

@@ -1,6 +1,7 @@
+// 2D1B: unit damage
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
-#include "REVENGE_2D1B_INTERNAL.h"
+#include "CombatInternal.h"
 #include "revenge/debug.h"
 
 // 2D1B:1E2B's damage past the armour: the location's critical rolls, then

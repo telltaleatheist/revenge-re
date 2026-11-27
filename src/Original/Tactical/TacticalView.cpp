@@ -1,7 +1,8 @@
-// REVENGE_1A1F_TACTICAL_VIEW.cpp
+// 0800, 1A1F: tactical view
+// TacticalView.cpp
 // Procedures preserved from REVENGE_1A1F_SCENARIO.c.
 
-#include "REVENGE_1A1F_INTERNAL.h"
+#include "BattleInternal.h"
 
 // 1A1F:0D55: draw and clip a tactical weapon trace.
 // Verified against ASM 1A1F:0D55-10CC.

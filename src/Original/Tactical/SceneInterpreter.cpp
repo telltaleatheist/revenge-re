@@ -1,7 +1,8 @@
-// REVENGE_1A1F_SCENE_INTERPRETER.cpp
+// 1A1F: scene interpreter
+// SceneInterpreter.cpp
 // Procedures preserved from REVENGE_1A1F_SCENARIO.c.
 
-#include "REVENGE_1A1F_INTERNAL.h"
+#include "BattleInternal.h"
 #include "revenge/debug.h"
 
 static byte tracedSceneOpcodeCount;

@@ -1,7 +1,8 @@
-// REVENGE_2D1B_DAMAGE.cpp
+// 2D1B: damage
+// Damage.cpp
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
-#include "REVENGE_2D1B_INTERNAL.h"
+#include "CombatInternal.h"
 
 // 2D1B:2453: void DestroyScenarioUnit(word16 unitIndex)
 // Called from:

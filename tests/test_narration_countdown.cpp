@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <string.h>
 
-/* 2007:0E19 (src/Original/Tactical/REVENGE_2007_TACTICAL_STATUS.cpp). */
+/* 2007:0E19 (src/Original/Tactical/TacticalStatus.cpp). */
 void DrawSelectedUnitStatusPanel(void);
 
 /* The narration countdown (PendingNarrationDelay) is battle time in ms by

@@ -1,7 +1,8 @@
-// REVENGE_2208_FORMATIONS.cpp
+// 2208: formations
+// Formations.cpp
 // Procedures preserved from REVENGE_2208_TACTICAL_INTERACTION.c.
 
-#include "REVENGE_2208_INTERNAL.h"
+#include "CommandsInternal.h"
 #include "revenge/debug.h"
 
 // 2208:1829: word16 IsCurrentLanceLeader(word16 unitIndex)

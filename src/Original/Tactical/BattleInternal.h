@@ -1,5 +1,6 @@
-#ifndef REVENGE_1A1F_INTERNAL_H
-#define REVENGE_1A1F_INTERNAL_H
+// 1A1F: battle, scene and campaign clock declarations
+#ifndef REVENGE_TACTICAL_BATTLE_INTERNAL_H
+#define REVENGE_TACTICAL_BATTLE_INTERNAL_H
 
 // REVENGE_1A1F_SCENARIO.c
 // Tactical battle orchestration, SCENE interpretation, input, and campaign

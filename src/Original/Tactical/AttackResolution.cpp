@@ -1,6 +1,7 @@
+// 2D1B: attack resolution
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
-#include "REVENGE_2D1B_INTERNAL.h"
+#include "CombatInternal.h"
 
 // 2D1B:1854: int16 ResolveWeaponAttack(
 //     Stack int16 attackerUnitIndex, Stack int16 weaponIndex,

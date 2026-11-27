@@ -1,5 +1,6 @@
-#ifndef REVENGE_2D1B_INTERNAL_H
-#define REVENGE_2D1B_INTERNAL_H
+// 2D1B: movement, weapon, damage and terrain declarations
+#ifndef REVENGE_TACTICAL_COMBAT_INTERNAL_H
+#define REVENGE_TACTICAL_COMBAT_INTERNAL_H
 
 // REVENGE_2D1B_TACTICAL_COMBAT.c
 // Tactical movement, targeting, weapon, damage, and terrain procedures

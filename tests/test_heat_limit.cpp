@@ -13,7 +13,7 @@
 
 #include "revenge/original_data.h"
 #include "REVENGE.h"
-#include "Tactical/REVENGE_2D1B_INTERNAL.h"
+#include "Tactical/CombatInternal.h"
 
 #include <stdio.h>
 #include <stdlib.h>

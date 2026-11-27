@@ -1,4 +1,5 @@
-// REVENGE_24C5_OVERVIEW_MAP.cpp
+// 24C5: overview map
+// OverviewMap.cpp
 // Tactical overview-map rendering and transition helpers.
 
 #include "REVENGE.h"

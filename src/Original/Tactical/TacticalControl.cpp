@@ -1,7 +1,8 @@
-// REVENGE_1A1F_TACTICAL_CONTROL.cpp
+// 1A1F: tactical control
+// TacticalControl.cpp
 // Procedures preserved from REVENGE_1A1F_SCENARIO.c.
 
-#include "REVENGE_1A1F_INTERNAL.h"
+#include "BattleInternal.h"
 #include "revenge/debug.h"
 #include "revenge/platform_backend.h"
 

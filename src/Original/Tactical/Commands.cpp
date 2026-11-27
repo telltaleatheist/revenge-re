@@ -1,11 +1,12 @@
-// REVENGE_2208_COMMANDS.cpp
+// 2208: commands
+// Commands.cpp
 // Procedures preserved from REVENGE_2208_TACTICAL_INTERACTION.c.
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE_2208_INTERNAL.h"
+#include "CommandsInternal.h"
 #include "revenge/debug.h"
 
 #include <string.h>

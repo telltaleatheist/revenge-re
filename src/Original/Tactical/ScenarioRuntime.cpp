@@ -1,7 +1,8 @@
-// REVENGE_1A1F_SCENARIO_RUNTIME.cpp
+// 1A1F: scenario runtime
+// ScenarioRuntime.cpp
 // Procedures preserved from REVENGE_1A1F_SCENARIO.c.
 
-#include "REVENGE_1A1F_INTERNAL.h"
+#include "BattleInternal.h"
 #include "revenge/original/campaign_data.h"
 
 // 1A1F:1C27

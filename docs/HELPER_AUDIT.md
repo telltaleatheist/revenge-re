@@ -32,17 +32,17 @@ the control flow that must remain comparable with the assembly.
 | `GraphicsRuntime.cpp` | `GetAdapterRowByteCount` | video copy/fill/tile procedures | Wrapper around the invented coordinate conversion. |
 | `GraphicsRuntime.cpp` | `ReadRleRunLength` | `DecodeRLEBlock_33D6` family | Splits original decoder control flow. |
 | `SaveLoad.cpp` | `GetSaveSlotDescriptor` | save/load menu procedures | Game-specific DS record selection. |
-| `REVENGE_1A1F_INTERNAL.h` | `GetPersistentUnitRecord` | scene interpreter `2A4E` | Game-record addressing inside the interpreter. |
-| `REVENGE_1A1F_INTERNAL.h` | `GetUnitRouteRecord` | scene interpreter `2A4E` | Game-record addressing inside the interpreter. |
-| `REVENGE_1A1F_INTERNAL.h` | `ReadSceneByte` | scene interpreter `2A4E` | Hides instruction-pointer mutation repeated by the ASM. |
-| `REVENGE_1A1F_INTERNAL.h` | `ReadSceneWord` | scene interpreter `2A4E` | Hides two byte reads and their ordering. |
-| `REVENGE_1A1F_INTERNAL.h` | `JumpToSceneOffset` | scene interpreter `2A4E` | Hides interpreter branch state changes. |
-| `REVENGE_1A1F_INTERNAL.h` | `BranchOrSkipSceneWord` | scene interpreter `2A4E` | Invented branch abstraction over original opcode cases. |
-| `REVENGE_24C5_OVERVIEW_MAP.cpp` | `GetOverviewRowStride` | tactical overview renderer | Game/video layout decision rather than a host boundary. |
-| `REVENGE_24C5_OVERVIEW_MAP.cpp` | `GetOverviewMapRow` | tactical overview renderer | Invented map-row abstraction. |
+| `BattleInternal.h` | `GetPersistentUnitRecord` | scene interpreter `2A4E` | Game-record addressing inside the interpreter. |
+| `BattleInternal.h` | `GetUnitRouteRecord` | scene interpreter `2A4E` | Game-record addressing inside the interpreter. |
+| `BattleInternal.h` | `ReadSceneByte` | scene interpreter `2A4E` | Hides instruction-pointer mutation repeated by the ASM. |
+| `BattleInternal.h` | `ReadSceneWord` | scene interpreter `2A4E` | Hides two byte reads and their ordering. |
+| `BattleInternal.h` | `JumpToSceneOffset` | scene interpreter `2A4E` | Hides interpreter branch state changes. |
+| `BattleInternal.h` | `BranchOrSkipSceneWord` | scene interpreter `2A4E` | Invented branch abstraction over original opcode cases. |
+| `OverviewMap.cpp` | `GetOverviewRowStride` | tactical overview renderer | Game/video layout decision rather than a host boundary. |
+| `OverviewMap.cpp` | `GetOverviewMapRow` | tactical overview renderer | Invented map-row abstraction. |
 | `REVENGE_2507_LANCE_CONFIGURATION.cpp` | `DrawRosterPilotUnitLabel` | lance/roster presentation | Extracted game presentation logic. |
 | `REVENGE_2507_LANCE_CONFIGURATION.cpp` | `GetLiveScenarioUnitTypeId` | lance/roster presentation | Game-record lookup. |
-| `REVENGE_2D1B_UNIT_STATE.cpp` | `LookupTacticalEngagementMode` | tactical engagement procedure | Extracted game decision table. |
+| `UnitState.cpp` | `LookupTacticalEngagementMode` | tactical engagement procedure | Extracted game decision table. |
 | `MIDISequence.cpp` | `ConfigureMIDIChannelFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
 | `MIDISequence.cpp` | `LoadMIDIInstrumentFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
 | `MIDISequence.cpp` | `SetMIDIVoiceCountFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
@@ -83,7 +83,7 @@ No game/data-flow helper function definitions remain in `src/Original`.
 
 | File | Helpers | Count | Required destination |
 | --- | --- | ---: | --- |
-| `REVENGE_1A1F_INTERNAL.h` | `GetTacticalBackingBuffer`, `SetTacticalBackingBuffer` | 2 | Replace with explicit DS far-pointer loads/stores or a Support-level 16:16 bridge. |
+| `BattleInternal.h` | `GetTacticalBackingBuffer`, `SetTacticalBackingBuffer` | 2 | Replace with explicit DS far-pointer loads/stores or a Support-level 16:16 bridge. |
 | `Keyboard.cpp` | `PumpHostKeyboardEvent` | 1 | SDL input boundary. |
 | `DigitalSound.cpp` | `DigitalSoundDataAt`, `DigitalSoundDriverDescriptorOffsets`, `DigitalSamplePlaybackDescriptors`, `DigitalWeaponEffectTable`, `DigitalSoundEntries`, `DigitalSoundString` | 6 | Typed views/macros over the recovered DS image in Support; no playback decisions. |
 | `AudioHardware.cpp` | `ResolveDigitalHardwareDescriptor`, `ResolveDigitalPlaybackDescriptor`, `ResolveProbeCandidateList`, `DispatchDigitalHardwareProbe`, `DispatchDigitalHardwareAcquire`, `DispatchDigitalHardwareRelease`, `InvokeDigitalSampleCompletion` | 7 | Host callback/far-pointer dispatch bridge in Support/SDL. Original wrapper calls remain in `AudioHardware.cpp`. |

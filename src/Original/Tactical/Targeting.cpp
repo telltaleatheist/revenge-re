@@ -1,7 +1,8 @@
-// REVENGE_2208_TARGETING.cpp
+// 2208: targeting
+// Targeting.cpp
 // Procedures preserved from REVENGE_2208_TACTICAL_INTERACTION.c.
 
-#include "REVENGE_2208_INTERNAL.h"
+#include "CommandsInternal.h"
 #include "revenge/debug.h"
 
 // 2208:060D

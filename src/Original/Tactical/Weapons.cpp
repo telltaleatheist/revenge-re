@@ -1,7 +1,8 @@
-// REVENGE_2D1B_WEAPONS.cpp
+// 2D1B: weapons
+// Weapons.cpp
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
-#include "REVENGE_2D1B_INTERNAL.h"
+#include "CombatInternal.h"
 #include "revenge/debug.h"
 
 // The heat limit at `index` of the table at DS:03E0 (2D1B:14A4 reads it with

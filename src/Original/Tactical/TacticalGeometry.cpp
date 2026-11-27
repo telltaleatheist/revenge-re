@@ -1,3 +1,4 @@
+// 0800: tactical geometry
 // GraphicsRuntime.cpp
 // Runtime, codec, tactical-map, and video procedures reconstructed from
 // REVENGE.EXE segment 0800.

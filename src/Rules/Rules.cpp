@@ -62,7 +62,7 @@ constexpr std::size_t kHitLocationRolls = 0x0B;   // 2d6: 2 to 12
 constexpr std::size_t kHitLocationWords = 0x0C;   // the rolls and a zero word
 constexpr unsigned kFacingHitTables = 0x04;       // HIT_LOCATION_FACING_TABLE_COUNT
 
-// The TACTICAL_ENGAGEMENT_ modes' names (src/Original/Tactical/REVENGE_2D1B_INTERNAL.h).
+// The TACTICAL_ENGAGEMENT_ modes' names (src/Original/Tactical/CombatInternal.h).
 constexpr std::array<std::string_view, 0x06> kEngagementModes = {
     "none", "close", "medium", "long", "withdraw", "position"
 };
