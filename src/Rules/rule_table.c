@@ -60,6 +60,7 @@ const RulePiece RulePieces[] =
 	{ "lance_editor.selection_cards", &UnitSelectionCards, sizeof(UnitSelectionCards), 0x3A6A, 0x1BBC, 0x10E, "d51147e7cfebca65" },
 	{ "lance_editor.lance_slots", &LanceAssignments, sizeof(LanceAssignments), 0x3A6A, 0x1CCA, 0x82, "ed9b671d2f37f653" },
 	{ "screens.text_window_frame", &TextWindowFrameDefinition, sizeof(TextWindowFrameDefinition), 0x3A6A, 0x08AA, 0x18, "784fdaba56e12fbc" },
+	{ "screens.campaign_messages", &CampaignMessageTable, sizeof(CampaignMessageTable), 0x3A6A, 0x2B54, 0x37A, "8a6e56333800019e" },
 	{ "screens.palette_files", &ScreenPaletteResourceByScreen, sizeof(ScreenPaletteResourceByScreen), 0x3A6A, 0x1704, 0x25, "e78bb6d27f4e84d3" },
 	{ "tactical_panel.formation_marker_x", &FormationMarkerOriginX, sizeof(FormationMarkerOriginX), 0x3A6A, 0x2F96, 0x14, "b096bff2a16441c6" },
 	{ "tactical_panel.formation_marker_y", &FormationMarkerOriginY, sizeof(FormationMarkerOriginY), 0x3A6A, 0x2FAA, 0x14, "d4b7e94022312e3d" },
@@ -136,6 +137,7 @@ _Static_assert(sizeof(LanceEditorLayout) == 0x1D4, "lance_editor.layout is the o
 _Static_assert(sizeof(UnitSelectionCards) == 0x10E, "lance_editor.selection_cards is the original's size");
 _Static_assert(sizeof(LanceAssignments) == 0x82, "lance_editor.lance_slots is the original's size");
 _Static_assert(sizeof(TextWindowFrameDefinition) == 0x18, "screens.text_window_frame is the original's size");
+_Static_assert(sizeof(CampaignMessageTable) == 0x37A, "screens.campaign_messages is the original's size");
 _Static_assert(sizeof(ScreenPaletteResourceByScreen) == 0x25, "screens.palette_files is the original's size");
 _Static_assert(sizeof(FormationMarkerOriginX) == 0x14, "tactical_panel.formation_marker_x is the original's size");
 _Static_assert(sizeof(FormationMarkerOriginY) == 0x14, "tactical_panel.formation_marker_y is the original's size");

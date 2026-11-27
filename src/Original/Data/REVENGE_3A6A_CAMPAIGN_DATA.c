@@ -67,6 +67,7 @@ word16 MissionSpriteSourcePixelY[CAMPAIGN_SPRITE_LAYOUT_COUNT];
 word16 MissionSpriteWidthTiles[CAMPAIGN_SPRITE_LAYOUT_COUNT];
 word16 MissionSpriteHeightPixels[CAMPAIGN_SPRITE_LAYOUT_COUNT];
 
+/* Filled at start from data/ui/screens.json (revenge/rules.h). */
 CampaignMessageEntry CampaignMessageTable[CAMPAIGN_MESSAGE_COUNT];
 
 const byte MonthLengthTable[0x0C] =

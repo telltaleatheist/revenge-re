@@ -16,10 +16,13 @@ enum
 };
 
 #pragma pack(push, 1)
+/* A campaign message: its text's place in the reference edition (the game
+ * shows CampaignMessageTextTable's, the story's), and its window's height in
+ * tiles. */
 typedef struct CampaignMessageEntry
 {
 	DosAddress text;
-	byte presentationFlags;
+	int8 windowHeight;
 } CampaignMessageEntry;
 
 typedef union CampaignSaveDirectory
@@ -36,8 +39,8 @@ typedef union CampaignSaveDirectory
 
 _Static_assert(sizeof(CampaignMessageEntry) == 0x05,
 	"Campaign message entries must retain their original five-byte layout");
-_Static_assert(offsetof(CampaignMessageEntry, presentationFlags) == 0x04,
-	"Campaign message flags must remain at entry offset 04h");
+_Static_assert(offsetof(CampaignMessageEntry, windowHeight) == 0x04,
+	"Campaign message heights must remain at entry offset 04h");
 _Static_assert(offsetof(CampaignSaveDirectory, slots) ==
 	REVENGE_SAVE_DIRECTORY_PREFIX_SIZE,
 	"Save descriptors must follow the original four-byte directory prefix");

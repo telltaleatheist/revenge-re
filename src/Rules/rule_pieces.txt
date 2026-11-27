@@ -84,6 +84,7 @@ lance_editor.lance_slots                LanceAssignments                    3A6A
 
 # data/ui/screens.json
 screens.text_window_frame               TextWindowFrameDefinition           3A6A:08AA 18
+screens.campaign_messages               CampaignMessageTable                3A6A:2B54 37A
 screens.palette_files                   ScreenPaletteResourceByScreen       3A6A:1704 25
 
 # data/ui/tactical_panel.json

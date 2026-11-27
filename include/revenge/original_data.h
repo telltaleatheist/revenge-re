@@ -18,16 +18,6 @@ enum
 	ORIGINAL_TEXT_WINDOW_COUNT = 0x17
 };
 
-#pragma pack(push, 1)
-typedef struct PresentationMessageRecord
-{
-	uint32 textPointer;
-	int8 windowHeight;
-} PresentationMessageRecord;
-#pragma pack(pop)
-
-_Static_assert(sizeof(PresentationMessageRecord) == 0x05,
-	"PresentationMessageRecord must retain its DOS layout");
 
 typedef void (*ResourceErrorCallback)(void);
 typedef void (*OriginalExitHandler)(void);

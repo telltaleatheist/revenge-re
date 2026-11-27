@@ -7,7 +7,6 @@ struct DigitalSampleDescriptor;
 struct DigitalWeaponEffectRecord;
 struct DigitalSoundEntryRecord;
 struct FarHeapBlockHeader;
-struct PresentationMessageRecord;
 
 byte *OriginalData_DigitalSoundDataAt(word16 dataSegmentOffset);
 word16 *OriginalData_DigitalSoundDriverDescriptorOffsets(void);
@@ -17,7 +16,6 @@ struct DigitalWeaponEffectRecord *OriginalData_DigitalWeaponEffectTable(void);
 struct DigitalSoundEntryRecord *OriginalData_DigitalSoundEntries(void);
 const char *OriginalData_DigitalSoundString(word16 dataSegmentOffset);
 void OriginalData_InitializeResourceDescriptorPointers(void);
-struct PresentationMessageRecord *OriginalData_PresentationMessageRecords(void);
 
 struct FarHeapBlockHeader *FarHeapBridge_ResolveBlock(uint32 address);
 uint32 FarHeapBridge_EncodeBlock(const struct FarHeapBlockHeader *block);

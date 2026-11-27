@@ -264,7 +264,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	memcpy(&(object), &originalDataSegment[(offset)], sizeof(object))
 	HYDRATE_DATA_OBJECT(TrainingScenarioCompletionFlags, 0x00A0);
 	HYDRATE_DATA_OBJECT(SaveCampaignSnapshot, 0x1956);
-	HYDRATE_DATA_OBJECT(CampaignMessageTable, 0x2B54);
 	HYDRATE_DATA_OBJECT(LoadedSceneFile, 0x71A8);
 	HYDRATE_DATA_OBJECT(SceneUnitRoutes, 0x86C1);
 	HYDRATE_DATA_OBJECT(SceneInstructionBaseOffset, 0xA862);

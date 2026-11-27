@@ -122,6 +122,9 @@
 //         "bottom_left", "bottom_right"}, "edges": {"top", "left", "right",
 //         "bottom"}}: the tiles a text window's frame is drawn from, each
 //         edge a run of tiles repeated along it; 12 tiles and ends in all
+//     "campaign_message_window_heights"  178, the height in tiles (0 to
+//         127) of each campaign message's window, by message number; the
+//         reader writes each message's text pointer (campaign_message.N)
 //
 //   tactical_panel.json, the unit status glyph, lines as [x0, y0, x1, y1] in
 //   pixels from its origin:

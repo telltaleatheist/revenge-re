@@ -745,6 +745,8 @@ void read_lance_editor_start(const Json& root, Tables& tables) {
 
 constexpr unsigned kResourceFiles = 0x5A;  // ORIGINAL_RESOURCE_DESCRIPTOR_COUNT
 
+constexpr std::size_t kCampaignMessages = 0xB2;  // CAMPAIGN_MESSAGE_COUNT
+
 void read_screens(const Json& root, Tables& tables) {
     Fields file(root, "screens.json:");
     tables["screens.palette_files"] = numbers(file.take("palette_file_by_screen"), file.at("palette_file_by_screen"),
@@ -777,6 +779,18 @@ void read_screens(const Json& root, Tables& tables) {
     edges.done();
     if (used != 0x0C) fail(frame.where(), "doesn't fill the frame's 12 tiles and ends");
     frame.done();
+
+    // CampaignMessageTable: 178 records of the message's text, a far pointer
+    // (the reference edition's place of campaign_message.N; the first has
+    // none), and the height of its window in tiles.
+    const std::vector<std::uint8_t> heights =
+        numbers(file.take("campaign_message_window_heights"), file.at("campaign_message_window_heights"),
+                kCampaignMessages, 0x7F, 1);
+    std::vector<std::uint8_t>& messages = tables["screens.campaign_messages"];
+    messages.assign(kCampaignMessages * 5, 0);
+    for (std::size_t index = 1; index < kCampaignMessages; ++index)
+        put_text_pointer(&messages[index * 5], STORY_ID_CAMPAIGN_MESSAGE_0 + int(index), "screens.json:");
+    for (std::size_t index = 0; index < kCampaignMessages; ++index) messages[index * 5 + 4] = heights[index];
     file.done();
 }
 

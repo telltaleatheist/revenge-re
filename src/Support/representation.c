@@ -35,12 +35,6 @@ const char *OriginalData_DigitalSoundString(word16 dataSegmentOffset)
 		OriginalData_DigitalSoundDataAt(dataSegmentOffset);
 }
 
-PresentationMessageRecord *OriginalData_PresentationMessageRecords(void)
-{
-	return (PresentationMessageRecord *) HostFarPointer_Resolve(
-		MAKE_DWORD(0x3A6A, 0x2B54));
-}
-
 void OriginalData_InitializeResourceDescriptorPointers(void)
 {
 	word16 resourceIndex;

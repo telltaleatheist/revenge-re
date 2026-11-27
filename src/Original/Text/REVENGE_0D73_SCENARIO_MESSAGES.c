@@ -5,7 +5,7 @@
 #include "revenge/input.h"
 #include "revenge/debug.h"
 #include "revenge/original_data.h"
-#include "revenge/representation.h"
+#include "revenge/original/campaign_data.h"
 
 void OpenModalTextWindow(word16 windowIndex, word16 clearAndFrame);
 void RestoreModalTextWindow(void);
@@ -13,7 +13,7 @@ void RestoreModalTextWindow(void);
 /* 0D73:2E7C-2F15 */
 void ShowScenarioMessage(word16 messageIndex)
 {
-	const PresentationMessageRecord *message;
+	const CampaignMessageEntry *message;
 
 	if ((PresentationCallbackOffset |
 		PresentationCallbackSegment) != 0x0000)
@@ -23,18 +23,17 @@ void ShowScenarioMessage(word16 messageIndex)
 	if (SceneTransitionAbortFlag != FALSE || messageIndex == 0x0000)
 		return;
 
-	message = &OriginalData_PresentationMessageRecords()[messageIndex];
+	message = &CampaignMessageTable[messageIndex];
 	REVENGE_PRESERVATION_TRACE(
-		"text: scenario message=%u height=%d pointer=%08lX\n",
+		"text: scenario message=%u height=%d text=%p\n",
 		messageIndex, message->windowHeight,
-		(unsigned long)message->textPointer);
+		(void *)CampaignMessageTextTable[messageIndex]);
 	TextWindowContexts[0x0F].heightTiles =
 		(word16) (int16) message->windowHeight;
 	TextWindowContexts[0x0F].topTile = 0x0001;
 	OpenModalTextWindow(0x000F, TRUE);
 	HideMouseCursorOverlay();
-	RenderFormattedText((const char *) HostFarPointer_Resolve(
-		message->textPointer));
+	RenderFormattedText(CampaignMessageTextTable[messageIndex]);
 	ShowMouseCursorOverlay();
 	FlushPendingInput();
 	if ((PresentationCallbackOffset |
@@ -53,7 +52,7 @@ void ShowScenarioMessage(word16 messageIndex)
 /* 0D73:3AE4-3B7D */
 void ShowMissionFollowupMessage(word16 messageIndex)
 {
-	const PresentationMessageRecord *message;
+	const CampaignMessageEntry *message;
 
 	if ((PresentationCallbackOffset |
 		PresentationCallbackSegment) != 0x0000)
@@ -63,14 +62,13 @@ void ShowMissionFollowupMessage(word16 messageIndex)
 	if (SceneTransitionAbortFlag != FALSE || messageIndex == 0x0000)
 		return;
 
-	message = &OriginalData_PresentationMessageRecords()[messageIndex];
+	message = &CampaignMessageTable[messageIndex];
 	TextWindowContexts[0x0F].heightTiles =
 		(word16) (int16) message->windowHeight;
 	TextWindowContexts[0x0F].topTile = 0x0006;
 	OpenModalTextWindow(0x000F, TRUE);
 	HideMouseCursorOverlay();
-	RenderFormattedText((const char *) HostFarPointer_Resolve(
-		message->textPointer));
+	RenderFormattedText(CampaignMessageTextTable[messageIndex]);
 	ShowMouseCursorOverlay();
 	FlushPendingInput();
 	if ((PresentationCallbackOffset |

@@ -391,10 +391,10 @@ void ShowCampaignMessageAndWait(word16 messageIndex)
 		return;
 
 	TextWindowContexts[0x0F].heightTiles =
-		OriginalData_PresentationMessageRecords()[messageIndex].windowHeight;
+		CampaignMessageTable[messageIndex].windowHeight;
 	REVENGE_PRESERVATION_TRACE("text: campaign message=%u height=%d text=%p\n",
 		messageIndex,
-		OriginalData_PresentationMessageRecords()[messageIndex].windowHeight,
+		CampaignMessageTable[messageIndex].windowHeight,
 		(void *)CampaignMessageTextTable[messageIndex]);
 	TextWindowContexts[0x0F].topTile = 0x000E;
 	OpenModalTextWindow(0x000F, 0x0001);
