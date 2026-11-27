@@ -25,5 +25,5 @@ Return idle:300 @snap:stage5_menu
 Down idle:50 Down idle:50 @snap:stage5_save         # Save & Continue highlighted
 Return idle:300 @snap:stage5_slots
 Return idle:300 @snap:stage5_save1 Return idle:300 @snap:stage5_save2
-# Saved; stage 6 (SCENE7) starts at once, its battle running: its fourth step.
+# Saved; stage 6 (SCENE8) starts at once, its battle running: its fourth step.
 Return steps:4 @snap:stage5_saved
