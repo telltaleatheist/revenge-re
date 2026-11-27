@@ -153,6 +153,20 @@ def mac_signing():
     return done.stdout.strip()
 
 
+def sign_app(root, app):
+    """The app's signature, the kit's `app`: with a Developer ID every Mach-O, then the app, with the hardened runtime and
+    a timestamp; ad hoc for a build not for release. The kit then checks it (codesign --verify --deep --strict). Who
+    signs comes from the environment alone (RE_SIGN_IDENTITY), never from here."""
+    run(root / SIGNER, "app", app, "--entitlements", root / "tools/package/chr.entitlements")
+
+
+def notarize_dmg(root, dmg, app):
+    """The kit's `dmg`: the dmg signed and, with a Developer ID, notarized (refused unless Apple accepts it), its ticket
+    stapled to it and to the app, and Gatekeeper's verdict checked. Stapling changes the dmg, so its digest comes
+    after."""
+    run(root / SIGNER, "dmg", dmg, app)
+
+
 def configure_and_build(root, build, label):
     args = ["cmake", "-S", root, "-B", build, "-DCHR_TRIM_PATHS=ON", f"-DCHR_RELEASE_TAG={release_tag(label)}",
             "-DBUILD_TESTING=OFF"]
@@ -607,8 +621,7 @@ def package_mac(root, build, output, label, game):
     """Revenge Rebuild.app and CHR-Rebuild-<label>-mac.dmg: the program in Contents/MacOS (SDL and the archive libraries
     linked in, universal), data/, the read-me and the notices in Contents/Resources (SDL_GetBasePath). Signed and
     notarized by the kit's sign_notarize.sh, or ad hoc for a build not for release (RE_ALLOW_UNSIGNED=1)."""
-    mode = mac_signing()
-    signer = root / SIGNER
+    mode = mac_signing()  # refused before anything is built when it couldn't be notarized
     binary = configure_and_build(root, build, label)
     check_stamp(binary, label)
     app = output / f"{APP_NAME}.app"
@@ -631,7 +644,7 @@ def package_mac(root, build, output, label, game):
                                                       check=True).stdout)
     with open(app / "Contents/Info.plist", "wb") as f:
         plistlib.dump(mac_plist(root, minos.group(1) if minos else "12.0"), f)
-    run(signer, "app", app, "--entitlements", root / "tools/package/chr.entitlements")
+    sign_app(root, app)  # before the smoke test, so a release's hardened runtime is what is started
     smoke(exe, game)
 
     dmg = output / f"{STEM}-{label}-mac.dmg"
@@ -651,7 +664,7 @@ def package_mac(root, build, output, label, game):
     run("hdiutil", "create", "-volname", APP_NAME, "-srcfolder", dmg_stage, "-ov", "-format", "UDZO", dmg,
         stdout=subprocess.DEVNULL)
     shutil.rmtree(dmg_stage)
-    run(signer, "dmg", dmg, app)
+    notarize_dmg(root, dmg, app)
     write_digest(dmg)
     print(f"App: {app}\nDMG: {dmg} ({mode})")
     return dmg

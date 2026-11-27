@@ -146,6 +146,10 @@ if(BUILD_TESTING)
 		add_test(NAME preservation.header_rules
 			COMMAND ${Python3_EXECUTABLE} -I
 				${CMAKE_CURRENT_SOURCE_DIR}/tests/check_headers_test.py)
+		# The packaging's own parts (tools/build_package.py), without a build.
+		add_test(NAME package.build_package
+			COMMAND ${Python3_EXECUTABLE} -I -m unittest discover
+				-s ${CMAKE_CURRENT_SOURCE_DIR}/tools -p test_build_package.py)
 
 		# The game's text stays out of the tree, and the import tables match
 		# the sources and the player's copy. Both need a copy of the game named
