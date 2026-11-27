@@ -10,17 +10,35 @@ never writes there) and writing its saves and snaps to WORK (emptied
 first; a temporary folder, deleted afterwards, unless given).
 --frames copies each snap's frame and save block (the game's art and data) to
 DIR, outside the repo, for tools/trace/frames.py and diff.py. Exits 0 when the script ran to its end.
+
+A script with a line `# start-save: VARIABLE` starts with the SAVEGAME.DAT that
+the environment variable VARIABLE names in its save folder (a save written by
+the original, kept outside the repo). Without the variable it can't run, and
+is skipped (exit 77 here).
 """
 import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 import tempfile
 
 TIMEOUT_SECONDS = 600
+SKIP = 77
+START_SAVE = re.compile(r"^#\s*start-save:\s*(\w+)\s*$", re.M)
+
+
+def start_save(script):
+    """The save a script starts with: (variable, path or None), or None if none."""
+    with open(script, encoding="utf-8") as f:
+        found = START_SAVE.search(f.read())
+    if not found:
+        return None
+    path = os.environ.get(found.group(1), "")
+    return found.group(1), (path if path and os.path.isfile(path) else None)
 
 
 def digest(path):
@@ -49,6 +67,11 @@ def run(exe, game, script, work, step_us=None):
     if os.path.isdir(work):
         shutil.rmtree(work)
     os.makedirs(os.path.join(work, "saves"))
+    wanted = start_save(script)
+    if wanted:
+        if wanted[1] is None:
+            return SKIP, f"no save in {wanted[0]}"
+        shutil.copyfile(wanted[1], os.path.join(work, "saves", "SAVEGAME.DAT"))
     env = dict(os.environ)
     env.update({
         "SDL_VIDEO_DRIVER": "dummy",
@@ -98,6 +121,9 @@ def trace(script, work):
 def record(exe, game, script, work, step_us=None):
     """Runs the script and returns its trace records, or stops naming why."""
     code, output = run(exe, game, script, work, step_us)
+    if code == SKIP and output.startswith("no save in "):
+        print(f"record: {os.path.basename(script)} skipped: {output}")
+        sys.exit(SKIP)
     if code != 0 or not os.path.exists(os.path.join(work, "done.txt")):
         last = [line for line in output.splitlines() if line.startswith("harness:")]
         sys.exit(f"record: {os.path.basename(script)} didn't run to its end (exit {code})"

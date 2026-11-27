@@ -1087,8 +1087,7 @@ void DrawUnitStatusScreen(
 			LanceEditorLayout.UnitCardBackgroundColorByState[panelFlags]);
 		DrawClippedSprite(
 			ActiveRenderTarget,
-			(const byte *)LANCE_EDITOR_FAR(
-				const byte, statusPanel->spriteBuffer),
+			LanceEditorCardSprite(statusPanel->spriteBuffer),
 			leftX, topY, 0x00);
 	}
 

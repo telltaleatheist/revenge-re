@@ -135,6 +135,11 @@ sides), the frame, the palette and the save block. ctest runs it as
 `trace.goldens` and runs `repeat.py` on the battle as `trace.repeat`; both
 read the game folder from `REVENGE_GAME` and skip without one.
 
+`old_save` starts from a save the original wrote (its `# start-save:` line):
+the 1e save_load run's SAVEGAME.DAT, kept outside the repo, named by
+`REVENGE_ORIGINAL_SAVE`. Without that variable `check.py` skips that script
+alone.
+
 To re-record a golden after an intended change, record over it and say in the
 commit what moved and why.
 

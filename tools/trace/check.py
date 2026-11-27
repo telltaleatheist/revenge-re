@@ -83,6 +83,11 @@ def check(args, names, work):
     problems = []
     for name in names:
         golden = load(os.path.join(TRACES, name + ".jsonl"))
+        script = os.path.join(SCRIPTS, name + ".keys")
+        wanted = record.start_save(script) if args.exe else None
+        if wanted and wanted[1] is None:
+            print(f"check: {name}: skipped, no save in {wanted[0]}")
+            continue
         if args.exe:
             candidate = record.record(args.exe, args.game, os.path.join(SCRIPTS, name + ".keys"),
                                       os.path.join(work, name))

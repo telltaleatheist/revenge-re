@@ -707,8 +707,7 @@ void DrawPilotSelectionSlot(
 	{
 		DrawClippedSprite(
 			ActiveRenderTarget,
-			(const byte *)LANCE_EDITOR_FAR(
-				const byte, pilotRecord->spriteBuffer),
+			LanceEditorCardSprite(pilotRecord->spriteBuffer),
 			leftX,
 			topY,
 			0x00);

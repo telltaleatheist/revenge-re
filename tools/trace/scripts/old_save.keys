@@ -1,0 +1,13 @@
+# A save the original wrote, loaded: the 1e save_load run's SAVEGAME.DAT,
+# made under DOSBox-X at the menu after the first battle (slot 1), kept
+# outside the repo and named by REVENGE_ORIGINAL_SAVE.
+# start-save: REVENGE_ORIGINAL_SAVE
+# Load Game from the main menu, slot 1. The save block after the load equals,
+# byte for byte, the original's own after it loaded the same file (state.py
+# on the 1e capture), the selection cards' sprite pointers included: the load
+# leaves them as the original wrote them, and the lance editor sets each card's
+# before drawing it (LanceEditorCardSprite faults on one it hasn't).
+# Then on into the second battle.
+idle:1000 Return idle:50 Right idle:50 Return idle:300 @snap:slots
+Return idle:600 @snap:loaded
+Return idle:6000 Return steps:2 Return still:2000 @snap:second

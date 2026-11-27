@@ -6,6 +6,7 @@
 #include "revenge/original/lance_editor_data.h"
 #include "revenge/original_data.h"
 #include "revenge/video.h"
+#include "revenge/debug.h"
 
 #include <stdbool.h>
 
@@ -152,5 +153,13 @@ void DrawTrainingChoiceButton(
 	const char *label,
 	word16 width);
 
+
+/* A selection card's sprite, for drawing. The editor points every card it
+ * builds at one of its graphics buffers before drawing it (2507:2BD9 for the
+ * units, 2507:5016 for the pilots). A card loaded from a save keeps the
+ * pointer the saving program had, unchanged by the load, so a card drawn
+ * before the editor rebuilds it would point at nothing of ours: that is a
+ * fault naming the card's pointer. */
+const byte *LanceEditorCardSprite(DosAddress spriteBuffer);
 
 #endif

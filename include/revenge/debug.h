@@ -6,6 +6,11 @@
 void RevengeTrace(const char *format, ...);
 void RevengeInstallCrashDiagnostics(void);
 
+/* Something the port's own rules say can't happen, or a game file the play
+ * can't go on without: prints "fault: " and the message, and stops the
+ * program (exit 70). */
+_Noreturn void RevengeFault(const char *format, ...);
+
 /* A table the port sizes as the original's space: an index the game's data
  * and code can't produce means the port is wrong, so it stops the program
  * with a fault naming the table, the index and the table's count (exit 70)

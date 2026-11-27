@@ -42,14 +42,25 @@ void RevengeTrace(const char *format, ...)
 	fflush(stderr);
 }
 
-size_t RevengeCheckIndex(const char *object, size_t index, size_t count)
+void RevengeFault(const char *format, ...)
 {
-	if (index < count)
-		return index;
-	fprintf(stderr, "fault: %s[%llu] is past its %llu entries\n", object,
-		(unsigned long long) index, (unsigned long long) count);
+	va_list arguments;
+
+	fputs("fault: ", stderr);
+	va_start(arguments, format);
+	vfprintf(stderr, format, arguments);
+	va_end(arguments);
+	fputc('\n', stderr);
 	fflush(stderr);
 	exit(70);
+}
+
+size_t RevengeCheckIndex(const char *object, size_t index, size_t count)
+{
+	if (index >= count)
+		RevengeFault("%s[%llu] is past its %llu entries", object,
+			(unsigned long long) index, (unsigned long long) count);
+	return index;
 }
 
 void RevengeInstallCrashDiagnostics(void)

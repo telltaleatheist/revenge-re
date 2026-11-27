@@ -110,3 +110,21 @@ void FreeGraphicsBufferRange(int16 firstBufferIndex, int16 lastBufferIndex)
 		FreeHeapBlock(UnitEditorGraphicsBuffer(bufferIndex));
 	}
 }
+
+const byte *LanceEditorCardSprite(DosAddress spriteBuffer)
+{
+	uint32 value = DosAddress_ToValue(spriteBuffer);
+	const byte *sprite = (const byte *) HostFarPointer_Resolve(value);
+	word16 bufferIndex;
+
+	for (bufferIndex = 0x0000;
+		bufferIndex < sizeof(SharedGraphicsBackingBuffers) / sizeof(SharedGraphicsBackingBuffers[0]);
+		++bufferIndex)
+	{
+		if (sprite != NULL && sprite == UnitEditorGraphicsBuffer(bufferIndex))
+			return sprite;
+	}
+	RevengeFault("a selection card's sprite pointer %04X:%04X is none of the "
+		"editor's graphics buffers (the card was drawn before it was built)",
+		(unsigned) HIGH_WORD(value), (unsigned) LOW_WORD(value));
+}
