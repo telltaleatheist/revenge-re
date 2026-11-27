@@ -22,7 +22,6 @@
 
 typedef int8_t int8;
 typedef uint8_t uint8;
-typedef int32_t int32;
 typedef uint32_t word32;
 typedef uint32_t segptr32;
 typedef uint8 ui8;
@@ -371,13 +370,6 @@ void DrawClippedSprite(
 	int16 x,
 	int16 y,
 	word16 preserveExistingPixels);
-int16 ReadFileWithTextTranslation(
-	word16 fileHandle, byte *buffer, word16 requestedBytes);
-int16 WriteFileWithTextTranslation(
-	int16 fileHandle, const byte *buffer, word16 byteCount);
-int32 GetFileLength(word16 fileHandle);
-int16 CRT_OpenFile(const char *filePath, unsigned int openFlags, ...);
-int16 CRT_CloseFile(int16 fileHandle);
 char *UppercaseStringInPlace(char *text);
 char *FormatLongInteger(
 	byte alphabeticDigitBase,
@@ -696,7 +688,6 @@ void SetActiveFontResource(byte *fontResource);
 word16 MeasureTextWidth(const char *text);
 void RenderTextToActiveWindow(
 	char *text, word16 advanceToNextLine);
-void SelectResourceDrive(int16 resourceDriveIndex);
 void SetActiveRenderTarget(byte *renderTarget);
 
 /* Verified original game lifetime. The preserved source owns main(). */

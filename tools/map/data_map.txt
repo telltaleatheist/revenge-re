@@ -242,13 +242,11 @@ place NullDigitalPlayback 3A6A:6EB2 C table
 place SoundBlasterPlayback 3A6A:6EE2 C table
 place DigitalPlaybackBuffers 3A6A:6F4C 58 table
 place PITCalibration 3A6A:6FA4 A table
-place DOSErrorToErrnoTable 3A6A:6FB0 59 run
 place RuntimeExitHook1 3A6A:700A 4 procedure
 place RuntimeExitHook2 3A6A:700E 4 procedure
 place RuntimeExitHook3 3A6A:7012 4 procedure
 place ExitHandlerCount 3A6A:7018 2 annotation
 place CharacterClassTable 3A6A:7029 100 run
-place FileRuntime 3A6A:712A 2C table
 place MonthLengthTable 3A6A:7156 C run
 place TimezoneOffsetLowWord 3A6A:7190 2 run
 place TimezoneOffsetHighWord 3A6A:7192 2 procedure
@@ -584,8 +582,6 @@ unplaced RollingBarrageEndMapX 1 zero at every snap
 unplaced RollingBarrageEndMapY 1 zero at every snap
 unplaced RollingBarrageStartMapX 1 zero at every snap
 unplaced RollingBarrageStartMapY 1 zero at every snap
-unplaced RuntimeDOSError 2 zero at every snap
-unplaced RuntimeErrno 2 zero at every snap
 unplaced SatelliteZoomText 4 host pointer
 unplaced SaveGameSeparatorText 4 host pointer
 unplaced SaveLoadMenuDefaultSelection 1 zero at every snap

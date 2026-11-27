@@ -1,4 +1,5 @@
 #include "REVENGE.h"
+#include "revenge/game_file.h"
 #include "revenge/original_data.h"
 
 #include <stdio.h>
@@ -27,28 +28,22 @@ static void Check(int condition, const char *message)
 	}
 }
 
-int16 CRT_OpenFile(
-	const char *filePath,
-	unsigned int openFlags,
-	...)
+int16 GameFile_Open(const char *name, GameFileAccess access)
 {
-	(void) filePath;
-	(void) openFlags;
+	(void) name;
+	(void) access;
 	filePosition = 0x00;
 	return 0x05;
 }
 
-int16 CRT_CloseFile(int16 fileHandle)
+int16 GameFile_Close(int16 fileHandle)
 {
 	(void) fileHandle;
 	++closeCount;
 	return 0x00;
 }
 
-int16 ReadFileWithTextTranslation(
-	word16 fileHandle,
-	byte *buffer,
-	word16 requestedBytes)
+int16 GameFile_Read(int16 fileHandle, void *buffer, word16 requestedBytes)
 {
 	word16 available;
 	word16 byteCount;
@@ -63,22 +58,22 @@ int16 ReadFileWithTextTranslation(
 	return (int16) byteCount;
 }
 
-int32 GetFileLength(word16 fileHandle)
+int32 GameFile_Length(int16 fileHandle)
 {
 	(void) fileHandle;
 	return reportedFileLength;
 }
 
-long DOS_SeekFile(word16 fileHandle, long fileOffset, byte origin)
+int32 GameFile_Seek(int16 fileHandle, int32 offset, GameFileOrigin origin)
 {
 	(void) fileHandle;
-	if (origin == 0x00)
-		filePosition = (int32) fileOffset;
-	else if (origin == 0x01)
-		filePosition += (int32) fileOffset;
+	if (origin == GAME_FILE_FROM_START)
+		filePosition = offset;
+	else if (origin == GAME_FILE_FROM_CURRENT)
+		filePosition += offset;
 	else
-		filePosition = TEST_FONT_SIZE + (int32) fileOffset;
-	return (long) filePosition;
+		filePosition = TEST_FONT_SIZE + offset;
+	return filePosition;
 }
 
 void *Heap_Allocate(uint32 byteCount, const char *caller)

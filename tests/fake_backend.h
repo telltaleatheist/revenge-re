@@ -9,14 +9,10 @@ typedef struct FakeBackendState
 {
     byte consoleCharacters[0x40];
     uint16 consoleCharacterCount;
-    byte drive;
-    const char *path;
-    uint16 fileHandle;
     uint16 firstWord;
     uint16 secondWord;
     byte firstByte;
     void *buffer;
-    long fileOffset;
     void (*gameClockHandler)(void);
     word16 musicClockDivisor;
     word16 digitalPlaybackClockDivisor;

@@ -27,9 +27,6 @@ int GamePaths_Resolve(const char *dosPath, GamePathUse use, char *out, size_t ca
  * install, which is never changed. */
 int GamePaths_Delete(const char *dosPath);
 
-/* 1 when the file GAME_PATH_READ resolves to is the install's. */
-int GamePaths_IsInstallFile(const char *dosPath);
-
 /* The install's REVENGE.EXE, in whatever case it is spelled on disk. */
 const char *GamePaths_Executable(void);
 

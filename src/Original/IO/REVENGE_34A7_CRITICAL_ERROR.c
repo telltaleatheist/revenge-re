@@ -11,8 +11,8 @@
 // assembly dispatcher at 34A7:0021, which preserves all registers, switches
 // to the game DS and invokes the retained callback. The install (34A7:0067-
 // 0074, a call of DOS_SetInterruptVector, 39E3:001E) goes with the vector
-// table: the host raises no critical error, its failing DOS calls return the
-// error instead (src/SDL/io.c).
+// table: the host raises no critical error, a game file that fails returns
+// -1 instead (revenge/game_file.h).
 void InstallCriticalErrorHandler(void *criticalErrorCallback)
 {
 	uintptr_t callbackToken;

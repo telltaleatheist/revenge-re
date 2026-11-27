@@ -1,4 +1,5 @@
 #include "fake_backend.h"
+#include "revenge/game_file.h"
 #include "revenge/media_settings.h"
 #include "revenge/platform_backend.h"
 
@@ -25,90 +26,43 @@ uint16 SDLBackend_DirectConsoleIO(byte character)
     return (uint16)(0x0600 | character);
 }
 
-void SDLBackend_SelectDefaultDrive(byte zeroBasedDrive)
+/* Game files as the DOS fakes had them: every open succeeds, a read or a
+ * write reports all its bytes moved and leaves the buffer as it was, and a
+ * seek lands at 12345678h. */
+int16 GameFile_Open(const char *name, GameFileAccess access)
 {
-    fakeBackend.drive = zeroBasedDrive;
+	(void) name;
+	(void) access;
+	return 0x0006;
 }
 
-int16 SDLBackend_CreateFile(uint16 attributes, const char *filePath)
+int16 GameFile_Close(int16 handle) { (void) handle; return 0x0000; }
+
+int16 GameFile_Read(int16 handle, void *destination, word16 byteCount)
 {
-    fakeBackend.firstWord = attributes;
-    fakeBackend.path = filePath;
-    return 0x0005;
+	(void) handle;
+	(void) destination;
+	return (int16) byteCount;
 }
 
-int16 SDLBackend_OpenFile(const char *filePath, uint16 openFlags)
+int16 GameFile_Write(int16 handle, const void *source, word16 byteCount)
 {
-    fakeBackend.path = filePath;
-    fakeBackend.firstWord = openFlags;
-    return 0x0006;
+	(void) handle;
+	(void) source;
+	return (int16) byteCount;
 }
 
-int16 SDLBackend_CloseFile(int16 fileHandle)
+int32 GameFile_Seek(int16 handle, int32 offset, GameFileOrigin origin)
 {
-    fakeBackend.fileHandle = (uint16)fileHandle;
-    return 0x0000;
+	(void) handle;
+	(void) offset;
+	(void) origin;
+	return 0x12345678L;
 }
 
-int16 SDLBackend_ReadFile(
-    uint16 fileHandle,
-    void *destinationBuffer,
-    uint16 byteCount)
-{
-    fakeBackend.fileHandle = fileHandle;
-    fakeBackend.buffer = destinationBuffer;
-    fakeBackend.firstWord = byteCount;
-    return (int16)byteCount;
-}
+int32 GameFile_Length(int16 handle) { (void) handle; return 0x12345678L; }
 
-int16 SDLBackend_WriteFile(
-    uint16 fileHandle,
-    const void *sourceBuffer,
-    uint16 byteCount)
-{
-    fakeBackend.fileHandle = fileHandle;
-    fakeBackend.buffer = (void *)sourceBuffer;
-    fakeBackend.firstWord = byteCount;
-    return (int16)byteCount;
-}
-
-long SDLBackend_SeekFile(uint16 fileHandle, long fileOffset, byte origin)
-{
-    fakeBackend.fileHandle = fileHandle;
-    fakeBackend.fileOffset = fileOffset;
-    fakeBackend.firstByte = origin;
-    return 0x12345678L;
-}
-
-int16 SDLBackend_DeleteFile(const char *filePath)
-{
-    fakeBackend.path = filePath;
-    return 0x0000;
-}
-
-int16 SDLBackend_GetSetFileAttributes(
-    const char *filePath,
-    byte operation,
-    uint16 attributes)
-{
-    fakeBackend.path = filePath;
-    fakeBackend.firstByte = operation;
-    fakeBackend.firstWord = attributes;
-    return 0x0021;
-}
-
-int16 SDLBackend_DeviceIOControl(
-    uint16 fileHandle,
-    uint16 operation,
-    void *data,
-    uint16 count)
-{
-    fakeBackend.fileHandle = fileHandle;
-    fakeBackend.firstWord = operation;
-    fakeBackend.buffer = data;
-    fakeBackend.secondWord = count;
-    return 0x0080;
-}
+int16 GameFile_Delete(const char *name) { (void) name; return 0x0000; }
 
 word16 SDLBackend_GetLargestFreeConventionalMemoryParagraphs(
 	word16 requestedParagraphs)

@@ -322,7 +322,6 @@ static const ImageRow rows[] =
 	ENCODED(MIDISequence, 0x624A, 0x1C, EncodeMIDISequence),
 	DS(MIDIParser, 0x62B0),
 	DS(MIDIChannelMap, 0x6728),
-	DS(FileRuntime, 0x712A),
 	ENCODED(ResourceFiles, 0xB632, 0x1E, EncodeResourceFiles),
 	DS(SecondaryResourceDriveEnabled, 0xB662),
 	DS(ResourceDriveSelectionDisabled, 0xB668),

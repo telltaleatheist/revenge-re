@@ -111,26 +111,6 @@ if(CHR_PRESERVATION_INSTRUMENTATION)
 endif()
 chr_strict(chr_original_runtime)
 
-# Small preservation-family targets provide focused compiler verification in
-# addition to the complete audited Original runtime inventory.
-add_library(chr_original_dos STATIC
-    ${CHR_3A6A_DATA_SOURCES}
-    src/Original/IO/REVENGE_38C3_DOS_ERROR.c
-    src/Original/IO/REVENGE_3915_FILE_CREATE.c
-    src/Original/IO/REVENGE_392F_FILE_OPEN.c
-    src/Original/IO/REVENGE_3934_DEVICE_IO.c
-    src/Original/IO/REVENGE_3936_CRT_FILE_CLOSE.c
-    src/Original/IO/REVENGE_3939_DOS_FILE_CLOSE.c
-    src/Original/IO/REVENGE_3948_DOS_FILE_READ.c
-    src/Original/IO/REVENGE_3961_DOS_FILE_WRITE.c
-    src/Original/IO/REVENGE_3965_FILE_SEEK.c
-    src/Original/IO/REVENGE_3978_FILE_DELETE.c
-    src/Original/IO/REVENGE_3989_FILE_ATTRIBUTES.c)
-target_include_directories(chr_original_dos
-    PUBLIC include
-    PRIVATE src/Original src/SDL)
-chr_strict(chr_original_dos)
-
 add_library(chr_original_audio STATIC
     src/Original/Audio/REVENGE_3621_MIDI_SEQUENCE.c
     src/Support/midi_data.c)
@@ -482,12 +462,6 @@ if(BUILD_TESTING)
     add_test(NAME graphics.original_fill_video_rectangle
         COMMAND test_fill_video_rectangle)
 
-    add_executable(test_resource_drive tests/test_resource_drive.c)
-    target_include_directories(test_resource_drive PRIVATE src/Original)
-    target_link_libraries(test_resource_drive PRIVATE chr_original_runtime)
-    chr_strict(test_resource_drive)
-    add_test(NAME platform.original_resource_drive COMMAND test_resource_drive)
-
 	add_executable(test_integer_format tests/test_integer_format.c)
 	target_include_directories(test_integer_format PRIVATE src/Original)
 	target_link_libraries(test_integer_format PRIVATE chr_original_runtime)
@@ -560,16 +534,6 @@ if(BUILD_TESTING)
     target_include_directories(test_original_editions PRIVATE include src/Original)
     chr_strict(test_original_editions)
     add_test(NAME import.original_editions COMMAND test_original_editions)
-
-    add_executable(test_file_translation
-        tests/test_file_translation.c
-        src/Original/IO/REVENGE_393C_TEXT_FILE_READ.c
-        src/Original/IO/REVENGE_394A_TEXT_FILE_WRITE.c
-        src/Original/IO/REVENGE_39C0_FILE_LENGTH.c
-        ${CHR_3A6A_DATA_SOURCES})
-    target_include_directories(test_file_translation PRIVATE include src/Original)
-    chr_strict(test_file_translation)
-    add_test(NAME platform.original_file_translation COMMAND test_file_translation)
 
     add_executable(test_resource_stream
         tests/test_resource_stream.c
@@ -865,6 +829,7 @@ if(CHR_BUILD_SDL)
         src/SDL/audio.c
         src/SDL/host_config.c
         src/SDL/io.c
+        src/SDL/game_file.c
         src/SDL/game_paths.c
         src/SDL/settings.c
         src/SDL/harness.c
@@ -1157,21 +1122,14 @@ if(CHR_BUILD_SDL)
     endif()
 
     if(BUILD_TESTING)
-        add_executable(test_sdl_dos_errors tests/test_sdl_dos_errors.c)
-        target_link_libraries(test_sdl_dos_errors PRIVATE
+        add_executable(test_game_file tests/test_game_file.c)
+        target_link_libraries(test_game_file PRIVATE
             ${CHR_RUNTIME_WITH_BACKEND})
-        chr_strict(test_sdl_dos_errors)
-        add_test(NAME platform.sdl_dos_error_state
-            COMMAND test_sdl_dos_errors)
-
-        add_executable(test_sdl_dos_io tests/test_sdl_dos_io.c)
-        target_link_libraries(test_sdl_dos_io PRIVATE
-            ${CHR_RUNTIME_WITH_BACKEND})
-        chr_strict(test_sdl_dos_io)
-        add_test(NAME platform.sdl_dos_file_semantics COMMAND test_sdl_dos_io)
+        chr_strict(test_game_file)
+        add_test(NAME platform.game_file COMMAND test_game_file)
         # Tests that write files keep them in the build folder, never in the
         # player's own save folder.
-        set_tests_properties(platform.sdl_dos_file_semantics PROPERTIES
+        set_tests_properties(platform.game_file PROPERTIES
             ENVIRONMENT "REVENGE_SAVE_DIRECTORY=${CMAKE_CURRENT_BINARY_DIR}/test-saves/")
 
         add_executable(test_sdl_game_paths tests/test_sdl_game_paths.c)

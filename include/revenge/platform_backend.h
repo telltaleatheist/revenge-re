@@ -10,21 +10,6 @@
  * cross this interface into the preserved Original source.
  */
 uint16 SDLBackend_DirectConsoleIO(byte character);
-void SDLBackend_SelectDefaultDrive(byte zeroBasedDrive);
-
-int16 SDLBackend_CreateFile(uint16 attributes, const char *filePath);
-int16 SDLBackend_OpenFile(const char *filePath, uint16 openFlags);
-int16 SDLBackend_CloseFile(int16 fileHandle);
-int16 SDLBackend_ReadFile(
-	uint16 fileHandle, void *destinationBuffer, uint16 byteCount);
-int16 SDLBackend_WriteFile(
-	uint16 fileHandle, const void *sourceBuffer, uint16 byteCount);
-long SDLBackend_SeekFile(uint16 fileHandle, long fileOffset, byte origin);
-int16 SDLBackend_DeleteFile(const char *filePath);
-int16 SDLBackend_GetSetFileAttributes(
-	const char *filePath, byte operation, uint16 attributes);
-int16 SDLBackend_DeviceIOControl(
-	uint16 fileHandle, uint16 operation, void *data, uint16 count);
 
 word16 SDLBackend_GetLargestFreeConventionalMemoryParagraphs(
 	word16 requestedParagraphs);

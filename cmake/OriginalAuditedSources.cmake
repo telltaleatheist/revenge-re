@@ -86,26 +86,11 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Text/REVENGE_356D_TEXT_WINDOW_CLEAR.c
     src/Original/Text/REVENGE_356F_TEXT_RENDER.c
     src/Original/Input/REVENGE_358E_SINGLE_UI_REGION.c
-    src/Original/IO/REVENGE_3593_RESOURCE_DRIVE.c
     src/Original/Graphics/REVENGE_3596_RENDER_TARGET.c
     src/Original/Input/REVENGE_3599_UI_REGION_HIGHLIGHT.c
     src/Original/Audio/REVENGE_3621_MIDI_SEQUENCE.c
 	src/Original/Audio/REVENGE_3621_MIDI_DRIVERS.c
-    src/Original/IO/REVENGE_38C3_DOS_ERROR.c
-    src/Original/IO/REVENGE_3915_FILE_CREATE.c
-    src/Original/IO/REVENGE_392F_FILE_OPEN.c
-    src/Original/IO/REVENGE_3934_DEVICE_IO.c
-    src/Original/IO/REVENGE_3936_CRT_FILE_CLOSE.c
-    src/Original/IO/REVENGE_3939_DOS_FILE_CLOSE.c
-    src/Original/IO/REVENGE_393C_TEXT_FILE_READ.c
-    src/Original/IO/REVENGE_3948_DOS_FILE_READ.c
-    src/Original/IO/REVENGE_394A_TEXT_FILE_WRITE.c
-    src/Original/IO/REVENGE_3961_DOS_FILE_WRITE.c
-    src/Original/IO/REVENGE_3965_FILE_SEEK.c
 	src/Original/Utility/REVENGE_3968_INTEGER_FORMAT.c
-    src/Original/IO/REVENGE_3978_FILE_DELETE.c
-    src/Original/IO/REVENGE_3989_FILE_ATTRIBUTES.c
-    src/Original/IO/REVENGE_39C0_FILE_LENGTH.c
 	src/Original/Utility/REVENGE_39C4_DECIMAL_PARSE.c
 	src/Original/Campaign/REVENGE_39CC_CLOCK_SNAPSHOT.c
     src/Original/IO/REVENGE_39D9_SYSTEM_TIME.c

@@ -1,6 +1,7 @@
 // Reconstructed original font resource loader and metrics (segment 3477).
 
 #include "REVENGE.h"
+#include "revenge/game_file.h"
 #include "revenge/original_data.h"
 
 #include <string.h>
@@ -12,27 +13,27 @@ byte *LoadFontResource(const char *fileName)
 	word16 totalFileSize = 0x00;
 	byte dimensions[0x02];
 	byte *fontResource = NULL;
-	int16 fileHandle = CRT_OpenFile(fileName, 0x8001);
+	int16 fileHandle = GameFile_Open(fileName, GAME_FILE_READ); /* 8001h */
 
 	if (fileHandle != -0x01)
 	{
-		word16 headerBytesRead = ReadFileWithTextTranslation(
-			(word16) fileHandle,
+		word16 headerBytesRead = GameFile_Read(
+			fileHandle,
 			(byte *) &totalFileSize,
 			0x02);
 		totalFileSize = (word16) (totalFileSize + 0x02);
 		if (headerBytesRead == 0x02 && totalFileSize > 0x0104)
 		{
-			int32 physicalFileLength = GetFileLength((word16) fileHandle);
+			int32 physicalFileLength = GameFile_Length(fileHandle);
 			if (HIGH_WORD(physicalFileLength) == 0x00 &&
 				LOW_WORD(physicalFileLength) == totalFileSize)
 			{
-				int32 seekPosition = (int32) DOS_SeekFile(
-					(word16) fileHandle, 0x0102L, 0x00);
+				int32 seekPosition = GameFile_Seek(
+					fileHandle, 0x0102L, GAME_FILE_FROM_START);
 				if (seekPosition == 0x0102L)
 				{
-					word16 dimensionsRead = ReadFileWithTextTranslation(
-						(word16) fileHandle,
+					word16 dimensionsRead = GameFile_Read(
+						fileHandle,
 						dimensions,
 						0x02);
 					if (dimensionsRead == 0x02)
@@ -52,14 +53,14 @@ byte *LoadFontResource(const char *fileName)
 								Heap_Allocate(allocationSize, "3477:00FF");
 							if (fontResource != NULL)
 							{
-								if ((int32) DOS_SeekFile(
-									(word16) fileHandle,
+								if (GameFile_Seek(
+									fileHandle,
 									0x00L,
-									0x00) == 0x00L)
+									GAME_FILE_FROM_START) == 0x00L)
 								{
 									word16 fontBytesRead =
-										ReadFileWithTextTranslation(
-											(word16) fileHandle,
+										GameFile_Read(
+											fileHandle,
 											fontResource,
 											totalFileSize);
 									if (fontBytesRead != totalFileSize)
@@ -79,7 +80,7 @@ byte *LoadFontResource(const char *fileName)
 				}
 			}
 		}
-		CRT_CloseFile(fileHandle);
+		GameFile_Close(fileHandle);
 	}
 	return fontResource;
 }

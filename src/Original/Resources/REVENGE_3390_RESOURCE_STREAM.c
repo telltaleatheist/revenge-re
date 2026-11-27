@@ -4,6 +4,7 @@
 #include "REVENGE.h"
 #include "revenge/original_data.h"
 #include "revenge/debug.h"
+#include "revenge/game_file.h"
 
 #include <string.h>
 
@@ -26,7 +27,7 @@ void ShutdownAndExit(word16 exitCode)
 // 3390:0037
 int16 OpenTrackedFile(char *path, word16 openMode)
 {
-	word16 openFlags;
+	GameFileAccess access;
 	int16 trackedHandle;
 	int16 handleSlot;
 
@@ -37,12 +38,12 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 		 * in neither is missing from the copy. */
 		if (IsResourceCached(path) == FALSE && CanOpenFileForRead(path) == FALSE)
 			RevengeFault("can't open %s: it is in neither the game's folder nor the save folder", path);
-		openFlags = 0x8001;
+		access = GAME_FILE_READ; /* 8001h */
 	}
 	else if (openMode == 0x0002)
 	{
 		DeleteFileIgnoringErrors(path);
-		openFlags = 0x8002;
+		access = GAME_FILE_WRITE; /* 8002h */
 	}
 	else if (openMode == 0x0003)
 	{
@@ -54,7 +55,7 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 			if (CanOpenFileForWrite(path) == FALSE || CanOpenFileForRead(path) == FALSE)
 				RevengeFault("can't create %s in the save folder", path);
 		}
-		openFlags = 0x8004;
+		access = GAME_FILE_READ_WRITE; /* 8004h */
 	}
 	else
 	{
@@ -62,7 +63,7 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 		ResourceErrorDisplayCallback();
 		ResourceErrorDismissCallback();
 		ShutdownAndExit(0x0001);
-		openFlags = 0x0000;
+		access = GAME_FILE_READ;
 	}
 
 	if (IsResourceCached(path) != FALSE)
@@ -77,7 +78,7 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 		/* 3390:0178-01BF asked for the file's disk and tried again,
 		 * ResourceRetryCount times. A failure here is the copy's, and no
 		 * disk can mend it. */
-		trackedHandle = CRT_OpenFile(path, openFlags, 0x0180);
+		trackedHandle = GameFile_Open(path, access);
 		if (trackedHandle == -0x01)
 			RevengeFault("can't open %s (open mode %u)", path, (unsigned) openMode);
 	}
@@ -114,7 +115,7 @@ void CloseTrackedFile(int16 handleSlot)
 	if (trackedHandle == ORIGINAL_TRACKED_FILE_UNUSED)
 		AbortRuntimeWithMessage(ResourceCloseUnopenedErrorText);
 	if ((trackedHandle & ORIGINAL_TRACKED_FILE_CACHED) == 0x0000)
-		CRT_CloseFile((int16)trackedHandle);
+		GameFile_Close((int16)trackedHandle);
 	ResourceFiles.trackedHandles[handleSlot] = ORIGINAL_TRACKED_FILE_UNUSED;
 }
 
@@ -132,8 +133,8 @@ uint32 ReadTrackedFile(int16 handleSlot, void *destination, uint32 byteCount)
 	while ((int16)HIGH_WORD(byteCount) > 0x0000 ||
 		(HIGH_WORD(byteCount) == 0x0000 && LOW_WORD(byteCount) > 0xFA00))
 	{
-		int16 chunkBytesRead = ReadFileWithTextTranslation(
-			trackedHandle, destination, 0xFA00);
+		int16 chunkBytesRead = GameFile_Read(
+			(int16)trackedHandle, destination, 0xFA00);
 
 		byteCount -= 0x0000FA00UL;
 		if (chunkBytesRead == -0x01)
@@ -142,8 +143,8 @@ uint32 ReadTrackedFile(int16 handleSlot, void *destination, uint32 byteCount)
 	}
 
 	{
-		int16 finalBytesRead = ReadFileWithTextTranslation(
-			trackedHandle, destination, LOW_WORD(byteCount));
+		int16 finalBytesRead = GameFile_Read(
+			(int16)trackedHandle, destination, LOW_WORD(byteCount));
 
 		if (finalBytesRead == -0x01)
 			return 0x00000000UL;
@@ -165,7 +166,7 @@ uint32 WriteTrackedFile(int16 handleSlot, const void *source, uint32 byteCount)
 	while ((int16)HIGH_WORD(byteCount) > 0x0000 ||
 		(HIGH_WORD(byteCount) == 0x0000 && LOW_WORD(byteCount) > 0xFA00))
 	{
-		int16 chunkBytesWritten = WriteFileWithTextTranslation(
+		int16 chunkBytesWritten = GameFile_Write(
 			(int16)trackedHandle, source, 0xFA00);
 
 		if (chunkBytesWritten == -0x01)
@@ -175,7 +176,7 @@ uint32 WriteTrackedFile(int16 handleSlot, const void *source, uint32 byteCount)
 	}
 
 	{
-		int16 finalBytesWritten = WriteFileWithTextTranslation(
+		int16 finalBytesWritten = GameFile_Write(
 			(int16)trackedHandle, source, LOW_WORD(byteCount));
 
 		if (finalBytesWritten == -0x01)
@@ -196,7 +197,7 @@ void SeekTrackedFile(int16 handleSlot, int32 distance, word16 origin)
 
 	if ((trackedHandle & ORIGINAL_TRACKED_FILE_CACHED) == 0x0000)
 	{
-		(void)DOS_SeekFile(trackedHandle, (long)distance, (byte)origin);
+		(void)GameFile_Seek((int16)trackedHandle, distance, (GameFileOrigin)origin);
 	}
 	else
 	{
@@ -239,28 +240,28 @@ void SeekTrackedFile(int16 handleSlot, int32 distance, word16 origin)
 // 3390:061F
 word16 CanOpenFileForRead(const char *path)
 {
-	int16 fileHandle = CRT_OpenFile(path, 0x8001, 0x0000);
+	int16 fileHandle = GameFile_Open(path, GAME_FILE_READ); /* 8001h */
 
 	if (fileHandle == -0x01)
 		return FALSE;
-	CRT_CloseFile(fileHandle);
+	GameFile_Close(fileHandle);
 	return TRUE;
 }
 
 // 3390:064F
 void DeleteFileIgnoringErrors(char *filePath)
 {
-	(void)DOS_DeleteFile(filePath);
+	(void)GameFile_Delete(filePath);
 }
 
 // 3390:0668
 word16 CanOpenFileForWrite(const char *path)
 {
-	int16 fileHandle = CRT_OpenFile(path, 0x8102, 0x0180);
+	int16 fileHandle = GameFile_Open(path, GAME_FILE_CREATE); /* 8102h */
 
 	if (fileHandle == -0x01)
 		return FALSE;
-	CRT_CloseFile(fileHandle);
+	GameFile_Close(fileHandle);
 	return TRUE;
 }
 
@@ -352,9 +353,7 @@ void InitializeResourceCache(void)
 			continue;
 		}
 
-		fileHandle = CRT_OpenFile(
-			resource->fileName,
-			0x8001, 0x0180);
+		fileHandle = GameFile_Open(resource->fileName, GAME_FILE_READ); /* 8001h */
 		if (fileHandle == -0x01)
 		{
 			Heap_Free(cachedData);
@@ -362,18 +361,18 @@ void InitializeResourceCache(void)
 			continue;
 		}
 
-		bytesRead = ReadFileWithTextTranslation(
+		bytesRead = GameFile_Read(
 			fileHandle, cachedData, LOW_WORD(resource->fileLength));
 		if ((uint32)bytesRead == resource->fileLength)
 		{
 			resource->cachedData = cachedData;
-			CRT_CloseFile(fileHandle);
+			GameFile_Close(fileHandle);
 			remainingConventionalMemoryKB -= (int16)allocationKB;
 		}
 		else
 		{
 			Heap_Free(cachedData);
-			CRT_CloseFile(fileHandle);
+			GameFile_Close(fileHandle);
 		}
 		++resourceIndex;
 	}

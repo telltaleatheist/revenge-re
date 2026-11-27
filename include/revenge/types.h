@@ -9,6 +9,7 @@ typedef int16_t int16;
 typedef uint16_t uint16;
 typedef uint16_t word16;
 typedef uint32_t uint32;
+typedef int32_t int32;
 
 /*
  * Original one-byte identifiers use FFh as the unassigned sentinel.  Keep

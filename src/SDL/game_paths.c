@@ -231,16 +231,6 @@ int GamePaths_Delete(const char *dosPath)
 	return FindAnyCase("", name, path, sizeof(path)) ? -EACCES : -ENOENT;
 }
 
-int GamePaths_IsInstallFile(const char *dosPath)
-{
-	char path[GAME_PATH_CAPACITY];
-	const char *saves = GamePaths_WriteDirectory();
-
-	if (GamePaths_Resolve(dosPath, GAME_PATH_READ, path, sizeof(path)) != 0)
-		return 0;
-	return saves == NULL || strncmp(path, saves, strlen(saves)) != 0;
-}
-
 const char *GamePaths_Executable(void)
 {
 	static char path[GAME_PATH_CAPACITY];

@@ -1,4 +1,5 @@
 #include "REVENGE.h"
+#include "revenge/game_file.h"
 #include "revenge/original_data.h"
 
 #include <stdio.h>
@@ -44,25 +45,19 @@ ResourceErrorCallback ResourceErrorDismissCallback = DismissError;
 
 void ShutdownGame(void) { ++shutdownCalls; }
 void RunExitHandlersAndTerminate(word16 exitCode) { (void)exitCode; }
-void SelectResourceDrive(int16 resourceDriveIndex)
+int16 GameFile_Open(const char *name, GameFileAccess access)
 {
-	(void)resourceDriveIndex;
-}
-
-int16 CRT_OpenFile(const char *filePath, unsigned int openFlags, ...)
-{
-	(void)filePath;
-	(void)openFlags;
+	(void)name;
+	(void)access;
 	return nextOpenHandle;
 }
 
-int16 CRT_CloseFile(int16 fileHandle)
+int16 GameFile_Close(int16 fileHandle)
 {
 	return fileHandle;
 }
 
-int16 ReadFileWithTextTranslation(
-	word16 fileHandle, byte *buffer, word16 requestedBytes)
+int16 GameFile_Read(int16 fileHandle, void *buffer, word16 requestedBytes)
 {
 	(void)fileHandle;
 	if (readCalls == 0x0000)
@@ -74,8 +69,7 @@ int16 ReadFileWithTextTranslation(
 	return (int16)requestedBytes;
 }
 
-int16 WriteFileWithTextTranslation(
-	int16 fileHandle, const byte *buffer, word16 requestedBytes)
+int16 GameFile_Write(int16 fileHandle, const void *buffer, word16 requestedBytes)
 {
 	(void)fileHandle;
 	if (writeCalls == 0x0000)
@@ -87,17 +81,17 @@ int16 WriteFileWithTextTranslation(
 	return (int16)requestedBytes;
 }
 
-int16 DOS_DeleteFile(const char *filePath)
+int16 GameFile_Delete(const char *name)
 {
-	(void)filePath;
+	(void)name;
 	return 0x0000;
 }
 
-long DOS_SeekFile(uint16 fileHandle, long fileOffset, byte origin)
+int32 GameFile_Seek(int16 fileHandle, int32 offset, GameFileOrigin origin)
 {
 	(void)fileHandle;
 	(void)origin;
-	return fileOffset;
+	return offset;
 }
 
 void *Heap_Allocate(uint32 byteCount, const char *caller)

@@ -1,4 +1,4 @@
-#include "revenge/dos.h"
+#include "revenge/game_file.h"
 #include "game_paths.h"
 
 #include <SDL3/SDL.h>
@@ -81,55 +81,52 @@ int main(int argc, char **argv)
 	 * game with a fault, and a run that gets past it fails. */
 	if (argc > 1 && strcmp(argv[1], "program_file") == 0)
 	{
-		(void) DOS_OpenFile("a:\\REVENGE.exe", 0x8000);
+		(void) GameFile_Open("a:\\REVENGE.exe", GAME_FILE_READ);
 		return 1;
 	}
 
 	/* A read finds the install's file in any case. */
-	handle = DOS_OpenFile("MIXED.DAT", 0x8000);
+	handle = GameFile_Open("MIXED.DAT", GAME_FILE_READ);
 	assert(handle >= 0x0000);
 	memset(buffer, 0, sizeof(buffer));
-	assert(DOS_ReadFile((uint16) handle, buffer, 0x0005) == 0x0005);
+	assert(GameFile_Read(handle, buffer, 0x0005) == 0x0005);
 	assert(strcmp(buffer, "first") == 0);
-	assert(DOS_CloseFile(handle) == 0x0000);
-	assert(DOS_OpenFile("ABSENT.DAT", 0x8000) < 0x0000);
+	assert(GameFile_Close(handle) == 0x0000);
+	assert(GameFile_Open("ABSENT.DAT", GAME_FILE_READ) == -0x01);
 
 	/* A write works on a copy in the save folder; the install keeps its own. */
-	handle = DOS_OpenFile("a:\\mixed.dat", 0x8002);
+	handle = GameFile_Open("a:\\mixed.dat", GAME_FILE_WRITE);
 	assert(handle >= 0x0000);
-	assert(DOS_WriteFile((uint16) handle, "X", 0x0001) == 0x0001);
-	assert(DOS_CloseFile(handle) == 0x0000);
+	assert(GameFile_Write(handle, "X", 0x0001) == 0x0001);
+	assert(GameFile_Close(handle) == 0x0000);
 	Path(path, sizeof(path), install, "Mixed.Dat");
 	assert(FileHolds(path, "first"));
 	Path(path, sizeof(path), saves, "Mixed.Dat");
 	assert(FileHolds(path, "Xirst"));
 
 	/* Reads now see the save folder's copy. */
-	handle = DOS_OpenFile("Mixed.dat", 0x8000);
+	handle = GameFile_Open("Mixed.dat", GAME_FILE_READ);
 	assert(handle >= 0x0000);
 	memset(buffer, 0, sizeof(buffer));
-	assert(DOS_ReadFile((uint16) handle, buffer, 0x0005) == 0x0005);
+	assert(GameFile_Read(handle, buffer, 0x0005) == 0x0005);
 	assert(strcmp(buffer, "Xirst") == 0);
-	assert(DOS_CloseFile(handle) == 0x0000);
+	assert(GameFile_Close(handle) == 0x0000);
 
 	/* A new file is made in the save folder only. */
-	handle = DOS_CreateFile(0x0000, "NEW.DAT");
+	handle = GameFile_Open("NEW.DAT", GAME_FILE_CREATE);
 	assert(handle >= 0x0000);
-	assert(DOS_CloseFile(handle) == 0x0000);
+	assert(GameFile_Close(handle) == 0x0000);
 	Path(path, sizeof(path), saves, "NEW.DAT");
 	assert(SDL_GetPathInfo(path, NULL));
 	Path(path, sizeof(path), install, "NEW.DAT");
 	assert(!SDL_GetPathInfo(path, NULL));
 
 	/* The install's files can't be deleted; the save folder's can. */
-	assert(DOS_DeleteFile("OTHER.DAT") < 0x0000);
+	assert(GameFile_Delete("OTHER.DAT") == -0x01);
 	Path(path, sizeof(path), install, "Other.dat");
 	assert(FileHolds(path, "keep"));
-	assert(DOS_DeleteFile("NEW.DAT") == 0x0000);
+	assert(GameFile_Delete("NEW.DAT") == 0x0000);
 	Path(path, sizeof(path), saves, "NEW.DAT");
 	assert(!SDL_GetPathInfo(path, NULL));
-
-	/* An install file reads as writable, whatever its mode on disk. */
-	assert(DOS_GetSetFileAttributes("other.dat", DOS_FILE_ATTRIBUTES_GET, 0x0000) == 0x0000);
 	return 0;
 }

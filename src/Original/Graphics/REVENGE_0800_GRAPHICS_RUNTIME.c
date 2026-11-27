@@ -607,12 +607,6 @@ uint16 DOS_PrintCharacter(char character)
 	return SDLBackend_DirectConsoleIO((byte) character);
 }
 
-void DOS_SelectDefaultDrive(byte zeroBasedDrive)
-{
-	/* 0800:4D81 -- DOS INT 21h/AH=0Eh. */
-	SDLBackend_SelectDefaultDrive(zeroBasedDrive);
-}
-
 void VGA_LoadPalette(const byte *paletteRgbTriplets)
 {
 	/* 0800:0974 -- BIOS INT 10h/AX=1012h. */
