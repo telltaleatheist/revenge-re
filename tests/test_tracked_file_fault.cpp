@@ -2,8 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Resources/Resources.h"
 #include "revenge/platform_backend.h"
 #include "original_import_for_tests.h"
 

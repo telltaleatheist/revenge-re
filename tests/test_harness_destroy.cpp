@@ -4,7 +4,7 @@
 
 #include "harness.h"
 
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
 
 #include <SDL3/SDL.h>
 #include <stdio.h>

@@ -4,7 +4,6 @@
 // Synthetic values only.
 
 #include "revenge/original/campaign_data.h"
-#include "../src/Original/REVENGE.h"
 
 #include <stdio.h>
 #include <stdlib.h>

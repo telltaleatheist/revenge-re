@@ -6,8 +6,9 @@
 // counts only.
 
 #include "revenge/combat_data.h"
-#include "revenge/original_data.h"
-#include "../src/Original/REVENGE.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalGraphicsData.h"
+#include "Tactical/Tactical.h"
 
 #include <stdio.h>
 #include <stdlib.h>

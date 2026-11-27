@@ -7,8 +7,7 @@
 #include "game_paths.h"
 #include "settings.h"
 #include "original_import_for_tests.h"
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/StartupData.h"
 
 #include <SDL3/SDL.h>
 #include <assert.h>

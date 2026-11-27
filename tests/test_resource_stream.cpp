@@ -1,6 +1,11 @@
-#include "REVENGE.h"
+#include "Data/ResourceData.h"
+#include "Data/TextIOData.h"
+#include "IO/IO.h"
+#include "Resources/Resources.h"
+#include "Runtime/Runtime.h"
+#include "UI/UI.h"
+#include "revenge/heap.h"
 #include "revenge/game_file.h"
-#include "revenge/original_data.h"
 
 #include <stdio.h>
 #include <stdlib.h>

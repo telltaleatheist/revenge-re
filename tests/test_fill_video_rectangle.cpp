@@ -1,5 +1,5 @@
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Graphics/Graphics.h"
 #include "revenge/video.h"
 
 #include <stdio.h>

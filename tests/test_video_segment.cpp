@@ -1,5 +1,4 @@
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TacticalGraphicsData.h"
 #include "revenge/platform_backend.h"
 #include "revenge/video.h"
 

@@ -6,7 +6,8 @@
  * references from other procedures in the same original object file.
  */
 
-#include "../src/Original/REVENGE.h"
+#include "Resources/Resources.h"
+#include "revenge/heap.h"
 
 void *Heap_Allocate(uint32_t byteCount, const char *caller)
 {

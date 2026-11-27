@@ -1,5 +1,7 @@
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalGraphicsData.h"
+#include "Graphics/Graphics.h"
+#include "Tactical/Tactical.h"
 #include "revenge/video.h"
 
 #include <stdio.h>

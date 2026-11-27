@@ -1,7 +1,10 @@
-#include "REVENGE.h"
+#include "Data/GraphicsData.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
 
 #include "fake_backend.h"
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 #include <assert.h>

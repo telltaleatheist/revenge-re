@@ -11,8 +11,7 @@
 // with nothing in its arms); one held at the check leaves it as it was.
 // Synthetic values only.
 
-#include "revenge/original_data.h"
-#include "REVENGE.h"
+#include "Data/TacticalTables.h"
 #include "Tactical/CombatInternal.h"
 
 #include <stdio.h>

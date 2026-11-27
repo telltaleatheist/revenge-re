@@ -1,4 +1,4 @@
-#include "REVENGE.h"
+#include "Graphics/Graphics.h"
 #include "revenge/video.h"
 
 #include <assert.h>

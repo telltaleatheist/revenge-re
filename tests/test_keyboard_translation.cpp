@@ -1,6 +1,9 @@
 #include "fake_backend.h"
 #include "revenge/input.h"
-#include "revenge/original_data.h"
+#include "Data/AudioData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Input/Input.h"
 
 #include <assert.h>
 

@@ -1,5 +1,6 @@
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "revenge/dos.h"
 
 #include <assert.h>
 

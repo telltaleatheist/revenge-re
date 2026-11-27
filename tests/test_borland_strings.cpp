@@ -10,7 +10,7 @@
  *   decimal digits up to the first byte that isn't one.
  *
  * itoa and ltoa (3968) are utility.original_integer_format's. */
-#include "REVENGE.h"
+#include "Utility/Utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>

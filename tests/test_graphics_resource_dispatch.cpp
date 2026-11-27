@@ -1,6 +1,7 @@
-#include "REVENGE.h"
+#include "Data/RuntimeData.h"
+#include "Graphics/Graphics.h"
+#include "Resources/Resources.h"
 
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 #include <assert.h>

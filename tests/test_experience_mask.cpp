@@ -6,8 +6,8 @@
 // past the table, and the port reads it from UnitActionMaskByExperiencePastEnd.
 // Synthetic values only.
 
-#include "revenge/original_data.h"
-#include "../src/Original/REVENGE.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalTables.h"
 
 #include <stdio.h>
 #include <stdlib.h>

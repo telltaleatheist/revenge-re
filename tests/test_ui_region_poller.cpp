@@ -1,6 +1,9 @@
-#include "REVENGE.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
+#include "Input/Input.h"
+#include "Runtime/Runtime.h"
 #include "revenge/input.h"
-#include "revenge/original_data.h"
 
 #include <assert.h>
 #include <string.h>

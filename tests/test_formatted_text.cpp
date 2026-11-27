@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS   /* original_import_for_tests.h uses fopen */
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Data/TextIOData.h"
+#include "Text/Text.h"
 #include "revenge/original/campaign_data.h"
 
 #include "original_import_for_tests.h"

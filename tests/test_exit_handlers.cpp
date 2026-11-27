@@ -1,6 +1,8 @@
-#include "REVENGE.h"
+#include "Data/ResourceData.h"
+#include "IO/IO.h"
+#include "Resources/Resources.h"
+#include "UI/UI.h"
 #include "fake_backend.h"
-#include "revenge/original_data.h"
 
 #include <stdio.h>
 #include <stdlib.h>

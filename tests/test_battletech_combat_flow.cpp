@@ -1,7 +1,6 @@
 #include "revenge/combat_data.h"
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
 #include "revenge/unit.h"
-#include "../src/Original/REVENGE.h"
 
 #include "rules_for_tests.h"
 

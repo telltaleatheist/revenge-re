@@ -1,5 +1,8 @@
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
+#include "Input/Input.h"
+#include "UI/UI.h"
 
 #include <assert.h>
 #include <string.h>

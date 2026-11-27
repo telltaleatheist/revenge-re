@@ -1,5 +1,10 @@
 #include "revenge/combat_data.h"
-#include "revenge/original_data.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalTables.h"
+#include "Graphics/Graphics.h"
+#include "Tactical/Tactical.h"
+#include "Units/Units.h"
 #include "revenge/random.h"
 #include "revenge/unit.h"
 

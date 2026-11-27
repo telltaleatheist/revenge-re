@@ -1,6 +1,6 @@
-#include "REVENGE.h"
+#include "Data/StartupData.h"
+#include "Input/Input.h"
 #include "revenge/input.h"
-#include "revenge/original_data.h"
 
 #include <assert.h>
 

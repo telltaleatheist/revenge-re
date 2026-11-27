@@ -1,5 +1,5 @@
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TextIOData.h"
+#include "Text/Text.h"
 
 #include <assert.h>
 #include <string.h>

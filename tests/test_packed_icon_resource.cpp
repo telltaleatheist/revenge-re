@@ -1,4 +1,4 @@
-#include "REVENGE.h"
+#include "Resources/Resources.h"
 
 #include <assert.h>
 #include <string.h>

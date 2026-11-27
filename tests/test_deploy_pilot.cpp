@@ -4,9 +4,9 @@
 // entry past the roster's end, the four bytes at DS:2148. The unit gets pilot
 // FF and that entry's experience and gunnery. Synthetic values only.
 
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
+#include "Resources/Resources.h"
 #include "revenge/original/scene_data.h"
-#include "../src/Original/REVENGE.h"
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -6,7 +6,6 @@
 
 #include "revenge/original/scene_data.h"
 #include "revenge/platform_backend.h"
-#include "../src/Original/REVENGE.h"
 
 #include <stdio.h>
 #include <stdlib.h>

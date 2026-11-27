@@ -1,4 +1,6 @@
-#include "revenge/original_data.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Resources/Resources.h"
 
 #include <assert.h>
 #include <stdlib.h>

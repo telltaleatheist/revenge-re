@@ -2,8 +2,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
 #include "revenge/original/lance_editor_data.h"
 #include "revenge/platform_backend.h"
 #include "revenge/save_data.h"
