@@ -114,3 +114,6 @@ lance_editor_start.section_enabled      UnitEditorSectionEnabled            3A6A
 game_start.tactical_update_delay_ticks  TacticalUpdateDelayReloadTicks      3A6A:17DA 2
 game_start.tactical_game_speed          TacticalGameSpeedIndex              3A6A:17DC 2
 game_start.presentation_dismiss_timeout PresentationDismissTimeout          3A6A:240F 2
+
+# data/start/save_directory.json
+save_directory.directory                SaveDirectory                       3A6A:18CE 88

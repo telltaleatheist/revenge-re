@@ -1,0 +1,11 @@
+{
+  "prefix": [0, 1, 0, 0],
+  "slots": [
+    {"occupied": 0, "name": "1"},
+    {"occupied": 0, "name": "2"},
+    {"occupied": 0, "name": "3"},
+    {"occupied": 0, "name": "4"},
+    {"occupied": 0, "name": "5"},
+    {"occupied": 0, "name": "6"}
+  ]
+}

@@ -873,6 +873,34 @@ void read_new_campaign(const Json& root, Tables& tables) {
     file.done();
 }
 
+// data/start/save_directory.json: CampaignSaveDirectory as it stands before a
+// save file is read, the 4-byte prefix then 6 slots of 22 bytes (occupied,
+// then the name, NUL-padded to 21).
+void read_save_directory(const Json& root, Tables& tables) {
+    constexpr std::size_t kSlots = 6, kSlotSize = 0x16, kNameSize = 0x15;
+    Fields file(root, "save_directory.json:");
+    std::vector<std::uint8_t> out = numbers(file.take("prefix"), file.at("prefix"), 4, 0xFF, 1);
+    const Json& slots = file.take("slots");
+    const std::string where = file.at("slots");
+    if (!slots.is_array() || slots.array().size() != kSlots) fail(where, "is not an array of 6 slots");
+    for (std::size_t index = 0; index < kSlots; ++index) {
+        Fields slot(slots.array()[index], where + "[" + std::to_string(index) + "]");
+        std::uint8_t record[kSlotSize] = {};
+        record[0] = static_cast<std::uint8_t>(whole(slot.take("occupied"), slot.at("occupied"), 1));
+        const Json& name = slot.take("name");
+        if (!name.is_string() || name.string().size() >= kNameSize)
+            fail(slot.at("name"), "is not a name of up to 20 characters");
+        for (const char c : name.string())
+            if (static_cast<unsigned char>(c) < 0x20 || static_cast<unsigned char>(c) > 0x7E)
+                fail(slot.at("name"), "holds a character outside printable ASCII");
+        std::copy(name.string().begin(), name.string().end(), record + 1);
+        slot.done();
+        out.insert(out.end(), record, record + kSlotSize);
+    }
+    file.done();
+    tables["save_directory.directory"] = std::move(out);
+}
+
 // data/start/game.json: the play's starting settings, as words.
 void read_game_start(const Json& root, Tables& tables) {
     Fields file(root, "game.json:");
@@ -931,6 +959,7 @@ void load(const std::filesystem::path& data_dir) {
     read_new_campaign(read_file(start / "new_campaign.json", "new_campaign.json"), tables);
     read_lance_editor_start(read_file(start / "lance_editor.json", "lance_editor.json (start)"), tables);
     read_game_start(read_file(start / "game.json", "game.json"), tables);
+    read_save_directory(read_file(start / "save_directory.json", "save_directory.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {

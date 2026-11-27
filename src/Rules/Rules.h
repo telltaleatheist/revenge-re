@@ -162,6 +162,12 @@
 //     "presentation_dismiss_timeout"  how long a story screen waits for a
 //         key before it goes on
 //
+//   save_directory.json, the save directory before a save file is read:
+//     "prefix"  4 bytes, as the original has them
+//     "slots"  6 {"occupied" (0 or 1), "name" (up to 20 printable ASCII
+//         characters)}: the slots the save and load menus list, named 1 to
+//         6 until a save file names them
+//
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
 // file and the key.

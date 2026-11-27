@@ -699,11 +699,11 @@ if(BUILD_TESTING)
     add_test(NAME rules.rebuild COMMAND test_rules from_data)
     add_test(NAME rules.exe COMMAND test_rules in_copy)
     add_test(NAME rules.range COMMAND test_rules too_large)
-    foreach(mode stray absent length shared location direction engagement overfull unit_type class_lists experience month record frame pilot_count section speed nofile)
+    foreach(mode stray absent length shared location direction engagement overfull unit_type class_lists experience month record frame pilot_count section speed slot_name nofile)
         add_test(NAME rules.${mode} COMMAND test_rules ${mode})
     endforeach()
     set_tests_properties(rules.rebuild rules.exe rules.range rules.stray rules.absent
-        rules.length rules.shared rules.location rules.direction rules.engagement rules.overfull rules.unit_type rules.class_lists rules.experience rules.month rules.record rules.frame rules.pilot_count rules.section rules.speed rules.nofile
+        rules.length rules.shared rules.location rules.direction rules.engagement rules.overfull rules.unit_type rules.class_lists rules.experience rules.month rules.record rules.frame rules.pilot_count rules.section rules.speed rules.slot_name rules.nofile
         PROPERTIES SKIP_RETURN_CODE 77)
     set_tests_properties(rules.stray PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: weapons.json: weapon_table.small_laser.rate_of_fire is no key of the rules here")
@@ -741,6 +741,8 @@ if(BUILD_TESTING)
         "fault: rules: lance_editor.json .start.: section_enabled.1. is not a whole number from 0 to 1")
     set_tests_properties(rules.speed PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: game.json: tactical_game_speed is not a whole number from 0 to 7")
+    set_tests_properties(rules.slot_name PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: save_directory.json: slots.2..name is not a name of up to 20 characters")
     set_tests_properties(rules.nofile PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: combat.json can't be read from")
 
