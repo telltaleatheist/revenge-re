@@ -1,3 +1,7 @@
+#if defined(_MSC_VER)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE.h"
 #include "revenge/original_data.h"
 #include "revenge/platform_backend.h"

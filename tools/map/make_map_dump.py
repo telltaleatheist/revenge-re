@@ -36,6 +36,10 @@ def source():
     lines = [
         "/* Written by tools/map/make_map_dump.py from the headers' externs; don't edit. */",
         "",
+        "#if defined(_MSC_VER)",
+        "#define _CRT_SECURE_NO_WARNINGS",
+        "#endif",
+        "",
         '#include "REVENGE.h"',
     ]
     lines += [f'#include "{include_name(h)}"' for h in headers if include_name(h) != "REVENGE.h"]

@@ -1,5 +1,9 @@
 /* Written by tools/map/make_map_dump.py from the headers' externs; don't edit. */
 
+#if defined(_MSC_VER)
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "REVENGE.h"
 #include "revenge/audio.h"
 #include "revenge/combat_data.h"
