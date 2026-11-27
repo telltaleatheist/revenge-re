@@ -14,7 +14,7 @@ enum
     JUKEBOX_SONG_CAPACITY = 0x30D4
 };
 
-static byte song[JUKEBOX_SONG_CAPACITY];
+static uint8_t song[JUKEBOX_SONG_CAPACITY];
 
 void JukeboxGame_Begin(void (*sink)(unsigned char))
 {
