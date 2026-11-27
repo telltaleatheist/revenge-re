@@ -873,6 +873,20 @@ void read_new_campaign(const Json& root, Tables& tables) {
     file.done();
 }
 
+// data/start/game.json: the play's starting settings, as words.
+void read_game_start(const Json& root, Tables& tables) {
+    Fields file(root, "game.json:");
+    const auto word = [&](const char* key, const char* table, unsigned maximum) {
+        std::vector<std::uint8_t>& out = tables[table];
+        out.assign(2, 0);
+        put_word(out.data(), whole(file.take(key), file.at(key), maximum));
+    };
+    word("tactical_game_speed", "game_start.tactical_game_speed", 0x07);
+    word("tactical_update_delay_ticks", "game_start.tactical_update_delay_ticks", 0xFFFF);
+    word("presentation_dismiss_timeout", "game_start.presentation_dismiss_timeout", 0xFFFF);
+    file.done();
+}
+
 // Bytes two tables share in the original's memory must agree.
 void check_shared(const Tables& tables) {
     // The first missile weapon's bonus is the high byte of the last direction
@@ -916,6 +930,7 @@ void load(const std::filesystem::path& data_dir) {
     const std::filesystem::path start = data_dir / "start";
     read_new_campaign(read_file(start / "new_campaign.json", "new_campaign.json"), tables);
     read_lance_editor_start(read_file(start / "lance_editor.json", "lance_editor.json (start)"), tables);
+    read_game_start(read_file(start / "game.json", "game.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {

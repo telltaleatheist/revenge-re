@@ -79,6 +79,9 @@ const RulePiece RulePieces[] =
 	{ "lance_editor_start.reload_graphics", &LanceEditorReloadGraphics, sizeof(LanceEditorReloadGraphics), 0x3A6A, 0x30C8, 0x2, "58f87d0a96fd20cb" },
 	{ "lance_editor_start.lance_slot_counts", &UnitEditorLanceSlotCount, sizeof(UnitEditorLanceSlotCount), 0x3A6A, 0x3112, 0x6, "0516c073ec9f9f7e" },
 	{ "lance_editor_start.section_enabled", &UnitEditorSectionEnabled, sizeof(UnitEditorSectionEnabled), 0x3A6A, 0x31E9, 0x1D, "6324cca6a61409b0" },
+	{ "game_start.tactical_update_delay_ticks", &TacticalUpdateDelayReloadTicks, sizeof(TacticalUpdateDelayReloadTicks), 0x3A6A, 0x17DA, 0x2, "1c6886649de1104e" },
+	{ "game_start.tactical_game_speed", &TacticalGameSpeedIndex, sizeof(TacticalGameSpeedIndex), 0x3A6A, 0x17DC, 0x2, "c849093f52e6bb81" },
+	{ "game_start.presentation_dismiss_timeout", &PresentationDismissTimeout, sizeof(PresentationDismissTimeout), 0x3A6A, 0x240F, 0x2, "c02198fcd61de6b3" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -151,3 +154,6 @@ _Static_assert(sizeof(ReplayExtendedCampaignState) == 0xF, "new_campaign.replay_
 _Static_assert(sizeof(LanceEditorReloadGraphics) == 0x2, "lance_editor_start.reload_graphics is the original's size");
 _Static_assert(sizeof(UnitEditorLanceSlotCount) == 0x6, "lance_editor_start.lance_slot_counts is the original's size");
 _Static_assert(sizeof(UnitEditorSectionEnabled) == 0x1D, "lance_editor_start.section_enabled is the original's size");
+_Static_assert(sizeof(TacticalUpdateDelayReloadTicks) == 0x2, "game_start.tactical_update_delay_ticks is the original's size");
+_Static_assert(sizeof(TacticalGameSpeedIndex) == 0x2, "game_start.tactical_game_speed is the original's size");
+_Static_assert(sizeof(PresentationDismissTimeout) == 0x2, "game_start.presentation_dismiss_timeout is the original's size");

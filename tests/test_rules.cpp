@@ -157,6 +157,7 @@ int main(int argc, char** argv) {
         {"pilot_count", "start/new_campaign.json", "\"random_pilot_count\": 15\n  },\n  \"forward\"",
          "\"random_pilot_count\": 16\n  },\n  \"forward\""},
         {"section", "start/lance_editor.json", "    1, 1, 1, 1,", "    1, 2, 1, 1,"},
+        {"speed", "start/game.json", "\"tactical_game_speed\": 2", "\"tactical_game_speed\": 8"},
         {"nofile", "rules/combat.json", nullptr, nullptr},
     };
     for (const Broken& one : broken)

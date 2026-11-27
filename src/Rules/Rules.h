@@ -1,7 +1,8 @@
 // The rules (include/revenge/rules.h): numbers we own, the original's to
 // begin with, read from <data dir>/rules/*.json, <data dir>/ui/*.json and
-// <data dir>/start/*.json at start into the tables the game reads. Never the game's text: a rule that names a text uses its story
-// id, and a name in a file is the name the code gives the thing.
+// <data dir>/start/*.json at start into the tables the game reads. Never the
+// game's text: a rule that names a text uses its story id, and a name in a
+// file is the name the code gives the thing.
 //
 //   weapons.json
 //     {"weapon_table": {"small_laser": {...}, ..., "srm_6": {...}},
@@ -154,6 +155,13 @@
 //         byte past them, as the original has it
 //     "reload_graphics"  0 or 1
 //
+//   game.json, words:
+//     "tactical_game_speed"  0 to 7, the battle speed's index (keys 1 to 8)
+//     "tactical_update_delay_ticks"  the delay that speed's key sets
+//         (SetTacticalGameSpeed's table: 35 for speed 2)
+//     "presentation_dismiss_timeout"  how long a story screen waits for a
+//         key before it goes on
+//
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
 // file and the key.
@@ -168,8 +176,8 @@ struct RulesError : std::runtime_error {
     using std::runtime_error::runtime_error;
 };
 
-// Reads every file under data_dir/rules, /ui and /start into its tables, or throws
-// RulesError naming the file and the key.
+// Reads every file under data_dir/rules, /ui and /start into its tables, or
+// throws RulesError naming the file and the key.
 void load(const std::filesystem::path& data_dir);
 
 }  // namespace revenge::rules

@@ -340,6 +340,7 @@ char SharedNumericTextBuffer[0x20];
 const char PercentageSuffixText[] = "%";
 word16 TacticalUpdateDelayTicks;
 word16 TacticalKeyRepeatDelayTicks;
+/* Filled at start from data/start/game.json (revenge/rules.h). */
 word16 TacticalUpdateDelayReloadTicks;
 word16 TacticalGameSpeedIndex;
 word16 TacticalBattleResult;
@@ -421,7 +422,7 @@ byte *MusicStagingBuffer;
 word16 PlanarBackingBufferExtentLow;
 word16 PlanarBackingBufferExtentHigh;
 byte SceneTransitionAbortFlag;
-/* DS:240F: from the player's copy (original_import_pieces.txt). */
+/* DS:240F: filled at start from data/start/game.json (revenge/rules.h). */
 word16 PresentationDismissTimeout;
 word16 PresentationCallbackOffset;
 word16 PresentationCallbackSegment;

@@ -13,7 +13,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces_dos100[0x143] =
+const OriginalPiece OriginalPieces_dos100[0x142] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, NULL, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, NULL, "2de063a6fef0f14a" },
@@ -61,7 +61,6 @@ const OriginalPiece OriginalPieces_dos100[0x143] =
 	{ "MusicConfigurationRecords", ORIGINAL_PIECE_BYTES, 0x3B12, 0x5B, 4, 91, &MusicConfigurationRecords, "d83877fc321af9c6" },
 	{ "InputConfigurationRecords", ORIGINAL_PIECE_BYTES, 0x3B6D, 0x1A, 4, 26, &InputConfigurationRecords, "9f15663163ffce23" },
 	{ "SoundConfigurationRecords", ORIGINAL_PIECE_BYTES, 0x3B87, 0x7E, 4, 126, &SoundConfigurationRecords, "b24d4746a766ad03" },
-	{ "PresentationDismissTimeout", ORIGINAL_PIECE_BYTES, 0x240F, 0x2, 4, 2, &PresentationDismissTimeout, "c02198fcd61de6b3" },
 	{ "MIDIParser", ORIGINAL_PIECE_BYTES, 0x62B0, 0xA, 4, 10, &MIDIParser, "609f8b66779f2c2b" },
 	{ "UnitNameSplitIndex", ORIGINAL_PIECE_BYTES, 0x3172, 0x59, 4, 89, &UnitNameSplitIndex, "863f1491250b4d50" },
 	{ "print_allocation_error_and_exit.0", ORIGINAL_PIECE_TEXT, 0x232B, 0, 0, 19, NULL, "21c3e217021da4b4" },
@@ -1120,6 +1119,5 @@ _Static_assert(sizeof(VideoConfigurationRecords) == 0x41, "VideoConfigurationRec
 _Static_assert(sizeof(MusicConfigurationRecords) == 0x5B, "MusicConfigurationRecords is the piece's size");
 _Static_assert(sizeof(InputConfigurationRecords) == 0x1A, "InputConfigurationRecords is the piece's size");
 _Static_assert(sizeof(SoundConfigurationRecords) == 0x7E, "SoundConfigurationRecords is the piece's size");
-_Static_assert(sizeof(PresentationDismissTimeout) == 0x2, "PresentationDismissTimeout is the piece's size");
 _Static_assert(sizeof(MIDIParser) == 0xA, "MIDIParser is the piece's size");
 _Static_assert(sizeof(UnitNameSplitIndex) == 0x59, "UnitNameSplitIndex is the piece's size");

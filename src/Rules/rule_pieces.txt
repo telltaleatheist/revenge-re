@@ -109,3 +109,8 @@ new_campaign.replay_pilot_pool          ReplayExtendedCampaignState         3A6A
 lance_editor_start.reload_graphics      LanceEditorReloadGraphics           3A6A:30C8 2
 lance_editor_start.lance_slot_counts    UnitEditorLanceSlotCount            3A6A:3112 6
 lance_editor_start.section_enabled      UnitEditorSectionEnabled            3A6A:31E9 1D
+
+# data/start/game.json
+game_start.tactical_update_delay_ticks  TacticalUpdateDelayReloadTicks      3A6A:17DA 2
+game_start.tactical_game_speed          TacticalGameSpeedIndex              3A6A:17DC 2
+game_start.presentation_dismiss_timeout PresentationDismissTimeout          3A6A:240F 2

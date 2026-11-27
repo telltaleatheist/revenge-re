@@ -89,7 +89,6 @@ bytes                InputConfigurationRecords               3B6D 1A
 bytes                SoundConfigurationRecords               3B87 7E
 
 # State the game starts with
-bytes                PresentationDismissTimeout              240F 2
 bytes                MIDIParser                              62B0 0A
 
 # Single texts

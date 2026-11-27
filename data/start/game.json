@@ -1,0 +1,5 @@
+{
+  "tactical_game_speed": 2,
+  "tactical_update_delay_ticks": 35,
+  "presentation_dismiss_timeout": 300
+}
