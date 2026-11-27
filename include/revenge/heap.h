@@ -25,21 +25,27 @@
  * editor, 2507:623D) lands in the same block every run; the host's own reuse
  * depends on its other threads. What is kept stays under 250 KB in the
  * longest trace scripts (second_battle, restart, save_load, battle_steps);
- * the size that varies most, the cursor's backing as it moves,
- * is under 400 bytes (2 tiles by 16 rows).
+ * the size that varies most, the cursor's backing as it moves, is under 400
+ * bytes (2 tiles by 16 rows).
+ *
+ * With REVENGE_HEAP_FREE set, a freed block goes back to the host at once
+ * instead, for a sanitizer's run.
  *
  * Each block is numbered in allocation order, from 1, a reused one anew; the
  * map dump names a pointer into a live block by that number and the offset
  * (src/SDL/map_dump.c).
  */
 void *Heap_Allocate(uint32 byteCount, const char *caller);
-/* NULL: nothing. A block already freed, and kept, again: nothing. The
- * original frees the music staging buffer twice when the game shuts down in
- * a battle: the battle frees it (0D73:0195), and the shutdown frees it again
- * (3014:0143, from 2C7F:02E3); its heap took the second as it found it, and
- * the program ends before it allocates again. Any other pointer that isn't a
- * live block's start is a fault. */
+/* NULL: nothing. A pointer that isn't a live block's start, a block freed
+ * already among them, is a fault. */
 void Heap_Free(void *block);
+/* Heap_Free of a block the caller holds from the request at allocator's
+ * address: a live block there that another request has taken since is a
+ * fault naming the free's caller and both requests. */
+void Heap_FreeFrom(void *block, const char *allocator, const char *caller);
+/* The caller of the request that took the live block starting there; NULL
+ * for any other pointer. */
+const char *Heap_Caller(const void *block);
 
 /* The live block holding the address: its number and the address's offset,
  * and 1; else 0. */

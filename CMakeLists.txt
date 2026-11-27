@@ -544,6 +544,12 @@ if(BUILD_TESTING)
     add_test(NAME support.heap_zero COMMAND test_heap zero)
     set_tests_properties(support.heap_zero PROPERTIES
         PASS_REGULAR_EXPRESSION "fault: a 0-byte allocation, called from 1234:5678")
+    add_test(NAME support.heap_twice COMMAND test_heap twice)
+    set_tests_properties(support.heap_twice PROPERTIES
+        PASS_REGULAR_EXPRESSION "fault: a free of a pointer that is no live block")
+    add_test(NAME support.heap_reused COMMAND test_heap reused)
+    set_tests_properties(support.heap_reused PROPERTIES
+        PASS_REGULAR_EXPRESSION "fault: the free called from 3014:0133, of the block 3014:011E allocated, finds one 0D73:562F allocated since")
 
     add_executable(test_formatted_text
         tests/test_formatted_text.c

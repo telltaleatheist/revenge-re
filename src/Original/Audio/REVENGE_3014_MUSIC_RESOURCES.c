@@ -7,6 +7,8 @@
 #include "revenge/debug.h"
 #include "revenge/original_data.h"
 
+#include <string.h>
+
 // 3014:000E: void DisableMusicPlayback(void)
 // Called from:
 //      ServiceMusicAndCheckKeyboardInput
@@ -76,10 +78,11 @@ void AllocateMusicStagingBuffer(void)
 
 // 3014:0133: void ReleaseMusicDriverBuffer(void)
 // Called from:
+//      CampaignDriver (0D73:025E)
 //      ShutdownMusicDriver
 void ReleaseMusicDriverBuffer(void)
 {
-	Heap_Free(MusicStagingBuffer);
+	Heap_FreeFrom(MusicStagingBuffer, "3014:011E", "3014:0133");
 }
 
 // 3014:0143: void ShutdownMusicDriver(void)
@@ -89,6 +92,14 @@ void ShutdownMusicDriver(void)
 {
 	StopMIDISequence();
 	DeactivateMIDIDriver();
+	// A shutdown in a battle frees the buffer the battle freed (0D73:025E)
+	// and hasn't asked for again (0D73:033D): the original's heap took that
+	// free as it found it, and the program ends before it allocates again.
+	// Here that block is still kept, or another request of its size has taken
+	// it since; either way it isn't the music's to free.
+	if (Heap_Caller(MusicStagingBuffer) == NULL ||
+		strcmp(Heap_Caller(MusicStagingBuffer), "3014:011E") != 0)
+		return;
 	ReleaseMusicDriverBuffer();
 }
 

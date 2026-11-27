@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "revenge/heap.h"
 #include "revenge/debug.h"
 
@@ -9,6 +11,7 @@ typedef struct HeapBlock
 	byte *start;
 	uint32 size;
 	uint32 number;
+	const char *caller;
 } HeapBlock;
 
 static HeapBlock *blocks;
@@ -19,6 +22,28 @@ static size_t freedCount;
 static size_t freedCapacity;
 static uint32 blocksMade;
 static int failNext;
+static int realFree = -1;
+
+/* REVENGE_HEAP_FREE set: a freed block goes back to the host at once and
+ * none is kept, so a sanitizer sees every read of a freed one. */
+static int RealFree(void)
+{
+	if (realFree < 0)
+		realFree = getenv("REVENGE_HEAP_FREE") != NULL;
+	return realFree;
+}
+
+static size_t LiveIndex(const void *block)
+{
+	size_t index;
+
+	for (index = 0; index < blockCount; ++index)
+	{
+		if (blocks[index].start == (const byte *) block)
+			return index;
+	}
+	return blockCount;
+}
 
 static int Grow(HeapBlock **list, size_t count, size_t *capacity)
 {
@@ -42,6 +67,8 @@ static byte *Reuse(uint32 byteCount)
 {
 	size_t index = freedCount;
 
+	if (RealFree())
+		return NULL;
 	while (index-- > 0)
 	{
 		if (freed[index].size == byteCount)
@@ -76,6 +103,7 @@ void *Heap_Allocate(uint32 byteCount, const char *caller)
 	blocks[blockCount].start = start;
 	blocks[blockCount].size = byteCount;
 	blocks[blockCount].number = ++blocksMade;
+	blocks[blockCount].caller = caller;
 	++blockCount;
 	return start;
 }
@@ -86,23 +114,36 @@ void Heap_Free(void *block)
 
 	if (block == NULL)
 		return;
-	for (index = 0; index < blockCount; ++index)
+	index = LiveIndex(block);
+	if (index == blockCount)
+		RevengeFault("a free of a pointer that is no live block: freed already, or never given");
+	if (RealFree())
+		free(block);
+	else
 	{
-		if (blocks[index].start == (byte *) block)
-		{
-			if (!Grow(&freed, freedCount, &freedCapacity))
-				RevengeFault("no host memory to keep a freed block");
-			freed[freedCount++] = blocks[index];
-			blocks[index] = blocks[--blockCount];
-			return;
-		}
+		if (!Grow(&freed, freedCount, &freedCapacity))
+			RevengeFault("no host memory to keep a freed block");
+		freed[freedCount++] = blocks[index];
 	}
-	for (index = 0; index < freedCount; ++index)
-	{
-		if (freed[index].start == (byte *) block)
-			return;
-	}
-	RevengeFault("a free of a pointer the heap didn't give");
+	blocks[index] = blocks[--blockCount];
+}
+
+void Heap_FreeFrom(void *block, const char *allocator, const char *caller)
+{
+	size_t index = LiveIndex(block);
+
+	if (block != NULL && index < blockCount &&
+		strcmp(blocks[index].caller, allocator) != 0)
+		RevengeFault("the free called from %s, of the block %s allocated, finds one %s allocated since",
+			caller, allocator, blocks[index].caller);
+	Heap_Free(block);
+}
+
+const char *Heap_Caller(const void *block)
+{
+	size_t index = LiveIndex(block);
+
+	return block != NULL && index < blockCount ? blocks[index].caller : NULL;
 }
 
 int Heap_Find(uintptr_t address, uint32 *number, uint32 *offset)
