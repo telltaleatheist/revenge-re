@@ -1,4 +1,5 @@
-// REVENGE_2B34_UNIT_STATUS.cpp
+// 2B2D, 2B34: unit status
+// UnitStatus.cpp
 // Reconstructed from REVENGE.EXE and its annotated instruction listing.
 // using Reko decompiler version 0.11.4.0.
 

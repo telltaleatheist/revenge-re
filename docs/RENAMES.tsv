@@ -126,3 +126,12 @@ file	src/Original/UI/REVENGE_0D73_CONFIRMATION.cpp	src/Original/UI/Confirmation.
 file	src/Original/UI/REVENGE_0D73_INVALID_SAVE_DIALOG.cpp	src/Original/UI/InvalidSaveDialog.cpp	0D73	invalid save dialog
 file	src/Original/UI/REVENGE_3390_RESOURCE_ERROR_MESSAGE.cpp	src/Original/UI/ResourceErrorMessage.cpp	3390	resource error message
 file	src/Original/UI/REVENGE_35CA_UI_REGION_HIGHLIGHT.cpp	src/Original/UI/UIRegionHighlight.cpp	35CA	UI region highlight
+file	src/Original/Units/REVENGE_2208_INITIALIZATION.cpp	src/Original/Units/Initialization.cpp	2208	scenario unit initialization
+file	src/Original/Units/REVENGE_2507_EDITOR_GRAPHICS.cpp	src/Original/Units/EditorGraphics.cpp	2507	editor graphics
+file	src/Original/Units/REVENGE_2507_LANCE_CONFIGURATION.cpp	src/Original/Units/LanceConfiguration.cpp	2507	lance configuration
+file	src/Original/Units/REVENGE_2507_LANCE_EDITOR_INTERNAL.h	src/Original/Units/LanceEditorInternal.h	2507	lance editor declarations
+file	src/Original/Units/REVENGE_2507_PILOT_ASSIGNMENT.cpp	src/Original/Units/PilotAssignment.cpp	2507	pilot assignment
+file	src/Original/Units/REVENGE_2507_TRAINING.cpp	src/Original/Units/Training.cpp	2507	training
+file	src/Original/Units/REVENGE_2507_UNIT_ASSIGNMENT.cpp	src/Original/Units/UnitAssignment.cpp	2507	unit assignment
+file	src/Original/Units/REVENGE_2B34_UNIT_STATUS.cpp	src/Original/Units/UnitStatus.cpp	2B2D 2B34	unit status
+file	src/Original/Units/REVENGE_30F1_SCENARIO_ROSTERS.cpp	src/Original/Units/ScenarioRosters.cpp	30F1	scenario rosters

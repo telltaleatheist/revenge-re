@@ -1,7 +1,8 @@
-// REVENGE_2507_EDITOR_GRAPHICS.cpp
+// 2507: editor graphics
+// EditorGraphics.cpp
 // Reconstructed from the original procedures in segment 2507.
 
-#include "REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
+#include "LanceEditorInternal.h"
 
 // 2507:60D2: draw the first four unit stat headers (UnitStatHeaderTextTable 0-3), 7 pixels apart.
 void DrawRangeAndSpeedStatHeaders(word16 topY)

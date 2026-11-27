@@ -1,7 +1,8 @@
-// REVENGE_2507_PILOT_ASSIGNMENT.cpp
+// 2507: pilot assignment
+// PilotAssignment.cpp
 // Reconstructed from the original procedures in segment 2507.
 
-#include "REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
+#include "LanceEditorInternal.h"
 
 // 2507:5016: prepare pilot-selection records and portrait buffers.
 // VERIFIED against ASM 2507:5016-5116.

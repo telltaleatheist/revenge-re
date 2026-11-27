@@ -1,3 +1,4 @@
+// 2208: scenario unit initialization
 /* Scenario-unit initialization procedure from original segment 2208. */
 
 #include "REVENGE.h"

@@ -4,7 +4,7 @@
 
 #include "revenge/original_data.h"
 #include "revenge/original/lance_editor_data.h"
-#include "Units/REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
+#include "Units/LanceEditorInternal.h"
 #include "original_import_for_tests.h"
 
 #include <assert.h>

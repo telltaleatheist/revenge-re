@@ -1,11 +1,12 @@
-// REVENGE_2507_UNIT_ASSIGNMENT.cpp
+// 2507: unit assignment
+// UnitAssignment.cpp
 // Reconstructed from the original procedures in segment 2507.
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
+#include "LanceEditorInternal.h"
 #include "revenge/debug.h"
 
 #include <string.h>

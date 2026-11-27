@@ -38,16 +38,16 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Tactical/UnitDamage.cpp
 	src/Original/Tactical/TerrainDamage.cpp
 	src/Original/Tactical/Damage.cpp
-	src/Original/Units/REVENGE_2507_TRAINING.cpp
-	src/Original/Units/REVENGE_2507_LANCE_CONFIGURATION.cpp
-	src/Original/Units/REVENGE_2507_UNIT_ASSIGNMENT.cpp
-	src/Original/Units/REVENGE_2507_PILOT_ASSIGNMENT.cpp
-	src/Original/Units/REVENGE_2507_EDITOR_GRAPHICS.cpp
+	src/Original/Units/Training.cpp
+	src/Original/Units/LanceConfiguration.cpp
+	src/Original/Units/UnitAssignment.cpp
+	src/Original/Units/PilotAssignment.cpp
+	src/Original/Units/EditorGraphics.cpp
 	src/Original/Graphics/TacticalSprite.cpp
     src/Original/Graphics/PlanarDisplayBacking.cpp
     src/Original/Runtime/Startup.cpp
 	src/Original/Audio/PCSpeakerEffects.cpp
-	src/Original/Units/REVENGE_30F1_SCENARIO_ROSTERS.cpp
+	src/Original/Units/ScenarioRosters.cpp
 	src/Original/Audio/MusicResources.cpp
 	src/Original/Audio/PCSpeakerTimer.cpp
     src/Original/Audio/DigitalSound.cpp
@@ -102,14 +102,14 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Text/FontRaster.cpp)
 
 list(APPEND CHR_ORIGINAL_SOURCES
-	src/Original/Units/REVENGE_2B34_UNIT_STATUS.cpp
+	src/Original/Units/UnitStatus.cpp
 	src/Original/Tactical/TacticalEffects.cpp
 	src/Original/Tactical/TacticalStatus.cpp
 	src/Original/Tactical/Display.cpp
 	src/Original/Tactical/Targeting.cpp
 	src/Original/Tactical/Commands.cpp
 	src/Original/Tactical/Formations.cpp
-	src/Original/Units/REVENGE_2208_INITIALIZATION.cpp
+	src/Original/Units/Initialization.cpp
 	src/Original/Tactical/OverviewMap.cpp
 	src/Original/Tactical/TacticalView.cpp
 	src/Original/Tactical/ScenarioRuntime.cpp

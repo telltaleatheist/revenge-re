@@ -8,7 +8,7 @@
 #include "revenge/platform_backend.h"
 #include "revenge/save_data.h"
 #include "revenge/video.h"
-#include "Units/REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
+#include "Units/LanceEditorInternal.h"
 #include "original_import_for_tests.h"
 
 #include <assert.h>

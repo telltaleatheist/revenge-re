@@ -1,5 +1,6 @@
-#ifndef REVENGE_2507_LANCE_EDITOR_INTERNAL_H
-#define REVENGE_2507_LANCE_EDITOR_INTERNAL_H
+// 2507: lance editor declarations
+#ifndef REVENGE_UNITS_LANCE_EDITOR_INTERNAL_H
+#define REVENGE_UNITS_LANCE_EDITOR_INTERNAL_H
 
 #include "REVENGE.h"
 #include "revenge/input.h"

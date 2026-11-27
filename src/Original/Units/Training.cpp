@@ -1,11 +1,12 @@
-// REVENGE_2507_TRAINING.cpp
+// 2507: training
+// Training.cpp
 // Reconstructed from the original procedures in segment 2507.
 
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE_2507_LANCE_EDITOR_INTERNAL.h"
+#include "LanceEditorInternal.h"
 #include "revenge/story_text.h"
 
 #include <string.h>

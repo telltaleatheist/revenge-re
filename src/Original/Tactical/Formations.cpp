@@ -204,7 +204,7 @@ int16 UpdateUnitEnemyProximityState(word16 unitIndex)
     return result;
 }
 
-/* 2208:2472 is reconstructed in Units/REVENGE_2208_INITIALIZATION.cpp. */
+/* 2208:2472 is reconstructed in Units/Initialization.cpp. */
 
 // 2208:18A1: void RebuildLanceFormationAfterLeaderLoss(word16 lanceBaseUnitIndex)
 // Called from:

@@ -40,8 +40,8 @@ the control flow that must remain comparable with the assembly.
 | `BattleInternal.h` | `BranchOrSkipSceneWord` | scene interpreter `2A4E` | Invented branch abstraction over original opcode cases. |
 | `OverviewMap.cpp` | `GetOverviewRowStride` | tactical overview renderer | Game/video layout decision rather than a host boundary. |
 | `OverviewMap.cpp` | `GetOverviewMapRow` | tactical overview renderer | Invented map-row abstraction. |
-| `REVENGE_2507_LANCE_CONFIGURATION.cpp` | `DrawRosterPilotUnitLabel` | lance/roster presentation | Extracted game presentation logic. |
-| `REVENGE_2507_LANCE_CONFIGURATION.cpp` | `GetLiveScenarioUnitTypeId` | lance/roster presentation | Game-record lookup. |
+| `LanceConfiguration.cpp` | `DrawRosterPilotUnitLabel` | lance/roster presentation | Extracted game presentation logic. |
+| `LanceConfiguration.cpp` | `GetLiveScenarioUnitTypeId` | lance/roster presentation | Game-record lookup. |
 | `UnitState.cpp` | `LookupTacticalEngagementMode` | tactical engagement procedure | Extracted game decision table. |
 | `MIDISequence.cpp` | `ConfigureMIDIChannelFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
 | `MIDISequence.cpp` | `LoadMIDIInstrumentFromSysEx` | MIDI SysEx service procedure | Splits original MIDI command handling. |
