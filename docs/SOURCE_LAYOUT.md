@@ -21,10 +21,16 @@ IO/         Resources/  Runtime/    Tactical/   Text/
 UI/         Units/      Utility/
 ```
 
-These directories do not change the original call graph. Filenames retain the
-`REVENGE_XXXX` segment prefix and may add a topic suffix. A large segment may
+These directories do not change the original call graph. A file is named for
+what it holds (`Tactical/UnitDamage.cpp`); its first line names the original's
+segments it holds and what it is (`// 2D1B: unit damage`). A large segment may
 be split only between original procedure boundaries. Every procedure keeps its
 `SEG:OFFSET` in its leading comment and in both ledgers.
+
+The files were first named for their segment (`REVENGE_2D1B_UNIT_DAMAGE`).
+[`RENAMES.tsv`](RENAMES.tsv) lists each old name with its new one, and
+`tools/rename_files.py` applies a row: the move, and every mention of the old
+name in the tree (includes, CMake lists, the ledgers, tests and docs).
 
 `src/Support` contains only facilities that have no original executable
 procedure boundary, such as stored 16:16 address resolution, host callback

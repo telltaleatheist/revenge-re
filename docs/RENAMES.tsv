@@ -1,0 +1,5 @@
+# The renames of the files and names the rebuild started from: one row each,
+# kept after they are applied so a reader of that tree finds ours.
+# tools/rename_files.py applies them; kind file or name, the original's
+# segments a file holds, and what it is (its first line).
+kind	old	new	segments	note
