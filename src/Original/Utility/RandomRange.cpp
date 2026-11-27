@@ -1,7 +1,8 @@
 // 34C6: random range
 // Reconstructed original inclusive random-range utility (segment 34C6).
 
-#include "REVENGE.h"
+#include "Graphics/Graphics.h"
+#include "Utility/Utility.h"
 
 // 34C6:0008: int16 RandomInRangeInclusive(uint16 minimum, uint16 maximum)
 int16_t RandomInRangeInclusive(uint16_t minimum, uint16_t maximum)

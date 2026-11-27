@@ -1,7 +1,7 @@
 // 3968: integer format
 // Reconstructed original integer formatting utilities (segment 3968).
 
-#include "REVENGE.h"
+#include "Utility/Utility.h"
 
 // 3968:0009: Register far pointer FormatLongInteger(
 //     Stack byte alphabeticDigitBase, Stack byte signedConversion,

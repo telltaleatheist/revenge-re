@@ -1,8 +1,8 @@
 // 39C4: decimal parse
 // Reconstructed original signed decimal parser (segment 39C4).
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Utility/Utility.h"
 
 // 39C4:0005
 // Borland atol implementation: skip CRT whitespace, accept one optional sign,
