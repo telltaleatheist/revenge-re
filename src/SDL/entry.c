@@ -23,6 +23,7 @@
 void InitializeGame(void);
 void RunCampaignLoop(void);
 void ShutdownGame(void);
+void RunExitHandlersAndTerminate(uint16 exitCode);
 
 /* The audio log's times: the game's clock, in nanoseconds. */
 static uint64_t AudioLogClock(void)
@@ -33,7 +34,8 @@ static uint64_t AudioLogClock(void)
 /*
  * Host entry shim for the preserved 2C7F:000F flow.  The Original library is
  * compiled without a DOS main so tests may provide their own entry points;
- * these five statements are the complete original main, not new game flow.
+ * these five statements are the complete original main, not new game flow,
+ * and its end is the C library start-up's exit after main returns.
  */
 int main(int argc, char **argv)
 {
@@ -83,5 +85,8 @@ int main(int argc, char **argv)
 	RevengeTrace("entry: campaign returned; shutdown\n");
 	ShutdownGame();
 	RevengeTrace("entry: shutdown complete\n");
+	/* main's 0, to the C library's exit as its start-up passes it
+	 * (0800:0102-0108): the exit handlers and hooks, then the host's end. */
+	RunExitHandlersAndTerminate(0x00);
 	return 0x00;
 }
