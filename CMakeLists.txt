@@ -238,6 +238,14 @@ if(BUILD_TESTING)
     add_test(NAME graphics.original_presentation_leaves
         COMMAND test_presentation_leaves)
 
+    add_executable(test_video_segment
+        tests/test_video_segment.c
+        tests/fake_backend.c)
+    target_include_directories(test_video_segment PRIVATE src/Original tests)
+    target_link_libraries(test_video_segment PRIVATE chr_original_runtime)
+    chr_strict(test_video_segment)
+    add_test(NAME graphics.video_segment COMMAND test_video_segment)
+
     add_executable(test_vga_display_backing
         tests/test_vga_display_backing.c
         tests/fake_backend.c)

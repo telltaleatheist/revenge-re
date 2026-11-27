@@ -87,14 +87,19 @@ void CopyVideoRegion(
 		word16 sourcePixelX = (word16)sourceX << 0x03;
 		word16 destinationPixelX = (word16)destinationX << 0x03;
 
+		/* 0800:2C1C-2C2A: each row by rep movsb, SI and DI 16-bit, so an
+		 * offset past FFFFh carries on at the start of the segment, and a
+		 * row past row 200 of A000 is video memory off the screen. */
 		for (row = 0x0000; row < height; ++row)
 		{
-			memmove(destinationBase +
-				(uint32)(destinationY + row) * VIDEO_SCREEN_WIDTH +
-				destinationPixelX,
-				sourceBase + (uint32)(sourceY + row) * VIDEO_SCREEN_WIDTH +
-				sourcePixelX,
-				pixelWidth);
+			word16 destinationOffset = (word16)
+				((word16) (destinationY + row) * VIDEO_SCREEN_WIDTH + destinationPixelX);
+			word16 sourceOffset = (word16)
+				((word16) (sourceY + row) * VIDEO_SCREEN_WIDTH + sourcePixelX);
+			word16 count;
+
+			for (count = 0x0000; count < pixelWidth; ++count)
+				destinationBase[destinationOffset++] = sourceBase[sourceOffset++];
 		}
 		return;
 	}

@@ -20,7 +20,9 @@ enum
 static SDL_Window *window;
 static SDL_Renderer *renderer;
 static SDL_Texture *texture;
-static byte indexedFramebuffer[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
+/* The whole VGA segment (revenge/video.h): the first 64000 bytes are the
+ * screen, shown and hashed; the rest is off the screen. */
+static byte indexedFramebuffer[VIDEO_SEGMENT_SIZE];
 static uint32_t scanoutPixels[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
 static uint32_t logicalPalette[VGA_DAC_ENTRY_COUNT];
 static byte currentVideoMode = 0x03;
@@ -574,7 +576,7 @@ byte *SDLBackend_GetIndexedFramebuffer(void)
 
 void SDLBackend_ClearIndexedFramebuffer(byte color)
 {
-    memset(indexedFramebuffer, color, sizeof(indexedFramebuffer));
+    memset(indexedFramebuffer, color, VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT);
 }
 
 void SDLBackend_DrawIndexedPixel(uint16 x, uint16 y, byte color)

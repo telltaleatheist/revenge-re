@@ -4,6 +4,12 @@
 #include "revenge/types.h"
 #include "revenge/far_memory.h"
 
+/* The VGA segment A000 is 64K: the screen's 64000 bytes, then video memory
+ * off the screen (A000:FA00-FFFF). The host keeps all of it, because the
+ * game's window saves read and write those rows (a text window reaching past
+ * row 200). Phase 3's canvas must keep the off-screen rows too. */
+#define VIDEO_SEGMENT_SIZE 0x10000UL
+
 enum
 {
     VIDEO_SCREEN_WIDTH = 0x0140,

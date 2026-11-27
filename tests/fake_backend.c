@@ -370,8 +370,7 @@ byte *SDLBackend_GetIndexedFramebuffer(void)
 
 void SDLBackend_ClearIndexedFramebuffer(byte color)
 {
-    memset(fakeBackend.indexedFramebuffer, color,
-        sizeof(fakeBackend.indexedFramebuffer));
+    memset(fakeBackend.indexedFramebuffer, color, 0x0140 * 0x00C8);
 }
 
 void SDLBackend_DrawIndexedPixel(uint16 x, uint16 y, byte color)

@@ -3,6 +3,7 @@
 
 #include "revenge/dos.h"
 #include "revenge/input.h"
+#include "revenge/video.h"
 
 typedef struct FakeBackendState
 {
@@ -37,7 +38,7 @@ typedef struct FakeBackendState
     byte paletteValue;
     byte vgaPalette[0x0300];
     uint16 retraceCount;
-    byte indexedFramebuffer[0x0140 * 0x00C8];
+    byte indexedFramebuffer[VIDEO_SEGMENT_SIZE];
     byte midiBytes[0x0100];
     uint16 midiByteCount;
 	word16 musicVoiceId;
