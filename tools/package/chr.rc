@@ -1,0 +1,2 @@
+// The program's icon on Windows (Explorer, the taskbar, the installer's shortcuts).
+1 ICON "revenge.ico"

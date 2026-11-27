@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Revenge Rebuild
+Comment=BattleTech: The Crescent Hawks' Revenge (1990), rebuilt on Elthial's SDL port; needs your own copy of the game
+Exec=chr
+Icon=revenge
+Categories=Game;StrategyGame;
+Terminal=false

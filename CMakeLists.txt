@@ -25,6 +25,26 @@ option(CHR_PRESERVATION_INSTRUMENTATION
     "Compile reconstruction-only trace points inside Original procedures" OFF)
 include(CTest)
 
+# A package's program names its sources relative to the tree, never by the
+# folder it was built in (tools/package/check_paths.py checks every shipped
+# file). Before any target, SDL's included; the build folder last, since it
+# may sit inside the tree and the last match wins (SDL's fetched source is in it).
+option(CHR_TRIM_PATHS "Name source files relative to the tree in the program (packages)" OFF)
+if(CHR_TRIM_PATHS)
+    foreach(path_map "${CMAKE_SOURCE_DIR}=revenge-re" "${CMAKE_BINARY_DIR}=build")
+        string(REGEX REPLACE "=.*" "" from "${path_map}")
+        if(MSVC)
+            file(TO_NATIVE_PATH "${from}/" native_from)
+            add_compile_options("/d1trimfile:${native_from}" "/d1trimfile:${from}/")
+        else()
+            add_compile_options("-ffile-prefix-map=${path_map}")
+        endif()
+    endforeach()
+    if(MSVC)
+        add_link_options("/PDBALTPATH:%_PDB%")
+    endif()
+endif()
+
 function(chr_strict target)
     if(MSVC)
         target_compile_options(${target} PRIVATE /W4 /WX /Gy)
@@ -1026,6 +1046,20 @@ if(CHR_BUILD_SDL)
             ${CHR_SOUNDFONT}
             $<TARGET_FILE_DIR:Revenge>/data/music)
     add_dependencies(Revenge chr_soundfont)
+    if(WIN32)
+        # The icon Explorer, the taskbar and the installer's shortcuts show,
+        # and UTF-8 paths.
+        target_sources(Revenge PRIVATE tools/package/chr.rc)
+        if(MSVC)
+            target_sources(Revenge PRIVATE tools/package/chr.manifest)
+        endif()
+    endif()
+    # A package's program opens no console window (tools/build_package.py
+    # sets it); it still writes to redirected stdout and stderr.
+    option(CHR_WINDOWS_GUI "Windows: link the program as a GUI program (no console)" OFF)
+    if(MSVC AND CHR_WINDOWS_GUI)
+        target_link_options(Revenge PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
+    endif()
 
     # The golden traces (tools/trace/README.md): every script against its
     # golden, and the battle's script twice, byte for byte. Both run the game
@@ -1107,23 +1141,6 @@ if(CHR_BUILD_SDL)
                 --out ${CMAKE_BINARY_DIR}/jukebox-test --only SUSP1)
         set_tests_properties(audio.music_jukebox PROPERTIES SKIP_RETURN_CODE 77)
     endif()
-
-    add_custom_target(revenge-package
-        DEPENDS Revenge
-        COMMAND ${CMAKE_COMMAND} -E rm -rf
-            ${CMAKE_BINARY_DIR}/package
-        COMMAND ${CMAKE_COMMAND} -E make_directory
-            ${CMAKE_BINARY_DIR}/package
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:Revenge>
-            ${CMAKE_BINARY_DIR}/package/Revenge.exe
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_CURRENT_SOURCE_DIR}/config/REVENGE.CFG
-            ${CMAKE_BINARY_DIR}/package/REVENGE.CFG
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-            ${CMAKE_CURRENT_SOURCE_DIR}/data
-            ${CMAKE_BINARY_DIR}/package/data
-        COMMENT "Assembling the Revenge runtime: the program, REVENGE.CFG and data/")
 
     if(BUILD_TESTING)
         add_executable(test_sdl_dos_errors tests/test_sdl_dos_errors.c)

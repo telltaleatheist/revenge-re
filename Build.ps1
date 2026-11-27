@@ -1,7 +1,6 @@
 param(
     [switch]$Headless,
     [switch]$PreservationInstrumentation,
-    [switch]$Package,
     [string[]]$Target = @(),
     [string]$TestFilter = '',
     [string]$SDL3Directory = '',
@@ -32,19 +31,6 @@ if ($Configuration -eq 'Release')
 
 $build = Join-Path $PSScriptRoot $buildName
 $options = @('-S', $PSScriptRoot, '-B', $build, '-G', 'Ninja', "-DCMAKE_BUILD_TYPE=$Configuration")
-
-if ($Package -and $Headless)
-{
-    throw 'The playable package requires SDL; -Package cannot be combined with -Headless.'
-}
-if ($Package -and $Target.Count)
-{
-    throw 'Use either -Package or -Target, not both.'
-}
-if ($Package)
-{
-    $Target = @('revenge-package')
-}
 
 if ($Headless)
 {
@@ -88,17 +74,4 @@ elseif (-not $Target.Count)
 {
     & $ctest --test-dir $build --output-on-failure
     if ($LASTEXITCODE -ne 0) { throw 'C17 tests failed' }
-}
-
-if ($Package)
-{
-    $packageDirectory = Join-Path $build 'package'
-    & (Join-Path $PSScriptRoot 'tools/Test-MinimalPackage.ps1') `
-        -PackageDirectory $packageDirectory
-    $version = (Get-Content -LiteralPath (Join-Path $PSScriptRoot 'VERSION') -Raw).Trim()
-    $checksumPath = Join-Path $build "Revenge-$version-SHA256SUMS.txt"
-    & (Join-Path $PSScriptRoot 'tools/Write-PackageChecksums.ps1') `
-        -PackageDirectory $packageDirectory -OutputPath $checksumPath
-    Write-Host "Runtime package: $packageDirectory"
-    Write-Host "Package checksums: $checksumPath"
 }
