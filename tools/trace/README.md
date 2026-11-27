@@ -219,13 +219,17 @@ battle loop. On a machine where passes per tick vary, those draws interleave
 differently with the dice. No scene in these scripts queues one; a script
 that reaches one should be recorded at more than one step.
 
-Two more things in a battle follow passes, not steps: the narration prompt's
-countdown (PendingNarrationDelay, counted down by each redraw of the status
-panel, so a message a lance other than the first reports stays readable for a
-number of passes) and the blinking of the status line and the clock's colon.
-Neither changes a state line in these scripts; the blinking changes battle
-frames, which is why a battle's frames differ from the original's while its
-state doesn't.
+One more thing in a battle follows passes, not steps: the blinking of the
+status line and the clock's colon. It changes no state line; it changes
+battle frames, which is why a battle's frames differ from the original's
+while its state doesn't. The narration's countdown followed passes in the
+original too; the port counts it in time (finding 11).
+
+A battle message's wait polls the keyboard, and each of the harness's polls
+costs a millisecond of its clock, where one of REVSNAP's costs the original
+almost nothing. A script answers a battle message after `still:200`, not
+`still:2000`, so the wait doesn't run down the step's update countdown
+(finding 10).
 
 ## The original (`tools/capture/`)
 
@@ -399,3 +403,30 @@ What the comparison found in the port, and how each was fixed:
    the overview map's mode (DS:03E5) and the battle's lances (DS:03EA-03EC)
    (tactical.original_heat_limit). In stages_02_04 the byte the port read
    gave the same fire, so no trace moved.
+10. **A battle message's wait took the harness's time.** A message mid-step
+    waits in a loop that polls the keyboard. On the port each poll passes the
+    timer service, which the harness charges 1 ms (HostClock_Step); under
+    REVSNAP a poll takes microseconds of the original's time. A `still:2000`
+    wait took the port about 36 game ticks and the original under 4, so the
+    step's update countdown (TacticalUpdateDelayTicks) ran out on the port
+    only. The original then finished its step after the message, while the
+    port began the next, and the dice fell to other units: stage 7 from the
+    made save parted at 07:34:33. Not a port bug: the scripts' waits.
+    Battle messages are answered after `still:200`, with which stage 7 matched
+    the original at every step to 07:34:44.
+11. **The narration's countdown followed the machine's speed.** A narration
+    (a unit lost, a contact) sets PendingNarrationDelay, which each redraw of
+    the status panel took one from, 25Dh passes in all (2007:0E19). Its
+    prompt opens only while the countdown runs, so whether it opened depended
+    on the passes a step took: about 48 in the original under DOSBox-X at
+    3000 cycles, about 100 in the port's harness. In stage 7 the original
+    opened unit 18's prompt at 07:34:44; the port's countdown had run out at
+    about 07:34:40. An original machine dependence, made time: the countdown
+    counts 20,000 ms of the game clock while the battle loop draws (at most
+    one tick a draw, since a longer gap is a wait in which the original drew
+    nothing), the 605 passes at the reference machine's mean 33.06 ms
+    (70,580 passes over nine battle stretches, stages 3 to 7; 31 to 40 ms by
+    stretch), and its sound comes 165 ms in, five passes
+    (tactical.narration_countdown). A prompt within a pass or two of the
+    limit can still fall either way against a capture; such a place is a
+    timing edge, and the chain takes the original's path there.
