@@ -1,3 +1,4 @@
+// 0D73: save compatibility
 /* Preserved save-file compatibility loop from REVENGE_0D73. */
 
 #include "REVENGE.h"

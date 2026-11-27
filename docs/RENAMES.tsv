@@ -67,3 +67,9 @@ file	src/Original/Graphics/REVENGE_34D5_TILE_STRIP_CAPTURE.cpp	src/Original/Grap
 file	src/Original/Graphics/REVENGE_34DF_PACKED_ICONS.cpp	src/Original/Graphics/PackedIcons.cpp	34DF	packed icons
 file	src/Original/Graphics/REVENGE_3596_RENDER_TARGET.cpp	src/Original/Graphics/RenderTarget.cpp	3596	render target
 file	src/Original/Graphics/REVENGE_35C2_ICON_PAGE_DECODE.cpp	src/Original/Graphics/IconPageDecode.cpp	35C2	icon page decode
+file	src/Original/IO/REVENGE_0D73_SAVE_COMPATIBILITY.cpp	src/Original/IO/SaveCompatibility.cpp	0D73	save compatibility
+file	src/Original/IO/REVENGE_3327_DOS_CONSOLE.cpp	src/Original/IO/DOSConsole.cpp	3327	DOS console
+file	src/Original/IO/REVENGE_34A7_CRITICAL_ERROR.cpp	src/Original/IO/CriticalError.cpp	34A7	critical error
+file	src/Original/IO/REVENGE_38C6_PROCESS_EXIT.cpp	src/Original/IO/ProcessExit.cpp	38C6	process exit
+file	src/Original/IO/REVENGE_39D9_SYSTEM_TIME.cpp	src/Original/IO/SystemTime.cpp	39D9	system time
+file	src/Original/IO/REVENGE_39DC_ENVIRONMENT.cpp	src/Original/IO/Environment.cpp	39DC	environment

@@ -51,9 +51,9 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Audio/MusicResources.cpp
 	src/Original/Audio/PCSpeakerTimer.cpp
     src/Original/Audio/DigitalSound.cpp
-    src/Original/IO/REVENGE_38C6_PROCESS_EXIT.cpp
+    src/Original/IO/ProcessExit.cpp
     src/Original/Input/REVENGE_3037_KEYBOARD.cpp
-    src/Original/IO/REVENGE_3327_DOS_CONSOLE.cpp
+    src/Original/IO/DOSConsole.cpp
     src/Original/Graphics/VideoRegionCopy.cpp
     src/Original/Text/REVENGE_3338_TEXT_WINDOW_SELECT.cpp
     src/Original/Text/REVENGE_3349_TEXT_WINDOW_RESET.cpp
@@ -73,7 +73,7 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Utility/REVENGE_34C6_RANDOM_RANGE.cpp
     src/Original/Input/REVENGE_34C8_NAVIGATION_KEY.cpp
     src/Original/Graphics/TileCapture.cpp
-    src/Original/IO/REVENGE_34A7_CRITICAL_ERROR.cpp
+    src/Original/IO/CriticalError.cpp
     src/Original/Resources/REVENGE_34B3_PACKED_ICON_RESOURCE.cpp
     src/Original/Graphics/TileStripCapture.cpp
     src/Original/Graphics/PackedIcons.cpp
@@ -93,8 +93,8 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Utility/REVENGE_3968_INTEGER_FORMAT.cpp
 	src/Original/Utility/REVENGE_39C4_DECIMAL_PARSE.cpp
 	src/Original/Campaign/ClockSnapshot.cpp
-    src/Original/IO/REVENGE_39D9_SYSTEM_TIME.cpp
-	src/Original/IO/REVENGE_39DC_ENVIRONMENT.cpp
+    src/Original/IO/SystemTime.cpp
+	src/Original/IO/Environment.cpp
 	src/Original/Campaign/EpochTime.cpp
 	src/Original/Campaign/Timezone.cpp
     src/Original/Utility/REVENGE_3A04_STRING_UPPERCASE.cpp
@@ -135,7 +135,7 @@ list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Text/REVENGE_0D73_STRING_FIELDS.cpp
 	src/Original/Text/REVENGE_0D73_ENTRY_BLINK.cpp
 	src/Original/Text/REVENGE_0D73_TEXT_EDITOR.cpp
-	src/Original/IO/REVENGE_0D73_SAVE_COMPATIBILITY.cpp
+	src/Original/IO/SaveCompatibility.cpp
 	src/Original/UI/REVENGE_0D73_INVALID_SAVE_DIALOG.cpp
 	src/Original/UI/REVENGE_0D73_CONFIRMATION.cpp
 	src/Original/Campaign/Presentation.cpp

@@ -1,4 +1,5 @@
-// REVENGE_34A7_CRITICAL_ERROR.cpp
+// 34A7: critical error
+// CriticalError.cpp
 // DOS critical-error handler installation.
 
 #include "REVENGE.h"

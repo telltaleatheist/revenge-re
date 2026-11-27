@@ -890,7 +890,7 @@ void DrawRightAlignedClippedText(
 
 /* 0D73:454A is reconstructed in Text/REVENGE_0D73_STRING_FIELDS.cpp. */
 
-/* 0D73:4572 is reconstructed in IO/REVENGE_0D73_SAVE_COMPATIBILITY.cpp. */
+/* 0D73:4572 is reconstructed in IO/SaveCompatibility.cpp. */
 
 /* 0D73:4611 is reconstructed in UI/REVENGE_0D73_INVALID_SAVE_DIALOG.cpp. */
 

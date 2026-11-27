@@ -1,3 +1,4 @@
+// 38C6: process exit
 // Reconstructed original exit-handler dispatcher (segment 38C6).
 
 #include "REVENGE.h"
