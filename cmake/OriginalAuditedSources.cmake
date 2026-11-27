@@ -23,14 +23,14 @@ set(CHR_3A6A_DATA_SOURCES
 	src/Support/story_text_buffer.cpp)
 
 set(CHR_ORIGINAL_SOURCES
-	src/Original/Graphics/REVENGE_0800_GRAPHICS_RUNTIME.cpp
+	src/Original/Graphics/GraphicsRuntime.cpp
 	src/Original/Resources/REVENGE_0800_RESOURCE_CODECS.cpp
 	src/Original/Tactical/REVENGE_0800_TACTICAL_GEOMETRY.cpp
-    src/Original/Graphics/REVENGE_0800_ENCODED_SPRITES.cpp
-    src/Original/Graphics/REVENGE_0800_TACTICAL_RASTER.cpp
+    src/Original/Graphics/EncodedSprites.cpp
+    src/Original/Graphics/TacticalRaster.cpp
 	${CHR_3A6A_DATA_SOURCES}
     src/Original/Resources/REVENGE_21E7_PACKED_RESOURCES.cpp
-	src/Original/Graphics/REVENGE_2B2D_PALETTE.cpp
+	src/Original/Graphics/AdapterPalette.cpp
 	src/Original/Tactical/REVENGE_2D1B_UNIT_STATE.cpp
 	src/Original/Tactical/REVENGE_2D1B_WEAPONS.cpp
 	src/Original/Tactical/REVENGE_2D1B_ATTACK_RESOLUTION.cpp
@@ -43,8 +43,8 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Units/REVENGE_2507_UNIT_ASSIGNMENT.cpp
 	src/Original/Units/REVENGE_2507_PILOT_ASSIGNMENT.cpp
 	src/Original/Units/REVENGE_2507_EDITOR_GRAPHICS.cpp
-	src/Original/Graphics/REVENGE_3005_TACTICAL_SPRITE.cpp
-    src/Original/Graphics/REVENGE_2FEA_DISPLAY_BACKING.cpp
+	src/Original/Graphics/TacticalSprite.cpp
+    src/Original/Graphics/PlanarDisplayBacking.cpp
     src/Original/Runtime/REVENGE_2C7F_STARTUP.cpp
 	src/Original/Audio/PCSpeakerEffects.cpp
 	src/Original/Units/REVENGE_30F1_SCENARIO_ROSTERS.cpp
@@ -54,31 +54,31 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/IO/REVENGE_38C6_PROCESS_EXIT.cpp
     src/Original/Input/REVENGE_3037_KEYBOARD.cpp
     src/Original/IO/REVENGE_3327_DOS_CONSOLE.cpp
-    src/Original/Graphics/REVENGE_3329_VIDEO_REGION_COPY.cpp
+    src/Original/Graphics/VideoRegionCopy.cpp
     src/Original/Text/REVENGE_3338_TEXT_WINDOW_SELECT.cpp
     src/Original/Text/REVENGE_3349_TEXT_WINDOW_RESET.cpp
-    src/Original/Graphics/REVENGE_334A_VERTICAL_RETRACE.cpp
-    src/Original/Graphics/REVENGE_334D_TEXT_WINDOW_FRAME.cpp
-    src/Original/Graphics/REVENGE_3365_CLIPPED_PRIMITIVES.cpp
-    src/Original/Graphics/REVENGE_337C_RECTANGLE_OUTLINE.cpp
-    src/Original/Graphics/REVENGE_3386_FRAME_TILES.cpp
+    src/Original/Graphics/VerticalRetrace.cpp
+    src/Original/Graphics/TextWindowFrame.cpp
+    src/Original/Graphics/ClippedPrimitives.cpp
+    src/Original/Graphics/RectangleOutline.cpp
+    src/Original/Graphics/FrameTiles.cpp
     src/Original/Resources/REVENGE_3390_RESOURCE_STREAM.cpp
     src/Original/UI/REVENGE_3390_RESOURCE_ERROR_MESSAGE.cpp
-    src/Original/Graphics/REVENGE_3471_RECTANGLE_FILL.cpp
+    src/Original/Graphics/RectangleFill.cpp
     src/Original/Text/REVENGE_3477_FONT.cpp
 	src/Original/Audio/AudioHardware.cpp
 	src/Original/Audio/DigitalPlayback.cpp
 	src/Original/Audio/PITTimer.cpp
-    src/Original/Graphics/REVENGE_34B8_VIDEO_TIMING.cpp
+    src/Original/Graphics/VideoTiming.cpp
     src/Original/Utility/REVENGE_34C6_RANDOM_RANGE.cpp
     src/Original/Input/REVENGE_34C8_NAVIGATION_KEY.cpp
-    src/Original/Graphics/REVENGE_3495_TILE_CAPTURE.cpp
+    src/Original/Graphics/TileCapture.cpp
     src/Original/IO/REVENGE_34A7_CRITICAL_ERROR.cpp
     src/Original/Resources/REVENGE_34B3_PACKED_ICON_RESOURCE.cpp
-    src/Original/Graphics/REVENGE_34D5_TILE_STRIP_CAPTURE.cpp
-    src/Original/Graphics/REVENGE_34DF_PACKED_ICONS.cpp
+    src/Original/Graphics/TileStripCapture.cpp
+    src/Original/Graphics/PackedIcons.cpp
     src/Original/Input/REVENGE_34E6_UI_REGION_POLL.cpp
-    src/Original/Graphics/REVENGE_35C2_ICON_PAGE_DECODE.cpp
+    src/Original/Graphics/IconPageDecode.cpp
     src/Original/Input/REVENGE_35AB_UI_REGION_SETUP.cpp
     src/Original/UI/REVENGE_35CA_UI_REGION_HIGHLIGHT.cpp
     src/Original/Text/REVENGE_35CE_FORMATTED_TEXT.cpp
@@ -86,7 +86,7 @@ set(CHR_ORIGINAL_SOURCES
     src/Original/Text/REVENGE_356D_TEXT_WINDOW_CLEAR.cpp
     src/Original/Text/REVENGE_356F_TEXT_RENDER.cpp
     src/Original/Input/REVENGE_358E_SINGLE_UI_REGION.cpp
-    src/Original/Graphics/REVENGE_3596_RENDER_TARGET.cpp
+    src/Original/Graphics/RenderTarget.cpp
     src/Original/Input/REVENGE_3599_UI_REGION_HIGHLIGHT.cpp
     src/Original/Audio/MIDISequence.cpp
 	src/Original/Audio/MIDIDrivers.cpp
@@ -125,11 +125,11 @@ list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/Campaign/CampaignMenus.cpp
 	src/Original/Campaign/CampaignPresentation.cpp
 	src/Original/Campaign/SaveLoad.cpp
-	src/Original/Graphics/REVENGE_0D73_RESOURCE.cpp
-	src/Original/Graphics/REVENGE_0D73_CURSOR_BACKING.cpp
-	src/Original/Graphics/REVENGE_0D73_DISPLAY_BACKING.cpp
-	src/Original/Graphics/REVENGE_0D73_SPRITE.cpp
-	src/Original/Graphics/REVENGE_0D73_PALETTE.cpp
+	src/Original/Graphics/Resource.cpp
+	src/Original/Graphics/CursorBacking.cpp
+	src/Original/Graphics/DisplayBacking.cpp
+	src/Original/Graphics/Sprite.cpp
+	src/Original/Graphics/PaletteBankAnchors.cpp
 	src/Original/Input/REVENGE_0D73_WAIT.cpp
 	src/Original/Text/REVENGE_0D73_STARTUP_TEXT.cpp
 	src/Original/Text/REVENGE_0D73_STRING_FIELDS.cpp
@@ -139,8 +139,8 @@ list(APPEND CHR_ORIGINAL_SOURCES
 	src/Original/UI/REVENGE_0D73_INVALID_SAVE_DIALOG.cpp
 	src/Original/UI/REVENGE_0D73_CONFIRMATION.cpp
 	src/Original/Campaign/Presentation.cpp
-	src/Original/Graphics/REVENGE_0D73_MISSION_HEADER.cpp
-	src/Original/Graphics/REVENGE_0D73_TACTICAL_VIDEO.cpp
+	src/Original/Graphics/MissionHeader.cpp
+	src/Original/Graphics/TacticalVideo.cpp
 	src/Original/Text/REVENGE_0D73_SCENARIO_MESSAGES.cpp)
 
 list(APPEND CHR_ORIGINAL_SOURCES

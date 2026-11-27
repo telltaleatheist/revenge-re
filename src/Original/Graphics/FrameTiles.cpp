@@ -1,3 +1,4 @@
+// 3386: frame tiles
 // Reconstructed original repeating frame-tile renderer (segment 3386).
 
 #include "REVENGE.h"

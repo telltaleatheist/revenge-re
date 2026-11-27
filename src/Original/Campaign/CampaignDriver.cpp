@@ -238,4 +238,4 @@ void InitializeTacticalScenario(void)
         SDLBackend_ServiceTimers();
 }
 
-/* 0D73:0387 is reconstructed in Graphics/REVENGE_0D73_TACTICAL_VIDEO.cpp. */
+/* 0D73:0387 is reconstructed in Graphics/TacticalVideo.cpp. */

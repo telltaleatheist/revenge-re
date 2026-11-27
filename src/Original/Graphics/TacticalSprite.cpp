@@ -1,4 +1,5 @@
-// REVENGE_3005_TACTICAL_SPRITE.cpp - tactical clipped-sprite dispatch
+// 3005: tactical sprite
+// TacticalSprite.cpp - tactical clipped-sprite dispatch
 // Tactical clipped-sprite rendering wrapper.
 
 #include "REVENGE.h"

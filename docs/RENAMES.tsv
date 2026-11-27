@@ -41,3 +41,29 @@ file	src/Original/Data/REVENGE_4184_TACTICAL_GRAPHICS_DATA.cpp	src/Original/Data
 file	src/Original/Data/REVENGE_426A_ENCODED_SPRITE_DATA.cpp	src/Original/Data/EncodedSpriteData.cpp	426A	encoded sprite data
 file	src/Original/Data/REVENGE_426B_MUSIC_TIMER_DATA.cpp	src/Original/Data/MusicTimerData.cpp	426B	music timer data
 file	src/Original/Data/REVENGE_TEXT_TABLES.cpp	src/Original/Data/TextTables.cpp	3A6A	text tables
+file	src/Original/Graphics/REVENGE_0800_ENCODED_SPRITES.cpp	src/Original/Graphics/EncodedSprites.cpp	0800	encoded sprites
+file	src/Original/Graphics/REVENGE_0800_GRAPHICS_RUNTIME.cpp	src/Original/Graphics/GraphicsRuntime.cpp	0800	graphics runtime
+file	src/Original/Graphics/REVENGE_0800_TACTICAL_RASTER.cpp	src/Original/Graphics/TacticalRaster.cpp	0800	tactical raster
+file	src/Original/Graphics/REVENGE_0D73_CURSOR_BACKING.cpp	src/Original/Graphics/CursorBacking.cpp	0D73	cursor backing
+file	src/Original/Graphics/REVENGE_0D73_DISPLAY_BACKING.cpp	src/Original/Graphics/DisplayBacking.cpp	0D73	display backing buffers
+file	src/Original/Graphics/REVENGE_0D73_MISSION_HEADER.cpp	src/Original/Graphics/MissionHeader.cpp	0D73	mission header
+file	src/Original/Graphics/REVENGE_0D73_PALETTE.cpp	src/Original/Graphics/PaletteBankAnchors.cpp	0D73	VGA palette bank anchors
+file	src/Original/Graphics/REVENGE_0D73_RESOURCE.cpp	src/Original/Graphics/Resource.cpp	0D73	resource
+file	src/Original/Graphics/REVENGE_0D73_SPRITE.cpp	src/Original/Graphics/Sprite.cpp	0D73	sprite
+file	src/Original/Graphics/REVENGE_0D73_TACTICAL_VIDEO.cpp	src/Original/Graphics/TacticalVideo.cpp	0D73	tactical video
+file	src/Original/Graphics/REVENGE_2B2D_PALETTE.cpp	src/Original/Graphics/AdapterPalette.cpp	2B2D	adapter palette loading
+file	src/Original/Graphics/REVENGE_2FEA_DISPLAY_BACKING.cpp	src/Original/Graphics/PlanarDisplayBacking.cpp	2FEA	planar display backing buffer
+file	src/Original/Graphics/REVENGE_3005_TACTICAL_SPRITE.cpp	src/Original/Graphics/TacticalSprite.cpp	3005	tactical sprite
+file	src/Original/Graphics/REVENGE_3329_VIDEO_REGION_COPY.cpp	src/Original/Graphics/VideoRegionCopy.cpp	3329	video region copy
+file	src/Original/Graphics/REVENGE_334A_VERTICAL_RETRACE.cpp	src/Original/Graphics/VerticalRetrace.cpp	334A	vertical retrace
+file	src/Original/Graphics/REVENGE_334D_TEXT_WINDOW_FRAME.cpp	src/Original/Graphics/TextWindowFrame.cpp	334D	text window frame
+file	src/Original/Graphics/REVENGE_3365_CLIPPED_PRIMITIVES.cpp	src/Original/Graphics/ClippedPrimitives.cpp	3365	clipped primitives
+file	src/Original/Graphics/REVENGE_337C_RECTANGLE_OUTLINE.cpp	src/Original/Graphics/RectangleOutline.cpp	337C	rectangle outline
+file	src/Original/Graphics/REVENGE_3386_FRAME_TILES.cpp	src/Original/Graphics/FrameTiles.cpp	3386	frame tiles
+file	src/Original/Graphics/REVENGE_3471_RECTANGLE_FILL.cpp	src/Original/Graphics/RectangleFill.cpp	3471	rectangle fill
+file	src/Original/Graphics/REVENGE_3495_TILE_CAPTURE.cpp	src/Original/Graphics/TileCapture.cpp	3495	tile capture
+file	src/Original/Graphics/REVENGE_34B8_VIDEO_TIMING.cpp	src/Original/Graphics/VideoTiming.cpp	34B8	video timing
+file	src/Original/Graphics/REVENGE_34D5_TILE_STRIP_CAPTURE.cpp	src/Original/Graphics/TileStripCapture.cpp	34D5	tile strip capture
+file	src/Original/Graphics/REVENGE_34DF_PACKED_ICONS.cpp	src/Original/Graphics/PackedIcons.cpp	34DF	packed icons
+file	src/Original/Graphics/REVENGE_3596_RENDER_TARGET.cpp	src/Original/Graphics/RenderTarget.cpp	3596	render target
+file	src/Original/Graphics/REVENGE_35C2_ICON_PAGE_DECODE.cpp	src/Original/Graphics/IconPageDecode.cpp	35C2	icon page decode

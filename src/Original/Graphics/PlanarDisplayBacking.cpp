@@ -1,4 +1,5 @@
-/* REVENGE_2FEA_DISPLAY_BACKING.cpp -- packed display-backing builder. */
+// 2FEA: planar display backing buffer
+/* PlanarDisplayBacking.cpp -- packed display-backing builder. */
 
 #include "REVENGE.h"
 

@@ -27,10 +27,10 @@ the control flow that must remain comparable with the assembly.
 
 | File | Helper | Owning procedure/family | Reason |
 | --- | --- | --- | --- |
-| `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `GetVideoScanlineOffset` | video copy/fill/tile procedures | Adapter layout arithmetic belongs at each original call site. |
-| `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `GetAdapterByteX` | video copy/fill/tile procedures | Invented shared coordinate conversion. |
-| `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `GetAdapterRowByteCount` | video copy/fill/tile procedures | Wrapper around the invented coordinate conversion. |
-| `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `ReadRleRunLength` | `DecodeRLEBlock_33D6` family | Splits original decoder control flow. |
+| `GraphicsRuntime.cpp` | `GetVideoScanlineOffset` | video copy/fill/tile procedures | Adapter layout arithmetic belongs at each original call site. |
+| `GraphicsRuntime.cpp` | `GetAdapterByteX` | video copy/fill/tile procedures | Invented shared coordinate conversion. |
+| `GraphicsRuntime.cpp` | `GetAdapterRowByteCount` | video copy/fill/tile procedures | Wrapper around the invented coordinate conversion. |
+| `GraphicsRuntime.cpp` | `ReadRleRunLength` | `DecodeRLEBlock_33D6` family | Splits original decoder control flow. |
 | `SaveLoad.cpp` | `GetSaveSlotDescriptor` | save/load menu procedures | Game-specific DS record selection. |
 | `REVENGE_1A1F_INTERNAL.h` | `GetPersistentUnitRecord` | scene interpreter `2A4E` | Game-record addressing inside the interpreter. |
 | `REVENGE_1A1F_INTERNAL.h` | `GetUnitRouteRecord` | scene interpreter `2A4E` | Game-record addressing inside the interpreter. |
@@ -116,7 +116,7 @@ branching, iteration, queue, allocation, and resource-selection decisions.
 
 | File | Helper | Disposition |
 | --- | --- | --- |
-| `REVENGE_0800_GRAPHICS_RUNTIME.cpp` | `RekoArtifact_ExtractHighNibbleAndShiftLeft` | It exists only inside disabled Reko pseudo-code. Delete that archival block; the annotation and executable remain the evidence. |
+| `GraphicsRuntime.cpp` | `RekoArtifact_ExtractHighNibbleAndShiftLeft` | It exists only inside disabled Reko pseudo-code. Delete that archival block; the annotation and executable remain the evidence. |
 
 Applied: the disabled block containing this artifact was removed on
 2026-09-28. It is no longer part of `src/Original`.

@@ -308,7 +308,7 @@ void LoadScreenPalette(word16 screenResourceIndex)
 	 * VGA only. */
 }
 
-/* 0D73:329E is reconstructed in Graphics/REVENGE_0D73_PALETTE.cpp. */
+/* 0D73:329E is reconstructed in Graphics/PaletteBankAnchors.cpp. */
 
 // 0D73:32F4: void LoadScreenAssetToWorkBuffer(word16 resourceIndex)
 // Called from:
@@ -449,7 +449,7 @@ void PrepareMissionDateScreen(int16 presentationMode)
 }
 
 
-/* 0D73:365C is reconstructed in Graphics/REVENGE_0D73_MISSION_HEADER.cpp. */
+/* 0D73:365C is reconstructed in Graphics/MissionHeader.cpp. */
 
 // 0D73:376C: animate the indexed campaign date and optional map highlight.
 void DisplayMissionDate(

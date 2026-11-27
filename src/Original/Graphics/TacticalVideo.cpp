@@ -1,3 +1,4 @@
+// 0D73: tactical video
 /* Tactical video-resource rebuild from original segment 0D73. */
 
 #include "REVENGE.h"

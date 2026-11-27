@@ -1,4 +1,5 @@
-// REVENGE_0800_GRAPHICS_RUNTIME.cpp
+// 0800: graphics runtime
+// GraphicsRuntime.cpp
 // Runtime, codec, tactical-map, and video procedures reconstructed from
 // REVENGE.EXE segment 0800.
 

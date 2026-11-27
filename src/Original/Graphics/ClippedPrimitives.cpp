@@ -1,3 +1,4 @@
+// 3365: clipped primitives
 // Reconstructed original clipped line and pixel primitives (segment 3365).
 
 #include "REVENGE.h"

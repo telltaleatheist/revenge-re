@@ -1,3 +1,4 @@
+// 0D73: resource
 /* Graphics-resource procedure from original segment 0D73. */
 
 #include "REVENGE.h"

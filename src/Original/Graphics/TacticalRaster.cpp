@@ -1,3 +1,4 @@
+// 0800: tactical raster
 /*
  * Tactical 16x16 tile raster leaves from REVENGE_0800.
  *

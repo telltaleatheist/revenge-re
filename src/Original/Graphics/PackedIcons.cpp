@@ -1,4 +1,5 @@
-// REVENGE_34DF_PACKED_ICONS.cpp - direct packed icon-page loading
+// 34DF: packed icons
+// PackedIcons.cpp - direct packed icon-page loading
 // Direct tactical icon-page loader used by the page-one special case.
 
 #include "REVENGE.h"

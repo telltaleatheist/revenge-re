@@ -1,3 +1,4 @@
+// 0800: encoded sprites
 /* Adapter sprite decoders from REVENGE_0800. */
 
 #include "revenge/original_data.h"
