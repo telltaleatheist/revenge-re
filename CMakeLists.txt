@@ -920,6 +920,72 @@ if(CHR_BUILD_SDL)
         COMMENT "Cutting the music soundfont from FluidR3 GM" VERBATIM)
     add_custom_target(chr_soundfont DEPENDS "${CHR_SOUNDFONT}")
 
+    # The shared setup kit (extern/re-setup-kit, a submodule; DESIGN.md
+    # there): finding the player's copy in a folder or an archive, the setup
+    # screen and the launcher contract (--status, --setup). It reads archives
+    # through libarchive with zlib and liblzma: packages build them static
+    # from pinned sources (tools/deps/build_archive.sh, build-deps/), else the
+    # system's are used; without them setup reads folders only.
+    if(APPLE)
+        set(CHR_DEPS_PLATFORM mac)
+    else()
+        set(CHR_DEPS_PLATFORM linux)
+    endif()
+    find_path(CHR_LIBARCHIVE_INCLUDE archive.h NO_CACHE
+        HINTS "${CMAKE_CURRENT_SOURCE_DIR}/build-deps/archive/include"
+              "${CMAKE_CURRENT_SOURCE_DIR}/build-deps/${CHR_DEPS_PLATFORM}/prefix/include"
+        NO_DEFAULT_PATH)
+    find_library(CHR_LIBARCHIVE_LIB NAMES archive archive_static NO_CACHE
+        HINTS "${CMAKE_CURRENT_SOURCE_DIR}/build-deps/archive/lib"
+              "${CMAKE_CURRENT_SOURCE_DIR}/build-deps/${CHR_DEPS_PLATFORM}/prefix/lib"
+        NO_DEFAULT_PATH)
+    if(CHR_LIBARCHIVE_INCLUDE AND CHR_LIBARCHIVE_LIB)
+        set(REKIT_LIBARCHIVE_INCLUDE "${CHR_LIBARCHIVE_INCLUDE}" CACHE PATH "" FORCE)
+        set(REKIT_LIBARCHIVE_LIB "${CHR_LIBARCHIVE_LIB}" CACHE FILEPATH "" FORCE)
+    elseif(APPLE)
+        # Homebrew's is for one architecture, and the Mac build is universal.
+        unset(REKIT_LIBARCHIVE_INCLUDE CACHE)
+        unset(REKIT_LIBARCHIVE_LIB CACHE)
+        list(APPEND CMAKE_IGNORE_PATH
+            /opt/homebrew/opt/libarchive/include /opt/homebrew/opt/libarchive/lib
+            /usr/local/opt/libarchive/include /usr/local/opt/libarchive/lib)
+        message(STATUS "Setup reads folders only: tools/deps/build_archive.sh builds the archive libraries")
+    endif()
+    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/extern/re-setup-kit/CMakeLists.txt")
+        message(FATAL_ERROR "extern/re-setup-kit is missing: git submodule update --init")
+    endif()
+    # The kit's SDL layer asks for SDL3::SDL3; ours is the static library.
+    if(NOT TARGET SDL3::SDL3)
+        add_library(chr_sdl3_for_kit INTERFACE)
+        target_link_libraries(chr_sdl3_for_kit INTERFACE ${CHR_SDL_TARGET})
+        add_library(SDL3::SDL3 ALIAS chr_sdl3_for_kit)
+    endif()
+    add_subdirectory(extern/re-setup-kit "${CMAKE_CURRENT_BINARY_DIR}/re-setup-kit")
+    # A release's tag (chr-vX.Y.Z), stamped in the program for the launcher
+    # (src/Setup/BuildTag.cpp); empty otherwise.
+    set(CHR_RELEASE_TAG "" CACHE STRING "The release's tag, chr-vX.Y.Z (release packages set it)")
+    if(NOT CHR_RELEASE_TAG STREQUAL "" AND NOT CHR_RELEASE_TAG MATCHES "^chr-v[0-9]+\\.[0-9]+\\.[0-9]+$")
+        message(FATAL_ERROR "CHR_RELEASE_TAG is a release's tag, chr-vX.Y.Z, or empty: ${CHR_RELEASE_TAG}")
+    endif()
+    # The setup's recipe (src/Setup/Setup.h): what a copy is, where it may be,
+    # how it is copied in.
+    add_library(chr_setup STATIC
+        src/Setup/Setup.cpp
+        src/Setup/FileCheck.cpp
+        src/Setup/GameFilesTable.cpp)
+    target_include_directories(chr_setup PUBLIC src)
+    target_link_libraries(chr_setup PUBLIC rekit rekit_sdl)
+    target_compile_features(chr_setup PUBLIC cxx_std_20)
+    chr_strict(chr_setup)
+
+    if(BUILD_TESTING)
+        # The setup's recipe without a window; its game parts need REVENGE_GAME.
+        add_executable(test_setup tests/setup_test.cpp src/Setup/BuildTag.cpp)
+        target_link_libraries(test_setup PRIVATE chr_setup)
+        chr_strict(test_setup)
+        add_test(NAME setup.recipe COMMAND test_setup ${CMAKE_CURRENT_BINARY_DIR}/setup_work)
+    endif()
+
     # The preserved Original source owns main() and all game flow. SDL only
     # satisfies the DOS/BIOS/hardware boundary calls made by that source.
     # The campaign loop is admitted and this target links end to end. It is a
