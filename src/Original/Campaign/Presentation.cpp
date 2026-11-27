@@ -1,9 +1,10 @@
 // 0D73: presentation
 /* Campaign screen/message presentation procedure from original segment 0D73. */
 
-#include "REVENGE.h"
-
-#include "revenge/original_data.h"
+#include "Campaign/Campaign.h"
+#include "Data/TacticalData.h"
+#include "Input/Input.h"
+#include "Text/Text.h"
 
 /* 0D73:341F-347C */
 uint16_t PresentScreenAndMessage(

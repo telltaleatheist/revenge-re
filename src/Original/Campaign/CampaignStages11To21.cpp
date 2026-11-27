@@ -3,6 +3,14 @@
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
 #include "CampaignInternal.h"
+#include "Audio/Audio.h"
+#include "Campaign/Campaign.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Text/Text.h"
 
 // 0D73:1302: int16 RunCampaignStage11(void)
 // VERIFIED against 0D73:1302-13FF.

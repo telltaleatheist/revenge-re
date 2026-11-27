@@ -3,6 +3,10 @@
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
 #include "CampaignInternal.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalData.h"
+#include "Input/Input.h"
+#include "revenge/text.h"
 
 // 0D73:2101: byte PrepareActivePilotList(void)
 // VERIFIED against 0D73:2101-214A.

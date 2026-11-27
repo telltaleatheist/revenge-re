@@ -29,7 +29,6 @@ UMBRELLAS = ("REVENGE.h", "original_data.h")
 # takes its folder's out; the list goes with the umbrellas.
 NOT_YET = {
     "include/revenge/original/lance_editor_data.h",
-    "src/Original/Campaign/CampaignInternal.h",
     "src/Original/Tactical/BattleInternal.h",
     "src/Original/Tactical/CombatInternal.h",
     "src/Original/Tactical/CommandsInternal.h",

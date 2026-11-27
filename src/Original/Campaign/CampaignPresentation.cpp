@@ -7,6 +7,19 @@
 #endif
 
 #include "CampaignInternal.h"
+#include "Campaign/Campaign.h"
+#include "Data/CampaignData.h"
+#include "Data/GraphicsData.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Resources/Resources.h"
+#include "Runtime/Runtime.h"
+#include "Text/Text.h"
+#include "Utility/Utility.h"
 #include "revenge/debug.h"
 
 #include <string.h>
@@ -448,7 +461,6 @@ void PrepareMissionDateScreen(int16_t presentationMode)
     }
 }
 
-
 /* 0D73:365C is reconstructed in Graphics/MissionHeader.cpp. */
 
 // 0D73:376C: animate the indexed campaign date and optional map highlight.
@@ -591,7 +603,6 @@ void DisplayMissionDate(
     if (SceneTransitionAbortFlag == FALSE)
         ShowMissionFollowupMessage(followupMessageIndex);
 }
-
 
 /* 0D73:3AE4 is reconstructed in Text/ScenarioMessages.cpp. */
 

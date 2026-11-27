@@ -1,8 +1,9 @@
 // 3A07: epoch time
 // Reconstructed original local-time to epoch converter (segment 3A07).
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Campaign/Campaign.h"
+#include "Data/CampaignData.h"
+#include "Utility/Utility.h"
 
 uint16_t IsDaylightSavingTime(
     uint16_t yearsSince1970, uint16_t month, uint16_t dayOrDayOfYear, uint8_t hour);

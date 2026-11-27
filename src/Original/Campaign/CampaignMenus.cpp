@@ -3,6 +3,16 @@
 // Procedures reconstructed from REVENGE.EXE segment 0D73.
 
 #include "CampaignInternal.h"
+#include "Audio/Audio.h"
+#include "Campaign/Campaign.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
+#include "Input/Input.h"
+#include "Text/Text.h"
+#include "UI/UI.h"
+#include "Units/Units.h"
 #include "revenge/debug.h"
 
 #include <string.h>

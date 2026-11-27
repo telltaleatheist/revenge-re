@@ -1,8 +1,9 @@
 // 39CC: clock snapshot
 // Reconstructed original local-clock snapshot procedure (segment 39CC).
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Campaign/Campaign.h"
+#include "Data/CampaignData.h"
+#include "Utility/Utility.h"
 
 // 39CC:000F: void CaptureLocalClockSnapshot(LocalClockSnapshot far *snapshot)
 // Called from:

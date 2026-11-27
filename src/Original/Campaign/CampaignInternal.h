@@ -2,12 +2,11 @@
 #ifndef REVENGE_CAMPAIGN_CAMPAIGN_INTERNAL_H
 #define REVENGE_CAMPAIGN_CAMPAIGN_INTERNAL_H
 
-#include "REVENGE.h"
+#include "revenge/original/resource_data.h"
 
 void InitializeTacticalScenario(void);
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
-#include "revenge/original_data.h"
 #include "revenge/save_data.h"
 #include "revenge/video.h"
 
@@ -28,7 +27,6 @@ enum
 };
 
 #define CACHED_FILE_NAME(index) (CachedFileDescriptors[(index)].fileName)
-
 
 #define SAVE_SLOT_COUNT                0x06
 #define SAVE_LOAD_MODE_SAVE            0x03

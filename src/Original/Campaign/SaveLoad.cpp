@@ -7,6 +7,15 @@
 #endif
 
 #include "CampaignInternal.h"
+#include "Data/CampaignData.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
+#include "IO/IO.h"
+#include "Input/Input.h"
+#include "Resources/Resources.h"
+#include "Text/Text.h"
+#include "Units/Units.h"
 #include "revenge/debug.h"
 #include "revenge/story_text.h"
 
