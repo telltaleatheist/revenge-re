@@ -115,7 +115,6 @@ constexpr GameFile kFiles[] = {
     {"MECHBAY.COL", 768, "511da0c06c1764d17f76dda657dce23658a813a06aea680a1cb531ae0b536dab", When::kSome, "a later stage of the campaign stops when it needs it"},
     {"MECHBAY.CPS", 15831, "95efdd2c9d263cfb5ac0ae064e6c6c00735f5e928713602bcec86b0a5822cae7", When::kSome, "a later stage of the campaign stops when it needs it"},
     {"MECHSET2.ICN", 26364, "ab7145f16f4c78d6eec4737bbd71df78ade3cfb3916f3748dec7a98ca9eae455", When::kSome, "a later stage of the campaign stops when it needs it"},
-    {"MSGS.TXT", 2590, "7aafe61673600c15c0daf163f1317a72cecebff650517d1c6c84f4ed1b75548f", When::kSome, "a later stage of the campaign stops when it needs it"},
     {"ORDERS.CPS", 4814, "8a0f5dd88db5963f3672fb1b331a2f1b675bde21627e9f09a113ee8504489b3f", When::kSome, "a later stage of the campaign stops when it needs it"},
     {"PILOTS1.CPS", 13511, "a474b67ee66d0fdd87c67a331d62423594efcf608021c1b0dc241fe116f3b571", When::kSome, "a later stage of the campaign stops when it needs it"},
     {"PILOTS2.CPS", 12618, "dce8388fa1a6a925e72f2309ac30b70a728cc76d97395b007e27040f3dd97c9b", When::kSome, "a later stage of the campaign stops when it needs it"},

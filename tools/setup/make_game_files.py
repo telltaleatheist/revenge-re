@@ -21,14 +21,15 @@ access times were set back, and the files read in each run were noted.
 Left out of the list: REVENGE.EXE (its own check, by its edition), the
 player's own files (SAVEGAME.DAT, MEDIA.CFG, SCRIPT.CFG: a copy's differ by
 what its player did), and the files the program never names (SETUP.EXE, the
-original's own setup; HELP.TXT and WINDOWS.TXT, notes for the player).
+original's own setup, and MSGS.TXT, its messages, which only SETUP.EXE names;
+HELP.TXT and WINDOWS.TXT, notes for the player).
 """
 import hashlib
 import os
 import sys
 
 EDITION = (256411, "c4502165e251f3e2a5005b5c0e450e6b335b14c2be9c035b0fd2d53cbb30667e")
-LEFT_OUT = {"REVENGE.EXE", "SAVEGAME.DAT", "MEDIA.CFG", "SCRIPT.CFG", "SETUP.EXE", "HELP.TXT", "WINDOWS.TXT"}
+LEFT_OUT = {"REVENGE.EXE", "SAVEGAME.DAT", "MEDIA.CFG", "SCRIPT.CFG", "SETUP.EXE", "MSGS.TXT", "HELP.TXT", "WINDOWS.TXT"}
 
 START = ["BTBORDER.CPS", "FONT6.FNT", "FONT8.FNT", "INFOCOM.BIN", "TITLE.COL", "TITLE.CPS", "TITLE.MUS"]
 PLAY = ["BOOMS.CMP", "COMM.CPS", "DESTROY0.ICN", "DETHMEC1.MUS", "DETHMEC2.MUS", "DPHRASES.BIN", "DSATTACK.COL",
