@@ -1,0 +1,38 @@
+# The seventh battle (stage 6, SCENE8) ended by the harness, not played: a
+# made save for the chain's next link. From the original's save after stage 5,
+# the battle played until 07:30, then the lance sent east past the Dragon's
+# guard; at a quiet moment before contact the Dragon (unit 20) is destroyed
+# by destroy:20, the game's own path for a unit's end. The scene's own ending
+# runs from there (its check that no lance unit is under fire, result 2):
+# the transmission after it, then Save & Continue to slot 1. No original
+# trace can match this one; the save it writes is REVENGE_SAVE_STAGE_06.
+# set: campaign
+# start-save: REVENGE_SAVE_STAGE_05
+# Load Game, slot 1; the battle running.
+idle:1000 Return idle:50 Right idle:50 Return idle:300
+Return steps:2 @snap:stage6_battle
+# The messages at 07:16 and 07:28, the ally's arrival at 07:30 and its loss.
+still:2000 @snap:stage6_message1 Return
+still:2000 @snap:stage6_message2 Return
+still:2000 @snap:stage6_ally Return
+still:2000 @snap:stage6_ally_lost Return
+# Lance Commands, Move: the cursor 39 cells up and right, then 50 up, to the
+# east of the guard's two groups; the order given.
+steps:10 Return idle:300 Return idle:300
+PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 PageUp idle:20 
+Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 
+idle:100 @snap:stage6_cursor Return idle:300 Return idle:300 Return steps:1 @snap:stage6_ordered
+# 150 steps on, no contact yet (07:33:57): the Dragon destroyed.
+steps:150 @snap:stage6_before steps:1 destroy:20
+# The battle won at once (07:34); the transmission after it, each screen
+# answered.
+still:2000 @snap:stage6_won Return idle:300
+still:2000 @snap:stage6_after1 Return idle:300
+still:2000 @snap:stage6_after2 Return idle:300
+# The menu over it: Save & Continue to slot 1, as stage_05 does.
+still:2000 @snap:stage6_menu
+Down idle:50 Down idle:50 @snap:stage6_save
+Return idle:300 @snap:stage6_slots
+Return idle:300 @snap:stage6_save1 Return idle:300 @snap:stage6_save2
+# Saved; stage 7 starts at once, its battle running: its fourth step.
+Return steps:4 @snap:stage6_saved

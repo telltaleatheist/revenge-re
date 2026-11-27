@@ -46,6 +46,7 @@ Tokens, separated by spaces, commas or new lines; `#` starts a comment.
 | `@snap:NAME` | takes a snap at the next wait; names are unique in a script |
 | `quit` | the host's quit (the window's close button), at the next timer service: the game's shutdown and exit (3390:0024), as after its own quit, code 0 |
 | `fail:allocation`, `fail:abort` | at the next timer service: the heap's next request fails as if the host had no memory, and the game goes on until it asks (a fault naming the request's size and caller, exit code 70); or a fatal path forced, a tracked file's slot closed though it isn't open (the resource abort and its two messages), which waits for its keys, then exits with code 1 |
+| `destroy:N` | after a `steps:N` wait (the battle running): battle unit N (0-23) ended by the game's own path for a unit's end (2D1B:2453), as the hit that ends it would; the run stops if the unit isn't deployed or the battle has a result. For making a save at a point no script plays to; never reachable in play (`trace.harness_destroy`) |
 
 The game polls the keyboard on every pass while a screen animates, so a few
 polls after a key the screen is often still the old one; `idle:` lets it
@@ -81,6 +82,7 @@ stopped. (Every item also waits 4 polls, well inside one step.)
 | `stages_02_04` | campaign set; from the 1e save: the second battle, then the third (stage 2) won by answering its messages, the fourth (stage 3) won with the lance moved east at once, the fifth (stage 4) won with the ammunition carrier driven at flank speed to its exit; its story, then Save & Continue to slot 1 |
 | `stage_05` | campaign set; from the original's save after stage 4: the story, the first of the two plans chosen (through the forest), its battle won hands-off at 07:14; the transmission after it, Save & Continue to slot 1 |
 | `stage_06_lost` | campaign set; from the original's save after stage 5: the Dragon battle (stage 6) lost, the lance sent at the Dragon at once and its leader lost at 07:27; the defeat, the menu after it, slot 1 loaded again |
+| `stage_06_made` | campaign set; from the original's save after stage 5: the Dragon battle played to 07:33 (the lance sent east after the ally's loss), then the Dragon ended by `destroy:20`; the scene's own win, the transmission, Save & Continue to slot 1. Made, not played: no original trace can match it |
 
 ## Trace records (`traces/*.jsonl`)
 
@@ -181,7 +183,14 @@ Continue, and the SAVEGAME.DAT the original writes there (under DOSBox-X,
 never the port's) starts the next script. Each link's save is named by its own
 variable: `REVENGE_SAVE_STAGE_04` for the one stages_02_04 ends with, which
 stage_05 starts from, `REVENGE_SAVE_STAGE_05` for stage_05's, which
-stage 6's scripts start from.
+stage 6's scripts start from, `REVENGE_SAVE_STAGE_06` for stage_06_made's.
+
+From stage 7 on, the chain starts from a made save, loaded alike by both
+sides: no script wins stage 6 by play, so stage_06_made ends it with the
+harness's `destroy:20` and lets the scene's own ending write the save. The
+comparison needs only that both sides load the same file, and they do: stage 7
+from it matches the original at every state line until timing apart from the
+game's own (the time a message's wait takes) leads them apart.
 
 To re-record a golden after an intended change, record over it and say in the
 commit what moved and why.
@@ -256,6 +265,18 @@ battles the poll counts are the same on both sides; in a battle the number of
 passes, and so of polls, a step takes is the machine's, which is why battles
 are paced by steps. The number of polls a screen takes to settle differs too,
 which is why scripts wait with `idle:` generously.
+
+### Scene-data quirks, kept
+
+The scene files' instructions (SCENEn.DAT) have a few slips the original runs
+as they are:
+
+- SCENE7 (stage 5's second plan): the branch that follows unit 1 to the map's
+  top edge tests unit 1's row, then unit 0's column, not unit 1's.
+- SCENE7: the block that sets up unit 23 gives its experience and gunnery to
+  unit 22 instead, so unit 22's are set twice and unit 23 keeps its template's.
+- SCENE8 (stage 6): one byte between two instructions of the ally's arrival
+  is skipped as an instruction that does nothing.
 
 ### What the comparison found
 
