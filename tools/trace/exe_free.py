@@ -39,7 +39,8 @@ def linked_install(game, folder):
 
 
 def exe_free(args, work):
-    names = sorted(n[:-6] for n in os.listdir(check.TRACES) if n.endswith(".jsonl"))
+    names = sorted(n[:-6] for n in os.listdir(check.TRACES) if n.endswith(".jsonl")
+                   and record.script_set(os.path.join(check.SCRIPTS, n[:-6] + ".keys")) == record.GOLDENS)
     first = os.path.join(check.SCRIPTS, "title.keys")
     seed = os.path.join(work, "import")
     code, output = record.run(args.exe, args.game, first, seed)

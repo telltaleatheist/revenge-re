@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Compares a candidate with the golden traces, snap by snap.
 
-    tools/trace/check.py --exe BUILD/Revenge [--game GAME_DIR] [--only NAME ...] [--work DIR]
-    tools/trace/check.py --traces DIR [--only NAME ...]
+    tools/trace/check.py --exe BUILD/Revenge [--game GAME_DIR] [--set SET] [--only NAME ...] [--work DIR]
+    tools/trace/check.py --traces DIR [--set SET] [--only NAME ...]
 
 The first form records every script in tools/trace/scripts that has a golden
 trace in tools/trace/traces (or those --only names) with the port at --exe;
 the second compares traces already recorded (NAME.jsonl in DIR), such as the
-rebuild's. GAME_DIR defaults to the REVENGE_GAME variable; without one, exit
+rebuild's. --set keeps the scripts of one set (record.script_set: goldens,
+or campaign for the long runs through the campaign). GAME_DIR defaults to the REVENGE_GAME variable; without one, exit
 77 (ctest's skip). For each snap it names what differs: the state lines (the
 first that differ, both sides), the frame, its palette, the save block.
 Exits 0 when everything matches.
@@ -65,6 +66,7 @@ def main():
     parser.add_argument("--game", default=os.environ.get("REVENGE_GAME", ""))
     parser.add_argument("--traces")
     parser.add_argument("--only", nargs="*")
+    parser.add_argument("--set")
     parser.add_argument("--work")
     args = parser.parse_args()
     if bool(args.exe) == bool(args.traces):
@@ -75,6 +77,9 @@ def main():
         if unknown:
             sys.exit(f"check: no golden trace for {', '.join(unknown)}")
         names = [n for n in names if n in args.only]
+    if args.set:
+        names = [n for n in names
+                 if record.script_set(os.path.join(SCRIPTS, n + ".keys")) == args.set]
     if args.exe and not (args.game and os.path.isdir(args.game)):
         print("check: no game folder (REVENGE_GAME); skipped")
         return SKIP

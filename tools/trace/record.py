@@ -34,6 +34,8 @@ SKIP = 77
 # drive).
 TRACE_SETTINGS = "video = vga\nmusic = speaker\nsound = speaker\ninput = keys\n"
 START_SAVE = re.compile(r"^#\s*start-save:\s*(\w+)\s*$", re.M)
+SET = re.compile(r"^#\s*set:\s*(\w+)\s*$", re.M)
+GOLDENS = "goldens"
 
 
 def start_save(script):
@@ -44,6 +46,14 @@ def start_save(script):
         return None
     path = os.environ.get(found.group(1), "")
     return found.group(1), (path if path and os.path.isfile(path) else None)
+
+
+def script_set(script):
+    """The set a script belongs to: its `# set: NAME` line (campaign: the long
+    runs through the campaign, a ctest of their own), else goldens."""
+    with open(script, encoding="utf-8") as f:
+        found = SET.search(f.read())
+    return found.group(1) if found else GOLDENS
 
 
 def digest(path):

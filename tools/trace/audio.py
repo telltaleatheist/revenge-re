@@ -50,11 +50,12 @@ def settings(device):
 
 
 def scripts():
-    """Every script the audio goldens cover, by name."""
+    """Every script the audio goldens cover, by name (the campaign set has none)."""
     found = {}
     for name in os.listdir(GOLDEN_TRACES):
-        if name.endswith(".jsonl"):
-            found[name[:-6]] = os.path.join(SCRIPTS, name[:-6] + ".keys")
+        script = os.path.join(SCRIPTS, name[:-6] + ".keys")
+        if name.endswith(".jsonl") and record.script_set(script) == record.GOLDENS:
+            found[name[:-6]] = script
     for name in os.listdir(AUDIO_SCRIPTS):
         if name.endswith(".keys"):
             found[name[:-5]] = os.path.join(AUDIO_SCRIPTS, name)

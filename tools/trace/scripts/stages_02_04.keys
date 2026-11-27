@@ -1,0 +1,48 @@
+# The third, fourth and fifth battles won (stages 2-4), from a save the
+# original wrote, to a save the original writes for the next script.
+# set: campaign
+# start-save: REVENGE_ORIGINAL_SAVE
+# Load Game, slot 1 (as old_save.keys), then the second battle (stage 1) with
+# each message answered by its first choice, which wins it, and its story.
+idle:1000 Return idle:50 Right idle:50 Return idle:300
+Return idle:600
+Return idle:6000
+Return still:2000 Return still:2000 Return still:2000 Return still:2000
+Return still:2000 Return still:2000 Return still:2000 Return still:2000
+Return still:2000 Return still:2000 Return still:2000 Return still:2000
+Return still:2000
+# Stage 2 (SCENE3), won the same way; its story; the menu.
+Return idle:6000 @snap:stage2_menu
+# Stage 3 (SCENE4): the lance moved 20 cells east at once, out of the way of
+# the enemy's heavy unit; it is won when the enemy withdraws.
+Return steps:1 Return idle:300 Return idle:300      # Continue; the commands; Move
+Right idle:30 Right idle:30 Right idle:30 Right idle:30 Right idle:30
+Right idle:30 Right idle:30 Right idle:30 Right idle:30 Right idle:30
+Right idle:30 Right idle:30 Right idle:30 Right idle:30 Right idle:30
+Right idle:30 Right idle:30 Right idle:30 Right idle:30 Right idle:30
+idle:100 Return idle:300 @snap:stage3_route Return idle:300 Return idle:300
+steps:8 @snap:stage3_step08 steps:8 @snap:stage3_step16
+still:2000 @snap:stage3_contact Return
+still:2000 @snap:stage3_won Return
+still:2000 @snap:stage3_story Return
+still:2000 @snap:stage3_menu Return                  # Continue
+still:2000 @snap:stage4_story1 Return
+still:2000 @snap:stage4_story2 Return
+# Stage 4 (SCENE5): the ammunition carrier the lance escorts, driven at flank
+# speed to (49,95) before the enemy reaches it; won there at 17:45.
+still:2000 @snap:stage4_battle
+Return steps:1 Return idle:300 Down idle:300 Return idle:300 Return idle:300
+Up idle:300 Return idle:300                         # Flank Speed; Move
+PageDown idle:30 PageDown idle:30 PageDown idle:30 PageDown idle:30 PageDown idle:30
+PageDown idle:30 PageDown idle:30 PageDown idle:30 PageDown idle:30 PageDown idle:30
+PageDown idle:30 PageDown idle:30 PageDown idle:30 PageDown idle:30 PageDown idle:30
+PageDown idle:30 PageDown idle:30
+Right idle:30 Right idle:30 idle:100 @snap:stage4_cursor
+Return idle:300 @snap:stage4_route Return idle:300 @snap:stage4_commands
+Return idle:300 @snap:stage4_ordered               # Done
+still:2000 @snap:stage4_moving Return
+still:2000 @snap:stage4_arrived Return
+still:2000 @snap:stage4_won Return
+still:2000 @snap:stage4_menu                        # the menu after the stage
+Down idle:50 Down idle:50 Return idle:300 @snap:slots  # Save & Continue
+Return idle:300 @snap:save1 Return idle:300 @snap:save2 Return idle:600 @snap:saved

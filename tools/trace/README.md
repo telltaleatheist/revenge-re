@@ -78,6 +78,7 @@ stopped. (Every item also waits 4 polls, well inside one step.)
 | `first_win` | the first battle won: the leader moved across the enemy's road, the menu after the stage |
 | `second_battle` | on to the second battle: the options menu, a move order, steps 8 and 16, its messages to the end |
 | `save_load` | after the first stage, Save & Continue to slot 1; out of the second battle and Load Game, slot 1 |
+| `stages_02_04` | campaign set; from the 1e save: the second battle, then the third (stage 2) won by answering its messages, the fourth (stage 3) won with the lance moved east at once, the fifth (stage 4) won with the ammunition carrier driven at flank speed to its exit; Save & Continue to slot 1 |
 
 ## Trace records (`traces/*.jsonl`)
 
@@ -164,10 +165,18 @@ script plays from a folder of links to the game's files, its `.EXE` files left
 out, and must match its golden without importing again. All three read the
 game folder from `REVENGE_GAME` and skip without one.
 
+A script with a line `# set: campaign` is one of the long runs through the
+campaign. `trace.goldens` (`check.py --set goldens`) leaves those out, as do
+`exe_free.py` and the audio check; `trace.campaign` (`--set campaign`) runs
+them. The ctest labels are the same names: `ctest -L trace.goldens` for the
+everyday run, `ctest -L trace.campaign` for the campaign.
+
 `old_save` starts from a save the original wrote (its `# start-save:` line):
 the 1e save_load run's SAVEGAME.DAT, kept outside the repo, named by
 `REVENGE_ORIGINAL_SAVE`. Without that variable `check.py` skips that script
-alone.
+alone. The campaign scripts make a chain from it: each ends with Save &
+Continue, and the SAVEGAME.DAT the original writes there (under DOSBox-X,
+never the port's) starts the next script.
 
 To re-record a golden after an intended change, record over it and say in the
 commit what moved and why.

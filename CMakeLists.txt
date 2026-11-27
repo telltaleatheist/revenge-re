@@ -1076,7 +1076,13 @@ if(CHR_BUILD_SDL)
         add_test(NAME trace.goldens
             COMMAND ${Python3_EXECUTABLE} -I
                 ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/check.py
-                --exe $<TARGET_FILE:Revenge>)
+                --exe $<TARGET_FILE:Revenge> --set goldens)
+        # The long runs through the campaign, a chain of saves the original
+        # wrote: a label of their own, out of the everyday targeted run.
+        add_test(NAME trace.campaign
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/check.py
+                --exe $<TARGET_FILE:Revenge> --set campaign)
         add_test(NAME trace.repeat
             COMMAND ${Python3_EXECUTABLE} -I
                 ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/repeat.py
@@ -1106,8 +1112,13 @@ if(CHR_BUILD_SDL)
             COMMAND ${Python3_EXECUTABLE} -I
                 ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/fatal_exit.py
                 --exe $<TARGET_FILE:Revenge>)
-        set_tests_properties(trace.goldens trace.repeat trace.exe_free audio.check trace.quit
-            trace.fatal_exit PROPERTIES SKIP_RETURN_CODE 77)
+        set_tests_properties(trace.goldens trace.campaign trace.repeat trace.exe_free audio.check
+            trace.quit trace.fatal_exit PROPERTIES SKIP_RETURN_CODE 77)
+        set_tests_properties(trace.goldens trace.repeat trace.exe_free trace.quit trace.fatal_exit
+            PROPERTIES LABELS trace.goldens)
+        # Its own limit: each campaign script plays under a minute on a Release
+        # build, and the chain grows a script or two per stage of the campaign.
+        set_tests_properties(trace.campaign PROPERTIES LABELS trace.campaign TIMEOUT 1200)
         # Bytes a run must hold, by the map's places, against the image.
         add_test(NAME map.dump_checks
             COMMAND ${Python3_EXECUTABLE} -I
