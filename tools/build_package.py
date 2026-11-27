@@ -363,7 +363,8 @@ def bmp_picture(path):
 def check_title_shot(executable, game, saves, scratch):
     """A second start, the story imported by the first: the window's picture at the title, through the smoke input's
     shot:NAME (docs/CAMPAIGN_SMOKE_TEST.md), asked for once a second until one holds a picture (more than 16 colours,
-    at least 320x200). The title waits for a key, so the run is then stopped. With --shots the capture is kept there."""
+    at least 320x200). The title waits for a key, so the run is then ended as the system's quit ends it (SIGTERM; on
+    Windows the process is ended), and killed only if it has not gone in 10 s. With --shots the capture is kept there."""
     shots = scratch / "shots"
     shots.mkdir()
     items = ",".join(f"1000:shot:t{n:02}" for n in range(1, TITLE_SECONDS + 1))
@@ -381,7 +382,11 @@ def check_title_shot(executable, game, saves, scratch):
                     break
     finally:
         if run.poll() is None:
-            run.kill()
+            run.terminate()
+            try:
+                run.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                run.kill()
         run.wait()
     if found is None:
         raise RuntimeError(f"Packaged start: no picture in the window in {TITLE_SECONDS} s (exit {run.returncode})")
