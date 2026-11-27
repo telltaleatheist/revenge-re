@@ -17,12 +17,24 @@ enum
 	MEDIA_SOUND_PARAMETER_CAPACITY = 8
 };
 
+/* Where the music goes: the soundfont (the game drives its Roland driver,
+ * whose bytes the soundfont plays), the speaker (its own speaker driver), or
+ * nowhere (the Roland driver, unheard). */
+enum
+{
+	MEDIA_MUSIC_SOUNDFONT = 0,
+	MEDIA_MUSIC_SPEAKER = 1,
+	MEDIA_MUSIC_OFF = 2
+};
+
 /* Each option's choice: an index into that option's records (DS:3AD1,
- * 3B12, 3B87, 3B6D), and the sound card's hexadecimal parameter. */
+ * 3B12, 3B87, 3B6D), and the sound card's hexadecimal parameter; and the
+ * music's way out (MEDIA_MUSIC_*), which picks the music's record. */
 typedef struct RevengeMediaChoices
 {
 	word16 choice[MEDIA_OPTION_COUNT];
 	char soundParameter[MEDIA_SOUND_PARAMETER_CAPACITY];
+	word16 music;
 } RevengeMediaChoices;
 
 /* The names of MEDIA.CFG's options, in the option records at DS:3A91

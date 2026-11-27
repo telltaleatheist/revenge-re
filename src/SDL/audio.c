@@ -7,10 +7,15 @@
  * here, and SDL's thread runs no game code: the stream only plays what the
  * game's thread has put in it, at most a quarter of a second ahead.
  * REVENGE_AUDIO_PCM=FILE also writes every frame there, as 32-bit floats,
- * mono, 48 kHz, for listening to a run without a device. */
+ * stereo (left, then right), 48 kHz, for listening to a run without a
+ * device. The music's soundfont and instrument table are read from the data
+ * folder (data/music) once, when the music is the soundfont. */
 #include "revenge/platform_backend.h"
 #include "revenge/audio.h"
+#include "revenge/debug.h"
+#include "revenge/media_settings.h"
 #include "audio_mix.h"
+#include "game_paths.h"
 #include "harness.h"
 
 #include <SDL3/SDL.h>
@@ -20,21 +25,57 @@ enum
 {
 	/* The most the stream holds before a block is dropped: a quarter of a
 	 * second, in bytes. */
-	AudioQueueLimitBytes = AUDIO_MIX_SAMPLE_RATE / 4 * (int) sizeof(float)
+	AudioQueueLimitBytes = AUDIO_MIX_SAMPLE_RATE / 4 * AUDIO_MIX_CHANNELS * (int) sizeof(float),
+	MusicPathCapacity = 4096,
+	MusicErrorCapacity = 256
 };
+
+static const char MusicSoundfontName[] = "FluidR3_GM-subset.sf2";
+static const char MusicTableName[] = "instruments.json";
 
 static SDL_AudioStream *audioStream;
 static FILE *pcmFile;
+static int musicLoaded;
 static word16 timedDelayScale;
 static word16 timedByteCount;
 
 static void PutFrames(const float *frames, uint32_t count)
 {
 	if (pcmFile != NULL)
-		(void) fwrite(frames, sizeof(float), count, pcmFile);
+		(void) fwrite(frames, sizeof(float) * AUDIO_MIX_CHANNELS, count, pcmFile);
 	if (audioStream == NULL || SDL_GetAudioStreamQueued(audioStream) > AudioQueueLimitBytes)
 		return;
-	(void) SDL_PutAudioStreamData(audioStream, frames, (int) (count * sizeof(float)));
+	(void) SDL_PutAudioStreamData(audioStream, frames, (int) (count * AUDIO_MIX_CHANNELS * sizeof(float)));
+}
+
+/* The soundfont and the table, from data/music; a fault naming the file if
+ * either is missing or wrong, as they are ours and ship with the program. */
+static void LoadMusic(void)
+{
+	const char *data = GamePaths_DataDirectory();
+	char soundfontPath[MusicPathCapacity];
+	char tablePath[MusicPathCapacity];
+	char error[MusicErrorCapacity];
+	size_t soundfontSize = 0;
+	size_t tableSize = 0;
+	void *soundfont;
+	void *table;
+
+	if (data == NULL)
+		RevengeFault("no data folder for the music");
+	(void) SDL_snprintf(soundfontPath, sizeof(soundfontPath), "%s/music/%s", data, MusicSoundfontName);
+	(void) SDL_snprintf(tablePath, sizeof(tablePath), "%s/music/%s", data, MusicTableName);
+	soundfont = SDL_LoadFile(soundfontPath, &soundfontSize);
+	if (soundfont == NULL)
+		RevengeFault("can't read %s", soundfontPath);
+	table = SDL_LoadFile(tablePath, &tableSize);
+	if (table == NULL)
+		RevengeFault("can't read %s", tablePath);
+	if (!AudioMix_LoadMusic(soundfont, soundfontSize, (const char *) table, tableSize, error, sizeof(error)))
+		RevengeFault("%s, %s: %s", soundfontPath, MusicTableName, error);
+	SDL_free(table);
+	SDL_free(soundfont);
+	musicLoaded = 1;
 }
 
 int SDLBackend_OpenAudio(void)
@@ -43,11 +84,14 @@ int SDLBackend_OpenAudio(void)
 
 	if (audioStream != NULL)
 		return TRUE;
+	if (HostSettings_MediaChoices()->music == MEDIA_MUSIC_SOUNDFONT && !musicLoaded)
+		LoadMusic();
 	AudioMix_Reset();
+	AudioMix_MusicOn(HostSettings_MediaChoices()->music == MEDIA_MUSIC_SOUNDFONT);
 	if (pcmFile == NULL && SDL_getenv("REVENGE_AUDIO_PCM") != NULL)
 		pcmFile = fopen(SDL_getenv("REVENGE_AUDIO_PCM"), "wb");
 	specification.format = SDL_AUDIO_F32;
-	specification.channels = 0x01;
+	specification.channels = AUDIO_MIX_CHANNELS;
 	specification.freq = AUDIO_MIX_SAMPLE_RATE;
 	audioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &specification, NULL, NULL);
 	if (audioStream == NULL || !SDL_ResumeAudioStreamDevice(audioStream))
@@ -119,19 +163,25 @@ void SDLBackend_WriteMIDIByte(byte midiByte)
 	AudioMix_MidiByte(midiByte);
 }
 
+/* The AdLib driver's voices. The settings no longer choose it (its word
+ * reads as the soundfont), so nothing plays them; the card drivers go in
+ * phase 3's next slice. */
 void SDLBackend_StartMusicVoice(word16 voiceId, byte note, byte velocity, byte program, byte voiceClass)
 {
-	AudioMix_StartMusicVoice(voiceId, note, velocity, program, voiceClass);
+	(void) voiceId;
+	(void) note;
+	(void) velocity;
+	(void) program;
+	(void) voiceClass;
 }
 
 void SDLBackend_StopMusicVoice(word16 voiceId)
 {
-	AudioMix_StopMusicVoice(voiceId);
+	(void) voiceId;
 }
 
 void SDLBackend_ResetMusicVoices(void)
 {
-	AudioMix_ResetMusicVoices();
 }
 
 word16 SDLBackend_ProbeLegacyAudioDevice(byte deviceId)

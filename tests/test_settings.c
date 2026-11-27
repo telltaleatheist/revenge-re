@@ -28,7 +28,10 @@
  *            then parses is that file's bytes, and settings.txt is written;
  *            the next start reads settings.txt alone, to the same choices
  *   none     with no MEDIA.CFG, our defaults
- *   own      a settings.txt of the player's own words wins
+ *   own      a settings.txt of the player's own words wins; an old card
+ *            word for the music reads as the soundfont, and the file is
+ *            written again in the new words
+ *   words    the music's words: off and speaker, each its record
  *   bad      a choice it doesn't know is a fault naming the file and line
  *   parse    the game's own parse applies every line, the last (the input
  *            device) too, as 2C7F:055F tests its count before the decrement
@@ -110,17 +113,42 @@ int main(int argc, char **argv)
 		assert(choices->choice[MEDIA_OPTION_VIDEO] == 0 && choices->choice[MEDIA_OPTION_MUSIC] == 1);
 		assert(choices->choice[MEDIA_OPTION_SOUND] == 0 && choices->choice[MEDIA_OPTION_INPUT] == 1);
 		assert(strcmp(choices->soundParameter, "220") == 0);
+		assert(choices->music == MEDIA_MUSIC_SOUNDFONT);
 		assert(SDL_GetPathInfo(settingsPath, NULL));
 	}
 	else if (strcmp(mode, "own") == 0)
 	{
 		const RevengeMediaChoices *choices;
+		char *written;
 
 		WriteText(settingsPath, "# mine\nVIDEO = VGA\nmusic=adlib\n\nsound = ssi-2001 2C0   # the card\ninput = mouse\n");
 		assert(HostSettings_Prepare());
 		choices = HostSettings_MediaChoices();
-		assert(choices->choice[MEDIA_OPTION_MUSIC] == 3 && choices->choice[MEDIA_OPTION_SOUND] == 2);
+		assert(choices->music == MEDIA_MUSIC_SOUNDFONT && choices->choice[MEDIA_OPTION_MUSIC] == 1);
+		assert(choices->choice[MEDIA_OPTION_SOUND] == 2);
 		assert(choices->choice[MEDIA_OPTION_INPUT] == 0 && strcmp(choices->soundParameter, "2C0") == 0);
+		written = (char *) SDL_LoadFile(settingsPath, NULL);
+		assert(written != NULL && strstr(written, "\nmusic = soundfont\n") != NULL);
+		assert(strstr(written, "\nsound = ssi-2001 2C0\n") != NULL && strstr(written, "adlib\n") == NULL);
+		SDL_free(written);
+	}
+	else if (strcmp(mode, "words") == 0)
+	{
+		const RevengeMediaChoices *choices;
+		const char *off = "video = vga\nmusic = off\nsound = pc-speaker\ninput = keys\n";
+		char *written;
+
+		WriteText(settingsPath, off);
+		assert(HostSettings_Prepare());
+		choices = HostSettings_MediaChoices();
+		assert(choices->music == MEDIA_MUSIC_OFF && choices->choice[MEDIA_OPTION_MUSIC] == 1);
+		written = (char *) SDL_LoadFile(settingsPath, NULL);
+		assert(written != NULL && strcmp(written, off) == 0);
+		SDL_free(written);
+		WriteText(settingsPath, "video = vga\nmusic = Speaker\nsound = pc-speaker\ninput = keys\n");
+		assert(HostSettings_Prepare());
+		choices = HostSettings_MediaChoices();
+		assert(choices->music == MEDIA_MUSIC_SPEAKER && choices->choice[MEDIA_OPTION_MUSIC] == 6);
 	}
 	else if (strcmp(mode, "parse") == 0)
 	{

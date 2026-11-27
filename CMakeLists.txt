@@ -853,7 +853,6 @@ if(CHR_BUILD_SDL)
 
     # Our sound (src/Audio/audio_mix.h): voices and the mixer, no device.
     add_library(chr_audio STATIC
-        src/Audio/LegacySynth.cpp
         src/Audio/Mixer.cpp
         src/Audio/Music.cpp
         src/Audio/PcmVoice.cpp
@@ -1104,7 +1103,7 @@ if(CHR_BUILD_SDL)
         set_tests_properties(resources.tracked_file_make PROPERTIES SKIP_RETURN_CODE 77
             PASS_REGULAR_EXPRESSION "fault: can't create ABSENT.DAT|skipped")
 
-        foreach(mode first none own bad parse)
+        foreach(mode first none own words bad parse)
             add_test(NAME platform.settings_${mode} COMMAND test_settings ${mode})
             set_tests_properties(platform.settings_${mode} PROPERTIES SKIP_RETURN_CODE 77)
         endforeach()

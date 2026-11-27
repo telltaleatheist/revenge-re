@@ -40,8 +40,8 @@ AUDIO_TRACES = os.path.join(HERE, "audio", "traces")
 SKIP = 77
 
 DEVICES = {
-    "card": "music = mt-32\nsound = sound-blaster 220\n",
-    "speaker": "music = pc-speaker\nsound = pc-speaker\n",
+    "card": "music = soundfont\nsound = sound-blaster 220\n",
+    "speaker": "music = speaker\nsound = pc-speaker\n",
 }
 
 

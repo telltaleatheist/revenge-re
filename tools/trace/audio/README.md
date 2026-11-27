@@ -35,7 +35,8 @@ Every script with a golden trace (`../scripts`), and `scripts/music.keys`
 (the title's tune to its end), each on two device settings written to the
 run's `settings.txt`:
 
-- `card`: music on the MT-32 path, effects on the Sound Blaster;
+- `card`: the music on the soundfont (the game's Roland driver), the effects
+  on the Sound Blaster;
 - `speaker`: both on the speaker.
 
 The log is cut at each snap (what follows the last is the shutdown), and each
@@ -51,13 +52,13 @@ outside the repo, to compare by hand.
 - Speaker: the same effects start speaker streams (`tone-effect`), and speech
   plays as a speaker bitstream (`pcm speech` then `pcm done` at once: the
   port doesn't time the bitstream).
-- The sequencer sends the same notes on both settings. On the speaker none of
-  them becomes a tone: the port never runs the music driver's service
-  (`ServiceActiveMIDIDriver`). The original's timer runs it, and the
-  sequencer, only while 426B:0004 is set; the port's host runs the sequencer
-  on its own clock instead and never the service, so the MT-32 path's queue
-  also empties only when it is full. Where the original sets 426B:0004 isn't
-  found yet (no direct write); phase 3's music slice settles it.
+- The sequencer sends the same notes on both settings. On the speaker the
+  game's own set-up (its sysex for the speaker driver) gives the music one
+  voice, which goes to the highest-priority channel sounding, so a few notes
+  in many become tones. Until phase 3's music slice none did: the port kept
+  426B:0004 (tested by the music timer) apart from 3A6A:8014 (written by
+  `InitializeMusicDriver`), which are one byte, and its host never ran the
+  driver's service, which the timer runs on every IRQ0 (1193182/400h Hz).
 - Speaker effects are nearly silent: their notes look up the divisor table at
   426B:0020, which the original's image holds and the port leaves at zero, so
   only their explicit-frequency events sound. Phase 3's effects slice fills

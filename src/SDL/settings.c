@@ -19,14 +19,15 @@ enum
 
 /* Our word for each option, and for each of its records in the records'
  * order (DS:3AD1 video, 3B12 music, 3B87 sound, 3B6D input). */
-/* Phase 3 replaces the music and sound words with the rebuild's own
- * (music: a soundfont, the speaker or off; effects: samples or the
- * speaker). The card words below then stay readable as old values, read
- * once and mapped to the new ones, so ReadOurFile keeps each option's
- * words in a table of its own. */
+/* The music's words are the rebuild's own: where it goes (MEDIA_MUSIC_*).
+ * The card words, its records' (DS:3B12), are still read as old values,
+ * once: the speaker's as the speaker, every card's as the soundfont, and
+ * the file is written again in the new words. (The sound's words go the
+ * same way in phase 3's effects slice.) */
 static const char *const OptionWords[MEDIA_OPTION_COUNT] = { "video", "music", "sound", "input" };
 static const char *const VideoWords[] = { "vga", "mcga", "ega", "tandy", "cga" };
-static const char *const MusicWords[] = {
+static const char *const MusicWords[] = { "soundfont", "speaker", "off" };
+static const char *const MusicRecordWords[] = {
 	"lapc-1", "mt-32", "sound-blaster", "adlib", "ps-1", "tandy", "pc-speaker"
 };
 static const char *const SoundWords[] = {
@@ -35,20 +36,44 @@ static const char *const SoundWords[] = {
 };
 static const char *const InputWords[] = { "mouse", "keys" };
 
+/* Each option's words; the music's are its records', as the game counts
+ * them (the player's words are MusicWords). */
 static const char *const *const ChoiceWords[MEDIA_OPTION_COUNT] = {
-	VideoWords, MusicWords, SoundWords, InputWords
+	VideoWords, MusicRecordWords, SoundWords, InputWords
 };
 static const word16 ChoiceWordCounts[MEDIA_OPTION_COUNT] = {
-	sizeof(VideoWords) / sizeof(VideoWords[0]), sizeof(MusicWords) / sizeof(MusicWords[0]),
+	sizeof(VideoWords) / sizeof(VideoWords[0]), sizeof(MusicRecordWords) / sizeof(MusicRecordWords[0]),
 	sizeof(SoundWords) / sizeof(SoundWords[0]), sizeof(InputWords) / sizeof(InputWords[0])
 };
 
-/* With no MEDIA.CFG: VGA, music through the MIDI path, the effects as
+enum
+{
+	MUSIC_WORD_COUNT = sizeof(MusicWords) / sizeof(MusicWords[0]),
+	/* The records the music's ways out drive: the speaker's own driver, and
+	 * the Roland driver for the soundfont and for none. */
+	MUSIC_RECORD_ROLAND = 1,
+	MUSIC_RECORD_SPEAKER = 6
+};
+
+/* With no MEDIA.CFG: VGA, the music on the soundfont, the effects as
  * digital samples (a Sound Blaster at 220h), the keyboard. */
-static const RevengeMediaChoices DefaultChoices = { { 0, 1, 0, 1 }, "220" };
+static const RevengeMediaChoices DefaultChoices = {
+	{ 0, MUSIC_RECORD_ROLAND, 0, 1 }, "220", MEDIA_MUSIC_SOUNDFONT
+};
 
 static RevengeMediaChoices choices;
 static int prepared;
+
+static word16 MusicRecord(word16 music)
+{
+	return music == MEDIA_MUSIC_SPEAKER ? MUSIC_RECORD_SPEAKER : MUSIC_RECORD_ROLAND;
+}
+
+/* A card's record read as an old value: the speaker's, or the soundfont. */
+static word16 MusicFromRecord(word16 record)
+{
+	return record == MUSIC_RECORD_SPEAKER ? MEDIA_MUSIC_SPEAKER : MEDIA_MUSIC_SOUNDFONT;
+}
 
 const RevengeMediaChoices *HostSettings_MediaChoices(void)
 {
@@ -130,9 +155,10 @@ static char *NextLine(char **cursor)
 }
 
 /* Our file: "option = word", the sound's word followed by its parameter
- * when it takes one; '#' starts a comment. */
-static void ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
+ * when it takes one; '#' starts a comment. 1 if it held an old word. */
+static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
 {
+	int old = 0;
 	int seen[MEDIA_OPTION_COUNT] = { 0, 0, 0, 0 };
 	char *cursor = text;
 	char *line;
@@ -161,10 +187,17 @@ static void ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
 		if (seen[option])
 			RevengeFault("%s:%d: %s is set twice", path, lineNumber, OptionWords[option]);
 		seen[option] = 1;
-		choice = WordIndex(ChoiceWords[option], ChoiceWordCounts[option], words[1]);
+		if (option == MEDIA_OPTION_MUSIC && (choice = WordIndex(MusicWords, MUSIC_WORD_COUNT, words[1])) >= 0)
+			out->music = (word16) choice;
+		else if ((choice = WordIndex(ChoiceWords[option], ChoiceWordCounts[option], words[1])) >= 0
+			&& option == MEDIA_OPTION_MUSIC)
+		{
+			out->music = MusicFromRecord((word16) choice);
+			old = 1;
+		}
 		if (choice < 0)
 			RevengeFault("%s:%d: %s can't be \"%s\"", path, lineNumber, OptionWords[option], words[1]);
-		out->choice[option] = (word16) choice;
+		out->choice[option] = option == MEDIA_OPTION_MUSIC ? MusicRecord(out->music) : (word16) choice;
 		if (option == MEDIA_OPTION_SOUND && MediaSettings_SoundTakesParameter((word16) choice))
 		{
 			if (count != 3 || !IsHexParameter(words[2]))
@@ -179,6 +212,7 @@ static void ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
 	for (option = 0; option < MEDIA_OPTION_COUNT; ++option)
 		if (!seen[option])
 			RevengeFault("%s: no %s line", path, OptionWords[option]);
+	return old;
 }
 
 /* The DOS installer's MEDIA.CFG: "KEY=VALUE[ PARAMETER]" lines. What it
@@ -212,6 +246,8 @@ static void ReadMediaConfiguration(char *text, RevengeMediaChoices *out)
 		}
 		out->choice[option] = (word16) choice;
 	}
+	out->music = MusicFromRecord(out->choice[MEDIA_OPTION_MUSIC]);
+	out->choice[MEDIA_OPTION_MUSIC] = MusicRecord(out->music);
 }
 
 static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
@@ -227,10 +263,12 @@ static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
 	{
 		word16 choice;
 
+		const char *const *words = option == MEDIA_OPTION_MUSIC ? MusicWords : ChoiceWords[option];
+		word16 count = option == MEDIA_OPTION_MUSIC ? (word16) MUSIC_WORD_COUNT : ChoiceWordCounts[option];
+
 		length += snprintf(text + length, sizeof(text) - (size_t) length, "#   %s:", OptionWords[option]);
-		for (choice = 0; choice < ChoiceWordCounts[option]; ++choice)
-			length += snprintf(text + length, sizeof(text) - (size_t) length, " %s",
-				ChoiceWords[option][choice]);
+		for (choice = 0; choice < count; ++choice)
+			length += snprintf(text + length, sizeof(text) - (size_t) length, " %s", words[choice]);
 		length += snprintf(text + length, sizeof(text) - (size_t) length, "\n");
 	}
 	length += snprintf(text + length, sizeof(text) - (size_t) length,
@@ -252,6 +290,9 @@ static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
 		if (option == MEDIA_OPTION_SOUND && MediaSettings_SoundTakesParameter(choice))
 			length += snprintf(text + length, sizeof(text) - (size_t) length, "%s = %s %s\n",
 				OptionWords[option], ChoiceWords[option][choice], values->soundParameter);
+		else if (option == MEDIA_OPTION_MUSIC)
+			length += snprintf(text + length, sizeof(text) - (size_t) length, "%s = %s\n",
+				OptionWords[option], MusicWords[values->music]);
 		else
 			length += snprintf(text + length, sizeof(text) - (size_t) length, "%s = %s\n",
 				OptionWords[option], ChoiceWords[option][choice]);
@@ -294,8 +335,11 @@ int HostSettings_Prepare(void)
 		text = LoadText(path);
 		if (text != NULL)
 		{
-			ReadOurFile(text, path, &choices);
+			int old = ReadOurFile(text, path, &choices);
+
 			SDL_free(text);
+			if (old)
+				WriteOurFile(path, &choices);
 			prepared = 1;
 			return 1;
 		}

@@ -1,13 +1,16 @@
-// The mixer (audio_mix.h): the speaker's tone, the samples and the music
-// synth, rendered on the game's clock one 48 kHz frame at a time.
+// The mixer (audio_mix.h): the speaker's tone, the samples and the music,
+// rendered on the game's clock into 48 kHz stereo frames.
 #include "audio_mix.h"
 
-#include "LegacySynth.h"
+#include "Music.h"
 #include "PcmVoice.h"
 #include "ToneVoice.h"
 
 #include <algorithm>
 #include <array>
+#include <cstdio>
+#include <exception>
+#include <string>
 
 namespace revenge::audio {
 namespace {
@@ -22,13 +25,15 @@ constexpr uint64_t kMostFramesAtOnce = AUDIO_MIX_SAMPLE_RATE;
 struct Mixer {
     ToneVoice tone;
     PcmVoice samples;
-    LegacySynth music;
+    Music music;
+    bool musicOn = false;
     bool speakerSounding = false;
     uint16_t speakerDivisor = 0;
     bool started = false;
-    uint64_t framesDone = 0;     // frames rendered since the clock started
+    uint64_t framesDone = 0;  // frames rendered since the clock started
     uint64_t startNanoseconds = 0;
-    std::array<float, AUDIO_MIX_BLOCK_FRAMES> block{};
+    std::array<float, AUDIO_MIX_BLOCK_FRAMES * AUDIO_MIX_CHANNELS> block{};
+    std::array<float, AUDIO_MIX_BLOCK_FRAMES * AUDIO_MIX_CHANNELS> musicBlock{};
     uint32_t blockFrames = 0;
 
     void updateTone() {
@@ -39,10 +44,21 @@ struct Mixer {
         tone.play(kPitClockHz / (speakerDivisor == 0 ? 65536.0 : speakerDivisor));
     }
 
-    float frame() {
-        const float value = kToneLevel * static_cast<float>(tone.mean(1.0 / AUDIO_MIX_SAMPLE_RATE)) +
-                            samples.next() + static_cast<float>(music.next()) / 32768.0f;
-        return std::clamp(value, -1.0f, 1.0f);
+    // Renders count frames (no more than fit the block) onto its end.
+    void render(uint32_t count) {
+        float* notes = musicBlock.data();
+        if (musicOn)
+            music.render(notes, count);
+        else
+            std::fill(notes, notes + count * AUDIO_MIX_CHANNELS, 0.0f);
+        float* out = &block[blockFrames * AUDIO_MIX_CHANNELS];
+        for (uint32_t frame = 0; frame < count; ++frame) {
+            const float middle =
+                kToneLevel * static_cast<float>(tone.mean(1.0 / AUDIO_MIX_SAMPLE_RATE)) + samples.next();
+            out[frame * 2] = std::clamp(middle + notes[frame * 2], -1.0f, 1.0f);
+            out[frame * 2 + 1] = std::clamp(middle + notes[frame * 2 + 1], -1.0f, 1.0f);
+        }
+        blockFrames += count;
     }
 };
 
@@ -77,8 +93,10 @@ void AudioMix_Advance(uint64_t nowNanoseconds, AudioMixSink sink) {
     if (due - mixer.framesDone > revenge::audio::kMostFramesAtOnce)
         mixer.framesDone = due - revenge::audio::kMostFramesAtOnce;
     while (mixer.framesDone < due) {
-        mixer.block[mixer.blockFrames++] = mixer.frame();
-        ++mixer.framesDone;
+        const uint32_t count = static_cast<uint32_t>(
+            std::min<uint64_t>(due - mixer.framesDone, AUDIO_MIX_BLOCK_FRAMES - mixer.blockFrames));
+        mixer.render(count);
+        mixer.framesDone += count;
         if (mixer.blockFrames == AUDIO_MIX_BLOCK_FRAMES) {
             if (sink != nullptr) sink(mixer.block.data(), mixer.blockFrames);
             mixer.blockFrames = 0;
@@ -100,11 +118,25 @@ void AudioMix_SampleRate(uint32_t sourceRateHz) { mixer.samples.setRate(sourceRa
 void AudioMix_QueueUnsigned8(uint8_t sample) { mixer.samples.queueUnsigned8(sample); }
 void AudioMix_QueueBits(const uint8_t* data, uint16_t byteCount) { mixer.samples.queueBits(data, byteCount); }
 
-void AudioMix_MidiByte(uint8_t value) { mixer.music.midiByte(value); }
-void AudioMix_StartMusicVoice(uint16_t voiceId, uint8_t note, uint8_t velocity, uint8_t program, uint8_t voiceClass) {
-    mixer.music.startVoice(voiceId, note, velocity, program, voiceClass);
+int AudioMix_LoadMusic(const void* soundfont, size_t soundfontSize, const char* table, size_t tableSize, char* error,
+                       size_t errorCapacity) {
+    std::string why;
+    try {
+        if (mixer.music.load(soundfont, soundfontSize,
+                             revenge::audio::ParseInstrumentTable(std::string_view(table, tableSize)),
+                             AUDIO_MIX_SAMPLE_RATE, why))
+            return 1;
+    } catch (const std::exception& problem) {
+        why = problem.what();
+    }
+    if (error != nullptr && errorCapacity > 0) std::snprintf(error, errorCapacity, "%s", why.c_str());
+    return 0;
 }
-void AudioMix_StopMusicVoice(uint16_t voiceId) { mixer.music.stopVoice(voiceId); }
-void AudioMix_ResetMusicVoices(void) { mixer.music.resetVoices(); }
+
+void AudioMix_MusicOn(int on) { mixer.musicOn = on != 0 && mixer.music.loaded(); }
+
+void AudioMix_MidiByte(uint8_t value) {
+    if (mixer.musicOn) mixer.music.midiByte(value);
+}
 
 }  // extern "C"
