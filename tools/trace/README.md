@@ -271,3 +271,10 @@ What the comparison found in the port, and how each was fixed:
    two come from the player's copy now, the third is FFFFh
    (import.original_initial_data_values). Without the pilots' gunnery the
    first battle parted from its second message on.
+4. **The title text's fade-out starts one past its colours.** The original
+   (0D73:2F5F) fades the line in through the four colours at DS:2718 and out
+   from index 4 down, so its first fade-out step uses DS:271C, the low byte of
+   MissionBlinkRectX[0]. An original quirk, kept. The port read index 4 past
+   its C array, a byte that depended on the host's layout and differed
+   between the Mac's two architectures; it reads MissionBlinkRectX[0] as it
+   stands now (campaign.original_mission_fade_color). Found by UBSan.

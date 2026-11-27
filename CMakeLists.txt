@@ -1248,6 +1248,13 @@ if(CHR_BUILD_SDL)
         chr_strict(test_scene_jump)
         add_test(NAME tactical.original_scene_jump COMMAND test_scene_jump)
 
+        # The title text's fade colours: the fade-out's first step past them.
+        add_executable(test_mission_fade_color tests/test_mission_fade_color.c)
+        target_include_directories(test_mission_fade_color PRIVATE src/Original tests)
+        target_link_libraries(test_mission_fade_color PRIVATE ${CHR_RUNTIME_WITH_BACKEND})
+        chr_strict(test_mission_fade_color)
+        add_test(NAME campaign.original_mission_fade_color COMMAND test_mission_fade_color)
+
         # The objects the source places in the data segment, as the program
         # starts them, against the player's copy's load image.
         add_executable(test_initial_data_image tests/test_initial_data_image.c)

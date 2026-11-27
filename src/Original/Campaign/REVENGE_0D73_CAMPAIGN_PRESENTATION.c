@@ -219,6 +219,17 @@ word16 PlayTitleTextSequence(void)
 	return continueSequence;
 }
 
+/* A colour of the title text's fade, by step. The fade-out (0D73:2F5F)
+ * starts one past the four fade colours, as the original does: its first step
+ * is the byte after them in the data segment (DS:271C), the low byte of
+ * MissionBlinkRectX[0], read as it stands then. */
+byte MissionFadeColor(word16 fadeIndex)
+{
+	if (fadeIndex < sizeof(MissionFadeColorTable))
+		return MissionFadeColorTable[fadeIndex];
+	return (byte) (MissionBlinkRectX[0x00] & 0x00FF);
+}
+
 // 0D73:2F5F: Register word16 AnimateTitleTextLine(Stack const char * dwArg04)
 // Called from:
 //      PlayTitleTextSequence
@@ -242,7 +253,7 @@ word16 AnimateTitleTextLine(const char *text)
 	{
 		HideMouseCursorOverlay();
 		DrawCenteredClippedText(text, 0x00, 0x00, textY, 0x0140,
-			MissionFadeColorTable[fadeIndex], 0x00);
+			MissionFadeColor(fadeIndex), 0x00);
 		ShowMouseCursorOverlay();
 		WaitVerticalRetraces(0x02);
 	}
@@ -254,7 +265,7 @@ word16 AnimateTitleTextLine(const char *text)
 		{
 			HideMouseCursorOverlay();
 			DrawCenteredClippedText(text, 0x00, 0x00, textY, 0x0140,
-				MissionFadeColorTable[fadeIndex], 0x00);
+				MissionFadeColor(fadeIndex), 0x00);
 			ShowMouseCursorOverlay();
 			WaitVerticalRetraces(0x02);
 		}

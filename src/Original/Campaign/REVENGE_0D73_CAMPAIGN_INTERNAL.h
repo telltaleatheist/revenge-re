@@ -157,6 +157,7 @@ void OpenModalTextWindow(word16 windowIndex, word16 clearAndFrame);
 void RestoreModalTextWindow(void);
 word16 RunGameOptionsMenu(word16 embeddedMode);
 byte *AddBytesToFarPointer(byte *base, uint32 byteCount);
+byte MissionFadeColor(word16 fadeIndex);
 word16 AnimateTitleTextLine(const char *text);
 void PresentAnimatedScreenAndMessage(
 	word16 screenResourceIndex,
