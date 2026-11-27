@@ -3,6 +3,11 @@
 // Procedures preserved from REVENGE_1A1F_SCENARIO.c.
 
 #include "BattleInternal.h"
+#include "Resources/Resources.h"
+#include "Runtime/Runtime.h"
+#include "Tactical/Tactical.h"
+#include "Units/Units.h"
+#include "revenge/text.h"
 #include "revenge/original/campaign_data.h"
 
 // 1A1F:1C27

@@ -6,13 +6,12 @@
 // Tactical battle orchestration, SCENE interpretation, input, and campaign
 // clock procedures reconstructed from REVENGE.EXE segment 1A1F.
 
-#include "REVENGE.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
 #include "revenge/input.h"
 #include "revenge/original/scene_data.h"
-#include "revenge/original_data.h"
 #include "revenge/debug.h"
 #include "revenge/video.h"
-
 
 uint16_t ReadTerrainDamageState(int16_t mapX, int16_t mapY);
 void BeginTerrainDamageAtCell(
@@ -74,7 +73,6 @@ void EnableMusicPlayback(void);
 #define TacticalOverviewZoomed    TacticalOverviewViewportDirty
 #define TacticalOverviewSavedMode TacticalOverviewDisplayMode
 #define NarrationReady            FriendlyUnitDestroyed
-
 
 #define TACTICAL_RUNTIME_ALLOCATION_SIZE 0xCB90
 #define TACTICAL_VIEWPORT_WIDTH_CELLS    0x0013
@@ -217,6 +215,5 @@ static inline uint16_t ReadSceneWordLowFirst(void)
         if ((takeBranch) != 0x00) \
             JumpToSceneOffset(branchOffset); \
     } while (0)
-
 
 #endif

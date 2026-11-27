@@ -2,8 +2,14 @@
 // OverviewMap.cpp
 // Tactical overview-map rendering and transition helpers.
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Tactical/Tactical.h"
+#include "Text/Text.h"
+#include "revenge/text.h"
 
 #define TACTICAL_UNIT_COUNT             0x18
 #define FIRST_OPPOSING_UNIT_INDEX       0x0C

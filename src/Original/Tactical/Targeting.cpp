@@ -3,6 +3,16 @@
 // Procedures preserved from REVENGE_2208_TACTICAL_INTERACTION.c.
 
 #include "CommandsInternal.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalTables.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Runtime/Runtime.h"
+#include "Tactical/Tactical.h"
+#include "Text/Text.h"
+#include "revenge/tactical_panel_data.h"
 #include "revenge/debug.h"
 
 // 2208:060D

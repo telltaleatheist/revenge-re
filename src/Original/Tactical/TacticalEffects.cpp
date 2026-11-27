@@ -2,8 +2,14 @@
 // TacticalEffects.cpp - tactical display, projectile, and effect procedures.
 // Reconstructed from REVENGE.EXE and its verified annotation project.
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalTables.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Tactical/Tactical.h"
+#include "Text/Text.h"
 #include "revenge/video.h"
 
 #define TACTICAL_VIEWPORT_WIDTH_CELLS  0x0013

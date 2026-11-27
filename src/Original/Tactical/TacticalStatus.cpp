@@ -6,8 +6,18 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Campaign/Campaign.h"
+#include "Data/AudioData.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Tactical/Tactical.h"
+#include "Text/Text.h"
+#include "Utility/Utility.h"
+#include "revenge/tactical_panel_data.h"
 #include "revenge/video.h"
 
 #include <string.h>

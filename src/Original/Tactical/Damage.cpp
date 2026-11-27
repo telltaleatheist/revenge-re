@@ -3,6 +3,10 @@
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
 #include "CombatInternal.h"
+#include "Data/AudioData.h"
+#include "Data/StartupData.h"
+#include "Graphics/Graphics.h"
+#include "Tactical/Tactical.h"
 
 // 2D1B:2453: void DestroyScenarioUnit(word16 unitIndex)
 // Called from:

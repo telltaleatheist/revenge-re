@@ -3,6 +3,15 @@
 // Procedures preserved from REVENGE_2208_TACTICAL_INTERACTION.c.
 
 #include "CommandsInternal.h"
+#include "Data/AudioData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalTables.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Tactical/Tactical.h"
+#include "revenge/tactical_panel_data.h"
+#include "revenge/text.h"
 #include "revenge/debug.h"
 
 // 2208:1829: word16 IsCurrentLanceLeader(word16 unitIndex)

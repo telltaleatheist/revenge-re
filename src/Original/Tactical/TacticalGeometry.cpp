@@ -4,8 +4,9 @@
 // REVENGE.EXE segment 0800.
 
 // Tactical geometry and terrain procedures from REVENGE.EXE segment 0800.
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalGraphicsData.h"
+#include "Tactical/Tactical.h"
 #include "revenge/platform_backend.h"
 #include "revenge/video.h"
 
@@ -281,7 +282,6 @@ int16_t InterpolateLineCoordinate(
         (uint16_t) otherEndCoordinate);
 }
 
-
 // 0800:0A89: translate the map-cell bytes used by the tactical overview into
 // display colors and pad each destination row to an eight-byte boundary.
 // The four color bands are the literal CS:04C9 translation table used by XLAT.
@@ -352,7 +352,6 @@ void BuildTacticalOverviewMapBuffer(
             *destination++ = overviewPixelTranslation[0x00];
     }
 }
-
 
 #define TACTICAL_VIEWPORT_WIDTH_CELLS    0x0013
 #define TACTICAL_VIEWPORT_HEIGHT_CELLS   0x000C

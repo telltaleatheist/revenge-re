@@ -3,6 +3,15 @@
 // Procedures preserved from REVENGE_1A1F_SCENARIO.c.
 
 #include "BattleInternal.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalTables.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Tactical/Tactical.h"
+#include "Text/Text.h"
+#include "Units/Units.h"
+#include "Utility/Utility.h"
 
 // 1A1F:0D55: draw and clip a tactical weapon trace.
 // Verified against ASM 1A1F:0D55-10CC.

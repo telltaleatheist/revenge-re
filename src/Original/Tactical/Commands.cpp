@@ -7,6 +7,14 @@
 #endif
 
 #include "CommandsInternal.h"
+#include "Data/AudioData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
+#include "Input/Input.h"
+#include "Tactical/Tactical.h"
+#include "Text/Text.h"
+#include "Units/Units.h"
+#include "revenge/tactical_panel_data.h"
 #include "revenge/debug.h"
 
 #include <string.h>

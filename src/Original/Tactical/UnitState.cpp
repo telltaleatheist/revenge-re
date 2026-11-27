@@ -3,6 +3,10 @@
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
 #include "CombatInternal.h"
+#include "Data/AudioData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalTables.h"
+#include "Tactical/Tactical.h"
 
 // 2D1B:0005: void RecalculateUnitCombatRatings(Stack RevengeUnitRecord *unitRecord,
 //     Stack word16 unitSlot, Stack word16 rebuildWeaponCounts, Stack word16 advanceRecovery)

@@ -2,6 +2,11 @@
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
 #include "CombatInternal.h"
+#include "Data/AudioData.h"
+#include "Data/HitLocationData.h"
+#include "Data/TacticalTables.h"
+#include "Graphics/Graphics.h"
+#include "Tactical/Tactical.h"
 #include "revenge/debug.h"
 
 // 2D1B:1E2B's damage past the armour: the location's critical rolls, then

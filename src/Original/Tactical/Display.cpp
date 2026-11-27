@@ -1,9 +1,12 @@
 // 2007: display
 /* Tactical sprite composition and display procedures from segment 2007. */
 
-#include "REVENGE.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Tactical/Tactical.h"
 
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 void AdvanceTerrainEffects(uint16_t advanceEffects);

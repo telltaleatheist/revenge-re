@@ -3,6 +3,20 @@
 // Procedures preserved from REVENGE_1A1F_SCENARIO.c.
 
 #include "BattleInternal.h"
+#include "Audio/Audio.h"
+#include "Data/AudioData.h"
+#include "Data/ResourceData.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalGraphicsData.h"
+#include "Data/TacticalTables.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Resources/Resources.h"
+#include "Runtime/Runtime.h"
+#include "Tactical/Tactical.h"
+#include "Utility/Utility.h"
+#include "revenge/heap.h"
 #include "revenge/debug.h"
 #include "revenge/platform_backend.h"
 

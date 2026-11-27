@@ -3,6 +3,15 @@
 // Procedures preserved from REVENGE_1A1F_SCENARIO.c.
 
 #include "BattleInternal.h"
+#include "Data/AudioData.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Tactical/Tactical.h"
+#include "Text/Text.h"
+#include "Units/Units.h"
+#include "Utility/Utility.h"
+#include "revenge/tactical_panel_data.h"
 #include "revenge/debug.h"
 
 static uint8_t tracedSceneOpcodeCount;

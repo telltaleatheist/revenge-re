@@ -6,8 +6,7 @@
 // Tactical movement, targeting, weapon, damage, and terrain procedures
 // reconstructed from REVENGE.EXE segment 2D1B.
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
 
 #define TACTICAL_ENGAGEMENT_NONE     0x00
 #define TACTICAL_ENGAGEMENT_CLOSE    0x01
@@ -89,6 +88,5 @@ uint16_t ShouldDestroyUnitAfterLegLoss(void);
 void RebuildLanceFormationAfterLeaderLoss(uint16_t firstUnitIndex);
 uint16_t AdvanceTerrainDamageState(
     int16_t mapX, int16_t mapY, uint16_t maximumDamageState);
-
 
 #endif

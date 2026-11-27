@@ -5,9 +5,8 @@
 // Tactical input, command, formation, and intelligence procedures reconstructed
 // from REVENGE.EXE and the Revenge annotation project.
 
-#include "REVENGE.h"
+#include "revenge/unit.h"
 #include "revenge/input.h"
-#include "revenge/original_data.h"
 
 #define TACTICAL_ORDER_SCRIPTED_ROUTE   0x00
 #define TACTICAL_ORDER_HOLD_POSITION    0x01
@@ -113,6 +112,5 @@ void ShowTacticalCommandPrompt(const char *prompt);
 void AdvanceLanceFormation(uint16_t unitIndex);
 uint16_t SelectTacticalMoveDestination(
     uint16_t unitIndex, uint16_t selectionMode);
-
 
 #endif
