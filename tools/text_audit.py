@@ -14,21 +14,22 @@ What is searched for, from the player's copy:
   dictionaries at DS:05AA and DS:05BA), split at NULs and line breaks;
 - every other file of the copy: its runs of printable characters.
 
+What counts as the game's words is wording: at least MIN_WORDS words, or two
+words in at least PHRASE_LENGTH characters. Single words and two-word names
+(a weapon, a place, a button), which our identifiers, keys and prose share by
+meaning, match ordinary text too often to search for; the keyed hashes of the
+import and rule tables keep those out of the tree.
+
 Four kinds of hit, each named by the file and line in the tree, the game
 file and the offset of the match, and its length. Never the text.
-- wording: a line of the game's with at least MIN_WORDS words, or two words
-  and PHRASE_LENGTH characters, anywhere in a tracked or new (not ignored) file, case folded and
-  as whole words;
-- piece: a string literal in C source, or a quoted string in its comments,
-  of at least PIECE_MIN characters, three of them letters, that occurs
-  anywhere in any game file, case-blind: raw, or in REVENGE.EXE's text
-  expanded. A piece of a longer line is caught too. Only names of the
-  player's files the program opens (NAME.EXT) are let through. (Docs, ledgers
-  and tools are held to wording and literal: their quoted fields are common
-  words that occur in the game's data by chance.)
-- literal: a C string literal of at least four characters, three of them
-  letters, that is the whole of a NUL-terminated string of REVENGE.EXE
-  (expanded or not). This catches names and labels too short for wording;
+- wording: a line of the game's that is wording, anywhere in a tracked or
+  new (not ignored) file, case folded and as whole words;
+- piece: a C string literal (adjacent literals joined) that is wording and
+  occurs anywhere in any game file, case-blind: raw, or in REVENGE.EXE's
+  text expanded. A piece of a longer line is caught too;
+- literal: a C string literal that is wording and the whole of a
+  NUL-terminated string of REVENGE.EXE (expanded or not), line breaks and
+  all;
 - bytes: a C array of hex bytes holding a run of 16 bytes of REVENGE.EXE's
   image, with at least four different values among them.
 File names (the code opens the install's files by name) and printf formats
@@ -305,7 +306,7 @@ def main():
             file, offset, length = wording[m.group()]
             found.append(("wording", m.start(), file, offset, length))
         for start, value in joined_literals(text) if name.lower().endswith(C_SOURCES) else ():
-            if (len(value) >= PIECE_MIN and sum(chr(b).isalpha() for b in value) >= 3
+            if (len(value) >= PIECE_MIN and is_wording(value.decode("latin-1"))
                     and not FILE_NAME.match(value.decode("latin-1"))):
                 position = hay.find(value.lower())
                 if position >= 0:
@@ -317,7 +318,7 @@ def main():
                     decoded = value.decode("ascii")
                 except UnicodeDecodeError:
                     continue
-                if decoded in strings:
+                if decoded in strings and is_wording(decoded):
                     file, offset, length = strings[decoded]
                     found.append(("literal", start, file, offset, length))
             for m in HEX_LIST.finditer(text):
