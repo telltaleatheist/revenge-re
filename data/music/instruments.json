@@ -1,5 +1,5 @@
 {
-  "gain_db": -6.0,
+  "gain_db": -9.0,
   "fallback_program": 48,
   "timbres": [
     {"group": "a", "number": 0, "mt32": "AcouPiano1", "program": 0},
