@@ -17,9 +17,9 @@ uint8_t PrepareActivePilotList(void)
     uint16_t windowHeight;
 
     lineCount = 0x0003;
-    for (pilotSlot = 0x0000; pilotSlot < 0x0025; ++pilotSlot)
+    for (pilotSlot = 0x0000; pilotSlot < REVENGE_PLAYER_PILOT_COUNT; ++pilotSlot)
     {
-        if (PilotRoster[pilotSlot].availability == 0x01)
+        if (PilotRoster[pilotSlot].availability == REVENGE_PILOT_ACTIVE)
         {
             ++lineCount;
         }
@@ -40,9 +40,9 @@ void RenderActivePilotList(void)
     HideMouseCursorOverlay();
     RenderFormattedText(PilotRosterHeadingText);
     ShowMouseCursorOverlay();
-    for (pilotSlot = 0x0000; pilotSlot < 0x0025; ++pilotSlot)
+    for (pilotSlot = 0x0000; pilotSlot < REVENGE_PLAYER_PILOT_COUNT; ++pilotSlot)
     {
-        if (PilotRoster[pilotSlot].availability == 0x01)
+        if (PilotRoster[pilotSlot].availability == REVENGE_PILOT_ACTIVE)
         {
             RenderPilotName(
                 PilotRoster[pilotSlot].identityId);
@@ -62,10 +62,10 @@ uint8_t PrepareSurvivingCommanderList(void)
 
     lineCount = 0x0003;
     for (firstUnitIndex = 0x0000;
-        firstUnitIndex < 0x000C;
-        firstUnitIndex += 0x0004)
+        firstUnitIndex < TACTICAL_FORCE_UNIT_COUNT;
+        firstUnitIndex += LANCE_UNIT_COUNT)
     {
-        for (unitSlot = 0x0000; unitSlot < 0x0004; ++unitSlot)
+        for (unitSlot = 0x0000; unitSlot < LANCE_UNIT_COUNT; ++unitSlot)
         {
             RevengeUnitRecord *unitRecord = firstUnitIndex < 0x0008 ? &PersistentUnitRoster[firstUnitIndex + unitSlot] : &LiveScenarioUnits[firstUnitIndex + unitSlot];
             if (unitRecord->tonnage != 0x00 &&
@@ -94,10 +94,10 @@ void RenderSurvivingCommanderList(void)
     RenderFormattedText(PilotRosterHeadingText);
     ShowMouseCursorOverlay();
     for (firstUnitIndex = 0x0000;
-        firstUnitIndex < 0x000C;
-        firstUnitIndex += 0x0004)
+        firstUnitIndex < TACTICAL_FORCE_UNIT_COUNT;
+        firstUnitIndex += LANCE_UNIT_COUNT)
     {
-        for (unitSlot = 0x0000; unitSlot < 0x0004; ++unitSlot)
+        for (unitSlot = 0x0000; unitSlot < LANCE_UNIT_COUNT; ++unitSlot)
         {
             RevengeUnitRecord *unitRecord = firstUnitIndex < 0x0008 ? &PersistentUnitRoster[firstUnitIndex + unitSlot] : &LiveScenarioUnits[firstUnitIndex + unitSlot];
             if (unitRecord->tonnage != 0x00 &&
@@ -117,9 +117,9 @@ uint16_t HasFallenPilots(void)
 {
     uint16_t pilotSlot;
 
-    for (pilotSlot = 0x0000; pilotSlot < 0x0025; ++pilotSlot)
+    for (pilotSlot = 0x0000; pilotSlot < REVENGE_PLAYER_PILOT_COUNT; ++pilotSlot)
     {
-        if (PilotRoster[pilotSlot].availability == 0xFF)
+        if (PilotRoster[pilotSlot].availability == REVENGE_PILOT_FALLEN)
         {
             return TRUE;
         }
@@ -136,9 +136,9 @@ uint8_t PrepareFallenPilotList(void)
     uint16_t windowHeight;
 
     lineCount = 0x0002;
-    for (pilotSlot = 0x0000; pilotSlot < 0x0025; ++pilotSlot)
+    for (pilotSlot = 0x0000; pilotSlot < REVENGE_PLAYER_PILOT_COUNT; ++pilotSlot)
     {
-        if (PilotRoster[pilotSlot].availability == 0xFF)
+        if (PilotRoster[pilotSlot].availability == REVENGE_PILOT_FALLEN)
         {
             ++lineCount;
         }
@@ -159,9 +159,9 @@ void RenderFallenPilotList(void)
     HideMouseCursorOverlay();
     RenderFormattedText(PilotRosterHeadingText);
     ShowMouseCursorOverlay();
-    for (pilotSlot = 0x0000; pilotSlot < 0x0025; ++pilotSlot)
+    for (pilotSlot = 0x0000; pilotSlot < REVENGE_PLAYER_PILOT_COUNT; ++pilotSlot)
     {
-        if (PilotRoster[pilotSlot].availability == 0xFF)
+        if (PilotRoster[pilotSlot].availability == REVENGE_PILOT_FALLEN)
         {
             RenderPilotName(
                 PilotRoster[pilotSlot].identityId);

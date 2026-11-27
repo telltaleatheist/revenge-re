@@ -6,6 +6,13 @@
 #include "revenge/types.h"
 
 extern const uint8_t CharacterClassTable[0x100];
+/* CharacterClassTable's bits, as its rows set them: white space, digits,
+ * capitals and small letters. */
+inline constexpr uint8_t CHARACTER_CLASS_SPACE = 0x01;
+inline constexpr uint8_t CHARACTER_CLASS_DIGIT = 0x02;
+inline constexpr uint8_t CHARACTER_CLASS_UPPER = 0x04;
+inline constexpr uint8_t CHARACTER_CLASS_LOWER = 0x08;
+inline constexpr uint8_t CHARACTER_CLASS_LETTER = CHARACTER_CLASS_UPPER | CHARACTER_CLASS_LOWER;
 extern const uint16_t VideoPixelAlignmentMasks[0x08];
 extern const uint16_t PackedPixelShiftCounts[0x03];
 extern uint16_t TextWindowFrameDefinition[0x0C];

@@ -11,7 +11,8 @@ enum
     CAMPAIGN_DATA_SEGMENT = 0x3A6A,
     CAMPAIGN_PRIMARY_STATE_COUNT = 0x07,
     CAMPAIGN_EXTENDED_STATE_COUNT = 0x0F,
-    CAMPAIGN_STAGE_COUNT = 0x16
+    CAMPAIGN_STAGE_COUNT = 0x16,
+    TRAINING_SCENARIO_COUNT = 0x06
 };
 
 #pragma pack(push, 1)
@@ -57,7 +58,7 @@ enum
     CAMPAIGN_MESSAGE_COUNT = 0xB2
 };
 
-extern uint8_t TrainingScenarioCompletionFlags[0x06];
+extern uint8_t TrainingScenarioCompletionFlags[TRAINING_SCENARIO_COUNT];
 /* DS:1704: the palette of screens 1-25h, the first entry screen 1's. The
  * original indexes it from DS:1703, the last cached-file descriptor's last
  * byte, with screens that start at 1. */

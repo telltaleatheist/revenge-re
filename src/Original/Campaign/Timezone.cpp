@@ -13,6 +13,11 @@
 
 #include <string.h>
 
+/* TZ's zone names are three letters; with no TZ the zone is five hours west
+ * of UTC (the runtime's default names, DS's, say which). */
+constexpr int TIMEZONE_NAME_LENGTH = 0x03;
+constexpr uint16_t DEFAULT_TIMEZONE_OFFSET_SECONDS = 0x4650;
+
 // 3A3C:0008
 // Borland tzset path. Parse TZ as a three-character standard-zone name,
 // signed decimal UTC offset in hours, and an optional three-character DST name.
@@ -24,14 +29,14 @@ void InitializeTimezoneFromEnvironment(void)
     if (validTimezone)
     {
         uint16_t firstThreeAreLetters =
-            (CharacterClassTable[(unsigned char) timezone[0x00]] & 0x0C) != 0x00 &&
-            (CharacterClassTable[(unsigned char) timezone[0x01]] & 0x0C) != 0x00 &&
-            (CharacterClassTable[(unsigned char) timezone[0x02]] & 0x0C) != 0x00;
+            (CharacterClassTable[(unsigned char) timezone[0x00]] & CHARACTER_CLASS_LETTER) != 0x00 &&
+            (CharacterClassTable[(unsigned char) timezone[0x01]] & CHARACTER_CLASS_LETTER) != 0x00 &&
+            (CharacterClassTable[(unsigned char) timezone[0x02]] & CHARACTER_CLASS_LETTER) != 0x00;
         uint16_t offsetStartsWithDigit =
-            (CharacterClassTable[(unsigned char) timezone[0x03]] & 0x02) != 0x00;
+            (CharacterClassTable[(unsigned char) timezone[0x03]] & CHARACTER_CLASS_DIGIT) != 0x00;
         uint16_t offsetStartsWithSign = timezone[0x03] == '-' || timezone[0x03] == '+';
         uint16_t signedOffsetHasDigit =
-            (CharacterClassTable[(unsigned char) timezone[0x04]] & 0x02) != 0x00;
+            (CharacterClassTable[(unsigned char) timezone[0x04]] & CHARACTER_CLASS_DIGIT) != 0x00;
 
         validTimezone = firstThreeAreLetters &&
             (offsetStartsWithDigit || offsetStartsWithSign) &&
@@ -42,18 +47,18 @@ void InitializeTimezoneFromEnvironment(void)
     {
         DaylightSavingEnabled = 0x01;
         TimezoneOffsetHighWord = 0x00;
-        TimezoneOffsetLowWord = 0x4650;
+        TimezoneOffsetLowWord = DEFAULT_TIMEZONE_OFFSET_SECONDS;
         strcpy(StandardTimezoneName, DefaultStandardTimezoneName);
         strcpy(DaylightTimezoneName, DefaultDaylightTimezoneName);
         return;
     }
 
     memset(DaylightTimezoneName, 0x00, 0x04);
-    strncpy(StandardTimezoneName, timezone, 0x03);
-    StandardTimezoneName[0x03] = 0x00;
+    strncpy(StandardTimezoneName, timezone, TIMEZONE_NAME_LENGTH);
+    StandardTimezoneName[TIMEZONE_NAME_LENGTH] = 0x00;
 
     {
-        long offsetSeconds = ParseSignedDecimalLong(timezone + 0x03) * 0x0E10L;
+        long offsetSeconds = ParseSignedDecimalLong(timezone + TIMEZONE_NAME_LENGTH) * 0x0E10L;
         TimezoneOffsetLowWord = (uint16_t) offsetSeconds;
         TimezoneOffsetHighWord = HIGH_WORD(offsetSeconds);
     }
@@ -63,14 +68,14 @@ void InitializeTimezoneFromEnvironment(void)
         unsigned short index = 0x03;
         while (timezone[index] != '\0')
         {
-            if ((CharacterClassTable[(unsigned char) timezone[index]] & 0x0C) != 0x00)
+            if ((CharacterClassTable[(unsigned char) timezone[index]] & CHARACTER_CLASS_LETTER) != 0x00)
             {
                 if ((uint16_t) strlen(timezone + index) >= 0x03 &&
-                    (CharacterClassTable[(unsigned char) timezone[index + 0x01]] & 0x0C) != 0x00 &&
-                    (CharacterClassTable[(unsigned char) timezone[index + 0x02]] & 0x0C) != 0x00)
+                    (CharacterClassTable[(unsigned char) timezone[index + 0x01]] & CHARACTER_CLASS_LETTER) != 0x00 &&
+                    (CharacterClassTable[(unsigned char) timezone[index + 0x02]] & CHARACTER_CLASS_LETTER) != 0x00)
                 {
-                    strncpy(DaylightTimezoneName, timezone + index, 0x03);
-                    DaylightTimezoneName[0x03] = 0x00;
+                    strncpy(DaylightTimezoneName, timezone + index, TIMEZONE_NAME_LENGTH);
+                    DaylightTimezoneName[TIMEZONE_NAME_LENGTH] = 0x00;
                     DaylightSavingEnabled = 0x01;
                 }
                 return;

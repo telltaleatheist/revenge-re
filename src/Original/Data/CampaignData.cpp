@@ -31,7 +31,7 @@ const char *const InGameMenuTextTable[0x0B] = {
 };
 const char *const SaveGameSeparatorText = STORY_TEXT(SAVE_GAME_SEPARATOR);
 
-uint8_t TrainingScenarioCompletionFlags[0x06];
+uint8_t TrainingScenarioCompletionFlags[TRAINING_SCENARIO_COUNT];
 /* Filled at start from data/ui/screens.json (revenge/rules.h). */
 int8_t ScreenPaletteResourceByScreen[CAMPAIGN_SCREEN_PALETTE_COUNT];
 CampaignSaveDirectory SaveDirectory;

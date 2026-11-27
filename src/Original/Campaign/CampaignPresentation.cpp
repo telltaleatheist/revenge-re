@@ -931,7 +931,7 @@ void BuildMissionSpriteBackingBuffer(uint16_t spriteLayoutIndex)
 void ShowScenarioCompletionStatus(void)
 {
     HideMouseCursorOverlay();
-    if ((CampaignFlags & 0x01) != FALSE)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) != FALSE)
     {
         DrawTileAlignedText(
             ScenarioCompleteHeadingText,

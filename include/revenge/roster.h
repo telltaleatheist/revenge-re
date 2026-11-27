@@ -21,6 +21,10 @@ typedef struct RevengePilotRosterRecord
     uint8_t availability;        /* +03 */
 } RevengePilotRosterRecord;
 
+/* RevengePilotRosterRecord.availability: in the lance and out of it for good. */
+inline constexpr uint8_t REVENGE_PILOT_ACTIVE = 0x01;
+inline constexpr uint8_t REVENGE_PILOT_FALLEN = 0xFF;
+
 typedef struct RevengeUnitLanceAssignment
 {
     uint16_t left;              /* +00 */

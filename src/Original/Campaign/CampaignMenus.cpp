@@ -223,7 +223,7 @@ int16_t RunInGameMenu(int16_t firstMenuOption)
     if (firstMenuOption == 0x00)
     {
         menuWindowTop = 0x09;
-        menuItemCount = 0x09;
+        menuItemCount = IN_GAME_MENU_OPTION_COUNT;
     }
     else
     {
@@ -239,7 +239,7 @@ int16_t RunInGameMenu(int16_t firstMenuOption)
     HideMouseCursorOverlay();
     menuY = TextWindowContexts[0x11].topTile << 0x03;
     for (optionIndex = (uint16_t) firstMenuOption;
-        optionIndex < 0x0009;
+        optionIndex < IN_GAME_MENU_OPTION_COUNT;
         ++optionIndex)
     {
         DrawCenteredClippedText(
@@ -324,13 +324,13 @@ int16_t RunInGameMenu(int16_t firstMenuOption)
             break;
         CampaignRestartState = FALSE;
         ReplayCampaignStateRequested = FALSE;
-        for (index = 0x0000; index < 0x0007; ++index)
+        for (index = 0x0000; index < CAMPAIGN_PRIMARY_STATE_COUNT; ++index)
         {
             ReplayCampaignState[index] =
                 InitialCampaignState[index];
         }
         RandomPilotPoolCounts.replay = RandomPilotPoolCounts.initial;
-        for (index = 0x0000; index < 0x000F; ++index)
+        for (index = 0x0000; index < CAMPAIGN_EXTENDED_STATE_COUNT; ++index)
         {
             ReplayExtendedCampaignState[index] =
                 InitialExtendedCampaignState[index];
@@ -350,7 +350,7 @@ int16_t RunInGameMenu(int16_t firstMenuOption)
         ScenarioUnitFifteenState = 0x00;
         EjectedPilotRosterState = 0x00;
         ScenarioUnitZeroAvailable = 0x00;
-        for (index = 0x0000; index < 0x0006; ++index)
+        for (index = 0x0000; index < TRAINING_SCENARIO_COUNT; ++index)
             TrainingScenarioCompletionFlags[index] = 0x00;
         result = 0x01;
         break;

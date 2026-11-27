@@ -90,7 +90,7 @@ int16_t RunCampaignStage00(void)
     if (CampaignMenuRequested != FALSE)
         return FALSE;
 
-    if ((CampaignFlags & 0x0001) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) != 0x0000)
     {
         PlayMusicResource(0x004E);
         PresentScreenAndMessage(0x0006, 0x000B);
@@ -119,9 +119,9 @@ int16_t RunCampaignStage01(void)
     if (CampaignMenuRequested != FALSE)
         return FALSE;
 
-    if ((CampaignFlags & 0x0001) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) != 0x0000)
     {
-        if ((CampaignFlags & 0x0008) != 0x0000)
+        if ((CampaignFlags & CAMPAIGN_FLAG_UNIT_1_LOST) != 0x0000)
             PresentScreenAndMessage(0x0006, 0x000F);
         PresentAnimatedScreenAndMessage(0x0020, 0x0011);
         PendingCampaignStageDelta = TRUE;
@@ -129,14 +129,14 @@ int16_t RunCampaignStage01(void)
         return TRUE;
     }
 
-    if ((CampaignFlags & 0x0002) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_LOST) != 0x0000)
     {
         PlayMusicResource(0x0047);
         PresentScreenAndMessage(0x000C, 0x000E);
         return FALSE;
     }
 
-    if ((CampaignFlags & 0x0008) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_UNIT_1_LOST) != 0x0000)
         PresentScreenAndMessage(0x0006, 0x000F);
     PresentAnimatedScreenAndMessage(0x0020, 0x0010);
     PendingCampaignStageDelta = TRUE;
@@ -154,22 +154,22 @@ int16_t RunCampaignStage02(void)
     ShowStoryMessageAndWait(0x0013);
     InitializeTacticalScenario();
 
-    if ((CampaignFlags & 0x2000) == 0x0000 &&
+    if ((CampaignFlags & CAMPAIGN_FLAG_UNIT_1_LOST_BEFORE) == 0x0000 &&
         PersistentUnitRoster[0x01].deploymentState == 0x00)
     {
-        CampaignFlags |= 0x0008;
+        CampaignFlags |= CAMPAIGN_FLAG_UNIT_1_LOST;
     }
     if (CampaignMenuRequested != FALSE)
         return FALSE;
 
-    if ((CampaignFlags & 0x0001) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) != 0x0000)
     {
         PlayMusicResource(0x004A);
         PresentAnimatedScreenAndMessage(0x0020, 0x0015);
         ShowStoryMessageAndWait(0x0016);
-        if ((CampaignFlags & 0x0020) != 0x0000)
+        if ((CampaignFlags & CAMPAIGN_FLAG_EJECTED_PILOT_ALIVE) != 0x0000)
         {
-            if ((CampaignFlags & 0x2008) != 0x0000)
+            if ((CampaignFlags & (CAMPAIGN_FLAG_UNIT_1_LOST_BEFORE | CAMPAIGN_FLAG_UNIT_1_LOST)) != 0x0000)
                 ShowStoryMessageAndWait(0x0017);
             else
                 ShowStoryMessageAndWait(0x0018);
@@ -183,7 +183,7 @@ int16_t RunCampaignStage02(void)
         return TRUE;
     }
 
-    if ((CampaignFlags & 0x0002) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_LOST) != 0x0000)
     {
         PlayMusicResource(0x0047);
         PresentScreenAndMessage(0x000C, 0x0014);
@@ -200,13 +200,13 @@ int16_t RunCampaignStage03(void)
     if (CampaignMenuRequested != FALSE)
         return FALSE;
 
-    if ((CampaignFlags & 0x0002) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_LOST) != 0x0000)
     {
         PlayMusicResource(0x0047);
         PresentScreenAndMessage(0x000C, 0x001A);
         return FALSE;
     }
-    if ((CampaignFlags & 0x0080) == 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_APC_BRIDGE) == 0x0000)
     {
         PlayMusicResource(0x004E);
         PresentAnimatedScreenAndMessage(0x0020, 0x001C);
@@ -235,7 +235,7 @@ int16_t RunCampaignStage04(void)
     if (CampaignMenuRequested != FALSE)
         return FALSE;
 
-    if ((CampaignFlags & 0x0001) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) != 0x0000)
     {
         PlayMusicResource(0x004E);
         PresentScreenAndMessage(0x0006, 0x0022);
@@ -245,7 +245,7 @@ int16_t RunCampaignStage04(void)
     }
 
     PlayMusicResource(0x0047);
-    if ((CampaignFlags & 0x0004) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_LOST_TO_BATTLEMECH) != 0x0000)
         PresentScreenAndMessage(0x000C, 0x0020);
     else
         PresentScreenAndMessage(0x000C, 0x0021);
@@ -262,9 +262,9 @@ int16_t RunCampaignStage05(void)
     PlayMusicResource(0x004A);
     PresentScreenAndMessage(0x0009, 0x0025);
     ShowScenarioMessage(0x0026);
-    if ((SavedCampaignFlags & 0x1000) != 0x0000)
+    if ((SavedCampaignFlags & CAMPAIGN_FLAG_LRM_SHIPMENT) != 0x0000)
         ShowScenarioMessage(0x0028);
-    else if ((SavedCampaignFlags & 0x0800) != 0x0000)
+    else if ((SavedCampaignFlags & CAMPAIGN_FLAG_SRM_SHIPMENT) != 0x0000)
         ShowScenarioMessage(0x0027);
     ShowScenarioMessage(0x0029);
 
@@ -278,15 +278,15 @@ int16_t RunCampaignStage05(void)
         InitializeTacticalScenario();
         if (CampaignMenuRequested != FALSE)
             return FALSE;
-        if ((CampaignFlags & 0x0001) == 0x0000)
+        if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) == 0x0000)
         {
             PlayMusicResource(0x0047);
             PresentScreenAndMessage(0x000C, 0x002B);
             return FALSE;
         }
-        if ((CampaignFlags & 0x0008) != 0x0000)
+        if ((CampaignFlags & CAMPAIGN_FLAG_UNIT_1_LOST) != 0x0000)
             PresentScreenAndMessage(0x0006, 0x002C);
-        if ((CampaignFlags & 0x0040) != 0x0000)
+        if ((CampaignFlags & CAMPAIGN_FLAG_CLOCK_PAST_LIMIT) != 0x0000)
             PresentAnimatedScreenAndMessage(0x0020, 0x002D);
         PlayMusicResource(0x004B);
         PresentAnimatedScreenAndMessage(0x0021, 0x0033);
@@ -298,7 +298,7 @@ int16_t RunCampaignStage05(void)
         InitializeTacticalScenario();
         if (CampaignMenuRequested != FALSE)
             return FALSE;
-        if ((CampaignFlags & 0x0001) == 0x0000)
+        if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) == 0x0000)
         {
             PlayMusicResource(0x0047);
             PresentScreenAndMessage(0x000C, 0x0030);
@@ -306,7 +306,7 @@ int16_t RunCampaignStage05(void)
         }
         if ((CampaignFlags & 0x0010) != 0x0000)
             PresentScreenAndMessage(0x0006, 0x0031);
-        if ((CampaignFlags & 0x0040) != 0x0000)
+        if ((CampaignFlags & CAMPAIGN_FLAG_CLOCK_PAST_LIMIT) != 0x0000)
             PresentAnimatedScreenAndMessage(0x0021, 0x0032);
         PlayMusicResource(0x004B);
         PresentScreenAndMessage(0x0006, 0x0035);
@@ -327,14 +327,14 @@ int16_t RunCampaignStage06(void)
     scenarioVariant = ScenarioVariantIndex;
     InitializeTacticalScenario();
     if (CampaignMenuRequested == FALSE &&
-        (CampaignFlags & 0x0002) != 0x0000)
+        (CampaignFlags & CAMPAIGN_FLAG_BATTLE_LOST) != 0x0000)
     {
         PlayMusicResource(0x0047);
         PresentScreenAndMessage(0x000C,
             scenarioVariant == 0x0000 ? 0x0034 : 0x0037);
     }
     if (CampaignMenuRequested != FALSE ||
-        (CampaignFlags & 0x0002) != 0x0000)
+        (CampaignFlags & CAMPAIGN_FLAG_BATTLE_LOST) != 0x0000)
     {
         return FALSE;
     }
@@ -356,7 +356,7 @@ int16_t RunCampaignStage07(void)
     InitializeTacticalScenario();
     if (CampaignMenuRequested != FALSE)
         return FALSE;
-    if ((CampaignFlags & 0x0002) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_LOST) != 0x0000)
     {
         PlayMusicResource(0x0047);
         PresentScreenAndMessage(0x000C, 0x003B);
@@ -385,16 +385,16 @@ int16_t RunCampaignStage08(void)
     ShowCampaignMessageAndWait(0x0042);
     ShowCampaignMessageAndWait(0x0043);
 
-    for (unitIndex = 0x0000; unitIndex < 0x000C; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_FORCE_UNIT_COUNT; ++unitIndex)
         LiveScenarioUnits[unitIndex] = BlankUnitRecord;
 
     if (CampaignPhase == 0x08)
     {
         if (ReplayScenarioRequested == FALSE)
         {
-            PresentationCallbackOffset = 0x249E;
+            PresentationCallbackOffset = PRESENTATION_CALLBACK_CAMPAIGN_PATH_SELECTION;
             PresentationCallback = RunCampaignPathSelectionCallback;
-            PresentationCallbackSegment = 0x0D73;
+            PresentationCallbackSegment = PRESENTATION_CALLBACK_SEGMENT;
             ShowCampaignMessageAndWait(0x0044);
             PresentationCallbackOffset = 0x0000;
             PresentationCallback = NULL;
@@ -471,13 +471,13 @@ int16_t RunCampaignStage08(void)
         ScenarioVariantIndex = SelectScenarioVariant(0x0001);
     InitializeTacticalScenario();
     if (PersistentUnitRoster[0x08].deploymentState == FALSE)
-        CampaignFlags |= 0x0080;
-    if ((CampaignFlags & 0x00C0) != 0x0000)
-        CampaignFlags &= 0xFFFE;
+        CampaignFlags |= CAMPAIGN_FLAG_APC_BRIDGE;
+    if ((CampaignFlags & (CAMPAIGN_FLAG_CLOCK_PAST_LIMIT | CAMPAIGN_FLAG_APC_BRIDGE)) != 0x0000)
+        CampaignFlags &= (uint16_t) ~CAMPAIGN_FLAG_BATTLE_WON;
     if (CampaignMenuRequested != FALSE)
         return FALSE;
 
-    if ((CampaignFlags & 0x0001) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) != 0x0000)
     {
         HideMouseCursorOverlay();
         ClearActiveVideoBuffer();
@@ -485,17 +485,17 @@ int16_t RunCampaignStage08(void)
         PendingCampaignStageDelta = TRUE;
         return TRUE;
     }
-    if ((CampaignFlags & 0x0002) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_LOST) != 0x0000)
     {
         PlayMusicResource(0x0047);
         PresentScreenAndMessage(0x000C, 0x0048);
     }
-    else if ((CampaignFlags & 0x0040) != 0x0000)
+    else if ((CampaignFlags & CAMPAIGN_FLAG_CLOCK_PAST_LIMIT) != 0x0000)
     {
         PlayMusicResource(0x0046);
         PresentScreenAndMessage(0x0006, 0x0049);
     }
-    else if ((CampaignFlags & 0x0080) != 0x0000)
+    else if ((CampaignFlags & CAMPAIGN_FLAG_APC_BRIDGE) != 0x0000)
     {
         PlayMusicResource(0x0046);
         PresentScreenAndMessage(0x0006, 0x004D);
@@ -514,19 +514,19 @@ int16_t RunCampaignStage09(void)
     PresentStoryScreenAndMessage(0x0022, 0x004A);
     InitializeTacticalScenario();
     if (PersistentUnitRoster[0x08].deploymentState == FALSE)
-        CampaignFlags |= 0x0080;
-    if ((CampaignFlags & 0x00C0) != 0x0000)
-        CampaignFlags &= 0xFFFE;
+        CampaignFlags |= CAMPAIGN_FLAG_APC_BRIDGE;
+    if ((CampaignFlags & (CAMPAIGN_FLAG_CLOCK_PAST_LIMIT | CAMPAIGN_FLAG_APC_BRIDGE)) != 0x0000)
+        CampaignFlags &= (uint16_t) ~CAMPAIGN_FLAG_BATTLE_WON;
     if (CampaignMenuRequested != FALSE)
         return FALSE;
 
-    if ((CampaignFlags & 0x0001) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) != 0x0000)
     {
-        if ((CampaignFlags & 0x4000) != 0x0000)
+        if ((CampaignFlags & CAMPAIGN_FLAG_MECH_SHOP_REACHED) != 0x0000)
         {
             LoadUnitTemplateRecord(0x0025);
             EstimatedUnitRecord.deploymentState = TRUE;
-            for (unitIndex = 0x0000; unitIndex < 0x0004; ++unitIndex)
+            for (unitIndex = 0x0000; unitIndex < LANCE_UNIT_COUNT; ++unitIndex)
             {
                 PersistentUnitRoster[unitIndex] = EstimatedUnitRecord;
                 LanceAssignments[unitIndex].pilotId =
@@ -544,17 +544,17 @@ int16_t RunCampaignStage09(void)
         PendingCampaignStageDelta = TRUE;
         return TRUE;
     }
-    if ((CampaignFlags & 0x0002) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_LOST) != 0x0000)
     {
         PlayMusicResource(0x0047);
         PresentScreenAndMessage(0x000C, 0x004B);
     }
-    else if ((CampaignFlags & 0x0040) != 0x0000)
+    else if ((CampaignFlags & CAMPAIGN_FLAG_CLOCK_PAST_LIMIT) != 0x0000)
     {
         PlayMusicResource(0x0046);
         PresentScreenAndMessage(0x0006, 0x004C);
     }
-    else if ((CampaignFlags & 0x0080) != 0x0000)
+    else if ((CampaignFlags & CAMPAIGN_FLAG_APC_BRIDGE) != 0x0000)
     {
         PlayMusicResource(0x0046);
         PresentScreenAndMessage(0x0006, 0x004D);
@@ -574,13 +574,13 @@ int16_t RunCampaignStage10(void)
     PresentStoryScreenAndMessage(0x0022, 0x004F);
     InitializeTacticalScenario();
     if (PersistentUnitRoster[0x08].deploymentState == 0x00)
-        CampaignFlags |= 0x0080;
-    if ((CampaignFlags & 0x00C0) != 0x0000)
-        CampaignFlags &= 0xFFFE;
+        CampaignFlags |= CAMPAIGN_FLAG_APC_BRIDGE;
+    if ((CampaignFlags & (CAMPAIGN_FLAG_CLOCK_PAST_LIMIT | CAMPAIGN_FLAG_APC_BRIDGE)) != 0x0000)
+        CampaignFlags &= (uint16_t) ~CAMPAIGN_FLAG_BATTLE_WON;
     if (CampaignMenuRequested != FALSE)
         return FALSE;
 
-    if ((CampaignFlags & 0x0001) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_WON) != 0x0000)
     {
         HideMouseCursorOverlay();
         ClearActiveVideoBuffer();
@@ -588,18 +588,18 @@ int16_t RunCampaignStage10(void)
         PendingCampaignStageDelta = TRUE;
         return TRUE;
     }
-    if ((CampaignFlags & 0x0002) != 0x0000)
+    if ((CampaignFlags & CAMPAIGN_FLAG_BATTLE_LOST) != 0x0000)
     {
         PlayMusicResource(0x0047);
         PresentScreenAndMessage(0x000C,
-            (CampaignFlags & 0x0004) != 0x0000 ? 0x0051 : 0x0050);
+            (CampaignFlags & CAMPAIGN_FLAG_LOST_TO_BATTLEMECH) != 0x0000 ? 0x0051 : 0x0050);
     }
-    else if ((CampaignFlags & 0x0040) != 0x0000)
+    else if ((CampaignFlags & CAMPAIGN_FLAG_CLOCK_PAST_LIMIT) != 0x0000)
     {
         PlayMusicResource(0x0046);
         PresentScreenAndMessage(0x0006, 0x0052);
     }
-    else if ((CampaignFlags & 0x0080) != 0x0000)
+    else if ((CampaignFlags & CAMPAIGN_FLAG_APC_BRIDGE) != 0x0000)
     {
         PlayMusicResource(0x0046);
         PresentScreenAndMessage(0x0006, 0x004D);

@@ -51,8 +51,8 @@ uint16_t SaveGame(void)
                 PrepareScenarioUnitRosters();
                 CampaignStageIndex += PendingCampaignStageDelta;
                 CampaignPhase += PendingCampaignPhaseDelta;
-                if ((SavedCampaignFlags & 0x0008) != 0x0000)
-                    CampaignFlags |= 0x2000;
+                if ((SavedCampaignFlags & CAMPAIGN_FLAG_UNIT_1_LOST) != 0x0000)
+                    CampaignFlags |= CAMPAIGN_FLAG_UNIT_1_LOST_BEFORE;
             }
             ScenarioRosterPrepared = TRUE;
             snapshot->campaignStageIndex = CampaignStageIndex;
@@ -95,20 +95,20 @@ uint16_t SaveGame(void)
                 ReplayExtendedCampaignState,
                 sizeof(snapshot->state1BAD));
             for (scenarioRecordIndex = 0x0000;
-                scenarioRecordIndex < 0x0012;
+                scenarioRecordIndex < REVENGE_SAVE_SCENARIO_RECORD_COUNT;
                 ++scenarioRecordIndex)
             {
                 UnitSelectionCard_Store(
                     &snapshot->scenarioRecords[scenarioRecordIndex],
                     &UnitSelectionCards[scenarioRecordIndex]);
             }
-            for (lanceIndex = 0x0000; lanceIndex < 0x000D; ++lanceIndex)
+            for (lanceIndex = 0x0000; lanceIndex < REVENGE_LANCE_ASSIGNMENT_COUNT; ++lanceIndex)
             {
                 snapshot->lanceAssignments[lanceIndex] =
                     LanceAssignments[lanceIndex];
             }
             pilotIndex = 0x0000;
-            while (pilotIndex < 0x0025)
+            while (pilotIndex < REVENGE_PLAYER_PILOT_COUNT)
             {
                 snapshot->pilotAvailability[pilotIndex] =
                     PilotRoster[pilotIndex].availability;
@@ -146,13 +146,13 @@ uint16_t WriteSaveSlot(uint16_t cachedFileIndex, int16_t saveSlot)
     fileHandle = EnsureCompatibleSaveFile(
         OpenTrackedFile(
             CACHED_FILE_NAME(cachedFileIndex),
-            0x03),
+            TRACKED_FILE_OPEN_READ_WRITE),
         CACHED_FILE_NAME(cachedFileIndex),
-        0x03);
+        TRACKED_FILE_OPEN_READ_WRITE);
     directoryOffset = (int16_t) ((uint16_t) (saveSlot + 0x01) << 0x01);
     SeekTrackedFile(fileHandle, (uint32_t) (int32_t) directoryOffset, 0x00);
-    ReadTrackedFile(fileHandle, &slotStartOffset, 0x02);
-    ReadTrackedFile(fileHandle, &slotEndOffset, 0x02);
+    ReadTrackedFile(fileHandle, &slotStartOffset, sizeof slotStartOffset);
+    ReadTrackedFile(fileHandle, &slotEndOffset, sizeof slotEndOffset);
     SeekTrackedFile(
         fileHandle, (uint32_t) (int32_t) (int16_t) slotStartOffset, 0x00);
     slotByteCount = slotEndOffset - slotStartOffset;
@@ -282,20 +282,20 @@ uint16_t LoadGame(void)
                     ForwardExtendedCampaignState[stateIndex] = stateValue;
                 }
                 for (scenarioRecordIndex = 0x0000;
-                    scenarioRecordIndex < 0x0012;
+                    scenarioRecordIndex < REVENGE_SAVE_SCENARIO_RECORD_COUNT;
                     ++scenarioRecordIndex)
                 {
                     UnitSelectionCard_Load(
                         &UnitSelectionCards[scenarioRecordIndex],
                         &snapshot->scenarioRecords[scenarioRecordIndex]);
                 }
-                for (lanceIndex = 0x0000; lanceIndex < 0x000D; ++lanceIndex)
+                for (lanceIndex = 0x0000; lanceIndex < REVENGE_LANCE_ASSIGNMENT_COUNT; ++lanceIndex)
                 {
                     LanceAssignments[lanceIndex] =
                         snapshot->lanceAssignments[lanceIndex];
                 }
                 pilotIndex = 0x0000;
-                while (pilotIndex < 0x0025)
+                while (pilotIndex < REVENGE_PLAYER_PILOT_COUNT)
                 {
                     PilotRoster[pilotIndex].availability =
                         snapshot->pilotAvailability[pilotIndex];
@@ -326,13 +326,13 @@ uint16_t ReadSaveSlot(uint16_t cachedFileIndex, int16_t saveSlot)
     fileHandle = EnsureCompatibleSaveFile(
         OpenTrackedFile(
             CACHED_FILE_NAME(cachedFileIndex),
-            0x01),
+            TRACKED_FILE_OPEN_READ),
         CACHED_FILE_NAME(cachedFileIndex),
-        0x01);
+        TRACKED_FILE_OPEN_READ);
     directoryOffset = (int16_t) ((uint16_t) (saveSlot + 0x01) << 0x01);
     SeekTrackedFile(fileHandle, (uint32_t) (int32_t) directoryOffset, 0x00);
-    ReadTrackedFile(fileHandle, &slotStartOffset, 0x02);
-    ReadTrackedFile(fileHandle, &slotEndOffset, 0x02);
+    ReadTrackedFile(fileHandle, &slotStartOffset, sizeof slotStartOffset);
+    ReadTrackedFile(fileHandle, &slotEndOffset, sizeof slotEndOffset);
     SeekTrackedFile(
         fileHandle, (uint32_t) (int32_t) (int16_t) slotStartOffset, 0x00);
     slotByteCount = slotEndOffset - slotStartOffset;

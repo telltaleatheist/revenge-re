@@ -25,7 +25,7 @@ void CaptureLocalClockSnapshot(LocalClockSnapshot *snapshot)
         TimezoneOffsetHighWord,
         TimezoneOffsetLowWord);
     snapshot->timezoneOffsetMinutes = (int16_t) (timezoneOffsetSeconds / 0x3C);
-    if (DaylightSavingEnabled != 0x00 && IsDaylightSavingTime(dateBefore.year - 0x07B2, (int16_t) dateBefore.month, (int16_t) dateBefore.day, time.hour) != 0x00)
+    if (DaylightSavingEnabled != 0x00 && IsDaylightSavingTime(dateBefore.year - UNIX_EPOCH_YEAR, (int16_t) dateBefore.month, (int16_t) dateBefore.day, time.hour) != 0x00)
         snapshot->daylightSavingActive = TRUE;
     else
         snapshot->daylightSavingActive = FALSE;

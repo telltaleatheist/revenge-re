@@ -5,6 +5,10 @@
 #include "revenge/dos.h"
 #include "revenge/types.h"
 
+/* The years the Unix and the DOS clocks count from. */
+inline constexpr int UNIX_EPOCH_YEAR = 0x07B2;
+inline constexpr int DOS_EPOCH_YEAR = 0x07BC;
+
 #pragma pack(push, 1)
 typedef struct LocalClockSnapshot
 {

@@ -17,7 +17,7 @@
 
 void (*PresentationCallback)(void);
 
-static const CampaignStageHandler CampaignStageHandlers[0x16] = {
+static const CampaignStageHandler CampaignStageHandlers[CAMPAIGN_STAGE_COUNT] = {
     RunCampaignStage00, RunCampaignStage01,
     RunCampaignStage02, RunCampaignStage03,
     RunCampaignStage04, RunCampaignStage05,
@@ -95,13 +95,13 @@ void RunCampaignLoop(void)
         if (ReplayCampaignStateRequested == FALSE)
         {
             SavedCampaignFlags = CampaignFlags;
-            for (stateIndex = 0x0000; stateIndex < 0x0007; ++stateIndex)
+            for (stateIndex = 0x0000; stateIndex < CAMPAIGN_PRIMARY_STATE_COUNT; ++stateIndex)
             {
                 ForwardCampaignState[stateIndex] =
                     ReplayCampaignState[stateIndex];
             }
             RandomPilotPoolCounts.forward = RandomPilotPoolCounts.replay;
-            for (stateIndex = 0x0000; stateIndex < 0x000F; ++stateIndex)
+            for (stateIndex = 0x0000; stateIndex < CAMPAIGN_EXTENDED_STATE_COUNT; ++stateIndex)
             {
                 ForwardExtendedCampaignState[stateIndex] =
                     ReplayExtendedCampaignState[stateIndex];
@@ -114,13 +114,13 @@ void RunCampaignLoop(void)
             {
                 AlternateLanceSelection = TRUE;
             }
-            for (stateIndex = 0x0000; stateIndex < 0x0007; ++stateIndex)
+            for (stateIndex = 0x0000; stateIndex < CAMPAIGN_PRIMARY_STATE_COUNT; ++stateIndex)
             {
                 ReplayCampaignState[stateIndex] =
                     ForwardCampaignState[stateIndex];
             }
             RandomPilotPoolCounts.replay = RandomPilotPoolCounts.forward;
-            for (stateIndex = 0x0000; stateIndex < 0x000F; ++stateIndex)
+            for (stateIndex = 0x0000; stateIndex < CAMPAIGN_EXTENDED_STATE_COUNT; ++stateIndex)
             {
                 ReplayExtendedCampaignState[stateIndex] =
                     ForwardExtendedCampaignState[stateIndex];
@@ -129,8 +129,8 @@ void RunCampaignLoop(void)
 
         ReplayCampaignStateRequested = FALSE;
         CampaignFlags = 0x0000;
-        if ((SavedCampaignFlags & 0x0008) != 0x0000)
-            CampaignFlags |= 0x2000;
+        if ((SavedCampaignFlags & CAMPAIGN_FLAG_UNIT_1_LOST) != 0x0000)
+            CampaignFlags |= CAMPAIGN_FLAG_UNIT_1_LOST_BEFORE;
         if (ReplayScenarioRequested != FALSE)
             SceneTransitionAbortFlag = TRUE;
 
@@ -164,7 +164,7 @@ void RunCampaignLoop(void)
                 else
                 {
                     do
-                        campaignRunning = RunInGameMenu(0x0004);
+                        campaignRunning = RunInGameMenu(IN_GAME_MENU_LOAD);
                     while (campaignRunning == -0x0001);
                 }
             }
@@ -214,7 +214,7 @@ void InitializeTacticalScenario(void)
     TacticalMechSetFileName[0x07] =
         (scenarioSuffix < 'F' || scenarioSuffix == 'T') ? '1' : '2';
 
-    for (campaignStateIndex = 0x00; campaignStateIndex < 0x07;
+    for (campaignStateIndex = 0x00; campaignStateIndex < CAMPAIGN_PRIMARY_STATE_COUNT;
         ++campaignStateIndex)
     {
         ForwardCampaignState[campaignStateIndex] =

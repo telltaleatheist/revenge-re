@@ -12,17 +12,17 @@ void RunAlternateScenarioVariantSelectionCallback(void);
 
 void InvokePresentationCallback(void)
 {
-    if (PresentationCallbackSegment != 0x0D73)
+    if (PresentationCallbackSegment != PRESENTATION_CALLBACK_SEGMENT)
         return;
 
     switch (PresentationCallbackOffset)
     {
-    case 0x214B: RenderActivePilotList(); break;
-    case 0x223D: RenderSurvivingCommanderList(); break;
-    case 0x2361: RenderFallenPilotList(); break;
-    case 0x249E: RunCampaignPathSelectionCallback(); break;
-    case 0x24B3: RunScenarioVariantSelectionCallback(); break;
-    case 0x24C9: RunAlternateScenarioVariantSelectionCallback(); break;
+    case PRESENTATION_CALLBACK_ACTIVE_PILOT_LIST: RenderActivePilotList(); break;
+    case PRESENTATION_CALLBACK_SURVIVING_COMMANDER_LIST: RenderSurvivingCommanderList(); break;
+    case PRESENTATION_CALLBACK_FALLEN_PILOT_LIST: RenderFallenPilotList(); break;
+    case PRESENTATION_CALLBACK_CAMPAIGN_PATH_SELECTION: RunCampaignPathSelectionCallback(); break;
+    case PRESENTATION_CALLBACK_SCENARIO_VARIANT_SELECTION: RunScenarioVariantSelectionCallback(); break;
+    case PRESENTATION_CALLBACK_ALTERNATE_SCENARIO_VARIANT_SELECTION: RunAlternateScenarioVariantSelectionCallback(); break;
     default: break;
     }
 }

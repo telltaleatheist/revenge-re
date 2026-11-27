@@ -30,6 +30,11 @@ void DOS_TerminateProcess(uint16_t exitCode);
 
 void AbortRuntimeWithMessage(const char *errorText);
 void ShutdownAndExit(uint16_t exitCode);
+/* OpenTrackedFile's modes: read, make it anew, and read and write (made when
+ * missing). */
+inline constexpr uint16_t TRACKED_FILE_OPEN_READ = 0x0001;
+inline constexpr uint16_t TRACKED_FILE_CREATE = 0x0002;
+inline constexpr uint16_t TRACKED_FILE_OPEN_READ_WRITE = 0x0003;
 int16_t OpenTrackedFile(char *path, uint16_t openMode);
 void CloseTrackedFile(int16_t handleSlot);
 uint32_t ReadTrackedFile(

@@ -34,6 +34,7 @@ inline constexpr uint16_t IN_GAME_MENU_REPLAY_SCENARIO = 0x05;
 inline constexpr uint16_t IN_GAME_MENU_REPLAY_STORY = 0x06;
 inline constexpr uint16_t IN_GAME_MENU_RESTART = 0x07;
 inline constexpr uint16_t IN_GAME_MENU_OPTIONS = 0x08;
+inline constexpr uint16_t IN_GAME_MENU_OPTION_COUNT = 0x09;
 
 typedef int16_t (*CampaignStageHandler)(void);
 

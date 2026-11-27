@@ -35,7 +35,7 @@ uint32_t ConvertLocalDateTimeToEpochSeconds(
         TimezoneOffsetLowWord);
     epochSeconds = (uint32_t) (timezoneOffsetSeconds + EPOCH_SECONDS_AT);
 
-    yearsSince1980 = (int16_t) date->year - 0x07BC;
+    yearsSince1980 = (int16_t) date->year - DOS_EPOCH_YEAR;
     epochSeconds += (uint32_t) (yearsSince1980 >> 0x02) * SECONDS_PER_FOUR_YEARS;
     remainingYears = yearsSince1980 & 0x03;
     epochSeconds += (uint32_t) remainingYears * SECONDS_PER_COMMON_YEAR;
@@ -52,7 +52,7 @@ uint32_t ConvertLocalDateTimeToEpochSeconds(
     hourOfYear = dayOfYear * 0x18 + time->hour;
     if (DaylightSavingEnabled != FALSE &&
         IsDaylightSavingTime(
-            date->year - 0x07B2, 0x00, dayOfYear, time->hour) != FALSE)
+            date->year - UNIX_EPOCH_YEAR, 0x00, dayOfYear, time->hour) != FALSE)
         --hourOfYear;
 
     epochSeconds += (uint32_t) hourOfYear * SECONDS_PER_HOUR;
