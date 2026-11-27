@@ -127,9 +127,13 @@ void Play(const std::string& json, const std::string& soundfont) {
     // Channel 1 has no part: nothing sounds.
     Send(music, {0x90, 60, 100});
     assert(music.activeVoices() == 0);
-    // Part 1 sounds, and stops.
+    // Part 1 sounds, and stops; its timbre, B4, is heard from its first
+    // note.
+    assert(!music.timbreHeard(64 + 4) && !music.timbreHeard(0));
     Send(music, {0x91, 40, 100});
     assert(music.activeVoices() > 0);
+    assert(music.timbreHeard(64 + 4) && !music.timbreHeard(1));
+    assert(music.programName(36) != "" && music.programName(127) == "");
     assert(Peak(music, 4800) > 0.001f);
     Send(music, {0x81, 40, 0});
     for (int block = 0; block < 40 && music.activeVoices() > 0; ++block) (void)Peak(music, 4800);
@@ -140,8 +144,10 @@ void Play(const std::string& json, const std::string& soundfont) {
     Send(music, {0x99, 16, 100, 0x99, 52, 100});
     assert(music.activeVoices() == 0);
     Write(music, 0x03, 0x01, 0x10, {64, 100, 7, 0});
+    assert(!music.rhythmTimbreHeard(64));
     Send(music, {0x99, 24, 100});
     assert(music.activeVoices() > 0);
+    assert(music.rhythmTimbreHeard(64));
     Send(music, {0xB9, 123, 0});
     for (int block = 0; block < 40 && music.activeVoices() > 0; ++block) (void)Peak(music, 4800);
     assert(music.activeVoices() == 0);
@@ -153,9 +159,10 @@ void Play(const std::string& json, const std::string& soundfont) {
     Send(music, {0x90, 40, 100});
     assert(music.activeVoices() > 0);
 
-    // Back to the MT-32 as it starts.
+    // Back to the MT-32 as it starts: nothing heard yet.
     music.reset();
     assert(music.partProgram(0) == 0);
+    assert(!music.timbreHeard(64 + 4) && !music.rhythmTimbreHeard(64));
     for (int block = 0; block < 4 && music.activeVoices() > 0; ++block) (void)Peak(music, 480);
     assert(music.activeVoices() == 0);
 }

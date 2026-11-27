@@ -53,7 +53,10 @@ The music's soundfont is cut from FluidR3 GM (MIT) at build time, and a
 build never downloads: fetch its pinned source once per machine with
 `tools/deps/fetch_soundfont.sh` (on Windows, `python tools\soundfont\subset.py
 fetch`), or set `REVENGE_SOUNDFONT_SOURCE` to a copy of
-`fluid-soundfont_3.1.orig.tar.gz`.
+`fluid-soundfont_3.1.orig.tar.gz`. `tools/music/listening.py` renders every
+song through the game's own sequencer and Roland driver (the build's
+`revenge_jukebox`) to WAV files, with a sheet for judging
+`data/music/instruments.json`; nothing is played aloud.
 
 Run the asset-independent build and tests:
 

@@ -40,7 +40,8 @@ typedef struct FakeBackendState
     uint16 retraceCount;
     byte indexedFramebuffer[VIDEO_SEGMENT_SIZE];
     byte midiBytes[0x0100];
-    uint16 midiByteCount;
+    uint16 midiByteCount;     /* stops at the buffer's end */
+    void (*midiSink)(byte);   /* when set, every byte goes to it instead */
 	word16 musicVoiceId;
 	byte musicNote;
 	byte musicVelocity;

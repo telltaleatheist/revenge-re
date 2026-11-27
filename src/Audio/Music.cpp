@@ -188,6 +188,8 @@ void Music::reset() {
     status_ = have_ = 0;
     inSysex_ = false;
     sysexLength_ = 0;
+    heard_.fill(false);
+    rhythmHeard_.fill(false);
     if (bank_ == nullptr) return;
     tsf_reset(bank_);
     for (int part = 0; part < kRhythmPart; ++part) programChange(part, part);
@@ -265,14 +267,16 @@ void Music::programChange(int part, int patch) {
     const uint8_t* bytes = &patches_[static_cast<std::size_t>(patch) * kPatchBytes];
     const int number = bytes[kNumber] & 0x3F;
     int program = InstrumentTable::kNone;
+    int timbre = -1;
     switch (bytes[kGroup]) {
-    case 0: program = table_.preset[static_cast<std::size_t>(number)]; break;
-    case 1: program = table_.preset[static_cast<std::size_t>(64 + number)]; break;
-    case 2: program = table_.memory[static_cast<std::size_t>(number)]; break;
+    case 0: program = table_.preset[static_cast<std::size_t>(timbre = number)]; break;
+    case 1: program = table_.preset[static_cast<std::size_t>(timbre = 64 + number)]; break;
+    case 2: program = table_.memory[static_cast<std::size_t>(number)]; timbre = 128 + number; break;
     default: break;
     }
     if (program == InstrumentTable::kNone) program = table_.fallbackProgram;
     Part& state = parts_[static_cast<std::size_t>(part)];
+    state.timbre = timbre;
     state.keyShift = std::clamp(static_cast<int>(bytes[kKeyShift]), 0, 48) - 24;
     tsf_channel_set_presetnumber(bank_, part, program, 0);
     tsf_channel_set_pitchrange(bank_, part, static_cast<float>(std::min(static_cast<int>(bytes[kBenderRange]), 24)));
@@ -286,9 +290,11 @@ void Music::noteOn(int part, int key, int velocity) {
         if (key < kFirstRhythmKey || key >= kFirstRhythmKey + kRhythmKeys) return;
         const uint8_t* setup = &rhythmSetup_[static_cast<std::size_t>(key - kFirstRhythmKey) * 4];
         played = setup[0] < 127 ? table_.rhythm[setup[0]] : InstrumentTable::kNone;
+        if (setup[0] < 127) rhythmHeard_[setup[0]] = true;
         level *= static_cast<float>(std::min(static_cast<int>(setup[1]), 100)) / 100.0f;
     }
     if (played < 0 || played > 127) return;
+    if (part != kRhythmPart && state.timbre >= 0) heard_[static_cast<std::size_t>(state.timbre)] = true;
     noteOff(part, key);
     state.sounding[static_cast<std::size_t>(key)] = static_cast<int8_t>(played);
     tsf_channel_note_on(bank_, part, played, level);
@@ -353,6 +359,21 @@ void Music::render(float* stereo, uint32_t frames) {
 }
 
 int Music::activeVoices() const { return bank_ != nullptr ? tsf_active_voice_count(bank_) : 0; }
+
+bool Music::timbreHeard(int timbre) const {
+    return timbre >= 0 && timbre < kTimbres && heard_[static_cast<std::size_t>(timbre)];
+}
+
+bool Music::rhythmTimbreHeard(int timbre) const {
+    return timbre >= 0 && timbre < 128 && rhythmHeard_[static_cast<std::size_t>(timbre)];
+}
+
+std::string Music::programName(int program) const {
+    if (bank_ == nullptr) return {};
+    const int index = tsf_get_presetindex(bank_, 0, program);
+    const char* name = index < 0 ? nullptr : tsf_get_presetname(bank_, index);
+    return name == nullptr ? std::string() : std::string(name);
+}
 
 int Music::partProgram(int part) const {
     return bank_ != nullptr && part >= 0 && part < kRhythmPart ? tsf_channel_get_preset_number(bank_, part) : -1;

@@ -1015,6 +1015,20 @@ if(CHR_BUILD_SDL)
                     ${CMAKE_CURRENT_SOURCE_DIR}/data/music/instruments.json ${CHR_SOUNDFONT})
         endforeach()
         set_tests_properties(audio.music_songs PROPERTIES SKIP_RETURN_CODE 77)
+        # The jukebox (tools/music): every song through the game's own
+        # sequencer and Roland driver into the music, a WAV a song, and
+        # listening.py's sheet; the test renders one short song (needs
+        # REVENGE_GAME).
+        add_executable(revenge_jukebox tools/music/jukebox.cpp tools/music/jukebox_game.c tests/fake_backend.c)
+        target_include_directories(revenge_jukebox PRIVATE src/SDL tests)
+        target_link_libraries(revenge_jukebox PRIVATE chr_original_runtime chr_audio)
+        chr_strict(revenge_jukebox)
+        add_dependencies(revenge_jukebox chr_soundfont)
+        add_test(NAME audio.music_jukebox
+            COMMAND ${Python3_EXECUTABLE} -I ${CMAKE_CURRENT_SOURCE_DIR}/tools/music/listening.py
+                --jukebox $<TARGET_FILE:revenge_jukebox> --soundfont ${CHR_SOUNDFONT}
+                --out ${CMAKE_BINARY_DIR}/jukebox-test --only SUSP1)
+        set_tests_properties(audio.music_jukebox PROPERTIES SKIP_RETURN_CODE 77)
     endif()
 
     add_custom_target(revenge-package

@@ -66,6 +66,13 @@ public:
     int activeVoices() const;
     // The program a part plays now, or -1 (tests): parts 0-7.
     int partProgram(int part) const;
+    // Whether a note has sounded with a timbre since the reset (the
+    // jukebox's sheet): 0-63 group A, 64-127 group B, 128-191 the memory
+    // timbres; and with a rhythm timbre (0-127).
+    bool timbreHeard(int timbre) const;
+    bool rhythmTimbreHeard(int timbre) const;
+    // The soundfont's name for a program (bank 0), or "".
+    std::string programName(int program) const;
 
 private:
     static constexpr int kParts = 9;         // 8 melodic parts, then the rhythm part
@@ -74,10 +81,12 @@ private:
     static constexpr int kFirstRhythmKey = 24;
     static constexpr int kRhythmKeys = 85;   // 24 to 108
     static constexpr std::size_t kSysexCapacity = 256;
+    static constexpr int kTimbres = 192;     // groups A and B, then the memory timbres
 
     struct Part {
         int channel = 0;     // the MIDI channel it hears, or -1
         int keyShift = 0;    // semitones
+        int timbre = -1;     // the timbre its patch names (as timbreHeard counts them), or -1
         std::array<int8_t, 128> sounding{};  // by key sent: the key played, or -1
     };
 
@@ -94,6 +103,8 @@ private:
     std::array<uint8_t, 128 * kPatchBytes> patches_{};
     std::array<uint8_t, kRhythmKeys * 4> rhythmSetup_{};
     std::array<Part, kParts> parts_{};
+    std::array<bool, kTimbres> heard_{};
+    std::array<bool, 128> rhythmHeard_{};
     uint8_t status_ = 0, data_[2] = {}, have_ = 0;
     bool inSysex_ = false;
     std::size_t sysexLength_ = 0;

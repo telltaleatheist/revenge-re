@@ -450,7 +450,10 @@ void SDLBackend_HoldTimers(uint64_t nanoseconds)
 
 void SDLBackend_WriteMIDIByte(byte midiByte)
 {
-    fakeBackend.midiBytes[fakeBackend.midiByteCount++] = midiByte;
+    if (fakeBackend.midiSink != NULL)
+        fakeBackend.midiSink(midiByte);
+    else if (fakeBackend.midiByteCount < sizeof(fakeBackend.midiBytes))
+        fakeBackend.midiBytes[fakeBackend.midiByteCount++] = midiByte;
 }
 
 void SDLBackend_StartMusicVoice(
