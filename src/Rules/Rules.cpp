@@ -471,6 +471,38 @@ void read_pilots(const Json& root, Tables& tables) {
     file.done();
 }
 
+void read_campaign(const Json& root, Tables& tables) {
+    Fields file(root, "campaign.json:");
+    tables["campaign.scenario_ordinal_base"] = numbers(
+        file.take("scenario_ordinal_base_by_stage"), file.at("scenario_ordinal_base_by_stage"), 0x16, 0xFF, 1);
+
+    // CAMPAIGN_MISSION_DATE_COUNT dates, each a month (MonthNameTextTable's
+    // index), a year and the months the date screen counts on by.
+    const Json& dates = file.take("mission_dates");
+    const std::string dates_where = file.at("mission_dates");
+    if (!dates.is_array() || dates.array().size() != 0x0C)
+        fail(dates_where, "is not an array of 12 dates");
+    std::vector<std::uint8_t>& months = tables["campaign.mission_date_months"];
+    std::vector<std::uint8_t>& years = tables["campaign.mission_date_years"];
+    std::vector<std::uint8_t>& advances = tables["campaign.mission_date_advance_months"];
+    months.assign(0x0C, 0);
+    years.assign(0x0C * 2, 0);
+    advances.assign(0x0C * 2, 0);
+    for (std::size_t index = 0; index < 0x0C; ++index) {
+        Fields date(dates.array()[index], dates_where + "[" + std::to_string(index) + "]");
+        months[index] = std::uint8_t(whole(date.take("month"), date.at("month"), 0x0B));
+        put_word(&years[index * 2], whole(date.take("year"), date.at("year"), 0xFFFF));
+        put_word(&advances[index * 2], whole(date.take("advance_months"), date.at("advance_months"), 0xFFFF));
+        date.done();
+    }
+
+    tables["campaign.scenario_unit_cards"] = numbers(
+        file.take("scenario_unit_cards_by_family"), file.at("scenario_unit_cards_by_family"), 0x07, 0x12, 1);
+    tables["campaign.pilot_cards"] = numbers(
+        file.take("pilot_cards_by_family"), file.at("pilot_cards_by_family"), 0x07, 0x12, 1);
+    file.done();
+}
+
 // Bytes two tables share in the original's memory must agree.
 void check_shared(const Tables& tables) {
     // The first missile weapon's bonus is the high byte of the last direction
@@ -505,6 +537,7 @@ void load(const std::filesystem::path& data_dir) {
     read_ai(read_file(rules / "ai.json", "ai.json"), tables);
     read_units(read_file(rules / "units.json", "units.json"), tables);
     read_pilots(read_file(rules / "pilots.json", "pilots.json"), tables);
+    read_campaign(read_file(rules / "campaign.json", "campaign.json"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {

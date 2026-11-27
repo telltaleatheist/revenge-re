@@ -1,0 +1,19 @@
+{
+  "scenario_ordinal_base_by_stage": [0, 1, 2, 3, 4, 5, 7, 9, 10, 11, 12, 28, 13, 14, 20, 22, 23, 24, 25, 26, 27, 29],
+  "mission_dates": [
+    {"month": 9, "year": 3028, "advance_months": 0},
+    {"month": 3, "year": 3029, "advance_months": 0},
+    {"month": 4, "year": 3029, "advance_months": 0},
+    {"month": 5, "year": 3029, "advance_months": 0},
+    {"month": 5, "year": 3029, "advance_months": 8},
+    {"month": 4, "year": 3030, "advance_months": 107},
+    {"month": 3, "year": 3039, "advance_months": 42},
+    {"month": 10, "year": 3042, "advance_months": 98},
+    {"month": 0, "year": 3051, "advance_months": 10},
+    {"month": 10, "year": 3051, "advance_months": 0},
+    {"month": 11, "year": 3051, "advance_months": 0},
+    {"month": 0, "year": 3052, "advance_months": 0}
+  ],
+  "scenario_unit_cards_by_family": [1, 0, 1, 0, 0, 0, 3],
+  "pilot_cards_by_family": [0, 0, 0, 2, 3, 3, 2]
+}

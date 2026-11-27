@@ -74,6 +74,15 @@
 //         lance slot
 //     "fixed_pilots"  2
 //
+//   campaign.json:
+//     "scenario_ordinal_base_by_stage"  22, the scenario number each
+//         campaign stage starts from (plus its variant)
+//     "mission_dates"  12 {"month" (0 to 11), "year", "advance_months"}: the
+//         date each mission screen shows and how many months it counts on
+//     "scenario_unit_cards_by_family", "pilot_cards_by_family"  7 each, how
+//         many unit and pilot cards the lance editor deals (0 to 18, the
+//         cards there are)
+//
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the
 // file and the key.

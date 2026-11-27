@@ -272,14 +272,10 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HYDRATE_DATA_OBJECT(InitialExtendedCampaignState, 0x1B8F);
 	HYDRATE_DATA_OBJECT(ForwardExtendedCampaignState, 0x1B9E);
 	HYDRATE_DATA_OBJECT(ReplayExtendedCampaignState, 0x1BAD);
-	HYDRATE_DATA_OBJECT(ScenarioOrdinalBaseByCampaignStage, 0x254C);
 	HYDRATE_DATA_OBJECT(MissionFadeColorTable, 0x2718);
 	HYDRATE_DATA_OBJECT(MissionBlinkRectX, 0x271C);
 	HYDRATE_DATA_OBJECT(MissionBlinkRectY, 0x272A);
 	HYDRATE_DATA_OBJECT(MissionBlinkRectExtent, 0x2738);
-	HYDRATE_DATA_OBJECT(MissionDateMonthIndex, 0x273F);
-	HYDRATE_DATA_OBJECT(MissionDateYear, 0x274B);
-	HYDRATE_DATA_OBJECT(MissionDateAdvanceMonths, 0x2763);
 	HYDRATE_DATA_OBJECT(MissionSpriteSourceTileX, 0x2783);
 	HYDRATE_DATA_OBJECT(MissionSpriteSourcePixelY, 0x279B);
 	HYDRATE_DATA_OBJECT(MissionSpriteWidthTiles, 0x27B3);
@@ -302,9 +298,7 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HYDRATE_DATA_OBJECT(UnitEditorUnitSpriteIndex, 0x3119);
 	HYDRATE_DATA_OBJECT(UnitMovementClassByType, 0x3172);
 	HYDRATE_DATA_OBJECT(UnitEditorSectionEnabled, 0x31E9);
-	HYDRATE_DATA_OBJECT(UnitEditorScenarioCardCountByFamily, 0x3206);
 	HYDRATE_DATA_OBJECT(PilotPortraitIndexById, 0x3248);
-	HYDRATE_DATA_OBJECT(UnitEditorPilotCardCountByFamily, 0x3291);
 	HYDRATE_DATA_OBJECT(LanceEditorLayout, 0x3470);
 #undef HYDRATE_DATA_OBJECT
 }

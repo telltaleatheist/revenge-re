@@ -6,6 +6,7 @@
 #include "revenge/combat_data.h"
 #include "revenge/original_data.h"
 #include "revenge/original/lance_editor_data.h"
+#include "revenge/original/campaign_data.h"
 
 const RulePiece RulePieces[] =
 {
@@ -39,6 +40,12 @@ const RulePiece RulePieces[] =
 	{ "pilots.roster", &PilotRoster, sizeof(PilotRoster), 0x3A6A, 0x1D4C, 0xEC, "3b6a8afa53abb786" },
 	{ "pilots.default_by_scenario", &DefaultPilotIdsByScenario, sizeof(DefaultPilotIdsByScenario), 0x3A6A, 0x3269, 0x28, "f4a1c9d3a839f49a" },
 	{ "pilots.fixed", &FixedPilotIds, sizeof(FixedPilotIds), 0x3A6A, 0x3354, 0x2, "fcff83adf5bf3e97" },
+	{ "campaign.scenario_ordinal_base", &ScenarioOrdinalBaseByCampaignStage, sizeof(ScenarioOrdinalBaseByCampaignStage), 0x3A6A, 0x254C, 0x16, "9aae4d188417c3a3" },
+	{ "campaign.mission_date_months", &MissionDateMonthIndex, sizeof(MissionDateMonthIndex), 0x3A6A, 0x273F, 0xC, "23f90bd8c86f8a71" },
+	{ "campaign.mission_date_years", &MissionDateYear, sizeof(MissionDateYear), 0x3A6A, 0x274B, 0x18, "534344de5aa882a1" },
+	{ "campaign.mission_date_advance_months", &MissionDateAdvanceMonths, sizeof(MissionDateAdvanceMonths), 0x3A6A, 0x2763, 0x18, "ee893d85b5e03044" },
+	{ "campaign.scenario_unit_cards", &UnitEditorScenarioCardCountByFamily, sizeof(UnitEditorScenarioCardCountByFamily), 0x3A6A, 0x3206, 0x7, "a1d6daaf6fee93e6" },
+	{ "campaign.pilot_cards", &UnitEditorPilotCardCountByFamily, sizeof(UnitEditorPilotCardCountByFamily), 0x3A6A, 0x3291, 0x7, "e8d81d90ea6156e8" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -72,3 +79,9 @@ _Static_assert(sizeof(ScenarioLanceAllegianceTable) == 0x15, "units.lance_allegi
 _Static_assert(sizeof(PilotRoster) == 0xEC, "pilots.roster is the original's size");
 _Static_assert(sizeof(DefaultPilotIdsByScenario) == 0x28, "pilots.default_by_scenario is the original's size");
 _Static_assert(sizeof(FixedPilotIds) == 0x2, "pilots.fixed is the original's size");
+_Static_assert(sizeof(ScenarioOrdinalBaseByCampaignStage) == 0x16, "campaign.scenario_ordinal_base is the original's size");
+_Static_assert(sizeof(MissionDateMonthIndex) == 0xC, "campaign.mission_date_months is the original's size");
+_Static_assert(sizeof(MissionDateYear) == 0x18, "campaign.mission_date_years is the original's size");
+_Static_assert(sizeof(MissionDateAdvanceMonths) == 0x18, "campaign.mission_date_advance_months is the original's size");
+_Static_assert(sizeof(UnitEditorScenarioCardCountByFamily) == 0x7, "campaign.scenario_unit_cards is the original's size");
+_Static_assert(sizeof(UnitEditorPilotCardCountByFamily) == 0x7, "campaign.pilot_cards is the original's size");

@@ -16,6 +16,7 @@ byte UnitMovementClassByType[LANCE_EDITOR_UNIT_TYPE_COUNT];
 /* Filled at start from data/rules/units.json (revenge/rules.h). */
 byte PredefinedUnitTypeTable[0x1E];
 byte UnitEditorSectionEnabled[0x1D];
+/* Filled at start from data/rules/campaign.json (revenge/rules.h). */
 byte UnitEditorScenarioCardCountByFamily[0x07];
 /* Filled at start from data/rules/units.json (revenge/rules.h). */
 byte RandomUnitTypeCountByFamily[0x0A];
@@ -23,6 +24,7 @@ byte RandomUnitTypePoolByFamily[0x31];
 byte PilotPortraitIndexById[0x21];
 /* Filled at start from data/rules/pilots.json (revenge/rules.h). */
 word16 DefaultPilotIdsByScenario[0x14];
+/* Filled at start from data/rules/campaign.json (revenge/rules.h). */
 byte UnitEditorPilotCardCountByFamily[0x07];
 
 /* Filled at start from data/rules/pilots.json (revenge/rules.h). */

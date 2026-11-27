@@ -15,6 +15,7 @@
 header revenge/combat_data.h
 header revenge/original_data.h
 header revenge/original/lance_editor_data.h
+header revenge/original/campaign_data.h
 
 # weapons.json
 weapons.definitions                     WeaponDefinitions                3A6A:0435 159
@@ -55,3 +56,11 @@ units.lance_allegiances                 ScenarioLanceAllegianceTable      3A6A:5
 pilots.roster                           PilotRoster                       3A6A:1D4C EC
 pilots.default_by_scenario              DefaultPilotIdsByScenario         3A6A:3269 28
 pilots.fixed                            FixedPilotIds                     3A6A:3354 2
+
+# campaign.json
+campaign.scenario_ordinal_base          ScenarioOrdinalBaseByCampaignStage  3A6A:254C 16
+campaign.mission_date_months            MissionDateMonthIndex               3A6A:273F C
+campaign.mission_date_years             MissionDateYear                     3A6A:274B 18
+campaign.mission_date_advance_months    MissionDateAdvanceMonths            3A6A:2763 18
+campaign.scenario_unit_cards            UnitEditorScenarioCardCountByFamily 3A6A:3206 7
+campaign.pilot_cards                    UnitEditorPilotCardCountByFamily    3A6A:3291 7
