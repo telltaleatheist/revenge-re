@@ -29,6 +29,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import zipfile
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "package"))
@@ -40,6 +41,10 @@ APP_NAME = "Revenge Rebuild"
 PROGRAM = "chr"  # the shipped program (the build's target stays Revenge, which the tools and traces run)
 BUNDLE_ID = "io.github.revengere.chr"  # its own, so it never replaces another game's settings
 FIRST_RUN_SECONDS = 120
+TITLE_SECONDS = 60
+# Where the smoke keeps the title's captures (--shots); None: each is checked and dropped. Never in the repo: it is the
+# player's game on the screen.
+SHOTS = None
 # Our data beside the program: each folder must hold JSON files.
 DATA_FOLDERS = ("data/rules", "data/ui", "data/start", "data/sound", "data/music")
 MAC_ARCHITECTURES = ("x86_64", "arm64")
@@ -339,7 +344,55 @@ def check_first_run(executable, game):
             tail = (result.stdout + result.stderr).splitlines()[-10:]
             raise RuntimeError(f"Packaged first run: exit {result.returncode}, story imported {imported}, snaps {snaps}:\n"
                                + "\n".join(tail))
-    print("First run from the package: story imported, the game reached its first input wait")
+        print("First run from the package: story imported, the game reached its first input wait")
+        check_title_shot(executable, game, saves, scratch)
+
+
+def bmp_picture(path):
+    """(width, height, colours seen) of a finished BMP SDL wrote, or None while it is incomplete."""
+    data = Path(path).read_bytes()
+    if len(data) < 54 or data[:2] != b"BM" or len(data) < int.from_bytes(data[2:6], "little"):
+        return None
+    offset = int.from_bytes(data[10:14], "little")
+    width, height = int.from_bytes(data[18:22], "little", signed=True), abs(int.from_bytes(data[22:26], "little", signed=True))
+    step = int.from_bytes(data[28:30], "little") // 8 or 1
+    pixels = data[offset:]
+    return width, height, len({pixels[i:i + step] for i in range(0, len(pixels) - step, step * 7)})
+
+
+def check_title_shot(executable, game, saves, scratch):
+    """A second start, the story imported by the first: the window's picture at the title, through the smoke input's
+    shot:NAME (docs/CAMPAIGN_SMOKE_TEST.md), asked for once a second until one holds a picture (more than 16 colours,
+    at least 320x200). The title waits for a key, so the run is then stopped. With --shots the capture is kept there."""
+    shots = scratch / "shots"
+    shots.mkdir()
+    items = ",".join(f"1000:shot:t{n:02}" for n in range(1, TITLE_SECONDS + 1))
+    env = dict(quiet_env(saves), REVENGE_ASSET_DIRECTORY=str(Path(game).resolve()), REVENGE_SMOKE_INPUT=items,
+               REVENGE_SMOKE_SHOTS=str(shots))
+    run = subprocess.Popen([str(executable)], cwd=scratch, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    found, deadline = None, time.monotonic() + TITLE_SECONDS + 15
+    try:
+        while found is None and run.poll() is None and time.monotonic() < deadline:
+            time.sleep(0.5)
+            for shot in sorted(shots.glob("t*.bmp")):
+                picture = bmp_picture(shot)
+                if picture and picture[0] >= 320 and picture[1] >= 200 and picture[2] > 16:
+                    found = shot, picture
+                    break
+    finally:
+        if run.poll() is None:
+            run.kill()
+        run.wait()
+    if found is None:
+        raise RuntimeError(f"Packaged start: no picture in the window in {TITLE_SECONDS} s (exit {run.returncode})")
+    shot, (width, height, _) = found
+    kept = ""
+    if SHOTS:
+        SHOTS.mkdir(parents=True, exist_ok=True)
+        target = SHOTS / f"title-{platform_name()}-{len(list(SHOTS.glob('title-*.bmp'))) + 1}.bmp"
+        shutil.copy2(shot, target)
+        kept = f", kept as {target}"
+    print(f"Title from the package: the window showed a picture {width}x{height} after {int(shot.stem[1:])} s{kept}")
 
 
 def smoke(executable, game, architecture=None):
@@ -619,9 +672,11 @@ if __name__ == "__main__":
     parser.add_argument("--arch", choices=MAC_ARCHITECTURES, help="with --smoke of a Mac app: run this half of it")
     parser.add_argument("--installer", action="store_true", help="Windows: also the Inno Setup installer")
     parser.add_argument("--appimage-tools", type=Path, help="Linux: the folder with linuxdeploy, appimagetool and the runtime")
+    parser.add_argument("--shots", type=Path, help="keep the smoke's capture of the title here (never in the repo)")
     parser.add_argument("--game", type=Path, default=os.environ.get("REVENGE_GAME") or None,
                         help="an original game folder for the first-run check (default REVENGE_GAME; never packaged)")
     options = parser.parse_args()
+    SHOTS = options.shots.resolve() if options.shots else None
     try:
         if options.smoke:
             names = [PROGRAM + ".exe", PROGRAM, "Contents/MacOS/" + PROGRAM, "usr/bin/" + PROGRAM]

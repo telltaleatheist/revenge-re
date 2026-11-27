@@ -162,6 +162,12 @@ AppImage's `usr/bin` and its unpacked copy):
   one-line script `@snap:first_wait`: the harness takes that snap at the
   first wait, writes `done.txt` and ends the run, and the test checks those
   and `story/import.json`. The game folder is only read and is never packaged.
+- then a second start, the story imported, shows the title: the smoke input
+  (`REVENGE_SMOKE_INPUT`, `docs/CAMPAIGN_SMOKE_TEST.md`) asks for `shot:NAME`
+  once a second until a capture holds a picture (at least 320x200 and more
+  than 16 colours), and the run is stopped, since the title waits for a key.
+  `--shots DIR` keeps that capture as `title-<platform>-<n>.bmp`. It shows
+  the player's game, so DIR is a scratch folder, never the repo.
 
 Nothing is shown: the video and audio drivers are `dummy`, the player's folder
 is a temporary one (never the real one), and on a Mac the runs start a
