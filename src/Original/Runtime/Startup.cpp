@@ -7,10 +7,24 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "REVENGE.h"
+#include "Audio/Audio.h"
+#include "Campaign/Campaign.h"
+#include "Data/GraphicsData.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Graphics/Graphics.h"
+#include "IO/IO.h"
+#include "Input/Input.h"
+#include "Resources/Resources.h"
+#include "Runtime/Runtime.h"
+#include "Text/Text.h"
+#include "Utility/Utility.h"
+#include "revenge/heap.h"
+#include "revenge/original/io_data.h"
+#include "revenge/text.h"
 #include "revenge/audio.h"
 #include "revenge/input.h"
-#include "revenge/original_data.h"
 #include "revenge/platform_backend.h"
 #include "revenge/story_text.h"
 #include "revenge/media_settings.h"
@@ -67,7 +81,6 @@ static MediaConfigurationHandler const ConfigOptionHandlers[0x04] = {
 const char *const ConfigOptionNames[MEDIA_OPTION_COUNT] = {
     STORY_TEXT(CONFIG_OPTION_NAMES_0), STORY_TEXT(CONFIG_OPTION_NAMES_1), STORY_TEXT(CONFIG_OPTION_NAMES_2), STORY_TEXT(CONFIG_OPTION_NAMES_3)
 };
-
 
 // 2C7F:000F: int main(void)
 #if !defined(REVENGE_NO_DOS_MAIN)
@@ -442,7 +455,6 @@ uint16_t ApplyMusicConfigOption(void)
     return optionAccepted;
 }
 
-
 // 2C7F:07CE: Register uint16 ApplySoundConfigOption(void)
 // Called from:
 //      LoadMediaConfiguration
@@ -487,7 +499,6 @@ uint16_t ApplySoundConfigOption(void)
     return optionAccepted;
 }
 
-
 // 2C7F:08CA: Register uint16 ApplyInputDeviceConfigOption(void)
 // Called from:
 //      LoadMediaConfiguration
@@ -520,7 +531,6 @@ uint16_t ApplyInputDeviceConfigOption(void)
     }
     return optionAccepted;
 }
-
 
 // 2C7F:096C: uint16 ParseHexValue(const char *text)
 // Called from:
