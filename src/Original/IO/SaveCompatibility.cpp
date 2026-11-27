@@ -5,6 +5,11 @@
 #include "Resources/Resources.h"
 #include "UI/UI.h"
 
+/* The save directory's word for slot 0, the save index, which begins with
+ * the file's version; the oldest version the game reads. */
+constexpr int16_t SAVE_INDEX_DIRECTORY_OFFSET = 0x0002;
+constexpr int16_t MINIMUM_SAVE_VERSION = 0x0097;
+
 /* 0D73:4572-4610 */
 int16_t EnsureCompatibleSaveFile(
     int16_t fileHandle,
@@ -18,12 +23,12 @@ int16_t EnsureCompatibleSaveFile(
     searching = TRUE;
     while (searching != FALSE)
     {
-        nextRecordOffset = 0x0002;
+        nextRecordOffset = SAVE_INDEX_DIRECTORY_OFFSET;
         SeekTrackedFile(fileHandle, nextRecordOffset, 0x0000);
-        ReadTrackedFile(fileHandle, &nextRecordOffset, 0x00000002UL);
+        ReadTrackedFile(fileHandle, &nextRecordOffset, sizeof nextRecordOffset);
         SeekTrackedFile(fileHandle, nextRecordOffset, 0x0000);
-        ReadTrackedFile(fileHandle, &saveVersion, 0x00000002UL);
-        if (saveVersion >= (int16_t) 0x0097)
+        ReadTrackedFile(fileHandle, &saveVersion, sizeof saveVersion);
+        if (saveVersion >= MINIMUM_SAVE_VERSION)
         {
             searching = FALSE;
         }
