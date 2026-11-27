@@ -24,3 +24,8 @@ VERSION text eol=lf
 .editorconfig text eol=lf
 LICENSE text eol=lf
 *.png binary
+
+# Third-party files and the soundfont's licence texts are kept byte for byte
+# (extern/*/PROVENANCE.md hashes; tools/soundfont/subset.py check).
+extern/** -text
+data/music/FluidR3_GM-*.txt -text

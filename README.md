@@ -49,6 +49,12 @@ Requirements:
 - SDL3 for the playable build; and
 - a legally obtained copy of the original game data.
 
+The music's soundfont is cut from FluidR3 GM (MIT) at build time, and a
+build never downloads: fetch its pinned source once per machine with
+`tools/deps/fetch_soundfont.sh` (on Windows, `python tools\soundfont\subset.py
+fetch`), or set `REVENGE_SOUNDFONT_SOURCE` to a copy of
+`fluid-soundfont_3.1.orig.tar.gz`.
+
 Run the asset-independent build and tests:
 
 ```powershell

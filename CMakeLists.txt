@@ -48,7 +48,6 @@ include(cmake/OriginalAuditedSources.cmake)
 set(CHR_STORY_SOURCES
 	src/Support/story_text.c
 	src/Support/story_text_slots.c
-	src/Support/Json.cpp
 	src/Import/Story.cpp
 	src/Import/StoryHost.cpp)
 # The rules, layout and starting state (revenge/rules.h): our numbers, read
@@ -63,6 +62,10 @@ function(chr_uses_rules target)
 	target_compile_definitions(${target} PRIVATE
 		CHR_DATA_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/data")
 endfunction()
+# The JSON reader our data files are read with (src/Support/Json.h): the
+# story, the rules and the music's instrument table.
+add_library(chr_json STATIC src/Support/Json.cpp)
+chr_strict(chr_json)
 add_library(chr_original_runtime STATIC ${CHR_ORIGINAL_SOURCES})
 target_sources(chr_original_runtime PRIVATE
 	src/Support/audio_log.c
@@ -83,6 +86,7 @@ target_sources(chr_original_runtime PRIVATE
 target_include_directories(chr_original_runtime
     PUBLIC include
     PRIVATE src/Original src/SDL)
+target_link_libraries(chr_original_runtime PUBLIC chr_json)
 target_compile_definitions(chr_original_runtime PRIVATE REVENGE_NO_DOS_MAIN)
 if(CHR_PRESERVATION_INSTRUMENTATION)
     target_compile_definitions(chr_original_runtime PRIVATE
@@ -551,6 +555,7 @@ if(BUILD_TESTING)
         ${CHR_STORY_SOURCES}
         src/Support/debug.c)
     target_include_directories(test_formatted_text PRIVATE include src/Original tests)
+    target_link_libraries(test_formatted_text PRIVATE chr_json)
     chr_strict(test_formatted_text)
     add_test(NAME output.original_formatted_text COMMAND test_formatted_text)
     set_tests_properties(output.original_formatted_text PROPERTIES SKIP_RETURN_CODE 77)
@@ -892,6 +897,35 @@ if(CHR_BUILD_SDL)
         ${CHR_RUNTIME_WITH_BACKEND})
     chr_strict(RevengeDiagnostic)
 
+    # The music soundfont: the programs data/music/soundfont_programs.txt
+    # lists, cut from FluidR3 GM by tools/soundfont/subset.py and refused
+    # unless it hashes as data/music/soundfont_subset.sha256 says. Its source
+    # is fetched once per machine (tools/deps/fetch_soundfont.sh): a build
+    # never downloads. REVENGE_SOUNDFONT_SOURCE names another copy.
+    find_package(Python3 REQUIRED COMPONENTS Interpreter)
+    set(CHR_SOUNDFONT_SOURCE "" CACHE FILEPATH
+        "A copy of fluid-soundfont_3.1.orig.tar.gz (default build-deps/soundfont)")
+    if(DEFINED ENV{REVENGE_SOUNDFONT_SOURCE})
+        set(CHR_SOUNDFONT_SOURCE "$ENV{REVENGE_SOUNDFONT_SOURCE}" CACHE FILEPATH "" FORCE)
+    elseif(NOT CHR_SOUNDFONT_SOURCE)
+        set(CHR_SOUNDFONT_SOURCE
+            "${CMAKE_CURRENT_SOURCE_DIR}/build-deps/soundfont/fluid-soundfont_3.1.orig.tar.gz"
+            CACHE FILEPATH "" FORCE)
+    endif()
+    if(NOT EXISTS "${CHR_SOUNDFONT_SOURCE}")
+        message(FATAL_ERROR "The music soundfont's source is missing: ${CHR_SOUNDFONT_SOURCE}\n"
+            "Fetch it once: tools/deps/fetch_soundfont.sh (Windows: python tools\\soundfont\\subset.py fetch), "
+            "or set REVENGE_SOUNDFONT_SOURCE to a copy of fluid-soundfont_3.1.orig.tar.gz.")
+    endif()
+    set(CHR_SOUNDFONT "${CMAKE_CURRENT_BINARY_DIR}/soundfont/FluidR3_GM-subset.sf2")
+    add_custom_command(OUTPUT "${CHR_SOUNDFONT}"
+        COMMAND Python3::Interpreter -I "${CMAKE_CURRENT_SOURCE_DIR}/tools/soundfont/subset.py" generate
+            --source "${CHR_SOUNDFONT_SOURCE}" --out "${CHR_SOUNDFONT}"
+        DEPENDS tools/soundfont/subset.py data/music/soundfont_programs.txt
+            data/music/soundfont_subset.sha256 "${CHR_SOUNDFONT_SOURCE}"
+        COMMENT "Cutting the music soundfont from FluidR3 GM" VERBATIM)
+    add_custom_target(chr_soundfont DEPENDS "${CHR_SOUNDFONT}")
+
     # The preserved Original source owns main() and all game flow. SDL only
     # satisfies the DOS/BIOS/hardware boundary calls made by that source.
     # The campaign loop is admitted and this target links end to end. It is a
@@ -908,7 +942,11 @@ if(CHR_BUILD_SDL)
             $<TARGET_FILE_DIR:Revenge>/REVENGE.CFG
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_CURRENT_SOURCE_DIR}/data
-            $<TARGET_FILE_DIR:Revenge>/data)
+            $<TARGET_FILE_DIR:Revenge>/data
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CHR_SOUNDFONT}
+            $<TARGET_FILE_DIR:Revenge>/data/music)
+    add_dependencies(Revenge chr_soundfont)
 
     # The golden traces (tools/trace/README.md): every script against its
     # golden, and the battle's script twice, byte for byte. Both run the game
@@ -947,6 +985,22 @@ if(CHR_BUILD_SDL)
         add_test(NAME map.data_map
             COMMAND ${Python3_EXECUTABLE} -I
                 ${CMAKE_CURRENT_SOURCE_DIR}/tools/map/check_map.py)
+        # The soundfont subset: the tool on a bank it builds, then the real
+        # subset against the pinned source (its hash, its licence texts, and
+        # through TinySoundFont the same regions and samples as the full bank).
+        add_executable(soundfont_render_test tests/soundfont_render_test.cpp)
+        target_include_directories(soundfont_render_test SYSTEM PRIVATE extern/TinySoundFont)
+        target_compile_definitions(soundfont_render_test PRIVATE _CRT_SECURE_NO_WARNINGS)
+        add_test(NAME soundfont.subset
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/soundfont/test_subset.py
+                --renderer $<TARGET_FILE:soundfont_render_test>)
+        add_test(NAME soundfont.bank
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/soundfont/subset.py check
+                --source ${CHR_SOUNDFONT_SOURCE}
+                --renderer $<TARGET_FILE:soundfont_render_test>)
+        set_tests_properties(soundfont.bank PROPERTIES TIMEOUT 600)
     endif()
 
     add_custom_target(revenge-package
