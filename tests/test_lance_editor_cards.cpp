@@ -25,6 +25,10 @@
  *   (no argument)  after the editor's preparation, every card it draws points
  *                  at the editor's buffer for its unit or pilot
  *   stale          a card drawn as loaded is a fault (ctest matches it)
+ *   unset          the image's start cards hold no unit slot (FFh) until the
+ *                  campaign's first selection sets them (mode 1, stage 0);
+ *                  prepared as they stand, the roster index FFFFh is a fault
+ *                  (ctest matches it), not a read past the roster
  *
  * The editor's graphics buffers are built first, all of them: entries 01h-10h
  * for the units, 17h-25h for the pilots' portraits (2507:5016). */
@@ -76,6 +80,13 @@ int main(int argc, char **argv)
 	BuildEditorBuffers();
 	LoadOriginalSaveCards();
 
+	if (argc > 1 && strcmp(argv[1], "unset") == 0)
+	{
+		UnitSelectionCards_LoadStart();
+		PrepareLanceSelectionRecords(0x0000, 0x0000, FALSE);
+		return 0;
+	}
+
 	if (argc > 1 && strcmp(argv[1], "stale") == 0)
 	{
 		(void) LanceEditorCardSprite(&UnitSelectionCards[0x00]);
@@ -124,9 +135,16 @@ int main(int argc, char **argv)
 			UnitEditorGraphicsBuffer(PilotPortraitIndexById[card->selectionId]));
 	}
 
-	/* A new campaign's cards, from the image's start cards, set by the editor:
-	 * each saves 0000:0000, as the image holds them. */
+	/* A new campaign's cards, from the image's start cards, given their unit
+	 * slots as the campaign's first selection gives them (stage 0, mode 1,
+	 * which also loads each unit's template from the game's files), then set
+	 * by the editor: each saves 0000:0000, as the image holds them. */
 	UnitSelectionCards_LoadStart();
+	for (slot = 0x0000; slot < 0x0006; ++slot)
+	{
+		UnitSelectionCards[slot].persistentUnitSlot = (RevengeUnitSlot) slot;
+		UnitSelectionCards[slot].assignmentSlot = REVENGE_ASSIGNMENT_SLOT_NONE;
+	}
 	PrepareLanceSelectionRecords(0x0000, 0x0000, FALSE);
 	for (slot = 0x0000; slot < UNIT_SELECTION_CARD_COUNT; ++slot)
 	{

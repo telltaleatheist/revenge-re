@@ -1230,6 +1230,9 @@ if(CHR_BUILD_SDL)
         set_tests_properties(units.lance_editor_cards PROPERTIES SKIP_RETURN_CODE 77)
         set_tests_properties(units.lance_editor_cards_stale PROPERTIES SKIP_RETURN_CODE 77
             PASS_REGULAR_EXPRESSION "fault: a selection card's sprite pointer 7929:0008|skipped")
+        add_test(NAME units.lance_editor_cards_unset COMMAND test_lance_editor_cards unset)
+        set_tests_properties(units.lance_editor_cards_unset PROPERTIES SKIP_RETURN_CODE 77
+            PASS_REGULAR_EXPRESSION "fault: PersistentUnitRoster\\[65535\\] is past its 24 entries|skipped")
 
         add_executable(test_sdl_renderer_fallback tests/test_sdl_renderer_fallback.cpp)
         target_link_libraries(test_sdl_renderer_fallback PRIVATE

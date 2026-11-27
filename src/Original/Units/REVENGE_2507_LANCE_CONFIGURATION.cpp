@@ -1003,8 +1003,8 @@ void PrepareLanceSelectionRecords(
 
 					LoadUnitTemplateRecord((int16) unitType);
 					persistentUnitSlot = scenarioRecord->persistentUnitSlot;
-					PersistentUnitRoster[persistentUnitSlot] =
-						EstimatedUnitRecord;
+					PersistentUnitRoster[REVENGE_INDEX(PersistentUnitRoster,
+						persistentUnitSlot)] = EstimatedUnitRecord;
 				}
 
 				if (scenarioRecord->assignmentSlot != REVENGE_ASSIGNMENT_SLOT_NONE)
@@ -1012,9 +1012,13 @@ void PrepareLanceSelectionRecords(
 				else
 					scenarioRecord->state = 0x01;
 
+				// A card's slot is set by the campaign's first selection (mode
+				// 1) before any other: the image's start cards hold none (FFh),
+				// which the original would widen to FFFFh and read before the
+				// roster. Play never prepares an unset card, so one is a fault.
 				persistentUnitSlot = scenarioRecord->persistentUnitSlot;
-				unitTypeId =
-					PersistentUnitRoster[persistentUnitSlot].unitTypeId;
+				unitTypeId = PersistentUnitRoster[
+					REVENGE_INDEX(PersistentUnitRoster, persistentUnitSlot)].unitTypeId;
 				graphicsBufferIndex = UnitEditorUnitSpriteIndex[unitTypeId];
 				scenarioRecord->spriteBuffer =
 					UnitEditorGraphicsBuffer(graphicsBufferIndex);
