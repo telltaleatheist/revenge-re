@@ -30,94 +30,8 @@ void PITCalibrationIRQ0Handler(void);
 
 #define ORIGINAL_DATA_SEGMENT_MAPPED_BYTES 0xB8A0
 
-static word16 ReadLittleEndianWord(const byte *bytes)
-{
-	return (word16)(bytes[0x00] | ((word16)bytes[0x01] << 0x08));
-}
-
-static byte *ResolveOriginalDataPointer(word16 dataOffset)
-{
-	uint32 encodedAddress =
-		((uint32)ReadLittleEndianWord(&originalDataSegment[dataOffset + 0x02])
-			<< 0x10) |
-		ReadLittleEndianWord(&originalDataSegment[dataOffset]);
-	return HostFarPointer_Resolve(encodedAddress);
-}
-
-/* The program the import accepted (revenge/original_import.h), loaded as DOS
- * loaded it: the load image at segment 0800h after the 100h-byte PSP, each
- * relocated segment word moved by the load segment. These are the bytes the
- * import checked, whole, not the file again. */
-static void LoadOriginalModuleImage(byte *programBlock, uint32 blockBytes)
-{
-	size_t moduleSize = OriginalImport_ImageBytes();
-	size_t relocationCount = OriginalImport_RelocationCount();
-	size_t relocationIndex;
-
-	if ((uint32) moduleSize + 0x0100UL > blockBytes)
-	{
-		/* DOS would refuse to load a program larger than the block, and
-		 * nothing the game does next works without it. */
-		fprintf(stderr, "REVENGE.EXE: its load image (%lu bytes) doesn't fit the "
-			"conventional-memory block (%lu bytes)\n", (unsigned long) moduleSize,
-			(unsigned long) (blockBytes - 0x0100UL));
-		exit(1);
-	}
-	memcpy(programBlock + 0x0100, OriginalImage, moduleSize);
-	for (relocationIndex = 0x0000; relocationIndex < relocationCount;
-		++relocationIndex)
-	{
-		uint32 targetOffset = 0x0100UL + OriginalImport_Relocation(relocationIndex);
-		word16 relocatedSegment;
-
-		if (targetOffset + 0x01 >= blockBytes)
-			continue;
-		relocatedSegment = (word16) (
-			ReadLittleEndianWord(&programBlock[targetOffset]) + 0x0800);
-		programBlock[targetOffset] = (byte) relocatedSegment;
-		programBlock[targetOffset + 0x01] = (byte) (relocatedSegment >> 0x08);
-	}
-}
-
-/* The initialised part of segment 3A6A from the same image, the rest zero, its
- * relocated segment words moved by the load segment. */
-static void LoadOriginalDataSegment(void)
-{
-	size_t moduleSize = OriginalImport_ImageBytes();
-	size_t relocationCount = OriginalImport_RelocationCount();
-	size_t relocationIndex;
-
-	memset(originalDataSegment, 0x00, sizeof(originalDataSegment));
-	if (moduleSize > ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET)
-	{
-		size_t initializedByteCount = moduleSize - ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET;
-		if (initializedByteCount > sizeof(originalDataSegment))
-			initializedByteCount = sizeof(originalDataSegment);
-		memcpy(originalDataSegment, &OriginalImage[ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET],
-			initializedByteCount);
-	}
-
-	for (relocationIndex = 0x0000; relocationIndex < relocationCount;
-		++relocationIndex)
-	{
-		uint32 targetLinear = OriginalImport_Relocation(relocationIndex);
-		word16 dataOffset;
-		word16 relocatedSegment;
-
-		if (targetLinear < ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET ||
-			targetLinear >= ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + 0xFFFFUL)
-			continue;
-		dataOffset = (word16)(targetLinear - ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET);
-		relocatedSegment = (word16)(
-			ReadLittleEndianWord(&originalDataSegment[dataOffset]) + 0x0800);
-		originalDataSegment[dataOffset] = (byte)relocatedSegment;
-		originalDataSegment[dataOffset + 0x01] = (byte)(relocatedSegment >> 0x08);
-	}
-}
-
 void SDLBackend_InitializeDOSMemoryArena(void)
 {
-	word16 graphicsBufferIndex;
 	/* Borland establishes these CRT break values before calling main. The host
 	 * entry shim supplies the equivalent conventional-memory arena so the
 	 * preserved sbrk/far-heap procedures can remain unchanged. */
@@ -133,12 +47,12 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	MaximumProgramBreakOffset = 0x0000;
 	ProgramBreakKilobytes = 0x0000;
 
-	/* The DOS loader copied the initialized portion of segment 3A6A from the
-	 * MZ image, zero-filled its BSS tail, and applied load-segment relocations.
-	 * Recreate that data edge so preserved DS:offset expressions address the
-	 * same bytes. Named globals are registered first as overlays where the C17
-	 * transcription exposes an independently typed object. */
-	LoadOriginalDataSegment();
+	/* DS:offset expressions the port doesn't name address
+	 * originalDataSegment, which starts at zero: every byte of the original's
+	 * data segment that play reads is a named object the port fills (its
+	 * initializer, the rules, the story), registered below over this
+	 * backing. Neither the data segment nor the program image is taken from
+	 * the player's copy. */
 	HostFarPointer_RegisterAt(&PresentationDismissTimeout,
 		sizeof(PresentationDismissTimeout), 0x3A6A240FUL);
 	HostFarPointer_RegisterAt(&SceneTransitionAbortFlag,
@@ -219,39 +133,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 #undef REGISTER_DATA_OBJECT
 	HostFarPointer_RegisterAt(originalDataSegment,
 		ORIGINAL_DATA_SEGMENT_MAPPED_BYTES, 0x3A6A0000UL);
-
-	SecondaryScreenBuffer = ResolveOriginalDataPointer(0x83DE);
-	PlanarScreenBuffer = ResolveOriginalDataPointer(0x83E2);
-	ActiveRenderTarget = ResolveOriginalDataPointer(0x7D3B);
-	for (graphicsBufferIndex = 0x00; graphicsBufferIndex < 0x20;
-		++graphicsBufferIndex)
-	{
-		SharedGraphicsBackingBuffers[graphicsBufferIndex] =
-			ResolveOriginalDataPointer((word16)(0x83EE + graphicsBufferIndex * 0x04));
-	}
-	PrimaryScreenBuffer = ResolveOriginalDataPointer(0xB65E);
-	VideoFramebuffer = ResolveOriginalDataPointer(0xB664);
-	memcpy(TacticalStatusRowInvalidation,
-		&originalDataSegment[0xB574],
-		sizeof(TacticalStatusRowInvalidation));
-	memcpy(TacticalImpactQueue, &originalDataSegment[0xB2F4],
-		sizeof(TacticalImpactQueue));
-	TacticalStatusBlinkVisible = originalDataSegment[0x86BD];
-	memcpy(SceneNarrationEventFlags,
-		&originalDataSegment[0xAE63], sizeof(SceneNarrationEventFlags));
-
-#define HYDRATE_DATA_OBJECT(object, offset) \
-	memcpy(&(object), &originalDataSegment[(offset)], sizeof(object))
-	HYDRATE_DATA_OBJECT(TrainingScenarioCompletionFlags, 0x00A0);
-	HYDRATE_DATA_OBJECT(SaveCampaignSnapshot, 0x1956);
-	HYDRATE_DATA_OBJECT(LoadedSceneFile, 0x71A8);
-	HYDRATE_DATA_OBJECT(SceneUnitRoutes, 0x86C1);
-	HYDRATE_DATA_OBJECT(SceneInstructionBaseOffset, 0xA862);
-	HYDRATE_DATA_OBJECT(SceneInstructionCursor, 0xA9D9);
-	HYDRATE_DATA_OBJECT(LanceEditorFirstBriefingPending, 0x30C4);
-	HYDRATE_DATA_OBJECT(LanceEditorBriefingPresented, 0x30C6);
-	HYDRATE_DATA_OBJECT(RandomUnitTypeCount, 0x3118);
-#undef HYDRATE_DATA_OBJECT
 }
 
 _Noreturn void SDLBackend_TerminateProcess(byte exitCode)
@@ -305,7 +186,6 @@ word16 SDLBackend_ResizeMemoryBlock(
 			return (word16) (maximumBytes >> 0x04);
 		dosMemoryBlockCapacity = maximumBytes;
 		dosMemoryBlockSegment = memorySegment;
-		LoadOriginalModuleImage(dosMemoryBlock, dosMemoryBlockCapacity);
 		HostFarPointer_RegisterAt(dosMemoryBlock, dosMemoryBlockCapacity,
 			(uint32) dosMemoryBlockSegment << 0x10);
 	}
