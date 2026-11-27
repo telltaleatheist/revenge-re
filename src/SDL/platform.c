@@ -7,6 +7,7 @@
 #include "harness.h"
 
 #include <SDL3/SDL.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -36,15 +37,27 @@ static word16 hostMouseButtons;
 
 enum
 {
-    SmokeInputCapacity = 0x80
+    SmokeInputCapacity = 0x80,
+    SmokeShotNameLength = 0x40
 };
 
+typedef enum SmokeInputKind
+{
+    SmokeKey,
+    SmokeMouse,
+    SmokeShot
+} SmokeInputKind;
 
 typedef struct SmokeInputEvent
 {
     uint32_t delayMilliseconds;
+    SmokeInputKind kind;
     int scancode;
     byte modifiers;
+    word16 mouseX;
+    word16 mouseY;
+    word16 mouseButtons;
+    char shotName[SmokeShotNameLength];
 } SmokeInputEvent;
 
 static SmokeInputEvent smokeInputEvents[SmokeInputCapacity];
@@ -52,14 +65,53 @@ static uint16 smokeInputEventCount;
 static uint16 smokeInputEventIndex;
 static uint64_t smokeInputDueTime;
 static byte smokeInputInitialized;
+static word16 smokeMouseButtons;
+static char smokeShotPending[SmokeShotNameLength];
 static byte keyboardHandlerInstalled;
 static byte deliveringHostEvents;
 static byte quitRequested;
 
-static void SendScriptedKey(int scancode, byte modifiers);
+/* One smoke item after its delay: a key name as the harness's scripts write
+ * them (Shift+, Ctrl+, Alt+ allowed), mouse:X/Y[/B] (the game's 320x200 and
+ * the buttons held, 1 left, 2 right, 4 middle) or shot:NAME. */
+static int ParseSmokeItem(const char *item, SmokeInputEvent *event)
+{
+    if (strncmp(item, "mouse:", 0x06) == 0x00)
+    {
+        unsigned x;
+        unsigned y;
+        unsigned buttons = 0x00;
+        int fields = SDL_sscanf(item + 0x06, "%u/%u/%u", &x, &y, &buttons);
 
-/* REVENGE_SMOKE_INPUT: DELAY_MS:KEY[,DELAY_MS:KEY...], each KEY a key name
- * as the harness's scripts write them (Shift+, Ctrl+, Alt+ allowed). */
+        if (fields < 0x02 || x >= VIDEO_SCREEN_WIDTH ||
+            y >= VIDEO_SCREEN_HEIGHT || buttons > 0x07)
+            return FALSE;
+        event->kind = SmokeMouse;
+        event->mouseX = (word16)x;
+        event->mouseY = (word16)y;
+        event->mouseButtons = (word16)buttons;
+        return TRUE;
+    }
+    if (strncmp(item, "shot:", 0x05) == 0x00)
+    {
+        const char *name = item + 0x05;
+        size_t i;
+
+        if (*name == '\0' || strlen(name) >= SmokeShotNameLength)
+            return FALSE;
+        for (i = 0x00; name[i] != '\0'; ++i)
+            if (!isalnum((unsigned char)name[i]) && name[i] != '_' &&
+                name[i] != '-')
+                return FALSE;
+        event->kind = SmokeShot;
+        SDL_strlcpy(event->shotName, name, sizeof(event->shotName));
+        return TRUE;
+    }
+    event->kind = SmokeKey;
+    return Harness_ParseKey(item, &event->scancode, &event->modifiers);
+}
+
+/* REVENGE_SMOKE_INPUT: DELAY_MS:ITEM[,DELAY_MS:ITEM...]. */
 static void InitializeSmokeInput(void)
 {
     const char *cursor;
@@ -72,7 +124,7 @@ static void InitializeSmokeInput(void)
         smokeInputEventCount < SmokeInputCapacity)
     {
         char *end;
-        char name[0x40];
+        char item[0x50];
         size_t length;
         unsigned long delay = strtoul(cursor, &end, 0x0A);
         SmokeInputEvent *event = &smokeInputEvents[smokeInputEventCount];
@@ -81,12 +133,15 @@ static void InitializeSmokeInput(void)
             break;
         cursor = end + 0x01;
         length = strcspn(cursor, ",");
-        if (length == 0x00 || length >= sizeof(name))
+        if (length == 0x00 || length >= sizeof(item))
             break;
-        memcpy(name, cursor, length);
-        name[length] = '\0';
-        if (!Harness_ParseKey(name, &event->scancode, &event->modifiers))
+        memcpy(item, cursor, length);
+        item[length] = '\0';
+        if (!ParseSmokeItem(item, event))
+        {
+            RevengeTrace("input: smoke item '%s' not understood\n", item);
             break;
+        }
         event->delayMilliseconds = (uint32_t)delay;
         ++smokeInputEventCount;
         cursor += length;
@@ -100,6 +155,83 @@ static void InitializeSmokeInput(void)
         smokeInputEventCount, (unsigned long long) smokeInputDueTime);
 }
 
+/* The smoke input goes in as the devices' own events would: pushed on SDL's
+ * queue, and taken off it with the rest by DeliverHostEvents. */
+static void PushSmokeKey(SDL_Scancode scancode, int down)
+{
+    SDL_Event event;
+
+    SDL_zero(event);
+    event.type = down ? SDL_EVENT_KEY_DOWN : SDL_EVENT_KEY_UP;
+    event.key.timestamp = SDL_GetTicksNS();
+    event.key.windowID = window != NULL ? SDL_GetWindowID(window) : 0x00;
+    event.key.scancode = scancode;
+    event.key.key = SDL_GetKeyFromScancode(scancode, SDL_KMOD_NONE, false);
+    event.key.down = down ? true : false;
+    (void)SDL_PushEvent(&event);
+}
+
+static void PushSmokeKeystroke(SDL_Scancode scancode, byte modifiers)
+{
+    if ((modifiers & 0x01) != 0x00)
+        PushSmokeKey(SDL_SCANCODE_LSHIFT, TRUE);
+    if ((modifiers & 0x02) != 0x00)
+        PushSmokeKey(SDL_SCANCODE_LCTRL, TRUE);
+    if ((modifiers & 0x04) != 0x00)
+        PushSmokeKey(SDL_SCANCODE_LALT, TRUE);
+    PushSmokeKey(scancode, TRUE);
+    PushSmokeKey(scancode, FALSE);
+    if ((modifiers & 0x04) != 0x00)
+        PushSmokeKey(SDL_SCANCODE_LALT, FALSE);
+    if ((modifiers & 0x02) != 0x00)
+        PushSmokeKey(SDL_SCANCODE_LCTRL, FALSE);
+    if ((modifiers & 0x01) != 0x00)
+        PushSmokeKey(SDL_SCANCODE_LSHIFT, FALSE);
+}
+
+/* The mouse moved to the game's X,Y, as the window's coordinates, then each
+ * button whose state changed pressed or released there. */
+static void PushSmokeMouse(word16 x, word16 y, word16 buttons)
+{
+    static const Uint8 sdlButtons[0x03] =
+        { SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_BUTTON_MIDDLE };
+    SDL_Event event;
+    float windowX = (float)x + 0.5f;
+    float windowY = (float)y + 0.5f;
+    SDL_WindowID windowID = window != NULL ? SDL_GetWindowID(window) : 0x00;
+    int i;
+
+    if (renderer != NULL)
+        (void)SDL_RenderCoordinatesToWindow(renderer, (float)x + 0.5f,
+            (float)y + 0.5f, &windowX, &windowY);
+    SDL_zero(event);
+    event.type = SDL_EVENT_MOUSE_MOTION;
+    event.motion.timestamp = SDL_GetTicksNS();
+    event.motion.windowID = windowID;
+    event.motion.x = windowX;
+    event.motion.y = windowY;
+    (void)SDL_PushEvent(&event);
+    for (i = 0x00; i < 0x03; ++i)
+    {
+        word16 bit = (word16)(0x01 << i);
+
+        if (((buttons ^ smokeMouseButtons) & bit) == 0x00)
+            continue;
+        SDL_zero(event);
+        event.type = (buttons & bit) != 0x00 ?
+            SDL_EVENT_MOUSE_BUTTON_DOWN : SDL_EVENT_MOUSE_BUTTON_UP;
+        event.button.timestamp = SDL_GetTicksNS();
+        event.button.windowID = windowID;
+        event.button.button = sdlButtons[i];
+        event.button.down = (buttons & bit) != 0x00 ? true : false;
+        event.button.clicks = 0x01;
+        event.button.x = windowX;
+        event.button.y = windowY;
+        (void)SDL_PushEvent(&event);
+    }
+    smokeMouseButtons = buttons;
+}
+
 static void SendDueSmokeInput(void)
 {
     const SmokeInputEvent *event;
@@ -109,14 +241,50 @@ static void SendDueSmokeInput(void)
         HostClock_NowMS() < smokeInputDueTime)
         return;
     event = &smokeInputEvents[smokeInputEventIndex];
-    RevengeTrace("input: smoke event=%u/%u scancode=%d modifiers=%u\n",
-        smokeInputEventIndex + 0x01, smokeInputEventCount,
-        event->scancode, event->modifiers);
-    SendScriptedKey(event->scancode, event->modifiers);
+    RevengeTrace("input: smoke event=%u/%u kind=%d\n",
+        smokeInputEventIndex + 0x01, smokeInputEventCount, (int)event->kind);
+    switch (event->kind)
+    {
+    case SmokeKey:
+        PushSmokeKeystroke((SDL_Scancode)event->scancode, event->modifiers);
+        break;
+    case SmokeMouse:
+        PushSmokeMouse(event->mouseX, event->mouseY, event->mouseButtons);
+        break;
+    case SmokeShot:
+        SDL_strlcpy(smokeShotPending, event->shotName, sizeof(smokeShotPending));
+        nextVideoPresentTick = 0x00;
+        break;
+    }
     ++smokeInputEventIndex;
     if (smokeInputEventIndex < smokeInputEventCount)
         smokeInputDueTime = HostClock_NowMS() +
             smokeInputEvents[smokeInputEventIndex].delayMilliseconds;
+}
+
+/* A smoke shot: what the window shows, as rendered, to NAME.bmp in the
+ * folder REVENGE_SMOKE_SHOTS names (none without it). */
+static void SaveSmokeShot(void)
+{
+    const char *folder = SDL_getenv("REVENGE_SMOKE_SHOTS");
+    SDL_Surface *surface;
+    char path[0x400];
+
+    if (smokeShotPending[0x00] == '\0')
+        return;
+    if (folder != NULL && *folder != '\0')
+    {
+        surface = SDL_RenderReadPixels(renderer, NULL);
+        SDL_snprintf(path, sizeof(path), "%s/%s.bmp", folder,
+            smokeShotPending);
+        if (surface == NULL || !SDL_SaveBMP(surface, path))
+            RevengeTrace("input: smoke shot %s failed: %s\n", path,
+                SDL_GetError());
+        else
+            RevengeTrace("input: smoke shot %s\n", path);
+        SDL_DestroySurface(surface);
+    }
+    smokeShotPending[0x00] = '\0';
 }
 
 /*
@@ -466,7 +634,7 @@ uint16 Platform_ScanCodeForKey(int scancode)
     return GetSet1ScanCode((SDL_Scancode)scancode) & 0x00FF;
 }
 
-/* A scripted key (the harness's, the smoke input's), sent as REVSNAP sends
+/* A scripted key (the harness's), sent as REVSNAP sends
  * it to the original (tools/capture/revsnap.asm): Shift, Ctrl, Alt pressed
  * as asked, the key pressed and released, the modifiers released; the key's
  * code without E0h, as tools/capture/keys.py has it. */
@@ -734,14 +902,16 @@ int SDLBackend_PresentIndexedFramebuffer(void)
             logicalPalette[indexedFramebuffer[pixelIndex]];
     }
 
-    return SDL_UpdateTexture(
-        texture,
-        0,
-        scanoutPixels,
-        VIDEO_SCREEN_WIDTH * sizeof(uint32_t))
-        && SDL_RenderClear(renderer)
-        && SDL_RenderTexture(renderer, texture, 0, 0)
-        && SDL_RenderPresent(renderer);
+    if (!SDL_UpdateTexture(
+            texture,
+            0,
+            scanoutPixels,
+            VIDEO_SCREEN_WIDTH * sizeof(uint32_t))
+        || !SDL_RenderClear(renderer)
+        || !SDL_RenderTexture(renderer, texture, 0, 0))
+        return FALSE;
+    SaveSmokeShot();
+    return SDL_RenderPresent(renderer);
 }
 
 void Video_PresentTransientFrame(void)
@@ -796,6 +966,8 @@ static void SendMouseEvent(float windowX, float windowY)
         logicalX = VIDEO_SCREEN_WIDTH - 0x01;
     if (logicalY >= VIDEO_SCREEN_HEIGHT)
         logicalY = VIDEO_SCREEN_HEIGHT - 0x01;
+    RevengeTrace("input: mouse x=%u y=%u buttons=%u\n", (unsigned)logicalX,
+        (unsigned)logicalY, (unsigned)hostMouseButtons);
     MouseEventCallback(hostMouseButtons, (word16)logicalX, (word16)logicalY);
 }
 

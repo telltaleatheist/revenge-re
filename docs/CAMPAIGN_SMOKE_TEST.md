@@ -6,10 +6,20 @@ play testing. Neither is a claim that the complete campaign is verified.
 ## Automated smoke path
 
 Established on 2026-09-29, the smoke path runs the SDL executable against a
-private original-game installation. `REVENGE_SMOKE_INPUT` supplies delayed keys
-(`DELAY_MS:KEY`, comma-separated, each KEY a key name as the trace scripts
-write them) through the game's own keyboard handler; it does not bypass menus
-or call game procedures directly.
+private original-game installation. `REVENGE_SMOKE_INPUT` supplies delayed
+items, `DELAY_MS:ITEM` comma-separated, each delay counted from the item
+before:
+
+- a key name as the trace scripts write them (`Shift+`, `Ctrl+`, `Alt+`
+  allowed);
+- `mouse:X/Y[/B]`: the mouse moved to X,Y of the game's 320x200, with the
+  buttons B held (1 left, 2 right, 4 middle);
+- `shot:NAME`: what the window shows next, saved as NAME.bmp in the folder
+  `REVENGE_SMOKE_SHOTS` names.
+
+Keys and the mouse are pushed on SDL's event queue as the devices' own events
+and reach the game's keyboard and mouse handlers the way a real keyboard and
+mouse do; nothing bypasses a menu or calls a game procedure directly.
 
 | Check | Result |
 | --- | --- |
@@ -23,7 +33,8 @@ or call game procedures directly.
 | Confirmed title/options shutdown returns zero | Pass |
 
 The keys used by this harness include `Return`, `Escape`, `Right`, `Down` and
-`Up` (for example `REVENGE_SMOKE_INPUT=1500:Return,300:Down`). The harness is
+`Up` (for example `REVENGE_SMOKE_INPUT=1500:Return,300:Down`, or with the
+mouse `1500:mouse:40/188/1,100:mouse:40/188/0`). The harness is
 optional and is inactive unless `REVENGE_SMOKE_INPUT` is set.
 
 ## Manual acceptance
