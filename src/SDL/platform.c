@@ -375,6 +375,37 @@ static void RunClockTimer(ClockTimerId id)
 
 static void DeliverHostEvents(void);
 
+/* 2C7F:02E3: the game's shutdown, as main makes it when the game's own quit
+ * (the title's, the in-game menu's) returns. */
+void ShutdownGame(void);
+
+/* A quit the player asked of the host ends the program between the game's
+ * timer services, as an interrupt would have come, the way main ends it
+ * after the game's own quit: ShutdownGame (the music stopped, the timers
+ * and handlers given back, the screen reset), then the host's end (audio
+ * and window closed, files closed by the C runtime's exit), code 0.
+ * Nothing is saved: the game saves only when the player asks it to. Not
+ * through ShutdownAndExit (3390:0024): its exit hooks (38C6:002C-0034)
+ * are never set in the rebuild. Once: the shutdown's own waits service the
+ * clock. */
+static void QuitIfAsked(void)
+{
+    static byte quitting;
+
+    if (quitRequested == FALSE || quitting != FALSE)
+        return;
+    quitting = TRUE;
+    RevengeTrace("quit: asked; the game's shutdown\n");
+    ShutdownGame();
+    SDLBackend_TerminateProcess(0x00);
+}
+
+/* A harness script's quit item (harness.h), as the host's quit comes. */
+void Platform_RequestHarnessQuit(void)
+{
+    quitRequested = TRUE;
+}
+
 void SDLBackend_ServiceTimers(void)
 {
     uint64_t now;
@@ -409,6 +440,7 @@ void SDLBackend_ServiceTimers(void)
     /* The keyboard's and the mouse's interrupts, delivered at the same
      * passes as the timer's. */
     DeliverHostEvents();
+    QuitIfAsked();
 }
 
 void SDLBackend_SetGameClockHandler(void (*handler)(void))
@@ -946,8 +978,9 @@ static void PresentPendingVideoFrame(void)
 }
 
 /* Every event SDL has queued: keys to the game's keyboard handler, the
- * mouse's moves and buttons to its mouse handler, closing the window as
- * Escape (as the port has always taken it), the rest dropped.
+ * mouse's moves and buttons to its mouse handler, a quit (the window's
+ * close button, the system's quit, SIGTERM) asked of the game's clock
+ * (QuitIfAsked), the rest dropped.
  * Nothing under the harness, whose keys come at the game's polls. */
 /* A mouse event as the driver called the game's handler: the buttons (1
  * left, 2 right, 4 middle) and the position in the game's 320x200, from the
@@ -1006,8 +1039,6 @@ static void DeliverHostEvents(void)
         {
         case SDL_EVENT_QUIT:
             quitRequested = TRUE;
-            SendScanCode(0x01);
-            SendScanCode(0x81);
             break;
         case SDL_EVENT_KEY_DOWN:
             /* SDL's repeats are the keyboard's typematic make codes. */

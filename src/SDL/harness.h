@@ -63,6 +63,8 @@ int Harness_ParseKey(const char *token, int *scancode, byte *modifiers);
 /* From the platform layer (platform.c), for the harness. */
 /* A script's mouse item, to the game's mouse handler when it has one. */
 void Platform_SendHarnessMouse(uint16 x, uint16 y, byte buttons);
+/* A script's quit item: the host's quit, as the window's close button asks it. */
+void Platform_RequestHarnessQuit(void);
 /* The set-1 scan code the keyboard gives SDL's scancode, without E0h (as
  * tools/capture/keys.py has it); zero for a key with none. */
 uint16 Platform_ScanCodeForKey(int scancode);

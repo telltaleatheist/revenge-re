@@ -44,6 +44,7 @@ Tokens, separated by spaces, commas or new lines; `#` starts a comment.
 | `still:N` | the next item waits for N polls in a row without a battle step |
 | `mouse:X/Y[/B]` | moves the mouse to X,Y (320×200) with buttons B |
 | `@snap:NAME` | takes a snap at the next wait; names are unique in a script |
+| `quit` | the host's quit (the window's close button), at the next timer service: the game's shutdown, as after its own quit, code 0 |
 
 The game polls the keyboard on every pass while a screen animates, so a few
 polls after a key the screen is often still the old one; `idle:` lets it

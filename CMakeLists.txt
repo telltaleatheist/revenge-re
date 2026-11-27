@@ -1091,7 +1091,13 @@ if(CHR_BUILD_SDL)
             COMMAND ${Python3_EXECUTABLE} -I
                 ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/audio.py check
                 --exe $<TARGET_FILE:Revenge>)
-        set_tests_properties(trace.goldens trace.repeat trace.exe_free audio.check
+        # The host's quit at the title, in a menu and mid-battle: the game's
+        # exit, code 0, the save folder untouched.
+        add_test(NAME trace.quit
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/quit.py
+                --exe $<TARGET_FILE:Revenge>)
+        set_tests_properties(trace.goldens trace.repeat trace.exe_free audio.check trace.quit
             PROPERTIES SKIP_RETURN_CODE 77)
         # Bytes a run must hold, by the map's places, against the image.
         add_test(NAME map.dump_checks

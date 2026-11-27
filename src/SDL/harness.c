@@ -26,6 +26,7 @@ enum
 	ITEM_KEY,
 	ITEM_SNAP,
 	ITEM_MOUSE,
+	ITEM_QUIT,
 	POLLS_PER_WAIT = 4,
 	NAME_CAPACITY = 48,
 	PATH_CAPACITY = 1024,
@@ -197,6 +198,8 @@ static void ReadScript(const char *path)
 			item.kind = ITEM_SNAP;
 			memcpy(item.name, token + 6, strlen(token + 6) + 1);
 		}
+		else if (strcmp(token, "quit") == 0)
+			item.kind = ITEM_QUIT;
 		else if (strncmp(token, "mouse:", 6) == 0)
 		{
 			unsigned x, y, buttons = 0;
@@ -510,6 +513,12 @@ int Harness_KeyPending(void)
 			return 0;
 		}
 		++itemIndex;
+		if (item->kind == ITEM_QUIT)
+		{
+			ItemTaken();
+			Platform_RequestHarnessQuit();
+			return 0;
+		}
 		Platform_SendHarnessMouse(item->x, item->y, item->buttons);
 	}
 	if (pollsSinceItem >= POLLS_PER_WAIT)
