@@ -13,7 +13,13 @@
 # id                                    object                           SEG:OFF   bytes
 
 header revenge/combat_data.h
-header revenge/original_data.h
+header Data/HitLocationData.h
+header Data/RuntimeData.h
+header Data/TacticalData.h
+header Data/TacticalGraphicsData.h
+header Data/TacticalTables.h
+header Data/TextIOData.h
+header revenge/tactical_panel_data.h
 header revenge/original/lance_editor_data.h
 header revenge/original/campaign_data.h
 header revenge/original/audio_data.h
