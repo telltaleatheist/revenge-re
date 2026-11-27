@@ -16,24 +16,24 @@ int16_t NormalizeNavigationKeyCode(int16_t keyCode)
     case -0x00F4:
     case 0x000C:
         return TranslatedExtendedKey(KEY_RIGHT);
-    case -0x0051:
+    case TranslatedExtendedKey(KEY_PAGE_DOWN):
         return TranslatedExtendedKey(KEY_PAGE_DOWN);
-    case -0x0050:
+    case TranslatedExtendedKey(KEY_DOWN):
     case 0x0060:
         return TranslatedExtendedKey(KEY_DOWN);
-    case -0x004F:
+    case TranslatedExtendedKey(KEY_END):
         return TranslatedExtendedKey(KEY_END);
-    case -0x004D:
+    case TranslatedExtendedKey(KEY_RIGHT):
         return TranslatedExtendedKey(KEY_RIGHT);
-    case -0x004B:
+    case TranslatedExtendedKey(KEY_LEFT):
     case 0x007C:
         return TranslatedExtendedKey(KEY_LEFT);
-    case -0x0049:
+    case TranslatedExtendedKey(KEY_PAGE_UP):
         return TranslatedExtendedKey(KEY_PAGE_UP);
-    case -0x0048:
+    case TranslatedExtendedKey(KEY_UP):
     case 0x007E:
         return TranslatedExtendedKey(KEY_UP);
-    case -0x0047:
+    case TranslatedExtendedKey(KEY_HOME):
     case 0x005C:
         return TranslatedExtendedKey(KEY_HOME);
     }

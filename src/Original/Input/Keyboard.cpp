@@ -26,6 +26,7 @@ enum
     KEY_MODIFIER_ALT = 0x04,
     KEY_MODIFIER_ANY_MASK = 0x07,
     KEY_CTRL_OUTPUT_MASK = 0x1F,
+    KEYBOARD_LOCK_CAPS = 0x01,
     KEYBOARD_LOCK_NUM = 0x02,
     KEYBOARD_MODE_FORCE_EXTENDED_TABLE = 0x0200,
     KEY_SCAN_F1 = 0x70,
@@ -37,6 +38,15 @@ enum
     BIOS_SHIFT_FLAGS = 0x0017,
     BIOS_EXTENDED_SHIFT_FLAGS = 0x0018,
     BIOS_KEYBOARD_STATUS = 0x0096,
+    /* BIOS_SHIFT_FLAGS' bits (0040:0017) */
+    BIOS_SHIFT_LEFT_SHIFT = 0x02,
+    BIOS_SHIFT_NUM_LOCK = 0x20,
+    BIOS_SHIFT_CAPS_LOCK = 0x40,
+    /* BIOS_KEYBOARD_STATUS' bits (0040:0096): the last code an E0h prefix,
+     * right Ctrl and right Alt held */
+    BIOS_STATUS_EXTENDED_PREFIX = 0x02,
+    BIOS_STATUS_RIGHT_CTRL = 0x04,
+    BIOS_STATUS_RIGHT_ALT = 0x08,
     SCAN_PAUSE_PREFIX = 0xE1,
     SCAN_EXTENDED_PREFIX = 0xE0,
     SCAN_BREAK_FLAG = 0x80,
@@ -199,11 +209,11 @@ void KeyboardInterruptHandler(uint8_t scanCode)
     uint16_t nextWriteOffset;
     uint16_t index;
 
-    Keyboard.modeFlags &= ~(uint16_t) 0x0003;
+    Keyboard.modeFlags &= ~(uint16_t) (KEYBOARD_LOCK_CAPS | KEYBOARD_LOCK_NUM);
     shiftFlags = SDLBackend_ReadBiosKeyboardFlags(BIOS_SHIFT_FLAGS);
-    if ((shiftFlags & 0x40) != 0x00)
-        Keyboard.modeFlags |= 0x0001;
-    if ((shiftFlags & 0x20) != 0x00)
+    if ((shiftFlags & BIOS_SHIFT_CAPS_LOCK) != 0x00)
+        Keyboard.modeFlags |= KEYBOARD_LOCK_CAPS;
+    if ((shiftFlags & BIOS_SHIFT_NUM_LOCK) != 0x00)
         Keyboard.modeFlags |= KEYBOARD_LOCK_NUM;
     Keyboard.translationMode = StartupInputMode;
     mode = Keyboard.translationMode;
@@ -300,7 +310,7 @@ void KeyboardInterruptHandler(uint8_t scanCode)
     {
         uint16_t narrationMode = NarrationMode + 0x0001;
 
-        if (narrationMode > 0x0002)
+        if (narrationMode >= NARRATION_MODE_COUNT)
             narrationMode = 0x0000;
         NarrationMode = narrationMode;
     }
@@ -402,22 +412,22 @@ void InstallKeyboardHandlers(void)
     uint8_t flags = SDLBackend_ReadBiosKeyboardFlags(BIOS_SHIFT_FLAGS);
     uint8_t heldModifiers;
 
-    if ((flags & 0x40) != 0x00)
-        Keyboard.modeFlags |= 0x0001;
-    if ((flags & 0x20) != 0x00)
+    if ((flags & BIOS_SHIFT_CAPS_LOCK) != 0x00)
+        Keyboard.modeFlags |= KEYBOARD_LOCK_CAPS;
+    if ((flags & BIOS_SHIFT_NUM_LOCK) != 0x00)
         Keyboard.modeFlags |= KEYBOARD_LOCK_NUM;
-    if ((flags & 0x02) != 0x00)
+    if ((flags & BIOS_SHIFT_LEFT_SHIFT) != 0x00)
         KeyDownBits[0x05] |= 0x10;
     heldModifiers = (uint8_t) ((flags & 0x01) << 0x01);
     flags = SDLBackend_ReadBiosKeyboardFlags(BIOS_EXTENDED_SHIFT_FLAGS);
     heldModifiers |= (uint8_t) ((flags << 0x02) & 0x0C);
     flags = SDLBackend_ReadBiosKeyboardFlags(BIOS_KEYBOARD_STATUS);
-    if ((flags & 0x08) != 0x00)
+    if ((flags & BIOS_STATUS_RIGHT_ALT) != 0x00)
         heldModifiers |= 0x40;
     KeyDownBits[0x07] = heldModifiers;
-    if ((flags & 0x04) != 0x00)
+    if ((flags & BIOS_STATUS_RIGHT_CTRL) != 0x00)
         KeyDownBits[0x08] |= 0x01;
-    if ((flags & 0x02) != 0x00)
+    if ((flags & BIOS_STATUS_EXTENDED_PREFIX) != 0x00)
         ExtendedPrefixPending = 0x01;
     if ((flags & 0x01) != 0x00)
         PausePrefixRemaining = 0x02;

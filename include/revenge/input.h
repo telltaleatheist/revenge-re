@@ -40,7 +40,7 @@ inline constexpr int MOUSE_BUTTON_LEFT = 0x01;
 inline constexpr int MOUSE_BUTTON_RIGHT = 0x02;
 inline constexpr int MOUSE_BUTTON_MIDDLE = 0x04;
 
-static inline int16_t TranslatedExtendedKey(uint8_t keyCode)
+constexpr int16_t TranslatedExtendedKey(uint8_t keyCode)
 {
     return (int16_t) (int8_t) keyCode;
 }

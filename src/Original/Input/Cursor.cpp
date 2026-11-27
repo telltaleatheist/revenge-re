@@ -7,6 +7,9 @@
 #include "revenge/platform_backend.h"
 #include "revenge/video.h"
 
+/* The cursor's backing covers three tiles each way. */
+constexpr int MOUSE_CURSOR_TILE_SPAN = 0x03;
+
 /* 0800:3772-37FD: the handler the game gives the mouse driver (INT 33h
  * AX=0Ch, every event: 1Fh), called with the buttons in BX and the position
  * in CX and DX. Host: SDL's mouse events arrive here as the driver called it
@@ -95,23 +98,23 @@ void HideMouseCursorOverlayUnlocked(void)
         cursorLeft = MouseCursorDisplayedX - MouseCursorHotspotX;
         cursorTop = MouseCursorDisplayedY - MouseCursorHotspotY;
         tileLeft = cursorLeft >> 0x03;
-        if (tileLeft > -0x03 && tileLeft < VIDEO_SCREEN_8PX_COLUMN_COUNT)
+        if (tileLeft > -MOUSE_CURSOR_TILE_SPAN && tileLeft < VIDEO_SCREEN_8PX_COLUMN_COUNT)
         {
             MouseCursorRestoreTileLeft = tileLeft;
-            MouseCursorRestoreTileRight = tileLeft + 0x03;
+            MouseCursorRestoreTileRight = tileLeft + MOUSE_CURSOR_TILE_SPAN;
             if (MouseCursorRestoreTileLeft < 0x0000)
                 MouseCursorRestoreTileLeft = 0x0000;
             if (MouseCursorRestoreTileRight > VIDEO_SCREEN_8PX_COLUMN_COUNT)
                 MouseCursorRestoreTileRight = VIDEO_SCREEN_8PX_COLUMN_COUNT;
             tileTop = cursorTop >> 0x03;
-            if (tileTop > -0x03 && tileTop < VIDEO_SCREEN_HEIGHT / 0x0008)
+            if (tileTop > -MOUSE_CURSOR_TILE_SPAN && tileTop < VIDEO_SCREEN_HEIGHT / TILE_PIXEL_SIZE)
             {
                 MouseCursorRestoreTileTop = tileTop;
-                MouseCursorRestoreTileBottom = tileTop + 0x03;
+                MouseCursorRestoreTileBottom = tileTop + MOUSE_CURSOR_TILE_SPAN;
                 if (MouseCursorRestoreTileTop < 0x0000)
                     MouseCursorRestoreTileTop = 0x0000;
-                if (MouseCursorRestoreTileBottom > VIDEO_SCREEN_HEIGHT / 0x0008)
-                    MouseCursorRestoreTileBottom = VIDEO_SCREEN_HEIGHT / 0x0008;
+                if (MouseCursorRestoreTileBottom > VIDEO_SCREEN_HEIGHT / TILE_PIXEL_SIZE)
+                    MouseCursorRestoreTileBottom = VIDEO_SCREEN_HEIGHT / TILE_PIXEL_SIZE;
                 CopyBufferToVideoRegion(
                     MouseCursorRestoreTileLeft,
                     (uint16_t) MouseCursorRestoreTileTop,
@@ -209,23 +212,23 @@ void ShowMouseCursorOverlayUnlocked(void)
     MouseCursorDrawLeft = drawLeft;
     MouseCursorDrawTop = drawTop;
     tileLeft = drawLeft >> 0x03;
-    if (tileLeft <= -0x03 || tileLeft >= VIDEO_SCREEN_8PX_COLUMN_COUNT)
+    if (tileLeft <= -MOUSE_CURSOR_TILE_SPAN || tileLeft >= VIDEO_SCREEN_8PX_COLUMN_COUNT)
         return;
     MouseCursorCaptureTileLeft = tileLeft;
-    MouseCursorCaptureTileRight = tileLeft + 0x03;
+    MouseCursorCaptureTileRight = tileLeft + MOUSE_CURSOR_TILE_SPAN;
     if (MouseCursorCaptureTileLeft < 0x0000)
         MouseCursorCaptureTileLeft = 0x0000;
     if (MouseCursorCaptureTileRight > VIDEO_SCREEN_8PX_COLUMN_COUNT)
         MouseCursorCaptureTileRight = VIDEO_SCREEN_8PX_COLUMN_COUNT;
     tileTop = drawTop >> 0x03;
-    if (tileTop <= -0x03 || tileTop >= VIDEO_SCREEN_HEIGHT / 0x0008)
+    if (tileTop <= -MOUSE_CURSOR_TILE_SPAN || tileTop >= VIDEO_SCREEN_HEIGHT / TILE_PIXEL_SIZE)
         return;
     MouseCursorCaptureTileTop = tileTop;
-    MouseCursorCaptureTileBottom = tileTop + 0x03;
+    MouseCursorCaptureTileBottom = tileTop + MOUSE_CURSOR_TILE_SPAN;
     if (MouseCursorCaptureTileTop < 0x0000)
         MouseCursorCaptureTileTop = 0x0000;
-    if (MouseCursorCaptureTileBottom > VIDEO_SCREEN_HEIGHT / 0x0008)
-        MouseCursorCaptureTileBottom = VIDEO_SCREEN_HEIGHT / 0x0008;
+    if (MouseCursorCaptureTileBottom > VIDEO_SCREEN_HEIGHT / TILE_PIXEL_SIZE)
+        MouseCursorCaptureTileBottom = VIDEO_SCREEN_HEIGHT / TILE_PIXEL_SIZE;
     CopyVideoRegionToBuffer(
         MouseCursorCaptureTileLeft,
         (uint16_t) MouseCursorCaptureTileTop,
