@@ -29,6 +29,7 @@ static byte currentVideoMode = 0x03;
 static uint16 currentVideoAdapter = VIDEO_ADAPTER_EGA;
 static uint64_t nextSpeakerEffectTick;
 static uint64_t nextMIDIServiceTick;
+static uint64_t nextMIDIDriverTick;
 static uint64_t nextGameClockTick;
 static uint64_t nextDigitalPlaybackTick;
 static uint64_t nextVideoPresentTick;
@@ -111,6 +112,10 @@ void SDLBackend_ServiceTimers(void)
         UINT64_C(60000000000) / 0x4440;
     const uint64_t midiServicePeriod =
         UINT64_C(60000000000) / 0x1110;
+    /* With a music driver, the music timer ran the driver's own service on
+     * every IRQ0, the PIT at 1193182 / 400h Hz (30B2:0010, 30B2:02D9). */
+    const uint64_t midiDriverPeriod =
+        UINT64_C(1000000000) * 0x400 / 0x1234DE;
     const uint64_t gameClockPeriod =
         UINT64_C(1000000000) * 0x10000 / 0x1234DE;
     uint64_t now;
@@ -145,6 +150,12 @@ void SDLBackend_ServiceTimers(void)
     {
         DecodePCSpeakerEffectTick();
         nextSpeakerEffectTick += speakerEffectPeriod;
+    }
+    while (nextMIDIDriverTick <= now)
+    {
+        if (Seg426B.MusicDriverMode != 0x00)
+            ServiceActiveMIDIDriver();
+        nextMIDIDriverTick += midiDriverPeriod;
     }
     while (nextMIDIServiceTick <= now)
     {
@@ -379,6 +390,7 @@ int SDLBackend_Open(void)
     memset(indexedFramebuffer, 0, sizeof(indexedFramebuffer));
     nextSpeakerEffectTick = HostClock_NowNS();
     nextMIDIServiceTick = nextSpeakerEffectTick;
+    nextMIDIDriverTick = nextSpeakerEffectTick;
     nextGameClockTick = nextSpeakerEffectTick;
     nextDigitalPlaybackTick = 0x0000000000000000ULL;
     previousMouseButtons = 0x00;

@@ -1,12 +1,12 @@
-{"digest": "54d4aca67c48e079", "kinds": {"midi --": 3, "midi 80": 1742, "midi 90": 1754, "midi B0": 71, "midi C0": 60, "midi E0": 29, "midi F7": 3, "midi reset": 4, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 160, "tone": 8, "tone-effect": 6}, "lines": 3845, "snap": "battle"}
+{"digest": "ce5fb6450401964e", "kinds": {"midi --": 3, "midi 80": 1742, "midi 90": 1754, "midi B0": 71, "midi C0": 60, "midi E0": 29, "midi F7": 3, "midi reset": 4, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 160, "tone": 168, "tone-effect": 6}, "lines": 4005, "snap": "battle"}
 {"digest": "f6823aa1fc0e2e4f", "kinds": {"snap": 1}, "lines": 1, "snap": "route"}
 {"digest": "7c29011bd694ddd2", "kinds": {"snap": 1, "tone-effect": 6}, "lines": 7, "snap": "contact"}
 {"digest": "259d2d11f2ae72d8", "kinds": {"snap": 1, "tone-effect": 9}, "lines": 10, "snap": "won"}
-{"digest": "074808502cc06774", "kinds": {"midi --": 2, "midi 80": 67, "midi 90": 73, "midi B0": 7, "midi C0": 15, "midi E0": 11, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 53, "tone": 1}, "lines": 232, "snap": "story"}
-{"digest": "42c4f5991111a7af", "kinds": {"midi 80": 34, "midi 90": 31, "midi C0": 2, "snap": 1}, "lines": 68, "snap": "menu"}
-{"digest": "e771680400851fe9", "kinds": {"midi 80": 5, "midi 90": 5, "midi C0": 1, "snap": 1}, "lines": 12, "snap": "slots"}
-{"digest": "9af80f38bca9a872", "kinds": {"midi --": 1, "midi 80": 8, "midi 90": 10, "midi B0": 23, "midi C0": 8, "midi E0": 8, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 52, "tone": 2}, "lines": 115, "snap": "saved"}
-{"digest": "c5370562117b2fe1", "kinds": {"midi 80": 57, "midi 90": 60, "midi B0": 16, "midi C0": 1, "pcm done": 4, "pcm speech": 4, "snap": 1, "tone": 1}, "lines": 144, "snap": "second"}
+{"digest": "68b5eea6a50a407d", "kinds": {"midi --": 2, "midi 80": 67, "midi 90": 73, "midi B0": 7, "midi C0": 15, "midi E0": 11, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 53, "tone": 22}, "lines": 253, "snap": "story"}
+{"digest": "7615c7e044410563", "kinds": {"midi 80": 34, "midi 90": 31, "midi C0": 2, "snap": 1, "tone": 9}, "lines": 77, "snap": "menu"}
+{"digest": "b8d71c33c2759837", "kinds": {"midi 80": 5, "midi 90": 5, "midi C0": 1, "snap": 1, "tone": 1}, "lines": 13, "snap": "slots"}
+{"digest": "d9212affd073236f", "kinds": {"midi --": 1, "midi 80": 8, "midi 90": 10, "midi B0": 23, "midi C0": 8, "midi E0": 8, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 52, "tone": 7}, "lines": 120, "snap": "saved"}
+{"digest": "a5f779af26e3bd64", "kinds": {"midi 80": 57, "midi 90": 60, "midi B0": 16, "midi C0": 1, "pcm done": 4, "pcm speech": 4, "snap": 1, "tone": 11}, "lines": 154, "snap": "second"}
 {"digest": "15d328ff6cf503fb", "kinds": {"snap": 1}, "lines": 1, "snap": "in_game"}
 {"digest": "de6c6603d62ec3b1", "kinds": {"snap": 1}, "lines": 1, "snap": "load"}
-{"digest": "a9fef8bbf034a333", "kinds": {"midi --": 1, "midi 90": 2, "midi B0": 7, "midi C0": 8, "midi E0": 8, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 52, "tone": 1}, "lines": 82, "snap": "loaded"}
+{"digest": "94b6253caf4d26a5", "kinds": {"midi --": 1, "midi 90": 2, "midi B0": 7, "midi C0": 8, "midi E0": 8, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 52, "tone": 2}, "lines": 83, "snap": "loaded"}
