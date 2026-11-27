@@ -10,7 +10,7 @@ extern "C"
     __attribute__((used))
 #endif
     const char chr_version_tag[] = CHR_STAMP CHR_RELEASE_TAG;
-const char* chr::setup::build_tag() { return chr_version_tag + sizeof(CHR_STAMP) - 1; }
+const char *chr::setup::build_tag() { return chr_version_tag + sizeof(CHR_STAMP) - 1; }
 #else
-const char* chr::setup::build_tag() { return ""; }
+const char *chr::setup::build_tag() { return ""; }
 #endif
