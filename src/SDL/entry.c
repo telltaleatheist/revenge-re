@@ -39,11 +39,16 @@ int main(int argc, char **argv)
 	}
 	if (!SDLHost_ConfigureAssetDirectory())
 		return 0x01;
-	/* The game's own text and data come from the player's copy. */
-	if (!OriginalImport_Load(GamePaths_Executable()))
+	/* The game's own text and data: the story file in our write folder,
+	 * taken from the player's copy the first time (or when it is outdated).
+	 * Without a write folder, from the copy each time. */
+	if (GamePaths_WriteDirectory() == NULL &&
+		!OriginalImport_Load(GamePaths_Executable()))
 		return 0x01;
-	/* Its text, from the story file in our write folder. */
-	StoryHost_Prepare(GamePaths_Executable(), GamePaths_WriteDirectory());
+	if (!StoryHost_Prepare(GamePaths_Executable(), GamePaths_WriteDirectory()))
+		return 0x01;
+	/* Nothing reads the copy from here on. */
+	OriginalImport_Release();
 	/* The rules, ours, from the data folder beside the program. */
 	Rules_Load(GamePaths_DataDirectory());
 	RevengeInstallCrashDiagnostics();

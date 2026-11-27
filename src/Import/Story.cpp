@@ -175,6 +175,20 @@ std::string story_table_hash(const OriginalEdition& edition) {
     return sha256_hex(all);
 }
 
+const OriginalEdition* story_edition(const fs::path& write_dir) {
+    std::error_code ec;
+    if (!fs::exists(manifest_path(write_dir), ec)) return nullptr;
+    try {
+        const auto manifest = parse_json(read_file(manifest_path(write_dir)));
+        const auto* name = manifest.find("edition");
+        if (!name || !name->is_string()) return nullptr;
+        for (std::size_t index = 0; index < OriginalEditionCount; ++index)
+            if (name->string() == OriginalEditions[index].name) return &OriginalEditions[index];
+    } catch (const std::exception&) {
+    }
+    return nullptr;
+}
+
 StoryState story_state(const fs::path& write_dir, const OriginalEdition& edition) {
     std::error_code ec;
     if (!fs::exists(manifest_path(write_dir), ec) || !fs::exists(text_path(write_dir), ec))

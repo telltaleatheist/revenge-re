@@ -51,7 +51,7 @@ static void RemoveIfThere(const char *directory, const char *name)
 	(void) SDL_RemovePath(path);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
 	char install[1024];
 	char path[1024];
@@ -76,6 +76,14 @@ int main(void)
 	WriteFile(path, "keep");
 	assert(SDL_setenv_unsafe("REVENGE_SAVE_DIRECTORY", saves, 1) == 0);
 	assert(CHANGE_DIRECTORY(install) == 0);
+
+	/* Play opens no program file, in any case: asking for one stops the
+	 * game with a fault, and a run that gets past it fails. */
+	if (argc > 1 && strcmp(argv[1], "program_file") == 0)
+	{
+		(void) DOS_OpenFile("a:\\REVENGE.exe", 0x8000);
+		return 1;
+	}
 
 	/* A read finds the install's file in any case. */
 	handle = DOS_OpenFile("MIXED.DAT", 0x8000);

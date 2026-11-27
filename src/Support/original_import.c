@@ -377,6 +377,15 @@ int OriginalImport_IsLoaded(void)
 	return originalImportLoaded;
 }
 
+void OriginalImport_Release(void)
+{
+	memset(OriginalImage, 0, sizeof(OriginalImage));
+	free(originalHeader);
+	originalHeader = NULL;
+	originalHeaderBytes = originalFileBytes = originalImageBytes = 0;
+	originalImageAccepted = 0;
+}
+
 const OriginalEdition *OriginalImport_Edition(void)
 {
 	return loadedEdition;

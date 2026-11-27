@@ -2,6 +2,8 @@
  * (game_paths.h). */
 #include "game_paths.h"
 
+#include "revenge/debug.h"
+
 #include <SDL3/SDL.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -160,6 +162,14 @@ static int MakeParents(const char *path)
 	return SDL_CreateDirectory(parent) ? 0 : -EIO;
 }
 
+/* A name whose extension is EXE, in any case. */
+static int IsProgramFile(const char *name)
+{
+	size_t length = strlen(name);
+
+	return length >= 4 && name[length - 4] == '.' && SDL_strcasecmp(&name[length - 3], "EXE") == 0;
+}
+
 int GamePaths_Resolve(const char *dosPath, GamePathUse use, char *out, size_t capacity)
 {
 	char name[GAME_PATH_CAPACITY];
@@ -172,6 +182,10 @@ int GamePaths_Resolve(const char *dosPath, GamePathUse use, char *out, size_t ca
 	result = NormaliseName(dosPath, name, sizeof(name));
 	if (result != 0)
 		return result;
+	/* Play opens no program file: the player's copy is read once, by the
+	 * story's import (revenge/story.h), and never through the game. */
+	if (IsProgramFile(name))
+		RevengeFault("play opens no program file, and the game asked for %s", dosPath);
 	if (saves == NULL)
 	{
 		/* No folder of our own: reads still work, writes don't. */

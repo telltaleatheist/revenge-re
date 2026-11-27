@@ -39,16 +39,21 @@ void place_file(const std::filesystem::path& write_dir) {
 
 }  // namespace
 
-extern "C" void StoryHost_Prepare(const char* executablePath, const char* writeDirectory) {
-    const OriginalEdition* edition = OriginalImport_Edition();
-    if (edition == nullptr) RevengeFault("the story is taken from an accepted copy, and none is loaded");
+extern "C" int StoryHost_Prepare(const char* executablePath, const char* writeDirectory) {
     try {
         if (writeDirectory == nullptr) {
+            const OriginalEdition* edition = OriginalImport_Edition();
+            if (edition == nullptr) RevengeFault("the story is taken from an accepted copy, and none is loaded");
             place_all(revenge::import::import_texts(*edition));
             place_pieces(revenge::import::import_pieces(*edition));
         } else {
             const std::filesystem::path write_dir(writeDirectory);
-            if (revenge::import::story_state(write_dir, *edition) != revenge::import::StoryState::Current) {
+            // A current story file stands for the copy: the copy isn't opened.
+            const OriginalEdition* edition = revenge::import::story_edition(write_dir);
+            if (edition == nullptr ||
+                revenge::import::story_state(write_dir, *edition) != revenge::import::StoryState::Current) {
+                if (!OriginalImport_Load(executablePath)) return 0;
+                edition = OriginalImport_Edition();
                 revenge::import::write_story(write_dir, *edition, revenge::import::import_texts(*edition),
                                              revenge::import::import_pieces(*edition), executablePath);
                 std::fprintf(stderr, "imported the story file into %s\n",
@@ -61,4 +66,5 @@ extern "C" void StoryHost_Prepare(const char* executablePath, const char* writeD
         RevengeFault("the story: %s", e.what());
     }
     StoryText_FillTargets();
+    return 1;
 }

@@ -133,17 +133,19 @@ graphics driver; `SDL_RENDER_DRIVER=software` chooses it from the start.
 ## Preservation model
 
 This tree carries none of the original game's text, art or sound: the program
-reads them from the player's own `REVENGE.EXE` and game files at start. The
-text, and the media and data the program keeps with it (the sounds, the
-palette and the text's digram tables; the setup's device records and two small
-tables), are taken from the copy once, into `story/` in the player's folder
+reads them from the player's own game files. The text, and the media and data
+the program keeps with it (the sounds, the palette and the text's digram
+tables; the setup's device records and two small tables), are taken from the
+player's `REVENGE.EXE` once, into `story/` in the player's folder
 (`text.json`, `media/<id>.bin`, `data/<id>.bin`, and `import.json` saying what
 they were taken from, with each file's length and SHA-256), and read from
 there; they are taken again when that folder is missing or from an older
-version. The rules, the screens' layout and a new campaign's starting state
-are the program's own numbers, the original's to begin with: `data/rules`,
-`data/ui` and `data/start`, read at start
-(`src/Rules/Rules.h` has the files' shapes), and checked by the tests against
+version. That import is the only time the program reads the copy: play reads
+the story folder and the game's other files, and asking for any `.EXE` stops
+it with a fault. The rules, the screens' layout and a new campaign's starting
+state are the program's own numbers, the original's to begin with:
+`data/rules`, `data/ui` and `data/start`, read at start (`src/Rules/Rules.h`
+has the files' shapes), and checked by the tests against
 the original's bytes by keyed hash, never holding them. The
 title artwork and screenshots of the upstream port (`docs/images`, which
 `NOTICE.md` and `LICENSES/README.md` still mention) are left out.

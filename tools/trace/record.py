@@ -62,11 +62,15 @@ def tokens_by_snap(script):
     return groups
 
 
-def run(exe, game, script, work, step_us=None):
-    """Runs the port; returns (exit code, the run's output)."""
+def run(exe, game, script, work, step_us=None, story=None):
+    """Runs the port; returns (exit code, the run's output). With story, a
+    story folder (an earlier run's saves/story) is put in the save folder
+    first, so the run finds its story already imported."""
     if os.path.isdir(work):
         shutil.rmtree(work)
     os.makedirs(os.path.join(work, "saves"))
+    if story:
+        shutil.copytree(story, os.path.join(work, "saves", "story"))
     wanted = start_save(script)
     if wanted:
         if wanted[1] is None:

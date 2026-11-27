@@ -49,13 +49,16 @@ void StoryText_Place(StoryTextId id, const char *text, size_t length);
 /* Once every text is placed: the tables and arrays get theirs. */
 void StoryText_FillTargets(void);
 
-/* Puts every text in place (src/Import/StoryHost.cpp): from the story file
- * in writeDirectory (our write folder), imported first from the copy
- * OriginalImport_Load accepted, executablePath, when it is missing or
- * outdated; with no write folder (NULL), from the copy alone. A text that
- * isn't the edition table's by its length or keyed hash, and a story file
- * that can't be read, stop the game with a fault naming what. */
-void StoryHost_Prepare(const char *executablePath, const char *writeDirectory);
+/* Puts every text and stored piece in place (src/Import/StoryHost.cpp):
+ * from the story file in writeDirectory (our write folder) when it is current
+ * for the edition its import.json names, without opening the copy at all;
+ * otherwise from executablePath, which OriginalImport_Load must accept, the
+ * story file being written first. With no write folder (NULL), from the copy
+ * OriginalImport_Load already accepted. Returns 0 when the copy is needed and
+ * isn't accepted (OriginalImport_Load has said why), 1 otherwise. A text or
+ * piece that isn't the edition table's by its length or keyed hash, and a
+ * story file that can't be read, stop the game with a fault naming what. */
+int StoryHost_Prepare(const char *executablePath, const char *writeDirectory);
 
 #ifdef __cplusplus
 }

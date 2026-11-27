@@ -127,6 +127,10 @@ const OriginalEdition *OriginalImport_Identify(const char *executablePath, const
  * image's size and its relocations, each the image offset of a segment word
  * DOS adds the load segment to (0 and none otherwise). */
 const OriginalEdition *OriginalImport_Edition(void);
+
+/* Forgets the copy's image (zeroed) once the story is prepared, so nothing
+ * in play can read it; the edition stays known. */
+void OriginalImport_Release(void);
 const OriginalVariant *OriginalImport_Variant(void);
 size_t OriginalImport_ImageBytes(void);
 size_t OriginalImport_RelocationCount(void);

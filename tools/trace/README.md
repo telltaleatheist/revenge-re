@@ -123,6 +123,9 @@ tools/trace/check.py --traces DIR
 # The same script twice, byte for byte
 tools/trace/repeat.py --exe BUILD/Revenge --game GAME_DIR --script tools/trace/scripts/tactical.keys
 
+# Every golden with the story imported and no program file in the game folder
+tools/trace/exe_free.py --exe BUILD/Revenge --game GAME_DIR
+
 # A run's snaps as PNGs, outside the repo
 tools/trace/frames.py RUN_DIR OUT_DIR [--scale N]
 
@@ -132,8 +135,11 @@ tools/trace/diff.py --port DIR --original DIR [--frames PORT_FRAMES ORIGINAL_FRA
 
 `check.py` names, for each snap, the first state line that differs (both
 sides), the frame, the palette and the save block. ctest runs it as
-`trace.goldens` and runs `repeat.py` on the battle as `trace.repeat`; both
-read the game folder from `REVENGE_GAME` and skip without one.
+`trace.goldens`, runs `repeat.py` on the battle as `trace.repeat`, and runs
+`exe_free.py` as `trace.exe_free`: one run imports the story, then every
+script plays from a folder of links to the game's files, its `.EXE` files left
+out, and must match its golden without importing again. All three read the
+game folder from `REVENGE_GAME` and skip without one.
 
 `old_save` starts from a save the original wrote (its `# start-save:` line):
 the 1e save_load run's SAVEGAME.DAT, kept outside the repo, named by

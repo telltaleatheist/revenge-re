@@ -906,7 +906,13 @@ if(CHR_BUILD_SDL)
                 ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/repeat.py
                 --exe $<TARGET_FILE:Revenge>
                 --script ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/scripts/tactical.keys)
-        set_tests_properties(trace.goldens trace.repeat PROPERTIES SKIP_RETURN_CODE 77)
+        # Every script again with the program file out of the game folder and
+        # the story already imported: play reads nothing from the copy.
+        add_test(NAME trace.exe_free
+            COMMAND ${Python3_EXECUTABLE} -I
+                ${CMAKE_CURRENT_SOURCE_DIR}/tools/trace/exe_free.py
+                --exe $<TARGET_FILE:Revenge>)
+        set_tests_properties(trace.goldens trace.repeat trace.exe_free PROPERTIES SKIP_RETURN_CODE 77)
         # Bytes a run must hold, by the map's places, against the image.
         add_test(NAME map.dump_checks
             COMMAND ${Python3_EXECUTABLE} -I
@@ -939,8 +945,7 @@ if(CHR_BUILD_SDL)
     if(BUILD_TESTING)
         add_executable(test_sdl_dos_errors tests/test_sdl_dos_errors.c)
         target_link_libraries(test_sdl_dos_errors PRIVATE
-            chr_original_dos
-            chr_sdl_backend)
+            ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_sdl_dos_errors)
         add_test(NAME platform.sdl_dos_error_state
             COMMAND test_sdl_dos_errors)
@@ -960,6 +965,12 @@ if(CHR_BUILD_SDL)
             ${CHR_RUNTIME_WITH_BACKEND})
         chr_strict(test_sdl_game_paths)
         add_test(NAME platform.sdl_game_paths COMMAND test_sdl_game_paths)
+        # Play opens no program file: asking for one stops the game.
+        add_test(NAME platform.sdl_no_program_file
+            COMMAND test_sdl_game_paths program_file)
+        set_tests_properties(platform.sdl_no_program_file PROPERTIES
+            PASS_REGULAR_EXPRESSION
+            "fault: play opens no program file, and the game asked for a:.REVENGE.exe")
 
         # The player's settings file, made once from the install's MEDIA.CFG.
         add_executable(test_settings tests/test_settings.c)

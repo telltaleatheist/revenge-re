@@ -70,6 +70,10 @@ std::vector<StoredPiece> import_pieces(const OriginalEdition& edition);
 // and the stored pieces'): a story file made under another table is outdated.
 std::string story_table_hash(const OriginalEdition& edition);
 
+// The edition the story file's import.json names, among OriginalEditions;
+// nullptr when there is no such file or it names none of them.
+const OriginalEdition* story_edition(const std::filesystem::path& write_dir);
+
 enum class StoryState { Current, Missing, Outdated };
 StoryState story_state(const std::filesystem::path& write_dir, const OriginalEdition& edition);
 
