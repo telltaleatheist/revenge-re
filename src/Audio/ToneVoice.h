@@ -1,13 +1,15 @@
 #pragma once
 
-namespace revenge::audio {
+namespace revenge::audio
+{
 
 // One pitch at a time, as the speaker plays: a square wave made of its odd
 // harmonics up to the 31st, none at or above the output's Nyquist frequency,
 // so it never aliases (a tone above it is silent). It takes frequencies,
 // never ports.
-class ToneVoice {
-public:
+class ToneVoice
+{
+  public:
     void reset();
     // Plays frequency Hz from now: a new tone starts at the wave's start, a
     // change of pitch while playing keeps its place. 0 is silence.
@@ -18,7 +20,7 @@ public:
     // moved on by them.
     double mean(double seconds);
 
-private:
+  private:
     double frequency_ = 0;
     double phase_ = 0;  // the place in the wave, in its cycles: 0 to 1
 };

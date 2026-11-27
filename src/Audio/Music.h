@@ -8,7 +8,8 @@
 
 struct tsf;
 
-namespace revenge::audio {
+namespace revenge::audio
+{
 
 // The instrument table (data/music/instruments.json): which General MIDI
 // program plays each MT-32 timbre the songs choose, and which General MIDI
@@ -24,7 +25,8 @@ namespace revenge::audio {
 //                      starts, before the songs change it
 //
 // "mt32" and "note" are words for the reader, and skipped.
-struct InstrumentTable {
+struct InstrumentTable
+{
     static constexpr int kNone = -1;
     float gainDb = 0;
     int fallbackProgram = 0;
@@ -46,22 +48,23 @@ InstrumentTable ParseInstrumentTable(std::string_view json);
 // the table that timbre's program; the patch's key shift and bender range
 // apply. Channels the MT-32 doesn't hear are skipped. One thread; not an
 // emulation of the MT-32's sound, only of what it is told.
-class Music {
-public:
+class Music
+{
+  public:
     Music();
-    Music(const Music&) = delete;
-    Music& operator=(const Music&) = delete;
+    Music(const Music &) = delete;
+    Music &operator=(const Music &) = delete;
     ~Music();
 
     // The soundfont's bytes and the table. False, with `error`, if the bank
     // doesn't load or lacks a program the table names.
-    bool load(const void* soundfont, std::size_t size, InstrumentTable table, uint32_t sampleRate, std::string& error);
+    bool load(const void *soundfont, std::size_t size, InstrumentTable table, uint32_t sampleRate, std::string &error);
     bool loaded() const { return bank_ != nullptr; }
     // The MT-32 as it starts: its own patches, parts and rhythm set-up.
     void reset();
     void midiByte(uint8_t value);
     // Interleaved stereo, overwritten.
-    void render(float* stereo, uint32_t frames);
+    void render(float *stereo, uint32_t frames);
     // Voices sounding now (tests).
     int activeVoices() const;
     // The program a part plays now, or -1 (tests): parts 0-7.
@@ -74,7 +77,7 @@ public:
     // The soundfont's name for a program (bank 0), or "".
     std::string programName(int program) const;
 
-private:
+  private:
     static constexpr int kParts = 9;         // 8 melodic parts, then the rhythm part
     static constexpr int kRhythmPart = 8;
     static constexpr int kPatchBytes = 8;
@@ -83,7 +86,8 @@ private:
     static constexpr std::size_t kSysexCapacity = 256;
     static constexpr int kTimbres = 192;     // groups A and B, then the memory timbres
 
-    struct Part {
+    struct Part
+    {
         int channel = 0;     // the MIDI channel it hears, or -1
         int keyShift = 0;    // semitones
         int timbre = -1;     // the timbre its patch names (as timbreHeard counts them), or -1
@@ -93,12 +97,12 @@ private:
     int partFor(int channel) const;
     void channelMessage();
     void sysex();
-    void write(uint32_t address, const uint8_t* data, std::size_t count);
+    void write(uint32_t address, const uint8_t *data, std::size_t count);
     void programChange(int part, int patch);
     void noteOn(int part, int key, int velocity);
     void noteOff(int part, int key);
 
-    tsf* bank_ = nullptr;
+    tsf *bank_ = nullptr;
     InstrumentTable table_;
     std::array<uint8_t, 128 * kPatchBytes> patches_{};
     std::array<uint8_t, kRhythmKeys * 4> rhythmSetup_{};

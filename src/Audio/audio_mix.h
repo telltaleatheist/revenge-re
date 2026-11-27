@@ -11,8 +11,8 @@
 #include <stdint.h>
 
 
-#define AUDIO_MIX_SAMPLE_RATE 48000
-#define AUDIO_MIX_CHANNELS 2
+#define AUDIO_MIX_SAMPLE_RATE  48000
+#define AUDIO_MIX_CHANNELS     2
 #define AUDIO_MIX_BLOCK_FRAMES 256
 
 /* count frames, each AUDIO_MIX_CHANNELS floats (left, then right). */
@@ -39,7 +39,7 @@ void AudioMix_QueueUnsigned8(uint8_t sample);
  * table's text. 1 if both load; else 0, with why in `error`. Until then, and
  * while it is off, the music is silent. */
 int AudioMix_LoadMusic(const void *soundfont, size_t soundfontSize, const char *table, size_t tableSize,
-	char *error, size_t errorCapacity);
+    char *error, size_t errorCapacity);
 void AudioMix_MusicOn(int on);
 /* A byte the game sends its Roland driver. */
 void AudioMix_MidiByte(uint8_t value);

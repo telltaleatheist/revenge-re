@@ -4,14 +4,16 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace revenge::audio {
+namespace revenge::audio
+{
 
 // Samples as the game hands them over, played one after another at the
 // output's rate: each held for its share of the output's frames, as many as
 // its source rate gives it. The queue is bounded (about 2.7 s); what doesn't
 // fit is dropped.
-class PcmVoice {
-public:
+class PcmVoice
+{
+  public:
     void reset();
     // The source rate of what is queued from now (0 keeps the rate); the
     // share of a frame carried over starts again.
@@ -21,7 +23,7 @@ public:
     // The next frame, from -1 to 1; 0 when nothing is queued.
     float next();
 
-private:
+  private:
     static constexpr std::size_t kCapacity = 0x20000;
     void push(float value);
 

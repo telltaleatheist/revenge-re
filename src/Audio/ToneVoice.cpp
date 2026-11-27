@@ -4,15 +4,19 @@
 
 #include <cmath>
 
-namespace revenge::audio {
+namespace revenge::audio
+{
 
-void ToneVoice::reset() {
+void ToneVoice::reset()
+{
     frequency_ = 0;
     phase_ = 0;
 }
 
-void ToneVoice::play(double frequency) {
-    if (!(frequency > 0)) {
+void ToneVoice::play(double frequency)
+{
+    if (!(frequency > 0))
+    {
         stop();
         return;
     }
@@ -20,12 +24,14 @@ void ToneVoice::play(double frequency) {
     frequency_ = frequency;
 }
 
-void ToneVoice::stop() {
+void ToneVoice::stop()
+{
     frequency_ = 0;
     phase_ = 0;
 }
 
-double ToneVoice::mean(double seconds) {
+double ToneVoice::mean(double seconds)
+{
     if (!playing() || !(seconds > 0)) return 0;
     constexpr double pi = 3.14159265358979323846;
     const double cycles = seconds * frequency_;
@@ -34,7 +40,8 @@ double ToneVoice::mean(double seconds) {
     // cycles of the wave and divided by it.
     double integral = 0;
     for (unsigned harmonic = 1;
-         harmonic <= 31 && harmonic * frequency_ < AUDIO_MIX_SAMPLE_RATE / 2.0; harmonic += 2) {
+        harmonic <= 31 && harmonic * frequency_ < AUDIO_MIX_SAMPLE_RATE / 2.0; harmonic += 2)
+    {
         const double angular = 2 * pi * harmonic;
         const double amplitude = 4 / (pi * harmonic);
         integral += amplitude * (std::cos(angular * phase_) - std::cos(angular * (phase_ + cycles))) / angular;
