@@ -1,10 +1,19 @@
 // 0D73: invalid save dialog
 /* Preserved invalid-save-version dialog from REVENGE_0D73. */
 
-#include "REVENGE.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "IO/IO.h"
+#include "Input/Input.h"
+#include "Resources/Resources.h"
+#include "Runtime/Runtime.h"
+#include "Text/Text.h"
+#include "UI/UI.h"
+#include "revenge/heap.h"
 
 #include "revenge/input.h"
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 /* 0D73:4611-4865 */

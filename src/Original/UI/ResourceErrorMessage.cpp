@@ -3,9 +3,17 @@
 // The resource layer's error messages (3390:071E-098B), the two callbacks
 // AbortRuntimeWithMessage and OpenTrackedFile's errors call.
 
-#include "REVENGE.h"
+#include "Data/ResourceData.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
+#include "Resources/Resources.h"
+#include "Runtime/Runtime.h"
+#include "Text/Text.h"
+#include "UI/UI.h"
+#include "revenge/heap.h"
 #include "revenge/input.h"
-#include "revenge/original_data.h"
 #include "revenge/text.h"
 #include "revenge/video.h"
 

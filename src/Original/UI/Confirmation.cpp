@@ -1,9 +1,10 @@
 // 0D73: confirmation
 /* Restart-confirmation procedure from original segment 0D73. */
 
-#include "REVENGE.h"
-
-#include "revenge/original_data.h"
+#include "Campaign/Campaign.h"
+#include "Data/CampaignData.h"
+#include "UI/UI.h"
+#include "revenge/original/input_data.h"
 
 /* 0D73:242E-2447 */
 uint16_t ConfirmRestartGame(void)

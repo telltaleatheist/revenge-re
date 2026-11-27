@@ -1,8 +1,10 @@
 // 35CA: UI region highlight
 // Reconstructed original active UI-region highlight toggle (segment 35CA).
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalData.h"
+#include "Input/Input.h"
+#include "UI/UI.h"
 #include "revenge/video.h"
 
 void HideMouseCursorOverlay(void);
