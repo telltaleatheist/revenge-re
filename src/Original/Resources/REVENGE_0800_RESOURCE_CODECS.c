@@ -123,18 +123,16 @@ void DecodeRLEBlock(
 }
 
 
-#pragma pack(push, 1)
+/* CS:0C93-0C99. The stream's segment (CS:0C97) is its pointer: the
+ * caller gives a segment alone (21E7:00F4), so the stream starts at offset
+ * 0 and a code's offset is counted from there, in 16 bits. */
 typedef struct WestwoodLzwDecoderState
 {
 	word16 OutputByteCount;
 	word16 Reserved;
-	word16 CompressedStreamSegment;
+	const byte *CompressedStream;
 	byte CodePhase;
 } WestwoodLzwDecoderState;
-#pragma pack(pop)
-
-_Static_assert(sizeof(WestwoodLzwDecoderState) == 0x07,
-	"Westwood decoder state must retain CS:0C93-0C99 layout");
 
 static WestwoodLzwDecoderState WestwoodLzwDecoder;
 
@@ -169,7 +167,6 @@ void DecodeWestwoodLzw12(
 	byte *destination,
 	byte *dictionary)
 {
-	uint32 compressedAddress;
 	word16 sourceOffset;
 	word16 outputOffset;
 	word16 nextCode;
@@ -179,13 +176,9 @@ void DecodeWestwoodLzw12(
 	memcpy(&WestwoodLzwDecoder.OutputByteCount,
 		compressed + 0x02, sizeof(word16));
 	memcpy(&sourceOffset, compressed + 0x06, sizeof(sourceOffset));
-	compressedAddress = HostFarPointer_Register((void *) compressed,
-		(uint32) WestwoodLzwDecoder.OutputByteCount * 0x02 +
-		sourceOffset + 0x08);
-	WestwoodLzwDecoder.CompressedStreamSegment =
-		HIGH_WORD(compressedAddress);
+	WestwoodLzwDecoder.CompressedStream = compressed;
 	WestwoodLzwDecoder.CodePhase = 0x00;
-	sourceOffset = LOW_WORD(compressedAddress) + sourceOffset + 0x08;
+	sourceOffset = sourceOffset + 0x08;
 	outputOffset = 0x0000;
 	nextCode = 0x0100;
 	previousCode = ReadWestwoodLzw12Code(
@@ -246,10 +239,7 @@ uint16 ReadWestwoodLzw12Code(
 	const byte *compressedData;
 	word16 packedCode;
 
-	compressedData = FAR_POINTER(
-		const byte,
-		WestwoodLzwDecoder.CompressedStreamSegment,
-		sourceOffset);
+	compressedData = WestwoodLzwDecoder.CompressedStream + sourceOffset;
 	++WestwoodLzwDecoder.CodePhase;
 	if ((WestwoodLzwDecoder.CodePhase & 0x01) != 0x00)
 	{
@@ -270,7 +260,6 @@ void DecodeWestwoodLzw14(
 	byte *destination,
 	byte *dictionary)
 {
-	uint32 compressedAddress;
 	word16 sourceOffset;
 	word16 outputOffset;
 	word16 nextCode;
@@ -280,13 +269,9 @@ void DecodeWestwoodLzw14(
 	memcpy(&WestwoodLzwDecoder.OutputByteCount,
 		compressed + 0x02, sizeof(word16));
 	memcpy(&sourceOffset, compressed + 0x06, sizeof(sourceOffset));
-	compressedAddress = HostFarPointer_Register((void *) compressed,
-		(uint32) WestwoodLzwDecoder.OutputByteCount * 0x02 +
-		sourceOffset + 0x08);
-	WestwoodLzwDecoder.CompressedStreamSegment =
-		HIGH_WORD(compressedAddress);
+	WestwoodLzwDecoder.CompressedStream = compressed;
 	WestwoodLzwDecoder.CodePhase = 0x00;
-	sourceOffset = LOW_WORD(compressedAddress) + sourceOffset + 0x08;
+	sourceOffset = sourceOffset + 0x08;
 	outputOffset = 0x0000;
 	nextCode = 0x0100;
 	previousCode = ReadWestwoodLzw14Code(sourceOffset, &sourceOffset);
@@ -347,10 +332,7 @@ uint16 ReadWestwoodLzw14Code(
 	const byte *compressedData;
 	byte phase;
 
-	compressedData = FAR_POINTER(
-		const byte,
-		WestwoodLzwDecoder.CompressedStreamSegment,
-		sourceOffset);
+	compressedData = WestwoodLzwDecoder.CompressedStream + sourceOffset;
 	phase = (WestwoodLzwDecoder.CodePhase + 0x01) & 0x03;
 	WestwoodLzwDecoder.CodePhase = phase;
 	switch (phase)

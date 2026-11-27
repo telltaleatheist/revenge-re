@@ -34,8 +34,7 @@ void RunTacticalBattle(word16 scenarioCode)
 	InstallDamagedTerrainSpriteLookup();
 
 	LoadPackedIconPageDirect(
-		(const char *) MAKE_FAR_POINTER(
-			TacticalResourcePathSegment, TacticalResourcePathOffset),
+		TacticalResourcePath,
 		PlanarScreenBuffer,
 		PrimaryScreenBuffer);
 
@@ -624,9 +623,7 @@ void RunTacticalInteractionLoop(void)
 // The routine reads exactly one 0x96-byte template into DS:84C7.
 void LoadUnitTemplateRecord(int16 unitType)
 {
-	char *templatePath = (char *)MAKE_FAR_POINTER(
-		UnitTemplatePathSegment,
-		UnitTemplatePathOffset);
+	char *templatePath = UnitTemplatePath;
 	int16 fileHandle = OpenTrackedFile(templatePath, 0x01);
 	int32 fileOffset = (int32)unitType * UNIT_RECORD_SIZE;
 

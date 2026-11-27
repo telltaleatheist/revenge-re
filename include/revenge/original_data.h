@@ -351,10 +351,8 @@ extern word16 NarrationFocusRegion;
 /* DS:1530 and DS:1566 are cached-file descriptors 40h's and 43h's name
  * pointers, which the code reads as the unit template and tactical resource
  * paths: not second objects. */
-#define UnitTemplatePathOffset (CachedFileDescriptors[0x40].fileName.offset)
-#define UnitTemplatePathSegment (CachedFileDescriptors[0x40].fileName.segment)
-#define TacticalResourcePathOffset (CachedFileDescriptors[0x43].fileName.offset)
-#define TacticalResourcePathSegment (CachedFileDescriptors[0x43].fileName.segment)
+#define UnitTemplatePath (CachedFileDescriptors[0x40].fileName)
+#define TacticalResourcePath (CachedFileDescriptors[0x43].fileName)
 extern word16 TacticalOverviewClockNoticeActive;
 extern word16 TacticalRuntimeState;
 extern word16 PreviousMouseCellX;

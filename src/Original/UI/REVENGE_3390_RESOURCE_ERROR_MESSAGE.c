@@ -71,8 +71,7 @@ void ShowResourceErrorMessage(void)
 	savedBackgroundColor = ActiveTextBackgroundColor;
 	ActiveTextForegroundColor = 0x000F;
 	ActiveTextBackgroundColor = 0x000C;
-	RenderFormattedText((const char *) HostFarPointer_Resolve(
-		DosAddress_ToValue(ResourceFiles.errorText)));
+	RenderFormattedText(ResourceFiles.errorText);
 	ActiveTextForegroundColor = savedForegroundColor;
 	ActiveTextBackgroundColor = savedBackgroundColor;
 	(void) ReadTranslatedKeypress();
@@ -98,12 +97,7 @@ void ShowResourceErrorMessage(void)
 // after an error's own text, the program says it returns to DOS.
 void ShowFatalDiskErrorMessage(void)
 {
-	uint32 errorTextPointer = HostFarPointer_Register(
-		(void *)ResourceFatalDiskErrorText,
-		(uint32)StringLength(ResourceFatalDiskErrorText) + 0x01);
-
-	ResourceFiles.errorText.segment = HIGH_WORD(errorTextPointer);
-	ResourceFiles.errorText.offset = LOW_WORD(errorTextPointer);
+	ResourceFiles.errorText = ResourceFatalDiskErrorText;
 	ShowResourceErrorMessage();
 }
 

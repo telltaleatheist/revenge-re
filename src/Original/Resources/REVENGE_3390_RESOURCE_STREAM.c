@@ -9,11 +9,7 @@
 // 3390:0002
 void AbortRuntimeWithMessage(const char *errorText)
 {
-	uint32 errorTextPointer = HostFarPointer_Register(
-		(void *)errorText, (uint32)StringLength(errorText) + 0x01);
-
-	ResourceFiles.errorText.segment = HIGH_WORD(errorTextPointer);
-	ResourceFiles.errorText.offset = LOW_WORD(errorTextPointer);
+	ResourceFiles.errorText = errorText;
 	ResourceErrorDisplayCallback();
 	ResourceErrorDismissCallback();
 	ShutdownAndExit(0x0001);
@@ -61,12 +57,7 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 	}
 	else
 	{
-		uint32 errorTextPointer = HostFarPointer_Register(
-			(void *)ResourceIllegalOpenModeErrorText,
-			(uint32)StringLength(ResourceIllegalOpenModeErrorText) + 0x01);
-
-		ResourceFiles.errorText.segment = HIGH_WORD(errorTextPointer);
-		ResourceFiles.errorText.offset = LOW_WORD(errorTextPointer);
+		ResourceFiles.errorText = ResourceIllegalOpenModeErrorText;
 		ResourceErrorDisplayCallback();
 		ResourceErrorDismissCallback();
 		ShutdownAndExit(0x0001);
@@ -101,12 +92,7 @@ int16 OpenTrackedFile(char *path, word16 openMode)
 	}
 	if (handleSlot == ORIGINAL_TRACKED_FILE_COUNT)
 	{
-		uint32 errorTextPointer = HostFarPointer_Register(
-			(void *)ResourceTooManyOpenFilesErrorText,
-			(uint32)StringLength(ResourceTooManyOpenFilesErrorText) + 0x01);
-
-		ResourceFiles.errorText.segment = HIGH_WORD(errorTextPointer);
-		ResourceFiles.errorText.offset = LOW_WORD(errorTextPointer);
+		ResourceFiles.errorText = ResourceTooManyOpenFilesErrorText;
 		ResourceErrorDisplayCallback();
 		ResourceErrorDismissCallback();
 		/* DS:B64E immediately follows the ten-entry table in the executable. */
@@ -283,15 +269,12 @@ word16 GetResourceDriveMask(char *path)
 	word16 resourceIndex = 0x0000;
 	char *normalizedPath = UppercaseStringInPlace(path);
 
-	while (*(char *)HostFarPointer_Resolve(
-		DosAddress_ToValue(
-			CachedFileDescriptors[resourceIndex].fileName)) != '\0')
+	while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
 	{
 		CachedFileDescriptor *resource = &CachedFileDescriptors[resourceIndex];
 
 		if (FarStringCompare(
-			(char *)HostFarPointer_Resolve(
-				DosAddress_ToValue(resource->fileName)),
+			resource->fileName,
 			normalizedPath) == 0x0000)
 			return resource->resourceDriveMask;
 		++resourceIndex;
@@ -306,17 +289,14 @@ void ReleaseCachedResources(void)
 	word16 resourceIndex = 0x0000;
 	int16 handleSlot;
 
-	while (*(char *)HostFarPointer_Resolve(
-		DosAddress_ToValue(
-			CachedFileDescriptors[resourceIndex].fileName)) != '\0')
+	while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
 	{
 		CachedFileDescriptor *resource = &CachedFileDescriptors[resourceIndex];
 
-		if (!DosAddress_IsNull(resource->cachedData))
+		if (resource->cachedData != NULL)
 		{
-			FreeFarHeapAllocation((byte *)HostFarPointer_Resolve(
-				DosAddress_ToValue(resource->cachedData)));
-			resource->cachedData = DosAddress_FromValue(0x00000000UL);
+			FreeFarHeapAllocation(resource->cachedData);
+			resource->cachedData = NULL;
 		}
 		++resourceIndex;
 	}
@@ -335,7 +315,7 @@ void InitializeResourceCache(void)
 	word16 resourceIndex;
 	int16 handleSlot;
 
-	/* Host-only mechanical registration for the original 16:16 name fields. */
+	/* The names and lengths the image holds at DS:10B0. */
 	OriginalData_InitializeResourceDescriptorPointers();
 	for (handleSlot = 0x0000; handleSlot < ORIGINAL_TRACKED_FILE_COUNT; ++handleSlot)
 		ResourceFiles.trackedHandles[handleSlot] = ORIGINAL_TRACKED_FILE_UNUSED;
@@ -344,9 +324,7 @@ void InitializeResourceCache(void)
 		GetLargestFreeConventionalMemoryKB() - ReservedConventionalMemoryKB);
 	ResourceFiles.availableDriveMask = 0x0000;
 	resourceIndex = 0x0000;
-	while (*(char *)HostFarPointer_Resolve(
-		DosAddress_ToValue(
-			CachedFileDescriptors[resourceIndex].fileName)) != '\0')
+	while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
 	{
 		CachedFileDescriptor *resource = &CachedFileDescriptors[resourceIndex];
 		word16 allocationKB;
@@ -361,9 +339,7 @@ void InitializeResourceCache(void)
 			continue;
 		}
 
-		resource->fileName = DosAddress_FromValue(HostFarPointer_Encode(
-			UppercaseStringInPlace((char *)HostFarPointer_Resolve(
-				DosAddress_ToValue(resource->fileName)))));
+		resource->fileName = UppercaseStringInPlace(resource->fileName);
 		allocationKB = (word16)DivideUnsignedLong(
 			resource->fileLength, 0x00000400UL) + 0x0001;
 		cachedData = NULL;
@@ -376,8 +352,7 @@ void InitializeResourceCache(void)
 		}
 
 		fileHandle = CRT_OpenFile(
-			(char *)HostFarPointer_Resolve(
-				DosAddress_ToValue(resource->fileName)),
+			resource->fileName,
 			0x8001, 0x0180);
 		if (fileHandle == -0x01)
 		{
@@ -390,8 +365,7 @@ void InitializeResourceCache(void)
 			fileHandle, cachedData, LOW_WORD(resource->fileLength));
 		if ((uint32)bytesRead == resource->fileLength)
 		{
-			resource->cachedData = DosAddress_FromValue(
-				HostFarPointer_Encode(cachedData));
+			resource->cachedData = cachedData;
 			CRT_CloseFile(fileHandle);
 			remainingConventionalMemoryKB -= (int16)allocationKB;
 		}
@@ -410,17 +384,14 @@ word16 IsResourceCached(char *path)
 	word16 resourceIndex = 0x0000;
 	char *normalizedPath = UppercaseStringInPlace(path);
 
-	while (*(char *)HostFarPointer_Resolve(
-		DosAddress_ToValue(
-			CachedFileDescriptors[resourceIndex].fileName)) != '\0')
+	while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
 	{
 		CachedFileDescriptor *resource = &CachedFileDescriptors[resourceIndex];
 
 		if (FarStringCompare(
-			(char *)HostFarPointer_Resolve(
-				DosAddress_ToValue(resource->fileName)),
+			resource->fileName,
 			normalizedPath) == 0x0000)
-			return !DosAddress_IsNull(resource->cachedData) ? TRUE : FALSE;
+			return resource->cachedData != NULL ? TRUE : FALSE;
 		++resourceIndex;
 	}
 	return FALSE;
@@ -432,14 +403,10 @@ word16 FindResourceDescriptorIndex(char *path)
 	word16 resourceIndex = 0x0000;
 	char *normalizedPath = UppercaseStringInPlace(path);
 
-	while (*(char *)HostFarPointer_Resolve(
-		DosAddress_ToValue(
-			CachedFileDescriptors[resourceIndex].fileName)) != '\0')
+	while (*CachedFileDescriptors[resourceIndex].fileName != '\0')
 	{
 		if (FarStringCompare(
-			(char *)HostFarPointer_Resolve(
-				DosAddress_ToValue(
-					CachedFileDescriptors[resourceIndex].fileName)),
+			CachedFileDescriptors[resourceIndex].fileName,
 			normalizedPath) == 0x0000)
 			return resourceIndex;
 		++resourceIndex;
@@ -456,15 +423,19 @@ word16 ReadCachedResource(
 {
 	CachedFileDescriptor *resource = &CachedFileDescriptors[resourceIndex];
 	uint32 bytesToRead = requestedBytes;
-	uint32 sourcePointer;
+	word16 sourceOffset;
 
 	if (resource->currentPosition + bytesToRead > resource->fileLength)
 		bytesToRead = resource->fileLength - resource->currentPosition;
-	sourcePointer = NormalizeFarPointer(
-		(word16)(resource->cachedData.offset +
-			LOW_WORD(resource->currentPosition)),
-		resource->cachedData.segment);
-	CopyFarBytes32(HostFarPointer_Resolve(sourcePointer), destination, bytesToRead);
+	/* 3390:0D86-0DA1 add the position's low word to the cache's offset
+	 * (FAR_HEAP_PAYLOAD_OFFSET, past the heap block's header) in 16 bits: a
+	 * read from FFF8h on starts 64K back, in the block's header, then over
+	 * the file's start again. The game's main leaves files uncached
+	 * (preloadFiles, 2C7F:000F), so play never reads here. */
+	sourceOffset = (word16)(FAR_HEAP_PAYLOAD_OFFSET +
+		LOW_WORD(resource->currentPosition));
+	CopyFarBytes32(resource->cachedData - FAR_HEAP_PAYLOAD_OFFSET + sourceOffset,
+		destination, bytesToRead);
 	resource->currentPosition += bytesToRead;
 	return LOW_WORD(bytesToRead);
 }

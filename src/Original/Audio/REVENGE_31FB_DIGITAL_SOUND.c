@@ -100,8 +100,7 @@ void LoadDigitalWeaponEffectBank(void)
 			resource = &CachedFileDescriptors[
 				effect->ResourceIndex];
 			ReadWholeResourceFile(
-				(const char *) HostFarPointer_Resolve(
-					DosAddress_ToValue(resource->fileName)),
+				resource->fileName,
 				DigitalWeaponSampleBuffer
 					+ effect->PackedBufferOffset,
 				effect->SampleLength);
@@ -341,8 +340,7 @@ void LoadScenarioDigitalSoundBank(int8 scenarioCode)
 			resource = &CachedFileDescriptors[
 				entry->ResourceIndex];
 			ReadResourceFileSpan(
-				(const char *) HostFarPointer_Resolve(
-					DosAddress_ToValue(resource->fileName)),
+				resource->fileName,
 				(int32) entry->SourceFileOffset,
 				DigitalSoundBuffer + entry->PackedBufferOffset,
 				entry->SampleLength);

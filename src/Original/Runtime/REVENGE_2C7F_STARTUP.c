@@ -335,9 +335,6 @@ word16 LoadMediaConfiguration(void)
 
 		memcpy(configBuffer, configText, configTextLength);
 		configBuffer[configTextLength] = '\0';
-		/* DOS can address this SS buffer directly. Register its complete
-		 * extent while the preserved far strtok cursor traverses it. */
-		HostFarPointer_Register(configLine, sizeof(configLine));
 		word16 continueParsing = TRUE;
 		while (continueParsing != FALSE)
 		{
@@ -392,7 +389,6 @@ word16 LoadMediaConfiguration(void)
 				}
 			}
 		}
-		HostFarPointer_Unregister(configLine);
 		FreeFarMemory(configBuffer);
 	}
 	ResourceRuntimeInitialized = 0x01;

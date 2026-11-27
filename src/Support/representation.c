@@ -44,8 +44,7 @@ void OriginalData_InitializeResourceDescriptorPointers(void)
 		++resourceIndex)
 	{
 		CachedFileDescriptors[resourceIndex].fileName =
-			DosAddress_FromValue(HostFarPointer_Register(
-				ResourceFileNames[resourceIndex], 0x0010));
+			ResourceFileNames[resourceIndex];
 		CachedFileDescriptors[resourceIndex].fileLength =
 			ResourceFileLengths[resourceIndex];
 	}

@@ -11,9 +11,7 @@ void LoadGraphicsResourceToBuffers(
 	byte *decodeBuffer,
 	byte *displayBuffer)
 {
-	const char *resourceName = (const char *) HostFarPointer_Resolve(
-		DosAddress_ToValue(
-			CachedFileDescriptors[resourceIndex].fileName));
+	const char *resourceName = CachedFileDescriptors[resourceIndex].fileName;
 
 	if (VideoAdapterType == VIDEO_ADAPTER_VGA)
 	{

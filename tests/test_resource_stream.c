@@ -170,26 +170,23 @@ static void TestDescriptorCatalogue(void)
 		"resource lookup uppercases its caller-owned path");
 	Check(CachedFileDescriptors[index].fileLength == 0x000033CDUL,
 		"MECHTYPE.DAT retains its executable length");
-	Check(*((char *)HostFarPointer_Resolve(
-		DosAddress_ToValue(
-			CachedFileDescriptors[0x0059].fileName))) == '\0',
+	Check(*CachedFileDescriptors[0x0059].fileName == '\0',
 		"descriptor 89 is the empty sentinel");
 }
 
 static void TestCachedStream(void)
 {
-	byte source[0x20];
+	/* A heap block: its header, then the file's bytes. */
+	byte block[FAR_HEAP_PAYLOAD_OFFSET + 0x20];
+	byte *source = block + FAR_HEAP_PAYLOAD_OFFSET;
 	byte destination[0x10];
-	uint32 sourceAddress;
 	word16 index;
 
-	for (index = 0x0000; index < sizeof(source); ++index)
-		source[index] = (byte)(index + 0x20);
+	for (index = 0x0000; index < sizeof(block); ++index)
+		block[index] = (byte)(index + 0x18);
 	memset(destination, 0x00, sizeof(destination));
-	sourceAddress = HostFarPointer_Register(source, sizeof(source));
-	CachedFileDescriptors[0x0000].cachedData =
-		DosAddress_FromValue(sourceAddress);
-	CachedFileDescriptors[0x0000].fileLength = sizeof(source);
+	CachedFileDescriptors[0x0000].cachedData = source;
+	CachedFileDescriptors[0x0000].fileLength = 0x20;
 	CachedFileDescriptors[0x0000].currentPosition = 0x00000004UL;
 
 	Check(ReadCachedResource(0x0000, destination, 0x00000008UL) == 0x0008,
@@ -207,11 +204,43 @@ static void TestCachedStream(void)
 	Check(CachedFileDescriptors[0x0000].currentPosition == 0x0000001CUL,
 		"cached end-relative seek uses file length");
 	SeekTrackedFile(0x0000, 0x40, 0x0000);
-	Check(CachedFileDescriptors[0x0000].currentPosition == sizeof(source),
+	Check(CachedFileDescriptors[0x0000].currentPosition == 0x20,
 		"cached absolute seek clamps to file length");
 	SeekTrackedFile(0x0000, -0x01, 0x0000);
 	Check(CachedFileDescriptors[0x0000].currentPosition == 0xFFFFFFFFUL,
 		"cached absolute seek preserves the original signed-high comparison");
+}
+
+/* 3390:0D86-0DA1: the position's low word is added to the cache's offset
+ * (8, past the heap block's header) in 16 bits. In a file longer than 64K, a
+ * read at FFFCh starts four bytes into the block's header, and one at
+ * 10004h starts four bytes into the file, as at 0004h. */
+static void TestCachedStreamPast64K(void)
+{
+	static byte block[FAR_HEAP_PAYLOAD_OFFSET + 0x10010];
+	byte *source = block + FAR_HEAP_PAYLOAD_OFFSET;
+	byte destination[0x08];
+	uint32 index;
+
+	for (index = 0x00000000UL; index < sizeof(block); ++index)
+		block[index] = (byte)(index * 0x07);
+	CachedFileDescriptors[0x0000].cachedData = source;
+	CachedFileDescriptors[0x0000].fileLength = 0x00010010UL;
+
+	CachedFileDescriptors[0x0000].currentPosition = 0x0000FFFCUL;
+	Check(ReadCachedResource(0x0000, destination, 0x00000008UL) == 0x0008 &&
+		memcmp(destination, block + 0x0004, 0x08) == 0,
+		"a cached read at FFFCh wraps into the block's header");
+	CachedFileDescriptors[0x0000].currentPosition = 0x00010004UL;
+	Check(ReadCachedResource(0x0000, destination, 0x00000008UL) == 0x0008 &&
+		memcmp(destination, source + 0x0004, 0x08) == 0,
+		"a cached read at 10004h reads from 0004h");
+	Check(CachedFileDescriptors[0x0000].currentPosition == 0x0001000CUL,
+		"the position still counts all 32 bits");
+	CachedFileDescriptors[0x0000].currentPosition = 0x0000FFF0UL;
+	Check(ReadCachedResource(0x0000, destination, 0x00000008UL) == 0x0008 &&
+		memcmp(destination, source + 0xFFF0, 0x08) == 0,
+		"a cached read below FFF8h reads where it is");
 }
 
 static void TestChunkedStreams(void)
@@ -271,23 +300,22 @@ static void TestAbortCallsBothMessages(void)
 	Check(errorCallCount == 0x0002 && errorCalls[0x00] == 0x01 &&
 		errorCalls[0x01] == 0x02, "abort shows the error, then the fatal error");
 	Check(shutdownCalls == 0x0001, "abort shuts the game down");
-	Check(HostFarPointer_Resolve(DosAddress_ToValue(ResourceFiles.errorText)) ==
-		(const void *)ResourceCloseUnopenedErrorText, "abort's text is the close error");
+	Check(ResourceFiles.errorText == ResourceCloseUnopenedErrorText,
+		"abort's text is the close error");
 }
 
 int main(void)
 {
-	HostFarPointer_Reset();
 	ResetStreamState();
 	TestDescriptorCatalogue();
 	TestCachedStream();
+	TestCachedStreamPast64K();
 	ResetStreamState();
 	TestChunkedStreams();
 	ResetStreamState();
 	TestOpenCloseAndWindowMargin();
 	ResetStreamState();
 	TestAbortCallsBothMessages();
-	HostFarPointer_Reset();
 
 	if (failures != 0)
 		return EXIT_FAILURE;

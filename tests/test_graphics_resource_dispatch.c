@@ -31,10 +31,7 @@ static void ResetCapture(void)
 
 int main(void)
 {
-	HostFarPointer_Reset();
-	CachedFileDescriptors[0x03].fileName =
-		DosAddress_FromValue(
-			HostFarPointer_Register(resourceName, sizeof(resourceName)));
+	CachedFileDescriptors[0x03].fileName = resourceName;
 
 	ResetCapture();
 	VideoAdapterType = VIDEO_ADAPTER_VGA;
@@ -44,6 +41,5 @@ int main(void)
 	assert(capturedCompressed == decodeBuffer);
 	assert(capturedDestination == displayBuffer);
 
-	HostFarPointer_Reset();
 	return 0;
 }

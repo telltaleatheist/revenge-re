@@ -144,9 +144,7 @@ void LoadMusicResource(word16 resourceIndex)
 		{
 			const char *resourceName;
 
-			resourceName = (const char *)
-				HostFarPointer_Resolve(
-					DosAddress_ToValue(descriptor->fileName));
+			resourceName = descriptor->fileName;
 			ReadWholeResourceFile(
 				resourceName,
 				MusicStagingBuffer,

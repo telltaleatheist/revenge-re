@@ -32,9 +32,7 @@ enum
 	KEY_CTRL_S = 0x13
 };
 
-#define CACHED_FILE_NAME(index) \
-	((char *)HostFarPointer_Resolve( \
-		DosAddress_ToValue(CachedFileDescriptors[(index)].fileName)))
+#define CACHED_FILE_NAME(index) (CachedFileDescriptors[(index)].fileName)
 
 
 #define SAVE_SLOT_COUNT                  0x06

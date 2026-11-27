@@ -125,6 +125,37 @@ static void EncodeQueue(byte *bytes, const DigitalDriverQueue *queue)
 	bytes[0x11] = queue->ReservedOutputByte;
 }
 
+static void EncodeResourceFiles(byte *bytes)
+{
+	size_t index;
+
+	PutNull(bytes, 0x00, ResourceFiles.errorText);
+	PutWord(bytes, 0x04, ResourceFiles.pendingDriveMask);
+	PutWord(bytes, 0x06, ResourceFiles.availableDriveMask);
+	for (index = 0; index < ORIGINAL_TRACKED_FILE_COUNT; ++index)
+		PutWord(bytes, 0x08 + index * 2, ResourceFiles.trackedHandles[index]);
+	PutWord(bytes, 0x1C, ResourceFiles.preloadFiles);
+}
+
+static void EncodeCachedFiles(byte *bytes)
+{
+	size_t index;
+
+	for (index = 0; index < ORIGINAL_RESOURCE_DESCRIPTOR_COUNT; ++index)
+	{
+		const CachedFileDescriptor *file = &CachedFileDescriptors[index];
+		byte *record = bytes + index * 0x12;
+
+		PutNull(record, 0x00, file->fileName);
+		PutWord(record, 0x04, LOW_WORD(file->fileLength));
+		PutWord(record, 0x06, HIGH_WORD(file->fileLength));
+		PutNull(record, 0x08, file->cachedData);
+		PutWord(record, 0x0C, file->resourceDriveMask);
+		PutWord(record, 0x0E, LOW_WORD(file->currentPosition));
+		PutWord(record, 0x10, HIGH_WORD(file->currentPosition));
+	}
+}
+
 static void EncodeDescriptor(byte *bytes, const DigitalSampleDescriptor *descriptor)
 {
 	PutNull(bytes, 0x00, descriptor->Link.Next);
@@ -273,7 +304,7 @@ static const ImageRow rows[] =
 	DS(MIDIParser, 0x62B0),
 	DS(MIDIChannelMap, 0x6728),
 	DS(FileRuntime, 0x712A),
-	DS(ResourceFiles, 0xB632),
+	ENCODED(ResourceFiles, 0xB632, 0x1E, EncodeResourceFiles),
 	DS(SecondaryResourceDriveEnabled, 0xB662),
 	DS(ResourceDriveSelectionDisabled, 0xB668),
 	DS(WeaponPriorityData, 0x09C6),
@@ -286,11 +317,11 @@ static const ImageRow rows[] =
 	DS(InputDeviceType, 0x88BD),
 	DS(UnitCombatRatings, 0xAEF1),
 	DS(CriticalErrorCallback, 0xB888),
-	/* Each file's name is a host pointer; the rest is compared, as the
-	 * resource cache's start (3390:0A22) fills it. */
-	{ "CachedFileDescriptors", CachedFileDescriptors, sizeof(CachedFileDescriptors), 0x3A6A, 0x10B0,
-		sizeof(CachedFileDescriptors[0]), offsetof(CachedFileDescriptor, fileName),
-		sizeof(CachedFileDescriptors[0].fileName), NULL },
+	/* As the resource cache's start (3390:0A22) fills them. Each file's name
+	 * points at its own text in the original and at ResourceFileNames here:
+	 * it is left out. */
+	{ "CachedFileDescriptors", NULL, ORIGINAL_RESOURCE_DESCRIPTOR_COUNT * 0x12, 0x3A6A, 0x10B0,
+		0x12, 0x00, 0x04, EncodeCachedFiles },
 	ENCODED(PCSpeakerEffectStreamPointerTable, 0x58DB, 0x40, EncodeSpeakerEffectStreams),
 	DS(ScenarioLanceAllegianceTable, 0x5928),
 
