@@ -1506,7 +1506,13 @@ enum StoryTextPlace
 
 /* Every text the game shows, as the story file (src/Import) holds it:
  * filled once at start, before the game runs. */
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern char StoryTextBuffer[STORY_TEXT_BYTES];
+#ifdef __cplusplus
+}
+#endif
 
 /* A single text by its id, as STORY_TEXT(SAVE_GAME_SEPARATOR): an address
  * constant, so it may initialise a table, typed char * as a C string
