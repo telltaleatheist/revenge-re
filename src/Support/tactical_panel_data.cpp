@@ -1,6 +1,6 @@
 /* Original DS tables consumed by the tactical unit-control panel. */
 
-#include "revenge/original_data.h"
+#include "revenge/tactical_panel_data.h"
 #include "revenge/story_text.h"
 
 /* Filled at start from data/rules/combat.json (revenge/rules.h). */

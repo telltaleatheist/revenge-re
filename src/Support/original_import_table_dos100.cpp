@@ -3,13 +3,16 @@
  * only. Don't edit by hand. */
 #include "revenge/original_import.h"
 #include "revenge/story_text.h"
-#include "revenge/original_data.h"
+#include "Data/AudioData.h"
+#include "Data/GraphicsData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
 #include "revenge/combat_data.h"
 #include "revenge/original/audio_data.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
 #include "revenge/original/scene_data.h"
-#include "REVENGE.h"
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 

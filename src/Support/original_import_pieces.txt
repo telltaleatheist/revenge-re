@@ -29,13 +29,16 @@
 # function that uses it in place. One that is an entry of a text_table or a
 # pointed_text has that entry's id and no line of its own.
 
-header revenge/original_data.h
+header Data/AudioData.h
+header Data/GraphicsData.h
+header Data/StartupData.h
+header Data/TacticalData.h
+header Data/TextIOData.h
 header revenge/combat_data.h
 header revenge/original/audio_data.h
 header revenge/original/campaign_data.h
 header revenge/original/lance_editor_data.h
 header revenge/original/scene_data.h
-header REVENGE.h
 
 # Text tables (TextTables.cpp)
 text_table           TitleTextTable                          2411 12

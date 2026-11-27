@@ -1,6 +1,8 @@
 #include "revenge/platform_backend.h"
 #include "revenge/video.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
 
 #include <stdint.h>
 

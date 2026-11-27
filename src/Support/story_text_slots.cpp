@@ -2,13 +2,16 @@
  * and a copy of DOS 1.00: each story text's id, place and size, and
  * the table entry or array it fills. Don't edit by hand. */
 #include "revenge/story.h"
-#include "revenge/original_data.h"
+#include "Data/AudioData.h"
+#include "Data/GraphicsData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Data/TextIOData.h"
 #include "revenge/combat_data.h"
 #include "revenge/original/audio_data.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
 #include "revenge/original/scene_data.h"
-#include "REVENGE.h"
 
 const StoryTextSlot StoryTextSlots[STORY_TEXT_COUNT] =
 {

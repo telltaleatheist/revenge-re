@@ -1,8 +1,7 @@
 /* Mechanical dispatch for the original DS:24E6:24E8 far callback. */
 
-#include "REVENGE.h"
-
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
+#include "revenge/presentation_callback_bridge.h"
 
 void RenderActivePilotList(void);
 void RenderSurvivingCommanderList(void);
