@@ -132,7 +132,7 @@ void ExecuteSceneInstructions(void)
                 StoryUnitDeployedFlag = 0x01;
                 GetPersistentUnitRecord(0x02)->deploymentState = 0x01;
             }
-            InitializeScenarioUnitFromTemplate(0xFFFF, 0x02);
+            InitializeScenarioUnitFromTemplate(UNIT_TEMPLATE_NONE, 0x02);
             AssignPilotRosterEntryToUnit(0x02, 0x02);
             ScenarioUnitMapX[0x02] = ReadSceneByte();
             ScenarioUnitMapY[0x02] = ReadSceneByte();
@@ -150,14 +150,14 @@ void ExecuteSceneInstructions(void)
             switch (ReadSceneByte())
             {
             case CAMPAIGN_MILESTONE_APC_BRIDGE:
-                CampaignFlags |= 0x0080;
+                CampaignFlags |= CAMPAIGN_FLAG_APC_BRIDGE;
                 break;
             case CAMPAIGN_MILESTONE_SRM_SHIPMENT:
-                CampaignFlags |= 0x0800;
+                CampaignFlags |= CAMPAIGN_FLAG_SRM_SHIPMENT;
                 SrmShipmentLoaded = 0x01;
                 break;
             case CAMPAIGN_MILESTONE_LRM_SHIPMENT:
-                CampaignFlags |= 0x1000;
+                CampaignFlags |= CAMPAIGN_FLAG_LRM_SHIPMENT;
                 LrmShipmentLoaded = 0x01;
                 break;
             case CAMPAIGN_MILESTONE_PILOT_EJECTED:
@@ -173,19 +173,19 @@ void ExecuteSceneInstructions(void)
                         PersistentUnitRoster[0x0C].walkMovement;
                 }
                 if (EjectedPilotRosterState != 0x00)
-                    CampaignFlags |= 0x0020;
+                    CampaignFlags |= CAMPAIGN_FLAG_EJECTED_PILOT_ALIVE;
                 break;
             case CAMPAIGN_MILESTONE_UNKNOWN_04:
-                CampaignFlags |= 0x0100;
+                CampaignFlags |= CAMPAIGN_FLAG_MILESTONE_UNKNOWN_04;
                 break;
             case CAMPAIGN_MILESTONE_UNKNOWN_05:
-                CampaignFlags |= 0x0200;
+                CampaignFlags |= CAMPAIGN_FLAG_MILESTONE_UNKNOWN_05;
                 break;
             case CAMPAIGN_MILESTONE_COMMANDER_CRIPPLED:
-                CampaignFlags |= 0x0400;
+                CampaignFlags |= CAMPAIGN_FLAG_COMMANDER_CRIPPLED;
                 break;
             case CAMPAIGN_MILESTONE_MECH_SHOP_REACHED:
-                CampaignFlags |= 0x4000;
+                CampaignFlags |= CAMPAIGN_FLAG_MECH_SHOP_REACHED;
                 break;
             }
             break;
@@ -245,12 +245,12 @@ void ExecuteSceneInstructions(void)
         }
 
         case SCENE_END_BATTLE_RESULT_3:
-            TacticalBattleResult = 0x03;
+            TacticalBattleResult = TACTICAL_BATTLE_ENDED;
             stopInterpreter = 0x01;
             break;
 
         case SCENE_END_BATTLE_RESULT_2:
-            TacticalBattleResult = 0x02;
+            TacticalBattleResult = TACTICAL_BATTLE_WON;
             stopInterpreter = 0x01;
             break;
 
@@ -695,7 +695,7 @@ void ExecuteSceneInstructions(void)
             uint16_t unitIndex = ReadSceneByte();
             uint8_t targetUnit = ReadSceneByte();
             UnitAttackTarget[unitIndex] = targetUnit;
-            if (targetUnit == 0x18)
+            if (targetUnit == TACTICAL_TARGET_MAP_CELL)
             {
                 UnitTargetMapX[unitIndex] = ReadSceneByte();
                 UnitTargetMapY[unitIndex] = ReadSceneByte();
@@ -726,7 +726,7 @@ void ExecuteSceneInstructions(void)
             RevengeUnitRecord *unitRecord =
                 GetPersistentUnitRecord(unitIndex);
             uint16_t occurrence;
-            for (occurrence = 0x00; occurrence < 0x0C; ++occurrence)
+            for (occurrence = 0x00; occurrence < TACTICAL_FORCE_UNIT_COUNT; ++occurrence)
             {
                 if (FindUnitWeaponByOrdinal(
                         unitRecord,
@@ -1054,13 +1054,13 @@ uint16_t HasNarrationMessage(
 // 1A1F:5525: void QueueLinkedUnitStatusNarration(word16 unitIndex)
 void QueueLinkedUnitStatusNarration(uint16_t unitIndex)
 {
-    if (unitIndex < 0x0C || UnitEnemyVisible[unitIndex] == 0x00)
+    if (unitIndex < ENEMY_FORCE_FIRST_UNIT || UnitEnemyVisible[unitIndex] == 0x00)
         return;
 
     int16_t linkedUnitIndex = UnitTacticalTarget[unitIndex];
-    if (linkedUnitIndex == 0x18)
+    if (linkedUnitIndex == TACTICAL_TARGET_MAP_CELL)
         linkedUnitIndex = 0x00;
-    if (linkedUnitIndex < 0x00 || linkedUnitIndex >= 0x0C ||
+    if (linkedUnitIndex < 0x00 || linkedUnitIndex >= ENEMY_FORCE_FIRST_UNIT ||
         HasNarrationMessage(linkedUnitIndex, 0x08) == 0x00)
     {
         return;

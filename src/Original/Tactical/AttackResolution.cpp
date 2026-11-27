@@ -4,6 +4,17 @@
 #include "CombatInternal.h"
 #include "Tactical/Tactical.h"
 
+/* The to-hit number's changes this attack makes: easier at a map cell, with
+ * a spotter for indirect LRM fire, at an immobile target and with a pulse
+ * laser; harder per range bracket past the weapon's range and while the
+ * attacker jumps. */
+constexpr int16_t MAP_CELL_TARGET_TO_HIT_BONUS = 0x04;
+constexpr int16_t SPOTTED_INDIRECT_FIRE_TO_HIT_BONUS = 0x06;
+constexpr int16_t IMMOBILE_TARGET_TO_HIT_BONUS = 0x04;
+constexpr int16_t PULSE_LASER_TO_HIT_BONUS = 0x02;
+constexpr int16_t RANGE_BRACKET_TO_HIT_PENALTY = 0x02;
+constexpr int16_t JUMPING_TO_HIT_PENALTY = 0x03;
+
 // 2D1B:1854: int16 ResolveWeaponAttack(
 //     Stack int16 attackerUnitIndex, Stack int16 weaponIndex,
 //     Stack int16 targetUnitIndex)
@@ -50,7 +61,7 @@ int16_t ResolveWeaponAttack(
             TerrainImpactAnimationTypeMaximum,
             (uint8_t) TerrainLineOfSightBlockingThreshold,
             TerrainLineOfSightMaximumSteps);
-        toHitModifier = -0x04;
+        toHitModifier = -MAP_CELL_TARGET_TO_HIT_BONUS;
     }
     else
     {
@@ -80,7 +91,7 @@ int16_t ResolveWeaponAttack(
                     spotterIndex, targetUnitIndex) != 0x00)
             {
                 hasLineOfSight = 0x01;
-                toHitModifier = -0x06;
+                toHitModifier = -SPOTTED_INDIRECT_FIRE_TO_HIT_BONUS;
                 break;
             }
         }
@@ -102,7 +113,7 @@ int16_t ResolveWeaponAttack(
         toHitTarget +=
             (int16_t) (uint8_t) targetUnit->targetMovementModifier;
         if (targetUnit->walkMovement == 0x00)
-            toHitTarget -= 0x04;
+            toHitTarget -= IMMOBILE_TARGET_TO_HIT_BONUS;
     }
 
     if (weaponIndex == WEAPON_SMALL_PULSE_LASER ||
@@ -110,13 +121,13 @@ int16_t ResolveWeaponAttack(
         weaponIndex == WEAPON_LARGE_PULSE_LASER)
     {
         // V: the three pulse-laser definitions receive a -2 to-hit bonus.
-        toHitTarget -= 0x02;
+        toHitTarget -= PULSE_LASER_TO_HIT_BONUS;
     }
 
     if (distance > weaponDefinition->maximumRangeUnits)
-        toHitTarget += 0x02;
+        toHitTarget += RANGE_BRACKET_TO_HIT_PENALTY;
     if (distance > weaponDefinition->maximumRangeUnits * 0x02)
-        toHitTarget += 0x02;
+        toHitTarget += RANGE_BRACKET_TO_HIT_PENALTY;
     if (distance <= weaponDefinition->minimumRange)
     {
         // V: the executable adds distance - minimumRange. This makes close
@@ -128,7 +139,7 @@ int16_t ResolveWeaponAttack(
 
     toHitTarget += attackerUnit->currentHeat / BATTLEMECH_HEAT_SCALE;
     if (UnitJumpingState[attackerUnitIndex] != 0x00)
-        toHitTarget += 0x03;
+        toHitTarget += JUMPING_TO_HIT_PENALTY;
     if (targetUnitIndex != TACTICAL_TARGET_MAP_CELL)
     {
         toHitTarget +=
@@ -158,7 +169,7 @@ int16_t ResolveWeaponAttack(
     if (targetUnitIndex == TACTICAL_TARGET_MAP_CELL && shotHit != 0x00)
     {
         ApplyTerrainImpact(targetX, targetY, TRUE, FALSE);
-        if (ReadTerrainDamageState(targetX, targetY) == 0x03)
+        if (ReadTerrainDamageState(targetX, targetY) == TERRAIN_DAMAGE_STATE_MAXIMUM)
         {
             int16_t unitIndex;
             for (unitIndex = 0x00; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)

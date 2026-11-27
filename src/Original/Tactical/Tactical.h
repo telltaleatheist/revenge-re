@@ -94,6 +94,9 @@ inline constexpr uint16_t TACTICAL_TRACE_DASH_INTERVAL = 0x0006;
 
 /* Where the packed terrain-damage map starts in the battle's runtime
  * allocation. */
+/* A map cell's two-bit damage state at its top: off the map, one of the
+ * three special destructible terrain types, or damaged as far as it goes. */
+inline constexpr uint16_t TERRAIN_DAMAGE_STATE_MAXIMUM = 0x03;
 inline constexpr uint16_t PACKED_TERRAIN_DAMAGE_MAP_OFFSET = 0xA000;
 
 /* A unit's order (UnitTacticalOrderMode). Proposed behavioural names from the

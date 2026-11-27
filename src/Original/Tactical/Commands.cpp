@@ -440,8 +440,8 @@ void RunTacticalGameOptionsMenu(void)
                 TacticalCursorOutlineEnabled = TRUE;
                 RollingBarrageActive = 0x00;
                 ArtilleryShellingActive = 0x01;
-                ArtilleryTargetMapX = UnitTargetMapX[0x18];
-                ArtilleryTargetMapY = UnitTargetMapY[0x18];
+                ArtilleryTargetMapX = UnitTargetMapX[TACTICAL_TARGET_MAP_CELL];
+                ArtilleryTargetMapY = UnitTargetMapY[TACTICAL_TARGET_MAP_CELL];
             }
             break;
 
@@ -456,12 +456,12 @@ void RunTacticalGameOptionsMenu(void)
                 SelectTacticalMapCoordinate(0x18);
                 ArtilleryShellingActive = 0x00;
                 RollingBarrageActive = 0x01;
-                DropShipMapX = UnitTargetMapX[0x18];
-                RollingBarrageStartMapX = UnitTargetMapX[0x18];
-                ArtilleryTargetMapX = UnitTargetMapX[0x18];
-                DropShipMapY = UnitTargetMapY[0x18];
-                RollingBarrageStartMapY = UnitTargetMapY[0x18];
-                ArtilleryTargetMapY = UnitTargetMapY[0x18];
+                DropShipMapX = UnitTargetMapX[TACTICAL_TARGET_MAP_CELL];
+                RollingBarrageStartMapX = UnitTargetMapX[TACTICAL_TARGET_MAP_CELL];
+                ArtilleryTargetMapX = UnitTargetMapX[TACTICAL_TARGET_MAP_CELL];
+                DropShipMapY = UnitTargetMapY[TACTICAL_TARGET_MAP_CELL];
+                RollingBarrageStartMapY = UnitTargetMapY[TACTICAL_TARGET_MAP_CELL];
+                ArtilleryTargetMapY = UnitTargetMapY[TACTICAL_TARGET_MAP_CELL];
                 ShowTacticalCommandPrompt(SelectBarrageEndPrompt);
                 SelectTacticalMoveDestinationInput(0x18, 0x00);
                 RollingBarrageEndMapX = UnitRouteTargetMapX[0x18];

@@ -24,9 +24,9 @@ void DestroyScenarioUnit(uint16_t unitIndex)
     unit->deploymentState = 0x00;
 
     if (TacticalSelectedUnitIndex == unitIndex)
-        TacticalSelectedUnitIndex = 0xFFFF;
+        TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
     if (EnemyCycleUnitIndex == unitIndex)
-        EnemyCycleUnitIndex = 0xFFFF;
+        EnemyCycleUnitIndex = TACTICAL_UNIT_NONE;
 
     for (attackerIndex = 0x00; attackerIndex < TACTICAL_UNIT_COUNT;
         ++attackerIndex)
@@ -84,7 +84,7 @@ uint16_t FindOperationalLanceLeader(uint16_t unitIndex)
     uint16_t lanceBaseUnitIndex = unitIndex & 0x001C;
     uint16_t lanceOffset;
 
-    for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
+    for (lanceOffset = 0x00; lanceOffset < LANCE_UNIT_COUNT; ++lanceOffset)
     {
         uint16_t candidateUnitIndex = lanceBaseUnitIndex + lanceOffset;
         RevengeUnitRecord *candidateUnit =
@@ -241,13 +241,13 @@ void ApplyTerrainImpact(
 
     if (mapX < 0x0000 || mapX >= (int16_t) MapWidth ||
         mapY < 0x0000 || mapY >= (int16_t) MapHeight ||
-        previousDamageState >= 0x0003)
+        previousDamageState >= TERRAIN_DAMAGE_STATE_MAXIMUM)
     {
         return;
     }
 
     if (advanceBeforeRecording != FALSE)
-        AdvanceTerrainDamageState(mapX, mapY, 0x03);
+        AdvanceTerrainDamageState(mapX, mapY, TERRAIN_DAMAGE_STATE_MAXIMUM);
 
     terrainType = TerrainTypeMap[(uint16_t) mapY * MapWidth + (uint16_t) mapX];
     shouldRecordImpact = FALSE;
@@ -285,7 +285,7 @@ void ApplyTerrainImpact(
             record->mapY = mapY;
             record->animationVariant = (uint8_t) (GeneratePseudoRandomByte() % 0x03);
             if (advanceBeforeRecording == FALSE)
-                AdvanceTerrainDamageState(mapX, mapY, 0x03);
+                AdvanceTerrainDamageState(mapX, mapY, TERRAIN_DAMAGE_STATE_MAXIMUM);
             return;
         }
         return;
@@ -366,7 +366,7 @@ void CollapseStructureAtMapCell(
             int16_t maximumUnitY = (int16_t) (uint16_t) ((uint16_t) cellY + 0x01);
 
             while ((int16_t) AdvanceTerrainDamageState(
-                       cellX, cellY, 0x03) < 0x03)
+                       cellX, cellY, TERRAIN_DAMAGE_STATE_MAXIMUM) < TERRAIN_DAMAGE_STATE_MAXIMUM)
                 ApplyTerrainImpact(cellX, cellY, TRUE, TRUE);
             QueueTacticalImpactVisual(cellX, cellY, 0x01);
 

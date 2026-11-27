@@ -103,7 +103,7 @@ void QueueTacticalProjectile(
     destinationX = (uint16_t) record->destinationMapX;
     destinationY = (uint16_t) record->destinationMapY;
 
-    if ((int16_t) targetUnitIndex < 0x18)
+    if ((int16_t) targetUnitIndex < TACTICAL_UNIT_COUNT)
     {
         direction = DetermineOctant(
             (int16_t) (uint16_t) (ScenarioUnitMapY[attackerUnitIndex] -
@@ -121,7 +121,7 @@ void QueueTacticalProjectile(
     }
 
     hasDestination = FALSE;
-    if (targetUnitIndex == 0x18)
+    if (targetUnitIndex == TACTICAL_TARGET_MAP_CELL)
     {
         destinationX = UnitTargetMapX[attackerUnitIndex];
         destinationY = UnitTargetMapY[attackerUnitIndex];
@@ -619,7 +619,7 @@ void ComposeTacticalSpriteMaps(void)
     uint16_t drawUnit;
     uint16_t drewContactMarker;
 
-    for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         marker = UnitDestructionMarkers[(uint16_t) unitIndex];
         if (marker[0x02] != 0x00)
@@ -636,14 +636,14 @@ void ComposeTacticalSpriteMaps(void)
                 0x0001, 0x0001, 0x01DA);
     }
 
-    for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         unitRecord = &PersistentUnitRoster[unitIndex];
         if (unitRecord->deploymentState != 0x01)
             continue;
 
         drewContactMarker = FALSE;
-        if (unitIndex < 0x000C)
+        if (unitIndex < ENEMY_FORCE_FIRST_UNIT)
             drawUnit = TRUE;
         else if (TacticalOverviewMapMode == FALSE)
             drawUnit = TRUE;
@@ -675,10 +675,10 @@ void ComposeTacticalSpriteMaps(void)
                 0x0001, 0x0001,
                 UnitSpriteId[unitIndex]);
         }
-        else if (unitIndex >= 0x000C &&
+        else if (unitIndex >= ENEMY_FORCE_FIRST_UNIT &&
             unitIndex == TacticalSelectedUnitIndex &&
             drewContactMarker == FALSE)
-            TacticalSelectedUnitIndex = 0xFFFF;
+            TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
     }
 
     effectCount = (int16_t) MapEdgeEffectCount;

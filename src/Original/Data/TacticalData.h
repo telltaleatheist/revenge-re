@@ -358,6 +358,13 @@ extern uint16_t TacticalKeyRepeatDelayTicks;
 extern uint16_t TacticalUpdateDelayReloadTicks;
 extern uint16_t TacticalGameSpeedIndex;
 extern uint16_t TacticalBattleResult;
+/* TacticalBattleResult: the battle runs; every enemy unit is out or
+ * immobile, or a scene ended the battle so; unit 0 is out, the player's
+ * force is gone, or a scene ended it so; the player left for DOS. */
+inline constexpr uint16_t TACTICAL_BATTLE_RUNNING = 0x0000;
+inline constexpr uint16_t TACTICAL_BATTLE_WON = 0x0002;
+inline constexpr uint16_t TACTICAL_BATTLE_ENDED = 0x0003;
+inline constexpr uint16_t TACTICAL_BATTLE_EXIT_TO_DOS = 0x0004;
 extern uint16_t TacticalClockDivider;
 extern uint16_t TacticalImpactQueueCount;
 extern RevengeTacticalImpactRecord

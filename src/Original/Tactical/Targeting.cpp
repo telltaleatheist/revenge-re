@@ -48,12 +48,12 @@ void SelectTacticalMapCoordinate(uint16_t unitIndex)
         TacticalCursorViewportX = 0x0A;
     }
     if ((int16_t) savedCursorX > 0x0A &&
-        (int16_t) (MapWidth - 0x13) >=
+        (int16_t) (MapWidth - TACTICAL_VIEWPORT_WIDTH_CELLS) >=
             (int16_t) TacticalViewportMapX)
     {
         TacticalCursorViewportX = 0x0A;
     }
-    maximumViewportX = (int16_t) MapWidth - 0x13;
+    maximumViewportX = (int16_t) MapWidth - TACTICAL_VIEWPORT_WIDTH_CELLS;
     if ((int16_t) TacticalViewportMapX < 0x00)
         TacticalViewportMapX = 0x00;
     if (maximumViewportX <= (int16_t) TacticalViewportMapX)
@@ -66,12 +66,12 @@ void SelectTacticalMapCoordinate(uint16_t unitIndex)
         TacticalCursorViewportY = 0x06;
     }
     if ((int16_t) savedCursorY > 0x06 &&
-        (int16_t) (MapHeight - 0x0C) >=
+        (int16_t) (MapHeight - TACTICAL_VIEWPORT_HEIGHT_CELLS) >=
             (int16_t) TacticalViewportMapY)
     {
         TacticalCursorViewportY = 0x06;
     }
-    maximumViewportY = (int16_t) MapHeight - 0x0C;
+    maximumViewportY = (int16_t) MapHeight - TACTICAL_VIEWPORT_HEIGHT_CELLS;
     if ((int16_t) TacticalViewportMapY < 0x00)
         TacticalViewportMapY = 0x00;
     if (maximumViewportY <= (int16_t) TacticalViewportMapY)
@@ -83,15 +83,15 @@ void SelectTacticalMapCoordinate(uint16_t unitIndex)
         cursorMapY - TacticalViewportMapY;
     if ((int16_t) TacticalCursorViewportX < 0x00)
         TacticalCursorViewportX = 0x00;
-    if ((int16_t) TacticalCursorViewportX >= 0x13)
+    if ((int16_t) TacticalCursorViewportX >= TACTICAL_VIEWPORT_WIDTH_CELLS)
         TacticalCursorViewportX = 0x12;
     if ((int16_t) TacticalCursorViewportY < 0x00)
         TacticalCursorViewportY = 0x00;
-    if ((int16_t) TacticalCursorViewportY >= 0x0C)
+    if ((int16_t) TacticalCursorViewportY >= TACTICAL_VIEWPORT_HEIGHT_CELLS)
         TacticalCursorViewportY = 0x0B;
 
     savedSelectedUnit = TacticalSelectedUnitIndex;
-    TacticalSelectedUnitIndex = 0xFFFF;
+    TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
     savedCursorColumn = ActiveTextCursorColumn;
     savedAttackTarget = UnitAttackTarget[unitIndex];
     savedTargetMapX = UnitTargetMapX[unitIndex];
@@ -126,7 +126,7 @@ void SelectTacticalMapCoordinate(uint16_t unitIndex)
 
         case (int16_t) (KEY_F9 - 0x0100):
         case '+':
-            if (unitIndex < 0x0C)
+            if (unitIndex < ENEMY_FORCE_FIRST_UNIT)
                 CycleTacticalEnemyTarget();
             break;
         }
@@ -185,10 +185,10 @@ void RefreshTacticalCoordinateSelection(
             (int16_t) TacticalViewportMapX >= 0x00)
             TacticalCursorViewportX = 0x0A;
         if ((int16_t) TacticalCursorViewportX > 0x0A &&
-            (int16_t) (MapWidth - 0x13) >=
+            (int16_t) (MapWidth - TACTICAL_VIEWPORT_WIDTH_CELLS) >=
                 (int16_t) TacticalViewportMapX)
             TacticalCursorViewportX = 0x0A;
-        maximumViewportX = (int16_t) MapWidth - 0x13;
+        maximumViewportX = (int16_t) MapWidth - TACTICAL_VIEWPORT_WIDTH_CELLS;
         if ((int16_t) TacticalViewportMapX < 0x00)
             TacticalViewportMapX = 0x00;
         if (maximumViewportX <= (int16_t) TacticalViewportMapX)
@@ -200,10 +200,10 @@ void RefreshTacticalCoordinateSelection(
             (int16_t) TacticalViewportMapY >= 0x00)
             TacticalCursorViewportY = 0x06;
         if ((int16_t) TacticalCursorViewportY > 0x06 &&
-            (int16_t) (MapHeight - 0x0C) >=
+            (int16_t) (MapHeight - TACTICAL_VIEWPORT_HEIGHT_CELLS) >=
                 (int16_t) TacticalViewportMapY)
             TacticalCursorViewportY = 0x06;
-        maximumViewportY = (int16_t) MapHeight - 0x0C;
+        maximumViewportY = (int16_t) MapHeight - TACTICAL_VIEWPORT_HEIGHT_CELLS;
         if ((int16_t) TacticalViewportMapY < 0x00)
             TacticalViewportMapY = 0x00;
         if (maximumViewportY <= (int16_t) TacticalViewportMapY)
@@ -211,11 +211,11 @@ void RefreshTacticalCoordinateSelection(
 
         if ((int16_t) TacticalCursorViewportX < 0x00)
             TacticalCursorViewportX = 0x00;
-        if ((int16_t) TacticalCursorViewportX >= 0x13)
+        if ((int16_t) TacticalCursorViewportX >= TACTICAL_VIEWPORT_WIDTH_CELLS)
             TacticalCursorViewportX = 0x12;
         if ((int16_t) TacticalCursorViewportY < 0x00)
             TacticalCursorViewportY = 0x00;
-        if ((int16_t) TacticalCursorViewportY >= 0x0C)
+        if ((int16_t) TacticalCursorViewportY >= TACTICAL_VIEWPORT_HEIGHT_CELLS)
             TacticalCursorViewportY = 0x0B;
     }
 
@@ -239,9 +239,9 @@ void RefreshTacticalCoordinateSelection(
             ScenarioUnitMapY[unitIndex] -
             TacticalViewportMapY;
         if ((int16_t) TacticalCursorViewportX >= 0x00 &&
-            (int16_t) TacticalCursorViewportX < 0x13 &&
+            (int16_t) TacticalCursorViewportX < TACTICAL_VIEWPORT_WIDTH_CELLS &&
             (int16_t) TacticalCursorViewportY >= 0x00 &&
-            (int16_t) TacticalCursorViewportY < 0x0C)
+            (int16_t) TacticalCursorViewportY < TACTICAL_VIEWPORT_HEIGHT_CELLS)
         {
             DrawTacticalCursorOutline(
                 cursorColorPhase != FALSE ? 0x0F : 0x0C);
@@ -258,9 +258,9 @@ void RefreshTacticalCoordinateSelection(
                 route->waypointMapY[routeIndex] -
                 TacticalViewportMapY;
             if ((int16_t) TacticalCursorViewportX >= 0x00 &&
-                (int16_t) TacticalCursorViewportX < 0x13 &&
+                (int16_t) TacticalCursorViewportX < TACTICAL_VIEWPORT_WIDTH_CELLS &&
                 (int16_t) TacticalCursorViewportY >= 0x00 &&
-                (int16_t) TacticalCursorViewportY < 0x0C)
+                (int16_t) TacticalCursorViewportY < TACTICAL_VIEWPORT_HEIGHT_CELLS)
             {
                 DrawTacticalCursorOutline(
                     cursorColorPhase != FALSE ? 0x0E : 0x0D);
@@ -278,9 +278,9 @@ void RefreshTacticalCoordinateSelection(
         UnitTargetMapY[unitIndex] = (uint8_t) (TacticalCursorViewportY +
             TacticalViewportMapY);
         if ((int16_t) TacticalCursorViewportX >= 0x00 &&
-            (int16_t) TacticalCursorViewportX < 0x13 &&
+            (int16_t) TacticalCursorViewportX < TACTICAL_VIEWPORT_WIDTH_CELLS &&
             (int16_t) TacticalCursorViewportY >= 0x00 &&
-            (int16_t) TacticalCursorViewportY < 0x0C)
+            (int16_t) TacticalCursorViewportY < TACTICAL_VIEWPORT_HEIGHT_CELLS)
         {
             DrawTacticalCursorOutline(
                 cursorColorPhase != FALSE ? 0x08 : 0x05);
@@ -295,8 +295,8 @@ void RefreshTacticalCoordinateSelection(
         if (TacticalCellSpriteMap[TacticalCursorViewportY * 0x13 +
                 TacticalCursorViewportX] != 0x0000)
         {
-            for (enemyUnitIndex = 0x000C;
-                enemyUnitIndex < 0x0018;
+            for (enemyUnitIndex = ENEMY_FORCE_FIRST_UNIT;
+                enemyUnitIndex < TACTICAL_UNIT_COUNT;
                 ++enemyUnitIndex)
             {
                 unitRecord = &PersistentUnitRoster[enemyUnitIndex];
@@ -313,11 +313,11 @@ void RefreshTacticalCoordinateSelection(
                         (uint8_t) enemyUnitIndex;
                     UnitTacticalTarget[unitIndex] =
                         (uint8_t) enemyUnitIndex;
-                    enemyUnitIndex = 0x0018;
+                    enemyUnitIndex = TACTICAL_UNIT_COUNT;
                 }
             }
         }
-        if (unitIndex == 0x0018)
+        if (unitIndex == TACTICAL_UNIT_COUNT)
             targetFound = TRUE;
 
         ActiveTextCursorColumn = savedCursorColumn;
@@ -427,7 +427,7 @@ void CycleTacticalEnemyTarget(void)
         ++candidateOffset)
     {
         candidateUnit = firstCandidate + candidateOffset;
-        while ((int16_t) candidateUnit >= 0x18)
+        while ((int16_t) candidateUnit >= TACTICAL_UNIT_COUNT)
             candidateUnit -= 0x0C;
 
         unitRecord = &PersistentUnitRoster[candidateUnit];
@@ -515,12 +515,12 @@ uint16_t SelectTacticalMoveDestinationInput(
         TacticalCursorViewportX = 0x0A;
     }
     if ((int16_t) savedCursorX > 0x0A &&
-        (int16_t) (MapWidth - 0x13) >=
+        (int16_t) (MapWidth - TACTICAL_VIEWPORT_WIDTH_CELLS) >=
             (int16_t) TacticalViewportMapX)
     {
         TacticalCursorViewportX = 0x0A;
     }
-    maximumViewportX = (int16_t) MapWidth - 0x13;
+    maximumViewportX = (int16_t) MapWidth - TACTICAL_VIEWPORT_WIDTH_CELLS;
     if ((int16_t) TacticalViewportMapX < 0x00)
         TacticalViewportMapX = 0x00;
     if (maximumViewportX <= (int16_t) TacticalViewportMapX)
@@ -533,12 +533,12 @@ uint16_t SelectTacticalMoveDestinationInput(
         TacticalCursorViewportY = 0x06;
     }
     if ((int16_t) savedCursorY > 0x06 &&
-        (int16_t) (MapHeight - 0x0C) >=
+        (int16_t) (MapHeight - TACTICAL_VIEWPORT_HEIGHT_CELLS) >=
             (int16_t) TacticalViewportMapY)
     {
         TacticalCursorViewportY = 0x06;
     }
-    maximumViewportY = (int16_t) MapHeight - 0x0C;
+    maximumViewportY = (int16_t) MapHeight - TACTICAL_VIEWPORT_HEIGHT_CELLS;
     if ((int16_t) TacticalViewportMapY < 0x00)
         TacticalViewportMapY = 0x00;
     if (maximumViewportY <= (int16_t) TacticalViewportMapY)
@@ -550,16 +550,16 @@ uint16_t SelectTacticalMoveDestinationInput(
         cursorMapY - TacticalViewportMapY;
     if ((int16_t) TacticalCursorViewportX < 0x00)
         TacticalCursorViewportX = 0x00;
-    if ((int16_t) TacticalCursorViewportX >= 0x13)
+    if ((int16_t) TacticalCursorViewportX >= TACTICAL_VIEWPORT_WIDTH_CELLS)
         TacticalCursorViewportX = 0x12;
     if ((int16_t) TacticalCursorViewportY < 0x00)
         TacticalCursorViewportY = 0x00;
-    if ((int16_t) TacticalCursorViewportY >= 0x0C)
+    if ((int16_t) TacticalCursorViewportY >= TACTICAL_VIEWPORT_HEIGHT_CELLS)
         TacticalCursorViewportY = 0x0B;
 
     selectionAccepted = TRUE;
     savedSelectedUnit = TacticalSelectedUnitIndex;
-    TacticalSelectedUnitIndex = 0xFFFF;
+    TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
     remainingPoints = unitIndex == 0x18 ? 0x01 : 0x04;
     route = &SceneUnitRoutes[unitIndex];
     *route = SavedTacticalRoute;
@@ -743,7 +743,7 @@ void DisplayDropShipIntelligence(void)
         0x0F,
         0x00);
 
-    for (unitIndex = 0x0C; unitIndex < 0x18; ++unitIndex)
+    for (unitIndex = ENEMY_FORCE_FIRST_UNIT; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         (void) UpdateUnitEnemyVisibility(unitIndex);
         (void) UpdateUnitEnemyProximityState(unitIndex);
@@ -755,12 +755,12 @@ void DisplayDropShipIntelligence(void)
 
     ActiveTextCursorColumn = 0x00;
     ActiveTextCursorRow = 0x03;
-    for (unitIndex = 0x0C; unitIndex < 0x18; unitIndex += 0x04)
+    for (unitIndex = ENEMY_FORCE_FIRST_UNIT; unitIndex < TACTICAL_UNIT_COUNT; unitIndex += LANCE_UNIT_COUNT)
         RenderLanceIntelligenceSummary(unitIndex);
 
     ActiveTextCursorColumn = 0x00;
     ActiveTextCursorRow = 0x09;
-    for (unitIndex = 0x00; unitIndex < 0x0C; unitIndex += 0x04)
+    for (unitIndex = 0x00; unitIndex < TACTICAL_FORCE_UNIT_COUNT; unitIndex += LANCE_UNIT_COUNT)
         RenderLanceIntelligenceSummary(unitIndex);
 
     ShowMouseCursorOverlay();
@@ -799,7 +799,7 @@ void RenderLanceIntelligenceSummary(uint16_t firstUnitIndex)
         {
             hasEngagement = TRUE;
         }
-        if (firstUnitIndex < 0x000C &&
+        if (firstUnitIndex < ENEMY_FORCE_FIRST_UNIT &&
             ScenarioUnitNeedsUpdate[selectedUnitIndex] != FALSE)
         {
             hasContact = TRUE;
@@ -861,7 +861,7 @@ void RenderLanceIntelligenceSummary(uint16_t firstUnitIndex)
         return;
     }
 
-    if (firstUnitIndex == 0x000C)
+    if (firstUnitIndex == ENEMY_FORCE_FIRST_UNIT)
     {
         hasDeployedUnit = FALSE;
         memberOffset = firstDeployedMemberOffset;
@@ -1036,8 +1036,8 @@ void SelectStrafingArea(void)
     SelectTacticalMapCoordinate(0x0018);
     ArtilleryShellingActive = 0x00;
     RollingBarrageActive = 0x00;
-    RollingBarrageEndMapX = UnitTargetMapX[0x18];
-    RollingBarrageEndMapY = UnitTargetMapY[0x18];
+    RollingBarrageEndMapX = UnitTargetMapX[TACTICAL_TARGET_MAP_CELL];
+    RollingBarrageEndMapY = UnitTargetMapY[TACTICAL_TARGET_MAP_CELL];
 }
 
 // 2208:25C4: replace the command-window text while preserving the tactical
@@ -1074,9 +1074,9 @@ void HighlightLanceFollowers(uint16_t leaderUnitIndex)
                 (int16_t) ((uint16_t) ScenarioUnitMapY[unitIndex] -
                     TacticalViewportMapY);
             if ((int16_t) TacticalCursorViewportX >= 0x00 &&
-                (int16_t) TacticalCursorViewportX < 0x13 &&
+                (int16_t) TacticalCursorViewportX < TACTICAL_VIEWPORT_WIDTH_CELLS &&
                 (int16_t) TacticalCursorViewportY >= 0x00 &&
-                (int16_t) TacticalCursorViewportY < 0x0C)
+                (int16_t) TacticalCursorViewportY < TACTICAL_VIEWPORT_HEIGHT_CELLS)
             {
                 DrawTacticalCursorOutline(0x05);
             }

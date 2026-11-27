@@ -237,9 +237,9 @@ void MoveUnitTowardMapCell(
                             &PersistentUnitRoster[lanceUnitIndex];
                         UnitWithdrawalState[lanceUnitIndex] |= 0x80;
                         if (EnemyCycleUnitIndex == lanceUnitIndex)
-                            EnemyCycleUnitIndex = 0xFFFF;
+                            EnemyCycleUnitIndex = TACTICAL_UNIT_NONE;
                         if (TacticalSelectedUnitIndex == lanceUnitIndex)
-                            TacticalSelectedUnitIndex = 0xFFFF;
+                            TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
                         lanceUnit->deploymentState = 0x00;
                         ++lanceUnitIndex;
                     } while ((lanceUnitIndex & 0x03) != 0x00);
@@ -252,9 +252,9 @@ void MoveUnitTowardMapCell(
             else if ((UnitWithdrawalState[unitIndex] & 0x01) != 0x00)
             {
                 if (EnemyCycleUnitIndex == unitIndex)
-                    EnemyCycleUnitIndex = 0xFFFF;
+                    EnemyCycleUnitIndex = TACTICAL_UNIT_NONE;
                 if (TacticalSelectedUnitIndex == unitIndex)
-                    TacticalSelectedUnitIndex = 0xFFFF;
+                    TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
                 UnitWithdrawalState[unitIndex] |= 0x80;
                 unitRecord->deploymentState = 0x00;
             }
@@ -940,7 +940,7 @@ void AdvanceUnitTacticalMovement(uint16_t unitIndex)
     {
         uint16_t lanceBase = unitIndex & 0x00FC;
         uint16_t lanceOffset;
-        for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
+        for (lanceOffset = 0x00; lanceOffset < LANCE_UNIT_COUNT; ++lanceOffset)
         {
             uint16_t leaderIndex = lanceBase + lanceOffset;
             if (IsCurrentLanceLeader(leaderIndex) != FALSE &&

@@ -234,7 +234,7 @@ void RebuildLanceFormationAfterLeaderLoss(uint16_t lanceBaseUnitIndex)
 
     int16_t greatestActiveOrderValue = 0x00;
     uint16_t lanceOffset;
-    for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
+    for (lanceOffset = 0x00; lanceOffset < LANCE_UNIT_COUNT; ++lanceOffset)
     {
         uint16_t unitIndex = lanceBaseUnitIndex + lanceOffset;
         if (UnitWasAttackedThisTick[unitIndex] != 0x00 &&
@@ -258,7 +258,7 @@ void RebuildLanceFormationAfterLeaderLoss(uint16_t lanceBaseUnitIndex)
             UnitTacticalOrderMode[leaderUnitIndex] !=
                 TACTICAL_ORDER_SCRIPTED_ROUTE)
         {
-            for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
+            for (lanceOffset = 0x00; lanceOffset < LANCE_UNIT_COUNT; ++lanceOffset)
             {
                 uint16_t unitIndex = lanceBaseUnitIndex + lanceOffset;
                 if (unitIndex != leaderUnitIndex)
@@ -278,7 +278,7 @@ void RebuildLanceFormationAfterLeaderLoss(uint16_t lanceBaseUnitIndex)
     uint16_t leaderFormationMode = UnitFormationMode[leaderUnitIndex] & 0x007F;
     uint16_t formationIndex = facingBand + leaderFormationMode;
     uint16_t formationSlot = 0x00;
-    for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
+    for (lanceOffset = 0x00; lanceOffset < LANCE_UNIT_COUNT; ++lanceOffset)
     {
         uint16_t followerUnitIndex = lanceBaseUnitIndex + lanceOffset;
         if (followerUnitIndex == leaderUnitIndex ||
@@ -443,7 +443,7 @@ int16_t CompareLanceCombatRatings(
     uint16_t lanceOffset;
     uint16_t ratingIndex;
 
-    if (secondUnitIndex < 0x00 || secondUnitIndex >= 0x18)
+    if (secondUnitIndex < 0x00 || secondUnitIndex >= TACTICAL_UNIT_COUNT)
         return 0x00;
     for (ratingIndex = 0x00; ratingIndex < 0x05; ++ratingIndex)
     {
@@ -451,7 +451,7 @@ int16_t CompareLanceCombatRatings(
         secondTotals[ratingIndex] = 0x00;
     }
 
-    for (lanceOffset = 0x00; lanceOffset < 0x04; ++lanceOffset)
+    for (lanceOffset = 0x00; lanceOffset < LANCE_UNIT_COUNT; ++lanceOffset)
     {
         uint16_t firstIndex = (firstUnitIndex & 0x00FC) + lanceOffset;
         uint16_t secondIndex = ((uint16_t) secondUnitIndex & 0x00FC) + lanceOffset;

@@ -46,7 +46,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
 
     TacticalCursorOutlineEnabled = 0x0001;
     TacticalUiSuppressed = 0x0000;
-    for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         ScenarioUnitMapX[unitIndex] =
             SavedScenarioUnitMapX[unitIndex];
@@ -78,7 +78,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
     StrafingRunActive = 0x00;
     RollingBarrageActive = 0x00;
     ArtilleryShellingActive = 0x00;
-    for (recordIndex = 0x0000; recordIndex < 0x000C; ++recordIndex)
+    for (recordIndex = 0x0000; recordIndex < TACTICAL_FORCE_UNIT_COUNT; ++recordIndex)
         UnitLastNarratedTarget[recordIndex] = TACTICAL_TARGET_NONE;
     for (recordIndex = 0x0000; recordIndex < 0x0009; ++recordIndex)
     {
@@ -88,9 +88,9 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
     for (recordIndex = 0x0000; recordIndex < 0x0006; ++recordIndex)
         TacticalResourceSlotState[recordIndex] = 0x00;
 
-    EnemyCycleUnitIndex = 0xFFFF;
-    TacticalSelectedUnitIndex = 0xFFFF;
-    TacticalBattleResult = 0x0000;
+    EnemyCycleUnitIndex = TACTICAL_UNIT_NONE;
+    TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
+    TacticalBattleResult = TACTICAL_BATTLE_RUNNING;
     TacticalProjectileCount = 0x0000;
     MapEdgeEffectCount = 0x0000;
     TacticalImpactQueueCount = 0x0000;
@@ -109,7 +109,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
 
     scenarioPath = ScenarioResourcePathText;
     scenarioPath[0x05] = scenarioCode;
-    fileHandle = OpenTrackedFile(scenarioPath, 0x0001);
+    fileHandle = OpenTrackedFile(scenarioPath, TRACKED_FILE_OPEN_READ);
     scenarioData = LoadedSceneFile.raw;
     ReadTrackedFile(fileHandle, scenarioData, 0x00000002UL);
     scenarioSize = (int16_t) (uint16_t) (scenarioData[0x00] |
@@ -211,7 +211,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
     case 0x0019:
     case 0x001B:
     case 0x001C:
-        for (unitIndex = 0x0000; unitIndex < 0x000C; ++unitIndex)
+        for (unitIndex = 0x0000; unitIndex < TACTICAL_FORCE_UNIT_COUNT; ++unitIndex)
             COPY_SCENARIO_RECORD(unitIndex, unitIndex);
         break;
     case 0x001A:
@@ -233,7 +233,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
     case 0x0020:
         for (unitIndex = 0x0000; unitIndex < 0x0008; ++unitIndex)
             COPY_SCENARIO_RECORD(unitIndex, unitIndex);
-        for (unitIndex = 0x0008; unitIndex < 0x000C; ++unitIndex)
+        for (unitIndex = 0x0008; unitIndex < ENEMY_FORCE_FIRST_UNIT; ++unitIndex)
             COPY_SCENARIO_RECORD(unitIndex + 0x0004, unitIndex);
         break;
     case 0x0021:
@@ -242,21 +242,21 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
         break;
     case 0x0022:
     case 0x0023:
-        for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+        for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
             COPY_SCENARIO_RECORD(unitIndex, unitIndex);
         break;
     default:
         break;
     }
 
-    for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         value = sceneHeader->unitType[unitIndex];
         unitRecord = &PersistentUnitRoster[unitIndex];
         if (value < 0xFE)
             InitializeScenarioUnitFromTemplate(value, unitIndex);
         else if (unitRecord->deploymentState != 0x00)
-            InitializeScenarioUnitFromTemplate(0xFFFF, unitIndex);
+            InitializeScenarioUnitFromTemplate(UNIT_TEMPLATE_NONE, unitIndex);
     }
 
     scenarioCase = (uint16_t) (ScenarioFileSuffix - 0x0031);
@@ -283,7 +283,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
         if (ScenarioUnitThirteenEnabled != 0x0000)
         {
             PersistentUnitRoster[0x0D].deploymentState = 0x01;
-            InitializeScenarioUnitFromTemplate(0xFFFF, 0x000D);
+            InitializeScenarioUnitFromTemplate(UNIT_TEMPLATE_NONE, 0x000D);
         }
         else
         {
@@ -293,7 +293,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
         if (ScenarioUnitFourteenEnabled != 0x0000)
         {
             PersistentUnitRoster[0x0E].deploymentState = 0x01;
-            InitializeScenarioUnitFromTemplate(0xFFFF, 0x000E);
+            InitializeScenarioUnitFromTemplate(UNIT_TEMPLATE_NONE, 0x000E);
         }
         else
         {
@@ -303,7 +303,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
         if ((uint16_t) ScenarioUnitFifteenState != 0x0000)
         {
             PersistentUnitRoster[0x0F].deploymentState = 0x01;
-            InitializeScenarioUnitFromTemplate(0xFFFF, 0x000F);
+            InitializeScenarioUnitFromTemplate(UNIT_TEMPLATE_NONE, 0x000F);
         }
         else
         {
@@ -349,7 +349,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
         break;
     }
 
-    for (unitIndex = 0x0000; unitIndex < 0x000C; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_FORCE_UNIT_COUNT; ++unitIndex)
     {
         if (sceneHeader->friendlyMapX[unitIndex] != 0xFF)
             ScenarioUnitMapX[unitIndex] =
@@ -365,7 +365,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
                 sceneHeader->enemyMapY[unitIndex];
     }
 
-    for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         value = ScenarioUnitMapX[unitIndex];
         UnitRouteTargetMapX[unitIndex] = value;
@@ -384,7 +384,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
         routeRecord->activeMapY = value;
     }
 
-    for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         value = sceneHeader->unitFacing[unitIndex] & 0x07;
         ScenarioUnitFacing[unitIndex] = value;
@@ -399,7 +399,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
         UpdateUnitSpriteForFacing(unitIndex, spriteFacing);
     }
 
-    for (unitIndex = 0x0000; unitIndex < 0x000C; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_FORCE_UNIT_COUNT; ++unitIndex)
     {
         value = sceneHeader->friendlyPilotRosterSlot[unitIndex];
         if (value != 0xFF)
@@ -410,7 +410,7 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
     if (ScenarioFileSuffix == 0x0042 &&
         ScenarioVariantIndex != 0x0000)
     {
-        for (unitIndex = 0x0000; unitIndex < 0x000C; ++unitIndex)
+        for (unitIndex = 0x0000; unitIndex < TACTICAL_FORCE_UNIT_COUNT; ++unitIndex)
         {
             value = (uint8_t) (UnitRouteTargetMapY[unitIndex] + 0xCC);
             UnitRouteTargetMapY[unitIndex] = value;
@@ -437,12 +437,12 @@ void LoadTacticalScenarioResources(uint8_t scenarioCode)
     SceneInstructionCursor = cursor;
     ExecuteSceneInstructions();
     TacticalSelectedUnitIndex = 0x0000;
-    if (TacticalSelectedUnitIndex != 0xFFFF)
+    if (TacticalSelectedUnitIndex != TACTICAL_UNIT_NONE)
     {
         TacticalCursorMapY = 0x0005;
         TacticalCursorMapX = 0x0005;
     }
-    for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
         UnitLanceFormationState[unitIndex] =
             (uint8_t) IsCurrentLanceLeader(unitIndex);
     SuppressCampaignClock = 0x0000;

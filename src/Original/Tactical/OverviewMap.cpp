@@ -95,7 +95,7 @@ void EnterTacticalOverview(void)
     if (showClockNotice == FALSE)
     {
         TacticalOverviewActive = TRUE;
-        TacticalSelectedUnitIndex = 0xFFFF;
+        TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
         TacticalOverviewScreenOriginX =
             (uint16_t) (((int16_t) 0x00A0 - (int16_t) MapWidth) >> 0x01);
         BuildTacticalOverviewMapBuffer(

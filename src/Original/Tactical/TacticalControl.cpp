@@ -146,7 +146,7 @@ void PrepareUnitTypeResources(uint16_t unitIndex)
         if (UnitTypeResourceCode[0x05] == 0x00)
             resourceSlot = 0x05;
     }
-    else if (unitIndex < 0x0C && UnitTypeResourceCode[0x06] == 0x00)
+    else if (unitIndex < ENEMY_FORCE_FIRST_UNIT && UnitTypeResourceCode[0x06] == 0x00)
         resourceSlot = 0x06;
 
     if (resourceSlot == 0x00FF)
@@ -400,7 +400,7 @@ uint16_t AdvanceTerrainDamageState(
     if (mapX < 0x00 || mapX >= (int16_t) MapWidth ||
         mapY < 0x00 || mapY >= (int16_t) MapHeight)
     {
-        return 0x03;
+        return TERRAIN_DAMAGE_STATE_MAXIMUM;
     }
 
     mapCellIndex = (uint16_t) ((uint16_t) mapY *
@@ -414,7 +414,7 @@ uint16_t AdvanceTerrainDamageState(
         (int16_t) terrainType <= (int16_t) destructibleTerrainTypeMaximum)
     {
         BeginTerrainDamageAtCell(mapX, mapY, terrainType);
-        return 0x03;
+        return TERRAIN_DAMAGE_STATE_MAXIMUM;
     }
 
     damageState = ReadTerrainDamageState(mapX, mapY);
@@ -481,7 +481,7 @@ void UpdateUnitHeatAccumulators(void)
     uint16_t unitIndex;
 
     // Verified against 1A1F:533A-5475.
-    for (unitIndex = 0x00; unitIndex < 0x18; ++unitIndex)
+    for (unitIndex = 0x00; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         RevengeUnitRecord *unitRecord =
             &PersistentUnitRoster[unitIndex];
@@ -731,7 +731,7 @@ uint16_t RunGameOptionsMenu(uint16_t embeddedMode)
                 break;
 
             case 0x02:
-                NarrationMode = (NarrationMode + 0x01) % 0x03;
+                NarrationMode = (NarrationMode + 0x01) % NARRATION_MODE_COUNT;
                 break;
 
             case 0x03:
@@ -755,7 +755,7 @@ uint16_t RunGameOptionsMenu(uint16_t embeddedMode)
             case 0x04:
                 if (embeddedMode != FALSE)
                 {
-                    CampaignFlags |= 0x02;
+                    CampaignFlags |= CAMPAIGN_FLAG_BATTLE_LOST;
                     CampaignMenuRequested = 0x01;
                     menuAction = 0x02;
                 }
@@ -765,7 +765,7 @@ uint16_t RunGameOptionsMenu(uint16_t embeddedMode)
                     if (ConfirmExitToDos() != FALSE)
                     {
                         menuAction = 0x04;
-                        TacticalBattleResult = 0x0004;
+                        TacticalBattleResult = TACTICAL_BATTLE_EXIT_TO_DOS;
                     }
                     else
                         menuAction = -0x01;
@@ -778,7 +778,7 @@ uint16_t RunGameOptionsMenu(uint16_t embeddedMode)
                     if (ConfirmExitToDos() != FALSE)
                     {
                         menuAction = 0x04;
-                        TacticalBattleResult = 0x0004;
+                        TacticalBattleResult = TACTICAL_BATTLE_EXIT_TO_DOS;
                     }
                     else
                         menuAction = -0x01;
@@ -869,8 +869,8 @@ void ScrollTacticalViewportToCursor(void)
     if (cursorX >= 0x13)
     {
         viewportX += cursorX - 0x12;
-        if (viewportX >= (int16_t) MapWidth - 0x13)
-            viewportX = (int16_t) MapWidth - 0x13;
+        if (viewportX >= (int16_t) MapWidth - TACTICAL_VIEWPORT_WIDTH_CELLS)
+            viewportX = (int16_t) MapWidth - TACTICAL_VIEWPORT_WIDTH_CELLS;
         cursorX = 0x12;
     }
     if (cursorY < 0x00)
@@ -883,8 +883,8 @@ void ScrollTacticalViewportToCursor(void)
     if (cursorY >= 0x0C)
     {
         viewportY += cursorY - 0x0B;
-        if (viewportY >= (int16_t) MapHeight - 0x0C)
-            viewportY = (int16_t) MapHeight - 0x0C;
+        if (viewportY >= (int16_t) MapHeight - TACTICAL_VIEWPORT_HEIGHT_CELLS)
+            viewportY = (int16_t) MapHeight - TACTICAL_VIEWPORT_HEIGHT_CELLS;
         cursorY = 0x0B;
     }
 
@@ -1104,7 +1104,7 @@ void HandleTacticalInput(uint16_t inputAction)
         HandleTacticalFunctionKey(inputAction);
 
     narrationUnit = ActiveNarrationSubject;
-    if ((int16_t) narrationUnit < 0x00 || narrationUnit >= 0x0C)
+    if ((int16_t) narrationUnit < 0x00 || narrationUnit >= ENEMY_FORCE_FIRST_UNIT)
         PendingNarrationDelay = FALSE;
     if (PendingNarrationDelay != FALSE)
     {

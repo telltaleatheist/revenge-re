@@ -9,6 +9,10 @@
 #include "Tactical/Tactical.h"
 #include "revenge/debug.h"
 
+/* A center-torso critical hits the engine when a second 2D6 roll comes in
+ * under 7. */
+constexpr int BATTLETECH_2D6_ENGINE_CRITICAL_LIMIT = 0x07;
+
 // 2D1B:1E2B's damage past the armour: the location's critical rolls, then
 // its internal structure; a location brought to zero is destroyed with its
 // equipment and the unit's ratings are recomputed.
@@ -41,7 +45,7 @@ static void ApplyInternalStructureDamage(
 
     if (internalLocation == BATTLEMECH_LOCATION_CENTER_TORSO &&
         Roll2D6() >= BATTLETECH_2D6_CRITICAL_TARGET &&
-        Roll2D6() < 0x07)
+        Roll2D6() < BATTLETECH_2D6_ENGINE_CRITICAL_LIMIT)
     {
         // V: three center-torso engine criticals destroy the unit.
         ++targetUnit->engineHits;

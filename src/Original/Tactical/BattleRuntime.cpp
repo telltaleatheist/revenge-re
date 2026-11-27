@@ -108,7 +108,7 @@ void RunTacticalBattle(uint16_t scenarioCode)
     REVENGE_PRESERVATION_TRACE("tactical: viewport redrawn\n");
 
     uint16_t unitIndex;
-    for (unitIndex = 0x00; unitIndex < 0x18; ++unitIndex)
+    for (unitIndex = 0x00; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         RevengeUnitRecord *unitRecord =
             &PersistentUnitRoster[unitIndex];
@@ -332,7 +332,7 @@ void RunTacticalInteractionLoop(void)
     REVENGE_PRESERVATION_TRACE("tactical: interaction refresh combat complete\n");
     TacticalClockDivider = 0x0080;
     scanUnitIndex = 0x0000;
-    for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+    for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         UpdateUnitEnemyVisibility(unitIndex);
         UpdateUnitEnemyProximityState(unitIndex);
@@ -344,7 +344,7 @@ void RunTacticalInteractionLoop(void)
     TacticalUpdateDelayTicks = TacticalUpdateDelayReloadTicks;
 
     while (completionRequested == 0x0000 &&
-        TacticalBattleResult == 0x0000)
+        TacticalBattleResult == TACTICAL_BATTLE_RUNNING)
     {
         inputAction = 0x0000;
         savedFrameCountdown = TacticalUpdateDelayTicks;
@@ -414,13 +414,13 @@ void RunTacticalInteractionLoop(void)
             {
                 UpdateUnitEnemyVisibility(scanUnitIndex);
                 UpdateUnitEnemyProximityState(scanUnitIndex);
-                if (++scanUnitIndex >= 0x0018)
+                if (++scanUnitIndex >= TACTICAL_UNIT_COUNT)
                     scanUnitIndex = 0x0000;
             }
-            for (unitIndex = 0x0000; unitIndex < 0x0018; unitIndex += 0x0004)
+            for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; unitIndex += LANCE_UNIT_COUNT)
                 RebuildLanceFormationAfterLeaderLoss(unitIndex);
             RefreshAllUnitCombatState(FALSE);
-            for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+            for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
             {
                 if (PersistentUnitRoster[unitIndex].deploymentState != 0x00)
                 {
@@ -436,7 +436,7 @@ void RunTacticalInteractionLoop(void)
             {
                 TacticalClockDivider = 0x0080;
                 AdvanceTacticalCampaignClock();
-                for (unitIndex = 0x0000; unitIndex < 0x0018; ++unitIndex)
+                for (unitIndex = 0x0000; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
                 {
                     if (UnitWasAttackedThisTick[unitIndex] != 0x00)
                         ++UnitConsecutiveAttackTicks[unitIndex];
@@ -458,13 +458,13 @@ void RunTacticalInteractionLoop(void)
         if (completionRequested == 0x0000)
         {
             completionRequested = 0x0001;
-            for (unitIndex = 0x0000; unitIndex < 0x000C; ++unitIndex)
+            for (unitIndex = 0x0000; unitIndex < TACTICAL_FORCE_UNIT_COUNT; ++unitIndex)
             {
                 if (PersistentUnitRoster[unitIndex].deploymentState != 0x00)
                     completionRequested = 0x0000;
             }
             enemyForceDefeated = 0x0001;
-            for (unitIndex = 0x000C; unitIndex < 0x0018; ++unitIndex)
+            for (unitIndex = ENEMY_FORCE_FIRST_UNIT; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
             {
                 if (PersistentUnitRoster[unitIndex].deploymentState != 0x00 &&
                     PersistentUnitRoster[unitIndex].walkMovement != 0x00)
@@ -473,20 +473,20 @@ void RunTacticalInteractionLoop(void)
                 }
             }
             if (enemyForceDefeated != 0x0000)
-                TacticalBattleResult = 0x0002;
+                TacticalBattleResult = TACTICAL_BATTLE_WON;
         }
         if (PersistentUnitRoster[0x00].deploymentState == 0x00)
             completionRequested = 0x0001;
     }
 
     if (PersistentUnitRoster[0x00].deploymentState == 0x00)
-        TacticalBattleResult = 0x0003;
+        TacticalBattleResult = TACTICAL_BATTLE_ENDED;
     if (ScenarioFileSuffix == 0x0053 &&
         PersistentUnitRoster[0x14].deploymentState != 0x00 &&
         PersistentUnitRoster[0x14].walkMovement == 0x00)
     {
-        CampaignFlags &= 0xFDFF;
-        CampaignFlags |= 0x0400;
+        CampaignFlags &= (uint16_t) ~CAMPAIGN_FLAG_MILESTONE_UNKNOWN_05;
+        CampaignFlags |= CAMPAIGN_FLAG_COMMANDER_CRIPPLED;
     }
     if (PendingNarrationDelay != 0x0000 &&
         (int16_t) NarrationMessageCategory >= 0x000B &&
@@ -500,11 +500,11 @@ void RunTacticalInteractionLoop(void)
         ShowPendingNarrationPrompt();
         enemyForceDefeated = 0x0000;
     }
-    if (TacticalBattleResult == 0x0002 &&
+    if (TacticalBattleResult == TACTICAL_BATTLE_WON &&
         enemyForceDefeated != 0x0000)
     {
         changedEnemyRecord = 0x0000;
-        for (unitIndex = 0x000C; unitIndex < 0x0018; ++unitIndex)
+        for (unitIndex = ENEMY_FORCE_FIRST_UNIT; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
         {
             if (PersistentUnitRoster[unitIndex].deploymentState != 0x00 &&
                 PersistentUnitRoster[unitIndex].walkMovement == 0x00)
@@ -521,7 +521,7 @@ void RunTacticalInteractionLoop(void)
         }
         if (changedEnemyRecord != 0x0000)
         {
-            TacticalSelectedUnitIndex = 0xFFFF;
+            TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
             RefreshTacticalDisplay(FALSE);
             PendingNarrationDelay = NARRATION_DELAY_MS;
             ActiveNarrationSubject = 0x0000;
@@ -561,7 +561,7 @@ void RunTacticalInteractionLoop(void)
         }
     }
     if (PersistentUnitRoster[0x00].deploymentState == 0x00)
-        TacticalBattleResult = 0x0003;
+        TacticalBattleResult = TACTICAL_BATTLE_ENDED;
     if (TacticalOverviewActive != 0x0000)
     {
         for (unitIndex = 0x0000; unitIndex < 0x0009; ++unitIndex)
@@ -576,33 +576,33 @@ void RunTacticalInteractionLoop(void)
     MapEdgeEffectCount = 0x0000;
     TerrainDamageQueueWordCount = 0x0000;
     if (PersistentUnitRoster[0x00].deploymentState == 0x00)
-        CampaignFlags |= 0x0002;
+        CampaignFlags |= CAMPAIGN_FLAG_BATTLE_LOST;
     if (PersistentUnitRoster[0x01].deploymentState == 0x00)
-        CampaignFlags |= 0x0008;
+        CampaignFlags |= CAMPAIGN_FLAG_UNIT_1_LOST;
     if (ScenarioFileSuffix == 0x0037 &&
         PersistentUnitRoster[0x01].deploymentState == 0x00)
     {
         CampaignFlags |= 0x0010;
     }
     if (CampaignClockState[0x00] >= 0x0C)
-        CampaignFlags |= 0x0040;
+        CampaignFlags |= CAMPAIGN_FLAG_CLOCK_PAST_LIMIT;
     if ((ScenarioFileSuffix == 0x0036 ||
             ScenarioFileSuffix == 0x0037) &&
         (CampaignClockState[0x00] > 0x07 ||
             (CampaignClockState[0x00] == 0x07 &&
                 CampaignClockState[0x01] >= 0x1E)))
     {
-        CampaignFlags |= 0x0040;
+        CampaignFlags |= CAMPAIGN_FLAG_CLOCK_PAST_LIMIT;
     }
     TacticalClockSubtick = 0x00;
     if (completionRequested != 0x0000)
-        TacticalBattleResult = 0x0003;
+        TacticalBattleResult = TACTICAL_BATTLE_ENDED;
     switch (TacticalBattleResult)
     {
-    case 0x0002:
-        CampaignFlags |= 0x0001;
+    case TACTICAL_BATTLE_WON:
+        CampaignFlags |= CAMPAIGN_FLAG_BATTLE_WON;
         break;
-    case 0x0004:
+    case TACTICAL_BATTLE_EXIT_TO_DOS:
         VideoPathUnavailable = 0x01;
         break;
     default:
@@ -614,7 +614,7 @@ void RunTacticalInteractionLoop(void)
         PersistentUnitRoster[LastAttackingUnitIndex].damageModel ==
             UNIT_DAMAGE_MODEL_BATTLEMECH)
     {
-        CampaignFlags |= 0x0004;
+        CampaignFlags |= CAMPAIGN_FLAG_LOST_TO_BATTLEMECH;
     }
     /* DOS finished the effect from IRQ0 while this loop spun; the port
 	 * services its timers here, as the other waits on the effect do. */
@@ -629,7 +629,7 @@ void RunTacticalInteractionLoop(void)
 void LoadUnitTemplateRecord(int16_t unitType)
 {
     char *templatePath = UnitTemplatePath;
-    int16_t fileHandle = OpenTrackedFile(templatePath, 0x01);
+    int16_t fileHandle = OpenTrackedFile(templatePath, TRACKED_FILE_OPEN_READ);
     int32_t fileOffset = (int32_t) unitType * UNIT_RECORD_SIZE;
 
     SeekTrackedFile(fileHandle, fileOffset, 0x00);
@@ -683,7 +683,7 @@ void InitializeTacticalUnitRuntime(void)
     {
         TacticalSlotSpriteState[0x06] = 0x00;
         deployedUnitCount = 0x00;
-        for (unitIndex = 0x08; unitIndex < 0x0C; ++unitIndex)
+        for (unitIndex = 0x08; unitIndex < ENEMY_FORCE_FIRST_UNIT; ++unitIndex)
         {
             RevengeUnitRecord *unitRecord =
                 &PersistentUnitRoster[unitIndex];

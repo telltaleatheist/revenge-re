@@ -13,6 +13,8 @@ void DrawCombatRatingDescription(
 void DrawTacticalUnitControlPanel(uint16_t unitIndex);
 void PrepareScenarioUnitRosters(void);
 uint8_t AssignScenarioLanceAllegiances(uint16_t scenarioAllegianceIndex);
+/* InitializeScenarioUnitFromTemplate's unit type when no template is loaded. */
+inline constexpr uint16_t UNIT_TEMPLATE_NONE = 0xFFFF;
 void InitializeScenarioUnitFromTemplate(
     uint16_t unitType,
     uint16_t unitIndex);

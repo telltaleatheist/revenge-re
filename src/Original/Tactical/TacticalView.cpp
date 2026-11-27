@@ -145,7 +145,7 @@ void DrawWeaponAttackTrace(
 
     if (TacticalOverviewActive != FALSE)
         return;
-    traceColor = attackerUnitIndex < 0x0C ? 0x05 : 0x08;
+    traceColor = attackerUnitIndex < ENEMY_FORCE_FIRST_UNIT ? 0x05 : 0x08;
     if (offsetEndpoints != FALSE)
         traceColor = (LOW_WORD(GameAnimationTicks) & 0x08) ^ 0x0F;
     if (weaponIndex <= WEAPON_ER_PPC)
@@ -154,7 +154,7 @@ void DrawWeaponAttackTrace(
             DrawClippedWeaponTraceLine(
                 (int16_t) (uint16_t) (sourceX + 0x02), sourceY,
                 (int16_t) (uint16_t) (targetX + 0x02), targetY,
-                attackerUnitIndex < 0x0C ? 0x04 : 0x06, FALSE);
+                attackerUnitIndex < ENEMY_FORCE_FIRST_UNIT ? 0x04 : 0x06, FALSE);
         if (offsetEndpoints == FALSE && weaponIndex >= WEAPON_LARGE_LASER)
             DrawClippedWeaponTraceLine(
                 (int16_t) (uint16_t) (sourceX + 0x01), sourceY,
@@ -236,7 +236,7 @@ int16_t MapUnitToTacticalStatusSlot(uint16_t unitIndex)
     uint16_t lanceBase;
 
     statusSlot = -0x01;
-    if ((int16_t) unitIndex >= 0x0C)
+    if ((int16_t) unitIndex >= ENEMY_FORCE_FIRST_UNIT)
         return 0x07;
 
     if ((int16_t) unitIndex < 0x04)
@@ -279,7 +279,7 @@ void RefreshTacticalStatusSlotStates(void)
     FirstLanceOrdersEnabled = 0x00;
     PrimaryStatusHighlightColor = 0x0F;
 
-    for (unitIndex = 0x00; unitIndex < 0x0C; ++unitIndex)
+    for (unitIndex = 0x00; unitIndex < TACTICAL_FORCE_UNIT_COUNT; ++unitIndex)
     {
         statusSlot = MapUnitToTacticalStatusSlot(unitIndex);
         if (statusSlot == -0x01)
@@ -356,7 +356,7 @@ void ApplyScenarioMissileUpgradeAvailability(void)
     uint16_t hasEligibleSrm;
     uint16_t hasEligibleLrm;
 
-    for (unitIndex = 0x00; unitIndex < 0x0C; ++unitIndex)
+    for (unitIndex = 0x00; unitIndex < TACTICAL_FORCE_UNIT_COUNT; ++unitIndex)
     {
         unitRecord = &PersistentUnitRoster[unitIndex];
         hasEligibleSrm =

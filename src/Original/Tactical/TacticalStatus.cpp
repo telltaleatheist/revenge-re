@@ -267,10 +267,10 @@ void ApplyAreaTerrainAndUnitDamage(
     uint16_t adjacentMapY = impactMapY + 0x01;
 
     QueueTacticalImpactVisual(mapX, mapY, visualEffectType);
-    AdvanceTerrainDamageState(mapX, mapY, 0x03);
+    AdvanceTerrainDamageState(mapX, mapY, TERRAIN_DAMAGE_STATE_MAXIMUM);
 
     uint16_t unitIndex;
-    for (unitIndex = 0x00; unitIndex < 0x18; ++unitIndex)
+    for (unitIndex = 0x00; unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
     {
         RevengeUnitRecord *unitRecord =
             &PersistentUnitRoster[unitIndex];
@@ -298,7 +298,7 @@ void FormatUnitDurabilityPercentage(int16_t unitIndex)
     uint16_t percentage;
 
     CalculateUnitDurabilityTotals(unitRecord);
-    if (unitIndex >= 0x0C)
+    if (unitIndex >= ENEMY_FORCE_FIRST_UNIT)
     {
         percentage = (uint16_t) (((uint32_t) CurrentUnitDurabilityTotal * 0x0A) /
                          MaximumUnitDurabilityTotal) *
@@ -519,7 +519,7 @@ void DrawSelectedUnitStatusPanel(void)
             ActiveNarrationSubject);
 
     selectedUnitIndex = TacticalSelectedUnitIndex;
-    if (selectedUnitIndex == 0xFFFF)
+    if (selectedUnitIndex == TACTICAL_UNIT_NONE)
     {
         viewportCellIndex = (uint16_t) (TacticalCursorViewportY *
                 TACTICAL_VIEWPORT_WIDTH_CELLS +
@@ -533,7 +533,7 @@ void DrawSelectedUnitStatusPanel(void)
             mapY = (uint16_t) (TacticalViewportMapY +
                 TacticalCursorViewportY);
             for (unitIndex = 0x0000;
-                unitIndex < 0x0018 && selectedUnitIndex == 0xFFFF;
+                unitIndex < TACTICAL_UNIT_COUNT && selectedUnitIndex == TACTICAL_UNIT_NONE;
                 ++unitIndex)
             {
                 unitRecord = &PersistentUnitRoster[unitIndex];
@@ -547,7 +547,7 @@ void DrawSelectedUnitStatusPanel(void)
         }
     }
 
-    if (selectedUnitIndex == 0xFFFF)
+    if (selectedUnitIndex == TACTICAL_UNIT_NONE)
     {
         HideMouseCursorOverlay();
         DrawTileAlignedText(
@@ -569,10 +569,10 @@ void DrawSelectedUnitStatusPanel(void)
         ActiveTextBackgroundColor = 0x000C;
         drawUnitDetails = TRUE;
 
-        if (selectedUnitIndex >= 0x000C)
+        if (selectedUnitIndex >= ENEMY_FORCE_FIRST_UNIT)
         {
             HideMouseCursorOverlay();
-            if (TacticalSelectedUnitIndex == 0xFFFF &&
+            if (TacticalSelectedUnitIndex == TACTICAL_UNIT_NONE &&
                 (cursorSpriteId & 0x00FF) == 0x00EF)
             {
                 ClearActiveTextWindow();
@@ -596,9 +596,9 @@ void DrawSelectedUnitStatusPanel(void)
             if (selectedUnitIndex < 0x0004 ||
                 IsCurrentLanceLeader(selectedUnitIndex) != FALSE)
             {
-                RenderFormattedText(selectedUnitIndex < 0x000C ? FriendlyUnitStatusHeading : EnemyUnitStatusHeading);
+                RenderFormattedText(selectedUnitIndex < ENEMY_FORCE_FIRST_UNIT ? FriendlyUnitStatusHeading : EnemyUnitStatusHeading);
             }
-            if (selectedUnitIndex >= 0x000C)
+            if (selectedUnitIndex >= ENEMY_FORCE_FIRST_UNIT)
             {
                 ActiveTextForegroundColor = 0x0006;
                 EnemyCycleUnitIndex = selectedUnitIndex;
