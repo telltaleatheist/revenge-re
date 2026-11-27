@@ -16,7 +16,7 @@ word16 *OriginalData_DigitalSoundDriverDescriptorOffsets(void)
 struct DigitalSampleDescriptor *
 OriginalData_DigitalSamplePlaybackDescriptors(void)
 {
-	return DigitalSoundData.Layout.SampleDescriptors;
+	return DigitalSamplePlaybackDescriptorTable;
 }
 
 struct DigitalWeaponEffectRecord *OriginalData_DigitalWeaponEffectTable(void)

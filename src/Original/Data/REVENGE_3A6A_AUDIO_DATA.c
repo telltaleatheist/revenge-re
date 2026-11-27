@@ -11,13 +11,13 @@
  * The host materializes that segmented data pointer when it initializes the
  * DOS memory image; keeping this definition independent preserves its use by
  * data-only verification targets. */
-/* Exact initialized words recovered from REVENGE.EXE DS:624A-6265. The
+/* The initialized words of DS:624A-6265. The
  * sequence service uses the beat and measure divisors before a track's first
  * tempo/time-signature events are dispatched. */
 MIDISequenceState MIDISequence =
 {
 	0x0078, 0x1110, 0x2D00, 0x0000,
-	0x0060, 0x0004, { 0x0000, 0x0000 },
+	0x0060, 0x0004, NULL,
 	0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
 	0x00, 0x00
 };
@@ -50,6 +50,8 @@ const word16 SpeakerMIDIFrequencyDivisors[0x72] =
 /* DS:593E-5F6A, the digital sound data typed; the story's media, placed at
  * start (original_import_pieces.txt). */
 DigitalSoundDataImage DigitalSoundData;
+/* DS:5950, the original's sample descriptors (in the bytes above), typed. */
+DigitalSampleDescriptor DigitalSamplePlaybackDescriptorTable[0x0F];
 
 DigitalSampleDescriptor *ActiveDigitalSampleDescriptor;
 DigitalDriverQueue ActiveDigitalDriverQueue;
@@ -66,20 +68,22 @@ word16 NarrationEmphasis;
 byte PCSpeakerEffectStreamData[
 	PC_SPEAKER_EFFECT_STREAM_BYTE_COUNT];
 
-const DosAddress PCSpeakerEffectStreamPointerTable[
+/* DS:58DB: each far pointer, DS:5642 plus the offset here. */
+const byte *const PCSpeakerEffectStreamPointerTable[
 	PC_SPEAKER_EFFECT_COUNT] =
 {
-	{ 0x5642, 0x3A6A }, { 0x5669, 0x3A6A },
-	{ 0x5688, 0x3A6A }, { 0x56A5, 0x3A6A },
-	{ 0x56E4, 0x3A6A }, { 0x575A, 0x3A6A },
-	{ 0x579D, 0x3A6A }, { 0x57AF, 0x3A6A },
-	{ 0x57BE, 0x3A6A }, { 0x57C9, 0x3A6A },
-	{ 0x57DE, 0x3A6A }, { 0x57F7, 0x3A6A },
-	{ 0x584A, 0x3A6A }, { 0x5863, 0x3A6A },
-	{ 0x5892, 0x3A6A }, { 0x589D, 0x3A6A }
+	PCSpeakerEffectStreamData + 0x000, PCSpeakerEffectStreamData + 0x027,
+	PCSpeakerEffectStreamData + 0x046, PCSpeakerEffectStreamData + 0x063,
+	PCSpeakerEffectStreamData + 0x0A2, PCSpeakerEffectStreamData + 0x118,
+	PCSpeakerEffectStreamData + 0x15B, PCSpeakerEffectStreamData + 0x16D,
+	PCSpeakerEffectStreamData + 0x17C, PCSpeakerEffectStreamData + 0x187,
+	PCSpeakerEffectStreamData + 0x19C, PCSpeakerEffectStreamData + 0x1B5,
+	PCSpeakerEffectStreamData + 0x208, PCSpeakerEffectStreamData + 0x221,
+	PCSpeakerEffectStreamData + 0x250, PCSpeakerEffectStreamData + 0x25B
 };
 
 _Static_assert(sizeof(PCSpeakerEffectStreamData) == 0x0299,
 	"The reconstructed DS:5642-58DA speaker stream data must be exact.");
-_Static_assert(sizeof(PCSpeakerEffectStreamPointerTable) == 0x0040,
-	"The reconstructed DS:58DB-591A far-pointer table must be exact.");
+_Static_assert(sizeof(PCSpeakerEffectStreamPointerTable) /
+	sizeof(PCSpeakerEffectStreamPointerTable[0]) == 0x10,
+	"DS:58DB-591A holds a far pointer for each of the 10h effects.");

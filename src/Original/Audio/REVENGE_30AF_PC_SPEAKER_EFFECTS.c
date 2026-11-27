@@ -15,13 +15,9 @@ void PlayPCSpeakerEffectByIndex(word16 effectId)
 {
 	if (SoundEffectsEnabled != FALSE)
 	{
-		DosAddress effectStream =
-			PCSpeakerEffectStreamPointerTable[effectId];
-
 		AudioLog_ToneEffect(effectId);
 		StartPCSpeakerEffectStream(
-			PCSpeakerEffectStreamData +
-			(effectStream.offset - PC_SPEAKER_EFFECT_STREAM_FIRST_OFFSET));
+			PCSpeakerEffectStreamPointerTable[effectId]);
 	}
 }
 

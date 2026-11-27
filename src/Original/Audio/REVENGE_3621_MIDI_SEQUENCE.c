@@ -137,8 +137,7 @@ uint16 StartMIDISequence(const byte *midiData, uint16 playbackFlags)
 	cursor = track + 0x08;
 	MIDISequence.MIDITicksUntilNextEvent =
 		ReadMIDIVariableLengthQuantity(&cursor);
-	MIDISequence.MIDIStreamCursor = DosAddress_FromValue(
-		HostFarPointer_Encode(cursor));
+	MIDISequence.MIDIStreamCursor = cursor;
 	MIDISequence.MIDIPlaybackFlags = playbackFlags;
 	MIDISequence.MIDIBeatTickRemainder = 0x0000;
 	MIDISequence.MIDIMeasureBeatRemainder = 0x0000;
@@ -224,8 +223,7 @@ void ServiceMIDISequenceTick(void)
 	if (MIDISequence.MIDIPlaybackStateBusy == TRUE)
 		return;
 
-	const byte *cursor = (const byte *) HostFarPointer_Resolve(
-		DosAddress_ToValue(MIDISequence.MIDIStreamCursor));
+	const byte *cursor = MIDISequence.MIDIStreamCursor;
 	while ((int16) MIDISequence.MIDITicksUntilNextEvent >= 0x00)
 	{
 		byte status = *cursor++;
@@ -287,8 +285,7 @@ void ServiceMIDISequenceTick(void)
 
 			case 0x2F:
 				StopMIDISequence();
-				MIDISequence.MIDIStreamCursor = DosAddress_FromValue(
-					HostFarPointer_Encode(cursor));
+				MIDISequence.MIDIStreamCursor = cursor;
 				return;
 
 			case 0x51:
@@ -385,8 +382,7 @@ void ServiceMIDISequenceTick(void)
 			ReadMIDIVariableLengthQuantity(&cursor);
 	}
 
-	MIDISequence.MIDIStreamCursor = DosAddress_FromValue(
-		HostFarPointer_Encode(cursor));
+	MIDISequence.MIDIStreamCursor = cursor;
 }
 
 // 3621:0388: uint32 DivideUnsigned32(uint32 dividend, uint32 divisor)

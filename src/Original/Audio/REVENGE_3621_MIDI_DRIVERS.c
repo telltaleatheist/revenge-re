@@ -229,8 +229,8 @@ void ActivateRolandMIDIDriver(word16 activationArgument)
 	RolandMPU401.WriteIndex = 0x0000;
 	RolandMPU401.ReadIndex = 0x0000;
 	RolandMPU401.ByteCount = 0x0000;
-	RolandMPU401.SavedIRQVector.offset = 0x0000;
-	RolandMPU401.SavedIRQVector.segment = 0x0000;
+	/* The original then cleared the IRQ 2 vector it saved (DS:6C0E), which
+	 * the rebuild never takes. */
 }
 
 // 3621:0EDA. The queue is drained as the original drained it; the original

@@ -69,7 +69,7 @@ static void TestSingleTrackSequence(void)
 	assert(sizeof(MIDIDriverDescriptorData) == 0x1B);
 	assert(sizeof(MIDISystemExclusiveState) == 0x28);
 	assert(sizeof(SpeakerMIDIRuntimeState) == 0x06);
-	assert(sizeof(RolandMPU401State) == 0x010A);
+	assert(sizeof(RolandMPU401.TransmitQueue) == 0x0100);
 	assert(SpeakerMIDIFrequencyDivisors[0x00] == 0xFDF1);
 	assert(SpeakerMIDIFrequencyDivisors[0x71] == 0x005F);
 	assert(SpeakerMIDIDriverDescriptor.ProbeOffset == 0x08B6);

@@ -52,17 +52,30 @@ typedef struct FarHeapBlockHeader
 	segptr32 nextFree;
 } FarHeapBlockHeader;
 
-#pragma pack(push, 1)
-typedef struct DigitalSampleDescriptor
+typedef struct DigitalSampleDescriptor DigitalSampleDescriptor;
+typedef struct DigitalDriverQueue DigitalDriverQueue;
+
+/* A queue's list (375F:0868, 08C9): each descriptor starts with its link,
+ * and the queue's end is a link of its own. The original kept each as two far
+ * pointers: the next descriptor, and the link pointing here (the queue's
+ * first, or the previous descriptor's next). */
+typedef struct DigitalSampleLink
 {
-	word16 NextDescriptorOffset;
-	word16 NextDescriptorSegment;
-	word16 PreviousLinkOffset;
-	word16 PreviousLinkSegment;
-	word16 OwnerQueueOffset;
-	word16 OwnerQueueSegment;
-	word16 SampleDataOffset;
-	word16 SampleDataSegment;
+	struct DigitalSampleLink *Next;
+	struct DigitalSampleLink **PreviousLink;
+} DigitalSampleLink;
+
+/* A descriptor's completion (its +2C far pointer): 31FB:06E9 for a weapon
+ * effect, else the driver's own 375F:0AE5, which does nothing (NULL). */
+typedef void (*DigitalSampleCompletion)(DigitalSampleDescriptor *descriptor);
+
+/* The original's descriptor is 34h bytes; each far pointer here is a
+ * reference, at the offset the comment gives. */
+struct DigitalSampleDescriptor
+{
+	DigitalSampleLink Link;                 /* +00 next, +04 previous link */
+	DigitalDriverQueue *OwnerQueue;         /* +08 */
+	const byte *SampleData;                 /* +0C */
 	word16 SampleLength;
 	word16 LoopStart;
 	word16 LoopEnd;
@@ -73,56 +86,58 @@ typedef struct DigitalSampleDescriptor
 	word16 SourceStepWhole;
 	word16 PlaybackHandlerOffset;
 	word16 SourceCursorFraction;
-	word16 SourceCursorOffset;
-	word16 SourceCursorSegment;
+	/* +24/+26: the cursor's offset and segment. Here, bytes from SampleData:
+	 * the original's offset began at the sample's own (normalized, under
+	 * 10h), so the two wrap alike for any sample under FFF0h bytes. */
+	word16 SourceCursor;
 	word16 RemainingFraction;
 	word16 RemainingWhole;
-	word16 CompletionCallbackOffset;
-	word16 CompletionCallbackSegment;
-	word16 CompletionArgumentLow;
-	word16 CompletionArgumentHigh;
-} DigitalSampleDescriptor;
+	DigitalSampleCompletion Completion;     /* +2C */
+	DigitalSampleDescriptor *CompletionArgument; /* +30 */
+};
 
-typedef struct DigitalDriverQueue
+/* The original's queue is 12h bytes: its first link at +00, the end link at
+ * +04 (the first points there while the queue is empty). */
+struct DigitalDriverQueue
 {
-	word16 FirstDescriptorOffset;
-	word16 FirstDescriptorSegment;
-	word16 SentinelNextOffset;
-	word16 SentinelNextSegment;
-	word16 SentinelOwnerOffset;
-	word16 SentinelOwnerSegment;
+	DigitalSampleLink *First;
+	DigitalSampleLink End;
 	word16 ActiveDescriptorCount;
 	word16 MixBias;
 	byte OutputSample;
 	byte ReservedOutputByte;
-} DigitalDriverQueue;
+};
 
-/* Exact CS:04BC-05D5 digital playback timer/mixer state. */
+/* The CS:04BC-05D5 digital playback timer/mixer state. CS:04BC, the IRQ0
+ * vector 38AE:0010 saved, has no field: the rebuild never takes the vector
+ * (375F:0A1D is Replaced). */
 typedef struct DigitalPlaybackRuntimeState
 {
-	DosAddress SavedSystemTimerVector;
 	word16 SystemTimerDivisor;
 	word16 SystemTimerAccumulator;
 	word16 InterruptNestingGuard;
 	word16 DigitalTimerReloadMinusOne;
 	uint16 PlaybackRateHz;
 	word16 WriteSampleCallbackOffset;
-	DosAddress ActiveDriverQueue;
+	DigitalDriverQueue *ActiveDriverQueue;  /* CS:04CE */
 	uint16 RequestedMixScale;
 	uint16 DriverMixScale;
 	word16 ActiveMixScale;
 	byte MixLookup[0x0100];
 } DigitalPlaybackRuntimeState;
 
-/* Exact contiguous DS:6F4C-6FA3 queues and calibration descriptor. The
- * rebuild has no calibration (375F:05D6): its queue and descriptor stay as
- * places in the original's data, unused. */
+/* The DS:6F4C-6FA3 queues and calibration descriptor (the second queue at
+ * DS:6F5E, the descriptor at DS:6F70). The rebuild has no calibration
+ * (375F:05D6): its queue and descriptor stay as places in the original's
+ * data, unused. */
 typedef struct DigitalPlaybackWorkingSet
 {
 	DigitalDriverQueue PlaybackTimerQueue;
 	DigitalDriverQueue CalibrationQueue;
 	DigitalSampleDescriptor CalibrationSample;
 } DigitalPlaybackWorkingSet;
+
+#pragma pack(push, 1)
 
 typedef struct DigitalPlaybackDescriptor
 {
@@ -155,37 +170,23 @@ typedef struct DigitalSoundEntryRecord
 typedef struct DigitalSoundDataLayout
 {
 	word16 DriverDescriptorOffsets[0x09];
-	DigitalSampleDescriptor SampleDescriptors[0x0F];
+	/* DS:5950: the original's 0Fh sample descriptors, 34h bytes each. The
+	 * port's are DigitalSamplePlaybackDescriptorTable, typed; these bytes
+	 * stay as the story's media gives them. */
+	byte SampleDescriptorPlaces[0x0F][0x34];
 	DigitalWeaponEffectRecord WeaponEffects[0x10];
 	DigitalSoundEntryRecord SoundEntries[0x16];
 	byte ScenarioCodeStrings[0x017D];
 } DigitalSoundDataLayout;
 #pragma pack(pop)
 
-_Static_assert(sizeof(DigitalSampleDescriptor) == 0x34,
-	"DigitalSampleDescriptor must retain its DOS layout");
-_Static_assert(sizeof(DigitalDriverQueue) == 0x12,
-	"DigitalDriverQueue must retain its DOS layout");
-_Static_assert(offsetof(DigitalPlaybackRuntimeState,
-	InterruptNestingGuard) == 0x08,
-	"digital playback IRQ nesting guard must remain at CS:04C4");
-_Static_assert(offsetof(DigitalPlaybackRuntimeState, MixLookup) == 0x1A,
-	"digital mix lookup must remain at CS:04D6");
-_Static_assert(sizeof(DigitalPlaybackRuntimeState) == 0x011A,
-	"digital playback state must retain CS:04BC-05D5 layout");
-_Static_assert(offsetof(DigitalPlaybackWorkingSet, CalibrationQueue) == 0x12,
-	"digital calibration queue must remain at DS:6F5E");
-_Static_assert(offsetof(DigitalPlaybackWorkingSet, CalibrationSample) == 0x24,
-	"digital calibration sample must remain at DS:6F70");
-_Static_assert(sizeof(DigitalPlaybackWorkingSet) == 0x58,
-	"digital playback working set must retain DS:6F4C-6FA3 layout");
 _Static_assert(sizeof(DigitalPlaybackDescriptor) == 0x0C,
 	"DigitalPlaybackDescriptor must retain its DOS layout");
 _Static_assert(sizeof(DigitalWeaponEffectRecord) == 0x0A,
 	"DigitalWeaponEffectRecord must retain its DOS layout");
 _Static_assert(sizeof(DigitalSoundEntryRecord) == 0x0B,
 	"DigitalSoundEntryRecord must retain its DOS layout");
-_Static_assert(offsetof(DigitalSoundDataLayout, SampleDescriptors) == 0x0012,
+_Static_assert(offsetof(DigitalSoundDataLayout, SampleDescriptorPlaces) == 0x0012,
 	"digital sample descriptors must begin at DS:5950");
 _Static_assert(offsetof(DigitalSoundDataLayout, WeaponEffects) == 0x031E,
 	"weapon effects must begin at DS:5C5C");
@@ -216,6 +217,7 @@ enum
 };
 
 extern DigitalSoundDataImage DigitalSoundData;
+extern DigitalSampleDescriptor DigitalSamplePlaybackDescriptorTable[0x0F];
 extern DigitalSampleDescriptor *ActiveDigitalSampleDescriptor;
 extern DigitalDriverQueue ActiveDigitalDriverQueue;
 extern word16 DigitalPlaybackRateHz;
@@ -505,7 +507,7 @@ void AttachDigitalDriverQueue(
 	DigitalDriverQueue *queue);
 void InitializeDigitalSampleDescriptor(
 	DigitalSampleDescriptor *descriptor,
-	segptr32 sampleData,
+	const byte *sampleData,
 	word16 sampleLength,
 	word16 playbackRateHz,
 	word16 playbackScale);
@@ -514,9 +516,8 @@ void ConfigureDigitalSampleTiming(
 	word16 playbackScale);
 void ConfigureDigitalSampleCompletion(
 	DigitalSampleDescriptor *descriptor,
-	segptr32 completionCallback,
-	word16 argumentLow,
-	word16 argumentHigh);
+	DigitalSampleCompletion completion,
+	DigitalSampleDescriptor *argument);
 void EnqueueDigitalSampleDescriptor(
 	DigitalSampleDescriptor *descriptor,
 	DigitalDriverQueue *queue);

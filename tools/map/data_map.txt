@@ -198,6 +198,7 @@ place GameAnimationTicks 3A6A:591F 4 table
 place TacticalUpdateDelayTicks 3A6A:5923 2 table
 place ScenarioLanceAllegianceTable 3A6A:5928 15 table
 place DigitalSoundData 3A6A:593E 62D import
+place DigitalSamplePlaybackDescriptorTable 3A6A:5950 30C import
 place VideoPixelAlignmentMasks 3A6A:5F6C 10 run
 place PackedPixelShiftCounts 3A6A:5F7C 6 run
 place ResourceCreateFileErrorText 3A6A:5F82 4 annotation
@@ -739,6 +740,7 @@ place WeaponDefinitions 3A6A:0435 159 table
 # Where there is no note, the two are one byte in the original and the run
 # must keep them equal (check_dump.py's agree lines); a note says why they
 # can differ for now.
+overlap DigitalSoundData DigitalSamplePlaybackDescriptorTable host pointer: the port's sample descriptors, typed; the media keeps the original's bytes at DS:5950
 overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
 overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable the selector's last byte is the first missile weapon's bonus (the original reads the bonus from DS:3D0D by weapon index, from WEAPON_LRM_5 on)
 overlap LinePrimaryYStep LinePrimaryXStep the original lays the two constant tables 4 bytes apart

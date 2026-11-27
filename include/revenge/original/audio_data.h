@@ -6,10 +6,9 @@
 #include <stddef.h>
 
 /*
- * Exact data map used by the shared timer and PC-speaker stream driver.
- * Layout assertions and address comments retain the segment-426B offsets.
+ * The shared timer and PC-speaker stream driver's state, segment 426B. The
+ * address comments give the original's offsets.
  */
-#pragma pack(push, 1)
 typedef struct RevengeMusicTimerState
 {
 	byte ReservedTimerPrefix[0x02];
@@ -23,12 +22,12 @@ typedef struct RevengeMusicTimerState
 	word16 MusicServiceCountdown;
 	word16 MusicServiceReload;
 	word16 MusicServiceBusy;
-	DosAddress ActiveSpeakerEffectStream;
-	word16 SpeakerEffectStreamCursor;
-	DosAddress PendingSpeakerEffectStream;
+	const byte *ActiveSpeakerEffectStream;   /* 426B:0012 */
+	word16 SpeakerEffectStreamCursor;        /* 426B:0016 */
+	const byte *PendingSpeakerEffectStream;  /* 426B:0018 */
 	word16 ReservedTimerStreamWord;
 	word16 SpeakerEffectTicksRemaining;
-	word16 MusicFrequencyDivisorTable[0x60];
+	word16 MusicFrequencyDivisorTable[0x60]; /* 426B:0020 */
 	byte SpeakerEffectPlaybackActive;
 	byte SpeakerEffectStartRequested;
 	byte SpeakerEffectStopRequested;
@@ -36,22 +35,9 @@ typedef struct RevengeMusicTimerState
 	byte SpeakerEffectDurationScale;
 	byte SpeakerEffectLoop1Remaining;
 	byte SpeakerEffectLoop2Remaining;
-	word16 MusicElapsedSubtick;
+	word16 MusicElapsedSubtick;              /* 426B:00E7 */
 	byte MusicElapsedUnit;
 } RevengeMusicTimerState;
-#pragma pack(pop)
-
-_Static_assert(sizeof(RevengeMusicTimerState) == 0xEA,
-	"The reconstructed 426B:0000-00E9 timer state must be exact.");
-_Static_assert(offsetof(RevengeMusicTimerState,
-	ActiveSpeakerEffectStream) == 0x12,
-	"The active speaker stream must remain at 426B:0012.");
-_Static_assert(offsetof(RevengeMusicTimerState,
-	MusicFrequencyDivisorTable) == 0x20,
-	"The speaker frequency table must remain at 426B:0020.");
-_Static_assert(offsetof(RevengeMusicTimerState,
-	MusicElapsedSubtick) == 0xE7,
-	"The elapsed subtick must remain at 426B:00E7.");
 
 extern RevengeMusicTimerState Seg426B;
 
@@ -64,14 +50,14 @@ enum
 
 extern byte PCSpeakerEffectStreamData[
 	PC_SPEAKER_EFFECT_STREAM_BYTE_COUNT];
-extern const DosAddress PCSpeakerEffectStreamPointerTable[
+/* DS:58DB, each effect's stream: the original's far pointers into DS:5642. */
+extern const byte *const PCSpeakerEffectStreamPointerTable[
 	PC_SPEAKER_EFFECT_COUNT];
 
 /* Offset and segment words at DS:B60A/B60C. */
 extern byte *MusicStagingBuffer;
 
-/* Exact standard-MIDI sequence state at DS:624A-6265. */
-#pragma pack(push, 1)
+/* The standard-MIDI sequence state at DS:624A-6265. */
 typedef struct MIDISequenceState
 {
 	word16 MIDIBeatsPerMinute;
@@ -80,8 +66,8 @@ typedef struct MIDISequenceState
 	word16 MIDITickRateRemainder;
 	word16 MIDITicksPerBeat;
 	word16 MIDIBeatsPerMeasure;
-	DosAddress MIDIStreamCursor;
-	word16 MIDIPlaybackFlags;
+	const byte *MIDIStreamCursor;  /* DS:6256 */
+	word16 MIDIPlaybackFlags;      /* DS:625A */
 	word16 MIDITicksUntilNextEvent;
 	word16 MIDIBeatTickRemainder;
 	word16 MIDIMeasureBeatRemainder;
@@ -89,14 +75,6 @@ typedef struct MIDISequenceState
 	byte MIDIPlaybackStateBusy;
 	byte MIDIRunningStatus;
 } MIDISequenceState;
-#pragma pack(pop)
-
-_Static_assert(sizeof(MIDISequenceState) == 0x1C,
-	"The reconstructed DS:624A-6265 MIDI sequence state must be exact.");
-_Static_assert(offsetof(MIDISequenceState, MIDIStreamCursor) == 0x0C,
-	"The MIDI stream cursor must remain at DS:6256.");
-_Static_assert(offsetof(MIDISequenceState, MIDIPlaybackFlags) == 0x10,
-	"The MIDI playback flags must remain at DS:625A.");
 
 extern MIDISequenceState MIDISequence;
 
@@ -261,11 +239,12 @@ _Static_assert(offsetof(AdLibInstrumentPatch, Carrier) == 0x06,
 
 extern AdLibInstrumentPatch MIDIInstrumentPatches[0x20];
 
-/* Exact MPU-401 saved vector and transmit queue at DS:6C0E-6D17. */
+/* The MPU-401 transmit queue at DS:6C12-6D17. DS:6C0E, the IRQ 2 vector the
+ * original saved, has no field: the rebuild never takes the vector
+ * (3621:0EDA). */
 #pragma pack(push, 1)
 typedef struct RolandMPU401State
 {
-	DosAddress SavedIRQVector;
 	byte TransmitQueue[0x0100];
 	word16 WriteIndex;
 	word16 ReadIndex;
@@ -273,12 +252,8 @@ typedef struct RolandMPU401State
 } RolandMPU401State;
 #pragma pack(pop)
 
-_Static_assert(sizeof(RolandMPU401State) == 0x010A,
-	"The original MPU-401 state occupies exactly 10Ah bytes.");
-_Static_assert(offsetof(RolandMPU401State, TransmitQueue) == 0x04,
-	"The MPU-401 transmit queue must remain at DS:6C12.");
-_Static_assert(offsetof(RolandMPU401State, WriteIndex) == 0x0104,
-	"The MPU-401 write index must remain at DS:6D12.");
+_Static_assert(offsetof(RolandMPU401State, WriteIndex) == 0x0100,
+	"The MPU-401 write index follows its queue (DS:6D12).");
 
 extern RolandMPU401State RolandMPU401;
 

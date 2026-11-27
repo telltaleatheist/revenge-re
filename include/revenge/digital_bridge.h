@@ -4,13 +4,10 @@
 #include "revenge/types.h"
 
 struct DigitalPlaybackDescriptor;
-struct DigitalSampleDescriptor;
 
 /* The two sampled-output descriptors the rebuild keeps (NULL for the
  * original's others, whose cards it has no driver for). */
 struct DigitalPlaybackDescriptor *
 	DigitalBridge_ResolvePlaybackDescriptor(word16 descriptorOffset);
-void DigitalBridge_InvokeSampleCompletion(
-	struct DigitalSampleDescriptor *descriptor);
 
 #endif

@@ -163,9 +163,9 @@ void LoadDigitalWeaponEffectBank(void);
 void ReleaseDigitalWeaponEffectBank(void);
 void DispatchWeaponEffect(int16 weaponEffectId);
 void PlayDigitalWeaponEffect(uint16 weaponEffectId);
+struct DigitalSampleDescriptor;
 void HandleDigitalWeaponEffectCompletion(
-    uint16 descriptorOffset,
-    uint16 descriptorSegment);
+    struct DigitalSampleDescriptor *descriptor);
 void PlayPCSpeakerEffectByIndex(uint16 effectId);
 
 int16 ParseDigitalSoundCatalog(

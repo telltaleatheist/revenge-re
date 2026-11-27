@@ -17,7 +17,7 @@
 #define DigitalSoundDriverDescriptorOffsets() \
 	(DigitalSoundData.Layout.DriverDescriptorOffsets)
 #define DigitalSamplePlaybackDescriptors() \
-	(DigitalSoundData.Layout.SampleDescriptors)
+	(DigitalSamplePlaybackDescriptorTable)
 #define DigitalWeaponEffectTable() \
 	(DigitalSoundData.Layout.WeaponEffects)
 #define DigitalSoundEntries() \
@@ -30,8 +30,8 @@
 // and the digital PCM record table. Effect 03h has an FFFFh digital resource
 // sentinel and is explicitly routed through the PC-speaker path.
 
-void HandleDigitalWeaponEffectCompletion(word16 descriptorOffset,
-	word16 descriptorSegment);
+void HandleDigitalWeaponEffectCompletion(
+	DigitalSampleDescriptor *descriptor);
 void PlayDigitalWeaponEffect(word16 weaponEffectId);
 
 // 31FB:00B3: void LoadDigitalWeaponEffectBank(void)
@@ -171,20 +171,18 @@ void PlayDigitalWeaponEffect(word16 weaponEffectId)
 		weaponEffectId, (unsigned long) effect->PackedBufferOffset,
 		(unsigned long) effect->SampleLength,
 		effect->PlaybackScale);
-	segptr32 sampleData = HostFarPointer_Encode(
-		DigitalWeaponSampleBuffer + effect->PackedBufferOffset);
 	InitializeDigitalSampleDescriptor(
 		ActiveDigitalSampleDescriptor,
-		sampleData, effect->SampleLength, DIGITAL_SOUND_SAMPLE_RATE_HZ,
+		DigitalWeaponSampleBuffer + effect->PackedBufferOffset, effect->SampleLength, DIGITAL_SOUND_SAMPLE_RATE_HZ,
 		DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
 	ConfigureDigitalSampleTiming(
 		ActiveDigitalSampleDescriptor,
 		effect->PlaybackScale);
+	/* 31FB:06E9, given the descriptor's own far pointer. */
 	ConfigureDigitalSampleCompletion(
 		ActiveDigitalSampleDescriptor,
-		MAKE_FAR_POINTER(0x31FB, 0x06E9),
-		FAR_OFFSET(ActiveDigitalSampleDescriptor),
-		FAR_SEGMENT(ActiveDigitalSampleDescriptor));
+		HandleDigitalWeaponEffectCompletion,
+		ActiveDigitalSampleDescriptor);
 	PrepareDigitalSamplePlayback(
 		ActiveDigitalSampleDescriptor);
 	EnqueueDigitalSampleDescriptor(
@@ -197,15 +195,13 @@ void PlayDigitalWeaponEffect(word16 weaponEffectId)
 }
 
 // 31FB:06E9: completion callback installed by PlayDigitalWeaponEffect.
-void HandleDigitalWeaponEffectCompletion(word16 descriptorOffset,
-	word16 descriptorSegment)
+void HandleDigitalWeaponEffectCompletion(
+	DigitalSampleDescriptor *descriptor)
 {
 	// Verified against 31FB:06E9-0741.
 	if (DigitalSoundDriverMutationGuard != FALSE)
 		return;
 
-	DigitalSampleDescriptor *descriptor = FAR_POINTER(DigitalSampleDescriptor,
-		descriptorSegment, descriptorOffset);
 	if (DigitalWeaponEffectRepeatCount != 0x00)
 	{
 		--DigitalWeaponEffectRepeatCount;
@@ -662,8 +658,7 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 				entry = &DigitalSoundEntries()[soundEntryIndex];
 				InitializeDigitalSampleDescriptor(
 					&DigitalSamplePlaybackDescriptors()[descriptorCount],
-					HostFarPointer_Encode(DigitalSoundBuffer +
-						entry->PackedBufferOffset),
+					DigitalSoundBuffer + entry->PackedBufferOffset,
 					entry->SampleLength,
 					DIGITAL_SOUND_SAMPLE_RATE_HZ,
 					DIGITAL_SOUND_UNITY_PLAYBACK_SCALE);
@@ -687,8 +682,7 @@ void PlayScenarioDigitalSoundSequence(int8 scenarioCode)
 				 * interrupts off; the rebuild plays the samples clean,
 				 * the game held as long. */
 				SDLBackend_PlaySpeech(
-					FAR_POINTER(byte, descriptor->SampleDataSegment,
-						descriptor->SampleDataOffset), descriptor->SampleLength,
+					descriptor->SampleData, descriptor->SampleLength,
 					DIGITAL_SOUND_SAMPLE_RATE_HZ);
 				AudioLog_PcmDone();
 			}

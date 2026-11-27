@@ -29,8 +29,7 @@ void InitializeDigitalSampleDescriptorCore(
 	word16 sampleLength,
 	word16 playbackScale,
 	word16 sourceRateHz,
-	word16 sampleOffset,
-	word16 sampleSegment);
+	const byte *sampleData);
 void CalculateDigitalSampleStep(
 	DigitalSampleDescriptor *descriptor,
 	word16 playbackScale);
@@ -40,10 +39,8 @@ word16 SetDigitalSampleLoopRange(
 	word16 loopEnd);
 void SetDigitalSampleCompletionCallback(
 	DigitalSampleDescriptor *descriptor,
-	word16 argumentLow,
-	word16 argumentHigh,
-	word16 callbackOffset,
-	word16 callbackSegment);
+	DigitalSampleDescriptor *argument,
+	DigitalSampleCompletion completion);
 void LinkDigitalSampleDescriptor(
 	DigitalDriverQueue *queue,
 	DigitalSampleDescriptor *descriptor);
@@ -62,8 +59,7 @@ uint32 RebuildDigitalMixLookup(int16 mixScale);
 void ServiceDigitalAudioTick(void);
 word16 ProgramDigitalPlaybackTimerRate(uint16 playbackRateHz);
 void HandleDigitalWeaponEffectCompletion(
-	word16 descriptorOffset,
-	word16 descriptorSegment);
+	DigitalSampleDescriptor *descriptor);
 // 375F:063B: void InstallDigitalPlaybackTimer(Stack uint16 wArg04)
 // Called from:
 //      PlayScenarioDigitalSoundSequence
@@ -124,19 +120,9 @@ void InitializeDigitalDriverQueue(DigitalDriverQueue *queue)
 //      InitializeDigitalDriverQueue
 void InitializeDigitalDriverQueueCore(DigitalDriverQueue *queue)
 {
-	uint32 queueAddress;
-	word16 queueOffset;
-	word16 queueSegment;
-
-	queueAddress = HostFarPointer_Register(queue, sizeof(*queue));
-	queueOffset = LOW_WORD(queueAddress);
-	queueSegment = HIGH_WORD(queueAddress);
-	queue->FirstDescriptorOffset = queueOffset + 0x04;
-	queue->FirstDescriptorSegment = queueSegment;
-	queue->SentinelNextOffset = 0x00;
-	queue->SentinelNextSegment = 0x00;
-	queue->SentinelOwnerOffset = queueOffset;
-	queue->SentinelOwnerSegment = queueSegment;
+	queue->First = &queue->End;
+	queue->End.Next = NULL;
+	queue->End.PreviousLink = &queue->First;
 	queue->ActiveDescriptorCount = 0x00;
 }
 
@@ -158,14 +144,10 @@ void InstallDigitalDriverQueueCallback(
 	DigitalPlaybackDescriptor *playbackDescriptor,
 	DigitalDriverQueue *queue)
 {
-	uint32 queueAddress;
-
 	/* CLI (375F:070F) goes. */
-	queueAddress = HostFarPointer_Register(queue, sizeof(*queue));
 	DigitalPlaybackRuntime.WriteSampleCallbackOffset =
 		playbackDescriptor->WriteSampleCallbackOffset;
-	DigitalPlaybackRuntime.ActiveDriverQueue =
-		DosAddress_FromValue(queueAddress);
+	DigitalPlaybackRuntime.ActiveDriverQueue = queue;
 	DigitalPlaybackRuntime.DriverMixScale =
 		playbackDescriptor->MixScale;
 	ApplyDigitalMixScale(
@@ -176,11 +158,11 @@ void InstallDigitalDriverQueueCallback(
 // Called from:
 //      PlayScenarioDigitalSoundSequence
 void InitializeDigitalSampleDescriptor(DigitalSampleDescriptor *descriptor,
-	segptr32 sampleData,
+	const byte *sampleData,
 	word16 sampleLength, word16 playbackRateHz, word16 formatScale)
 {
 	InitializeDigitalSampleDescriptorCore(descriptor, sampleLength, formatScale, playbackRateHz,
-		LOW_WORD(sampleData), HIGH_WORD(sampleData));
+		sampleData);
 }
 
 // 375F:0757: reconstructed C signature follows.
@@ -189,20 +171,19 @@ void InitializeDigitalSampleDescriptor(DigitalSampleDescriptor *descriptor,
 void InitializeDigitalSampleDescriptorCore(
 	DigitalSampleDescriptor *descriptor,
 	word16 sampleLength, word16 playbackScale, word16 sourceRateHz,
-	word16 sampleOffset, word16 sampleSegment)
+	const byte *sampleData)
 {
-	HostFarPointer_Register(descriptor, sizeof(*descriptor));
-	descriptor->SampleDataOffset = sampleOffset;
-	descriptor->SampleDataSegment = sampleSegment;
+	descriptor->SampleData = sampleData;
 	descriptor->SampleLength = sampleLength;
 	descriptor->SourceRateHz = sourceRateHz;
 	descriptor->PlaybackScale = playbackScale;
-	descriptor->OwnerQueueOffset = 0x00;
-	descriptor->OwnerQueueSegment = 0x00;
+	descriptor->OwnerQueue = NULL;
 	descriptor->SourceStepWhole = 0x01;
 	descriptor->SourceStepFraction = 0x00;
-	SetDigitalSampleCompletionCallback(descriptor, 0x00,
-		SetDigitalSampleLoopRange(descriptor, 0x00, 0x00), 0x00, 0x00);
+	/* The original passed the loop range's length (0) as the argument's
+	 * high word, with a low word of 0: no argument. */
+	SetDigitalSampleLoopRange(descriptor, 0x00, 0x00);
+	SetDigitalSampleCompletionCallback(descriptor, NULL, NULL);
 	descriptor->PlaybackHandlerOffset = DIGITAL_SAMPLE_HANDLER_IDLE;
 }
 
@@ -271,33 +252,21 @@ word16 SetDigitalSampleLoopRange(DigitalSampleDescriptor *descriptor,
 //      InitializeDigitalSampleDescriptorCore
 void SetDigitalSampleCompletionCallback(
 	DigitalSampleDescriptor *descriptor,
-	word16 argumentLow,
-	word16 argumentHigh,
-	word16 callbackOffset,
-	word16 callbackSegment)
+	DigitalSampleDescriptor *argument,
+	DigitalSampleCompletion completion)
 {
-	/* CLI (375F:0833) goes. */
-	descriptor->CompletionArgumentLow = argumentLow;
-	descriptor->CompletionArgumentHigh = argumentHigh;
-	if ((callbackSegment | callbackOffset) == 0x00)
-	{
-		descriptor->CompletionCallbackSegment = 0x375F;
-		descriptor->CompletionCallbackOffset = 0x0AE5;
-	}
-	else
-	{
-		descriptor->CompletionCallbackSegment = callbackSegment;
-		descriptor->CompletionCallbackOffset = callbackOffset;
-	}
+	/* CLI (375F:0833) goes. No completion is the driver's own, 375F:0AE5,
+	 * which returns at once: NULL here. */
+	descriptor->CompletionArgument = argument;
+	descriptor->Completion = completion;
 }
 
 // 375F:0814: stack-argument wrapper around the register-call callback core.
 void ConfigureDigitalSampleCompletion(
 	DigitalSampleDescriptor *descriptor,
-	segptr32 completionCallback, word16 argumentLow, word16 argumentHigh)
+	DigitalSampleCompletion completion, DigitalSampleDescriptor *argument)
 {
-	SetDigitalSampleCompletionCallback(descriptor, argumentLow, argumentHigh,
-		LOW_WORD(completionCallback), HIGH_WORD(completionCallback));
+	SetDigitalSampleCompletionCallback(descriptor, argument, completion);
 }
 
 // 375F:0852: reconstructed C signature follows.
@@ -316,36 +285,21 @@ void EnqueueDigitalSampleDescriptor(
 void LinkDigitalSampleDescriptor(DigitalDriverQueue *queue,
 	DigitalSampleDescriptor *descriptor)
 {
-	uint32 queueAddress;
-	uint32 descriptorAddress;
-	word16 queueOffset;
-	word16 queueSegment;
-	DigitalSampleDescriptor *nextDescriptor;
+	DigitalSampleLink *next;
 
-	queueAddress = HostFarPointer_Register(queue, sizeof(*queue));
-	descriptorAddress = HostFarPointer_Register(descriptor,
-		sizeof(*descriptor));
-	queueOffset = LOW_WORD(queueAddress);
-	queueSegment = HIGH_WORD(queueAddress);
-	if ((descriptor->OwnerQueueOffset | descriptor->OwnerQueueSegment) == 0x0000)
+	if (descriptor->OwnerQueue == NULL)
 	{
-		descriptor->OwnerQueueOffset = queueOffset;
-		descriptor->OwnerQueueSegment = queueSegment;
+		descriptor->OwnerQueue = queue;
 		/* CLI (375F:0877) goes. */
 		word16 previousCount = queue->ActiveDescriptorCount;
 		queue->ActiveDescriptorCount = previousCount + 0x01;
 		queue->MixBias = DigitalMixBiasOffsets[previousCount];
-		nextDescriptor = FAR_POINTER(DigitalSampleDescriptor,
-			queue->FirstDescriptorSegment, queue->FirstDescriptorOffset);
-		descriptor->NextDescriptorOffset =
-			LOW_WORD(HostFarPointer_Encode(nextDescriptor));
-		descriptor->NextDescriptorSegment = FAR_SEGMENT(nextDescriptor);
-		descriptor->PreviousLinkOffset = queueOffset;
-		descriptor->PreviousLinkSegment = queueSegment;
-		nextDescriptor->PreviousLinkOffset = LOW_WORD(descriptorAddress);
-		nextDescriptor->PreviousLinkSegment = HIGH_WORD(descriptorAddress);
-		queue->FirstDescriptorOffset = LOW_WORD(descriptorAddress);
-		queue->FirstDescriptorSegment = HIGH_WORD(descriptorAddress);
+		/* In front of the queue's first (its end while empty). */
+		next = queue->First;
+		descriptor->Link.Next = next;
+		descriptor->Link.PreviousLink = &queue->First;
+		next->PreviousLink = &descriptor->Link.Next;
+		queue->First = &descriptor->Link;
 	}
 }
 
@@ -364,31 +318,21 @@ void RemoveDigitalSampleDescriptor(
 void UnlinkDigitalSampleDescriptor(
 	DigitalSampleDescriptor *descriptor)
 {
-	if ((descriptor->OwnerQueueOffset | descriptor->OwnerQueueSegment) != 0x0000)
+	if (descriptor->OwnerQueue != NULL)
 	{
-		DigitalSampleDescriptor *nextDescriptor;
-		word16 *previousLink;
-		DigitalDriverQueue *queue;
+		DigitalSampleLink *next = descriptor->Link.Next;
+		DigitalSampleLink **previousLink = descriptor->Link.PreviousLink;
+		DigitalDriverQueue *queue = descriptor->OwnerQueue;
 		word16 activeCount;
 
 		/* CLI (375F:08D3) goes. */
-		nextDescriptor = FAR_POINTER(DigitalSampleDescriptor,
-			descriptor->NextDescriptorSegment, descriptor->NextDescriptorOffset);
-		previousLink = FAR_POINTER(word16,
-			descriptor->PreviousLinkSegment, descriptor->PreviousLinkOffset);
+		next->PreviousLink = previousLink;
+		*previousLink = next;
 
-		nextDescriptor->PreviousLinkOffset = descriptor->PreviousLinkOffset;
-		nextDescriptor->PreviousLinkSegment = descriptor->PreviousLinkSegment;
-		previousLink[0x00] = descriptor->NextDescriptorOffset;
-		previousLink[0x01] = descriptor->NextDescriptorSegment;
-
-		queue = FAR_POINTER(DigitalDriverQueue,
-			descriptor->OwnerQueueSegment, descriptor->OwnerQueueOffset);
 		activeCount = --queue->ActiveDescriptorCount;
 		queue->MixBias = activeCount == 0x0000 ? 0x0AF2 :
 			DigitalMixBiasOffsets[activeCount - 0x01];
-		descriptor->OwnerQueueOffset = 0x0000;
-		descriptor->OwnerQueueSegment = 0x0000;
+		descriptor->OwnerQueue = NULL;
 	}
 }
 
@@ -408,8 +352,7 @@ void ResetDigitalSamplePlayback(
 	DigitalSampleDescriptor *descriptor)
 {
 	descriptor->PlaybackHandlerOffset = DIGITAL_SAMPLE_HANDLER_IDLE;
-	descriptor->SourceCursorOffset = descriptor->SampleDataOffset;
-	descriptor->SourceCursorSegment = (word16) descriptor->SampleDataSegment;
+	descriptor->SourceCursor = 0x0000;
 	descriptor->SourceCursorFraction = 0x0000;
 	descriptor->RemainingFraction = 0x0000;
 	if (descriptor->LoopLength != 0x0000)
@@ -439,8 +382,8 @@ void FinishDigitalSampleLoopCore(
 	if (descriptor->PlaybackHandlerOffset == DIGITAL_SAMPLE_HANDLER_LOOP)
 	{
 		/* CLI (375F:0972) goes. */
-		descriptor->RemainingWhole = descriptor->SampleDataOffset +
-			descriptor->SampleLength - descriptor->SourceCursorOffset;
+		descriptor->RemainingWhole = descriptor->SampleLength -
+			descriptor->SourceCursor;
 		descriptor->PlaybackHandlerOffset = DIGITAL_SAMPLE_HANDLER_ONESHOT;
 	}
 }
@@ -550,7 +493,6 @@ uint32 RebuildDigitalMixLookup(int16 mixScale)
 	return MAKE_DWORD(LOW_WORD(accumulator), axResult);
 }
 
-#define InvokeDigitalSampleCompletion DigitalBridge_InvokeSampleCompletion
 
 /* 375F:0A1D, the IRQ0 handler InstallDigitalPlaybackTimer installed, is
  * Replaced: it acknowledged the PIC, ran ServiceDigitalAudioTick, and chained
@@ -562,9 +504,7 @@ uint32 RebuildDigitalMixLookup(int16 mixScale)
 // queue. The hardware receives the byte produced on the previous tick.
 void ServiceDigitalAudioTick(void)
 {
-	DigitalDriverQueue *queue = (DigitalDriverQueue *) HostFarPointer_Resolve(
-		DosAddress_ToValue(
-			DigitalPlaybackRuntime.ActiveDriverQueue));
+	DigitalDriverQueue *queue = DigitalPlaybackRuntime.ActiveDriverQueue;
 	word16 activeDescriptorCount = queue->ActiveDescriptorCount;
 	if (activeDescriptorCount == 0x0000)
 	{
@@ -578,8 +518,8 @@ void ServiceDigitalAudioTick(void)
 	case 0x032E: WriteSoundBlasterDigitalSample(queue->OutputSample); break;
 	}
 	word16 mixTableOffset = queue->MixBias;
-	DigitalSampleDescriptor *descriptor = FAR_POINTER(DigitalSampleDescriptor,
-		queue->FirstDescriptorSegment, queue->FirstDescriptorOffset);
+	DigitalSampleDescriptor *descriptor =
+		(DigitalSampleDescriptor *) queue->First;
 
 	for (word16 descriptorIndex = 0x0000;
 		descriptorIndex < activeDescriptorCount; ++descriptorIndex)
@@ -590,9 +530,8 @@ void ServiceDigitalAudioTick(void)
 		else if (handlerOffset == DIGITAL_SAMPLE_HANDLER_ONESHOT ||
 			handlerOffset == DIGITAL_SAMPLE_HANDLER_LOOP)
 		{
-			word16 sourceOffset = descriptor->SourceCursorOffset;
-			const byte *source = FAR_POINTER(byte,
-				descriptor->SourceCursorSegment, sourceOffset);
+			word16 sourceOffset = descriptor->SourceCursor;
+			const byte *source = descriptor->SampleData + sourceOffset;
 			uint32 remaining = MAKE_DWORD(descriptor->RemainingWhole,
 				descriptor->RemainingFraction);
 			uint32 sourceStep = MAKE_DWORD(descriptor->SourceStepWhole,
@@ -612,14 +551,15 @@ void ServiceDigitalAudioTick(void)
 				else
 				{
 					descriptor->PlaybackHandlerOffset = DIGITAL_SAMPLE_HANDLER_IDLE;
-					InvokeDigitalSampleCompletion(descriptor);
+					if (descriptor->Completion != NULL)
+						descriptor->Completion(descriptor->CompletionArgument);
 				}
 			}
 
 			mixTableOffset += *source;
 			uint32 sourceCursor = MAKE_DWORD(sourceOffset,
 				descriptor->SourceCursorFraction) + sourceStep;
-			descriptor->SourceCursorOffset = HIGH_WORD(sourceCursor);
+			descriptor->SourceCursor = HIGH_WORD(sourceCursor);
 			descriptor->SourceCursorFraction = LOW_WORD(sourceCursor);
 		}
 		else
@@ -628,9 +568,7 @@ void ServiceDigitalAudioTick(void)
 			return;
 		}
 
-		descriptor = FAR_POINTER(DigitalSampleDescriptor,
-			descriptor->NextDescriptorSegment,
-			descriptor->NextDescriptorOffset);
+		descriptor = (DigitalSampleDescriptor *) descriptor->Link.Next;
 	}
 
 	{

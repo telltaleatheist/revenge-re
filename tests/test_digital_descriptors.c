@@ -10,16 +10,10 @@ int main(void)
 	DigitalPlaybackDescriptor *playback;
 
 	assert(sizeof(DigitalPlaybackDescriptor) == 0x0C);
-	assert(sizeof(DigitalPlaybackRuntimeState) == 0x011A);
-	assert(sizeof(DigitalPlaybackWorkingSet) == 0x58);
 	assert(DigitalPlaybackRuntime.InterruptNestingGuard ==
 		0xFFFF);
 	assert(DigitalPlaybackRuntime.RequestedMixScale ==
 		0x0100);
-	assert((byte *) &DigitalPlaybackBuffers.CalibrationQueue -
-		(byte *) &DigitalPlaybackBuffers == 0x12);
-	assert((byte *) &DigitalPlaybackBuffers.CalibrationSample -
-		(byte *) &DigitalPlaybackBuffers == 0x24);
 
 	playback = DigitalBridge_ResolvePlaybackDescriptor(0x6EE2);
 	assert(playback == &SoundBlasterPlayback);
@@ -38,6 +32,56 @@ int main(void)
 		&DigitalPlaybackBuffers.PlaybackTimerQueue);
 	InstallDigitalDriverQueueCallback(&NullDigitalPlayback,
 		&DigitalPlaybackBuffers.PlaybackTimerQueue);
+	/* An empty queue: its first link is its end, which points back at it
+	 * (375F:06D5). */
+	assert(DigitalPlaybackBuffers.PlaybackTimerQueue.First ==
+		&DigitalPlaybackBuffers.PlaybackTimerQueue.End);
+	assert(DigitalPlaybackBuffers.PlaybackTimerQueue.End.Next == NULL);
+	assert(DigitalPlaybackBuffers.PlaybackTimerQueue.End.PreviousLink ==
+		&DigitalPlaybackBuffers.PlaybackTimerQueue.First);
+	assert(DigitalPlaybackRuntime.ActiveDriverQueue ==
+		&DigitalPlaybackBuffers.PlaybackTimerQueue);
+	/* Two descriptors linked (375F:0868): each goes in front, its previous
+	 * link the queue's first; unlinking (375F:08C9) mends the list either
+	 * way round. */
+	{
+		static const byte samples[0x04] = { 0x80, 0x80, 0x80, 0x80 };
+		DigitalDriverQueue queue;
+		DigitalSampleDescriptor first;
+		DigitalSampleDescriptor second;
+
+		InitializeDigitalDriverQueue(&queue);
+		InitializeDigitalSampleDescriptor(&first, samples, 0x0004, 0x1F40, 0x6633);
+		InitializeDigitalSampleDescriptor(&second, samples, 0x0004, 0x1F40, 0x6633);
+		EnqueueDigitalSampleDescriptor(&first, &queue);
+		EnqueueDigitalSampleDescriptor(&first, &queue); /* already queued: no change */
+		EnqueueDigitalSampleDescriptor(&second, &queue);
+		assert(queue.ActiveDescriptorCount == 0x0002);
+		assert(queue.MixBias == 0x0BF2);
+		assert(queue.First == &second.Link);
+		assert(second.Link.PreviousLink == &queue.First);
+		assert(second.Link.Next == &first.Link);
+		assert(first.Link.PreviousLink == &second.Link.Next);
+		assert(first.Link.Next == &queue.End);
+		assert(queue.End.PreviousLink == &first.Link.Next);
+		assert(first.OwnerQueue == &queue && second.OwnerQueue == &queue);
+
+		RemoveDigitalSampleDescriptor(&first);
+		assert(queue.ActiveDescriptorCount == 0x0001);
+		assert(queue.MixBias == 0x0AF2);
+		assert(second.Link.Next == &queue.End);
+		assert(queue.End.PreviousLink == &second.Link.Next);
+		assert(first.OwnerQueue == NULL);
+		RemoveDigitalSampleDescriptor(&first); /* not queued: no change */
+		assert(queue.ActiveDescriptorCount == 0x0001);
+
+		RemoveDigitalSampleDescriptor(&second);
+		assert(queue.ActiveDescriptorCount == 0x0000);
+		assert(queue.First == &queue.End);
+		assert(queue.End.PreviousLink == &queue.First);
+		assert(queue.End.Next == NULL);
+	}
+
 	/* The IRQ0 swap is now the game clock's sample tick, from the PIT's
 	 * divisor (1193182 / 8000 = 149) until the restore. */
 	PITCalibration.Channel0Divisor = 0x0400;

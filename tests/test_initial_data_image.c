@@ -41,10 +41,121 @@ typedef struct ImageRow
 	size_t stride;
 	size_t skipAt;
 	size_t skipSize;
+	/* An object whose far pointers are references: it writes the object as
+	 * the original lays it out (size bytes), each reference as the far
+	 * pointer the original holds there. */
+	void (*encode)(byte *originalBytes);
 } ImageRow;
 
-#define ROW(object, segment, offset) { #object, &(object), sizeof(object), (segment), (offset), 0, 0, 0 }
+#define ROW(object, segment, offset) { #object, &(object), sizeof(object), (segment), (offset), 0, 0, 0, NULL }
 #define DS(object, offset) ROW(object, 0x3A6A, offset)
+#define ENCODED(object, offset, size, encoder) { #object, NULL, (size), 0x3A6A, (offset), 0, 0, 0, (encoder) }
+
+/* A reference written as the original's far pointer. NULL is 0:0; a
+ * reference to anything else gets FFFF:FFFF, which no image holds where the
+ * original starts with a far pointer of its own. */
+static void PutWord(byte *bytes, size_t at, word16 value)
+{
+	bytes[at] = (byte) value;
+	bytes[at + 1] = (byte) (value >> 8);
+}
+
+static void PutFar(byte *bytes, size_t at, word16 segment, word16 offset)
+{
+	PutWord(bytes, at, offset);
+	PutWord(bytes, at + 2, segment);
+}
+
+static void PutNull(byte *bytes, size_t at, const void *reference)
+{
+	PutFar(bytes, at, reference == NULL ? 0x0000 : 0xFFFF, reference == NULL ? 0x0000 : 0xFFFF);
+}
+
+/* DS:58DB: each into DS:5642. */
+static void EncodeSpeakerEffectStreams(byte *bytes)
+{
+	size_t index;
+
+	for (index = 0; index < PC_SPEAKER_EFFECT_COUNT; ++index)
+		PutFar(bytes, index * 4, 0x3A6A, (word16) (0x5642 +
+			(PCSpeakerEffectStreamPointerTable[index] - PCSpeakerEffectStreamData)));
+}
+
+/* DS:624A: six words, the stream cursor, five words, two bytes. */
+static void EncodeMIDISequence(byte *bytes)
+{
+	const MIDISequenceState *state = &MIDISequence;
+
+	PutWord(bytes, 0x00, state->MIDIBeatsPerMinute);
+	PutWord(bytes, 0x02, state->MIDITimerCallsPerMinute);
+	PutWord(bytes, 0x04, state->MIDITicksPerMinute);
+	PutWord(bytes, 0x06, state->MIDITickRateRemainder);
+	PutWord(bytes, 0x08, state->MIDITicksPerBeat);
+	PutWord(bytes, 0x0A, state->MIDIBeatsPerMeasure);
+	PutNull(bytes, 0x0C, state->MIDIStreamCursor);
+	PutWord(bytes, 0x10, state->MIDIPlaybackFlags);
+	PutWord(bytes, 0x12, state->MIDITicksUntilNextEvent);
+	PutWord(bytes, 0x14, state->MIDIBeatTickRemainder);
+	PutWord(bytes, 0x16, state->MIDIMeasureBeatRemainder);
+	PutWord(bytes, 0x18, state->MIDIMeasureCount);
+	bytes[0x1A] = state->MIDIPlaybackStateBusy;
+	bytes[0x1B] = state->MIDIRunningStatus;
+}
+
+/* DS:6C0E: the IRQ 2 vector the rebuild never takes (0:0), then the queue. */
+static void EncodeRolandMPU401(byte *bytes)
+{
+	PutFar(bytes, 0x00, 0x0000, 0x0000);
+	memcpy(bytes + 0x04, RolandMPU401.TransmitQueue, sizeof(RolandMPU401.TransmitQueue));
+	PutWord(bytes, 0x104, RolandMPU401.WriteIndex);
+	PutWord(bytes, 0x106, RolandMPU401.ReadIndex);
+	PutWord(bytes, 0x108, RolandMPU401.ByteCount);
+}
+
+/* A queue's 12h bytes and a descriptor's 34h (REVENGE.h). Before the game
+ * starts, none holds a reference. */
+static void EncodeQueue(byte *bytes, const DigitalDriverQueue *queue)
+{
+	PutNull(bytes, 0x00, queue->First);
+	PutNull(bytes, 0x04, queue->End.Next);
+	PutNull(bytes, 0x08, queue->End.PreviousLink);
+	PutWord(bytes, 0x0C, queue->ActiveDescriptorCount);
+	PutWord(bytes, 0x0E, queue->MixBias);
+	bytes[0x10] = queue->OutputSample;
+	bytes[0x11] = queue->ReservedOutputByte;
+}
+
+static void EncodeDescriptor(byte *bytes, const DigitalSampleDescriptor *descriptor)
+{
+	PutNull(bytes, 0x00, descriptor->Link.Next);
+	PutNull(bytes, 0x04, descriptor->Link.PreviousLink);
+	PutNull(bytes, 0x08, descriptor->OwnerQueue);
+	PutNull(bytes, 0x0C, descriptor->SampleData);
+	PutWord(bytes, 0x10, descriptor->SampleLength);
+	PutWord(bytes, 0x12, descriptor->LoopStart);
+	PutWord(bytes, 0x14, descriptor->LoopEnd);
+	PutWord(bytes, 0x16, descriptor->LoopLength);
+	PutWord(bytes, 0x18, descriptor->SourceRateHz);
+	PutWord(bytes, 0x1A, descriptor->PlaybackScale);
+	PutWord(bytes, 0x1C, descriptor->SourceStepFraction);
+	PutWord(bytes, 0x1E, descriptor->SourceStepWhole);
+	PutWord(bytes, 0x20, descriptor->PlaybackHandlerOffset);
+	PutWord(bytes, 0x22, descriptor->SourceCursorFraction);
+	PutWord(bytes, 0x24, descriptor->SourceCursor);
+	PutWord(bytes, 0x26, 0x0000);
+	PutWord(bytes, 0x28, descriptor->RemainingFraction);
+	PutWord(bytes, 0x2A, descriptor->RemainingWhole);
+	PutNull(bytes, 0x2C, (const void *) (descriptor->Completion != NULL ? descriptor : NULL));
+	PutNull(bytes, 0x30, descriptor->CompletionArgument);
+}
+
+/* DS:6F4C: two queues, then the calibration descriptor. */
+static void EncodePlaybackBuffers(byte *bytes)
+{
+	EncodeQueue(bytes + 0x00, &DigitalPlaybackBuffers.PlaybackTimerQueue);
+	EncodeQueue(bytes + 0x12, &DigitalPlaybackBuffers.CalibrationQueue);
+	EncodeDescriptor(bytes + 0x24, &DigitalPlaybackBuffers.CalibrationSample);
+}
 
 static const ImageRow rows[] =
 {
@@ -158,7 +269,7 @@ static const ImageRow rows[] =
 	DS(HitLocationTable, 0x1038),
 	DS(HitLocationDirectionSelectorTable, 0x3CFE),
 	DS(VideoConfigurationRecords, 0x3AD1),
-	DS(MIDISequence, 0x624A),
+	ENCODED(MIDISequence, 0x624A, 0x1C, EncodeMIDISequence),
 	DS(MIDIParser, 0x62B0),
 	DS(MIDIChannelMap, 0x6728),
 	DS(FileRuntime, 0x712A),
@@ -166,11 +277,11 @@ static const ImageRow rows[] =
 	DS(SecondaryResourceDriveEnabled, 0xB662),
 	DS(ResourceDriveSelectionDisabled, 0xB668),
 	DS(WeaponPriorityData, 0x09C6),
-	{ "TacticalStatusPadding", TacticalStatusPadding, 2, 0x3A6A, 0x30C2, 0, 0, 0 },
+	{ "TacticalStatusPadding", TacticalStatusPadding, 2, 0x3A6A, 0x30C2, 0, 0, 0, NULL },
 	DS(MIDISystemExclusive, 0x6738),
 	DS(SpeakerMIDIRuntime, 0x67BC),
-	DS(RolandMPU401, 0x6C0E),
-	DS(DigitalPlaybackBuffers, 0x6F4C),
+	ENCODED(RolandMPU401, 0x6C0E, 0x10A, EncodeRolandMPU401),
+	ENCODED(DigitalPlaybackBuffers, 0x6F4C, 0x58, EncodePlaybackBuffers),
 	DS(PITCalibration, 0x6FA4),
 	DS(InputDeviceType, 0x88BD),
 	DS(UnitCombatRatings, 0xAEF1),
@@ -179,8 +290,8 @@ static const ImageRow rows[] =
 	 * resource cache's start (3390:0A22) fills it. */
 	{ "CachedFileDescriptors", CachedFileDescriptors, sizeof(CachedFileDescriptors), 0x3A6A, 0x10B0,
 		sizeof(CachedFileDescriptors[0]), offsetof(CachedFileDescriptor, fileName),
-		sizeof(CachedFileDescriptors[0].fileName) },
-	DS(PCSpeakerEffectStreamPointerTable, 0x58DB),
+		sizeof(CachedFileDescriptors[0].fileName), NULL },
+	ENCODED(PCSpeakerEffectStreamPointerTable, 0x58DB, 0x40, EncodeSpeakerEffectStreams),
 	DS(ScenarioLanceAllegianceTable, 0x5928),
 
 	/* The sampled-sound devices: each output descriptor (DS:6EB2, 0Ch apart)
@@ -199,7 +310,7 @@ static const ImageRow rows[] =
 	DS(ImprovedMissileDamageBonusTable, 0x3D1D),
 	DS(StartupResourceState, 0x5FCE),
 	/* Where cached-file descriptor 45h's name points (DS:158A). */
-	{ "MediaConfigurationFileName", MediaConfigurationFileName, 0x0A, 0x3A6A, 0x21F4, 0, 0, 0 },
+	{ "MediaConfigurationFileName", MediaConfigurationFileName, 0x0A, 0x3A6A, 0x21F4, 0, 0, 0, NULL },
 };
 
 static byte image[ORIGINAL_IMAGE_CAPACITY];
@@ -240,11 +351,18 @@ int main(void)
 	{
 		const ImageRow *row = &rows[index];
 		size_t at = (size_t) (row->segment - 0x0800) * 16 + row->offset;
+		static byte encoded[0x1000];
 		const byte *port = (const byte *) row->object;
 		size_t first = row->size;
 		size_t count = 0;
 		size_t byteIndex;
 
+		if (row->encode != NULL)
+		{
+			memset(encoded, 0, sizeof(encoded));
+			row->encode(encoded);
+			port = encoded;
+		}
 		for (byteIndex = 0; byteIndex < row->size; ++byteIndex)
 		{
 			byte original = at + byteIndex < sizeof(image) ? image[at + byteIndex] : 0;

@@ -16,8 +16,7 @@ static DigitalWeaponEffectRecord *WeaponEffectRecord(word16 effectId)
 
 static const byte *PendingSpeakerEffectStream(void)
 {
-	return (const byte *) HostFarPointer_Resolve(DosAddress_ToValue(
-		Seg426B.PendingSpeakerEffectStream));
+	return Seg426B.PendingSpeakerEffectStream;
 }
 
 int main(void)
@@ -41,7 +40,7 @@ int main(void)
 	SoundEffectsEnabled = TRUE;
 	SoundDriverIndex = 0x00;
 	DispatchWeaponEffect(0x03);
-	assert(!DosAddress_IsNull(Seg426B.PendingSpeakerEffectStream));
+	assert(Seg426B.PendingSpeakerEffectStream != NULL);
 	assert(PendingSpeakerEffectStream()[0x00] == 0xE2);
 	assert(PendingSpeakerEffectStream()[0x01] == 0x01);
 
@@ -61,7 +60,6 @@ int main(void)
 	effect->SampleLength = 0x0004;
 	effect->PlaybackScale = 0x6633;
 	DigitalWeaponSampleBuffer = sampleData;
-	HostFarPointer_Register(sampleData, sizeof(sampleData));
 	DigitalPlaybackRateHz = 0x1F40;
 	InitializeDigitalDriverQueue(&ActiveDigitalDriverQueue);
 	DigitalSoundBusy = FALSE;
@@ -79,9 +77,7 @@ int main(void)
 	ServiceDigitalAudioTick();
 	ServiceDigitalAudioTick();
 	assert(fakeBackend.firstByte == 0x48);
-	HandleDigitalWeaponEffectCompletion(
-		FAR_OFFSET(ActiveDigitalSampleDescriptor),
-		FAR_SEGMENT(ActiveDigitalSampleDescriptor));
+	HandleDigitalWeaponEffectCompletion(ActiveDigitalSampleDescriptor);
 	assert(DigitalWeaponEffectRepeatCount == 0x02);
 	assert(GetDigitalSamplePlaybackState(
 		ActiveDigitalSampleDescriptor) == 0x02);

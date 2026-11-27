@@ -12,15 +12,3 @@ DigitalBridge_ResolvePlaybackDescriptor(word16 descriptorOffset)
 	default: return NULL;
 	}
 }
-
-void DigitalBridge_InvokeSampleCompletion(
-	struct DigitalSampleDescriptor *descriptor)
-{
-	if (descriptor->CompletionCallbackSegment == 0x31FB &&
-		descriptor->CompletionCallbackOffset == 0x06E9)
-	{
-		HandleDigitalWeaponEffectCompletion(
-			descriptor->CompletionArgumentLow,
-			descriptor->CompletionArgumentHigh);
-	}
-}

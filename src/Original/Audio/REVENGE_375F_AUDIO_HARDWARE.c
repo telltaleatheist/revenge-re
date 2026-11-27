@@ -91,14 +91,13 @@ void ReleaseDigitalPlaybackDriver(word16 driverDescriptorOffset)
 
 DigitalPlaybackRuntimeState DigitalPlaybackRuntime =
 {
-	.SavedSystemTimerVector = { 0x0000, 0x0000 },
 	.SystemTimerDivisor = 0x0000,
 	.SystemTimerAccumulator = 0x0000,
 	.InterruptNestingGuard = 0xFFFF,
 	.DigitalTimerReloadMinusOne = 0x0000,
 	.PlaybackRateHz = 0x0000,
 	.WriteSampleCallbackOffset = 0x0000,
-	.ActiveDriverQueue = { 0x0000, 0x0000 },
+	.ActiveDriverQueue = NULL,
 	.RequestedMixScale = 0x0100,
 	.DriverMixScale = 0x0000,
 	.ActiveMixScale = 0x0000

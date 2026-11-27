@@ -105,8 +105,7 @@ void RestoreSystemTimer(void)
 // 30B2:03B6
 void StartPCSpeakerEffectStream(const byte *effectStream)
 {
-	Seg426B.PendingSpeakerEffectStream = DosAddress_FromValue(
-		HostFarPointer_Encode(effectStream));
+	Seg426B.PendingSpeakerEffectStream = effectStream;
 	Seg426B.SpeakerEffectStartRequested = 0x01;
 	Seg426B.SpeakerEffectPlaybackActive = 0x01;
 	Seg426B.SpeakerEffectServiceActive = 0x01;
@@ -160,9 +159,7 @@ void DecodePCSpeakerEffectTick(void)
 	}
 	else
 	{
-		const byte *effectStream = (const byte *)
-			HostFarPointer_Resolve(DosAddress_ToValue(
-				Seg426B.ActiveSpeakerEffectStream));
+		const byte *effectStream = Seg426B.ActiveSpeakerEffectStream;
 		word16 pitDivisor;
 
 		while (TRUE)
