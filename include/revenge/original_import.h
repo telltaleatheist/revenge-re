@@ -71,7 +71,7 @@ typedef enum OriginalPieceKind
  * 131Eh the experience-41h units of the fourth battle act on two subticks in
  * eight; plain DOSBox-X, without REVSNAP, loads the game at 0823h, where they
  * would act on four. */
-enum { EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT = 0x131E };
+inline constexpr int EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT = 0x131E;
 
 typedef struct OriginalPiece
 {

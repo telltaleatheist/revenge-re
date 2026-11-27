@@ -20,21 +20,15 @@ enum
 /* Where the music goes: the soundfont (the game drives its Roland driver,
  * whose bytes the soundfont plays), the speaker (its own speaker driver), or
  * nowhere (the Roland driver, unheard). */
-enum
-{
-	MEDIA_MUSIC_SOUNDFONT = 0,
-	MEDIA_MUSIC_SPEAKER = 1,
-	MEDIA_MUSIC_OFF = 2
-};
+inline constexpr int MEDIA_MUSIC_SOUNDFONT = 0;
+inline constexpr int MEDIA_MUSIC_SPEAKER = 1;
+inline constexpr int MEDIA_MUSIC_OFF = 2;
 
 /* Where the effects and the speech go: as digital samples (the game drives
  * its Sound Blaster path, whose samples the mixer plays), or the speaker
  * (the effects as the speaker's tone streams). */
-enum
-{
-	MEDIA_SOUND_SAMPLES = 0,
-	MEDIA_SOUND_SPEAKER = 1
-};
+inline constexpr int MEDIA_SOUND_SAMPLES = 0;
+inline constexpr int MEDIA_SOUND_SPEAKER = 1;
 
 /* Each option's choice: an index into that option's records (DS:3AD1,
  * 3B12, 3B87, 3B6D), and the sound card's hexadecimal parameter; and the

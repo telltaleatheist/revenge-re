@@ -124,7 +124,7 @@ void RefreshTacticalOverview(void)
 	word16 unitIndex;
 	int16 column;
 	int16 row;
-	word16 opposingMarkerColor = OVERVIEW_OPPOSING_MARKER_COLOR;
+	byte opposingMarkerColor = OVERVIEW_OPPOSING_MARKER_COLOR;
 	byte *viewportTopRow;
 
 	// Restore the terrain pixels under the markers drawn by the previous pass.
@@ -194,9 +194,9 @@ void RefreshTacticalOverview(void)
 	{
 		RevengeUnitRecord *unitRecord =
 			&PersistentUnitRoster[unitIndex];
-		word16 markerColor = unitIndex < FIRST_OPPOSING_UNIT_INDEX
-			? OVERVIEW_FRIENDLY_MARKER_COLOR
-			: opposingMarkerColor;
+		byte markerColor = OVERVIEW_FRIENDLY_MARKER_COLOR;
+		if (unitIndex >= FIRST_OPPOSING_UNIT_INDEX)
+			markerColor = opposingMarkerColor;
 
 		if (unitRecord->deploymentState == 0x00)
 			continue;

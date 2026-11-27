@@ -53,22 +53,19 @@ static const word16 ChoiceWordCounts[MEDIA_OPTION_COUNT] = {
 	sizeof(SoundRecordWords) / sizeof(SoundRecordWords[0]), sizeof(InputWords) / sizeof(InputWords[0])
 };
 
-enum
-{
-	/* The record the video's one way drives: the MCGA's. */
-	VIDEO_RECORD_VGA = 1,
-	MUSIC_WORD_COUNT = sizeof(MusicWords) / sizeof(MusicWords[0]),
-	/* The records the music's ways out drive: the speaker's own driver, and
-	 * the Roland driver for the soundfont and for none. */
-	MUSIC_RECORD_ROLAND = 1,
-	MUSIC_RECORD_SPEAKER = 6,
-	SOUND_WORD_COUNT = sizeof(SoundWords) / sizeof(SoundWords[0]),
-	/* The records the sound's ways out drive: the samples through the
-	 * Sound Blaster's (its parameter always 220, the default's), and the
-	 * speaker's. */
-	SOUND_RECORD_SAMPLES = 0,
-	SOUND_RECORD_SPEAKER = 8
-};
+/* The record the video's one way drives: the MCGA's. */
+constexpr int VIDEO_RECORD_VGA = 1;
+constexpr int MUSIC_WORD_COUNT = sizeof(MusicWords) / sizeof(MusicWords[0]);
+/* The records the music's ways out drive: the speaker's own driver, and
+ * the Roland driver for the soundfont and for none. */
+constexpr int MUSIC_RECORD_ROLAND = 1;
+constexpr int MUSIC_RECORD_SPEAKER = 6;
+constexpr int SOUND_WORD_COUNT = sizeof(SoundWords) / sizeof(SoundWords[0]);
+/* The records the sound's ways out drive: the samples through the
+ * Sound Blaster's (its parameter always 220, the default's), and the
+ * speaker's. */
+constexpr int SOUND_RECORD_SAMPLES = 0;
+constexpr int SOUND_RECORD_SPEAKER = 8;
 
 /* With no MEDIA.CFG: VGA (the MCGA record), the music on the soundfont, the effects as
  * digital samples, the mouse. The keys work as fully with the mouse chosen

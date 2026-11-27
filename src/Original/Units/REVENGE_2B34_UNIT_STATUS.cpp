@@ -51,8 +51,8 @@ void DrawTileAlignedText(
 	word16 tileY,
 	byte foregroundColor,
 	byte backgroundColor);
-word16 UpdateUnitEnemyProximityState(word16 unitIndex);
-word16 UpdateUnitEnemyVisibility(word16 unitIndex);
+int16 UpdateUnitEnemyProximityState(word16 unitIndex);
+int16 UpdateUnitEnemyVisibility(word16 unitIndex);
 word16 HasTacticalReferencePointLineOfSightToUnit(
 	word16 referencePointIndex, word16 unitIndex);
 char *IntegerToString(

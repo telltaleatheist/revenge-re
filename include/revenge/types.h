@@ -95,10 +95,7 @@ static inline int DosAddress_IsNull(DosAddress pointer)
     return pointer.offset == 0x0000 && pointer.segment == 0x0000;
 }
 
-enum
-{
-    FALSE = 0x00,
-    TRUE = 0x01
-};
+inline constexpr int FALSE = 0x00;
+inline constexpr int TRUE = 0x01;
 
 #endif

@@ -100,5 +100,6 @@ DigitalPlaybackRuntimeState DigitalPlaybackRuntime =
 	.ActiveDriverQueue = NULL,
 	.RequestedMixScale = 0x0100,
 	.DriverMixScale = 0x0000,
-	.ActiveMixScale = 0x0000
+	.ActiveMixScale = 0x0000,
+	.MixLookup = { 0x00 }
 };

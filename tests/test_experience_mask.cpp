@@ -15,15 +15,12 @@
 
 void SelectUnitTacticalTargets(void);
 
-enum
-{
-	SEEK_AND_DESTROY_ORDER = 0x02,
-	ACTING_UNIT = 0x11,
-	TARGET_UNIT = 0x01,
-	PAST_END_EXPERIENCE = 0x41,
-	MASK_BIT = 0x0008,
-	OTHER_BIT = 0x0080
-};
+constexpr int SEEK_AND_DESTROY_ORDER = 0x02;
+constexpr int ACTING_UNIT = 0x11;
+constexpr int TARGET_UNIT = 0x01;
+constexpr int PAST_END_EXPERIENCE = 0x41;
+constexpr int MASK_BIT = 0x0008;
+constexpr int OTHER_BIT = 0x0080;
 
 static int failures;
 

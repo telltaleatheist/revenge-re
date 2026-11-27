@@ -32,6 +32,11 @@ in [`RECONSTRUCTED_C_PLAN.md`](RECONSTRUCTED_C_PLAN.md).
   numbers, redundant temporaries and invented pass-through helpers.
 - Use readable loops, `++`, `--` and compound assignments where the native
   width is kept.
+- An integer constant that meets other types is `inline constexpr int` in a
+  header (`constexpr int` in a source), not an unnamed enumerator: C++ gives
+  an enumerator its enum's type, which C++20 deprecates in arithmetic with
+  another enum or a float, and which MSVC can't see fits a narrower type
+  through `?:`. As `int` it reads as C's enumerator did.
 - Gameplay and the original drawing, decoding and audio logic live in
   `src/Original`. `src/SDL` is the lowest practical OS and hardware boundary;
   host representation the game needs belongs in `src/Support`.

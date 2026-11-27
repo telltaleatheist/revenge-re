@@ -15,15 +15,12 @@ word16 TraceMapLineOfSight(int16 sourceX, int16 sourceY, int16 targetX, int16 ta
 	const byte *terrainTypeMap, byte specialTerrainMinimum, byte specialTerrainMaximum,
 	byte blockingTerrainThreshold, byte maximumSteps);
 
-enum
-{
-	WIDTH = 55,
-	HEIGHT = 70,
-	OPEN = 0x00,
-	BLOCKING = 0xCC,
-	CLEAR_COLUMN = 20,
-	CLEAR_ROW = 30
-};
+constexpr int WIDTH = 55;
+constexpr int HEIGHT = 70;
+constexpr int OPEN = 0x00;
+constexpr int BLOCKING = 0xCC;
+constexpr int CLEAR_COLUMN = 20;
+constexpr int CLEAR_ROW = 30;
 
 static word16 Trace(int16 sourceX, int16 sourceY, int16 targetX, int16 targetY)
 {

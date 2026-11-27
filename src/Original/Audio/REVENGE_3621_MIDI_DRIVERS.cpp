@@ -41,6 +41,7 @@ void ServiceNullMIDIDriver(void) {}
 
 MIDIDriverDescriptorData NullMIDIDriverDescriptor =
 {
+	.Flags = { 0x00, 0x00, 0x00 },
 	.AvailableVoiceCount = 0x00,
 	.ProbeOffset = 0x08A8,
 	.ActivateOffset = 0x08AC,
@@ -50,7 +51,10 @@ MIDIDriverDescriptorData NullMIDIDriverDescriptor =
 	.ReleaseVoiceOffset = 0x08B2,
 	.ResetOffset = 0x08B3,
 	.LoadInstrumentOffset = 0x08B4,
-	.ServiceOffset = 0x08B5
+	.ServiceOffset = 0x08B5,
+	.ActivationArgument = 0x0000,
+	.VoiceRecordsOffset = 0x0000,
+	.ActiveVoiceCount = 0x00
 };
 
 static const MIDIDriverHostDispatch NullMIDIDriverHostDispatch =
@@ -185,7 +189,9 @@ MIDIDriverDescriptorData SpeakerMIDIDriverDescriptor =
 	.ResetOffset = 0x08FF,
 	.LoadInstrumentOffset = 0x0922,
 	.ServiceOffset = 0x0923,
-	.ActivationArgument = 0x4000
+	.ActivationArgument = 0x4000,
+	.VoiceRecordsOffset = 0x0000,
+	.ActiveVoiceCount = 0x00
 };
 
 static const MIDIDriverHostDispatch SpeakerMIDIDriverHostDispatch =
@@ -305,7 +311,9 @@ MIDIDriverDescriptorData RolandMIDIDriverDescriptor =
 	.ResetOffset = 0x0F2E,
 	.LoadInstrumentOffset = 0x0F32,
 	.ServiceOffset = 0x0F33,
-	.ActivationArgument = 0x0200
+	.ActivationArgument = 0x0200,
+	.VoiceRecordsOffset = 0x0000,
+	.ActiveVoiceCount = 0x00
 };
 
 static const MIDIDriverHostDispatch RolandMIDIDriverHostDispatch =
