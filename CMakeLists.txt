@@ -130,6 +130,11 @@ if(BUILD_TESTING)
 			COMMAND ${Python3_EXECUTABLE} -I
 				${CMAKE_CURRENT_SOURCE_DIR}/tools/check_ledgers.py
 				--root ${CMAKE_CURRENT_SOURCE_DIR})
+		# check_ledgers names a ledger row whose file doesn't define it, or
+		# whose two ledgers disagree on its file.
+		add_test(NAME preservation.ledger_rules
+			COMMAND ${Python3_EXECUTABLE} -I
+				${CMAKE_CURRENT_SOURCE_DIR}/tests/check_ledgers_test.py)
 
 		# The game's text stays out of the tree, and the import tables match
 		# the sources and the player's copy. Both need a copy of the game named

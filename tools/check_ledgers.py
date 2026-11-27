@@ -12,7 +12,11 @@ docs/METHOD_TABLE.csv and docs/SOURCE_CONVERSION_TABLE.csv:
   tree, stay as references); Verified [SDL] names its platform redirect, and
   Replaced names what replaced it there and has no C file;
 - the conversion table lists exactly the procedures of the method table;
-- a C name used by two addresses lives in one file and says it's an alias.
+- a C name used by two addresses lives in one file and says it's an alias;
+- a procedure that isn't Replaced is defined in its C file (`Name(...) {`),
+  and the conversion table names the same C name and file for it (its
+  current and target files both), so a renamed file or function the ledgers
+  missed fails here.
 
 src/Original/**/*.cpp:
 - a static function has a SEG:OFF in the 700 characters before it;
@@ -37,6 +41,11 @@ SDL_USE = re.compile(r"\bSDL_[A-Za-z][A-Za-z0-9_]*\b|^\s*#\s*include\s*[<\"]SDL"
 TRACE_USE = re.compile(r"\bRevengeTrace\s*\(")
 ALIAS = re.compile(r"\balias\b", re.IGNORECASE)
 PREFIX_CHARACTERS = 700
+
+
+def definition(name):
+    """A function definition of name: its name, parameters, then its body."""
+    return re.compile(r"\b" + re.escape(name) + r"\s*\([^;{}]*\)\s*\{")
 
 
 def read_table(path):
@@ -117,6 +126,33 @@ def check(root):
         if len(files) != 1 or not documented:
             errors.append(f"Unexplained duplicate CName '{rows[0]['CName']}': "
                           + ", ".join(r["Address"] for r in rows))
+
+    sources = {}
+    for row in methods:
+        if status(row) in (NOT_A_PROCEDURE, REPLACED) or blank(row.get("CName")):
+            continue
+        relative = (row.get("OriginalCFile") or "").strip()
+        path = os.path.join(root, relative)
+        if not os.path.isfile(path):
+            continue
+        if relative not in sources:
+            with open(path, encoding="utf-8", errors="replace", newline="") as f:
+                sources[relative] = f.read()
+        if not definition(row["CName"]).search(sources[relative]):
+            errors.append(f"{row['Address']} {row['CName']} isn't defined in {relative}.")
+
+    by_address = {r["Address"].casefold(): r for r in methods}
+    for row in conversions:
+        method = by_address.get(row["Address"].casefold())
+        if method is None or status(method) == NOT_A_PROCEDURE:
+            continue
+        if row.get("CName") != method.get("CName"):
+            errors.append(f"{row['Address']} is {row.get('CName')} in SOURCE_CONVERSION_TABLE, "
+                          f"{method.get('CName')} in METHOD_TABLE.")
+        for field in ("CurrentOriginalFile", "TargetOriginalFile"):
+            if (row.get(field) or "") != (method.get("OriginalCFile") or ""):
+                errors.append(f"{row['Address']} {field} {row.get(field)!r} isn't METHOD_TABLE's "
+                              f"OriginalCFile {method.get('OriginalCFile')!r}.")
 
     original = os.path.join(root, "src", "Original")
     for base, _, files in os.walk(original):
