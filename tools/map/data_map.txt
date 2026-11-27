@@ -750,6 +750,7 @@ unplaced UnitEditorScenarioGroupCount 2 its bytes match nowhere (pointers or val
 unplaced UnitHeatStatusPrefix 2 zero at every snap
 unplaced UnitJumpingState 18 zero at every snap
 unplaced UnitNameTable 164 host pointer
+unplaced WeaponNameTable 5C host pointer
 unplaced UnitRosterSeparator 4 host pointer
 unplaced UnitSpriteId 30 its bytes match nowhere (pointers or values differ)
 unplaced UnitStatusArmorLabel 4 host pointer

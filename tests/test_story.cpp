@@ -29,6 +29,9 @@
 #include "original_import_for_tests.h"
 #include "revenge/story.h"
 
+// revenge/combat_data.h is C only (_Static_assert): its one table here.
+extern "C" const char* WeaponNameTable[0x17];
+
 namespace fs = std::filesystem;
 namespace story = revenge::import;
 
@@ -104,6 +107,21 @@ void check_texts_are_the_pieces() {
     }
 }
 
+// Each weapon's name is the story text its WeaponDefinitions record (DS:0435,
+// 0Fh bytes each) points to in the copy, not a text the game reads there.
+void check_weapon_names() {
+    for (int weapon = 0; weapon < 0x17; ++weapon) {
+        const std::size_t record = ORIGINAL_DATA_SEGMENT_IMAGE_OFFSET + 0x0435 + std::size_t(weapon) * 0x0F;
+        const auto word = [&](std::size_t at) {
+            return std::size_t(std::uint8_t(OriginalImage[at])) | std::size_t(std::uint8_t(OriginalImage[at + 1])) << 8;
+        };
+        const char* in_copy = &OriginalImage[word(record + 2) * 16 + word(record)];
+        assert(WeaponNameTable[weapon] != nullptr && WeaponNameTable[weapon] != in_copy);
+        assert(WeaponNameTable[weapon] >= StoryTextBuffer && WeaponNameTable[weapon] < StoryTextBuffer + STORY_TEXT_BYTES);
+        assert(std::strcmp(WeaponNameTable[weapon], in_copy) == 0);
+    }
+}
+
 // A current story file whose text.json is `edit` applied to the written one.
 fs::path edited_story(const char* name, std::string (*edit)(std::string)) {
     const fs::path folder = fresh_folder(name);
@@ -129,6 +147,7 @@ int main(int argc, char** argv) {
 
     if (mode == "match") {
         check_texts_are_the_pieces();
+        check_weapon_names();
         const std::vector<char> from_copy(StoryTextBuffer, StoryTextBuffer + STORY_TEXT_BYTES);
         const fs::path folder = fresh_folder("match");
         std::memset(StoryTextBuffer, 0, STORY_TEXT_BYTES);

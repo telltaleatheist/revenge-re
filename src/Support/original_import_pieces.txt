@@ -26,6 +26,7 @@
 # pointed_text has that entry's id and no line of its own.
 
 header revenge/original_data.h
+header revenge/combat_data.h
 header revenge/original/audio_data.h
 header revenge/original/campaign_data.h
 header revenge/original/lance_editor_data.h
@@ -70,6 +71,8 @@ text_table           PilotExperienceLabelTextTable           40B3 04
 text_table           PilotGunneryLabelTextTable              40C3 04
 text_table           UnitMovementClassLabelTextTable         412D 05
 text_table           UnitArmorConditionLabelTextTable        4141 06
+# The weapon names: each WeaponDefinitions record (0Fh bytes) starts with its far pointer.
+text_table           WeaponNameTable                         0435 17 0F
 
 # Data the game's text and sound read in place
 bytes                CompressedTextFirstByteTable            05AA 10

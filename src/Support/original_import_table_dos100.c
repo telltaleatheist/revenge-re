@@ -4,6 +4,7 @@
 #include "revenge/original_import.h"
 #include "revenge/story_text.h"
 #include "revenge/original_data.h"
+#include "revenge/combat_data.h"
 #include "revenge/original/audio_data.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
@@ -12,7 +13,7 @@
 
 const char OriginalImportKey[] = "revenge-re import table: keyed so the hashes of short pieces can't be looked up";
 
-const OriginalPiece OriginalPieces_dos100[0x143] =
+const OriginalPiece OriginalPieces_dos100[0x144] =
 {
 	{ "TitleTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2411, 0x12, 4, 0, NULL, "ad9f2420f81121e9" },
 	{ "MonthNameTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x2459, 0xC, 4, 0, NULL, "2de063a6fef0f14a" },
@@ -51,6 +52,7 @@ const OriginalPiece OriginalPieces_dos100[0x143] =
 	{ "PilotGunneryLabelTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x40C3, 0x4, 4, 0, NULL, "3c322b33b947b0e3" },
 	{ "UnitMovementClassLabelTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x412D, 0x5, 4, 0, NULL, "9f85ccad72a41399" },
 	{ "UnitArmorConditionLabelTextTable", ORIGINAL_PIECE_TEXT_TABLE, 0x4141, 0x6, 4, 0, NULL, "7b47d6e36af60ef5" },
+	{ "WeaponNameTable", ORIGINAL_PIECE_TEXT_TABLE, 0x0435, 0x17, 15, 0, NULL, "a5c6d3eca97f509c" },
 	{ "CompressedTextFirstByteTable", ORIGINAL_PIECE_BYTES, 0x05AA, 0x10, 4, 16, &CompressedTextFirstByteTable, "f941df0158d610f0" },
 	{ "CompressedTextSecondByteTable", ORIGINAL_PIECE_BYTES, 0x05BA, 0x80, 4, 128, &CompressedTextSecondByteTable, "42798dce093c693b" },
 	{ "PCSpeakerEffectStreamData", ORIGINAL_PIECE_BYTES, 0x5642, 0x299, 4, 665, &PCSpeakerEffectStreamData, "e2d4ad0d77e7fe45" },
@@ -811,6 +813,29 @@ const StoryTextSource StoryTextSources_dos100[STORY_TEXT_COUNT] =
 	{ 0x00037541UL, 0x3A6A, 0x7, 0, "45365a68c0489e2f" }, /* unit_armor_condition_label.3 */
 	{ 0x00037549UL, 0x3A6A, 0x8, 0, "c223044fabdd0e9b" }, /* unit_armor_condition_label.4 */
 	{ 0x00037552UL, 0x3A6A, 0x8, 0, "b7f1f57a4b6500c1" }, /* unit_armor_condition_label.5 */
+	{ 0x000344D8UL, 0x3A6A, 0xB, 0, "a790df8dda9492ba" }, /* weapon_name.0 */
+	{ 0x000344E4UL, 0x3A6A, 0x8, 0, "ee0d6e2129a81325" }, /* weapon_name.1 */
+	{ 0x000344EDUL, 0x3A6A, 0xC, 0, "0f927c992f414a2d" }, /* weapon_name.2 */
+	{ 0x000344FAUL, 0x3A6A, 0x9, 0, "8aeafa06398a7100" }, /* weapon_name.3 */
+	{ 0x00034504UL, 0x3A6A, 0xB, 0, "52f952cc634159e5" }, /* weapon_name.4 */
+	{ 0x00034510UL, 0x3A6A, 0x8, 0, "6e9d2f416a039801" }, /* weapon_name.5 */
+	{ 0x00034519UL, 0x3A6A, 0x8, 0, "1a1a29303b269225" }, /* weapon_name.6 */
+	{ 0x00034522UL, 0x3A6A, 0x3, 0, "64006c12895c044d" }, /* weapon_name.7 */
+	{ 0x00034526UL, 0x3A6A, 0x6, 0, "eddab8b979342896" }, /* weapon_name.8 */
+	{ 0x0003452DUL, 0x3A6A, 0x4, 0, "29e1b35794a3b0d4" }, /* weapon_name.9 */
+	{ 0x00034532UL, 0x3A6A, 0x4, 0, "fdeca9de74f69091" }, /* weapon_name.10 */
+	{ 0x00034537UL, 0x3A6A, 0x5, 0, "0f495922ee1a86f9" }, /* weapon_name.11 */
+	{ 0x0003453DUL, 0x3A6A, 0xA, 0, "03bb5d2b90feaad4" }, /* weapon_name.12 */
+	{ 0x00034548UL, 0x3A6A, 0xB, 0, "da0d5c930b92c2ed" }, /* weapon_name.13 */
+	{ 0x00034554UL, 0x3A6A, 0x5, 0, "edea7957146c34f2" }, /* weapon_name.14 */
+	{ 0x0003455AUL, 0x3A6A, 0x9, 0, "7142a63543b803d2" }, /* weapon_name.15 */
+	{ 0x00034564UL, 0x3A6A, 0x5, 0, "0dcc5b7109ecc55e" }, /* weapon_name.16 */
+	{ 0x0003456AUL, 0x3A6A, 0x6, 0, "665f2806d3755458" }, /* weapon_name.17 */
+	{ 0x00034571UL, 0x3A6A, 0x6, 0, "543df14a9e1fb723" }, /* weapon_name.18 */
+	{ 0x00034578UL, 0x3A6A, 0x6, 0, "29c0da4d5622831b" }, /* weapon_name.19 */
+	{ 0x0003457FUL, 0x3A6A, 0x5, 0, "68e1d5cdf6a8c9b5" }, /* weapon_name.20 */
+	{ 0x00034585UL, 0x3A6A, 0x5, 0, "e18f0483f2a575a9" }, /* weapon_name.21 */
+	{ 0x0003458BUL, 0x3A6A, 0x5, 0, "85d88f9c8a5ab9c9" }, /* weapon_name.22 */
 	{ 0x000349CBUL, 0x3A6A, 0x13, 0, "21c3e217021da4b4" }, /* print_allocation_error_and_exit.0 */
 	{ 0x000349DFUL, 0x3A6A, 0x9, 0, "a833217c628541a3" }, /* print_allocation_error_and_exit.1 */
 	{ 0x000349E9UL, 0x3A6A, 0x5, 0, "4163f3dbaeeedbde" }, /* print_allocation_error_and_exit.2 */

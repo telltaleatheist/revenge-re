@@ -3,6 +3,7 @@
  * the table entry or array it fills. Don't edit by hand. */
 #include "revenge/story.h"
 #include "revenge/original_data.h"
+#include "revenge/combat_data.h"
 #include "revenge/original/audio_data.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
@@ -481,6 +482,29 @@ const StoryTextSlot StoryTextSlots[STORY_TEXT_COUNT] =
 	{ "unit_armor_condition_label.3", STORY_AT_UNIT_ARMOR_CONDITION_LABEL_3, 0x8, STORY_TARGET_TEXT, (void *) &UnitArmorConditionLabelTextTable[3], 0 },
 	{ "unit_armor_condition_label.4", STORY_AT_UNIT_ARMOR_CONDITION_LABEL_4, 0x9, STORY_TARGET_TEXT, (void *) &UnitArmorConditionLabelTextTable[4], 0 },
 	{ "unit_armor_condition_label.5", STORY_AT_UNIT_ARMOR_CONDITION_LABEL_5, 0x9, STORY_TARGET_TEXT, (void *) &UnitArmorConditionLabelTextTable[5], 0 },
+	{ "weapon_name.0", STORY_AT_WEAPON_NAME_0, 0xC, STORY_TARGET_TEXT, (void *) &WeaponNameTable[0], 0 },
+	{ "weapon_name.1", STORY_AT_WEAPON_NAME_1, 0x9, STORY_TARGET_TEXT, (void *) &WeaponNameTable[1], 0 },
+	{ "weapon_name.2", STORY_AT_WEAPON_NAME_2, 0xD, STORY_TARGET_TEXT, (void *) &WeaponNameTable[2], 0 },
+	{ "weapon_name.3", STORY_AT_WEAPON_NAME_3, 0xA, STORY_TARGET_TEXT, (void *) &WeaponNameTable[3], 0 },
+	{ "weapon_name.4", STORY_AT_WEAPON_NAME_4, 0xC, STORY_TARGET_TEXT, (void *) &WeaponNameTable[4], 0 },
+	{ "weapon_name.5", STORY_AT_WEAPON_NAME_5, 0x9, STORY_TARGET_TEXT, (void *) &WeaponNameTable[5], 0 },
+	{ "weapon_name.6", STORY_AT_WEAPON_NAME_6, 0x9, STORY_TARGET_TEXT, (void *) &WeaponNameTable[6], 0 },
+	{ "weapon_name.7", STORY_AT_WEAPON_NAME_7, 0x4, STORY_TARGET_TEXT, (void *) &WeaponNameTable[7], 0 },
+	{ "weapon_name.8", STORY_AT_WEAPON_NAME_8, 0x7, STORY_TARGET_TEXT, (void *) &WeaponNameTable[8], 0 },
+	{ "weapon_name.9", STORY_AT_WEAPON_NAME_9, 0x5, STORY_TARGET_TEXT, (void *) &WeaponNameTable[9], 0 },
+	{ "weapon_name.10", STORY_AT_WEAPON_NAME_10, 0x5, STORY_TARGET_TEXT, (void *) &WeaponNameTable[10], 0 },
+	{ "weapon_name.11", STORY_AT_WEAPON_NAME_11, 0x6, STORY_TARGET_TEXT, (void *) &WeaponNameTable[11], 0 },
+	{ "weapon_name.12", STORY_AT_WEAPON_NAME_12, 0xB, STORY_TARGET_TEXT, (void *) &WeaponNameTable[12], 0 },
+	{ "weapon_name.13", STORY_AT_WEAPON_NAME_13, 0xC, STORY_TARGET_TEXT, (void *) &WeaponNameTable[13], 0 },
+	{ "weapon_name.14", STORY_AT_WEAPON_NAME_14, 0x6, STORY_TARGET_TEXT, (void *) &WeaponNameTable[14], 0 },
+	{ "weapon_name.15", STORY_AT_WEAPON_NAME_15, 0xA, STORY_TARGET_TEXT, (void *) &WeaponNameTable[15], 0 },
+	{ "weapon_name.16", STORY_AT_WEAPON_NAME_16, 0x6, STORY_TARGET_TEXT, (void *) &WeaponNameTable[16], 0 },
+	{ "weapon_name.17", STORY_AT_WEAPON_NAME_17, 0x7, STORY_TARGET_TEXT, (void *) &WeaponNameTable[17], 0 },
+	{ "weapon_name.18", STORY_AT_WEAPON_NAME_18, 0x7, STORY_TARGET_TEXT, (void *) &WeaponNameTable[18], 0 },
+	{ "weapon_name.19", STORY_AT_WEAPON_NAME_19, 0x7, STORY_TARGET_TEXT, (void *) &WeaponNameTable[19], 0 },
+	{ "weapon_name.20", STORY_AT_WEAPON_NAME_20, 0x6, STORY_TARGET_TEXT, (void *) &WeaponNameTable[20], 0 },
+	{ "weapon_name.21", STORY_AT_WEAPON_NAME_21, 0x6, STORY_TARGET_TEXT, (void *) &WeaponNameTable[21], 0 },
+	{ "weapon_name.22", STORY_AT_WEAPON_NAME_22, 0x6, STORY_TARGET_TEXT, (void *) &WeaponNameTable[22], 0 },
 	{ "print_allocation_error_and_exit.0", STORY_AT_PRINT_ALLOCATION_ERROR_AND_EXIT_0, 0x14, STORY_TARGET_NONE, NULL, 0 },
 	{ "print_allocation_error_and_exit.1", STORY_AT_PRINT_ALLOCATION_ERROR_AND_EXIT_1, 0xA, STORY_TARGET_NONE, NULL, 0 },
 	{ "print_allocation_error_and_exit.2", STORY_AT_PRINT_ALLOCATION_ERROR_AND_EXIT_2, 0x6, STORY_TARGET_NONE, NULL, 0 },
@@ -792,3 +816,4 @@ _Static_assert(sizeof(PilotExperienceLabelTextTable) / sizeof(PilotExperienceLab
 _Static_assert(sizeof(PilotGunneryLabelTextTable) / sizeof(PilotGunneryLabelTextTable[0]) == 0x4, "PilotGunneryLabelTextTable has the piece's entries");
 _Static_assert(sizeof(UnitMovementClassLabelTextTable) / sizeof(UnitMovementClassLabelTextTable[0]) == 0x5, "UnitMovementClassLabelTextTable has the piece's entries");
 _Static_assert(sizeof(UnitArmorConditionLabelTextTable) / sizeof(UnitArmorConditionLabelTextTable[0]) == 0x6, "UnitArmorConditionLabelTextTable has the piece's entries");
+_Static_assert(sizeof(WeaponNameTable) / sizeof(WeaponNameTable[0]) == 0x17, "WeaponNameTable has the piece's entries");

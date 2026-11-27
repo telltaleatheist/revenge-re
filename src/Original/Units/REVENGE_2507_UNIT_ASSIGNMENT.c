@@ -1195,9 +1195,7 @@ void DrawUnitStatusScreen(
 			FarStringConcat(
 				textBuffer,
 				UnitStatusSpace);
-			text = (const char *)MAKE_FAR_POINTER(
-				WeaponDefinitions[weaponIndex].nameSegment,
-				WeaponDefinitions[weaponIndex].nameOffset);
+			text = WeaponNameTable[weaponIndex];
 			FarStringConcat(textBuffer, text);
 			DrawLeftAlignedClippedText(
 				textBuffer, weaponListX, weaponListY, 0x54,

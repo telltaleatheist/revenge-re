@@ -43,6 +43,7 @@ static const MapDumpObject objects[] =
 	{ "RolandMIDIDriverDescriptor", &RolandMIDIDriverDescriptor, sizeof(RolandMIDIDriverDescriptor) },
 	{ "PCSpeakerErrorDiffusionCoefficients", &PCSpeakerErrorDiffusionCoefficients, sizeof(PCSpeakerErrorDiffusionCoefficients) },
 	{ "WeaponDefinitions", &WeaponDefinitions, sizeof(WeaponDefinitions) },
+	{ "WeaponNameTable", &WeaponNameTable, sizeof(WeaponNameTable) },
 	{ "ConfigOptionNames", &ConfigOptionNames, sizeof(ConfigOptionNames) },
 	{ "Seg426B", &Seg426B, sizeof(Seg426B) },
 	{ "PCSpeakerSampleConversion", &PCSpeakerSampleConversion, sizeof(PCSpeakerSampleConversion) },

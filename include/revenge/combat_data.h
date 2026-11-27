@@ -177,5 +177,8 @@ _Static_assert(sizeof(RevengeWeaponPriorityData) ==
 
 extern const RevengeWeaponDefinition
 	WeaponDefinitions[WEAPON_DEFINITION_COUNT];
+/* Each weapon's name, the text its record's far pointer names: a story text
+ * (revenge/story.h), filled at start. */
+extern const char *WeaponNameTable[WEAPON_DEFINITION_COUNT];
 
 #endif

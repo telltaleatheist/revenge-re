@@ -3,6 +3,7 @@
 // at start (OriginalImport_Load, src/Support/original_import_pieces.txt); this file
 // holds only their declarations and the DS offsets of the single strings.
 
+#include "revenge/combat_data.h"
 #include "revenge/original_import.h"
 #include "revenge/original/campaign_data.h"
 #include "revenge/original/lance_editor_data.h"
@@ -70,6 +71,8 @@ const char *UnitStatHeaderTextTable[0x06];
 const byte *UnitClassTypeLists[0x07];
 
 const char *UnitClassLabelTextTable[0x07];
+
+const char *WeaponNameTable[WEAPON_DEFINITION_COUNT];
 
 const char *TrainingDeploymentLabelTextTable[0x04];
 
