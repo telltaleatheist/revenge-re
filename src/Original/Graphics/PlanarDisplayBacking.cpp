@@ -1,9 +1,12 @@
 // 2FEA: planar display backing buffer
 /* PlanarDisplayBacking.cpp -- packed display-backing builder. */
 
-#include "REVENGE.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalData.h"
+#include "Graphics/Graphics.h"
+#include "Utility/Utility.h"
+#include "revenge/heap.h"
 
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 /* 2FEA:000A-01B1 */

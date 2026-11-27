@@ -1,8 +1,8 @@
 // 3365: clipped primitives
 // Reconstructed original clipped line and pixel primitives (segment 3365).
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Graphics/Graphics.h"
 #include "revenge/video.h"
 
 // 3365:0007

@@ -1,9 +1,10 @@
 // 0D73: VGA palette bank anchors
 /* Palette procedure from original segment 0D73. */
 
-#include "REVENGE.h"
+#include "Data/GraphicsData.h"
+#include "Data/RuntimeData.h"
+#include "Graphics/Graphics.h"
 
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 // 0D73:329E: void InstallVgaPaletteBankAnchors(void)

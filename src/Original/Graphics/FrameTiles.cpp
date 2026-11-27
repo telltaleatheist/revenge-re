@@ -1,8 +1,8 @@
 // 3386: frame tiles
 // Reconstructed original repeating frame-tile renderer (segment 3386).
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Graphics/Graphics.h"
 #include "revenge/video.h"
 
 // 3386:0008: word16 DrawRepeatingFrameTileSequence(...)

@@ -2,8 +2,11 @@
 // TacticalSprite.cpp - tactical clipped-sprite dispatch
 // Tactical clipped-sprite rendering wrapper.
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalGraphicsData.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
 #include "revenge/video.h"
 
 // 3005:0008

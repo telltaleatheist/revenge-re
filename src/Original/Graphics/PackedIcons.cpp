@@ -2,8 +2,8 @@
 // PackedIcons.cpp - direct packed icon-page loading
 // Direct tactical icon-page loader used by the page-one special case.
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Graphics/Graphics.h"
+#include "Resources/Resources.h"
 #include "revenge/video.h"
 
 void LoadPackedIconResource(

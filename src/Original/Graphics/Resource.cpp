@@ -1,9 +1,10 @@
 // 0D73: resource
 /* Graphics-resource procedure from original segment 0D73. */
 
-#include "REVENGE.h"
+#include "Data/RuntimeData.h"
+#include "Graphics/Graphics.h"
+#include "Resources/Resources.h"
 
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 /* 0D73:4099-4125 */

@@ -4,8 +4,11 @@
 // REVENGE.EXE segment 0800.
 
 // Video-buffer, adapter, timer, and arithmetic procedures from segment 0800.
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalGraphicsData.h"
+#include "Graphics/Graphics.h"
+#include "Utility/Utility.h"
+#include "revenge/heap.h"
 #include "revenge/platform_backend.h"
 #include "revenge/random.h"
 #include "revenge/video.h"
@@ -102,7 +105,6 @@ void CopyVideoRegion(
     return;
 }
 
-
 void FillVideoTileRectangle(
     int16_t x,
     uint16_t y,
@@ -170,7 +172,6 @@ void FillVideoTileRectangle(
     return;
 }
 
-
 // 0800:2F05: draw one adapter-formatted 8x8 tile at tile coordinates X,Y.
 // Called from:
 //      DrawActiveTextWindowFrame
@@ -209,7 +210,6 @@ void Draw8x8VideoTile(
     }
     return;
 }
-
 
 // 0800:33D6: decode the signed-run stream into 7D00h linear bytes.
 void DecodeLinearRleScreen(
@@ -288,7 +288,6 @@ void DecodeColumnMajorRleScreen(
             ++compressedData;
     }
 }
-
 
 // 0800:072C: Register uint32 CalculateSelectedWeaponRating(
 //     Stack uint32 weaponMask, Stack const byte *weaponCounts)

@@ -1,9 +1,13 @@
 // 0D73: mission header
 /* Mission-header graphics procedure from original segment 0D73. */
 
-#include "REVENGE.h"
-
-#include "revenge/original_data.h"
+#include "Campaign/Campaign.h"
+#include "Data/CampaignData.h"
+#include "Data/StartupData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Text/Text.h"
+#include "revenge/text.h"
 
 /* 0D73:365C-376B */
 void DrawMissionHeaderFrame(void)

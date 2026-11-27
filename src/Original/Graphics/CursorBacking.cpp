@@ -1,9 +1,10 @@
 // 0D73: cursor backing
 /* Cursor-backing procedure from original segment 0D73. */
 
-#include "REVENGE.h"
+#include "Data/StartupData.h"
+#include "Graphics/Graphics.h"
+#include "revenge/heap.h"
 
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 /* 0D73:4126-4154 */

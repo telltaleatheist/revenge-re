@@ -1,9 +1,12 @@
 // 0D73: sprite
 /* Clipped-sprite procedure from original segment 0D73. */
 
-#include "REVENGE.h"
+#include "Data/RuntimeData.h"
+#include "Data/TacticalData.h"
+#include "Data/TacticalGraphicsData.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
 
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 /* 0D73:566E-57AA */

@@ -2,8 +2,7 @@
 // IconPageDecode.cpp - icon-page decoding and adapter conversion
 // Tactical icon-page decompression and adapter conversion.
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Graphics/Graphics.h"
 #include "revenge/video.h"
 
 void DecodeLinearRleScreen(

@@ -1,8 +1,9 @@
 // 334D: text window frame
 // Reconstructed original text-window frame renderer (segment 334D).
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "Data/TextIOData.h"
+#include "Graphics/Graphics.h"
 #include "revenge/video.h"
 
 // 334D:0001: void DrawActiveTextWindowFrame(word16 frameStyleIndex)

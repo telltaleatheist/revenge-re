@@ -1,9 +1,16 @@
 // 0D73: tactical video
 /* Tactical video-resource rebuild from original segment 0D73. */
 
-#include "REVENGE.h"
+#include "Campaign/Campaign.h"
+#include "Data/GraphicsData.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Data/TacticalData.h"
+#include "Graphics/Graphics.h"
+#include "Input/Input.h"
+#include "Runtime/Runtime.h"
+#include "revenge/heap.h"
 
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 /* 0D73:0387-0447 */

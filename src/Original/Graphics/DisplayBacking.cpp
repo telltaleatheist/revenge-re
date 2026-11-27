@@ -1,9 +1,11 @@
 // 0D73: display backing buffers
 /* Display-backing procedures from original segment 0D73. */
 
-#include "REVENGE.h"
+#include "Data/RuntimeData.h"
+#include "Data/StartupData.h"
+#include "Graphics/Graphics.h"
+#include "revenge/heap.h"
 
-#include "revenge/original_data.h"
 #include "revenge/video.h"
 
 #include <string.h>
