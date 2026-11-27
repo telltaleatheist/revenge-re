@@ -1,7 +1,7 @@
-{"digest": "e6427f7634fdc127", "kinds": {"midi --": 3, "midi 80": 1742, "midi 90": 1754, "midi B0": 71, "midi C0": 60, "midi E0": 29, "midi F7": 3, "midi reset": 4, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 160, "tone": 251, "tone-effect": 6}, "lines": 4088, "snap": "step01"}
-{"digest": "e563770ebe5f5e09", "kinds": {"snap": 1}, "lines": 1, "snap": "step02"}
-{"digest": "89aeb8796ba720a5", "kinds": {"snap": 1}, "lines": 1, "snap": "step04"}
-{"digest": "6786325af20a95d1", "kinds": {"snap": 1}, "lines": 1, "snap": "step08"}
-{"digest": "695b3f82af4997f4", "kinds": {"snap": 1}, "lines": 1, "snap": "step12"}
-{"digest": "809e1c1d95440802", "kinds": {"snap": 1}, "lines": 1, "snap": "step16"}
-{"digest": "13c2bb26f56a4c6e", "kinds": {"snap": 1}, "lines": 1, "snap": "step20"}
+{"digest": "fcd35396d7424217", "kinds": {"midi --": 3, "midi 80": 1742, "midi 90": 1754, "midi B0": 71, "midi C0": 60, "midi E0": 29, "midi F7": 3, "midi reset": 4, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 160, "tone": 251, "tone-effect": 6}, "lines": 4088, "snap": "step01"}
+{"digest": "8bc1fa661b812578", "kinds": {"snap": 1}, "lines": 1, "snap": "step02"}
+{"digest": "95e8af9cc1c0c7d2", "kinds": {"snap": 1}, "lines": 1, "snap": "step04"}
+{"digest": "b7d759f2e6d33421", "kinds": {"snap": 1}, "lines": 1, "snap": "step08"}
+{"digest": "10e4271b7f0f9c03", "kinds": {"snap": 1}, "lines": 1, "snap": "step12"}
+{"digest": "ee8d7fd60c597753", "kinds": {"snap": 1}, "lines": 1, "snap": "step16"}
+{"digest": "d11924b48dc5577c", "kinds": {"snap": 1}, "lines": 1, "snap": "step20"}

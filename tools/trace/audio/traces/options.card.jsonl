@@ -1,3 +1,3 @@
-{"digest": "7a846d87d22cae9f", "kinds": {"midi --": 3, "midi 80": 380, "midi 90": 384, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi reset": 1, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71}, "lines": 884, "snap": "options"}
-{"digest": "7ae301a9331cf506", "kinds": {"midi 80": 4, "snap": 1}, "lines": 5, "snap": "toggled"}
-{"digest": "7e7b3e71452c66bd", "kinds": {"midi 80": 94, "midi 90": 94, "snap": 1}, "lines": 189, "snap": "done"}
+{"digest": "a613143bfd3f12de", "kinds": {"midi --": 3, "midi 80": 380, "midi 90": 384, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi reset": 1, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71}, "lines": 884, "snap": "options"}
+{"digest": "f5eb48e3b15c7fd7", "kinds": {"midi 80": 4, "snap": 1}, "lines": 5, "snap": "toggled"}
+{"digest": "0429398ec1f3cde8", "kinds": {"midi 80": 94, "midi 90": 94, "snap": 1}, "lines": 189, "snap": "done"}

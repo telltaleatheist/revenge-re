@@ -1,3 +1,3 @@
-{"digest": "6ec63cf8c7a5b345", "kinds": {"snap": 1}, "lines": 1, "snap": "intro"}
-{"digest": "9450c632d7b81cbe", "kinds": {"midi --": 3, "midi 80": 370, "midi 90": 370, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi F7": 1, "midi reset": 2, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71, "tone": 46}, "lines": 908, "snap": "title"}
-{"digest": "0f5a5cfb8cf6878a", "kinds": {"midi 90": 4, "snap": 1, "tone": 1}, "lines": 6, "snap": "menu"}
+{"digest": "798fdb57b5ee1a7a", "kinds": {"snap": 1}, "lines": 1, "snap": "intro"}
+{"digest": "ec19a54c79a659b1", "kinds": {"midi --": 3, "midi 80": 370, "midi 90": 370, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi F7": 1, "midi reset": 2, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71, "tone": 46}, "lines": 908, "snap": "title"}
+{"digest": "a22df00cdb5937ed", "kinds": {"snap": 1}, "lines": 1, "snap": "menu"}

@@ -3,7 +3,7 @@
 one JSON line per @snap.
 
     tools/trace/record.py --exe BUILD/Revenge --game GAME_DIR --script SCRIPT.keys
-        --out TRACE.jsonl [--work DIR] [--frames DIR] [--step-us N]
+        --out TRACE.jsonl [--work DIR] [--frames DIR]
 
 The port runs with no window and no sound, reading the game from GAME_DIR (it
 never writes there) and writing its saves and snaps to WORK (emptied
@@ -62,7 +62,7 @@ def tokens_by_snap(script):
     return groups
 
 
-def run(exe, game, script, work, step_us=None, story=None, settings=None, env_extra=None):
+def run(exe, game, script, work, story=None, settings=None, env_extra=None):
     """Runs the port; returns (exit code, the run's output). With story, a
     story folder (an earlier run's saves/story) is put in the save folder
     first, so the run finds its story already imported. With settings, that
@@ -94,10 +94,6 @@ def run(exe, game, script, work, step_us=None, story=None, settings=None, env_ex
     env.pop("REVENGE_SMOKE_INPUT", None)
     env.pop("REVENGE_AUDIO_LOG", None)
     env.update(env_extra or {})
-    if step_us is not None:
-        env["REVENGE_HARNESS_STEP_US"] = str(step_us)
-    else:
-        env.pop("REVENGE_HARNESS_STEP_US", None)
     try:
         done = subprocess.run([os.path.abspath(exe)], cwd=os.path.abspath(game), env=env,
                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=TIMEOUT_SECONDS)
@@ -129,9 +125,9 @@ def trace(script, work):
     return records
 
 
-def record(exe, game, script, work, step_us=None):
+def record(exe, game, script, work):
     """Runs the script and returns its trace records, or stops naming why."""
-    code, output = run(exe, game, script, work, step_us)
+    code, output = run(exe, game, script, work)
     if code == SKIP and output.startswith("no save in "):
         print(f"record: {os.path.basename(script)} skipped: {output}")
         sys.exit(SKIP)
@@ -156,11 +152,10 @@ def main():
     parser.add_argument("--out", required=True)
     parser.add_argument("--work")
     parser.add_argument("--frames")
-    parser.add_argument("--step-us", type=int)
     args = parser.parse_args()
     with tempfile.TemporaryDirectory(prefix="revenge-trace-") as temporary:
         work = args.work or temporary
-        records = record(args.exe, args.game, args.script, work, args.step_us)
+        records = record(args.exe, args.game, args.script, work)
         write(records, args.out)
         if args.frames:
             os.makedirs(args.frames, exist_ok=True)

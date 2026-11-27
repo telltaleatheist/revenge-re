@@ -16,17 +16,18 @@ The port has the harness built in (`src/SDL/harness.c`). It is off unless
 `REVENGE_HARNESS_SCRIPT` names a script and `REVENGE_HARNESS_OUT` an existing
 folder; `record.py` sets both. When it is on:
 
-- **A test clock** stands in for SDL's in every host timer: the game's timer
-  interrupts, the BIOS tick count, delays, retrace waits and polls, the
-  speaker's effects and the DOS date and time. It starts at zero and moves by the wait when the game waits, and by
-  one step (`REVENGE_HARNESS_STEP_US`, 1000 µs unless set) when the game passes
-  through a timer service or a retrace poll. Nothing sleeps, so a run takes
+- **A test clock** stands in for SDL's as the game's clock, in whole
+  milliseconds: what the timer interrupts did (the BIOS tick, the music
+  timer, the digital sample tick), delays, retrace waits and the DOS date and
+  time all run from it. It starts at zero and moves by the wait when the game
+  waits, and by one millisecond when the game passes through a timer service
+  or waits for the script's next key. Nothing sleeps, so a run takes
   seconds. The date is 1991-01-01 12:00:00 plus the clock.
 - **Keys are fed at the game's own keyboard polls**, never by the host's speed:
   a key is pending on the 4th poll after the previous item, or that many more
   after `idle:N`, and, in a battle, once `steps:N` or `still:N` is met (below).
-  No SDL event reaches the game; the mouse stays where the
-  script or the game last put it, as a mouse nobody touches does.
+  No SDL event reaches the game; a `mouse:` item calls the game's mouse
+  handler when it is due, as REVSNAP does.
 - **Nothing is shown**: frames are kept in memory, not presented.
 
 Running the same script twice gives byte-identical snaps (`repeat.py`).

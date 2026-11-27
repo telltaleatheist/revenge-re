@@ -11,10 +11,11 @@
  * REVENGE_HARNESS_SCRIPT names a key script and REVENGE_HARNESS_OUT an
  * existing folder. When it is on:
  *
- * - every timer reads a test clock instead of SDL's: it starts at zero and
- *   moves only when the host would wait (a delay or a retrace wait moves it by
- *   the wait) or passes through a timer service or retrace poll (one step,
- *   REVENGE_HARNESS_STEP_US microseconds, 1000 unless set). Nothing sleeps.
+ * - the game's clock reads a test clock instead of SDL's, in whole
+ *   milliseconds: it starts at zero and moves only when the host would wait
+ *   (a delay or a retrace wait moves it by the wait) or passes through a timer
+ *   service or a wait for the script's next key (one millisecond). Nothing
+ *   sleeps.
  *   The date and time the game asks DOS for are 1991-01-01 12:00:00 plus the
  *   clock.
  * - keys come from the script, each fed through the game's own keyboard
@@ -37,14 +38,14 @@
 
 int Harness_Active(void);
 
-/* The clock every host timer reads, in nanoseconds; SDL's when the harness is
- * off. */
-uint64_t HostClock_NowNS(void);
+/* The game's clock, in milliseconds: SDL's when the harness is off. Every
+ * timer runs from it (src/SDL/platform.c). */
 uint64_t HostClock_NowMS(void);
 /* Waits: sleeps when the harness is off; otherwise moves the test clock. */
-void HostClock_DelayNS(uint64_t nanoseconds);
-/* A host pass that waits on time without sleeping (a timer service, a retrace
- * poll): one step of the test clock, nothing when the harness is off. */
+void HostClock_DelayMS(uint64_t milliseconds);
+/* A host pass that waits on time without sleeping (a timer service, a wait
+ * for the next key): one millisecond of the test clock, nothing when the
+ * harness is off. */
 void HostClock_Step(void);
 /* The calendar time the game is told: local time when the harness is off. */
 int HostClock_CalendarTime(struct tm *out, uint32_t *hundredths);

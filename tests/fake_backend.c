@@ -15,7 +15,6 @@ _Noreturn void SDLBackend_TerminateProcess(byte exitCode)
 void FakeBackend_Reset(void)
 {
     memset(&fakeBackend, 0, sizeof(fakeBackend));
-    fakeBackend.biosTickStep = 0x00000001U;
 }
 
 uint16 SDLBackend_DirectConsoleIO(byte character)
@@ -170,15 +169,6 @@ void SDLBackend_StopDigitalPlaybackClock(void)
     fakeBackend.digitalPlaybackClockDivisor = 0x0000;
 }
 
-uint32 SDLBackend_GetBIOSTickCount(void)
-{
-    uint32 result;
-
-    result = fakeBackend.biosTickCount;
-    fakeBackend.biosTickCount += fakeBackend.biosTickStep;
-    return result;
-}
-
 void SDLBackend_PollInput(void)
 {
     ++fakeBackend.inputPolls;
@@ -244,11 +234,6 @@ void SDLBackend_LoadVgaPalette(const byte *paletteRgbTriplets)
 {
     memcpy(fakeBackend.vgaPalette, paletteRgbTriplets,
         sizeof(fakeBackend.vgaPalette));
-}
-
-uint16 SDLBackend_IsVerticalRetraceActive(void)
-{
-    return 0x0008;
 }
 
 void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart)

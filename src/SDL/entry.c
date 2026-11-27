@@ -23,6 +23,12 @@ void InitializeGame(void);
 void RunCampaignLoop(void);
 void ShutdownGame(void);
 
+/* The audio log's times: the game's clock, in nanoseconds. */
+static uint64_t AudioLogClock(void)
+{
+	return HostClock_NowMS() * UINT64_C(1000000);
+}
+
 /*
  * Host entry shim for the preserved 2C7F:000F flow.  The Original library is
  * compiled without a DOS main so tests may provide their own entry points;
@@ -56,7 +62,7 @@ int main(int argc, char **argv)
 	Rules_Load(GamePaths_DataDirectory());
 	RevengeInstallCrashDiagnostics();
 	/* What the game asks to be heard, for tools/trace/audio. */
-	AudioLog_Open(SDL_getenv("REVENGE_AUDIO_LOG"), HostClock_NowNS);
+	AudioLog_Open(SDL_getenv("REVENGE_AUDIO_LOG"), AudioLogClock);
 	RevengeTrace("entry: initialize\n");
 	SDLBackend_InitializeDOSMemoryArena();
 	/* The player's settings stand for MEDIA.CFG from here on. */

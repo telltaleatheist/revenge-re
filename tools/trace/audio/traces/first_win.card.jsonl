@@ -1,6 +1,6 @@
-{"digest": "714d679ee17888c4", "kinds": {"midi --": 5, "midi 80": 1751, "midi 90": 1761, "midi B0": 70, "midi C0": 58, "midi E0": 29, "midi reset": 1, "pcm done": 8, "pcm effect": 6, "pcm speech": 2, "snap": 1, "sysex": 164}, "lines": 3856, "snap": "battle"}
-{"digest": "29f46d9c0842fd86", "kinds": {"snap": 1}, "lines": 1, "snap": "route"}
-{"digest": "63609a1113ff4a99", "kinds": {"pcm done": 3, "pcm effect": 6, "snap": 1}, "lines": 10, "snap": "contact"}
-{"digest": "92a61ab46b9472bd", "kinds": {"pcm done": 5, "pcm effect": 9, "snap": 1}, "lines": 15, "snap": "won"}
-{"digest": "a6d80ee951f6839e", "kinds": {"midi --": 2, "midi 80": 67, "midi 90": 73, "midi B0": 7, "midi C0": 15, "midi E0": 11, "snap": 1, "sysex": 53}, "lines": 229, "snap": "story"}
-{"digest": "1e3573635766a245", "kinds": {"midi 80": 34, "midi 90": 31, "midi C0": 2, "snap": 1}, "lines": 68, "snap": "menu"}
+{"digest": "06b7bb8ea99f3126", "kinds": {"midi --": 5, "midi 80": 1751, "midi 90": 1761, "midi B0": 70, "midi C0": 58, "midi E0": 29, "midi reset": 1, "pcm done": 8, "pcm effect": 6, "pcm speech": 2, "snap": 1, "sysex": 164}, "lines": 3856, "snap": "battle"}
+{"digest": "164b2d5ce455e76c", "kinds": {"snap": 1}, "lines": 1, "snap": "route"}
+{"digest": "4674b4922560a3ae", "kinds": {"pcm done": 3, "pcm effect": 6, "snap": 1}, "lines": 10, "snap": "contact"}
+{"digest": "500535d257d628b1", "kinds": {"pcm done": 5, "pcm effect": 9, "snap": 1}, "lines": 15, "snap": "won"}
+{"digest": "312facb091e43830", "kinds": {"midi --": 2, "midi 80": 67, "midi 90": 73, "midi B0": 7, "midi C0": 15, "midi E0": 11, "snap": 1, "sysex": 53}, "lines": 229, "snap": "story"}
+{"digest": "79283370dfa97f74", "kinds": {"midi 80": 34, "midi 90": 31, "midi C0": 2, "snap": 1}, "lines": 68, "snap": "menu"}

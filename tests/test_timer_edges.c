@@ -27,16 +27,15 @@ static void TestPITMath(void)
 
 static void TestVideoTimingCalibration(void)
 {
-	fakeBackend.biosTickCount = 0x00000100U;
-	fakeBackend.biosTickStep = 0x00000001U;
-	VerticalRetraceEdgeMode = VERTICAL_RETRACE_WAIT_FOR_END;
-	BusyWaitLoopCalibration = -0x01;
+	/* Only the edge is left: always the retrace's end; DS:B650 untouched. */
+	VerticalRetraceEdgeMode = VERTICAL_RETRACE_WAIT_FOR_START;
+	BusyWaitLoopCalibration = 0x0000;
 
 	CalibrateVideoTiming();
 
 	assert(BusyWaitLoopCalibration == 0x0000);
 	assert(VerticalRetraceEdgeMode ==
-		VERTICAL_RETRACE_WAIT_FOR_START);
+		VERTICAL_RETRACE_WAIT_FOR_END);
 }
 
 int main(void)

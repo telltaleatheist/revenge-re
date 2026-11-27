@@ -20,8 +20,6 @@ typedef struct FakeBackendState
     void (*gameClockHandler)(void);
     word16 musicClockDivisor;
     word16 digitalPlaybackClockDivisor;
-    uint32 biosTickCount;
-    uint32 biosTickStep;
     byte biosKeyboardFlags[0x03];  /* 0040:0017, 0018, 0096 */
     word16 keyboardHandlerInstalled;
     word16 inputPolls;

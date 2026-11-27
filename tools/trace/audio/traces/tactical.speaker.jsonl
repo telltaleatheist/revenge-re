@@ -1,6 +1,6 @@
-{"digest": "41a666e937477582", "kinds": {"midi --": 3, "midi 80": 1742, "midi 90": 1754, "midi B0": 71, "midi C0": 60, "midi E0": 29, "midi F7": 3, "midi reset": 4, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 160, "tone": 251, "tone-effect": 6}, "lines": 4088, "snap": "battle"}
-{"digest": "ca6c558bc4060f3a", "kinds": {"snap": 1}, "lines": 1, "snap": "message1"}
-{"digest": "173f0c0fb0ed28c6", "kinds": {"snap": 1, "tone": 484, "tone-effect": 17}, "lines": 502, "snap": "message2"}
-{"digest": "67f315696062b77c", "kinds": {"snap": 1, "tone": 22, "tone-effect": 5}, "lines": 28, "snap": "message3"}
-{"digest": "bc05f9a0c6d8e85a", "kinds": {"midi 80": 81, "midi 90": 89, "midi B0": 8, "midi C0": 9, "midi E0": 9, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 43, "tone": 21, "tone-effect": 1}, "lines": 264, "snap": "message4"}
-{"digest": "9e1baea1d7a577b7", "kinds": {"midi 80": 34, "midi 90": 34, "snap": 1, "tone": 6}, "lines": 75, "snap": "after"}
+{"digest": "8555eb499385ddcc", "kinds": {"midi --": 3, "midi 80": 1742, "midi 90": 1754, "midi B0": 71, "midi C0": 60, "midi E0": 29, "midi F7": 3, "midi reset": 4, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 160, "tone": 251, "tone-effect": 6}, "lines": 4088, "snap": "battle"}
+{"digest": "6cd1e2a6c6962f72", "kinds": {"snap": 1}, "lines": 1, "snap": "message1"}
+{"digest": "ef7b66deef0e3fd4", "kinds": {"snap": 1, "tone": 481, "tone-effect": 17}, "lines": 499, "snap": "message2"}
+{"digest": "2ded8cc854b5867e", "kinds": {"snap": 1, "tone": 22, "tone-effect": 5}, "lines": 28, "snap": "message3"}
+{"digest": "f1cf3be2309352d8", "kinds": {"midi 80": 84, "midi 90": 92, "midi B0": 8, "midi C0": 9, "midi E0": 9, "midi F7": 1, "midi reset": 1, "snap": 1, "sysex": 43, "tone": 22, "tone-effect": 1}, "lines": 271, "snap": "message4"}
+{"digest": "64ffbea4972cfcd2", "kinds": {"midi 80": 31, "midi 90": 31, "snap": 1, "tone": 5}, "lines": 68, "snap": "after"}

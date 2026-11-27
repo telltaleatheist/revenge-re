@@ -27,8 +27,6 @@ enum
 	 * second, in bytes. */
 	AudioQueueLimitBytes = AUDIO_MIX_SAMPLE_RATE / 4 * AUDIO_MIX_CHANNELS * (int) sizeof(float),
 	MusicPathCapacity = 4096,
-	/* The speech's wait renders the sound a millisecond at a time. */
-	SpeechWaitStepNS = 1000000,
 	MusicErrorCapacity = 256
 };
 
@@ -115,7 +113,7 @@ void SDLBackend_CloseAudio(void)
 
 void SDLBackend_AdvanceAudio(void)
 {
-	AudioMix_Advance(HostClock_NowNS(), PutFrames);
+	AudioMix_Advance(HostClock_NowMS() * UINT64_C(1000000), PutFrames);
 }
 
 byte SDLBackend_EnablePCSpeaker(void)
@@ -138,14 +136,13 @@ void SDLBackend_WritePCSpeakerPITDivisor(uint16 divisor)
 
 void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampleRateHz)
 {
-	const uint64_t start = HostClock_NowNS();
-	uint64_t length;
-	uint64_t now;
+	const uint64_t start = HostClock_NowMS();
+	uint64_t lengthNS;
 	word16 index;
 
 	if (sampleRateHz == 0x0000)
 		return;
-	length = (uint64_t) sampleCount * UINT64_C(1000000000) / sampleRateHz;
+	lengthNS = (uint64_t) sampleCount * UINT64_C(1000000000) / sampleRateHz;
 	/* The original took the speaker from its timer for the speech
 	 * (373D:002E) and gave it back after (373D:020F): a tone sounding
 	 * before is silent meanwhile, and sounds again after. */
@@ -153,15 +150,14 @@ void SDLBackend_PlaySpeech(const byte *samples, word16 sampleCount, word16 sampl
 	AudioMix_SampleRate(sampleRateHz);
 	for (index = 0; index < sampleCount; ++index)
 		AudioMix_QueueUnsigned8(samples[index]);
-	while ((now = HostClock_NowNS()) - start < length)
+	/* The wait renders the sound a millisecond at a time. */
+	while ((HostClock_NowMS() - start) * UINT64_C(1000000) < lengthNS)
 	{
-		const uint64_t left = length - (now - start);
-
-		HostClock_DelayNS(left < SpeechWaitStepNS ? left : SpeechWaitStepNS);
+		HostClock_DelayMS(1);
 		SDLBackend_AdvanceAudio();
 	}
 	AudioMix_SpeakerGate(speakerSounding);
-	SDLBackend_HoldTimers(HostClock_NowNS() - start);
+	SDLBackend_HoldTimers(HostClock_NowMS() - start);
 }
 
 void SDLBackend_WriteMIDIByte(byte midiByte)

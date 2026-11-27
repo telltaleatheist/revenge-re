@@ -96,7 +96,6 @@ int main(void)
     ClearActiveVideoBuffer();
     assert(fakeBackend.indexedFramebuffer[0x0000] == 0x00);
     assert(fakeBackend.indexedFramebuffer[0xF9FF] == 0x00);
-    assert(IsVerticalRetraceActive() == 0x0008);
 
     VerticalRetraceEdgeMode = VERTICAL_RETRACE_WAIT_FOR_END;
     WaitVerticalRetraces(0x0003);

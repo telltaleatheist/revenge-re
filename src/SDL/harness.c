@@ -51,8 +51,7 @@ static char outDirectory[PATH_CAPACITY];
 static HarnessItem *items;
 static size_t itemCount;
 static size_t itemIndex;
-static uint64_t clockNS;
-static uint64_t stepNS = UINT64_C(1000000);
+static uint64_t clockMS;
 static uint64_t polls;
 static uint64_t reads;
 static uint64_t pollsSinceItem;
@@ -243,7 +242,6 @@ int Harness_Active(void)
 	{
 		const char *script = SDL_getenv("REVENGE_HARNESS_SCRIPT");
 		const char *out = SDL_getenv("REVENGE_HARNESS_OUT");
-		const char *step = SDL_getenv("REVENGE_HARNESS_STEP_US");
 
 		state = -1;
 		if (script == NULL || script[0] == '\0')
@@ -251,43 +249,29 @@ int Harness_Active(void)
 		if (out == NULL || out[0] == '\0' || strlen(out) >= sizeof(outDirectory) || !SDL_GetPathInfo(out, NULL))
 			Stop("REVENGE_HARNESS_OUT must name an existing folder", out);
 		memcpy(outDirectory, out, strlen(out) + 1);
-		if (step != NULL && step[0] != '\0')
-		{
-			char *end;
-			unsigned long microseconds = strtoul(step, &end, 10);
-
-			if (end == step || *end != '\0' || microseconds == 0 || microseconds > 1000000UL)
-				Stop("REVENGE_HARNESS_STEP_US must be 1 to 1000000", step);
-			stepNS = (uint64_t) microseconds * 1000;
-		}
 		state = 1;
 		ReadScript(script);
 	}
 	return state == 1;
 }
 
-uint64_t HostClock_NowNS(void)
-{
-	return Harness_Active() ? clockNS : SDL_GetTicksNS();
-}
-
 uint64_t HostClock_NowMS(void)
 {
-	return HostClock_NowNS() / 1000000;
+	return Harness_Active() ? clockMS : SDL_GetTicks();
 }
 
-void HostClock_DelayNS(uint64_t nanoseconds)
+void HostClock_DelayMS(uint64_t milliseconds)
 {
 	if (Harness_Active())
-		clockNS += nanoseconds;
+		clockMS += milliseconds;
 	else
-		SDL_DelayNS(nanoseconds);
+		SDL_Delay((Uint32) milliseconds);
 }
 
 void HostClock_Step(void)
 {
 	if (Harness_Active())
-		clockNS += stepNS;
+		++clockMS;
 }
 
 int HostClock_CalendarTime(struct tm *out, uint32_t *hundredths)
@@ -295,7 +279,7 @@ int HostClock_CalendarTime(struct tm *out, uint32_t *hundredths)
 	if (Harness_Active())
 	{
 		/* 1991-01-01 12:00:00, plus the clock. */
-		uint64_t seconds = clockNS / 1000000000;
+		uint64_t seconds = clockMS / 1000;
 		uint64_t days = (seconds + 12 * 3600) / 86400;
 		uint64_t inDay = (seconds + 12 * 3600) % 86400;
 		static const int monthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
@@ -330,7 +314,7 @@ int HostClock_CalendarTime(struct tm *out, uint32_t *hundredths)
 		out->tm_min = (int) (inDay / 60 % 60);
 		out->tm_sec = (int) (inDay % 60);
 		if (hundredths != NULL)
-			*hundredths = (uint32_t) (clockNS / 10000000 % 100);
+			*hundredths = (uint32_t) (clockMS / 10 % 100);
 		return 1;
 	}
 	else
@@ -417,7 +401,7 @@ static void WriteState(const char *name)
 	fprintf(file, "state random %02x %02x %02x\n", PseudoRandomState[0], PseudoRandomState[1],
 		PseudoRandomState[2]);
 	fprintf(file, "state input polls %llu reads %llu clock %llu\n", (unsigned long long) polls,
-		(unsigned long long) reads, (unsigned long long) (clockNS / 1000000));
+		(unsigned long long) reads, (unsigned long long) clockMS);
 	fprintf(file, "state campaign stage %u phase %u variant %d flags %04x saved %04x training %u\n",
 		(unsigned) CampaignStageIndex, (unsigned) CampaignPhase, (int) ScenarioVariantIndex,
 		(unsigned) CampaignFlags, (unsigned) SavedCampaignFlags, (unsigned) TrainingSequenceFlag);

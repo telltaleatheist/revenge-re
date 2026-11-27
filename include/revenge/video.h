@@ -38,7 +38,6 @@ uint16 GetCurrentBIOSVideoMode(void);
 void SetVideoModeForAdapter(uint16 adapterOrRestoreSlot);
 void VGA_LoadPalette(const byte *paletteRgbTriplets);
 void SetVideoAdapterType(uint16 adapterType);
-uint16 IsVerticalRetraceActive(void);
 void WaitForVerticalRetraceEdge(byte waitForRetraceStart);
 void WaitVerticalRetraces(word16 retraceCount);
 byte *Video_GetIndexedFramebuffer(void);

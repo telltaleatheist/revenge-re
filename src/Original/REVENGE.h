@@ -297,7 +297,6 @@ void DrawCenteredClippedText(
 	byte foregroundColor,
 	byte backgroundColor);
 void WaitVerticalRetraces(word16 retraceCount);
-word16 IsVerticalRetraceActive(void);
 void WaitForVerticalRetraceEdge(byte waitForRetraceStart);
 void CalibrateVideoTiming(void);
 

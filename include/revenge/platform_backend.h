@@ -34,7 +34,6 @@ void SDLBackend_InitializeDOSMemoryArena(void);
 void SDLBackend_GetSystemDate(DOS_Date *date);
 void SDLBackend_GetSystemTime(DOS_Time *time);
 const char *SDLBackend_GetEnvironmentVariable(const char *name);
-uint32 SDLBackend_GetBIOSTickCount(void);
 _Noreturn void SDLBackend_TerminateProcess(byte exitCode);
 
 int SDLBackend_Open(void);
@@ -48,7 +47,6 @@ void SDLBackend_Delay(uint32_t milliseconds);
 byte SDLBackend_GetVideoMode(void);
 void SDLBackend_SetVideoMode(byte videoMode);
 void SDLBackend_LoadVgaPalette(const byte *paletteRgbTriplets);
-uint16 SDLBackend_IsVerticalRetraceActive(void);
 void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart);
 byte *SDLBackend_GetIndexedFramebuffer(void);
 void SDLBackend_ClearIndexedFramebuffer(byte color);

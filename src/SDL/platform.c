@@ -14,7 +14,10 @@ enum
 {
     WindowScale = 0x03,
     RetracesPerSecond = 0x46,
-    RetraceStatusBit = 0x08
+    /* The retrace: the last tenth of a frame, in thousandths of one. */
+    RetraceStart = 900,
+    /* A host present between the game's own, at most 60 a second. */
+    VideoPresentPeriodMS = 17
 };
 
 static SDL_Window *window;
@@ -26,15 +29,8 @@ static byte indexedFramebuffer[VIDEO_SEGMENT_SIZE];
 static uint32_t scanoutPixels[VIDEO_SCREEN_WIDTH * VIDEO_SCREEN_HEIGHT];
 static uint32_t logicalPalette[VGA_DAC_ENTRY_COUNT];
 static byte currentVideoMode = 0x03;
-static uint64_t nextSpeakerEffectTick;
-static uint64_t nextMIDIServiceTick;
-static uint64_t nextMIDIDriverTick;
-static uint64_t nextGameClockTick;
-static uint64_t nextDigitalPlaybackTick;
 static uint64_t nextVideoPresentTick;
 static void (*gameClockHandler)(void);
-static word16 musicClockDivisor;
-static word16 digitalPlaybackClockDivisor;
 static word16 mouseEventMask;
 static word16 hostMouseButtons;
 
@@ -123,67 +119,119 @@ static void SendDueSmokeInput(void)
             smokeInputEvents[smokeInputEventIndex].delayMilliseconds;
 }
 
+/*
+ * The game's clock. Each of the original's timer interrupts is a tick of
+ * 1193182 / divisor Hz (the PIT's input clock), counted from when it started:
+ * tick k falls at start + k * divisor / 1193182 s, exactly, from the clock's
+ * milliseconds. A pass runs every tick due by now, earliest first, ties in the
+ * order below (the music timer's handler, 30B2:0010, ran its effect tick,
+ * then the BIOS's chain, then the driver and the sequencer).
+ */
+enum
+{
+    PitInputHz = 0x1234DE,
+    /* The BIOS's own 18.2 Hz, and the music timer's chain to it. */
+    BiosTickDivisor = 0x10000,
+    /* 30B2:0010 ran the effect tick once every MusicServiceReload + 1
+     * interrupts: 1000h either way. */
+    SpeakerEffectDivisor = 0x1000,
+    /* ... and the sequencer once in 16 interrupts, with a music driver. */
+    MIDISequenceInterrupts = 0x10
+};
+
+typedef enum ClockTimerId
+{
+    SpeakerEffectTimer,
+    BiosTickTimer,
+    MIDIDriverTimer,
+    MIDISequenceTimer,
+    DigitalPlaybackTimer,
+    ClockTimerCount
+} ClockTimerId;
+
+typedef struct ClockTimer
+{
+    uint64_t startMS;
+    uint64_t ticks;
+    uint32_t divisor; /* zero: stopped */
+} ClockTimer;
+
+static ClockTimer clockTimers[ClockTimerCount] = {
+    [BiosTickTimer] = { 0, 0, BiosTickDivisor }
+};
+
+static void StartClockTimer(ClockTimerId id, uint32_t divisor)
+{
+    clockTimers[id].startMS = HostClock_NowMS();
+    clockTimers[id].ticks = 0;
+    clockTimers[id].divisor = divisor;
+}
+
+/* The next tick's time, in 1/1193182 ms. */
+static uint64_t NextTickTime(const ClockTimer *timer)
+{
+    return timer->startMS * PitInputHz +
+        (timer->ticks + 1) * timer->divisor * UINT64_C(1000);
+}
+
+static void RunClockTimer(ClockTimerId id)
+{
+    switch (id)
+    {
+    case SpeakerEffectTimer:
+        DecodePCSpeakerEffectTick();
+        break;
+    case BiosTickTimer:
+        if (gameClockHandler != NULL)
+            gameClockHandler();
+        break;
+    case MIDIDriverTimer:
+        if (Seg426B.MusicDriverMode != 0x00)
+            ServiceActiveMIDIDriver();
+        break;
+    case MIDISequenceTimer:
+        if (Seg426B.MusicDriverMode != 0x00)
+            ServiceMIDISequenceTick();
+        break;
+    case DigitalPlaybackTimer:
+        ServiceDigitalAudioTick();
+        break;
+    default:
+        break;
+    }
+}
+
 static void DeliverHostEvents(void);
 
 void SDLBackend_ServiceTimers(void)
 {
-    const uint64_t speakerEffectPeriod =
-        UINT64_C(60000000000) / 0x4440;
-    const uint64_t midiServicePeriod =
-        UINT64_C(60000000000) / 0x1110;
-    /* With a music driver, the music timer ran the driver's own service on
-     * every IRQ0, the PIT at 1193182 / 400h Hz (30B2:0010, 30B2:02D9). */
-    const uint64_t midiDriverPeriod =
-        UINT64_C(1000000000) * 0x400 / 0x1234DE;
-    const uint64_t gameClockPeriod =
-        UINT64_C(1000000000) * 0x10000 / 0x1234DE;
     uint64_t now;
 
     HostClock_Step();
-    now = HostClock_NowNS();
-    if (DigitalSoundBusy != FALSE &&
-        DigitalPlaybackRateHz != 0x0000)
+    now = HostClock_NowMS() * PitInputHz;
+    for (;;)
     {
-        const uint64_t digitalPlaybackPeriod = UINT64_C(1000000000) /
-            DigitalPlaybackRateHz;
+        int due = -1;
+        uint64_t dueTime = 0;
+        int id;
 
-        if (nextDigitalPlaybackTick == 0x0000000000000000ULL)
-            nextDigitalPlaybackTick = now;
-        while (nextDigitalPlaybackTick <= now &&
-            DigitalSoundBusy != FALSE)
+        for (id = 0; id < ClockTimerCount; ++id)
         {
-            if (digitalPlaybackClockDivisor != 0x0000)
-                ServiceDigitalAudioTick();
-            nextDigitalPlaybackTick += digitalPlaybackPeriod;
+            uint64_t time;
+
+            if (clockTimers[id].divisor == 0)
+                continue;
+            time = NextTickTime(&clockTimers[id]);
+            if (time <= now && (due < 0 || time < dueTime))
+            {
+                due = id;
+                dueTime = time;
+            }
         }
-        if (DigitalSoundBusy == FALSE)
-            nextDigitalPlaybackTick = 0x0000000000000000ULL;
-    }
-    else
-    {
-        nextDigitalPlaybackTick = 0x0000000000000000ULL;
-    }
-    while (nextSpeakerEffectTick <= now)
-    {
-        DecodePCSpeakerEffectTick();
-        nextSpeakerEffectTick += speakerEffectPeriod;
-    }
-    while (nextMIDIDriverTick <= now)
-    {
-        if (Seg426B.MusicDriverMode != 0x00)
-            ServiceActiveMIDIDriver();
-        nextMIDIDriverTick += midiDriverPeriod;
-    }
-    while (nextMIDIServiceTick <= now)
-    {
-        ServiceMIDISequenceTick();
-        nextMIDIServiceTick += midiServicePeriod;
-    }
-    while (nextGameClockTick <= now)
-    {
-        if (gameClockHandler != NULL)
-            gameClockHandler();
-        nextGameClockTick += gameClockPeriod;
+        if (due < 0)
+            break;
+        ++clockTimers[due].ticks;
+        RunClockTimer((ClockTimerId) due);
     }
     SDLBackend_AdvanceAudio();
     /* The keyboard's and the mouse's interrupts, delivered at the same
@@ -196,32 +244,38 @@ void SDLBackend_SetGameClockHandler(void (*handler)(void))
     gameClockHandler = handler;
 }
 
+/* 30B2:02D9 programmed the PIT to 1193182 / pitDivisor Hz for its handler. */
 void SDLBackend_StartMusicClock(word16 pitDivisor)
 {
-    musicClockDivisor = pitDivisor;
+    StartClockTimer(SpeakerEffectTimer, SpeakerEffectDivisor);
+    StartClockTimer(MIDIDriverTimer, pitDivisor);
+    StartClockTimer(MIDISequenceTimer,
+        (uint32_t) pitDivisor * MIDISequenceInterrupts);
 }
 
 void SDLBackend_StopMusicClock(void)
 {
-    musicClockDivisor = 0x0000;
+    clockTimers[SpeakerEffectTimer].divisor = 0;
+    clockTimers[MIDIDriverTimer].divisor = 0;
+    clockTimers[MIDISequenceTimer].divisor = 0;
 }
 
 void SDLBackend_StartDigitalPlaybackClock(word16 pitDivisor)
 {
-    digitalPlaybackClockDivisor = pitDivisor;
+    StartClockTimer(DigitalPlaybackTimer, pitDivisor);
 }
 
 void SDLBackend_StopDigitalPlaybackClock(void)
 {
-    digitalPlaybackClockDivisor = 0x0000;
+    clockTimers[DigitalPlaybackTimer].divisor = 0;
 }
 
-void SDLBackend_HoldTimers(uint64_t nanoseconds)
+void SDLBackend_HoldTimers(uint64_t milliseconds)
 {
-    nextSpeakerEffectTick += nanoseconds;
-    nextMIDIDriverTick += nanoseconds;
-    nextMIDIServiceTick += nanoseconds;
-    nextGameClockTick += nanoseconds;
+    int id;
+
+    for (id = 0; id < ClockTimerCount; ++id)
+        clockTimers[id].startMS += milliseconds;
 }
 
 static void StoreRgba(uint32_t *pixel, byte red, byte green, byte blue)
@@ -502,11 +556,6 @@ int SDLBackend_Open(void)
 
     ResetEgaPalette();
     memset(indexedFramebuffer, 0, sizeof(indexedFramebuffer));
-    nextSpeakerEffectTick = HostClock_NowNS();
-    nextMIDIServiceTick = nextSpeakerEffectTick;
-    nextMIDIDriverTick = nextSpeakerEffectTick;
-    nextGameClockTick = nextSpeakerEffectTick;
-    nextDigitalPlaybackTick = 0x0000000000000000ULL;
     hostMouseButtons = 0x0000;
     if (!SDLBackend_OpenAudio())
         goto failed;
@@ -559,7 +608,7 @@ uint64_t SDLBackend_Milliseconds(void)
 
 void SDLBackend_Delay(uint32_t milliseconds)
 {
-    HostClock_DelayNS((uint64_t)milliseconds * UINT64_C(1000000));
+    HostClock_DelayMS(milliseconds);
 }
 
 byte SDLBackend_GetVideoMode(void)
@@ -597,46 +646,49 @@ void SDLBackend_LoadVgaPalette(const byte *paletteRgbTriplets)
     }
 }
 
-uint16 SDLBackend_IsVerticalRetraceActive(void)
+/* The VGA's 70 Hz frames on the game's clock: frame f starts at f * 1000 / 70
+ * ms, and its last tenth is the retrace. Times here are in 1/70 ms. */
+static uint64_t FramePosition(uint64_t milliseconds)
 {
-    uint64_t period;
-    uint64_t phase;
+    return milliseconds * RetracesPerSecond;
+}
 
-    HostClock_Step();
-    period = UINT64_C(1000000000) / RetracesPerSecond;
-    phase = HostClock_NowNS() % period;
-    return phase >= period - period / 0x0A ? RetraceStatusBit : 0x0000;
+/* The first whole millisecond at or after a time in 1/70 ms. */
+static uint64_t CeilingMS(uint64_t position)
+{
+    return (position + RetracesPerSecond - 1) / RetracesPerSecond;
+}
+
+/* The next frame's start after `now`, in milliseconds. */
+static uint64_t NextFrameMS(uint64_t now)
+{
+    return CeilingMS((FramePosition(now) / 1000 + 1) * 1000);
 }
 
 void SDLBackend_WaitVerticalRetrace(byte waitForRetraceStart)
 {
-    uint64_t delay;
     uint64_t now;
-    uint64_t period;
-    uint64_t phase;
-    uint64_t retraceStart;
+    uint64_t frame;
+    uint64_t until;
 
     SDLBackend_ServiceTimers();
-    period = UINT64_C(1000000000) / RetracesPerSecond;
-    now = HostClock_NowNS();
-    phase = now % period;
-    retraceStart = period - period / 0x0A;
-
+    now = HostClock_NowMS();
+    frame = FramePosition(now) / 1000;
     if (waitForRetraceStart == VERTICAL_RETRACE_WAIT_FOR_START)
     {
-        if (phase < retraceStart)
-            delay = retraceStart - phase;
-        else
-            delay = period - phase + retraceStart;
+        /* The next retrace to begin: this frame's, or the next one's. */
+        until = CeilingMS(frame * 1000 + RetraceStart);
+        if (until <= now)
+            until = CeilingMS((frame + 1) * 1000 + RetraceStart);
     }
     else
     {
         /* The original waits for retrace to begin and then end, so even an
-         * invocation during active display targets the next period boundary. */
-        delay = period - phase;
+         * invocation during active display targets the next frame. */
+        until = NextFrameMS(now);
     }
 
-    HostClock_DelayNS(delay);
+    HostClock_DelayMS(until - now);
     (void)SDLBackend_PresentIndexedFramebuffer();
 }
 
@@ -700,20 +752,23 @@ void Video_PresentTransientFrame(void)
      * also prevents the much faster host loop from consuming every animation
      * frame between two visible refreshes. */
     (void)SDLBackend_PresentIndexedFramebuffer();
-    HostClock_DelayNS(UINT64_C(1000000000) / RetracesPerSecond);
+    {
+        uint64_t now = HostClock_NowMS();
+
+        HostClock_DelayMS(NextFrameMS(now) - now);
+    }
 }
 
 static void PresentPendingVideoFrame(void)
 {
-    const uint64_t videoPresentPeriod = UINT64_C(1000000000) / 0x3C;
     uint64_t now;
 
-    now = HostClock_NowNS();
+    now = HostClock_NowMS();
     if (now < nextVideoPresentTick)
         return;
 
     (void)SDLBackend_PresentIndexedFramebuffer();
-    nextVideoPresentTick = now + videoPresentPeriod;
+    nextVideoPresentTick = now + VideoPresentPeriodMS;
 }
 
 /* Every event SDL has queued: keys to the game's keyboard handler, the

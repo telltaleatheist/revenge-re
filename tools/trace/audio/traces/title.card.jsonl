@@ -1,3 +1,3 @@
-{"digest": "6ec63cf8c7a5b345", "kinds": {"snap": 1}, "lines": 1, "snap": "intro"}
-{"digest": "58a0b1a7a936ba4e", "kinds": {"midi --": 3, "midi 80": 370, "midi 90": 370, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi reset": 1, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71}, "lines": 860, "snap": "title"}
-{"digest": "854697c3bfd53cd7", "kinds": {"midi 90": 4, "snap": 1}, "lines": 5, "snap": "menu"}
+{"digest": "798fdb57b5ee1a7a", "kinds": {"snap": 1}, "lines": 1, "snap": "intro"}
+{"digest": "80cc4f2c0cf7471a", "kinds": {"midi --": 3, "midi 80": 370, "midi 90": 370, "midi B0": 7, "midi C0": 22, "midi E0": 11, "midi reset": 1, "pcm done": 2, "pcm speech": 2, "snap": 1, "sysex": 71}, "lines": 860, "snap": "title"}
+{"digest": "a22df00cdb5937ed", "kinds": {"snap": 1}, "lines": 1, "snap": "menu"}

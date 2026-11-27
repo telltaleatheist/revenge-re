@@ -4,75 +4,28 @@
 
 #include "REVENGE.h"
 #include "revenge/original_data.h"
-#include "revenge/platform_backend.h"
 #include "revenge/video.h"
-
-#define VIDEO_TIMING_CALIBRATION_TICKS    0x0004
-#define DELAY_LOOP_INNER_ITERATIONS       0x00C8
-#define DELAY_LOOP_BASELINE               0x0190
-#define VERTICAL_RETRACE_SAMPLE_COUNT     0x2710
 
 // 34B8:000A: void CalibrateVideoTiming(void)
 // Called from:
 //      InitializeGame
+// The original timed the machine in two ways. Both measured hardware the
+// rebuild doesn't have, and go with it; the decision the game keeps is the
+// retrace edge, which on the host is always the end.
 void CalibrateVideoTiming(void)
 {
-	// V: Calibrate the game's software delay loop against the BIOS tick count
-	// at 0000:046C, then determine which vertical-retrace edge should be used
-	// by sampling bit 3 of the color-adapter input-status register.
-	uint32 initialTick;
-	uint32 calibrationEndTick;
-	uint16 completedDelayLoops = 0x0000;
-	volatile uint16 spinCount;
-	uint16 sampleIndex;
-	uint16 verticalRetraceSamples = 0x0000;
-	uint16 activeDisplaySamples = 0x0000;
-	int16 calibratedDelayLoops;
-
+	// 34B8:0017-001E: the edge starts as the retrace's end.
 	VerticalRetraceEdgeMode = VERTICAL_RETRACE_WAIT_FOR_END;
 
-	// The original read the BIOS dword between CLI and STI (34B8:0022 and
-	// 0037 called 0800:34F6 and 34F4) so the timer could not change it
-	// halfway; the host's tick count changes only between the game's calls.
-	initialTick = SDLBackend_GetBIOSTickCount();
+	// 34B8:0022-00A9 counted delay loops of C8h spins over four BIOS ticks
+	// (0000:046C), from the start of a tick, and kept the count less 190h,
+	// at least zero, in DS:B650 (BusyWaitLoopCalibration). Nothing reads it;
+	// the host has no machine speed to measure, and it keeps its zero.
 
-	// Align the calibration interval to the beginning of a BIOS timer tick.
-	do
-	{
-		calibrationEndTick = SDLBackend_GetBIOSTickCount();
-	} while (calibrationEndTick == initialTick);
-
-	// Likewise 34B8:0052 and 006D.
-	calibrationEndTick = SDLBackend_GetBIOSTickCount() +
-		VIDEO_TIMING_CALIBRATION_TICKS;
-
-	while (SDLBackend_GetBIOSTickCount() < calibrationEndTick)
-	{
-		++completedDelayLoops;
-		for (spinCount = DELAY_LOOP_INNER_ITERATIONS;
-			spinCount != 0x0000;
-			--spinCount)
-			;
-	}
-
-	// The assembly subtracts 0190h after counting, then clamps a negative
-	// result to zero. DS:B650 is therefore a machine-speed calibration value.
-	calibratedDelayLoops = (int16) (completedDelayLoops - DELAY_LOOP_BASELINE);
-	if (calibratedDelayLoops < 0x0000)
-		calibratedDelayLoops = 0x0000;
-	BusyWaitLoopCalibration = calibratedDelayLoops;
-
-	for (sampleIndex = 0x0000;
-		sampleIndex < VERTICAL_RETRACE_SAMPLE_COUNT;
-		++sampleIndex)
-	{
-		if (IsVerticalRetraceActive() != 0x0000)
-			++verticalRetraceSamples;
-		else
-			++activeDisplaySamples;
-	}
-
-	if (verticalRetraceSamples > activeDisplaySamples)
-		VerticalRetraceEdgeMode = VERTICAL_RETRACE_WAIT_FOR_START;
+	// 34B8:00AA-00E1 sampled the input-status port's retrace bit
+	// (IsVerticalRetraceActive) 2710h times and took the retrace's start as
+	// the edge when more samples found the retrace than the display. The
+	// host's retrace is the last tenth of each 70 Hz frame
+	// (SDLBackend_WaitVerticalRetrace), so the display always wins and the
+	// edge stays the end.
 }
-

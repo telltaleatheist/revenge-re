@@ -668,11 +668,9 @@ void SetVideoAdapterType(uint16 adapterType)
 	ActiveVideoAdapterType = adapterType;
 }
 
-uint16 IsVerticalRetraceActive(void)
-{
-	/* 0800:4EAA -- input-status port 03DAh, bit 3. */
-	return SDLBackend_IsVerticalRetraceActive();
-}
+/* 0800:4EAA, IsVerticalRetraceActive (the input-status port 03DAh's bit 3),
+ * is Replaced: its one caller, CalibrateVideoTiming (34B8:00B9), no longer
+ * samples the retrace. */
 
 void WaitForVerticalRetraceEdge(byte waitForRetraceStart)
 {

@@ -3,7 +3,7 @@
 every snap's frame, palette, save block and state, and the traces.
 
     tools/trace/repeat.py --exe BUILD/Revenge [--game GAME_DIR] --script SCRIPT.keys
-        [--work DIR] [--step-us N]
+        [--work DIR]
 
 GAME_DIR defaults to the REVENGE_GAME variable; without one, exit 77
 (ctest's skip). Exits 0 when the runs are the same.
@@ -27,7 +27,6 @@ def main():
     parser.add_argument("--game", default=os.environ.get("REVENGE_GAME", ""))
     parser.add_argument("--script", required=True)
     parser.add_argument("--work")
-    parser.add_argument("--step-us", type=int)
     args = parser.parse_args()
     if not (args.game and os.path.isdir(args.game)):
         print("repeat: no game folder (REVENGE_GAME); skipped")
@@ -38,7 +37,7 @@ def main():
 
 def repeat(args, work):
     runs = [os.path.join(work, "first"), os.path.join(work, "second")]
-    traces = [record.record(args.exe, args.game, args.script, run, args.step_us) for run in runs]
+    traces = [record.record(args.exe, args.game, args.script, run) for run in runs]
     files = sorted(n for n in os.listdir(runs[0]) if n not in ("saves",))
     different = [n for n in files if not filecmp.cmp(os.path.join(runs[0], n), os.path.join(runs[1], n),
                                                      shallow=False)]

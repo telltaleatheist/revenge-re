@@ -220,11 +220,3 @@ const char *SDLBackend_GetEnvironmentVariable(const char *name)
 	return getenv(name);
 }
 
-uint32 SDLBackend_GetBIOSTickCount(void)
-{
-    /* DOS advances 0000:046C about 18.2 times per second. The game reads
-     * it in spin loops (34B8:000A), so a read is a pass that waits on time. */
-    HostClock_Step();
-    return (uint32)((SDLBackend_Milliseconds() * UINT64_C(0x00B6)) /
-        UINT64_C(0x2710));
-}
