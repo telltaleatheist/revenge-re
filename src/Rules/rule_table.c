@@ -57,6 +57,8 @@ const RulePiece RulePieces[] =
 	{ "lance_editor.unit_sprites", &UnitEditorUnitSpriteIndex, sizeof(UnitEditorUnitSpriteIndex), 0x3A6A, 0x3119, 0x59, "32e2805258a97d7d" },
 	{ "lance_editor.pilot_portraits", &PilotPortraitIndexById, sizeof(PilotPortraitIndexById), 0x3A6A, 0x3248, 0x21, "bc30e707e833bb08" },
 	{ "lance_editor.layout", &LanceEditorLayout, sizeof(LanceEditorLayout), 0x3A6A, 0x3470, 0x1D4, "133bbdf581993fe9" },
+	{ "lance_editor.selection_cards", &UnitSelectionCards, sizeof(UnitSelectionCards), 0x3A6A, 0x1BBC, 0x10E, "d51147e7cfebca65" },
+	{ "lance_editor.lance_slots", &LanceAssignments, sizeof(LanceAssignments), 0x3A6A, 0x1CCA, 0x82, "ed9b671d2f37f653" },
 	{ "screens.text_window_frame", &TextWindowFrameDefinition, sizeof(TextWindowFrameDefinition), 0x3A6A, 0x08AA, 0x18, "784fdaba56e12fbc" },
 	{ "screens.palette_files", &ScreenPaletteResourceByScreen, sizeof(ScreenPaletteResourceByScreen), 0x3A6A, 0x1704, 0x25, "e78bb6d27f4e84d3" },
 	{ "tactical_panel.formation_marker_x", &FormationMarkerOriginX, sizeof(FormationMarkerOriginX), 0x3A6A, 0x2F96, 0x14, "b096bff2a16441c6" },
@@ -74,6 +76,9 @@ const RulePiece RulePieces[] =
 	{ "new_campaign.initial_pilot_pool", &InitialExtendedCampaignState, sizeof(InitialExtendedCampaignState), 0x3A6A, 0x1B8F, 0xF, "5ed3771e99a6af78" },
 	{ "new_campaign.forward_pilot_pool", &ForwardExtendedCampaignState, sizeof(ForwardExtendedCampaignState), 0x3A6A, 0x1B9E, 0xF, "5ed3771e99a6af78" },
 	{ "new_campaign.replay_pilot_pool", &ReplayExtendedCampaignState, sizeof(ReplayExtendedCampaignState), 0x3A6A, 0x1BAD, 0xF, "2111c357b439a9b8" },
+	{ "lance_editor_start.reload_graphics", &LanceEditorReloadGraphics, sizeof(LanceEditorReloadGraphics), 0x3A6A, 0x30C8, 0x2, "58f87d0a96fd20cb" },
+	{ "lance_editor_start.lance_slot_counts", &UnitEditorLanceSlotCount, sizeof(UnitEditorLanceSlotCount), 0x3A6A, 0x3112, 0x6, "0516c073ec9f9f7e" },
+	{ "lance_editor_start.section_enabled", &UnitEditorSectionEnabled, sizeof(UnitEditorSectionEnabled), 0x3A6A, 0x31E9, 0x1D, "6324cca6a61409b0" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
 
@@ -124,6 +129,8 @@ _Static_assert(sizeof(MissionSpriteHeightPixels) == 0x18, "mission.sprite_height
 _Static_assert(sizeof(UnitEditorUnitSpriteIndex) == 0x59, "lance_editor.unit_sprites is the original's size");
 _Static_assert(sizeof(PilotPortraitIndexById) == 0x21, "lance_editor.pilot_portraits is the original's size");
 _Static_assert(sizeof(LanceEditorLayout) == 0x1D4, "lance_editor.layout is the original's size");
+_Static_assert(sizeof(UnitSelectionCards) == 0x10E, "lance_editor.selection_cards is the original's size");
+_Static_assert(sizeof(LanceAssignments) == 0x82, "lance_editor.lance_slots is the original's size");
 _Static_assert(sizeof(TextWindowFrameDefinition) == 0x18, "screens.text_window_frame is the original's size");
 _Static_assert(sizeof(ScreenPaletteResourceByScreen) == 0x25, "screens.palette_files is the original's size");
 _Static_assert(sizeof(FormationMarkerOriginX) == 0x14, "tactical_panel.formation_marker_x is the original's size");
@@ -141,3 +148,6 @@ _Static_assert(sizeof(RandomPilotPoolCounts) == 0x3, "new_campaign.random_pilot_
 _Static_assert(sizeof(InitialExtendedCampaignState) == 0xF, "new_campaign.initial_pilot_pool is the original's size");
 _Static_assert(sizeof(ForwardExtendedCampaignState) == 0xF, "new_campaign.forward_pilot_pool is the original's size");
 _Static_assert(sizeof(ReplayExtendedCampaignState) == 0xF, "new_campaign.replay_pilot_pool is the original's size");
+_Static_assert(sizeof(LanceEditorReloadGraphics) == 0x2, "lance_editor_start.reload_graphics is the original's size");
+_Static_assert(sizeof(UnitEditorLanceSlotCount) == 0x6, "lance_editor_start.lance_slot_counts is the original's size");
+_Static_assert(sizeof(UnitEditorSectionEnabled) == 0x1D, "lance_editor_start.section_enabled is the original's size");

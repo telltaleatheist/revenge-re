@@ -271,16 +271,11 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HYDRATE_DATA_OBJECT(SceneInstructionBaseOffset, 0xA862);
 	HYDRATE_DATA_OBJECT(SceneInstructionCursor, 0xA9D9);
 	HYDRATE_DATA_OBJECT(ScenarioResourcePathPointer, 0x1554);
-	HYDRATE_DATA_OBJECT(UnitSelectionCards, 0x1BBC);
-	HYDRATE_DATA_OBJECT(LanceAssignments, 0x1CCA);
 	HYDRATE_DATA_OBJECT(TacticalUpdateDelayReloadTicks, 0x17DA);
 	HYDRATE_DATA_OBJECT(TacticalGameSpeedIndex, 0x17DC);
 	HYDRATE_DATA_OBJECT(LanceEditorFirstBriefingPending, 0x30C4);
 	HYDRATE_DATA_OBJECT(LanceEditorBriefingPresented, 0x30C6);
-	HYDRATE_DATA_OBJECT(LanceEditorReloadGraphics, 0x30C8);
-	HYDRATE_DATA_OBJECT(UnitEditorLanceSlotCount, 0x3112);
 	HYDRATE_DATA_OBJECT(RandomUnitTypeCount, 0x3118);
-	HYDRATE_DATA_OBJECT(UnitEditorSectionEnabled, 0x31E9);
 #undef HYDRATE_DATA_OBJECT
 }
 

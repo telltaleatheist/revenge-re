@@ -3,12 +3,16 @@
 
 #include "revenge/original/lance_editor_data.h"
 
+/* Filled at start from data/ui/lance_editor.json (the places) and
+ * data/start/lance_editor.json (the starting state); revenge/rules.h. */
 UnitSelectionCard UnitSelectionCards[UNIT_SELECTION_CARD_COUNT];
 word16 LanceEditorFirstBriefingPending;
 word16 LanceEditorBriefingPresented;
+/* Filled at start from data/start/lance_editor.json (revenge/rules.h). */
 word16 LanceEditorReloadGraphics;
 
 
+/* Filled at start from data/start/lance_editor.json (revenge/rules.h). */
 word16 UnitEditorLanceSlotCount[0x03];
 byte RandomUnitTypeCount;
 /* Filled at start from data/ui/lance_editor.json (revenge/rules.h). */
@@ -17,6 +21,7 @@ byte UnitEditorUnitSpriteIndex[LANCE_EDITOR_UNIT_TYPE_COUNT];
 byte UnitNameSplitIndex[LANCE_EDITOR_UNIT_TYPE_COUNT];
 /* Filled at start from data/rules/units.json (revenge/rules.h). */
 byte PredefinedUnitTypeTable[0x1E];
+/* Filled at start from data/start/lance_editor.json (revenge/rules.h). */
 byte UnitEditorSectionEnabled[0x1D];
 /* Filled at start from data/rules/campaign.json (revenge/rules.h). */
 byte UnitEditorScenarioCardCountByFamily[0x07];

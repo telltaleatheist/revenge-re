@@ -675,6 +675,29 @@ constexpr LayoutField kLanceEditorLayout[] = {
     {"editor_backings", "height_pixels", 2, 8},
 };
 
+constexpr std::size_t kSelectionCards = 0x12;  // UNIT_SELECTION_CARD_COUNT
+constexpr std::size_t kLanceSlots = 0x0D;
+
+// `count` records of `size` bytes whose first three words are a place
+// ({"left", "top", "width"} in the file); the bytes at `empty` are FFh, the
+// rest 0.
+std::vector<std::uint8_t> placed_records(const Json& value, const std::string& where, std::size_t count,
+                                         std::size_t size, std::initializer_list<std::size_t> empty) {
+    if (!value.is_array() || value.array().size() != count)
+        fail(where, "is not an array of " + std::to_string(count) + " places");
+    std::vector<std::uint8_t> out(count * size, 0);
+    for (std::size_t index = 0; index < count; ++index) {
+        Fields place(value.array()[index], where + "[" + std::to_string(index) + "]");
+        std::uint8_t* record = &out[index * size];
+        put_word(record, whole(place.take("left"), place.at("left"), 0xFFFF));
+        put_word(record + 2, whole(place.take("top"), place.at("top"), 0xFFFF));
+        put_word(record + 4, whole(place.take("width"), place.at("width"), 0xFFFF));
+        place.done();
+        for (const std::size_t at : empty) record[at] = 0xFF;
+    }
+    return out;
+}
+
 // The shared graphics buffers the lance editor's sprites and portraits are
 // drawn from (SharedGraphicsBackingBuffers).
 constexpr unsigned kLastGraphicsBuffer = 0x25;
@@ -686,6 +709,37 @@ void read_lance_editor(const Json& root, Tables& tables) {
         numbers(file.take("unit_sprite_by_type"), file.at("unit_sprite_by_type"), 0x59, kLastGraphicsBuffer, 1);
     tables["lance_editor.pilot_portraits"] = numbers(file.take("pilot_portrait_by_pilot"),
                                                      file.at("pilot_portrait_by_pilot"), 0x21, kLastGraphicsBuffer, 1);
+
+    // UnitSelectionCard (15 bytes) and RevengeUnitLanceAssignment (10): the
+    // place of each, from here; the rest is the starting state
+    // (data/start/lance_editor.json), the slots and ids empty (FFh) and the
+    // card's sprite null.
+    tables["lance_editor.selection_cards"] = placed_records(file.take("selection_cards"), file.at("selection_cards"),
+                                                            kSelectionCards, 15, {0x07, 0x08, 0x09, 0x0A});
+    tables["lance_editor.lance_slots"] =
+        placed_records(file.take("lance_slots"), file.at("lance_slots"), kLanceSlots, 10, {0x07, 0x08, 0x09});
+    file.done();
+}
+
+// data/start/lance_editor.json, after data/ui's: the records' starting state
+// and the editor's.
+void read_lance_editor_start(const Json& root, Tables& tables) {
+    Fields file(root, "lance_editor.json (start):");
+    const std::vector<std::uint8_t> states =
+        numbers(file.take("selection_card_states"), file.at("selection_card_states"), kSelectionCards, 0xFF, 1);
+    std::vector<std::uint8_t>& cards = tables.at("lance_editor.selection_cards");
+    for (std::size_t card = 0; card < kSelectionCards; ++card) cards[card * 15 + 6] = states[card];
+    const std::vector<std::uint8_t> styles =
+        numbers(file.take("lance_slot_styles"), file.at("lance_slot_styles"), kLanceSlots, 0xFF, 1);
+    std::vector<std::uint8_t>& slots = tables.at("lance_editor.lance_slots");
+    for (std::size_t slot = 0; slot < kLanceSlots; ++slot) slots[slot * 10 + 6] = styles[slot];
+    tables["lance_editor_start.lance_slot_counts"] =
+        numbers(file.take("lance_slot_counts"), file.at("lance_slot_counts"), 3, 0xFFFF, 2);
+    tables["lance_editor_start.section_enabled"] =
+        numbers(file.take("section_enabled"), file.at("section_enabled"), 0x1D, 1, 1);
+    std::vector<std::uint8_t>& reload = tables["lance_editor_start.reload_graphics"];
+    reload.assign(2, 0);
+    put_word(reload.data(), whole(file.take("reload_graphics"), file.at("reload_graphics"), 1));
     file.done();
 }
 
@@ -861,6 +915,7 @@ void load(const std::filesystem::path& data_dir) {
     read_tactical_panel(read_file(ui / "tactical_panel.json", "tactical_panel.json"), tables);
     const std::filesystem::path start = data_dir / "start";
     read_new_campaign(read_file(start / "new_campaign.json", "new_campaign.json"), tables);
+    read_lance_editor_start(read_file(start / "lance_editor.json", "lance_editor.json (start)"), tables);
     check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {

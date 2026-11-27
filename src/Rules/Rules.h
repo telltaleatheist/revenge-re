@@ -108,6 +108,11 @@
 //         type's card shows
 //     "pilot_portrait_by_pilot"  33, the graphics buffer each pilot's card
 //         shows
+//     "selection_cards"  18 {"left", "top", "width"}: where each unit or
+//         pilot card is drawn (UnitSelectionCard)
+//     "lance_slots"  13 {"left", "top", "width"}: where each lance slot is
+//         drawn (RevengeUnitLanceAssignment); the thirteenth is the editor's
+//         exit button
 //
 //   screens.json:
 //     "palette_file_by_screen"  37, the resource file (0 to 89) whose palette
@@ -138,6 +143,16 @@
 //         pilot pool is 15 zeros while the replay copy's is pilots 18 to 32,
 //         as the original's are; the forward copy is overwritten from the
 //         replay copy before it is read.
+//
+//   lance_editor.json, the lance editor's starting state:
+//     "selection_card_states"  18, each card's state
+//     "lance_slot_styles"  13, each lance slot's style
+//         (a card's and a slot's units, pilots and ids start empty, FFh, and
+//         a card's sprite null; the reader writes them)
+//     "lance_slot_counts"  3 words, the slots of each lance
+//     "section_enabled"  29, 0 or 1: 7 families of 4 sections, then one
+//         byte past them, as the original has it
+//     "reload_graphics"  0 or 1
 //
 // Every value is a whole number in its field's range; arrays keep the
 // original's length. A file that breaks any of this is refused, naming the

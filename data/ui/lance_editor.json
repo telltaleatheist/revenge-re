@@ -104,6 +104,41 @@
       {"source_tile_x": 28, "source_pixel_y": 120, "width_tiles": 8, "height_pixels": 56}
     ]
   },
+  "selection_cards": [
+    {"left": 24, "top": 0, "width": 66},
+    {"left": 96, "top": 0, "width": 66},
+    {"left": 168, "top": 0, "width": 66},
+    {"left": 24, "top": 101, "width": 66},
+    {"left": 96, "top": 101, "width": 66},
+    {"left": 168, "top": 101, "width": 66},
+    {"left": 24, "top": 0, "width": 66},
+    {"left": 96, "top": 0, "width": 66},
+    {"left": 168, "top": 0, "width": 66},
+    {"left": 24, "top": 101, "width": 66},
+    {"left": 96, "top": 101, "width": 66},
+    {"left": 168, "top": 101, "width": 66},
+    {"left": 24, "top": 0, "width": 66},
+    {"left": 96, "top": 0, "width": 66},
+    {"left": 168, "top": 0, "width": 66},
+    {"left": 24, "top": 101, "width": 66},
+    {"left": 96, "top": 101, "width": 66},
+    {"left": 168, "top": 101, "width": 66}
+  ],
+  "lance_slots": [
+    {"left": 235, "top": 72, "width": 84},
+    {"left": 235, "top": 98, "width": 84},
+    {"left": 235, "top": 124, "width": 84},
+    {"left": 235, "top": 150, "width": 84},
+    {"left": 235, "top": 72, "width": 84},
+    {"left": 235, "top": 98, "width": 84},
+    {"left": 235, "top": 124, "width": 84},
+    {"left": 235, "top": 150, "width": 84},
+    {"left": 235, "top": 72, "width": 84},
+    {"left": 235, "top": 98, "width": 84},
+    {"left": 235, "top": 124, "width": 84},
+    {"left": 235, "top": 150, "width": 84},
+    {"left": 235, "top": 176, "width": 84}
+  ],
   "unit_sprite_by_type": [1, 2, 0, 3, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 5, 0, 0, 6, 0, 7, 8, 0, 9, 0, 0, 0, 10, 11, 0, 0, 12, 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 14, 15, 0, 0, 0, 0, 0, 0, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 6, 7, 7, 10, 10, 13, 13, 14, 14, 15, 4, 12, 11, 16],
   "pilot_portrait_by_pilot": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37]
 }
