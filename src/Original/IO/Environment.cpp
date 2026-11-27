@@ -2,7 +2,7 @@
 // Environment.cpp
 // Reconstructed DOS environment lookup with an SDL host boundary (segment 39DC).
 
-#include "REVENGE.h"
+#include "IO/IO.h"
 #include "revenge/platform_backend.h"
 
 // 39DC:0009

@@ -2,8 +2,9 @@
 // CriticalError.cpp
 // DOS critical-error handler installation.
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "IO/IO.h"
+#include "Utility/Utility.h"
+#include "revenge/original/io_data.h"
 
 #define CRITICAL_ERROR_DEFAULT_CALLBACK_OFFSET 0x0006
 #define CRITICAL_ERROR_CODE_SEGMENT            0x34A7

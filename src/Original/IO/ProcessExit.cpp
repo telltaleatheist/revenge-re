@@ -1,8 +1,9 @@
 // 38C6: process exit
 // Reconstructed original exit-handler dispatcher (segment 38C6).
 
-#include "REVENGE.h"
-#include "revenge/original_data.h"
+#include "Data/ResourceData.h"
+#include "IO/IO.h"
+#include "Resources/Resources.h"
 
 void DOS_TerminateProcess(uint16_t exitCode);
 

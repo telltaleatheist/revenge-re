@@ -1,7 +1,9 @@
 // 0D73: save compatibility
 /* Preserved save-file compatibility loop from REVENGE_0D73. */
 
-#include "REVENGE.h"
+#include "IO/IO.h"
+#include "Resources/Resources.h"
+#include "UI/UI.h"
 
 /* 0D73:4572-4610 */
 int16_t EnsureCompatibleSaveFile(
