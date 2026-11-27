@@ -20,6 +20,8 @@ look like a current instruction.
   profiles and SHA-256 identifiers.
 - [`ORIGINAL_BUGS.md`](ORIGINAL_BUGS.md) — policy for original quirks and host
   compatibility changes.
+- [`DISCOVERIES.md`](DISCOVERIES.md) — what the rebuild found in the
+  original's data and kept as it is.
 - [`../CONTRIBUTING.md`](../CONTRIBUTING.md) — preservation contribution and
   validation requirements.
 
