@@ -398,7 +398,7 @@ extern RevengeTacticalCombatRatings UnitCombatRatings[0x1A];
 #define ComparedUnitCombatRatings UnitCombatRatings[0x19]
 extern byte UnitLanceFormationState[0x18];
 extern byte TacticalScenarioLanceEnabled[0x03];
-extern const byte SensorDamageProximityRangeTable[0x03];
+extern byte SensorDamageProximityRangeTable[0x03];  /* the rules' */
 extern byte LanceFormationProfile[0x06];
 extern byte UnitEnemyEngagementActive[0x18];
 extern byte UnitMovementHeatExponent[0x18];
@@ -415,7 +415,7 @@ extern word16 ScenarioFileSuffix;
 extern byte CampaignUpgradeAwards[0x04];
 extern byte UnitEnemyInProximityRange[0x18];
 extern byte UnitShutdownState[0x18];
-extern const byte MovementRatingByWalkMP[0x09];
+extern byte MovementRatingByWalkMP[0x09];  /* the rules' */
 extern const char *UnitNameTable[0x59];
 extern const char *PilotSurnameTable[0x3B];
 extern const char *UnitAffiliationNameTable[0x04];
@@ -487,7 +487,7 @@ extern const word16 WeaponPriorityCountTable[
 extern const DosAddress WeaponPriorityListPointers[
 	WEAPON_PRIORITY_PROFILE_COUNT];
 extern const byte WeaponPriorityProfileByRangeHeat[0x80];
-extern const word16 MovementTimingMaskTable[0x09];
+extern word16 MovementTimingMaskTable[0x09];  /* the rules' */
 /* Forty formations of three x and three y offsets: a facing band (0, 0Ah,
  * 14h, 1Eh) plus one of the ten formation modes. SaveDirectory follows. */
 extern const int8 FormationOffsetTable[0xF0];
@@ -514,10 +514,10 @@ extern const int16 DirectionSearchDeltaTable[0x10];
 extern byte ImprovedMissileDamageBonusTable[0x07];  /* the rules' */
 extern const byte TerrainDamageQueueOccupiedMask[0x04];
 extern const byte TerrainDamageQueueIncrementMask[0x04];
-extern const word16 HitLocationDirectionSelectorTable[0x10];
-extern const word16 HitLocationTable[HIT_LOCATION_TABLE_COUNT]
-	[HIT_LOCATION_TABLE_WORD_COUNT];
-extern const word16 UnitActionMaskByExperience[0x04];
+extern word16 HitLocationDirectionSelectorTable[0x10];  /* the rules' */
+extern word16 HitLocationTable[HIT_LOCATION_TABLE_COUNT]
+	[HIT_LOCATION_TABLE_WORD_COUNT];  /* the rules' */
+extern word16 UnitActionMaskByExperience[0x04];  /* the rules' */
 extern RevengeTerrainImpactAnimationRecord
 	TerrainImpactAnimationRecords[TERRAIN_IMPACT_ANIMATION_RECORD_COUNT];
 extern word16 NarrationMessageCategory;
@@ -544,7 +544,7 @@ extern const int8 TacticalMouseEdgeInputByMask[0x10];
 extern byte SceneNarrationEventFlags[0x06];
 /* DS:176A: 30h words, one for each heat-sink count a unit's 2Fh equipment
  * slots allow. */
-extern word16 HeatDissipationBySinkCountQ8_8[0x30];
+extern word16 HeatDissipationBySinkCountQ8_8[0x30];  /* the rules' */
 extern word16 TerrainDamageQueueWordCount;
 extern word16 TacticalProjectileCount;
 extern RevengeTacticalProjectileRecord

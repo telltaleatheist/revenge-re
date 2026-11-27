@@ -1,0 +1,15 @@
+{
+  "heat_dissipation_by_sink_count": [0, 16, 32, 48, 64, 80, 96, 112, 128, 144, 160, 176, 192, 208, 224, 240, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512, 528, 544, 560, 576, 592, 608, 624, 640, 656, 672, 688, 704, 720, 736, 752],
+  "hit_location_tables": [
+    ["center_rear_torso", "right_arm", "right_arm", "right_leg", "right_rear_torso", "center_rear_torso", "left_rear_torso", "left_leg", "left_arm", "left_arm", "head"],
+    ["right_torso", "right_leg", "right_arm", "right_arm", "right_leg", "right_torso", "center_torso", "left_torso", "left_arm", "left_leg", "head"],
+    ["center_torso", "right_arm", "right_arm", "right_leg", "right_torso", "center_torso", "left_torso", "left_leg", "left_arm", "left_arm", "head"],
+    ["left_torso", "left_leg", "left_arm", "left_arm", "left_leg", "left_torso", "center_torso", "right_torso", "right_arm", "right_leg", "head"],
+    ["center_torso", "center_torso", "center_torso", "center_torso", "center_torso", "center_torso", "center_torso", "center_torso", "center_torso", "center_torso", "center_torso"]
+  ],
+  "hit_table_by_direction": [0, 1, 1, 2, 2, 2, 3, 3, 0, 1, 1, 2, 2, 2, 3, 3],
+  "sensor_damage_proximity_range": [20, 10, 0],
+  "action_mask_by_experience": [17, 85, 231, 255],
+  "movement_timing_masks": [16, 34, 84, 85, 181, 219, 127, 255, 0],
+  "movement_rating_by_walk_mp": [0, 1, 1, 1, 2, 2, 3, 3, 4]
+}

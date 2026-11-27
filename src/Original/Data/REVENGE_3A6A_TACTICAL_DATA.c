@@ -261,8 +261,8 @@ RevengeUnitRecord EstimatedUnitRecord;
 RevengeTacticalCombatRatings UnitCombatRatings[0x1A];
 byte UnitLanceFormationState[0x18];
 byte TacticalScenarioLanceEnabled[0x03];
-const byte SensorDamageProximityRangeTable[0x03] =
-	{ 0x14, 0x0A, 0x00 };
+/* Filled at start from data/rules/combat.json (revenge/rules.h). */
+byte SensorDamageProximityRangeTable[0x03];
 byte LanceFormationProfile[0x06];
 byte UnitEnemyEngagementActive[0x18];
 byte UnitMovementHeatExponent[0x18];

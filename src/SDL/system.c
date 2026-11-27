@@ -247,9 +247,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	}
 	PrimaryScreenBuffer = ResolveOriginalDataPointer(0xB65E);
 	VideoFramebuffer = ResolveOriginalDataPointer(0xB664);
-	memcpy(HeatDissipationBySinkCountQ8_8,
-		&originalDataSegment[0x176A],
-		sizeof(HeatDissipationBySinkCountQ8_8));
 	TacticalStatusBlinkCountdown =
 		ReadLittleEndianWord(&originalDataSegment[0x2F36]);
 	DisplayedTacticalStatusRow =

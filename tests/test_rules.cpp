@@ -96,22 +96,27 @@ std::string read(const fs::path& path) {
     return std::string((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
 }
 
-// data/ copied to a folder of the test's, weapons.json with `from` made `to`
-// (or with no weapons.json when `from` is null).
-std::string broken_data(const char* mode, const char* from, const char* to) {
+// data/rules copied to a folder of the test's, with `from` made `to` in
+// `file` (or with no `file` when `from` is null).
+std::string broken_data(const char* mode, const char* file, const char* from, const char* to) {
     const fs::path folder = fs::current_path() / (std::string("rules-test-") + mode);
     fs::remove_all(folder);
     fs::create_directories(folder / "rules");
-    if (from != nullptr) {
-        std::string text = read(fs::path(CHR_DATA_DIRECTORY) / "rules" / "weapons.json");
-        const std::size_t at = text.find(from);
-        if (at == std::string::npos) {
-            std::printf("FAIL %s: weapons.json has no %s\n", mode, from);
-            std::exit(1);
-        }
-        text.replace(at, std::strlen(from), to);
-        std::ofstream(folder / "rules" / "weapons.json", std::ios::binary) << text;
+    for (const fs::directory_entry& entry : fs::directory_iterator(fs::path(CHR_DATA_DIRECTORY) / "rules"))
+        fs::copy_file(entry.path(), folder / "rules" / entry.path().filename());
+    const fs::path target = folder / "rules" / file;
+    if (from == nullptr) {
+        fs::remove(target);
+        return folder.string();
     }
+    std::string text = read(target);
+    const std::size_t at = text.find(from);
+    if (at == std::string::npos) {
+        std::printf("FAIL %s: %s has no %s\n", mode, file, from);
+        std::exit(1);
+    }
+    text.replace(at, std::strlen(from), to);
+    std::ofstream(target, std::ios::binary) << text;
     return folder.string();
 }
 
@@ -124,20 +129,23 @@ int main(int argc, char** argv) {
 
     struct Broken {
         const char* mode;
+        const char* file;
         const char* from;
         const char* to;
     };
     static const Broken broken[] = {
-        {"stray", "\"small_laser\": {", "\"small_laser\": {\"rate_of_fire\": 1, "},
-        {"absent", "\"ppc\": {\"heat\": 10, ", "\"ppc\": {"},
-        {"too_large", "\"ppc\": {\"heat\": 10,", "\"ppc\": {\"heat\": 300,"},
-        {"length", "[45, ", "["},
-        {"shared", "\"improved_missile_damage_bonus\": 0}", "\"improved_missile_damage_bonus\": 1}"},
-        {"nofile", nullptr, nullptr},
+        {"stray", "weapons.json", "\"small_laser\": {", "\"small_laser\": {\"rate_of_fire\": 1, "},
+        {"absent", "weapons.json", "\"ppc\": {\"heat\": 10, ", "\"ppc\": {"},
+        {"too_large", "weapons.json", "\"ppc\": {\"heat\": 10,", "\"ppc\": {\"heat\": 300,"},
+        {"length", "weapons.json", "[45, ", "["},
+        {"shared", "weapons.json", "\"improved_missile_damage_bonus\": 0}", "\"improved_missile_damage_bonus\": 1}"},
+        {"location", "combat.json", "[\"center_rear_torso\", ", "[\"tail\", "},
+        {"direction", "combat.json", "\"hit_table_by_direction\": [0,", "\"hit_table_by_direction\": [4,"},
+        {"nofile", "combat.json", nullptr, nullptr},
     };
     for (const Broken& one : broken)
         if (mode == one.mode) {
-            const std::string folder = broken_data(one.mode, one.from, one.to);
+            const std::string folder = broken_data(one.mode, one.file, one.from, one.to);
             Rules_Load(folder.c_str());
             std::printf("FAIL %s: the rules were read\n", one.mode);
             return 1;

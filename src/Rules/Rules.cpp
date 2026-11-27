@@ -21,8 +21,6 @@ extern "C" {
 
 extern "C" {
 #include "revenge/rules.h"
-// HitLocationDirectionSelectorTable (revenge/original_data.h is C only).
-extern const std::uint16_t HitLocationDirectionSelectorTable[0x10];  // word16
 }
 
 namespace revenge::rules {
@@ -48,6 +46,16 @@ constexpr std::array<std::string_view, 0x0F> kAmmunition = {
 using Tables = std::map<std::string, std::vector<std::uint8_t>, std::less<>>;
 
 constexpr std::size_t kWeaponRecordBytes = 0x0F;  // WeaponDefinitions' record
+
+// RevengeBattleMechArmorLocation's names (revenge/unit.h), in its order: the
+// codes the hit-location tables hold.
+constexpr std::array<std::string_view, 0x0B> kArmorLocations = {
+    "head", "left_arm", "left_torso", "center_torso", "right_torso", "right_arm",
+    "left_leg", "right_leg", "left_rear_torso", "center_rear_torso", "right_rear_torso"};
+constexpr std::size_t kHitLocationTables = 0x05;  // HIT_LOCATION_TABLE_COUNT
+constexpr std::size_t kHitLocationRolls = 0x0B;   // 2d6: 2 to 12
+constexpr std::size_t kHitLocationWords = 0x0C;   // the rolls and a zero word
+constexpr unsigned kFacingHitTables = 0x04;       // HIT_LOCATION_FACING_TABLE_COUNT
 
 // "weapons.json: weapons.ppc.heat is missing".
 [[noreturn]] void fail(const std::string& where, const std::string& why) {
@@ -96,6 +104,32 @@ void put_word(std::uint8_t* at, unsigned value) {
     at[1] = static_cast<std::uint8_t>(value >> 8);
 }
 
+// An array of `count` whole numbers up to `maximum`, laid out as bytes or as
+// little-endian words (`width` 1 or 2).
+std::vector<std::uint8_t> numbers(const Json& value, const std::string& where, std::size_t count,
+                                  unsigned maximum, std::size_t width) {
+    if (!value.is_array() || value.array().size() != count)
+        fail(where, "is not an array of " + std::to_string(count) + " numbers");
+    std::vector<std::uint8_t> out(count * width, 0);
+    for (std::size_t index = 0; index < count; ++index) {
+        const unsigned number = whole(value.array()[index], where + "[" + std::to_string(index) + "]", maximum);
+        if (width == 2)
+            put_word(&out[index * 2], number);
+        else
+            out[index] = std::uint8_t(number);
+    }
+    return out;
+}
+
+// One of `names`, by its index.
+std::size_t named(const Json& value, const std::string& where, const std::string_view* names, std::size_t count,
+                  const char* what) {
+    if (!value.is_string()) fail(where, std::string("is not ") + what);
+    for (std::size_t index = 0; index < count; ++index)
+        if (names[index] == value.string()) return index;
+    fail(where, std::string("is not ") + what);
+}
+
 // The reference edition's place of the story text `id`, as the original's
 // far pointer names it.
 void put_text_pointer(std::uint8_t* at, int id, const std::string& where) {
@@ -132,12 +166,9 @@ void read_weapons(const Json& root, Tables& tables) {
             whole(weapon.take("missile_rack_size"), weapon.at("missile_rack_size"), 0xFF));
         const Json& ammunition = weapon.take("ammunition");
         std::size_t family = 0;
-        if (!std::holds_alternative<std::nullptr_t>(ammunition.value)) {
-            if (!ammunition.is_string()) fail(weapon.at("ammunition"), "is not a name or null");
-            for (family = 1; family < kAmmunition.size() && kAmmunition[family] != ammunition.string(); ++family) {
-            }
-            if (family == kAmmunition.size()) fail(weapon.at("ammunition"), "is no ammunition the code names");
-        }
+        if (!std::holds_alternative<std::nullptr_t>(ammunition.value))
+            family = 1 + named(ammunition, weapon.at("ammunition"), kAmmunition.data() + 1, kAmmunition.size() - 1,
+                               "null or an ammunition the code names");
         record[0x0B] = std::uint8_t(family);
         record[0x0C] = std::uint8_t(whole(weapon.take("critical_slots"), weapon.at("critical_slots"), 0xFF));
         record[0x0D] = std::uint8_t(whole(weapon.take("recovery_ticks"), weapon.at("recovery_ticks"), 0xFF));
@@ -149,19 +180,58 @@ void read_weapons(const Json& root, Tables& tables) {
         weapon.done();
     }
     weapons.done();
-    const unsigned shared = HitLocationDirectionSelectorTable[0x0F] >> 8;
-    if (bonuses[0] != shared)
-        fail(weapons.at(kWeapons[kFirstMissileWeapon]) + ".improved_missile_damage_bonus",
-             "is one byte with the hit-location selector's last, which is " + std::to_string(shared));
-
-    const Json& multipliers = file.take("ammunition_capacity_multipliers");
-    const std::string where = file.at("ammunition_capacity_multipliers");
-    if (!multipliers.is_array() || multipliers.array().size() != 0x0E)
-        fail(where, "is not an array of 14 numbers");
-    for (std::size_t index = 0; index < 0x0E; ++index)
-        put_word(&multipliers_out[index * 2],
-                 whole(multipliers.array()[index], where + "[" + std::to_string(index) + "]", 0xFFFF));
+    multipliers_out = numbers(file.take("ammunition_capacity_multipliers"),
+                              file.at("ammunition_capacity_multipliers"), 0x0E, 0xFFFF, 2);
     file.done();
+}
+
+void read_combat(const Json& root, Tables& tables) {
+    Fields file(root, "combat.json:");
+    tables["combat.heat_dissipation"] = numbers(
+        file.take("heat_dissipation_by_sink_count"), file.at("heat_dissipation_by_sink_count"), 0x30, 0xFFFF, 2);
+
+    const Json& hit = file.take("hit_location_tables");
+    const std::string hit_where = file.at("hit_location_tables");
+    if (!hit.is_array() || hit.array().size() != kHitLocationTables)
+        fail(hit_where, "is not an array of " + std::to_string(kHitLocationTables) + " tables");
+    std::vector<std::uint8_t>& hit_out = tables["combat.hit_location_tables"];
+    hit_out.assign(kHitLocationTables * kHitLocationWords * 2, 0);
+    for (std::size_t table = 0; table < kHitLocationTables; ++table) {
+        const Json& rolls = hit.array()[table];
+        const std::string where = hit_where + "[" + std::to_string(table) + "]";
+        if (!rolls.is_array() || rolls.array().size() != kHitLocationRolls)
+            fail(where, "is not an array of " + std::to_string(kHitLocationRolls) + " locations, rolls 2 to 12");
+        for (std::size_t roll = 0; roll < kHitLocationRolls; ++roll)
+            put_word(&hit_out[(table * kHitLocationWords + roll) * 2],
+                     unsigned(named(rolls.array()[roll], where + "[" + std::to_string(roll) + "]",
+                                    kArmorLocations.data(), kArmorLocations.size(),
+                                    "an armour location the code names")));
+    }
+
+    tables["combat.hit_table_by_direction"] = numbers(
+        file.take("hit_table_by_direction"), file.at("hit_table_by_direction"), 0x10, kFacingHitTables - 1, 2);
+    tables["combat.sensor_damage_proximity_range"] = numbers(
+        file.take("sensor_damage_proximity_range"), file.at("sensor_damage_proximity_range"), 0x03, 0xFF, 1);
+    tables["combat.action_mask_by_experience"] = numbers(
+        file.take("action_mask_by_experience"), file.at("action_mask_by_experience"), 0x04, 0xFFFF, 2);
+    tables["combat.movement_timing_masks"] = numbers(
+        file.take("movement_timing_masks"), file.at("movement_timing_masks"), 0x09, 0xFFFF, 2);
+    tables["combat.movement_rating_by_walk_mp"] = numbers(
+        file.take("movement_rating_by_walk_mp"), file.at("movement_rating_by_walk_mp"), 0x09, 0xFF, 1);
+    file.done();
+}
+
+// Bytes two tables share in the original's memory must agree.
+void check_shared(const Tables& tables) {
+    // The first missile weapon's bonus is the high byte of the last direction
+    // entry, which is a table number from 0 to 3: so the bonus is 0.
+    const std::uint8_t bonus = tables.at("weapons.improved_missile_damage_bonus")[0];
+    const std::uint8_t shared = tables.at("combat.hit_table_by_direction")[0x1F];
+    if (bonus != shared)
+        fail("weapons.json: weapon_table." + std::string(kWeapons[kFirstMissileWeapon]) +
+                 ".improved_missile_damage_bonus",
+             "is one byte with the high byte of combat.json's hit_table_by_direction[15], which is " +
+                 std::to_string(shared));
 }
 
 Json read_file(const std::filesystem::path& path, const std::string& name) {
@@ -181,6 +251,8 @@ void load(const std::filesystem::path& data_dir) {
     const std::filesystem::path rules = data_dir / "rules";
     Tables tables;
     read_weapons(read_file(rules / "weapons.json", "weapons.json"), tables);
+    read_combat(read_file(rules / "combat.json", "combat.json"), tables);
+    check_shared(tables);
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index) {
         const RulePiece& piece = RulePieces[index];

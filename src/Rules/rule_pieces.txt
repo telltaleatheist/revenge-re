@@ -20,3 +20,12 @@ weapons.definitions                     WeaponDefinitions                3A6A:04
 weapons.ammunition_capacity_multipliers AmmoCapacityMultiplierTable      3A6A:058E 1C
 weapons.improved_missile_damage_bonus   ImprovedMissileDamageBonusTable  3A6A:3D1D 7
 weapons.combat_ratings                  WeaponCombatRatingByType         4184:08BC 17
+
+# combat.json
+combat.heat_dissipation                 HeatDissipationBySinkCountQ8_8    3A6A:176A 60
+combat.hit_location_tables              HitLocationTable                  3A6A:1038 78
+combat.hit_table_by_direction           HitLocationDirectionSelectorTable 3A6A:3CFE 20
+combat.sensor_damage_proximity_range    SensorDamageProximityRangeTable   3A6A:03E7 3
+combat.action_mask_by_experience        UnitActionMaskByExperience        3A6A:3CF6 8
+combat.movement_timing_masks            MovementTimingMaskTable           3A6A:1026 12
+combat.movement_rating_by_walk_mp       MovementRatingByWalkMP            3A6A:0097 9

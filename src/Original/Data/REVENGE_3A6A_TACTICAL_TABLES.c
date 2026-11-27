@@ -3,10 +3,8 @@
 
 #include "revenge/original_data.h"
 
-const word16 UnitActionMaskByExperience[0x04] =
-{
-	0x0011, 0x0055, 0x00E7, 0x00FF
-};
+/* Filled at start from data/rules/combat.json (revenge/rules.h). */
+word16 UnitActionMaskByExperience[0x04];
 
 /* Filled at start from data/rules/weapons.json (revenge/rules.h). */
 RevengeWeaponDefinition WeaponDefinitions[WEAPON_DEFINITION_COUNT];
@@ -198,11 +196,8 @@ const byte WeaponPriorityProfileByRangeHeat[0x80] =
 	0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02,
 	0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03, 0x03
 };
-const word16 MovementTimingMaskTable[0x09] =
-{
-	0x0010, 0x0022, 0x0054, 0x0055, 0x00B5, 0x00DB, 0x007F, 0x00FF,
-	0x0000
-};
+/* Filled at start from data/rules/combat.json (revenge/rules.h). */
+word16 MovementTimingMaskTable[0x09];
 const int16 DirectionDeltaXTable[0x08] =
 {
 	0x0000, 0x0001, 0x0001, 0x0001, 0x0000, -0x0001, -0x0001, -0x0001

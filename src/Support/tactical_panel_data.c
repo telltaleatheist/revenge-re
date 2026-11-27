@@ -3,8 +3,8 @@
 #include "revenge/original_data.h"
 #include "revenge/story_text.h"
 
-const byte MovementRatingByWalkMP[0x09] =
-	{ 0x00, 0x01, 0x01, 0x01, 0x02, 0x02, 0x03, 0x03, 0x04 };
+/* Filled at start from data/rules/combat.json (revenge/rules.h). */
+byte MovementRatingByWalkMP[0x09];
 
 const char *UnitNameTable[0x59] =
 {

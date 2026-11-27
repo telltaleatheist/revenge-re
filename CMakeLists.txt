@@ -698,11 +698,12 @@ if(BUILD_TESTING)
     add_test(NAME rules.rebuild COMMAND test_rules from_data)
     add_test(NAME rules.exe COMMAND test_rules in_copy)
     add_test(NAME rules.range COMMAND test_rules too_large)
-    foreach(mode stray absent length shared nofile)
+    foreach(mode stray absent length shared location direction nofile)
         add_test(NAME rules.${mode} COMMAND test_rules ${mode})
     endforeach()
     set_tests_properties(rules.rebuild rules.exe rules.range rules.stray rules.absent
-        rules.length rules.shared rules.nofile PROPERTIES SKIP_RETURN_CODE 77)
+        rules.length rules.shared rules.location rules.direction rules.nofile
+        PROPERTIES SKIP_RETURN_CODE 77)
     set_tests_properties(rules.stray PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: weapons.json: weapon_table.small_laser.rate_of_fire is no key of the rules here")
     set_tests_properties(rules.absent PROPERTIES PASS_REGULAR_EXPRESSION
@@ -712,9 +713,13 @@ if(BUILD_TESTING)
     set_tests_properties(rules.length PROPERTIES PASS_REGULAR_EXPRESSION
         "fault: rules: weapons.json: ammunition_capacity_multipliers is not an array of 14 numbers")
     set_tests_properties(rules.shared PROPERTIES PASS_REGULAR_EXPRESSION
-        "fault: rules: weapons.json: weapon_table.lrm_5.improved_missile_damage_bonus is one byte with the hit-location selector's last")
+        "fault: rules: weapons.json: weapon_table.lrm_5.improved_missile_damage_bonus is one byte with the high byte of combat.json's hit_table_by_direction.15., which is 0")
+    set_tests_properties(rules.location PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: combat.json: hit_location_tables.0..0. is not an armour location the code names")
+    set_tests_properties(rules.direction PROPERTIES PASS_REGULAR_EXPRESSION
+        "fault: rules: combat.json: hit_table_by_direction.0. is not a whole number from 0 to 3")
     set_tests_properties(rules.nofile PROPERTIES PASS_REGULAR_EXPRESSION
-        "fault: rules: weapons.json can't be read from")
+        "fault: rules: combat.json can't be read from")
 
     add_executable(test_initial_data_values
         tests/test_initial_data_values.c
