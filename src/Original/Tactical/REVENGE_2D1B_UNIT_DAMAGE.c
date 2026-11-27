@@ -1,6 +1,7 @@
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
 #include "REVENGE_2D1B_INTERNAL.h"
+#include "revenge/debug.h"
 
 // 2D1B:1E2B: void ApplyWeaponDamage(
 //     Stack int16 attackerUnitIndex, Stack int16 weaponIndex,
@@ -54,7 +55,9 @@ void ApplyWeaponDamage(
 		// P: the shared upgrade byte means Improved Missiles for normal units;
 		// infantry interpret it as Inferno Rockets in ResolveWeaponAttack.
 		damageRemaining += (int16) (byte)
-			ImprovedMissileDamageBonusTable[weaponIndex]; // P: ImprovedMissileDamageBonusTable
+			ImprovedMissileDamageBonusTable[REVENGE_INDEX(
+				ImprovedMissileDamageBonusTable,
+				weaponIndex - WEAPON_LRM_5)]; // P: ImprovedMissileDamageBonusTable
 	}
 
 	relativeDirection = DetermineRelativeAttackDirection(

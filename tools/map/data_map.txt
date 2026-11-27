@@ -179,7 +179,7 @@ place DirectionSearchCountdown 3A6A:3CD4 2 run
 place DirectionSearchDeltaTable 3A6A:3CD6 20 run
 place UnitActionMaskByExperience 3A6A:3CF6 8 run
 place HitLocationDirectionSelectorTable 3A6A:3CFE 20 table
-place ImprovedMissileDamageBonusTable 3A6A:3D0D 17 run
+place ImprovedMissileDamageBonusTable 3A6A:3D1D 7 table
 place TerrainDamageQueueOccupiedMask 3A6A:3D25 4 run
 place TerrainDamageQueueIncrementMask 3A6A:3D29 4 run
 place PilotSurnameTextTable 3A6A:3E92 EC import
@@ -789,7 +789,7 @@ overlap CachedFileDescriptors ScenarioResourcePathPointer host pointer: the desc
 overlap CachedFileDescriptors TacticalResourcePathOffset host pointer: the descriptor's name pointer, set once at start; both are only read after
 overlap CachedFileDescriptors TacticalResourcePathSegment host pointer: the descriptor's name pointer, set once at start; both are only read after
 overlap CampaignMessageTable CampaignMessageTextTable host pointer: the text table is the port's pointers to the same texts
-overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable the original reads the constant missile bonus from DS:3D0D by weapon, over the selector's last 11h bytes
+overlap HitLocationDirectionSelectorTable ImprovedMissileDamageBonusTable the selector's last byte is the first missile weapon's bonus (the original reads the bonus from DS:3D0D by weapon index, from WEAPON_LRM_5 on)
 overlap AdLibActivateRegisterList AdLibNineVoiceResetList the original's second constant list is the first one's tail
 overlap LinePrimaryYStep LinePrimaryXStep the original lays the two constant tables 4 bytes apart
 overlap LineSecondaryYStep LineSecondaryXStep the original lays the two constant tables 4 bytes apart

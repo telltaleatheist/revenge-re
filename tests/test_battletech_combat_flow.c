@@ -91,9 +91,40 @@ static void VerifyHitLocationAndArmorDamage(void)
 	assert(internalBefore == 0x00);
 }
 
+/* With Improved Missiles each missile weapon adds its bonus to its damage:
+ * the bonuses the original reads from DS:3D0D at weapon indexes 10h-16h. */
+static void VerifyImprovedMissileBonus(void)
+{
+	static const byte expectedBonus[0x07] = { 0x00, 0x02, 0x03, 0x04, 0x05, 0x01, 0x02 };
+	RevengeUnitRecord *target;
+	word16 armorBefore;
+	word16 locationIndex;
+	int16 weaponIndex;
+
+	for (weaponIndex = WEAPON_LRM_5; weaponIndex <= WEAPON_SRM_6; ++weaponIndex)
+	{
+		PrepareCombatants();
+		target = &PersistentUnitRoster[ENEMY_FORCE_FIRST_UNIT];
+		for (locationIndex = 0x00;
+			locationIndex < BATTLEMECH_ARMOR_LOCATION_COUNT;
+			++locationIndex)
+		{
+			target->currentArmor[locationIndex] = 0x30;
+			target->maximumArmor[locationIndex] = 0x30;
+		}
+		PersistentUnitRoster[0x00].missileUpgradeState = 0x01;
+		armorBefore = SumArmor(target);
+		ApplyWeaponDamage(0x00, weaponIndex, ENEMY_FORCE_FIRST_UNIT);
+		assert(SumArmor(target) == armorBefore
+			- WeaponDefinitions[weaponIndex].damage
+			- expectedBonus[weaponIndex - WEAPON_LRM_5]);
+	}
+}
+
 int main(void)
 {
 	VerifyHitLocationAndArmorDamage();
+	VerifyImprovedMissileBonus();
 	return EXIT_SUCCESS;
 }
 

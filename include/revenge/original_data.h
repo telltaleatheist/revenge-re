@@ -508,7 +508,10 @@ extern int16 NeighborMapOffsetTable[0x08];
 extern word16 DirectionSearchMirror;
 extern int16 DirectionSearchCountdown;
 extern const int16 DirectionSearchDeltaTable[0x10];
-extern const byte ImprovedMissileDamageBonusTable[0x17];
+/* DS:3D1D: the Improved Missiles damage bonus of each missile weapon, from
+ * WEAPON_LRM_5 on. Its first byte is HitLocationDirectionSelectorTable's
+ * last. */
+extern const byte ImprovedMissileDamageBonusTable[0x07];
 extern const byte TerrainDamageQueueOccupiedMask[0x04];
 extern const byte TerrainDamageQueueIncrementMask[0x04];
 extern const word16 HitLocationDirectionSelectorTable[0x10];
