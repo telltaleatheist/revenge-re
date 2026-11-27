@@ -49,9 +49,11 @@ Every snap also writes `SNAP.names` (`MapDump_WriteNames`): each object by
 name with a hash of its bytes. An object declared as a pointer or an array of
 them has each pointer hashed as the place it points to (an object's name and
 offset, the DOS memory block's linear address, a function's name, or
-"elsewhere"), so it is the same on every run and system. Every other object is
-hashed as its bytes are: a number in it that happens to equal an address is
-not a pointer. Two linker habits are kept out: the empty stubs share one label
+"elsewhere"), so it is the same on every run and system. So has each pointer
+member of a struct or union, and of the structs inside it: the generator reads
+their definitions from the headers and lists each pointer member's offset
+(`offsetof`, repeated over the arrays it sits in). Every other byte is hashed
+as it is: a number that happens to equal an address is not a pointer. Two linker habits are kept out: the empty stubs share one label
 ("empty"), since MSVC folds identical functions into one address, and an
 address just past an object's end is not that object's, since what follows it
 differs from system to system.

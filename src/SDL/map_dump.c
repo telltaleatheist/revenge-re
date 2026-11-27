@@ -30,6 +30,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <stddef.h>
+
 typedef struct MapDumpObject
 {
 	const char *name;
@@ -759,6 +761,24 @@ static const MapDumpObject objects[] =
 	{ "NarrationMode", &NarrationMode, sizeof(NarrationMode), 0 },
 };
 
+/* Each pointer inside an object that isn't itself a pointer or an array
+ * of them: its offset, repeated count1 times stride1 apart and each of
+ * those count2 times stride2 apart (the arrays it sits in). */
+typedef struct MapDumpSlot
+{
+	size_t object;
+	size_t offset;
+	size_t count1;
+	size_t stride1;
+	size_t count2;
+	size_t stride2;
+} MapDumpSlot;
+
+static const MapDumpSlot pointerSlots[] =
+{
+	{ 0, 0, 0, 0, 0, 0 },
+};
+
 typedef void (*MapDumpFunction)(void);
 
 typedef struct MapDumpFunctionName
@@ -773,6 +793,7 @@ static const MapDumpFunctionName functions[] =
 	{ "empty", (MapDumpFunction) RuntimeTerminationStub },
 	{ "ShowResourceErrorMessage", (MapDumpFunction) ShowResourceErrorMessage },
 	{ "ShowFatalDiskErrorMessage", (MapDumpFunction) ShowFatalDiskErrorMessage },
+	{ "HandleDigitalWeaponEffectCompletion", (MapDumpFunction) HandleDigitalWeaponEffectCompletion },
 };
 
 void MapDump_Write(const char *snap)
@@ -940,41 +961,110 @@ static void HashPlace(Sha256 *hash, uintptr_t word, int *taken)
 	}
 }
 
-/* The object's hash: its bytes, with each slot of an object declared as
- * pointers hashed as its place. Other objects hash their bytes alone: a number
- * that happens to equal an address there is not a pointer. */
+static int CompareOffsets(const void *left, const void *right)
+{
+	size_t a = *(const size_t *) left;
+	size_t b = *(const size_t *) right;
+
+	return a < b ? -1 : a > b ? 1 : 0;
+}
+
+/* The offsets of the object's pointers, ascending: every aligned slot of an
+ * object declared as pointers, else its struct members that are (the slot
+ * table). *count is how many; the caller frees the list. */
+static size_t *PointerOffsets(size_t index, size_t size, size_t *count)
+{
+	size_t capacity = 0;
+	size_t *offsets = NULL;
+	size_t slot;
+
+	*count = 0;
+	if (objects[index].pointers > 0)
+	{
+		const unsigned char *bytes = (const unsigned char *) objects[index].object;
+		size_t at;
+
+		offsets = (size_t *) malloc((size / sizeof(void *) + 1) * sizeof(size_t));
+		if (offsets == NULL)
+			return NULL;
+		for (at = 0; at + sizeof(void *) <= size; ++at)
+		{
+			if (((uintptr_t) (bytes + at)) % sizeof(void *) == 0)
+				offsets[(*count)++] = at;
+		}
+		return offsets;
+	}
+	for (slot = 0; slot < sizeof(pointerSlots) / sizeof(pointerSlots[0]); ++slot)
+	{
+		const MapDumpSlot *entry = &pointerSlots[slot];
+		size_t first;
+		size_t second;
+
+		if (entry->object != index)
+			continue;
+		for (first = 0; first < entry->count1; ++first)
+		{
+			for (second = 0; second < entry->count2; ++second)
+			{
+				size_t at = entry->offset + first * entry->stride1 + second * entry->stride2;
+
+				if (at + sizeof(void *) > size)
+					continue;
+				if (*count == capacity)
+				{
+					size_t *grown;
+
+					capacity = capacity == 0 ? 16 : capacity * 2;
+					grown = (size_t *) realloc(offsets, capacity * sizeof(size_t));
+					if (grown == NULL)
+					{
+						free(offsets);
+						*count = 0;
+						return NULL;
+					}
+					offsets = grown;
+				}
+				offsets[(*count)++] = at;
+			}
+		}
+	}
+	if (*count > 1)
+		qsort(offsets, *count, sizeof(size_t), CompareOffsets);
+	return offsets;
+}
+
+/* The object's hash: its bytes, with each pointer in it hashed as its place
+ * (PointerOffsets). Other bytes hash as they are: a number that happens to
+ * equal an address is not a pointer. */
 static void HashObject(size_t index, char hex[17])
 {
 	const unsigned char *bytes = (const unsigned char *) objects[index].object;
 	size_t size = ObjectSize(index);
-	size_t at = 0;
+	size_t count;
+	size_t *offsets = PointerOffsets(index, size, &count);
 	size_t run = 0;
+	size_t slot;
 	uint8_t digest[SHA256_DIGEST_BYTES];
 	Sha256 hash;
 	int digit;
 
 	Sha256_Begin(&hash);
-	while (at < size)
+	for (slot = 0; slot < count; ++slot)
 	{
+		size_t at = offsets[slot];
 		uintptr_t word;
 		int taken = 0;
 
-		if (objects[index].pointers > 0 && ((uintptr_t) (bytes + at)) % sizeof(void *) == 0
-			&& size - at >= sizeof(void *))
-		{
-			memcpy(&word, bytes + at, sizeof(word));
-			Sha256_Add(&hash, bytes + run, at - run);
-			run = at;
-			HashPlace(&hash, word, &taken);
-		}
-		if (!taken)
-		{
-			++at;
+		if (at < run)
 			continue;
-		}
-		at += sizeof(void *);
+		memcpy(&word, bytes + at, sizeof(word));
+		Sha256_Add(&hash, bytes + run, at - run);
 		run = at;
+		HashPlace(&hash, word, &taken);
+		if (taken)
+			run = at + sizeof(void *);
 	}
+	free(offsets);
 	Sha256_Add(&hash, bytes + run, size - run);
 	Sha256_End(&hash, digest);
 	for (digit = 0; digit < 8; ++digit)

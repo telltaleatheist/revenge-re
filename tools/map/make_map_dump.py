@@ -28,7 +28,8 @@ NAMES_LEFT_OUT = {"StoryTextSlots"}
 # (MSVC's identical-code folding does), so their names can't be told apart.
 FUNCTIONS = [("empty", "RuntimeExitStepStub"), ("empty", "RuntimeTerminationStub"),
              ("ShowResourceErrorMessage", "ShowResourceErrorMessage"),
-             ("ShowFatalDiskErrorMessage", "ShowFatalDiskErrorMessage")]
+             ("ShowFatalDiskErrorMessage", "ShowFatalDiskErrorMessage"),
+             ("HandleDigitalWeaponEffectCompletion", "HandleDigitalWeaponEffectCompletion")]
 POINTER_TYPEDEF = re.compile(r"typedef\s[^;{}]*\(\s*\*\s*(\w+)\s*\)\s*\(|typedef\s[^;{}()]*\*\s*(\w+)\s*;")
 
 
@@ -46,6 +47,130 @@ def pointer_typedefs():
 def is_pointer(type_text, typedefs):
     """A pointer, or an array of pointers, by its declared type."""
     return "*" in type_text or any(word in typedefs for word in re.findall(r"\w+", type_text))
+
+
+FUNCTION_POINTER = re.compile(r"\(\s*\*\s*(\w+)\s*((?:\[[^\]]*\]\s*)*)\)")
+DECLARATOR = re.compile(r"^(.*?)(\w+)\s*((?:\[[^\]]*\]\s*)*)$", re.S)
+# Types with no pointer in them: the game's scalars and the C library's.
+SCALARS = {"byte", "word16", "uint16", "int16", "uint32", "int32", "uint8", "int8", "dword",
+           "segptr32", "char", "short", "int", "long", "unsigned", "signed", "bool", "float",
+           "double", "size_t", "uint8_t", "uint16_t", "uint32_t", "uint64_t", "int8_t",
+           "int16_t", "int32_t", "int64_t", "BOOL", "DosAddress"}
+
+
+SCALAR_TYPEDEF = re.compile(r"\btypedef\s+([\w\s]+?)\s+(\w+)\s*;")
+STRUCT_START = re.compile(r"\b(?:typedef\s+)?(struct|union)\s+(\w+)?\s*\{")
+
+
+def parse_members(body):
+    """[(member, type text, dimensions, pointer)] of a struct's body. An
+    anonymous struct or union inside gives its members as the outer's (C11);
+    a named one, each prefixed with its name."""
+    members = []
+    at = 0
+    while at < len(body):
+        inner = STRUCT_START.search(body, at)
+        end = body.find(";", at)
+        if end < 0:
+            break
+        if inner and inner.start() < end:
+            depth, close = 0, inner.end() - 1
+            for close in range(inner.end() - 1, len(body)):
+                depth += {"{": 1, "}": -1}.get(body[close], 0)
+                if depth == 0:
+                    break
+            nested = parse_members(body[inner.end():close])
+            tail_end = body.find(";", close)
+            name = body[close + 1:tail_end].strip()
+            if name:
+                d = DECLARATOR.match(name)
+                prefix = d.group(2) + "[0]" * d.group(3).count("[") + "." if d else ""
+                members += [(prefix + m[0], m[1], m[2], m[3]) for m in nested]
+            else:
+                members += nested
+            at = tail_end + 1
+            continue
+        declaration = re.sub(r":\s*\d+\s*$", "", " ".join(body[at:end].split()))
+        at = end + 1
+        if not declaration:
+            continue
+        pointer = FUNCTION_POINTER.search(declaration)
+        if pointer:
+            members.append((pointer.group(1), "", re.sub(r"\s+", "", pointer.group(2)), True))
+            continue
+        parts = declaration.split(",")
+        first = DECLARATOR.match(parts[0].strip())
+        if not first:
+            continue
+        base = first.group(1).replace("*", " ").strip()
+        for index, part in enumerate(parts):
+            d = DECLARATOR.match(part.strip()) if index else first
+            if not d:
+                continue
+            type_text = d.group(1) if index == 0 else base + " " + d.group(1)
+            members.append((d.group(2), " ".join(type_text.split()),
+                            re.sub(r"\s+", "", d.group(3)), "*" in d.group(1)))
+    return members
+
+
+def structs():
+    """{type name: [(member, type text, dimensions, pointer)]} for every struct
+    or union the headers define, by tag and by typedef name; the scalar
+    typedefs join SCALARS."""
+    found = {}
+    for header in map_objects.headers():
+        with open(os.path.join(map_objects.ROOT, header), encoding="utf-8") as f:
+            text = map_objects.strip_comments(f.read())
+        text = re.sub(r"^\s*#[^\n]*", "", text, flags=re.M)
+        for m in SCALAR_TYPEDEF.finditer(text):
+            if base_type(m.group(1)) in SCALARS and "struct" not in m.group(1) and "union" not in m.group(1):
+                SCALARS.add(m.group(2))
+        at = 0
+        while True:
+            m = STRUCT_START.search(text, at)
+            if not m:
+                break
+            depth, close = 0, m.end() - 1
+            for close in range(m.end() - 1, len(text)):
+                depth += {"{": 1, "}": -1}.get(text[close], 0)
+                if depth == 0:
+                    break
+            members = parse_members(text[m.end():close])
+            tail = re.match(r"\s*(\w+)?\s*;", text[close + 1:])
+            for name in (m.group(2), tail.group(1) if tail else None):
+                if name:
+                    found[name] = members
+            at = close + 1
+    return found
+
+
+def base_type(type_text):
+    """The type's name, without qualifiers or struct/union."""
+    words = [w for w in re.findall(r"\w+", type_text)
+             if w not in ("const", "volatile", "struct", "union", "static", "unsigned", "signed")]
+    return words[-1] if words else ""
+
+
+def pointer_paths(members, typedefs, layouts, prefix, depth, unresolved):
+    """[(member designator, [repeat designator])]: each pointer inside a
+    struct of these members. A repeat designator is an array member whose
+    elements repeat the path (counted and spaced in C)."""
+    paths = []
+    for name, type_text, dimensions, pointer in members:
+        designator = prefix + name
+        element = designator + "[0]" * dimensions.count("[")
+        repeats = [designator] if dimensions else []
+        if pointer or base_type(type_text) in typedefs:
+            paths.append((element, repeats))
+            continue
+        kind = base_type(type_text)
+        if kind in layouts and depth < 8:
+            for inner, inner_repeats in pointer_paths(layouts[kind], typedefs, layouts,
+                                                      element + ".", depth + 1, unresolved):
+                paths.append((inner, repeats + inner_repeats))
+        elif kind not in SCALARS:
+            unresolved.add(kind)
+    return paths
 
 
 def include_name(header):
@@ -83,6 +208,8 @@ def source():
         "#include <stdlib.h>",
         "#include <string.h>",
         "",
+        "#include <stddef.h>",
+        "",
         "typedef struct MapDumpObject",
         "{",
         "\tconst char *name;",
@@ -95,6 +222,34 @@ def source():
         "{",
     ]
     typedefs = pointer_typedefs()
+    layouts = structs()
+    slots = []
+    unresolved = set()
+    for index, (name, type_text, dimensions, _) in enumerate(objects):
+        if name in NAMES_LEFT_OUT or is_pointer(type_text, typedefs):
+            continue
+        kind = base_type(type_text)
+        if kind not in layouts:
+            if kind not in SCALARS:
+                unresolved.add(kind)
+            continue
+        c_type = " ".join(w for w in type_text.split() if w not in ("const", "volatile"))
+        element = name + "[0]" * dimensions.count("[")
+        for path, repeats in pointer_paths(layouts[kind], typedefs, layouts, "", 0, unresolved):
+            counts = []
+            if dimensions:
+                counts.append((f"sizeof({name}) / sizeof({element})", f"sizeof({element})"))
+            for repeat in repeats:
+                array = f"(({c_type} *) 0)->{repeat}"
+                inner = array + "[0]" * 1
+                counts.append((f"sizeof({array}) / sizeof({inner})", f"sizeof({inner})"))
+            if len(counts) > 2:
+                sys.exit(f"make_map_dump: {name}.{path} repeats {len(counts)} times over; the table holds two")
+            counts += [("1", "0")] * (2 - len(counts))
+            slots.append(f"\t{{ {index}, offsetof({c_type}, {path}), {counts[0][0]}, {counts[0][1]}, "
+                         f"{counts[1][0]}, {counts[1][1]} }},")
+    if unresolved - {""}:
+        sys.exit("make_map_dump: no layout found for " + ", ".join(sorted(unresolved - {""})))
     for name, type_text, dimensions, _ in objects:
         kind = -1 if name in NAMES_LEFT_OUT else 1 if is_pointer(type_text, typedefs) else 0
         if dimensions == "[]":
@@ -102,6 +257,24 @@ def source():
         else:
             lines.append(f'\t{{ "{name}", &{name}, sizeof({name}), {kind} }},')
     lines += [
+        "};",
+        "",
+        "/* Each pointer inside an object that isn't itself a pointer or an array",
+        " * of them: its offset, repeated count1 times stride1 apart and each of",
+        " * those count2 times stride2 apart (the arrays it sits in). */",
+        "typedef struct MapDumpSlot",
+        "{",
+        "\tsize_t object;",
+        "\tsize_t offset;",
+        "\tsize_t count1;",
+        "\tsize_t stride1;",
+        "\tsize_t count2;",
+        "\tsize_t stride2;",
+        "} MapDumpSlot;",
+        "",
+        "static const MapDumpSlot pointerSlots[] =",
+        "{",
+    ] + (slots or ["\t{ 0, 0, 0, 0, 0, 0 },"]) + [
         "};",
         "",
         "typedef void (*MapDumpFunction)(void);",
@@ -286,41 +459,110 @@ static void HashPlace(Sha256 *hash, uintptr_t word, int *taken)
 	}
 }
 
-/* The object's hash: its bytes, with each slot of an object declared as
- * pointers hashed as its place. Other objects hash their bytes alone: a number
- * that happens to equal an address there is not a pointer. */
+static int CompareOffsets(const void *left, const void *right)
+{
+	size_t a = *(const size_t *) left;
+	size_t b = *(const size_t *) right;
+
+	return a < b ? -1 : a > b ? 1 : 0;
+}
+
+/* The offsets of the object's pointers, ascending: every aligned slot of an
+ * object declared as pointers, else its struct members that are (the slot
+ * table). *count is how many; the caller frees the list. */
+static size_t *PointerOffsets(size_t index, size_t size, size_t *count)
+{
+	size_t capacity = 0;
+	size_t *offsets = NULL;
+	size_t slot;
+
+	*count = 0;
+	if (objects[index].pointers > 0)
+	{
+		const unsigned char *bytes = (const unsigned char *) objects[index].object;
+		size_t at;
+
+		offsets = (size_t *) malloc((size / sizeof(void *) + 1) * sizeof(size_t));
+		if (offsets == NULL)
+			return NULL;
+		for (at = 0; at + sizeof(void *) <= size; ++at)
+		{
+			if (((uintptr_t) (bytes + at)) % sizeof(void *) == 0)
+				offsets[(*count)++] = at;
+		}
+		return offsets;
+	}
+	for (slot = 0; slot < sizeof(pointerSlots) / sizeof(pointerSlots[0]); ++slot)
+	{
+		const MapDumpSlot *entry = &pointerSlots[slot];
+		size_t first;
+		size_t second;
+
+		if (entry->object != index)
+			continue;
+		for (first = 0; first < entry->count1; ++first)
+		{
+			for (second = 0; second < entry->count2; ++second)
+			{
+				size_t at = entry->offset + first * entry->stride1 + second * entry->stride2;
+
+				if (at + sizeof(void *) > size)
+					continue;
+				if (*count == capacity)
+				{
+					size_t *grown;
+
+					capacity = capacity == 0 ? 16 : capacity * 2;
+					grown = (size_t *) realloc(offsets, capacity * sizeof(size_t));
+					if (grown == NULL)
+					{
+						free(offsets);
+						*count = 0;
+						return NULL;
+					}
+					offsets = grown;
+				}
+				offsets[(*count)++] = at;
+			}
+		}
+	}
+	if (*count > 1)
+		qsort(offsets, *count, sizeof(size_t), CompareOffsets);
+	return offsets;
+}
+
+/* The object's hash: its bytes, with each pointer in it hashed as its place
+ * (PointerOffsets). Other bytes hash as they are: a number that happens to
+ * equal an address is not a pointer. */
 static void HashObject(size_t index, char hex[17])
 {
 	const unsigned char *bytes = (const unsigned char *) objects[index].object;
 	size_t size = ObjectSize(index);
-	size_t at = 0;
+	size_t count;
+	size_t *offsets = PointerOffsets(index, size, &count);
 	size_t run = 0;
+	size_t slot;
 	uint8_t digest[SHA256_DIGEST_BYTES];
 	Sha256 hash;
 	int digit;
 
 	Sha256_Begin(&hash);
-	while (at < size)
+	for (slot = 0; slot < count; ++slot)
 	{
+		size_t at = offsets[slot];
 		uintptr_t word;
 		int taken = 0;
 
-		if (objects[index].pointers > 0 && ((uintptr_t) (bytes + at)) % sizeof(void *) == 0
-			&& size - at >= sizeof(void *))
-		{
-			memcpy(&word, bytes + at, sizeof(word));
-			Sha256_Add(&hash, bytes + run, at - run);
-			run = at;
-			HashPlace(&hash, word, &taken);
-		}
-		if (!taken)
-		{
-			++at;
+		if (at < run)
 			continue;
-		}
-		at += sizeof(void *);
+		memcpy(&word, bytes + at, sizeof(word));
+		Sha256_Add(&hash, bytes + run, at - run);
 		run = at;
+		HashPlace(&hash, word, &taken);
+		if (taken)
+			run = at + sizeof(void *);
 	}
+	free(offsets);
 	Sha256_Add(&hash, bytes + run, size - run);
 	Sha256_End(&hash, digest);
 	for (digit = 0; digit < 8; ++digit)
