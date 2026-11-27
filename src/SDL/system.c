@@ -220,21 +220,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	HostFarPointer_RegisterAt(originalDataSegment,
 		ORIGINAL_DATA_SEGMENT_MAPPED_BYTES, 0x3A6A0000UL);
 
-	/* These initialized DS words are represented as typed C globals because
-	 * they are used throughout the preserved UI code.  Hydrate them from the
-	 * loaded image just as the DOS loader did for their original storage. */
-	UiNavigationUpKey =
-		ReadLittleEndianWord(&originalDataSegment[0x6242]);
-	UiNavigationDownKey =
-		ReadLittleEndianWord(&originalDataSegment[0x6244]);
-	UiPreviousRegionKey =
-		ReadLittleEndianWord(&originalDataSegment[0x6246]);
-	UiNextRegionKey =
-		ReadLittleEndianWord(&originalDataSegment[0x6248]);
-	memcpy(TextWindowContexts, &originalDataSegment[0x063A],
-		sizeof(TextWindowContexts));
-	memcpy(UiRegionTable, &originalDataSegment[0x07AA],
-		sizeof(UiRegionTable));
 	SecondaryScreenBuffer = ResolveOriginalDataPointer(0x83DE);
 	PlanarScreenBuffer = ResolveOriginalDataPointer(0x83E2);
 	ActiveRenderTarget = ResolveOriginalDataPointer(0x7D3B);
@@ -246,10 +231,6 @@ void SDLBackend_InitializeDOSMemoryArena(void)
 	}
 	PrimaryScreenBuffer = ResolveOriginalDataPointer(0xB65E);
 	VideoFramebuffer = ResolveOriginalDataPointer(0xB664);
-	TacticalStatusBlinkCountdown =
-		ReadLittleEndianWord(&originalDataSegment[0x2F36]);
-	DisplayedTacticalStatusRow =
-		ReadLittleEndianWord(&originalDataSegment[0x2F38]);
 	memcpy(TacticalStatusRowInvalidation,
 		&originalDataSegment[0xB574],
 		sizeof(TacticalStatusRowInvalidation));

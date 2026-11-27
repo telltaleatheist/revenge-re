@@ -87,6 +87,14 @@ screens.text_window_frame               TextWindowFrameDefinition           3A6A
 screens.campaign_messages               CampaignMessageTable                3A6A:2B54 37A
 screens.palette_files                   ScreenPaletteResourceByScreen       3A6A:1704 25
 
+# data/ui/windows.json
+windows.text_windows                    TextWindowContexts                  3A6A:063A 170
+windows.ui_regions                      UiRegionTable                       3A6A:07AA 100
+windows.navigation_key_up               UiNavigationUpKey                   3A6A:6242 2
+windows.navigation_key_down             UiNavigationDownKey                 3A6A:6244 2
+windows.navigation_key_previous_region  UiPreviousRegionKey                 3A6A:6246 2
+windows.navigation_key_next_region      UiNextRegionKey                     3A6A:6248 2
+
 # data/ui/tactical_panel.json
 tactical_panel.formation_marker_x       FormationMarkerOriginX              3A6A:2F96 14
 tactical_panel.formation_marker_y       FormationMarkerOriginY              3A6A:2FAA 14
@@ -115,6 +123,8 @@ lance_editor_start.section_enabled      UnitEditorSectionEnabled            3A6A
 game_start.tactical_update_delay_ticks  TacticalUpdateDelayReloadTicks      3A6A:17DA 2
 game_start.tactical_game_speed          TacticalGameSpeedIndex              3A6A:17DC 2
 game_start.presentation_dismiss_timeout PresentationDismissTimeout          3A6A:240F 2
+game_start.tactical_status_blink_countdown TacticalStatusBlinkCountdown     3A6A:2F36 2
+game_start.displayed_tactical_status_row DisplayedTacticalStatusRow         3A6A:2F38 2
 
 # data/start/save_directory.json
 save_directory.directory                SaveDirectory                       3A6A:18CE 88

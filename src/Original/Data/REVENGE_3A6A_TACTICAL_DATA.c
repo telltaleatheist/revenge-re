@@ -134,6 +134,7 @@ word16 TacticalOverviewViewportX;
 byte TacticalOverviewMarkerY[0x18];
 word16 TacticalOverviewViewportY;
 word16 TacticalOverviewScreenOriginX;
+/* Filled at start from data/start/game.json (revenge/rules.h). */
 word16 DisplayedTacticalStatusRow;
 word16 TacticalStatusBlinkCountdown;
 byte TacticalStatusBlinkVisible;

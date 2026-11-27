@@ -133,6 +133,16 @@
 //         facings, the line that shows the unit moving
 //     "formation_marker_origins"  10 {"x", "y"}, by formation
 //
+//   windows.json:
+//     "text_windows"  23 {"left_tile", "top_tile", "width_tiles",
+//         "height_tiles", "foreground_color", "background_color"}
+//         (TextWindowContext); each window's cursor starts at 0, 0
+//     "ui_regions"  16 {"left_column", "top_row", "width_columns",
+//         "row_count", "unknown000a", "xor_color", "unknown000e"}
+//         (OriginalUiRegionRecord); each region's selected row starts at 0
+//     "navigation_keys"  {"up", "down", "previous_region", "next_region"}:
+//         the key codes the menus move by
+//
 // data/start holds the state a new campaign begins with, ours too:
 //
 //   new_campaign.json:
@@ -164,6 +174,8 @@
 //         (SetTacticalGameSpeed's table: 35 for speed 2)
 //     "presentation_dismiss_timeout"  how long a story screen waits for a
 //         key before it goes on
+//     "tactical_status_blink_countdown", "displayed_tactical_status_row"
+//         the battle status panel's (65535: no row shown)
 //
 //   save_directory.json, the save directory before a save file is read:
 //     "prefix"  4 bytes, as the original has them

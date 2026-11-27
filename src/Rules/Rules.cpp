@@ -794,6 +794,49 @@ void read_screens(const Json& root, Tables& tables) {
     file.done();
 }
 
+// `count` records of eight words: the file's `keys` in order, each a word up
+// to FFFFh, at the record's words `at`; the other words are 0.
+std::vector<std::uint8_t> word_records(const Json& value, const std::string& where, std::size_t count,
+                                       std::initializer_list<const char*> keys,
+                                       std::initializer_list<std::size_t> at) {
+    if (!value.is_array() || value.array().size() != count)
+        fail(where, "is not an array of " + std::to_string(count) + " records");
+    std::vector<std::uint8_t> out(count * 0x10, 0);
+    for (std::size_t index = 0; index < count; ++index) {
+        Fields record(value.array()[index], where + "[" + std::to_string(index) + "]");
+        auto word = at.begin();
+        for (const char* key : keys)
+            put_word(&out[index * 0x10 + *word++ * 2], whole(record.take(key), record.at(key), 0xFFFF));
+        record.done();
+    }
+    return out;
+}
+
+// data/ui/windows.json.
+void read_windows(const Json& root, Tables& tables) {
+    Fields file(root, "windows.json:");
+    // TextWindowContext: the six words from here, the cursor's column and row
+    // (words 6 and 7) 0.
+    tables["windows.text_windows"] =
+        word_records(file.take("text_windows"), file.at("text_windows"), 0x17,
+                     {"left_tile", "top_tile", "width_tiles", "height_tiles", "foreground_color", "background_color"},
+                     {0, 1, 2, 3, 4, 5});
+    // OriginalUiRegionRecord: all but the selected row (word 4), which is 0.
+    tables["windows.ui_regions"] =
+        word_records(file.take("ui_regions"), file.at("ui_regions"), 0x10,
+                     {"left_column", "top_row", "width_columns", "row_count", "unknown000a", "xor_color",
+                      "unknown000e"},
+                     {0, 1, 2, 3, 5, 6, 7});
+    Fields keys(file.take("navigation_keys"), file.at("navigation_keys"));
+    for (const char* key : {"up", "down", "previous_region", "next_region"}) {
+        std::vector<std::uint8_t>& out = tables[std::string("windows.navigation_key_") + key];
+        out.assign(2, 0);
+        put_word(out.data(), whole(keys.take(key), keys.at(key), 0xFFFF));
+    }
+    keys.done();
+    file.done();
+}
+
 // A line of the unit status glyph: [x0, y0, x1, y1] in pixels from its
 // origin, the start into entry `at` of the two tables and the end into entry
 // `at + 8`.
@@ -926,6 +969,8 @@ void read_game_start(const Json& root, Tables& tables) {
     word("tactical_game_speed", "game_start.tactical_game_speed", 0x07);
     word("tactical_update_delay_ticks", "game_start.tactical_update_delay_ticks", 0xFFFF);
     word("presentation_dismiss_timeout", "game_start.presentation_dismiss_timeout", 0xFFFF);
+    word("tactical_status_blink_countdown", "game_start.tactical_status_blink_countdown", 0xFFFF);
+    word("displayed_tactical_status_row", "game_start.displayed_tactical_status_row", 0xFFFF);
     file.done();
 }
 
@@ -969,6 +1014,7 @@ void load(const std::filesystem::path& data_dir) {
     read_lance_editor(read_file(ui / "lance_editor.json", "lance_editor.json"), tables);
     read_screens(read_file(ui / "screens.json", "screens.json"), tables);
     read_tactical_panel(read_file(ui / "tactical_panel.json", "tactical_panel.json"), tables);
+    read_windows(read_file(ui / "windows.json", "windows.json"), tables);
     const std::filesystem::path start = data_dir / "start";
     read_new_campaign(read_file(start / "new_campaign.json", "new_campaign.json"), tables);
     read_lance_editor_start(read_file(start / "lance_editor.json", "lance_editor.json (start)"), tables);

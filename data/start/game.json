@@ -1,5 +1,7 @@
 {
   "tactical_game_speed": 2,
   "tactical_update_delay_ticks": 35,
-  "presentation_dismiss_timeout": 300
+  "presentation_dismiss_timeout": 300,
+  "tactical_status_blink_countdown": 1,
+  "displayed_tactical_status_row": 65535
 }

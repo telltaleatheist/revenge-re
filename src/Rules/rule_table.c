@@ -62,6 +62,12 @@ const RulePiece RulePieces[] =
 	{ "screens.text_window_frame", &TextWindowFrameDefinition, sizeof(TextWindowFrameDefinition), 0x3A6A, 0x08AA, 0x18, "784fdaba56e12fbc" },
 	{ "screens.campaign_messages", &CampaignMessageTable, sizeof(CampaignMessageTable), 0x3A6A, 0x2B54, 0x37A, "8a6e56333800019e" },
 	{ "screens.palette_files", &ScreenPaletteResourceByScreen, sizeof(ScreenPaletteResourceByScreen), 0x3A6A, 0x1704, 0x25, "e78bb6d27f4e84d3" },
+	{ "windows.text_windows", &TextWindowContexts, sizeof(TextWindowContexts), 0x3A6A, 0x063A, 0x170, "12875c4daab358d7" },
+	{ "windows.ui_regions", &UiRegionTable, sizeof(UiRegionTable), 0x3A6A, 0x07AA, 0x100, "12112a8ba40acc81" },
+	{ "windows.navigation_key_up", &UiNavigationUpKey, sizeof(UiNavigationUpKey), 0x3A6A, 0x6242, 0x2, "791a2cd414f7bcdb" },
+	{ "windows.navigation_key_down", &UiNavigationDownKey, sizeof(UiNavigationDownKey), 0x3A6A, 0x6244, 0x2, "0d446e6a5bef00d9" },
+	{ "windows.navigation_key_previous_region", &UiPreviousRegionKey, sizeof(UiPreviousRegionKey), 0x3A6A, 0x6246, 0x2, "161d0952f5ea12ae" },
+	{ "windows.navigation_key_next_region", &UiNextRegionKey, sizeof(UiNextRegionKey), 0x3A6A, 0x6248, 0x2, "2d76dc1e579f017e" },
 	{ "tactical_panel.formation_marker_x", &FormationMarkerOriginX, sizeof(FormationMarkerOriginX), 0x3A6A, 0x2F96, 0x14, "b096bff2a16441c6" },
 	{ "tactical_panel.formation_marker_y", &FormationMarkerOriginY, sizeof(FormationMarkerOriginY), 0x3A6A, 0x2FAA, 0x14, "d4b7e94022312e3d" },
 	{ "tactical_panel.facing_start_x", &FacingVectorStartX, sizeof(FacingVectorStartX), 0x3A6A, 0x2FBE, 0x20, "cdaf1ce7f55e11fe" },
@@ -83,6 +89,8 @@ const RulePiece RulePieces[] =
 	{ "game_start.tactical_update_delay_ticks", &TacticalUpdateDelayReloadTicks, sizeof(TacticalUpdateDelayReloadTicks), 0x3A6A, 0x17DA, 0x2, "1c6886649de1104e" },
 	{ "game_start.tactical_game_speed", &TacticalGameSpeedIndex, sizeof(TacticalGameSpeedIndex), 0x3A6A, 0x17DC, 0x2, "c849093f52e6bb81" },
 	{ "game_start.presentation_dismiss_timeout", &PresentationDismissTimeout, sizeof(PresentationDismissTimeout), 0x3A6A, 0x240F, 0x2, "c02198fcd61de6b3" },
+	{ "game_start.tactical_status_blink_countdown", &TacticalStatusBlinkCountdown, sizeof(TacticalStatusBlinkCountdown), 0x3A6A, 0x2F36, 0x2, "58f87d0a96fd20cb" },
+	{ "game_start.displayed_tactical_status_row", &DisplayedTacticalStatusRow, sizeof(DisplayedTacticalStatusRow), 0x3A6A, 0x2F38, 0x2, "ac6c9144ab715413" },
 	{ "save_directory.directory", &SaveDirectory, sizeof(SaveDirectory), 0x3A6A, 0x18CE, 0x88, "f838daf88a97478a" },
 };
 const size_t RulePieceCount = sizeof(RulePieces) / sizeof(RulePieces[0]);
@@ -139,6 +147,12 @@ _Static_assert(sizeof(LanceAssignments) == 0x82, "lance_editor.lance_slots is th
 _Static_assert(sizeof(TextWindowFrameDefinition) == 0x18, "screens.text_window_frame is the original's size");
 _Static_assert(sizeof(CampaignMessageTable) == 0x37A, "screens.campaign_messages is the original's size");
 _Static_assert(sizeof(ScreenPaletteResourceByScreen) == 0x25, "screens.palette_files is the original's size");
+_Static_assert(sizeof(TextWindowContexts) == 0x170, "windows.text_windows is the original's size");
+_Static_assert(sizeof(UiRegionTable) == 0x100, "windows.ui_regions is the original's size");
+_Static_assert(sizeof(UiNavigationUpKey) == 0x2, "windows.navigation_key_up is the original's size");
+_Static_assert(sizeof(UiNavigationDownKey) == 0x2, "windows.navigation_key_down is the original's size");
+_Static_assert(sizeof(UiPreviousRegionKey) == 0x2, "windows.navigation_key_previous_region is the original's size");
+_Static_assert(sizeof(UiNextRegionKey) == 0x2, "windows.navigation_key_next_region is the original's size");
 _Static_assert(sizeof(FormationMarkerOriginX) == 0x14, "tactical_panel.formation_marker_x is the original's size");
 _Static_assert(sizeof(FormationMarkerOriginY) == 0x14, "tactical_panel.formation_marker_y is the original's size");
 _Static_assert(sizeof(FacingVectorStartX) == 0x20, "tactical_panel.facing_start_x is the original's size");
@@ -160,4 +174,6 @@ _Static_assert(sizeof(UnitEditorSectionEnabled) == 0x1D, "lance_editor_start.sec
 _Static_assert(sizeof(TacticalUpdateDelayReloadTicks) == 0x2, "game_start.tactical_update_delay_ticks is the original's size");
 _Static_assert(sizeof(TacticalGameSpeedIndex) == 0x2, "game_start.tactical_game_speed is the original's size");
 _Static_assert(sizeof(PresentationDismissTimeout) == 0x2, "game_start.presentation_dismiss_timeout is the original's size");
+_Static_assert(sizeof(TacticalStatusBlinkCountdown) == 0x2, "game_start.tactical_status_blink_countdown is the original's size");
+_Static_assert(sizeof(DisplayedTacticalStatusRow) == 0x2, "game_start.displayed_tactical_status_row is the original's size");
 _Static_assert(sizeof(SaveDirectory) == 0x88, "save_directory.directory is the original's size");
