@@ -90,6 +90,24 @@ class SigningHooks(unittest.TestCase):
         self.assertFalse(any("made-up" in str(a) for c in calls for a in c))
 
 
+class CheckPaths(unittest.TestCase):
+    """tools/package/check_paths.py on a made-up name: allowed only in a public GitHub address."""
+
+    def test_the_name_is_allowed_only_in_a_public_github_address(self):
+        tool = Path(__file__).resolve().parent / "package/check_paths.py"
+        for text, code in [("https://github.com/someonemadeup/x/releases", 0),
+                           ("https://api.github.com/repos/someonemadeup/x", 0),
+                           ("https://raw.githubusercontent.com/someonemadeup/x/main/catalog/games.json", 0),
+                           ("https://raw.githubusercontent.com/someosomeonemadeup/x", 0),  # in overlapping pieces
+                           ("https://example.com/someonemadeup/x", 1),
+                           ("built by someonemadeup", 1)]:
+            with tempfile.TemporaryDirectory() as folder:
+                (Path(folder) / "chr.exe").write_text(text)
+                found = subprocess.run([sys.executable, "-I", str(tool), folder, "someonemadeup"],
+                                       capture_output=True, text=True)
+                self.assertEqual(found.returncode, code, text)
+
+
 def smoke_checks():
     return patch.multiple(build_package, check_usage=DEFAULT, check_served_setup=DEFAULT, check_first_run=DEFAULT)
 
