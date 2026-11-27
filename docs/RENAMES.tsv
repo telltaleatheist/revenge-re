@@ -86,3 +86,4 @@ file	src/Original/Resources/REVENGE_0800_RESOURCE_CODECS.cpp	src/Original/Resour
 file	src/Original/Resources/REVENGE_21E7_PACKED_RESOURCES.cpp	src/Original/Resources/PackedResources.cpp	21E7	packed resources
 file	src/Original/Resources/REVENGE_3390_RESOURCE_STREAM.cpp	src/Original/Resources/ResourceStream.cpp	3390	resource stream
 file	src/Original/Resources/REVENGE_34B3_PACKED_ICON_RESOURCE.cpp	src/Original/Resources/PackedIconResource.cpp	34B3	packed icon resource
+file	src/Original/Runtime/REVENGE_2C7F_STARTUP.cpp	src/Original/Runtime/Startup.cpp	2C7F	startup

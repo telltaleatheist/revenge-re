@@ -45,7 +45,7 @@ set(CHR_ORIGINAL_SOURCES
 	src/Original/Units/REVENGE_2507_EDITOR_GRAPHICS.cpp
 	src/Original/Graphics/TacticalSprite.cpp
     src/Original/Graphics/PlanarDisplayBacking.cpp
-    src/Original/Runtime/REVENGE_2C7F_STARTUP.cpp
+    src/Original/Runtime/Startup.cpp
 	src/Original/Audio/PCSpeakerEffects.cpp
 	src/Original/Units/REVENGE_30F1_SCENARIO_ROSTERS.cpp
 	src/Original/Audio/MusicResources.cpp
