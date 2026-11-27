@@ -2,7 +2,7 @@
 // TacticalData.cpp
 // Immutable tactical tables recovered from the REVENGE.EXE data segment.
 
-#include "revenge/original_data.h"
+#include "Data/TacticalTables.h"
 
 /* Filled at start from data/rules/combat.json (revenge/rules.h). */
 uint16_t UnitActionMaskByExperience[0x04];

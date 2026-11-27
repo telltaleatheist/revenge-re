@@ -2,10 +2,10 @@
 // RuntimeData.cpp
 // Typed objects recovered from REVENGE.EXE DS segment 3A6A.
 
-#include "revenge/original_data.h"
+#include "Data/RuntimeData.h"
+#include "revenge/original/io_data.h"
 #include "revenge/audio.h"
 #include "revenge/video.h"
-#include "REVENGE.h"
 
 const uint8_t CharacterClassTable[0x100] = {
     0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,

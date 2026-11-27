@@ -1,7 +1,7 @@
 // 3A6A: hit location data
 // BattleTech hit-location tables recovered from REVENGE.EXE DS:1038/3CFE.
 
-#include "revenge/original_data.h"
+#include "Data/HitLocationData.h"
 
 /* Filled at start from data/rules/combat.json (revenge/rules.h). */
 uint16_t HitLocationDirectionSelectorTable[0x10];

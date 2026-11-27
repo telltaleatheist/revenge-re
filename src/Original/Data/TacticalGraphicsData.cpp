@@ -2,7 +2,7 @@
 // TacticalGraphicsData.cpp
 // Typed definitions recovered from the shared graphics data segment.
 
-#include "revenge/original_data.h"
+#include "Data/TacticalGraphicsData.h"
 #include "revenge/video.h"
 
 /* Filled at start from data/rules/weapons.json (revenge/rules.h). */

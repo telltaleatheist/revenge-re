@@ -2,10 +2,9 @@
 // TacticalData.cpp
 // Typed objects recovered from REVENGE.EXE DS segment 3A6A.
 
-#include "revenge/original_data.h"
+#include "Data/TacticalData.h"
 #include "revenge/audio.h"
 #include "revenge/video.h"
-#include "REVENGE.h"
 #include "revenge/story_text.h"
 
 uint8_t *DamagedTerrainSpriteLookup;

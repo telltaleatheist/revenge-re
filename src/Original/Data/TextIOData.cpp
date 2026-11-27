@@ -2,10 +2,9 @@
 // TextIOData.cpp
 // Typed objects recovered from REVENGE.EXE DS segment 3A6A.
 
-#include "revenge/original_data.h"
+#include "Data/TextIOData.h"
 #include "revenge/audio.h"
 #include "revenge/video.h"
-#include "REVENGE.h"
 
 /* DS:05AA and DS:05BA, the story's media, placed at start
  * (original_import_pieces.txt). */

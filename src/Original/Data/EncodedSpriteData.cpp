@@ -2,7 +2,7 @@
 // EncodedSpriteData.cpp
 // Typed continuation of the shared graphics data segment at 4184:0E60.
 
-#include "revenge/original_data.h"
+#include "Data/EncodedSpriteData.h"
 
 uint16_t EncodedSpriteVisibleWidth;
 uint16_t EncodedSpriteSourceWidth;

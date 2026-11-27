@@ -2,10 +2,10 @@
 // AudioData.cpp
 // Typed objects recovered from REVENGE.EXE DS segment 3A6A.
 
-#include "revenge/original_data.h"
+#include "Audio/Audio.h"
+#include "Data/AudioData.h"
 #include "revenge/audio.h"
 #include "revenge/video.h"
-#include "REVENGE.h"
 
 /* DS:62B8 initially points at the null driver descriptor in segment 3621.
  * The host materializes that segmented data pointer when it initializes the
