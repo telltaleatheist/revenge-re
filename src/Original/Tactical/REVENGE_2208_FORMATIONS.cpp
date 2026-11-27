@@ -94,7 +94,7 @@ int16 UpdateUnitEnemyVisibility(word16 unitIndex)
 		&& hadContact == FALSE
 		&& (int16) unitIndex >= TACTICAL_FORCE_UNIT_COUNT)
 	{
-		PendingNarrationDelay = CONTACT_NARRATION_DELAY;
+		PendingNarrationDelay = NARRATION_DELAY_MS;
 		NarrationEmphasis = TRUE;
 		orderMode = UnitTacticalOrderMode[visibleEnemyIndex];
 		switch (orderMode)
@@ -563,7 +563,7 @@ word16 SelectTacticalMoveDestination(
 				NarrationEmphasis = 0x01;
 				ActiveNarrationSubject = unitIndex;
 				NarrationMessageCategory = 0x11;
-				PendingNarrationDelay = 0x025D;
+				PendingNarrationDelay = NARRATION_DELAY_MS;
 			}
 			ScenarioUnitFacing[unitIndex] = (byte)
 				DetermineRelativeAttackDirection(

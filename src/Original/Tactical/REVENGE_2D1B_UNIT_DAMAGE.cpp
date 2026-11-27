@@ -259,7 +259,7 @@ void ApplyWeaponDamage(
 			NarrationMessageCategory = 0x00;
 			ActiveNarrationSubject = targetUnitIndex;
 			NarrationEmphasis = 0x01;
-			PendingNarrationDelay = 0x025D;
+			PendingNarrationDelay = NARRATION_DELAY_MS;
 		}
 	}
 }

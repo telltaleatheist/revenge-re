@@ -478,10 +478,16 @@ uint16 CalculateApproximateMapDistance(
 	return (uint16) distance;
 }
 
+/* Host: the game clock's tick at the previous draw, and the ms the
+ * narration countdown lost then (NARRATION_DELAY_MS in original_data.h). */
+static uint32 narrationClockTick;
+static word16 narrationLastStepMs;
+
 // 2007:0E19: resolve the selected or cursor-contact unit, populate tactical
 // text window 6, maintain both status-row highlights, and service the pending
 // narration countdown.
 // Verified against 2007:0E19-1218.
+// Host: the countdown is battle time in ms, not draws (original_data.h).
 void DrawSelectedUnitStatusPanel(void)
 {
 	word16 narrationStatusRow;
@@ -500,6 +506,13 @@ void DrawSelectedUnitStatusPanel(void)
 	byte unitTypeId;
 	RevengeUnitRecord *unitRecord;
 	char *statusText;
+	word16 narrationStepMs;
+
+	/* At most one tick a draw: a longer gap is a wait outside the battle
+	 * loop (a message, a menu), when the original drew nothing. */
+	narrationStepMs = GameTimerTicks != narrationClockTick
+		? GAME_CLOCK_TICK_MS : 0x0000;
+	narrationClockTick = GameTimerTicks;
 
 	narrationStatusRow = 0xFFFF;
 	displayedStatusRow = 0xFFFF;
@@ -668,7 +681,10 @@ void DrawSelectedUnitStatusPanel(void)
 	}
 	else
 	{
-		if (PendingNarrationDelay == 0x0258)
+		if (PendingNarrationDelay <=
+				NARRATION_DELAY_MS - NARRATION_SOUND_AFTER_MS &&
+			PendingNarrationDelay + narrationLastStepMs >
+				NARRATION_DELAY_MS - NARRATION_SOUND_AFTER_MS)
 		{
 			if (NarrationMessageCategory == 0x0001)
 				DispatchWeaponEffect(0x0000);
@@ -708,7 +724,9 @@ void DrawSelectedUnitStatusPanel(void)
 		}
 		ShowMouseCursorOverlay();
 
-		--PendingNarrationDelay;
+		narrationLastStepMs = narrationStepMs < PendingNarrationDelay
+			? narrationStepMs : PendingNarrationDelay;
+		PendingNarrationDelay -= narrationLastStepMs;
 		if (PendingNarrationDelay == 0x0000)
 		{
 			NarrationEmphasis = 0x0000;

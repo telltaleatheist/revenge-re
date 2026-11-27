@@ -706,7 +706,7 @@ void SelectUnitTacticalTargets(void)
 						!= selectedTarget)
 				{
 					NarrationEmphasis = FALSE;
-					PendingNarrationDelay = 0x025D;
+					PendingNarrationDelay = NARRATION_DELAY_MS;
 					NarrationMessageCategory = 0x0A;
 					ActiveNarrationSubject = unitIndex;
 					UnitLastNarratedTarget[unitIndex] =

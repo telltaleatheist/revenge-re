@@ -501,6 +501,19 @@ extern byte WeaponAIHeatLimitByExperiencePastEnd[0xFC];
 extern RevengeTerrainImpactAnimationRecord
 	TerrainImpactAnimationRecords[TERRAIN_IMPACT_ANIMATION_RECORD_COUNT];
 extern word16 NarrationMessageCategory;
+/* How long a narration stays up, in ms of battle time (the game clock's
+ * ticks while the battle loop runs). The original counted it in battle-loop
+ * passes: 25Dh (605) of them, so its length, and whether its prompt still
+ * opened, followed the machine's speed. On the reference machine (DOSBox-X,
+ * 3000 cycles) a pass takes 33.06 ms on average: 70,580 passes over nine
+ * battle stretches of stages 3 to 7, 31 to 40 ms by stretch. 605 passes are
+ * 20,000 ms. */
+#define NARRATION_DELAY_MS 20000
+/* The narration's sound came on the pass at which five had gone by since
+ * the set (the test for 258h): five passes, 165 ms. */
+#define NARRATION_SOUND_AFTER_MS 165
+/* One tick of the game clock (GameTimerTicks, 18.2 a second), in whole ms. */
+#define GAME_CLOCK_TICK_MS 55
 extern word16 PendingNarrationDelay;
 extern word16 ActiveNarrationSubject;
 extern word16 NarrationEmphasis;

@@ -611,6 +611,15 @@ if(BUILD_TESTING)
     add_test(NAME tactical.original_status_row_highlight
         COMMAND test_status_row_highlight)
 
+    add_executable(test_narration_countdown
+        tests/test_narration_countdown.cpp
+        tests/fake_backend.cpp)
+    target_include_directories(test_narration_countdown PRIVATE src/SDL tests)
+    target_link_libraries(test_narration_countdown PRIVATE chr_original_runtime)
+    chr_strict(test_narration_countdown)
+    add_test(NAME tactical.narration_countdown
+        COMMAND test_narration_countdown)
+
     add_executable(test_tactical_cursor_retreat
         tests/test_tactical_cursor_retreat.cpp
         tests/fake_backend.cpp)

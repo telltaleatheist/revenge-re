@@ -515,7 +515,7 @@ void RunTacticalInteractionLoop(void)
 		{
 			TacticalSelectedUnitIndex = 0xFFFF;
 			RefreshTacticalDisplay(FALSE);
-			PendingNarrationDelay = 0x025D;
+			PendingNarrationDelay = NARRATION_DELAY_MS;
 			ActiveNarrationSubject = 0x0000;
 			NarrationMessageCategory = 0x0009;
 			NarrationEmphasis = 0x0000;

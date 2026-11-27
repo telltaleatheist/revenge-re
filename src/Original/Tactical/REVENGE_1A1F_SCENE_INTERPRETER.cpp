@@ -317,7 +317,7 @@ void ExecuteSceneInstructions(void)
 			{
 				ActiveNarrationSubject = narrationSubject;
 				NarrationMessageCategory = eventNumber - 0x14;
-				PendingNarrationDelay = 0x025D;
+				PendingNarrationDelay = NARRATION_DELAY_MS;
 				FriendlyUnitDestroyed = 0x0001;
 				NarrationEmphasis = 0x01;
 			}
@@ -1060,7 +1060,7 @@ void QueueLinkedUnitStatusNarration(word16 unitIndex)
 		return;
 	}
 
-	PendingNarrationDelay = 0x025D;
+	PendingNarrationDelay = NARRATION_DELAY_MS;
 	ActiveNarrationSubject = linkedUnitIndex;
 	NarrationMessageCategory = 0x08;
 	NarrationEmphasis = 0x00;

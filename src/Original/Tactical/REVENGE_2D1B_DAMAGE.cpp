@@ -36,7 +36,7 @@ void DestroyScenarioUnit(word16 unitIndex)
 	destructionMarker[0x01] = ScenarioUnitMapY[unitIndex];
 	destructionMarker[0x02] = 0xDD;
 
-	PendingNarrationDelay = 0x025D;
+	PendingNarrationDelay = NARRATION_DELAY_MS;
 	NarrationMessageCategory = 0x0009;
 	NarrationEmphasis = 0x0000;
 	NarrationSourceUnit = unitIndex;
@@ -198,7 +198,7 @@ byte UpdateUnitHeatShutdown(word16 unitIndex)
 		&& shutdownTriggered != FALSE
 		&& UnitShutdownState[unitIndex] == FALSE)
 	{
-		PendingNarrationDelay = 0x025D;
+		PendingNarrationDelay = NARRATION_DELAY_MS;
 		ActiveNarrationSubject = unitIndex;
 		NarrationEmphasis = TRUE;
 		NarrationMessageCategory = 0x01;
@@ -408,7 +408,7 @@ void QueueLanceOrderNarration(word16 unitIndex)
 	}
 
 	NarrationEmphasis = FALSE;
-	PendingNarrationDelay = 0x025D;
+	PendingNarrationDelay = NARRATION_DELAY_MS;
 	ActiveNarrationSubject = unitIndex;
 	NarrationMessageCategory = 0x07;
 }
