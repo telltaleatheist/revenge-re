@@ -102,8 +102,17 @@ bytes                PilotRosterRecordPastEnd                2148 04
 # on to DS:3EF5, the most an experience byte reaches. In the image, the hit
 # location and missile tables, the terrain damage masks, then the far
 # pointers of the unit-name and pilot-surname tables, whose segment words
-# are relocated (EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT).
+# are relocated (REFERENCE_LOAD_SEGMENT).
 relocated_bytes      UnitActionMaskByExperiencePastEnd       3CFE 1F8
+
+# What ExecuteUnitWeaponAI (2D1B:14A4) reads as the heat limit of a unit
+# whose experience is past the limit table's five bytes (DS:03E0): the bytes
+# on to DS:04E0, the most an experience byte (plus one) reaches. In the image,
+# the overview map's mode and the battle's lances (read live instead,
+# WeaponAIHeatLimit), the sensor ranges, a table of small values, then the
+# weapon definitions, whose name pointers' segment words are relocated
+# (REFERENCE_LOAD_SEGMENT).
+relocated_bytes      WeaponAIHeatLimitByExperiencePastEnd    03E5 FC
 
 # Single texts
 text                 invalid_save_version                    2372

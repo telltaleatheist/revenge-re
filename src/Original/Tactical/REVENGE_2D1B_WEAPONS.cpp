@@ -2,6 +2,30 @@
 // Procedures preserved from REVENGE_2D1B_TACTICAL_COMBAT.c.
 
 #include "REVENGE_2D1B_INTERNAL.h"
+#include "revenge/debug.h"
+
+// The heat limit at `index` of the table at DS:03E0 (2D1B:14A4 reads it with
+// the experience byte unchecked). Past the table's five bytes it is the
+// original's bytes on to DS:04E0, the most an experience byte plus one
+// reaches, but for the two variables among them, read live: the overview
+// map's mode (DS:03E5-03E6) and the battle's lances (DS:03EA-03EC).
+static byte WeaponAIHeatLimit(word16 index)
+{
+	constexpr word16 TABLE_COUNT = 0x05;
+	constexpr word16 OVERVIEW_MAP_MODE_AT = 0x05;  // DS:03E5
+	constexpr word16 SCENARIO_LANCES_AT = 0x0A;    // DS:03EA
+
+	if (index < TABLE_COUNT)
+		return WeaponAIHeatLimitByExperience[index];
+	if (index >= OVERVIEW_MAP_MODE_AT
+		&& index < OVERVIEW_MAP_MODE_AT + sizeof(TacticalOverviewMapMode))
+		return (byte) (TacticalOverviewMapMode >> (0x08 * (index - OVERVIEW_MAP_MODE_AT)));
+	if (index >= SCENARIO_LANCES_AT
+		&& index < SCENARIO_LANCES_AT + sizeof(TacticalScenarioLanceEnabled))
+		return TacticalScenarioLanceEnabled[index - SCENARIO_LANCES_AT];
+	return WeaponAIHeatLimitByExperiencePastEnd[
+		REVENGE_INDEX(WeaponAIHeatLimitByExperiencePastEnd, index - TABLE_COUNT)];
+}
 
 // 2D1B:14A4: word16 ExecuteUnitWeaponAI(word16 unitIndex)
 // Classify range, heat, and attack direction, select the first ready weapon
@@ -35,7 +59,7 @@ word16 ExecuteUnitWeaponAI(word16 unitIndex)
 			if (UnitOverburnOrCloseAssaultEnabled[unitIndex] != 0x00)
 				--heatLimitIndex;
 			if (unitRecord->currentHeat
-				> WeaponAIHeatLimitByExperience[heatLimitIndex])
+				> WeaponAIHeatLimit(heatLimitIndex))
 			{
 				mayAttack = FALSE;
 			}

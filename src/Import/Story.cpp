@@ -115,7 +115,7 @@ std::vector<StoredPiece> import_pieces(const OriginalEdition& edition) {
         }
         // Hashed as the copy holds it, kept as the reference run loaded it.
         if (piece.kind == ORIGINAL_PIECE_RELOCATED_BYTES)
-            OriginalImport_RelocatePiece(&piece, bytes.data(), EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT);
+            OriginalImport_RelocatePiece(&piece, bytes.data(), REFERENCE_LOAD_SEGMENT);
         pieces.push_back({&piece, piece_id(piece), std::string(reinterpret_cast<const char*>(bytes.data()), length)});
     }
     if (!refused.empty()) {

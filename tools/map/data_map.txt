@@ -15,6 +15,7 @@ place TrainingScenarioCompletionFlags 3A6A:00A0 6 table
 place VideoPaletteData 3A6A:00AC 310 import
 place TacticalSelectedUnitIndex 3A6A:03DC 2 table
 place WeaponAIHeatLimitByExperience 3A6A:03E0 5 run
+place WeaponAIHeatLimitByExperiencePastEnd 3A6A:03E5 FC import
 place TacticalOverviewMapMode 3A6A:03E5 2 procedure
 place SensorDamageProximityRangeTable 3A6A:03E7 3 run
 place TacticalScenarioLanceEnabled 3A6A:03EA 3 procedure
@@ -730,3 +731,8 @@ overlap UnitActionMaskByExperiencePastEnd ImprovedMissileDamageBonusTable the ex
 overlap UnitActionMaskByExperiencePastEnd TerrainDamageQueueOccupiedMask the experience mask's past-end window reads it as action masks (an experience past 3, SelectUnitTacticalTargets)
 overlap UnitActionMaskByExperiencePastEnd TerrainDamageQueueIncrementMask the experience mask's past-end window reads it as action masks (an experience past 3, SelectUnitTacticalTargets)
 overlap UnitActionMaskByExperiencePastEnd PilotSurnameTextTable the experience mask's past-end window reads it as action masks (an experience past 3, SelectUnitTacticalTargets)
+overlap WeaponAIHeatLimitByExperiencePastEnd TacticalOverviewMapMode the heat limit's past-end window reads it as heat limits (an experience past 3, ExecuteUnitWeaponAI)
+overlap WeaponAIHeatLimitByExperiencePastEnd SensorDamageProximityRangeTable the heat limit's past-end window reads it as heat limits (an experience past 3, ExecuteUnitWeaponAI)
+overlap WeaponAIHeatLimitByExperiencePastEnd TacticalScenarioLanceEnabled the heat limit's past-end window reads it as heat limits (an experience past 3, ExecuteUnitWeaponAI)
+overlap WeaponAIHeatLimitByExperiencePastEnd SpriteFacingByDirection the heat limit's past-end window reads it as heat limits (an experience past 3, ExecuteUnitWeaponAI)
+overlap WeaponAIHeatLimitByExperiencePastEnd WeaponDefinitions the heat limit's past-end window reads it as heat limits (an experience past 3, ExecuteUnitWeaponAI)

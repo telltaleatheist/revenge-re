@@ -144,7 +144,7 @@ void check_media(const fs::path* folder) {
         const std::size_t length = OriginalImport_PieceBytes(&piece, bytes.data(), bytes.size());
         assert(length == piece.length);
         if (piece.kind == ORIGINAL_PIECE_RELOCATED_BYTES)
-            OriginalImport_RelocatePiece(&piece, bytes.data(), EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT);
+            OriginalImport_RelocatePiece(&piece, bytes.data(), REFERENCE_LOAD_SEGMENT);
         assert(std::memcmp(piece.target, bytes.data(), length) == 0);
         if (folder == nullptr) continue;
         const std::string id = story::piece_id(piece);
@@ -154,7 +154,7 @@ void check_media(const fs::path* folder) {
                                    std::to_string(length) + ", \"sha256\": \"" + sha256_hex(file) + "\"}";
         assert(manifest.find(listed) != std::string::npos);
     }
-    assert(count == 13);
+    assert(count == 14);
 }
 
 // Clears every media and data piece's object, so a check after proves it was

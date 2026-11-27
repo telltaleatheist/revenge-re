@@ -642,6 +642,14 @@ if(BUILD_TESTING)
     chr_strict(test_experience_mask)
     add_test(NAME tactical.original_experience_mask COMMAND test_experience_mask)
 
+    # An experience past the heat-limit table: the original's bytes past it,
+    # the overview map's mode and the battle's lances read live.
+    add_executable(test_heat_limit tests/test_heat_limit.cpp tests/fake_backend.cpp)
+    target_include_directories(test_heat_limit PRIVATE src/Original src/SDL tests)
+    target_link_libraries(test_heat_limit PRIVATE chr_original_runtime)
+    chr_strict(test_heat_limit)
+    add_test(NAME tactical.original_heat_limit COMMAND test_heat_limit)
+
     # A unit's firepower ratings through the weapon-rating sum's mask, as the
     # original's loop leaves it.
     add_executable(test_weapon_rating tests/test_weapon_rating.cpp tests/fake_backend.cpp)

@@ -51,3 +51,9 @@ page on what the original does.
   two subticks in eight, like a green pilot; under plain DOSBox-X (0823h),
   four in eight. Kept as the reference runs had it; `tools/trace/README.md`
   (finding 7).
+
+- **Those enemies fire only when cool.** The same units, with experience 41h,
+  read their heat limit past its table too (2D1B:14A4): a byte of 0, or 2
+  with overburn, where a pilot's limit is 8 to 20. They fire only while their
+  heat is 0 (or 2), so once they have fired they wait to cool right down
+  before firing again. Kept; `tools/trace/README.md` (finding 9).

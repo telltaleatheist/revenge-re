@@ -494,6 +494,10 @@ extern word16 UnitActionMaskByExperience[0x04];  /* the rules' */
 /* What an experience past those four reads: the original's words after the
  * table, through DS:3EF5 (src/Support/original_import_pieces.txt). */
 extern word16 UnitActionMaskByExperiencePastEnd[0xFC];
+/* What a heat-limit index past WeaponAIHeatLimitByExperience's five reads:
+ * the original's bytes after the table, through DS:04E0
+ * (src/Support/original_import_pieces.txt). */
+extern byte WeaponAIHeatLimitByExperiencePastEnd[0xFC];
 extern RevengeTerrainImpactAnimationRecord
 	TerrainImpactAnimationRecords[TERRAIN_IMPACT_ANIMATION_RECORD_COUNT];
 extern word16 NarrationMessageCategory;

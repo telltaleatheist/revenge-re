@@ -188,6 +188,8 @@ RevengePilotRosterRecord PilotRoster[REVENGE_PILOT_ROSTER_COUNT];
 RevengePilotRosterRecord PilotRosterRecordPastEnd;
 /* Filled at start from the story (src/Support/original_import_pieces.txt). */
 word16 UnitActionMaskByExperiencePastEnd[0xFC];
+/* Filled at start from the story (src/Support/original_import_pieces.txt). */
+byte WeaponAIHeatLimitByExperiencePastEnd[0xFC];
 /* Filled at start from data/ui/lance_editor.json (the places) and
  * data/start/lance_editor.json (the starting state); revenge/rules.h. */
 RevengeUnitLanceAssignment

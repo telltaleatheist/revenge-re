@@ -375,7 +375,7 @@ What the comparison found in the port, and how each was fixed:
    four-word C array, a word that depended on the host's layout. It reads
    the original's 504 bytes past the table now, imported from the player's
    copy with its segment words relocated as the captures loaded it
-   (UnitActionMaskByExperiencePastEnd, EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT;
+   (UnitActionMaskByExperiencePastEnd, REFERENCE_LOAD_SEGMENT;
    tactical.original_experience_mask). None of those words changes in any
    capture.
 8. **Two more initial values the image has.** The overview map's mode
@@ -386,3 +386,16 @@ What the comparison found in the port, and how each was fixed:
    loads (1A1F:1C48), before anything reads them, so play was the same and
    the overview map looks the same. They start as the image has them now
    (import.original_initial_data_image, import.original_initial_data_values).
+9. **An experience past 3 reads its heat limit past its table too.** A unit
+   holds its fire while its heat is above the byte at DS:03E0 + experience +
+   1 (one less with overburn; 2D1B:14A4), five bytes of limits indexed
+   unchecked. SCENE4's units 11h-14h, at experience 41h (finding 7), read
+   DS:0422, 00h, or DS:0421, 02h, with overburn: they fire only while their
+   heat is 0, or 2, where a pilot's limit is 8 to 20. An original bug, kept.
+   The port read past its five-byte C array (UBSan, tools/trace/ubsan_sweep.py).
+   It reads the original's bytes to DS:04E0 now, imported like the mask's
+   (WeaponAIHeatLimitByExperiencePastEnd, relocated by
+   REFERENCE_LOAD_SEGMENT), but for the two variables among them, read live:
+   the overview map's mode (DS:03E5) and the battle's lances (DS:03EA-03EC)
+   (tactical.original_heat_limit). In stages_02_04 the byte the port read
+   gave the same fire, so no trace moved.

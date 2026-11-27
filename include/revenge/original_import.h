@@ -56,22 +56,26 @@ typedef enum OriginalPieceKind
 	ORIGINAL_PIECE_MEDIA,                 /* the same, the story's media */
 	ORIGINAL_PIECE_RELOCATED_BYTES        /* the same as bytes, with each segment word DOS relocates
 	                                         moved at import as DOS moved it in the reference run
-	                                         (EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT): the experience
-	                                         mask's window, the one such piece */
+	                                         (REFERENCE_LOAD_SEGMENT): the experience
+	                                         mask's and the heat limit's windows */
 } OriginalPieceKind;
 
 /* The segment DOS loaded the game at in the reference captures (DOSBox-X with
  * REVSNAP resident, tools/capture), used only to relocate the far-pointer
- * segment words in the experience mask's window (DS:3CFE-3EF5,
- * UnitActionMaskByExperiencePastEnd), the one relocated piece; nothing else
- * takes a segment from it. An enemy whose experience is past the mask
- * table's four entries takes its action timing from that window, and in
- * the original the segment words there were wherever DOS had put the game:
- * the timing varied with the machine's drivers and resident programs. At
+ * segment words in the two relocated pieces; nothing else takes a segment
+ * from it:
+ *   - the experience mask's window (DS:3CFE-3EF5,
+ *     UnitActionMaskByExperiencePastEnd)
+ *   - the heat limit's window (DS:03E5-04E0,
+ *     WeaponAIHeatLimitByExperiencePastEnd)
+ * An enemy whose experience is past those tables reads its action timing
+ * and its heat limit from them, and in the original the segment words there
+ * were wherever DOS had put the game: the timing varied with the machine's
+ * drivers and resident programs. At
  * 131Eh the experience-41h units of the fourth battle act on two subticks in
  * eight; plain DOSBox-X, without REVSNAP, loads the game at 0823h, where they
  * would act on four. */
-inline constexpr int EXPERIENCE_MASK_WINDOW_LOAD_SEGMENT = 0x131E;
+inline constexpr int REFERENCE_LOAD_SEGMENT = 0x131E;
 
 typedef struct OriginalPiece
 {
