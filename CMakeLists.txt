@@ -855,9 +855,12 @@ if(CHR_BUILD_SDL)
     add_library(chr_audio STATIC
         src/Audio/LegacySynth.cpp
         src/Audio/Mixer.cpp
+        src/Audio/Music.cpp
         src/Audio/PcmVoice.cpp
         src/Audio/ToneVoice.cpp)
     target_include_directories(chr_audio PUBLIC src/Audio)
+    target_include_directories(chr_audio SYSTEM PRIVATE extern/TinySoundFont)
+    target_link_libraries(chr_audio PRIVATE chr_json)
     target_compile_features(chr_audio PUBLIC cxx_std_20)
     chr_strict(chr_audio)
 
@@ -1001,6 +1004,18 @@ if(CHR_BUILD_SDL)
                 --source ${CHR_SOUNDFONT_SOURCE}
                 --renderer $<TARGET_FILE:soundfont_render_test>)
         set_tests_properties(soundfont.bank PROPERTIES TIMEOUT 600)
+        # The music (src/Audio/Music): the instrument table read strictly,
+        # played on the subset, and every timbre the game's songs write in it.
+        add_executable(test_music tests/test_music.cpp)
+        target_link_libraries(test_music PRIVATE chr_audio)
+        chr_strict(test_music)
+        add_dependencies(test_music chr_soundfont)
+        foreach(mode table play songs)
+            add_test(NAME audio.music_${mode}
+                COMMAND test_music ${mode}
+                    ${CMAKE_CURRENT_SOURCE_DIR}/data/music/instruments.json ${CHR_SOUNDFONT})
+        endforeach()
+        set_tests_properties(audio.music_songs PROPERTIES SKIP_RETURN_CODE 77)
     endif()
 
     add_custom_target(revenge-package
