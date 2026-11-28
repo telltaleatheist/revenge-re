@@ -1,9 +1,13 @@
 # The tenth battle (stage 9) won by play, from the original's save after
-# stage 8. The scene wins once the lance leader (unit 0) and the APC (unit 8)
-# both stand on the gate's four cells (columns 194-195, rows 98-99); it is
-# lost at 12:00 or if either of them is out of action. Hands-off nothing wins
-# it: the enemies (12-13 and 16-19) march down the road and park on and by
-# the gate, and the lance waits in the road's corridor at its start.
+# stage 8, by way of the mech shop. The scene wins once the lance leader
+# (unit 0) and the APC (unit 8) both stand on the gate's four cells (columns
+# 194-195, rows 98-99); it is lost at 12:00 or if either of them is out of
+# action. Before that, any unit of the first twelve that stands on 195,22
+# (the repair facility in the map's north-east corner) gets a message and
+# sets the campaign's mech-shop flag; a win with that flag gives the lance
+# four Crusaders for the next battle, which stage 10 needs. Hands-off nothing
+# wins it: the enemies (12-13 and 16-19) march down the road and park on and
+# by the gate, and the lance waits in the road's corridor at its start.
 # The map (MAP3): the forest between the start and the east half leaves two
 # ways through, the open strip along the top (rows 0-13) and the road's
 # corridor (columns 141-144) up to its crossing at 146,57; south of the
@@ -13,13 +17,20 @@
 # to the crossing once the enemy column has passed it (10:38), and its three
 # followers (F2-F4), their fire mode set to fire on any enemy, are each sent
 # through the crossing once they reach the corridor. The lance then meets the
-# enemies coming out from the gate (all destroyed by 10:45); the leader goes
-# round the lake to the west and onto 194,99, and the APC onto 195,98 (its
-# first stop is a cell short). Each unit is ordered on its own: a lance
+# enemies coming out from the gate (all destroyed by 10:45), and the leader
+# goes round the lake to the west and onto 194,99. Only then is the APC's
+# lance sent to the mech shop (the APC stops a cell short, on 194,22, and
+# one of its lance takes 195,22 at 10:48), and from there down to the gate
+# and onto 195,98 (its first stop is again a cell short). Sent there while
+# the enemies are still about, the APC leaves the lance short in the fight
+# and the leader is destroyed. Each unit is ordered on its own: a lance
 # order keeps the leader's formation, and the corridor jams. Every order is
 # given while the battle waits (a unit's commands are up); the keys that
 # land in the running battle wait for a step (steps:1), and a message is
 # answered with no idle after it.
+# The same battle won without the detour (the APC straight to the gate, won
+# at 10:49) is the no-Crusaders branch: the port plays it as the original
+# does, but stage 10 is then fought without the Crusaders.
 # Then the menu over the battle: Save & Continue to slot 1: the save is
 # REVENGE_SAVE_STAGE_09.
 # set: campaign
@@ -121,7 +132,7 @@ still:200 @snap:stage9_message10 Return
 still:200 @snap:stage9_message11 Return
 steps:25 @snap:stage9_e50
 # 10:45: the enemies destroyed; the leader round the lake's west side
-# (174,91, then 183,96) and onto the gate (194,99), the APC after it.
+# (174,91, then 183,96) and onto the gate (194,99).
 steps:1 F1 Return idle:300 Return idle:300
 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
 Left idle:20 Left idle:20 Left idle:20 Left idle:20
@@ -139,25 +150,38 @@ Down idle:20 Down idle:20 Down idle:20
 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
 idle:100 Return idle:300 Return idle:300
 Return steps:1 @snap:stage9_leg6_ordered
+# 10:47: the APC's lance from 160,54 to the mech shop (195,22).
 steps:1 F7 Return idle:300 Return idle:300
-Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20
 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
 idle:100 Return idle:300 Return idle:300
-Return steps:1 @snap:stage9_apc4_ordered
-steps:25 @snap:stage9_h25
+Return steps:1 @snap:stage9_shop_ordered
+steps:25 @snap:stage9_i25
 still:200 @snap:stage9_message12 Return
-steps:25 @snap:stage9_h50
-steps:25 @snap:stage9_h75
-steps:25 @snap:stage9_h100
-# The APC a cell short (196,97): onto 195,98, and the battle is won.
+steps:25 @snap:stage9_i50
+still:200 @snap:stage9_message13 Return
+steps:25 @snap:stage9_i75
+# 10:49: the APC from 194,22 down the east side to the gate (195,98).
+steps:1 F7 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_apc4_ordered
+steps:25 @snap:stage9_j25
+steps:25 @snap:stage9_j50
+steps:25 @snap:stage9_j75
+steps:25 @snap:stage9_j100
+# The APC a cell short (195,97): onto 195,98, and the battle is won.
 steps:1 F7 Return idle:300 Return idle:300
 Down idle:20
-Left idle:20
 idle:100 Return idle:300 Return idle:300
 Return steps:1 @snap:stage9_apc5_ordered
-# The menu over the battle: Save & Continue to slot 1; saved, the
+# Won with the mech shop's flag: the Crusaders' story is told first, then
+# the menu over the battle: Save & Continue to slot 1; saved, the
 # transmission before the next battle.
-still:200 @snap:stage9_menu
+still:200 @snap:stage9_won
+idle:600 @snap:stage9_shop_story
+Return idle:300 @snap:stage9_menu
 Down idle:50 Down idle:50 @snap:stage9_save
 Return idle:300 @snap:stage9_slots
 Return idle:300 @snap:stage9_save1 Return idle:300 @snap:stage9_save2

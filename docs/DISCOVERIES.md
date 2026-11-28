@@ -93,9 +93,22 @@ page on what the original does.
   follower (F2-F4) through the crossing on its own. Meet the enemies when
   they come out from the gate. The leader, a tank, cannot cross the lake
   north of the gate, so take it round the lake's west side. The APC stops a
-  cell short of its first order and needs a second. The original does
-  exactly this (tools/trace/scripts/stage_09.keys, checked against its
-  capture at every snap; won at 10:49).
+  cell short of its orders and needs a second.
+
+- **Stage 9's mech shop gives the lance its Crusaders.** Any of the first
+  twelve units that stands on 195,22, the repair facility in the map's
+  north-east corner, gets a message and sets the campaign's mech-shop flag
+  (milestone 7). A win with that flag puts four Crusaders in the lance's
+  first four slots for stage 10; a win without it leaves stage 10 to the
+  lance as it was, with little long-range fire. Send the APC's lance there
+  only once the enemies by the gate are destroyed: sent at 10:42, the APC
+  leaves the lance short in the fight and the leader is destroyed. The APC
+  stops on 194,22 and one of its lance takes 195,22 (10:48); from there the
+  APC goes down the east side to the gate. The original does exactly this
+  (tools/trace/scripts/stage_09.keys, checked against its capture at every
+  snap; won at 10:51). Won without the detour (the APC straight to the gate,
+  won at 10:49) is the no-Crusaders branch, which the port also plays as the
+  original does.
 
 ## Port bugs the comparison found
 
