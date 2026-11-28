@@ -613,6 +613,20 @@ def appimage_tools():
     return pins
 
 
+RUNTIME_NOTICE = "tools/package/appimage-runtime"  # the runtime's notices: it links libfuse (LGPL 2.1) and more
+
+
+def check_runtime_notice(root, licenses):
+    """`licenses` (the AppImage's usr/share/doc/chr/licenses) holds the runtime's notices, each as in the repo."""
+    wanted = sorted(f for f in (root / RUNTIME_NOTICE).iterdir() if f.is_file())
+    if not wanted:
+        raise RuntimeError(f"No notices in {RUNTIME_NOTICE}")
+    for notice in wanted:
+        shipped = licenses / "appimage-runtime" / notice.name
+        if not shipped.is_file() or shipped.read_bytes() != notice.read_bytes():
+            raise RuntimeError(f"The AppImage lacks the runtime's notice {notice.name} (licenses/appimage-runtime)")
+
+
 def check_appimage_tools(tools):
     for name, wanted in appimage_tools().items():
         file = tools / name
@@ -702,13 +716,14 @@ def package_linux(root, build, output, label, game, tools):
     for item in ("LICENSE", "README.txt"):
         shutil.copy2(stage / item, doc / item)
     shutil.copytree(stage / "licenses", doc / "licenses")
-    shutil.copytree(root / "tools/package/appimage-runtime", doc / "licenses/appimage-runtime")
+    shutil.copytree(root / RUNTIME_NOTICE, doc / "licenses/appimage-runtime")
     smoke(bin_dir / PROGRAM, game)
     env = dict(os.environ, APPIMAGE_EXTRACT_AND_RUN="1", ARCH="x86_64")
     run(tools / "linuxdeploy-x86_64.AppImage", "--appdir", appdir, "-e", bin_dir / PROGRAM,
         "-d", root / "tools/package/chr.desktop", "-i", root / "tools/package/revenge.png", env=env)
     check_paths(root, appdir, root, build)
     check_notices(doc / "licenses")
+    check_runtime_notice(root, doc / "licenses")
     shutil.copy2(stage / KIT_SETTINGS, appdir / KIT_SETTINGS)
     write_record(root, appdir)
     image = output / f"{STEM}-{label}-x86_64.AppImage"
@@ -725,6 +740,7 @@ def package_linux(root, build, output, label, game, tools):
     program = unpacked / "squashfs-root/usr/bin" / PROGRAM
     check_stamp(program, label)
     check_notices(unpacked / f"squashfs-root/usr/share/doc/{PROGRAM}/licenses")
+    check_runtime_notice(root, unpacked / f"squashfs-root/usr/share/doc/{PROGRAM}/licenses")
     check_record(unpacked / "squashfs-root")
     check_kit_settings(unpacked / "squashfs-root")
     smoke(program, game)

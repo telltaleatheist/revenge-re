@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import plistlib
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -301,6 +302,22 @@ class BackgroundApp(unittest.TestCase):
                     self.fail("ran")
             self.assertEqual(self.files(app), before)
 
+
+
+class RuntimeNotice(unittest.TestCase):
+    def test_the_appimage_needs_the_runtimes_notices(self):
+        notices = sorted(f.name for f in (ROOT / build_package.RUNTIME_NOTICE).iterdir())
+        self.assertIn("NOTICE.txt", notices)
+        self.assertIn("libfuse-LGPL2.txt", notices)
+        with tempfile.TemporaryDirectory() as d:
+            licenses = Path(d) / "licenses"
+            with self.assertRaisesRegex(RuntimeError, "runtime's notice"):
+                build_package.check_runtime_notice(ROOT, licenses)
+            shutil.copytree(ROOT / build_package.RUNTIME_NOTICE, licenses / "appimage-runtime")
+            build_package.check_runtime_notice(ROOT, licenses)
+            (licenses / "appimage-runtime/NOTICE.txt").write_text("changed")
+            with self.assertRaisesRegex(RuntimeError, "NOTICE.txt"):
+                build_package.check_runtime_notice(ROOT, licenses)
 
 
 class ProgramRecord(unittest.TestCase):
