@@ -128,6 +128,7 @@ def run(exe, game, script, work, story=None, settings=None, env_extra=None):
         "SDL_VIDEO_DRIVER": "dummy",
         "SDL_AUDIO_DRIVER": "dummy",
         "SDL_MAC_BACKGROUND_APP": "1",
+        "RE_KIT_TEST": "1",
         "REVENGE_ASSET_DIRECTORY": os.path.abspath(game),
         "REVENGE_SAVE_DIRECTORY": os.path.join(os.path.abspath(work), "saves") + os.sep,
         "REVENGE_HARNESS_SCRIPT": os.path.abspath(script),

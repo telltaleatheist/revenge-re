@@ -42,6 +42,12 @@ int Harness_Active(void);
 /* The game's clock, in milliseconds: SDL's when the harness is off. Every
  * timer runs from it (src/SDL/platform.cpp). */
 uint64_t HostClock_NowMS(void);
+/* The setup menu's pause (src/SDL/kit_menu.cpp): the clock stands still
+ * from the pause, and goes on from there at the resume, the time between
+ * left out, so nothing catches up. Nothing under the harness, whose clock
+ * moves only with the game. */
+void HostClock_Pause(void);
+void HostClock_Resume(void);
 /* Waits: sleeps when the harness is off; otherwise moves the test clock. */
 void HostClock_DelayMS(uint64_t milliseconds);
 /* A host pass that waits on time without sleeping (a timer service, a wait
@@ -74,6 +80,8 @@ int Harness_ParseKey(const char *token, int *scancode, uint8_t *modifiers);
 void Platform_SendHarnessMouse(uint16_t x, uint16_t y, uint8_t buttons);
 /* A script's quit item: the host's quit, as the window's close button asks it. */
 void Platform_RequestHarnessQuit(void);
+/* The same quit, asked by the setup menu (src/SDL/kit_menu.cpp). */
+void Platform_RequestQuit(void);
 /* A script's fail item: fail:allocation, the heap's next request failing,
  * or fail:abort, a fatal path the game has, forced (platform.cpp,
  * FailIfAsked). */

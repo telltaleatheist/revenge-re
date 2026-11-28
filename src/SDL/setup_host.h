@@ -33,6 +33,12 @@ int SetupHost_Start(int argc, char **argv);
 /* The recipe for the kit's setup screen, for a fresh setup of the player's folder `user`
  * (tests/setup_download_test.cpp). */
 rekit::sdl::Game SetupHost_KitGame(const std::string &user);
+/* Revenge's look on the kit's screens: the setup and the menu over the game (src/SDL/kit_menu.cpp). */
+rekit::sdl::Theme SetupHost_Theme();
+/* The play log, revenge.log in the player's folder, when this start writes one: a start that plays with no
+ * terminal on stderr (a package's, the launcher's) sends stderr there, the last start's kept as revenge.old.log; a
+ * terminal start leaves stderr as it is. "" when none. */
+std::string SetupHost_LogFile();
 
 
 #endif

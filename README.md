@@ -124,6 +124,19 @@ archive it came in), which is copied into their own folder and played from
 there. `chr --status` and `chr --setup` answer the launcher (the kit's
 contract, game id `chr`); `chr --help` lists the start options.
 
+While the game runs, Shift + Alt + F1 (Cmd + Shift + F1 on a Mac), or the
+UPGRADES page's Setup menu line, opens the kit's setup menu over it
+(`src/SDL/kit_menu.cpp`): the game files in use (and choosing others, which
+restarts the game into its setup), updates, reporting a problem, checking the
+program's and the game's files, resetting the settings, and the player's
+folder. The game stands still while it is open, its clock paused, so nothing
+catches up when it closes. A package carries the record of its own files
+(`rebuild-files.sha256`, written before the package is sealed; in a Mac app,
+in `Contents/Resources`) for the file check. A start with no terminal (a
+package's, the launcher's) writes its log to `revenge.log` in the player's
+folder, the start before's kept as `revenge.old.log`. Tests and trace runs
+set `RE_KIT_TEST=1`: no menu keys, no hint, nothing over the network.
+
 A build tree runs from the game folder `REVENGE.CFG` beside the program
 names:
 

@@ -857,10 +857,13 @@ static void RenderUpgradesOptionsLine(void)
 // menu's own window (text window 0Bh) and selection (UI region 5) as
 // 1A1F:417F RunGameOptionsMenu draws them, their size set for the page's
 // lines and put back after. A line for each switch, its word on or off, then
-// Done, and below one switch's help: the first's, then the last picked's. A
-// switch picked turns over and is saved to the player's settings at once. The game options menu's line and
-// the kit's menu entry open it alike, wherever the game waits for a key (a
-// battle waits while it is up, as for the options menu).
+// Setup menu when the host has one (re-setup-kit's menu over the game, which
+// it opens once the page is closed), then Done, and below one switch's help:
+// the first's, then the last picked's. A switch picked turns over and is
+// saved to the player's settings at once. The game options menu's line opens
+// it, and so does the setup menu's UPGRADES entry, at the next place the
+// options menu can open (Upgrades_TakePageRequest); a battle waits while it
+// is up, as for the options menu.
 void OpenUpgradesPage(void)
 {
     const uint16_t savedHeight = GameOptionsMenuHeight;
@@ -871,6 +874,8 @@ void OpenUpgradesPage(void)
     uint16_t lineCount;
     uint16_t open = TRUE;
     int shownHelp = 0;
+    const uint16_t setupMenu = Upgrades_SetupMenuShown() ? 0x01 : 0x00;
+    uint16_t openSetupMenu = FALSE;
 
     UiRegionTable[0x05].selectedRow = 0x00;
     while (open != FALSE)
@@ -879,15 +884,17 @@ void OpenUpgradesPage(void)
         size_t length = 0;
         int upgrade;
 
-        GameOptionsMenuEntryCount = (uint16_t) (UPGRADE_COUNT + 0x01);
+        GameOptionsMenuEntryCount = (uint16_t) (UPGRADE_COUNT + setupMenu + 0x01);
         // The lines: the switches, Done, a blank line, then one switch's
         // help (the first's, then the one last picked), wrapped to the
         // window's width in the font's glyphs.
         columns = (uint16_t) (((TextWindowContexts[0x0B].widthTiles << 0x03) / ActiveFontGlyphAdvanceX) - 0x01);
-        lineCount = (uint16_t) (UPGRADE_COUNT + 0x02);
+        lineCount = (uint16_t) (UPGRADE_COUNT + setupMenu + 0x02);
         for (upgrade = 0; upgrade < UPGRADE_COUNT; ++upgrade)
             length += (size_t) snprintf(text + length, sizeof(text) - length, "%s%c%c%s\r", Upgrades_Label(upgrade),
                 0x13, (char) (columns / 0x02), Upgrades_Text(Upgrades_IsOn(upgrade) ? UPGRADES_TEXT_ON : UPGRADES_TEXT_OFF));
+        if (setupMenu != 0x00)
+            length += (size_t) snprintf(text + length, sizeof(text) - length, "%s\r", Upgrades_Text(UPGRADES_TEXT_SETUP_MENU));
         length += (size_t) snprintf(text + length, sizeof(text) - length, "%s\r", Upgrades_Text(UPGRADES_TEXT_DONE));
         upgrade = shownHelp;
         {
@@ -939,11 +946,16 @@ void OpenUpgradesPage(void)
             shownHelp = selectedOption;
         }
         else
+        {
+            openSetupMenu = setupMenu != 0x00 && selectedOption == UPGRADE_COUNT;
             open = FALSE;
+        }
     }
     UiRegionTable[0x05].selectedRow = savedSelected;
     GameOptionsMenuEntryCount = savedRows;
     GameOptionsMenuHeight = savedHeight;
+    if (openSetupMenu != FALSE)
+        Upgrades_OpenSetupMenu();
 }
 
 // 1A1F:5D30: void AdvanceCampaignClock(byte hoursToAdvance, byte minutesToAdvance)

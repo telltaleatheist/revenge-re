@@ -49,6 +49,22 @@ int Upgrades_LineShown(void);
  * (the host's settings, src/SDL/settings.cpp); Upgrades_Save calls it. */
 void Upgrades_SetSaver(void (*saver)(void));
 void Upgrades_Save(void);
+/* The setup menu over the game (re-setup-kit's, src/SDL/kit_menu.cpp): what
+ * opens it, set by the host when there is one. The page shows its SETUP
+ * MENU line only then (never under the harness, where there is none). */
+void Upgrades_SetSetupMenu(void (*open)(void));
+int Upgrades_SetupMenuShown(void);
+void Upgrades_OpenSetupMenu(void);
+/* The setup menu's UPGRADES entry. It can be picked only while the battle
+ * map runs (Tactical/BattleRuntime.cpp sets that), and its page opens at the
+ * map's next key check, where Escape opens the options menu: there the
+ * page's window is drawn over the map and put back, with no other window
+ * open under it (they share one backing, 0D73:2A5D). Elsewhere the entry
+ * points to the options menu's UPGRADES line. Taking the request clears it. */
+void Upgrades_SetPageAvailable(int available);
+int Upgrades_PageAvailable(void);
+void Upgrades_RequestPage(void);
+int Upgrades_TakePageRequest(void);
 
 /* The page's words, ours, from data/ui/upgrades.json in the data folder
  * (a fault names what is wrong with the file). */
@@ -58,7 +74,9 @@ enum
     UPGRADES_TEXT_ON = 1,
     UPGRADES_TEXT_OFF = 2,
     UPGRADES_TEXT_DONE = 3,
-    UPGRADES_TEXT_COUNT = 4
+    UPGRADES_TEXT_SETUP_MENU = 4,
+    UPGRADES_TEXT_ELSEWHERE = 5,
+    UPGRADES_TEXT_COUNT = 6
 };
 void Upgrades_LoadText(const char *dataDirectory);
 /* A word, or "" before the file is read. */

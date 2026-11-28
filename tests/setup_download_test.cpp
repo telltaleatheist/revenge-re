@@ -12,6 +12,7 @@
 #include "test_keys.h"
 
 #include <rekit/hash.h>
+#include <rekit/manifest.h>
 #include <rekit/sdl/pickers.h>
 #include <rekit/sdl/setup_screen.h>
 #include <rekit/status.h>
@@ -137,7 +138,7 @@ bool starts(const std::vector<std::string> &log, const std::string &head)
     return false;
 }
 
-// A fresh setup that finds no copy: the download offered, pressed, fetched, and installed when it is the game.
+// A fresh setup that finds no copy: the originals fetched at once from the catalog, and installed when they are the game.
 void download(const fs::path &work, const char *game)
 {
     std::vector<std::pair<std::string, std::string>> files;
@@ -191,15 +192,23 @@ void download(const fs::path &work, const char *game)
     const rekit::sdl::SetupResult r = rekit::sdl::run_setup(g, rekit::sdl::Theme{}, o);
 
     check(has(log, "start: no copy found on this computer"), "a fresh setup searched this computer first");
-    check(has(log, "screen find: DOWNLOAD THE GAME FILES, PICK MY OWN COPY, QUIT"), "no copy found: the download offered");
+    // No copy found: the originals are fetched at once, the player's own copy offered instead (re-setup-kit 44d99aa).
+    check(has(log, "screen asking: USE MY OWN COPY INSTEAD, CANCEL"), "no copy found: the download started, own copy offered");
     check(has(log, "work: GETTING THE ORIGINAL GAME FILES") && has(log, "original: downloaded Revenge_1990.zip"),
-        "the download pressed and fetched from the catalog's source");
+        "fetched from the catalog's source");
     check(pickers == 0, "no picker opened");
     if (game)
     {
         check(r.exit == rekit::kSetupReady &&
                 setup::check_install(setup::default_install(user.string())).state == rekit::Status::kReady,
             "the download installed, ready");
+        // The install's record of its own files (re-setup-kit, setup_ops.cpp install(): the last stage, "Recording
+        // the files"), which the setup menu's CHECK MY FILES compares the game folder with.
+        const std::string installed = setup::default_install(user.string());
+        check(fs::is_regular_file(fs::path(installed) / "rebuild-files.sha256"), "the install recorded its files");
+        const rekit::FilesCheck files = rekit::check_files(installed, {}, nullptr);
+        check(files.ok() && files.checked > 0,
+            "every recorded file is there as it was (" + std::to_string(files.checked) + " checked)");
     }
     else
     {

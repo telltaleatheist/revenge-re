@@ -3,6 +3,8 @@
   "on": "On",
   "off": "Off",
   "done": "Done",
+  "setup_menu": "Setup menu",
+  "elsewhere": "Open it from the game's Options",
   "switches": {
     "lance_pursuit": {
       "label": "Lance pursuit",

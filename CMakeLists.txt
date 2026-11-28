@@ -1036,7 +1036,7 @@ if(CHR_BUILD_SDL)
     # normal build product now that the preservation inventory is complete.
     # The program, as `chr` in a package (tools/build_package.py). The
     # launcher's asks and the setup come first (src/SDL/setup_host.h).
-    set(CHR_PROGRAM_SOURCES src/SDL/entry.cpp src/SDL/setup_host.cpp src/Setup/BuildTag.cpp)
+    set(CHR_PROGRAM_SOURCES src/SDL/entry.cpp src/SDL/setup_host.cpp src/SDL/kit_menu.cpp src/Setup/BuildTag.cpp)
     add_executable(Revenge ${CHR_PROGRAM_SOURCES})
     target_compile_definitions(Revenge PRIVATE
         CHR_VERSION="${PROJECT_VERSION}")
@@ -1070,7 +1070,7 @@ if(CHR_BUILD_SDL)
         # signed by the kit's test key (no network); its install needs
         # REVENGE_GAME.
         add_executable(test_setup_download tests/setup_download_test.cpp
-            src/SDL/setup_host.cpp src/Setup/BuildTag.cpp)
+            src/SDL/setup_host.cpp src/SDL/kit_menu.cpp src/Setup/BuildTag.cpp)
         target_link_libraries(test_setup_download PRIVATE
             ${CHR_RUNTIME_WITH_BACKEND} chr_setup)
         target_include_directories(test_setup_download PRIVATE
@@ -1279,7 +1279,7 @@ if(CHR_BUILD_SDL)
         set_tests_properties(resources.tracked_file_make PROPERTIES SKIP_RETURN_CODE 77
             PASS_REGULAR_EXPRESSION "fault: can't create ABSENT.DAT|skipped")
 
-        foreach(mode first none own words bad extra parse upgrades upgrades_bad upgrades_test)
+        foreach(mode first none own words bad extra parse upgrades upgrades_bad upgrades_test reset)
             add_test(NAME platform.settings_${mode} COMMAND test_settings ${mode})
             set_tests_properties(platform.settings_${mode} PROPERTIES SKIP_RETURN_CODE 77)
         endforeach()
@@ -1373,4 +1373,13 @@ foreach(chr_test IN LISTS chr_tests)
 	if(NOT chr_test_timeout)
 		set_tests_properties(${chr_test} PROPERTIES TIMEOUT 120)
 	endif()
+endforeach()
+
+# Every test runs in the kit's test mode (RE_KIT_TEST=1: no setup menu keys or
+# hint, the UPGRADES switches the run's own, nothing over the network) and
+# silent (SDL's dummy audio driver: no test sounds through the machine's
+# speakers; an audio check renders to files). Appended, so a test's own
+# environment stays.
+foreach(chr_test IN LISTS chr_tests)
+	set_property(TEST ${chr_test} APPEND PROPERTY ENVIRONMENT "RE_KIT_TEST=1" "SDL_AUDIO_DRIVER=dummy")
 endforeach()

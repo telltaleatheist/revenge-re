@@ -19,6 +19,7 @@
 #include "revenge/heap.h"
 #include "revenge/debug.h"
 #include "revenge/platform_backend.h"
+#include "revenge/upgrades.h"
 #include "Data/CampaignStateData.h"
 #include "Data/MouseCursorData.h"
 #include "Data/RosterData.h"
@@ -349,6 +350,9 @@ void RunTacticalInteractionLoop(void)
     previousInput = 0x0000;
     completionRequested = 0x0000;
     TacticalUpdateDelayTicks = TacticalUpdateDelayReloadTicks;
+    // Ours (include/revenge/upgrades.h): the setup menu's UPGRADES entry can
+    // be picked while this loop runs, and nowhere else.
+    Upgrades_SetPageAvailable(TRUE);
 
     while (completionRequested == 0x0000 &&
         TacticalBattleResult == TACTICAL_BATTLE_RUNNING)
@@ -357,6 +361,18 @@ void RunTacticalInteractionLoop(void)
         savedFrameCountdown = TacticalUpdateDelayTicks;
         if (SoundEffectsEnabled == 0x0000)
             RequestPCSpeakerEffectStop();
+
+        // Ours (include/revenge/upgrades.h): the setup menu's UPGRADES entry
+        // opens the page here, where Escape opens the options menu, with the
+        // map as Escape leaves it; the battle waits while it is up. (Picked
+        // while the overview map is up, it opens once that is closed.)
+        if (TacticalOverviewActive == 0x0000 && Upgrades_TakePageRequest())
+        {
+            TacticalCursorOutlineEnabled = 0x0000;
+            RefreshTacticalDisplay(FALSE);
+            OpenUpgradesPage();
+            TacticalCursorOutlineEnabled = 0x0001;
+        }
 
         if (ServiceMusicAndCheckKeyboardInput() != 0x0000)
         {
@@ -485,6 +501,8 @@ void RunTacticalInteractionLoop(void)
         if (PersistentUnitRoster[0x00].deploymentState == 0x00)
             completionRequested = 0x0001;
     }
+    Upgrades_SetPageAvailable(FALSE);
+    (void) Upgrades_TakePageRequest();
 
     if (PersistentUnitRoster[0x00].deploymentState == 0x00)
         TacticalBattleResult = TACTICAL_BATTLE_ENDED;

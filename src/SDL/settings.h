@@ -19,6 +19,14 @@ int HostSettings_Prepare(void);
  * or without a write folder. */
 void HostSettings_SaveUpgrades(void);
 
+/* The setup menu's RESET SETTINGS (src/SDL/kit_menu.cpp): the file
+ * removed and made again as a first start makes it (from the install's
+ * MEDIA.CFG, else our defaults, every UPGRADES switch off), and taken in.
+ * The switches change at once; the media choices pick the game's drivers
+ * as it starts, so they take effect at the next start. Returns 0 when the
+ * file is there and can't be removed (nothing changed). */
+int HostSettings_Reset(void);
+
 /* The file's name, for messages and tests. */
 #define HOST_SETTINGS_FILE_NAME "settings.txt"
 

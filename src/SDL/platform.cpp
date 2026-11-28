@@ -7,6 +7,7 @@
 #include "Resources/Resources.h"
 #include "revenge/video.h"
 #include "harness.h"
+#include "kit_menu.h"
 
 #include <SDL3/SDL.h>
 #include <ctype.h>
@@ -74,7 +75,8 @@ typedef enum SmokeInputKind
 {
     SmokeKey,
     SmokeMouse,
-    SmokeShot
+    SmokeShot,
+    SmokeMenu
 } SmokeInputKind;
 
 typedef struct SmokeInputEvent
@@ -96,6 +98,8 @@ static uint64_t smokeInputDueTime;
 static uint8_t smokeInputInitialized;
 static uint16_t smokeMouseButtons;
 static char smokeShotPending[SmokeShotNameLength];
+/* The setup menu over the game (kit_menu.h), when the program has one. */
+static const PlatformMenu *setupMenu;
 static uint8_t keyboardHandlerInstalled;
 static uint8_t deliveringHostEvents;
 static uint8_t quitRequested;
@@ -119,6 +123,14 @@ static int ParseSmokeItem(const char *item, SmokeInputEvent *event)
         event->mouseX = (uint16_t) x;
         event->mouseY = (uint16_t) y;
         event->mouseButtons = (uint16_t) buttons;
+        return TRUE;
+    }
+    /* The setup menu opened as the UPGRADES page's Setup menu line opens it
+     * (kit_menu.h): a smoke run's way in, since RE_KIT_TEST takes the kit's
+     * keys away. */
+    if (strcmp(item, "menu") == 0x00)
+    {
+        event->kind = SmokeMenu;
         return TRUE;
     }
     if (strncmp(item, "shot:", 0x05) == 0x00)
@@ -178,7 +190,7 @@ static void InitializeSmokeInput(void)
             ++cursor;
     }
     if (smokeInputEventCount != 0x00)
-        smokeInputDueTime = HostClock_NowMS() +
+        smokeInputDueTime = SDL_GetTicks() +
             smokeInputEvents[0x00].delayMilliseconds;
     RevengeTrace("input: smoke events=%u first-due=%llu\n",
         smokeInputEventCount, (unsigned long long) smokeInputDueTime);
@@ -265,7 +277,7 @@ static void SendDueSmokeInput(void)
 
     InitializeSmokeInput();
     if (smokeInputEventIndex >= smokeInputEventCount ||
-        HostClock_NowMS() < smokeInputDueTime)
+        SDL_GetTicks() < smokeInputDueTime)
         return;
     event = &smokeInputEvents[smokeInputEventIndex];
     RevengeTrace("input: smoke event=%u/%u kind=%d\n",
@@ -282,10 +294,14 @@ static void SendDueSmokeInput(void)
         SDL_strlcpy(smokeShotPending, event->shotName, sizeof(smokeShotPending));
         nextVideoPresentTick = 0x00;
         break;
+    case SmokeMenu:
+        if (setupMenu != NULL)
+            setupMenu->show();
+        break;
     }
     ++smokeInputEventIndex;
     if (smokeInputEventIndex < smokeInputEventCount)
-        smokeInputDueTime = HostClock_NowMS() +
+        smokeInputDueTime = SDL_GetTicks() +
             smokeInputEvents[smokeInputEventIndex].delayMilliseconds;
 }
 
@@ -400,6 +416,13 @@ static void RunClockTimer(ClockTimerId id)
 }
 
 static void DeliverHostEvents(void);
+static void HandleHostEvent(const SDL_Event *event);
+
+
+void Platform_SetMenu(const PlatformMenu *menu)
+{
+    setupMenu = menu;
+}
 
 /* 3390:0024: the game's shutdown (2C7F:02E3) and the C library's exit, as
  * they end the game after its own quit (the title's, the in-game menu's).
@@ -466,6 +489,13 @@ void Platform_RequestHarnessFailure(int failure)
 
 /* A harness script's quit item (harness.h), as the host's quit comes. */
 void Platform_RequestHarnessQuit(void)
+{
+    quitRequested = TRUE;
+}
+
+/* The setup menu's quit (an update put in, or the setup started again), as
+ * the host's quit comes. */
+void Platform_RequestQuit(void)
 {
     quitRequested = TRUE;
 }
@@ -832,12 +862,16 @@ int SDLBackend_Open(void)
     }
     RevengeTrace("video: SDL window ready window=%p renderer=%p\n",
         (void *) window, (void *) renderer);
+    if (setupMenu != NULL)
+        setupMenu->start(window, HandleHostEvent);
     return TRUE;
 }
 
 void SDLBackend_Close(void)
 {
     RevengeTrace("video: closing SDL window=%p\n", (void *) window);
+    if (setupMenu != NULL)
+        setupMenu->stop();
     SDLBackend_CloseAudio();
     SDL_DestroyTexture(textScreen);
     textScreen = 0;
@@ -1102,6 +1136,8 @@ int SDLBackend_PresentIndexedFramebuffer(void)
     {
         if (!RenderTextScreen())
             return FALSE;
+        if (setupMenu != NULL)
+            setupMenu->drawOver(renderer);
         SaveSmokeShot();
         return SDL_RenderPresent(renderer);
     }
@@ -1121,6 +1157,8 @@ int SDLBackend_PresentIndexedFramebuffer(void)
             VIDEO_SCREEN_WIDTH * sizeof(uint32_t)) ||
         !SDL_RenderClear(renderer) || !SDL_RenderTexture(renderer, texture, 0, 0))
         return FALSE;
+    if (setupMenu != NULL)
+        setupMenu->drawOver(renderer);
     SaveSmokeShot();
     return SDL_RenderPresent(renderer);
 }
@@ -1201,6 +1239,75 @@ static uint16_t MouseButtonBit(Uint8 button)
     }
 }
 
+/* One host event, as the keyboard's or mouse's interrupt would have come:
+ * from the event pass, or from the setup menu (kit_menu.h) for those that
+ * are the game's. */
+static void HandleHostEvent(const SDL_Event *event)
+{
+    switch (event->type)
+    {
+    case SDL_EVENT_QUIT:
+        quitRequested = TRUE;
+        break;
+    case SDL_EVENT_KEY_DOWN:
+        /* SDL's repeats are the keyboard's typematic make codes. */
+        SendKeyEvent(event->key.scancode, TRUE);
+        break;
+    case SDL_EVENT_KEY_UP:
+        SendKeyEvent(event->key.scancode, FALSE);
+        break;
+    case SDL_EVENT_WINDOW_MOUSE_LEAVE:
+        pointerOutside = TRUE;
+        break;
+    case SDL_EVENT_WINDOW_MOUSE_ENTER:
+        pointerOutside = FALSE;
+        break;
+    case SDL_EVENT_MOUSE_MOTION:
+        SendMouseEvent(event->motion.x, event->motion.y, TRUE);
+        break;
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+        hostMouseButtons |= MouseButtonBit(event->button.button);
+        SendMouseEvent(event->button.x, event->button.y, FALSE);
+        break;
+    case SDL_EVENT_MOUSE_BUTTON_UP:
+        hostMouseButtons &= (uint16_t) ~MouseButtonBit(event->button.button);
+        SendMouseEvent(event->button.x, event->button.y, FALSE);
+        break;
+    default:
+        break;
+    }
+}
+
+/* The setup menu over the game, after a pass of events: its picture shown
+ * when it changed, and while it is open the game waits here, its clock
+ * paused (kit_menu.h), taking only the menu's events and the window's,
+ * until it is closed or the game is asked to quit. */
+static void ServiceSetupMenu(void)
+{
+    SDL_Event event;
+
+    if (setupMenu == NULL)
+        return;
+    if (setupMenu->frame(FALSE))
+        (void) SDLBackend_PresentIndexedFramebuffer();
+    while (setupMenu->isOpen() && quitRequested == FALSE)
+    {
+        if (SDL_WaitEventTimeout(&event, 16))
+        {
+            do
+            {
+                if (setupMenu == NULL || !setupMenu->event(&event))
+                    HandleHostEvent(&event);
+            } while (quitRequested == FALSE && SDL_PollEvent(&event));
+        }
+        SendDueSmokeInput();
+        if (setupMenu->frame(TRUE) || smokeShotPending[0x00] != '\0')
+            (void) SDLBackend_PresentIndexedFramebuffer();
+    }
+    if (quitRequested != FALSE)
+        setupMenu->hide();
+}
+
 static void DeliverHostEvents(void)
 {
     SDL_Event event;
@@ -1210,39 +1317,10 @@ static void DeliverHostEvents(void)
     deliveringHostEvents = TRUE;
     while (SDL_PollEvent(&event))
     {
-        switch (event.type)
-        {
-        case SDL_EVENT_QUIT:
-            quitRequested = TRUE;
-            break;
-        case SDL_EVENT_KEY_DOWN:
-            /* SDL's repeats are the keyboard's typematic make codes. */
-            SendKeyEvent(event.key.scancode, TRUE);
-            break;
-        case SDL_EVENT_KEY_UP:
-            SendKeyEvent(event.key.scancode, FALSE);
-            break;
-        case SDL_EVENT_WINDOW_MOUSE_LEAVE:
-            pointerOutside = TRUE;
-            break;
-        case SDL_EVENT_WINDOW_MOUSE_ENTER:
-            pointerOutside = FALSE;
-            break;
-        case SDL_EVENT_MOUSE_MOTION:
-            SendMouseEvent(event.motion.x, event.motion.y, TRUE);
-            break;
-        case SDL_EVENT_MOUSE_BUTTON_DOWN:
-            hostMouseButtons |= MouseButtonBit(event.button.button);
-            SendMouseEvent(event.button.x, event.button.y, FALSE);
-            break;
-        case SDL_EVENT_MOUSE_BUTTON_UP:
-            hostMouseButtons &= (uint16_t) ~MouseButtonBit(event.button.button);
-            SendMouseEvent(event.button.x, event.button.y, FALSE);
-            break;
-        default:
-            break;
-        }
+        if (setupMenu == NULL || !setupMenu->event(&event))
+            HandleHostEvent(&event);
     }
+    ServiceSetupMenu();
     deliveringHostEvents = FALSE;
 }
 

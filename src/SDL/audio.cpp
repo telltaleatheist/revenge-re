@@ -111,6 +111,18 @@ void SDLBackend_CloseAudio(void)
     AudioMix_Reset();
 }
 
+void SDLBackend_PauseAudio(void)
+{
+    if (audioStream != NULL)
+        (void) SDL_PauseAudioStreamDevice(audioStream);
+}
+
+void SDLBackend_ResumeAudio(void)
+{
+    if (audioStream != NULL)
+        (void) SDL_ResumeAudioStreamDevice(audioStream);
+}
+
 void SDLBackend_AdvanceAudio(void)
 {
     AudioMix_Advance(HostClock_NowMS() * UINT64_C(1000000), PutFrames);

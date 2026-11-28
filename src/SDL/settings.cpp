@@ -472,11 +472,34 @@ void HostSettings_SaveUpgrades(void)
         WriteOurFile(settingsPath, &choices, fileUpgrades);
 }
 
+/* The settings a first start makes: the install's MEDIA.CFG (the DOS
+ * installer's choices), else our defaults, every UPGRADES switch off;
+ * written to `path` when there is one, and taken in. */
+static void MakeFreshSettings(const char *path)
+{
+    char install[SETTINGS_PATH_CAPACITY];
+    char *text;
+    int option;
+
+    choices = DefaultChoices;
+    for (option = 0; option < UPGRADE_COUNT; ++option)
+        fileUpgrades[option] = 0;
+    if (GamePaths_Resolve("MEDIA.CFG", GAME_PATH_READ, install, sizeof(install)) == 0 &&
+        (text = LoadText(install)) != NULL)
+    {
+        ReadMediaConfiguration(text, &choices);
+        SDL_free(text);
+    }
+    if (path[0] != '\0')
+        WriteOurFile(path, &choices, fileUpgrades);
+    prepared = 1;
+    ApplyUpgrades();
+}
+
 int HostSettings_Prepare(void)
 {
     const char *folder = GamePaths_WriteDirectory();
     char *path = settingsPath;
-    char install[SETTINGS_PATH_CAPACITY];
     char *text;
     int option;
 
@@ -504,18 +527,14 @@ int HostSettings_Prepare(void)
         }
     }
 
-    choices = DefaultChoices;
-    for (option = 0; option < UPGRADE_COUNT; ++option)
-        fileUpgrades[option] = 0;
-    if (GamePaths_Resolve("MEDIA.CFG", GAME_PATH_READ, install, sizeof(install)) == 0 &&
-        (text = LoadText(install)) != NULL)
-    {
-        ReadMediaConfiguration(text, &choices);
-        SDL_free(text);
-    }
-    if (path[0] != '\0')
-        WriteOurFile(path, &choices, fileUpgrades);
-    prepared = 1;
-    ApplyUpgrades();
+    MakeFreshSettings(path);
+    return 1;
+}
+
+int HostSettings_Reset(void)
+{
+    if (settingsPath[0] != '\0' && !SDL_RemovePath(settingsPath) && SDL_GetPathInfo(settingsPath, NULL))
+        return 0;
+    MakeFreshSettings(settingsPath);
     return 1;
 }

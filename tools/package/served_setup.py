@@ -21,7 +21,7 @@ def asking_env(env, user):
     out = {k: v for k, v in env.items() if not k.startswith(HOOKS) and k != "REVENGE_ASSET_DIRECTORY"}
     home = str(Path(user).parent / "home")
     out.update(REVENGE_SAVE_DIRECTORY=str(user), SDL_VIDEO_DRIVER="dummy", SDL_AUDIO_DRIVER="dummy",
-               SDL_MAC_BACKGROUND_APP="1", HOME=home, APPDATA=home, XDG_DATA_HOME=os.path.join(home, "share"))
+               SDL_MAC_BACKGROUND_APP="1", RE_KIT_TEST="1", HOME=home, APPDATA=home, XDG_DATA_HOME=os.path.join(home, "share"))
     return out
 
 

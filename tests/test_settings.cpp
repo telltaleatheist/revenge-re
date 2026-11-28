@@ -262,6 +262,28 @@ int main(int argc, char **argv)
         assert(HostSettings_Prepare());
         assert(!Upgrades_IsOn(UPGRADE_LANCE_PURSUIT));
     }
+    else if (strcmp(mode, "reset") == 0)
+    {
+        /* The setup menu's RESET SETTINGS (HostSettings_Reset): the file as a
+         * first start writes it, whatever the player had chosen. */
+        const RevengeMediaChoices *choices;
+        char *fresh;
+        char *written;
+
+        assert(HostSettings_Prepare());
+        fresh = (char *) SDL_LoadFile(settingsPath, NULL);
+        assert(fresh != NULL);
+        WriteText(settingsPath, "video = vga\nmusic = off\nsound = speaker\ninput = keys\nupgrade_lance_pursuit = on\n");
+        assert(HostSettings_Prepare());
+        assert(HostSettings_MediaChoices()->music == MEDIA_MUSIC_OFF);
+        assert(HostSettings_Reset());
+        written = (char *) SDL_LoadFile(settingsPath, NULL);
+        assert(written != NULL && strcmp(written, fresh) == 0);
+        choices = HostSettings_MediaChoices();
+        assert(choices->music == MEDIA_MUSIC_SOUNDFONT && choices->sound == MEDIA_SOUND_SAMPLES);
+        SDL_free(written);
+        SDL_free(fresh);
+    }
     else if (strcmp(mode, "upgrades_bad") == 0)
     {
         WriteText(settingsPath, "video = vga\nmusic = off\nsound = speaker\ninput = keys\nupgrade_lance_pursuit = yes\n");

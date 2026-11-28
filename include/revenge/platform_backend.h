@@ -56,6 +56,10 @@ void SDLBackend_SetMouseEventHandler(uint16_t eventMask);
 
 int SDLBackend_OpenAudio(void);
 void SDLBackend_CloseAudio(void);
+/* The device held while the setup menu is open (src/SDL/kit_menu.cpp), and
+ * let go after; the sound due is rendered from the paused clock as before. */
+void SDLBackend_PauseAudio(void);
+void SDLBackend_ResumeAudio(void);
 /* Renders the sound due by the host clock (src/Audio) into the stream. */
 void SDLBackend_AdvanceAudio(void);
 uint8_t SDLBackend_EnablePCSpeaker(void);

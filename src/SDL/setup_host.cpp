@@ -4,6 +4,8 @@
 #include "Setup/Setup.h"
 
 #include "game_paths.h"
+#include "kit_menu.h"
+#include "kit_menu.h"
 
 #include <rekit/program_record.h>
 #include <rekit/sdl/pickers.h>
@@ -24,6 +26,14 @@
 #include <iterator>
 #include <string>
 #include <vector>
+
+#if defined(_WIN32)
+#include <io.h>
+#define REVENGE_STDERR_IS_TERMINAL() (_isatty(_fileno(stderr)) != 0)
+#else
+#include <unistd.h>
+#define REVENGE_STDERR_IS_TERMINAL() (isatty(fileno(stderr)) != 0)
+#endif
 
 #ifndef CHR_VERSION
 #define CHR_VERSION "development"
@@ -252,6 +262,10 @@ rekit::sdl::Game kit_game(const std::string &user, const std::string &in_use, bo
         return setup::find_other_install({ in_use, own }, user, pdir);
     };
     g.describe = describe;
+    // A copy found on this computer is shown before it is used when its files are missing, damaged or not the
+    // editions this program knows, or its REVENGE.EXE is not one it knows.
+    g.asks_first = [](const rekit::Found &f)
+    { return f.version.empty() || !setup::check_found(f).all_known(); };
     g.recognise = setup::recognise;
     g.install = [](const rekit::Found &f, const std::string &out, const std::string &, const rekit::sdl::ProgressFn &progress)
     {
@@ -473,6 +487,27 @@ int resolve_game(bool setup_only, std::string *folder)
     return rekit::kSetupReady;
 }
 
+std::string play_log;
+
+// A start that plays with a player and no terminal on stderr (a package's, the launcher's): stderr into revenge.log
+// in the player's folder, the last start's moved to revenge.old.log first, so two starts are kept at most.
+void open_play_log()
+{
+    if (unattended() || REVENGE_STDERR_IS_TERMINAL()) return;
+    const std::string user = setup::user_folder();
+    if (user.empty()) return;
+    std::error_code ec;
+    const std::filesystem::path log = std::filesystem::path(user) / "revenge.log";
+    std::filesystem::create_directories(user, ec);
+    if (std::filesystem::exists(log, ec)) std::filesystem::rename(log, std::filesystem::path(user) / "revenge.old.log", ec);
+    std::FILE *can = std::fopen(log.string().c_str(), "w");  // freopen closes a stream it can't open: see first that it can
+    if (!can) return;
+    std::fclose(can);
+    if (!std::freopen(log.string().c_str(), "w", stderr)) return;
+    std::setvbuf(stderr, nullptr, _IONBF, 0);
+    play_log = log.string();
+}
+
 // A released build's start with a player at it says where this program is, for the BattleTech launcher.
 void record_program()
 {
@@ -497,6 +532,16 @@ rekit::sdl::Game SetupHost_KitGame(const std::string &user)
     return kit_game(user, "", false);
 }
 
+rekit::sdl::Theme SetupHost_Theme()
+{
+    return theme();
+}
+
+std::string SetupHost_LogFile()
+{
+    return play_log;
+}
+
 int SetupHost_Start(int argc, char **argv)
 try
 {
@@ -519,6 +564,8 @@ try
     apply_play(play);
     if (!setup_only && folder_configured())
     {
+        open_play_log();
+        Platform_SetMenu(KitMenu_Platform());
         record_program();
         watch_for_play();
         return -1;
@@ -528,6 +575,8 @@ try
     if (setup_only) return ready;
     if (ready != rekit::kSetupReady) return ready == rekit::kSetupCancelled ? 0 : 1;  // the player's own cancel ends quietly
     SDL_setenv_unsafe("REVENGE_ASSET_DIRECTORY", folder.c_str(), 1);
+    open_play_log();
+    Platform_SetMenu(KitMenu_Platform());
     record_program();
     watch_for_play();
     return -1;

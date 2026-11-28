@@ -288,9 +288,33 @@ int Harness_Active(void)
     return state == 1;
 }
 
+/* SDL's milliseconds spent paused (the setup menu over the game), and SDL's
+ * time at the pause still running; the game's clock leaves them out. */
+static uint64_t pausedMS;
+static uint64_t pausedAtMS;
+static int paused;
+
 uint64_t HostClock_NowMS(void)
 {
-    return Harness_Active() ? clockMS : SDL_GetTicks();
+    if (Harness_Active())
+        return clockMS;
+    return (paused ? pausedAtMS : SDL_GetTicks()) - pausedMS;
+}
+
+void HostClock_Pause(void)
+{
+    if (Harness_Active() || paused)
+        return;
+    pausedAtMS = SDL_GetTicks();
+    paused = 1;
+}
+
+void HostClock_Resume(void)
+{
+    if (!paused)
+        return;
+    pausedMS += SDL_GetTicks() - pausedAtMS;
+    paused = 0;
 }
 
 void HostClock_DelayMS(uint64_t milliseconds)

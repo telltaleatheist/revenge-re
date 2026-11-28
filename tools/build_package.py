@@ -67,6 +67,10 @@ copied game live in your own folder:
   macOS:   ~/Library/Application Support/BattleTech/Revenge Rebuild
   Linux:   ~/.local/share/BattleTech/Revenge Rebuild
 
+While playing, Shift+Alt+F1 (Cmd+Shift+F1 on a Mac) opens the setup menu: your game files,
+updates, reporting a problem (revenge.log, in your folder, is the log to send), checking
+the files, and resetting the settings. The game waits while it is open.
+
 From a command line: chr --setup sets the game up again; chr --help lists the rest.
 {first_open}
 The Crescent Hawks' Revenge (1990) was developed by Westwood Associates and published by
@@ -240,7 +244,7 @@ def stage_data(root, build, resources, notices):
 
 # What every package holds the licence or notice of, in its licenses/ folder.
 NOTICES = ("NOTICE.md", "THIRD_PARTY_NOTICES.md", "SDL-LICENSE.txt", "hidapi-LICENSE-bsd.txt", "re-setup-kit-LICENSE",
-           "stb-LICENSE", "miniz-LICENSE", "monocypher-LICENCE.md", "TinySoundFont-LICENSE")
+           "re-setup-kit-OFL.txt", "stb-LICENSE", "miniz-LICENSE", "monocypher-LICENCE.md", "TinySoundFont-LICENSE")
 
 
 def check_notices(licenses):
@@ -264,10 +268,12 @@ def stage_common(root, build, resources, first_open=""):
         shutil.copy2(source, notices / source.name)
     archive_licences(build, notices)
     # SDL, linked in, and hidapi, which SDL compiles in under its BSD-style licence; the setup kit and its own
-    # third-party code (re-setup-kit THIRD-PARTY.md); the music's synthesiser. A package without them is refused.
+    # third-party code (re-setup-kit THIRD-PARTY.md), with the SIL Open Font License of the Saira Condensed fonts its
+    # screens draw with (the kit's REKIT_NOTICE_FILES); the music's synthesiser. A package without them is refused.
     kit = root / "extern/re-setup-kit"
     for name, source in [("SDL-LICENSE.txt", sdl / "LICENSE.txt"), ("hidapi-LICENSE-bsd.txt", sdl / "src/hidapi/LICENSE-bsd.txt"),
-                         ("re-setup-kit-LICENSE", kit / "LICENSE"), ("stb-LICENSE", kit / "third_party/stb/LICENSE"),
+                         ("re-setup-kit-LICENSE", kit / "LICENSE"), ("re-setup-kit-OFL.txt", kit / "assets/OFL.txt"),
+                         ("stb-LICENSE", kit / "third_party/stb/LICENSE"),
                          ("miniz-LICENSE", kit / "third_party/miniz/LICENSE"),
                          ("monocypher-LICENCE.md", kit / "third_party/monocypher/LICENCE.md"),
                          ("TinySoundFont-LICENSE", root / "extern/TinySoundFont/LICENSE")]:
@@ -275,6 +281,35 @@ def stage_common(root, build, resources, first_open=""):
             raise RuntimeError(f"Missing licence: {source}")
         shutil.copy2(source, notices / name)
     (resources / "README.txt").write_text(README.format(first_open=first_open), encoding="utf-8")
+
+
+# CHECK MY FILES' record of the program (re-setup-kit include/rekit/manifest.h): sha256sum's format, at the top of
+# the folder it covers. The program reads it from MenuHooks::program_dir (src/SDL/kit_menu.cpp): the program's own
+# folder; a Mac app's Contents/Resources, as codesign refuses a plain file at the top of Contents and the signature
+# seals Info.plist and the Mach-Os anyway; an AppImage's AppDir.
+RECORD = "rebuild-files.sha256"
+
+
+def write_record(root, folder):
+    """The record of `folder`, by the kit's tools/files_manifest.py: on the finished folder, before anything seals it
+    (the zip, the Setup, the tarball, the AppImage, codesign)."""
+    run(sys.executable, "-I", root / "extern/re-setup-kit/tools/files_manifest.py", folder)
+
+
+def check_record(folder):
+    """`folder`'s record, as the package holds it: every file named, each as it is now, and no other."""
+    named = {}
+    for line in (folder / RECORD).read_text(encoding="utf-8").splitlines():
+        digest, name = line.split("  ", 1)
+        named[name] = digest
+    present = {p.relative_to(folder).as_posix() for p in folder.rglob("*")
+               if p.is_file() and not p.is_symlink() and p.name != RECORD}
+    if set(named) != present:
+        raise RuntimeError(f"{folder / RECORD}: names {sorted(set(named) - present)[:5]} not there, "
+                           f"leaves out {sorted(present - set(named))[:5]}")
+    changed = [n for n, d in named.items() if hashlib.sha256((folder / n).read_bytes()).hexdigest() != d]
+    if changed:
+        raise RuntimeError(f"{folder / RECORD}: changed since it was made: {changed[:5]}")
 
 
 def check_paths(root, folder, *extra):
@@ -304,7 +339,7 @@ def quiet_env(saves):
     keep = {k: v for k, v in os.environ.items()
             if not k.startswith(("REVENGE_", "REKIT_SETUP_", "SDL_VIDEO", "SDL_AUDIO"))}
     return dict(keep, SDL_VIDEO_DRIVER="dummy", SDL_AUDIO_DRIVER="dummy", SDL_MAC_BACKGROUND_APP="1",
-                REVENGE_SAVE_DIRECTORY=str(saves))
+                RE_KIT_TEST="1", REVENGE_SAVE_DIRECTORY=str(saves))
 
 
 def check_usage(executable):
@@ -520,6 +555,7 @@ def package_windows(root, build, output, label, game, installer):
     check_windows_imports(stage, lambda file: dumpbin_imports(dumpbins[-1], file))
     stage_common(root, build, stage)
     check_paths(root, stage, root, build)
+    write_record(root, stage)
     archive = output / (name + ".zip")
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as target:
         for file in sorted(stage.rglob("*")):
@@ -532,6 +568,7 @@ def package_windows(root, build, output, label, game, installer):
     with zipfile.ZipFile(archive) as source:
         source.extractall(extracted)
     check_notices(extracted / name / "licenses")
+    check_record(extracted / name)
     smoke(extracted / name / (PROGRAM + ".exe"), game)
     write_digest(archive)
     print(f"Packaged and smoke-tested {archive}")
@@ -614,6 +651,7 @@ def package_linux(root, build, output, label, game, tools):
     check_linux_libraries(stage / PROGRAM)
     stage_common(root, build, stage)
     check_paths(root, stage, root, build)
+    write_record(root, stage)
     archive = output / f"{name}.tar.gz"
     make_tarball(stage, archive)
     # The archive's own layout is what is checked, not the build's.
@@ -624,6 +662,7 @@ def package_linux(root, build, output, label, game, tools):
     unpack_tarball(archive, extracted)
     check_stamp(extracted / name / PROGRAM, label)
     check_notices(extracted / name / "licenses")
+    check_record(extracted / name)
     smoke(extracted / name / PROGRAM, game)
     write_digest(archive)
     print(f"Packaged and smoke-tested {archive}")
@@ -646,6 +685,7 @@ def package_linux(root, build, output, label, game, tools):
         "-d", root / "tools/package/chr.desktop", "-i", root / "tools/package/revenge.png", env=env)
     check_paths(root, appdir, root, build)
     check_notices(doc / "licenses")
+    write_record(root, appdir)
     image = output / f"{STEM}-{label}-x86_64.AppImage"
     run(tools / "appimagetool-x86_64.AppImage", "--runtime-file", tools / "runtime-x86_64", appdir, image, env=env)
     result = subprocess.run([str(image.resolve()), "--help"], capture_output=True, text=True, timeout=60, env=env)
@@ -660,6 +700,7 @@ def package_linux(root, build, output, label, game, tools):
     program = unpacked / "squashfs-root/usr/bin" / PROGRAM
     check_stamp(program, label)
     check_notices(unpacked / f"squashfs-root/usr/share/doc/{PROGRAM}/licenses")
+    check_record(unpacked / "squashfs-root")
     smoke(program, game)
     write_digest(image)
     print(f"AppImage {image}")
@@ -717,7 +758,9 @@ def package_mac(root, build, output, label, game):
                                                       check=True).stdout)
     with open(app / "Contents/Info.plist", "wb") as f:
         plistlib.dump(mac_plist(root, minos.group(1) if minos else "12.0"), f)
+    write_record(root, resources)  # before codesign, which seals it
     sign_app(root, app)  # before the smoke test, so a release's hardened runtime is what is started
+    check_record(resources)
     smoke(exe, game)
 
     dmg = output / f"{STEM}-{label}-mac.dmg"
@@ -733,6 +776,7 @@ def package_mac(root, build, output, label, game):
     shutil.copy2(resources / "README.txt", dmg_stage / "Read me.txt")
     check_paths(root, dmg_stage, root, build)
     check_notices(dmg_stage / app.name / "Contents/Resources/licenses")
+    check_record(dmg_stage / app.name / "Contents/Resources")
     # Made from the folder, never mounted on the screen.
     run("hdiutil", "create", "-volname", APP_NAME, "-srcfolder", dmg_stage, "-ov", "-format", "UDZO", dmg,
         stdout=subprocess.DEVNULL)

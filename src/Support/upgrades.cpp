@@ -17,6 +17,9 @@ static int upgradeOn[UPGRADE_COUNT];
 static int testMode;
 static int lineShown = 1;
 static void (*settingsSaver)(void);
+static void (*setupMenuOpener)(void);
+static int pageRequested;
+static int pageAvailable;
 static std::string texts[UPGRADES_TEXT_COUNT];
 static std::string labels[UPGRADE_COUNT];
 static std::string helps[UPGRADE_COUNT];
@@ -88,6 +91,45 @@ void Upgrades_Save(void)
         settingsSaver();
 }
 
+void Upgrades_SetSetupMenu(void (*open)(void))
+{
+    setupMenuOpener = open;
+}
+
+int Upgrades_SetupMenuShown(void)
+{
+    return setupMenuOpener != NULL;
+}
+
+void Upgrades_OpenSetupMenu(void)
+{
+    if (setupMenuOpener != NULL)
+        setupMenuOpener();
+}
+
+void Upgrades_SetPageAvailable(int available)
+{
+    pageAvailable = available != 0;
+}
+
+int Upgrades_PageAvailable(void)
+{
+    return pageAvailable;
+}
+
+void Upgrades_RequestPage(void)
+{
+    pageRequested = pageAvailable;
+}
+
+int Upgrades_TakePageRequest(void)
+{
+    const int requested = pageRequested;
+
+    pageRequested = 0;
+    return requested;
+}
+
 /* A member that must be a string of printable ASCII, as the game's font
  * draws it; where names it for the fault. */
 static std::string TakeWords(const revenge::support::Json &object, const char *key, const std::string &where)
@@ -104,7 +146,7 @@ static std::string TakeWords(const revenge::support::Json &object, const char *k
 
 void Upgrades_LoadText(const char *dataDirectory)
 {
-    static const char *const TextKeys[UPGRADES_TEXT_COUNT] = { "options_line", "on", "off", "done" };
+    static const char *const TextKeys[UPGRADES_TEXT_COUNT] = { "options_line", "on", "off", "done", "setup_menu", "elsewhere" };
     const std::filesystem::path path = std::filesystem::path(dataDirectory) / "ui" / "upgrades.json";
 
     try

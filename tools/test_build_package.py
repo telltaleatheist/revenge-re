@@ -302,5 +302,44 @@ class BackgroundApp(unittest.TestCase):
             self.assertEqual(self.files(app), before)
 
 
+
+class ProgramRecord(unittest.TestCase):
+    """CHECK MY FILES' record (rebuild-files.sha256), written by the kit's files_manifest.py before a package is sealed
+    and checked in what the package holds."""
+
+    def test_the_record_names_every_file_and_finds_a_change(self):
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            for name in ("chr", "data/rules/x.json", "licenses/LICENSE"):
+                (folder / name).parent.mkdir(parents=True, exist_ok=True)
+                (folder / name).write_bytes(name.encode())
+            build_package.write_record(ROOT, folder)
+            self.assertEqual(len((folder / build_package.RECORD).read_text().splitlines()), 3)
+            build_package.check_record(folder)
+            (folder / "data/rules/x.json").write_bytes(b"{}")
+            with self.assertRaisesRegex(RuntimeError, "changed since it was made"):
+                build_package.check_record(folder)
+            build_package.write_record(ROOT, folder)
+            (folder / "extra.txt").write_bytes(b"")
+            with self.assertRaisesRegex(RuntimeError, "leaves out"):
+                build_package.check_record(folder)
+
+    @unittest.skipIf(sys.platform != "darwin", "A Mac's apps and signatures")
+    def test_a_mac_apps_record_is_in_resources_and_keeps_the_signature(self):
+        with tempfile.TemporaryDirectory() as directory:
+            app = Path(directory) / "A game.app"
+            for name in ("MacOS/chr", "Resources/data/rules/x.json"):
+                (app / "Contents" / name).parent.mkdir(parents=True, exist_ok=True)
+                (app / "Contents" / name).write_bytes(b"#!/bin/sh\nexit 0\n" if name == "MacOS/chr" else b"{}")
+            (app / "Contents/MacOS/chr").chmod(0o755)
+            (app / "Contents/Info.plist").write_bytes(plistlib.dumps(build_package.mac_plist(ROOT, "12.0")))
+            resources = app / "Contents/Resources"
+            build_package.write_record(ROOT, resources)
+            subprocess.run(["codesign", "--force", "--sign", "-", str(app)], check=True, capture_output=True)
+            subprocess.run(["codesign", "--verify", "--deep", "--strict", str(app)], check=True, capture_output=True)
+            build_package.check_record(resources)
+            self.assertEqual((resources / build_package.RECORD).read_text().split(), [
+                __import__("hashlib").sha256(b"{}").hexdigest(), "data/rules/x.json"])
+
 if __name__ == "__main__":
     unittest.main()
