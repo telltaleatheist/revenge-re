@@ -147,6 +147,15 @@ if(BUILD_TESTING)
 		add_test(NAME preservation.header_rules
 			COMMAND ${Python3_EXECUTABLE} -I
 				${CMAKE_CURRENT_SOURCE_DIR}/tests/check_headers_test.py)
+		# Each UPGRADES switch has its gate, its ORIGINAL_BUGS.md row, its
+		# words and its trace, and each names a switch (tools/check_upgrades.py).
+		add_test(NAME preservation.upgrade_gates
+			COMMAND ${Python3_EXECUTABLE} -I
+				${CMAKE_CURRENT_SOURCE_DIR}/tools/check_upgrades.py
+				--root ${CMAKE_CURRENT_SOURCE_DIR})
+		add_test(NAME preservation.upgrade_gates_rules
+			COMMAND ${Python3_EXECUTABLE} -I
+				${CMAKE_CURRENT_SOURCE_DIR}/tests/check_upgrades_test.py)
 		# The packaging's own parts (tools/build_package.py), without a build.
 		add_test(NAME package.build_package
 			COMMAND ${Python3_EXECUTABLE} -I -m unittest discover

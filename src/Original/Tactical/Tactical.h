@@ -29,6 +29,8 @@ int16_t RunOptionsMenuSelection(int16_t firstRegionIndex);
 void RunTacticalUnitCommandMenu(uint16_t unitIndex);
 void SelectStrafingArea(void);
 void RunTacticalGameOptionsMenu(void);
+/* Ours (include/revenge/upgrades.h): the UPGRADES page (TacticalControl.cpp). */
+void OpenUpgradesPage(void);
 void RunTacticalInteractionLoop(void);
 void CalculateUnitDurabilityTotals(RevengeUnitRecord *unitRecord);
 void FormatUnitDurabilityPercentage(int16_t unitIndex);

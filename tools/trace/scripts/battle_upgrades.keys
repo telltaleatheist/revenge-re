@@ -1,0 +1,16 @@
+# The first battle's options menu with the UPGRADES line shown (players see
+# it; every other run hides it): the line under the original's seven, the
+# page over the battle, a switch turned on, Done, the menu back, and the
+# battle going on. In test mode nothing is saved.
+# upgrades-line: shown
+idle:1000 Return idle:50 Return idle:6000 Return idle:6000
+Return idle:300 Right Return idle:300 Right Return idle:300 Right Return idle:300
+Return idle:9000 Return idle:6000                   # leave the editor; the story
+Return idle:6000 Return idle:6000 Return idle:6000  # its screens, one key each
+Return idle:6000 Return idle:6000 Return            # the battle begins
+steps:5 Escape idle:200 @snap:options                # the battle's options menu
+Down Down Down Down Down Down Down idle:100 @snap:line
+Return idle:300 @snap:page
+Return idle:300 @snap:switched
+Down Return idle:300 @snap:back
+Escape idle:300 steps:5 @snap:battle

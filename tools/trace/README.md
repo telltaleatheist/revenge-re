@@ -75,6 +75,8 @@ stopped. (Every item also waits 4 polls, well inside one step.)
 | `battle_steps` | the first battle at steps 1, 2, 4, 8, 12, 16 and 20 |
 | `quit_scenario` | the first battle quit from its options menu, the in-game menu, the battle replayed |
 | `options` | the main menu's game options: the menu, an item toggled, back |
+| `options_upgrades` | the main menu's game options with the UPGRADES line shown (its `# upgrades-line: shown` line): the line, the page it opens, a switch turned on, Done, the menu back, Escape |
+| `battle_upgrades` | the first battle's options menu with the UPGRADES line shown: the line under the original's seven, the page over the battle, a switch turned on, Done, the menu back, the battle going on |
 | `load_empty` | Load Game with no game saved: the slots, the empty slot's notice, back |
 | `first_win` | the first battle won: the leader moved across the enemy's road, the menu after the stage |
 | `second_battle` | on to the second battle: the options menu, a move order, steps 8 and 16, its messages to the end |
@@ -181,7 +183,11 @@ line `# upgrades: KEY ...` turns those on for its run, and its golden is the
 switch's own trace (`stage_07_pursuit`). `REVENGE_TRACE_UPGRADES=KEY` stands
 for every script's line, to see which traces a switch moves: with
 `lance_pursuit`, the campaign set moves in `stage_07` alone, from its quiet
-on.
+on, and the goldens not at all. The game options menu's UPGRADES line is
+hidden too, so every other trace sees the original's menu; a script with a
+line `# upgrades-line: shown` shows it (`options_upgrades`,
+`battle_upgrades`). Switches a run turns on, there or on the page, are never
+saved to the settings file.
 
 A script with a line `# set: campaign` is one of the long runs through the
 campaign. `trace.goldens` (`check.py --set goldens`) leaves those out, as do

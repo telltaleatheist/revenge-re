@@ -20,6 +20,8 @@ A script with a line `# upgrades: KEY ...` runs with those UPGRADES switches
 on (include/revenge/upgrades.h); every other run has them all off, whatever
 a settings file says. REVENGE_TRACE_UPGRADES, when set, stands for every
 script's line: to see which traces a switch moves, run check.py with it.
+The game options menu's UPGRADES line is hidden too, but in a script with a
+line `# upgrades-line: shown`.
 """
 import argparse
 import hashlib
@@ -41,6 +43,7 @@ TRACE_SETTINGS = "video = vga\nmusic = speaker\nsound = speaker\ninput = keys\n"
 START_SAVE = re.compile(r"^#\s*start-save:\s*(\w+)\s*$", re.M)
 SET = re.compile(r"^#\s*set:\s*(\w+)\s*$", re.M)
 UPGRADES = re.compile(r"^#\s*upgrades:\s*([\w ,]+?)\s*$", re.M)
+UPGRADES_LINE = re.compile(r"^#\s*upgrades-line:\s*shown\s*$", re.M)
 GOLDENS = "goldens"
 
 
@@ -60,6 +63,13 @@ def upgrades(script):
     with open(script, encoding="utf-8") as f:
         found = UPGRADES.search(f.read())
     return " ".join(found.group(1).replace(",", " ").split()) if found else ""
+
+
+def upgrades_line(script):
+    """1 if the script shows the game options menu's UPGRADES line (its
+    `# upgrades-line: shown` line), which every other run hides."""
+    with open(script, encoding="utf-8") as f:
+        return "1" if UPGRADES_LINE.search(f.read()) else ""
 
 
 def script_set(script):
@@ -122,6 +132,7 @@ def run(exe, game, script, work, story=None, settings=None, env_extra=None):
         "REVENGE_HARNESS_SCRIPT": os.path.abspath(script),
         "REVENGE_HARNESS_OUT": os.path.abspath(work),
         "REVENGE_TEST_UPGRADES": os.environ.get("REVENGE_TRACE_UPGRADES", upgrades(script)),
+        "REVENGE_TEST_UPGRADES_LINE": upgrades_line(script),
     })
     env.pop("REVENGE_SMOKE_INPUT", None)
     env.pop("REVENGE_AUDIO_LOG", None)

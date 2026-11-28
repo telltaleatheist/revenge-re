@@ -3,6 +3,8 @@
 // Procedures preserved from REVENGE_1A1F_SCENARIO.c.
 
 #include "BattleInternal.h"
+#include <stdio.h>
+#include <string.h>
 #include "Audio/Audio.h"
 #include "Data/AudioData.h"
 #include "Data/RuntimeData.h"
@@ -15,6 +17,7 @@
 #include "Utility/Utility.h"
 #include "revenge/debug.h"
 #include "revenge/platform_backend.h"
+#include "revenge/upgrades.h"
 #include "Data/CampaignStateData.h"
 #include "Data/MouseCursorData.h"
 #include "Data/RosterData.h"
@@ -25,6 +28,8 @@
 
 #include <string.h>
 
+
+static void RenderUpgradesOptionsLine(void);
 // 1A1F:5755: translate pending mouse input into a tactical input code.
 // Verified against 1A1F:5755-5961.
 int16_t TranslateTacticalMouseInput(int16_t inputAction)
@@ -664,6 +669,12 @@ uint16_t RunGameOptionsMenu(uint16_t embeddedMode)
         SDLBackend_ServiceTimers();
 
     menuEntryCount = (int16_t) (embeddedMode + 0x06);
+    // Ours (the UPGRADES line): a line for the UPGRADES page after the
+    // original's (include/revenge/upgrades.h); hidden in test mode, where
+    // the menu is the original's.
+    const int16_t originalEntryCount = menuEntryCount;
+    if (Upgrades_LineShown())
+        ++menuEntryCount;
     menuHeightTiles = (int16_t) (uint16_t) ((uint16_t) (ActiveFontLineHeight) *
             (uint16_t) menuEntryCount +
         0x07);
@@ -692,9 +703,11 @@ uint16_t RunGameOptionsMenu(uint16_t embeddedMode)
         for (labelIndex = 0x00; labelIndex < 0x07; ++labelIndex)
         {
             // Standalone mode omits the in-game-only fifth command.
-            if (menuEntryCount != 0x06 || labelIndex != 0x04)
+            if (originalEntryCount != 0x06 || labelIndex != 0x04)
                 RenderFormattedText(GameOptionLabelTextTable[labelIndex]);
         }
+        if (menuEntryCount != originalEntryCount)
+            RenderUpgradesOptionsLine();
         ShowMouseCursorOverlay();
 
         menuAction = 0x00;
@@ -719,7 +732,15 @@ uint16_t RunGameOptionsMenu(uint16_t embeddedMode)
             ToggleActiveUiRegionHighlight();
             ShowMouseCursorOverlay();
 
-            switch (selectedOption)
+            if (menuEntryCount != originalEntryCount && selectedOption == menuEntryCount - 0x01)
+            {
+                // Ours (the UPGRADES line): the page, then this menu drawn again.
+                if (embeddedMode == FALSE)
+                    RestoreModalTextWindow();
+                OpenUpgradesPage();
+                menuAction = -0x01;
+            }
+            else switch (selectedOption)
             {
             case 0x00:
                 RequestedMusicEnabled ^= 0x01;
@@ -818,6 +839,110 @@ uint16_t RunGameOptionsMenu(uint16_t embeddedMode)
     }
     return (uint16_t) menuAction;
 }
+// Ours (the UPGRADES line): the line under 1A1F:417F
+// RunGameOptionsMenu's own, on a line of its own (the last original label
+// may end its line or not).
+static void RenderUpgradesOptionsLine(void)
+{
+    const char *last = GameOptionLabelTextTable[0x06];
+    size_t length = strlen(last);
+    char line[0x40];
+
+    snprintf(line, sizeof(line), "%s%s", length != 0 && last[length - 1] == 0x0D ? "" : "\r",
+        Upgrades_Text(UPGRADES_TEXT_OPTIONS_LINE));
+    RenderFormattedText(line);
+}
+
+// Ours (include/revenge/upgrades.h): the UPGRADES page, in the game options
+// menu's own window (text window 0Bh) and selection (UI region 5) as
+// 1A1F:417F RunGameOptionsMenu draws them, their size set for the page's
+// lines and put back after. A line for each switch, its word on or off, then
+// Done, and each switch's help below; a switch picked turns over and is
+// saved to the player's settings at once. The game options menu's line and
+// the kit's menu entry open it alike, wherever the game waits for a key (a
+// battle waits while it is up, as for the options menu).
+void OpenUpgradesPage(void)
+{
+    const uint16_t savedHeight = GameOptionsMenuHeight;
+    const uint16_t savedRows = GameOptionsMenuEntryCount;
+    const uint16_t savedSelected = UiRegionTable[0x05].selectedRow;
+    char text[0x400];
+    int16_t selectedOption;
+    uint16_t lineCount;
+    uint16_t open = TRUE;
+
+    UiRegionTable[0x05].selectedRow = 0x00;
+    while (open != FALSE)
+    {
+        uint16_t columns;
+        size_t length = 0;
+        int upgrade;
+
+        GameOptionsMenuEntryCount = (uint16_t) (UPGRADE_COUNT + 0x01);
+        // The lines: the switches, Done, a blank line, then each help wrapped
+        // to the window's width in the font's glyphs.
+        columns = (uint16_t) (((TextWindowContexts[0x0B].widthTiles << 0x03) / ActiveFontGlyphAdvanceX) - 0x01);
+        lineCount = (uint16_t) (UPGRADE_COUNT + 0x02);
+        for (upgrade = 0; upgrade < UPGRADE_COUNT; ++upgrade)
+            length += (size_t) snprintf(text + length, sizeof(text) - length, "%s%c%c%s\r", Upgrades_Label(upgrade),
+                0x13, (char) (columns / 0x02), Upgrades_Text(Upgrades_IsOn(upgrade) ? UPGRADES_TEXT_ON : UPGRADES_TEXT_OFF));
+        length += (size_t) snprintf(text + length, sizeof(text) - length, "%s\r", Upgrades_Text(UPGRADES_TEXT_DONE));
+        for (upgrade = 0; upgrade < UPGRADE_COUNT; ++upgrade)
+        {
+            const char *help = Upgrades_Help(upgrade);
+            uint16_t used = 0;
+
+            length += (size_t) snprintf(text + length, sizeof(text) - length, "\r");
+            while (*help != '\0' && length + 2 < sizeof(text))
+            {
+                size_t word = strcspn(help, " ");
+
+                if (used != 0 && used + 0x01 + word > columns)
+                {
+                    text[length++] = '\r';
+                    ++lineCount;
+                    used = 0;
+                }
+                else if (used != 0)
+                {
+                    text[length++] = ' ';
+                    ++used;
+                }
+                while (word-- != 0 && length + 2 < sizeof(text))
+                {
+                    text[length++] = *help++;
+                    ++used;
+                }
+                while (*help == ' ')
+                    ++help;
+            }
+            ++lineCount;
+        }
+        text[length] = '\0';
+        GameOptionsMenuHeight = (uint16_t) (((uint16_t) ActiveFontLineHeight * lineCount + 0x07) >> 0x03);
+
+        OpenModalTextWindow(0x0B, 0x01);
+        HideMouseCursorOverlay();
+        RenderFormattedText(text);
+        ShowMouseCursorOverlay();
+        selectedOption = RunOptionsMenuSelection(0x05);
+        HideMouseCursorOverlay();
+        ToggleActiveUiRegionHighlight();
+        ShowMouseCursorOverlay();
+        RestoreModalTextWindow();
+        if (selectedOption >= 0x00 && selectedOption < UPGRADE_COUNT)
+        {
+            Upgrades_Set(selectedOption, !Upgrades_IsOn(selectedOption));
+            Upgrades_Save();
+        }
+        else
+            open = FALSE;
+    }
+    UiRegionTable[0x05].selectedRow = savedSelected;
+    GameOptionsMenuEntryCount = savedRows;
+    GameOptionsMenuHeight = savedHeight;
+}
+
 // 1A1F:5D30: void AdvanceCampaignClock(byte hoursToAdvance, byte minutesToAdvance)
 // Called from:
 //      PrepareScenarioUnitRosters

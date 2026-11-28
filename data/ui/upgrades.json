@@ -1,0 +1,12 @@
+{
+  "options_line": "Upgrades",
+  "on": "On",
+  "off": "Off",
+  "done": "Done",
+  "switches": {
+    "lance_pursuit": {
+      "label": "Lance pursuit",
+      "help": "If your 'Mech can't walk and no enemy has been in sight for a minute, your lance goes after the nearest one."
+    }
+  }
+}

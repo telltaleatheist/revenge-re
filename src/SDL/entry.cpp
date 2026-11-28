@@ -14,6 +14,7 @@
 #include "setup_host.h"
 #include "revenge/rules.h"
 #include "revenge/story.h"
+#include "revenge/upgrades.h"
 
 #include <SDL3/SDL.h>
 #include <stdio.h>
@@ -68,6 +69,8 @@ int main(int argc, char **argv)
     OriginalImport_Release();
     /* The rules, ours, from the data folder beside the program. */
     Rules_Load(GamePaths_DataDirectory());
+    /* The UPGRADES page's words, ours (include/revenge/upgrades.h). */
+    Upgrades_LoadText(GamePaths_DataDirectory());
     RevengeInstallCrashDiagnostics();
     /* What the game asks to be heard, for tools/trace/audio. */
     AudioLog_Open(SDL_getenv("REVENGE_AUDIO_LOG"), AudioLogClock);

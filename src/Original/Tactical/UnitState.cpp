@@ -14,8 +14,8 @@
 #include "Data/CampaignStateData.h"
 #include "revenge/upgrades.h"
 
-/* FIX (upgrade_lance_pursuit): how long, in seconds of the battle clock, the
- * quiet lasts before the lance moves (ApplyLancePursuitUpgrade). */
+/* The switch upgrade_lance_pursuit: how long, in seconds of the battle
+ * clock, the quiet lasts before the lance moves (ApplyLancePursuitUpgrade). */
 constexpr int32_t LANCE_PURSUIT_QUIET_SECONDS = 60;
 
 static void ApplyLancePursuitUpgrade(void);
@@ -753,7 +753,7 @@ void SelectUnitTacticalTargets(void)
         ApplyLancePursuitUpgrade();
 }
 
-// FIX (upgrade_lance_pursuit), ours, called at the end of 2D1B:08FA
+// Ours, for the switch upgrade_lance_pursuit, called at the end of 2D1B:08FA
 // SelectUnitTacticalTargets with the UPGRADES switch on. The original's own
 // battle can wait for ever: when the player's 'Mech has lost a leg
 // (walkMovement 0, UnitDamage.cpp), the lance's first walking member leads

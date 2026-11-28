@@ -38,6 +38,14 @@ everything else. Each switch:
   back (the project owner, 2026-11-27);
 - changes nothing in a save, so a save loads alike with it on or off.
 
+The player turns them on the UPGRADES page, from a line we add under the
+game options menu's own (`Tactical/TacticalControl.cpp`, OpenUpgradesPage;
+its words are ours, in `data/ui/upgrades.json`), and the page writes them to
+`settings.txt` as `upgrade_<key> = on` or `off`. In test mode the line is
+hidden but where a trace asks for it, and the page saves nothing.
+`tools/check_upgrades.py` (ctest `preservation.upgrade_gates`) holds each
+switch to its gate, its row below, its words and its trace.
+
 The switches, their keys in `settings.txt` and what each changes are listed
 below as they are added.
 

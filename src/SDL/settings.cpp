@@ -418,6 +418,12 @@ static void ApplyUpgrades(void)
     int upgrade;
 
     Upgrades_SetTestMode(InTestMode());
+    Upgrades_SetSaver(HostSettings_SaveUpgrades);
+    {
+        const char *line = SDL_getenv("REVENGE_TEST_UPGRADES_LINE");
+
+        Upgrades_SetLineShown(!Upgrades_TestMode() || (line != NULL && strcmp(line, "1") == 0));
+    }
     for (upgrade = 0; upgrade < UPGRADE_COUNT; ++upgrade)
         Upgrades_Set(upgrade, Upgrades_TestMode() ? 0 : fileUpgrades[upgrade]);
     if (Upgrades_TestMode())

@@ -46,7 +46,9 @@
  *            saved with the media lines kept
  *   upgrades_bad  a switch's word other than on or off is a fault
  *   upgrades_test under the harness the file's switches are not the game's:
- *            only those REVENGE_TEST_UPGRADES names, and nothing is saved
+ *            only those REVENGE_TEST_UPGRADES names, and nothing is saved;
+ *            the options menu's UPGRADES line is hidden unless the run asks
+ *            for it (REVENGE_TEST_UPGRADES_LINE=1)
  */
 /* 2C7F's loader; only its own file declares it. */
 uint16_t LoadMediaConfiguration(void);
@@ -241,6 +243,7 @@ int main(int argc, char **argv)
         WriteText(settingsPath, media);
         assert(HostSettings_Prepare());
         assert(!Upgrades_TestMode() && !Upgrades_IsOn(UPGRADE_LANCE_PURSUIT));
+        assert(Upgrades_LineShown());
         (void) SDL_RemovePath(settingsPath);
         assert(HostSettings_Prepare());
         written = (char *) SDL_LoadFile(settingsPath, NULL);
@@ -272,8 +275,14 @@ int main(int argc, char **argv)
         WriteText(settingsPath, on);
         assert(SDL_setenv_unsafe("REVENGE_HARNESS_SCRIPT", "a.keys", 1) == 0);
         assert(SDL_unsetenv_unsafe("REVENGE_TEST_UPGRADES") == 0);
+        assert(SDL_unsetenv_unsafe("REVENGE_TEST_UPGRADES_LINE") == 0);
         assert(HostSettings_Prepare());
         assert(Upgrades_TestMode() && !Upgrades_IsOn(UPGRADE_LANCE_PURSUIT));
+        assert(!Upgrades_LineShown());
+        assert(SDL_setenv_unsafe("REVENGE_TEST_UPGRADES_LINE", "1", 1) == 0);
+        assert(HostSettings_Prepare());
+        assert(Upgrades_LineShown());
+        assert(SDL_unsetenv_unsafe("REVENGE_TEST_UPGRADES_LINE") == 0);
         Upgrades_Set(UPGRADE_LANCE_PURSUIT, 0);
         HostSettings_SaveUpgrades();
         written = (char *) SDL_LoadFile(settingsPath, NULL);

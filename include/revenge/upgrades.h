@@ -35,4 +35,32 @@ void Upgrades_Set(int upgrade, int on);
 void Upgrades_SetTestMode(int on);
 int Upgrades_TestMode(void);
 
+/* The UPGRADES line on the game options menu: shown to players, hidden in
+ * test mode unless the run asks for it (REVENGE_TEST_UPGRADES_LINE=1, a
+ * script's "# upgrades-line: shown"), so every other trace sees the
+ * original's menu. */
+void Upgrades_SetLineShown(int shown);
+int Upgrades_LineShown(void);
+
+/* What writes the switches to the player's file when the page changes one
+ * (the host's settings, src/SDL/settings.cpp); Upgrades_Save calls it. */
+void Upgrades_SetSaver(void (*saver)(void));
+void Upgrades_Save(void);
+
+/* The page's words, ours, from data/ui/upgrades.json in the data folder
+ * (a fault names what is wrong with the file). */
+enum
+{
+    UPGRADES_TEXT_OPTIONS_LINE = 0,
+    UPGRADES_TEXT_ON = 1,
+    UPGRADES_TEXT_OFF = 2,
+    UPGRADES_TEXT_DONE = 3,
+    UPGRADES_TEXT_COUNT = 4
+};
+void Upgrades_LoadText(const char *dataDirectory);
+/* A word, or "" before the file is read. */
+const char *Upgrades_Text(int which);
+const char *Upgrades_Label(int upgrade);
+const char *Upgrades_Help(int upgrade);
+
 #endif

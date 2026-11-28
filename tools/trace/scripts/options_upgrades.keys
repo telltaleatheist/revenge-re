@@ -1,0 +1,12 @@
+# The main menu's game options with the UPGRADES line shown (players see it;
+# every other run hides it): the line under the original's six, the page it
+# opens (Tactical/TacticalControl.cpp, OpenUpgradesPage), a switch turned on
+# there, Done, and the menu back as it was. In test mode the switch is
+# turned for the run alone: nothing is saved.
+# upgrades-line: shown
+idle:1000 Return idle:50 Right Right idle:50 Return idle:300 @snap:options
+Down Down Down Down Down Down idle:100 @snap:line
+Return idle:300 @snap:page
+Return idle:300 @snap:switched
+Down Return idle:300 @snap:back
+Escape idle:300 @snap:done
