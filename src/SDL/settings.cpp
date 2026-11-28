@@ -434,9 +434,11 @@ static void ApplyUpgrades(void)
 
         if (named == NULL || named[0] == '\0')
             return;
-        if (strlen(named) >= sizeof(list))
+        const size_t length = strlen(named);
+
+        if (length >= sizeof(list))
             RevengeFault("REVENGE_TEST_UPGRADES is too long");
-        strcpy(list, named);
+        memcpy(list, named, length + 1);
         while (*cursor != '\0')
         {
             char *word;
