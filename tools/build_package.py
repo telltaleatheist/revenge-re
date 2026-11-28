@@ -22,6 +22,7 @@ usr/bin).
 """
 import argparse
 import hashlib
+import json
 import os
 from pathlib import Path
 import plistlib
@@ -284,6 +285,22 @@ def stage_common(root, build, resources, first_open=""):
             raise RuntimeError(f"Missing licence: {source}")
         shutil.copy2(source, notices / name)
     (resources / "README.txt").write_text(README.format(first_open=first_open), encoding="utf-8")
+    shutil.copy2(root / "config" / KIT_SETTINGS, resources / KIT_SETTINGS)
+
+
+# The setup kit's settings for this game (re-setup-kit DESIGN.md, Settings; config/): read from MenuHooks::program_dir,
+# so beside the program, in a Mac app's Contents/Resources and at an AppImage's AppDir top, and in the files record.
+KIT_SETTINGS = "setup-kit-settings.json"
+
+
+def check_kit_settings(folder):
+    """`folder`'s copy of the kit's settings: there, read as JSON, with this game's report page and catalogs."""
+    try:
+        values = json.loads((folder / KIT_SETTINGS).read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        raise RuntimeError(f"{folder / KIT_SETTINGS}: {e}") from None
+    if "revenge-re" not in values.get("report_url", "") or len(values.get("catalogs", [])) != 2:
+        raise RuntimeError(f"{folder / KIT_SETTINGS}: not this game's report page and catalogs")
 
 
 # CHECK MY FILES' record of the program (re-setup-kit include/rekit/manifest.h): sha256sum's format, at the top of
@@ -572,6 +589,7 @@ def package_windows(root, build, output, label, game, installer):
         source.extractall(extracted)
     check_notices(extracted / name / "licenses")
     check_record(extracted / name)
+    check_kit_settings(extracted / name)
     smoke(extracted / name / (PROGRAM + ".exe"), game)
     write_digest(archive)
     print(f"Packaged and smoke-tested {archive}")
@@ -666,6 +684,7 @@ def package_linux(root, build, output, label, game, tools):
     check_stamp(extracted / name / PROGRAM, label)
     check_notices(extracted / name / "licenses")
     check_record(extracted / name)
+    check_kit_settings(extracted / name)
     smoke(extracted / name / PROGRAM, game)
     write_digest(archive)
     print(f"Packaged and smoke-tested {archive}")
@@ -688,6 +707,7 @@ def package_linux(root, build, output, label, game, tools):
         "-d", root / "tools/package/chr.desktop", "-i", root / "tools/package/revenge.png", env=env)
     check_paths(root, appdir, root, build)
     check_notices(doc / "licenses")
+    shutil.copy2(stage / KIT_SETTINGS, appdir / KIT_SETTINGS)
     write_record(root, appdir)
     image = output / f"{STEM}-{label}-x86_64.AppImage"
     run(tools / "appimagetool-x86_64.AppImage", "--runtime-file", tools / "runtime-x86_64", appdir, image, env=env)
@@ -704,6 +724,7 @@ def package_linux(root, build, output, label, game, tools):
     check_stamp(program, label)
     check_notices(unpacked / f"squashfs-root/usr/share/doc/{PROGRAM}/licenses")
     check_record(unpacked / "squashfs-root")
+    check_kit_settings(unpacked / "squashfs-root")
     smoke(program, game)
     write_digest(image)
     print(f"AppImage {image}")
@@ -780,6 +801,7 @@ def package_mac(root, build, output, label, game):
     check_paths(root, dmg_stage, root, build)
     check_notices(dmg_stage / app.name / "Contents/Resources/licenses")
     check_record(dmg_stage / app.name / "Contents/Resources")
+    check_kit_settings(dmg_stage / app.name / "Contents/Resources")
     # Made from the folder, never mounted on the screen.
     run("hdiutil", "create", "-volname", APP_NAME, "-srcfolder", dmg_stage, "-ov", "-format", "UDZO", dmg,
         stdout=subprocess.DEVNULL)

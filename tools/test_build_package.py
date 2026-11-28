@@ -324,6 +324,17 @@ class ProgramRecord(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "leaves out"):
                 build_package.check_record(folder)
 
+    def test_the_kits_settings_are_this_games(self):
+        build_package.check_kit_settings(ROOT / "config")
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            with self.assertRaisesRegex(RuntimeError, build_package.KIT_SETTINGS):
+                build_package.check_kit_settings(folder)
+            (folder / build_package.KIT_SETTINGS).write_bytes(
+                (ROOT / "extern/re-setup-kit/assets" / build_package.KIT_SETTINGS).read_bytes())
+            with self.assertRaisesRegex(RuntimeError, "not this game's"):
+                build_package.check_kit_settings(folder)
+
     @unittest.skipIf(sys.platform != "darwin", "A Mac's apps and signatures")
     def test_a_mac_apps_record_is_in_resources_and_keeps_the_signature(self):
         with tempfile.TemporaryDirectory() as directory:

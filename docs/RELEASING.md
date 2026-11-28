@@ -22,6 +22,10 @@ hand on each platform, as below, and a person publishes them.
   FluidR3 GM, refused unless it hashes as `data/music/soundfont_subset.sha256`
   pins;
 - `data/setup/badge.png`, the setup screen's badge (`tools/package/revenge.png`);
+- `setup-kit-settings.json` (`config/`): re-setup-kit's settings for this game,
+  its report page and the launcher's two catalog addresses among them, where
+  the kit reads it (`MenuHooks::program_dir`: beside the program, a Mac app's
+  `Contents/Resources`, an AppImage's AppDir top), in the files record;
 - `LICENSE`, a `README.txt` and `licenses/`: the project's, `NOTICE.md`,
   `THIRD_PARTY_NOTICES.md`, SDL's and hidapi's, re-setup-kit's and its own
   third-party code's (stb, miniz, Monocypher), TinySoundFont's, FluidR3's

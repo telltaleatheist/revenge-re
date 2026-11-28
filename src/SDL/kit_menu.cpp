@@ -169,6 +169,24 @@ rekit::sdl::MenuHooks hooks(SDL_Window *window)
     h.update.keys = { setup::kCatalogKey };
     // What an update backs up first: the settings and the saves, in our write folder.
     h.update.keep = { in_folder(write, HOST_SETTINGS_FILE_NAME), in_folder(write, "SAVEGAME.DAT") };
+    // At backup time, in place of `keep`: every file at the top of our write folder (the saves, the settings, and
+    // any of the game's own files it has changed, copied there the first time: game_paths.h) and the story imported
+    // from the player's copy. Not the copy of the game (install/), the backups or the logs.
+    h.update.keep_now = [folder = std::string(write ? write : "")]
+    {
+        std::vector<std::string> paths;
+        std::error_code ec;
+        if (folder.empty()) return paths;
+        for (const fs::directory_entry &e : fs::directory_iterator(utf8_path(folder), ec))
+        {
+            const std::string name = e.path().filename().string();
+            if (e.is_regular_file(ec) && e.path().extension() != ".log")
+                paths.push_back(e.path().string());
+            else if (e.is_directory(ec) && name == "story")
+                paths.push_back(e.path().string());
+        }
+        return paths;
+    };
     h.quit = []
     { Platform_RequestQuit(); };
     h.program_dir = program_folder();

@@ -1083,6 +1083,10 @@ if(CHR_BUILD_SDL)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
             ${CMAKE_CURRENT_SOURCE_DIR}/config/REVENGE.CFG
             $<TARGET_FILE_DIR:Revenge>/REVENGE.CFG
+        # The setup kit's settings for this game (re-setup-kit DESIGN.md, Settings), read beside the program.
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_CURRENT_SOURCE_DIR}/config/setup-kit-settings.json
+            $<TARGET_FILE_DIR:Revenge>/setup-kit-settings.json
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_CURRENT_SOURCE_DIR}/data
             $<TARGET_FILE_DIR:Revenge>/data
