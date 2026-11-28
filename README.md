@@ -15,7 +15,7 @@ so far ([supported versions](docs/SUPPORTED_VERSIONS.md)).
 
 ## Status
 
-1.0.0 is out for Windows, macOS and Linux on the
+1.0.1 is out for Windows, macOS and Linux on the
 [Releases page](https://github.com/telltaleatheist/revenge-re/releases). What is
 known to differ from the original, and what no one has played yet, is in its
 notes. Your own copy of the game is needed (above): the first start sets up a
@@ -45,7 +45,7 @@ pick one yourself if neither works.
   every map. They are fixed here and reported upstream
   ([issue #1](https://github.com/Elthial/Crescent-Hawks-Revenge-sdl-port/issues/1)).
 - The setup and the packages for the BattleTech launcher are built
-  ([packages](#packages-and-the-setup)); 1.0.0 is the first release.
+  ([packages](#packages-and-the-setup)); 1.0.0 was the first release, 1.0.1 the newest.
 - Not yet: the rest of the campaign compared, and the old hardware layers
   replaced (graphics, input and timing).
 
