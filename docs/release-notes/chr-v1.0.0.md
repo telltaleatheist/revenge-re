@@ -51,17 +51,22 @@ This is the first release.
 
 ## Bring your own copy of the game
 
-None of the game's files are in these downloads. You need your own copy of
-the US DOS release 1.00. The first start looks for it on your computer, or
-asks you where it is, and sets it up in the rebuild's own folder. Your copy is
-never changed. If files are missing, damaged or unlike the ones this project
-knows, it says so first.
+None of the game's files are in these downloads. The game plays the US DOS
+release 1.00, and the first start gets it ready by itself, in a small window:
 
-If no copy is found, it offers to download release 1.00 from the Internet
-Archive, from the BattleTech launcher's own list. The list is used only when
-its signature checks, and the download only when it is exactly the file the
-list names. A download that breaks off goes on from where it stopped when it
-is tried again. You can still pick your own copy instead.
+- **A copy found on your computer** is checked and set up at once in the
+  rebuild's own folder, with no question asked. Your copy is never changed.
+  If the check finds files missing, damaged or unlike the ones this project
+  knows, it shows you what is wrong first.
+- **With no copy found**, the download of release 1.00 starts at once, from
+  the Internet Archive, by the BattleTech launcher's own list. The list is
+  used only when its signature checks, and the download only when it is
+  exactly the file the list names; a download that breaks off goes on from
+  where it stopped. CANCEL and USE MY OWN COPY INSTEAD are there while it
+  runs.
+- **If the download fails, is cancelled, or can't be had**, the setup window
+  opens for you to pick your own copy: its REVENGE.EXE, any file in its
+  folder, or the archive it came in.
 
 The BattleTech launcher can install, set up and start the game too.
 

@@ -18,8 +18,9 @@ so far ([supported versions](docs/SUPPORTED_VERSIONS.md)).
 1.0.0 is out for Windows, macOS and Linux on the
 [Releases page](https://github.com/telltaleatheist/revenge-re/releases). What is
 known to differ from the original, and what no one has played yet, is in its
-notes. Your own copy of the game is needed (above): the first start finds it,
-asks you where it is, or offers to download it.
+notes. Your own copy of the game is needed (above): the first start sets up a
+copy it finds on your computer, or else downloads release 1.00, and lets you
+pick one yourself if neither works.
 
 - Builds on Windows (MSVC), macOS 12 or later (one universal build for Intel
   and Apple silicon) and Linux (GCC).
@@ -142,10 +143,13 @@ notices, and none of the game; its smoke test starts the packaged program,
 headless, and checks the setup and a first run.
 [docs/RELEASING.md](docs/RELEASING.md) has the recipe.
 
-A package's first start without a game opens the setup (re-setup-kit's): the
-player picks their copy (its `REVENGE.EXE`, any file in its folder, or the
-archive it came in), which is copied into their own folder and played from
-there. `chr --status` and `chr --setup` answer the launcher (the kit's
+A package's first start without a game runs the setup (re-setup-kit's) in a
+small window: a copy found on the computer is checked and set up at once (a
+problem with it is shown first); with none found, release 1.00 is downloaded
+from the launcher's signed list at once; a failure, a cancel or no download
+opens the setup window, where the player picks their copy (its `REVENGE.EXE`,
+any file in its folder, or the archive it came in). The copy goes into their
+own folder and is played from there. `chr --status` and `chr --setup` answer the launcher (the kit's
 contract, game id `chr`); `chr --help` lists the start options.
 
 While the game runs, Shift + Alt + F1 (Cmd + Shift + F1 on a Mac), or the

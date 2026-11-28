@@ -58,10 +58,12 @@ README = """Revenge Rebuild
 A rebuild of BattleTech: The Crescent Hawks' Revenge (1990)'s program. Your own copy of
 the DOS game is required and is not included: no game data or saves are in this package.
 
-The first time it starts without your game, it asks for your copy: its REVENGE.EXE, any
-file in its folder, or the archive it came in (a .zip, for example), or the launcher asks
-for it on its own screens. It copies the game into your own folder and plays from there;
-your copy is never changed. It plays the US DOS release 1.00.
+It plays the US DOS release 1.00. The first time it starts without your game, it sets up a
+copy it finds on your computer (showing first anything wrong with it), or else downloads
+release 1.00; if that can't be done, it asks for your copy: its REVENGE.EXE, any file in
+its folder, or the archive it came in (a .zip, for example). The launcher can do this on
+its own screens too. The game is copied into your own folder and played from there; your
+copy is never changed.
 Your settings (settings.txt, setup.txt), saves, the story imported from your copy and the
 copied game live in your own folder:
   Windows: %APPDATA%\\BattleTech\\Revenge Rebuild
