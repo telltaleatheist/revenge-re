@@ -15,8 +15,11 @@ so far ([supported versions](docs/SUPPORTED_VERSIONS.md)).
 
 ## Status
 
-In development. There is no release yet and nothing packaged: it is built and
-run from source (below).
+1.0.0 is out for Windows, macOS and Linux on the
+[Releases page](https://github.com/telltaleatheist/revenge-re/releases). What is
+known to differ from the original, and what no one has played yet, is in its
+notes. Your own copy of the game is needed (above): the first start finds it,
+asks you where it is, or offers to download it.
 
 - Builds on Windows (MSVC), macOS 12 or later (one universal build for Intel
   and Apple silicon) and Linux (GCC).
@@ -41,7 +44,7 @@ run from source (below).
   every map. They are fixed here and reported upstream
   ([issue #1](https://github.com/Elthial/Crescent-Hawks-Revenge-sdl-port/issues/1)).
 - The setup and the packages for the BattleTech launcher are built
-  ([packages](#packages-and-the-setup)); none is released yet.
+  ([packages](#packages-and-the-setup)); 1.0.0 is the first release.
 - Not yet: the rest of the campaign compared, and the old hardware layers
   replaced (graphics, input and timing).
 
