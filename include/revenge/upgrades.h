@@ -18,7 +18,10 @@ enum
     /* A lance left waiting on a leader that can't walk goes after the last
      * enemy once nothing is in sight (Tactical/UnitState.cpp, 2D1B:08FA). */
     UPGRADE_LANCE_PURSUIT = 0,
-    UPGRADE_COUNT = 1
+    UPGRADE_RESTART_PILOTS = 1,
+    UPGRADE_LANCE_WEAPONS = 2,
+    UPGRADE_LANCE_TACTICS = 3,
+    UPGRADE_COUNT = 4
 };
 
 /* The switch's word in the settings file, after "upgrade_". */

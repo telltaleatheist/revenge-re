@@ -660,6 +660,26 @@ if(BUILD_TESTING)
     foreach(mode off minute walking seen target restart)
         add_test(NAME tactical.lance_pursuit_${mode} COMMAND test_lance_pursuit ${mode})
     endforeach()
+    add_executable(test_restart_pilots
+        tests/test_restart_pilots.cpp
+        tests/fake_backend.cpp)
+    target_include_directories(test_restart_pilots PRIVATE src/SDL tests)
+    target_link_libraries(test_restart_pilots PRIVATE chr_original_runtime)
+    chr_uses_rules(test_restart_pilots)
+    chr_strict(test_restart_pilots)
+    foreach(mode original fixed kept)
+        add_test(NAME campaign.restart_pilots_${mode} COMMAND test_restart_pilots ${mode})
+    endforeach()
+    add_executable(test_lance_ai
+        tests/test_lance_ai.cpp
+        tests/fake_backend.cpp)
+    target_include_directories(test_lance_ai PRIVATE src/SDL tests)
+    target_link_libraries(test_lance_ai PRIVATE chr_original_runtime)
+    chr_uses_rules(test_lance_ai)
+    chr_strict(test_lance_ai)
+    foreach(mode weapons_entries weapons_enemy weapons_player tactics_ratings tactics_enemy tactics_player)
+        add_test(NAME tactical.lance_ai_${mode} COMMAND test_lance_ai ${mode})
+    endforeach()
 
     add_executable(test_tactical_cursor_retreat
         tests/test_tactical_cursor_retreat.cpp

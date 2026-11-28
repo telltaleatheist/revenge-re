@@ -7,6 +7,18 @@
     "lance_pursuit": {
       "label": "Lance pursuit",
       "help": "If your 'Mech can't walk and no enemy has been in sight for a minute, your lance goes after the nearest one."
+    },
+    "restart_pilots": {
+      "label": "Restart pilots",
+      "help": "After a Restart, the lance editor deals the same new pilots a new campaign does, not one pilot over and over."
+    },
+    "lance_weapons": {
+      "label": "Lance weapons",
+      "help": "Your lance's computer-run 'Mechs fire the weapon each choice is meant to fire. Your lance only; enemies fire as in the original."
+    },
+    "lance_tactics": {
+      "label": "Lance tactics",
+      "help": "Your lance's computer-run 'Mechs count their firepower right when choosing how close to fight. Your lance only; enemies judge as in the original."
     }
   }
 }

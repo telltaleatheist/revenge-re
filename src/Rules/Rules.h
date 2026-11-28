@@ -193,6 +193,8 @@
 // file and the key.
 #pragma once
 
+#include <array>
+#include <cstdint>
 #include <filesystem>
 #include <stdexcept>
 
@@ -207,5 +209,10 @@ struct RulesError : std::runtime_error
 // Reads every file under data_dir/rules, /ui and /start into its tables, or
 // throws RulesError naming the file and the key.
 void load(const std::filesystem::path &data_dir);
+
+// The new campaign's replay pilot pool and count, as load read them
+// (Rules_StartingReplayPilots).
+extern std::array<std::uint8_t, 15> g_starting_replay_pilots;
+extern std::uint8_t g_starting_replay_pilot_count;
 
 }  // namespace revenge::rules

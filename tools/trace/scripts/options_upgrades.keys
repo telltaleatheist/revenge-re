@@ -8,5 +8,5 @@ idle:1000 Return idle:50 Right Right idle:50 Return idle:300 @snap:options
 Down Down Down Down Down Down idle:100 @snap:line
 Return idle:300 @snap:page
 Return idle:300 @snap:switched
-Down Return idle:300 @snap:back
+Down Down Down Down Return idle:300 @snap:back
 Escape idle:300 @snap:done

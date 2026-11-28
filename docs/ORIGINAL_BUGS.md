@@ -36,7 +36,9 @@ everything else. Each switch:
 - never makes the enemy stronger: the game is hard as it is, and a switch
   only takes away what stops the player's side, never what holds the enemy
   back (the project owner, 2026-11-27);
-- changes nothing in a save, so a save loads alike with it on or off.
+- keeps saves interchangeable: a save made with a switch on loads with it
+  off, and the reverse. The switch itself is never saved; what it changed in
+  the campaign's state is saved as the original would save that state.
 
 The player turns them on the UPGRADES page, from a line we add under the
 game options menu's own (`Tactical/TacticalControl.cpp`, OpenUpgradesPage;
@@ -52,3 +54,6 @@ below as they are added.
 | Key | What it changes | Where |
 | --- | --- | --- |
 | `upgrade_lance_pursuit` | A lance waiting on the player's 'Mech after it has lost a leg, with no enemy in sight for a minute of the battle clock, is sent at the nearest enemy's cell, as the player's Move order would send it: the eighth battle's stall ends (DISCOVERIES.md, Stage 7). Only the player's own lance. | `Tactical/UnitState.cpp`, after 2D1B:08FA; `tests/test_lance_pursuit.cpp`; `stage_07_pursuit` |
+| `upgrade_restart_pilots` | A Restart from the in-game menu gives the campaign's replay copy the random pilot pool and count a new campaign starts with, where the original copies the initial copy's 15 zeros, so that every pilot the lance editor deals after it is pilot 0 (DISCOVERIES.md). Only the pilots the player is offered; the pool is saved with the campaign, and either pool loads with the switch on or off. | `Campaign/CampaignMenus.cpp`, at 0D73:274D's Restart (0D73:29AD-29D1); `tests/test_restart_pilots.cpp`; `restart_pilots` |
+| `upgrade_lance_weapons` | A unit of the player's side, run by the computer, fires from priority list 14 the weapon each entry waits for, where the original fires the weapon the next entry waits for (DISCOVERIES.md). Sides as the original tells them (2D1B:08FA): units below 0Ch are the player's. Enemies fire as the original's. | `Tactical/Weapons.cpp`, in 2D1B:14A4; `tests/test_lance_ai.cpp`; `lance_weapons` |
+| `upgrade_lance_tactics` | A unit of the player's side, choosing how close to fight (2D1B:08FA), judges itself, its target and its allies by firepower summed exactly, where the original's sum (0800:072C) leaks its mask's high word (DISCOVERIES.md; trace finding 6). The original's ratings are kept as they are; the exact ones are kept apart, so enemies, the status screen and the lance comparison (2208:26B1) see the original's. | `Tactical/UnitState.cpp`, at the end of 2D1B:0005 and in 2D1B:08FA; `tests/test_lance_ai.cpp`; `lance_tactics` |

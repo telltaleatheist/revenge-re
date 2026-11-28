@@ -128,6 +128,9 @@ void FreeGraphicsBufferRange(
 void UpdatePilotAvailability(void);
 int16_t RunTitleAndMainMenu(void);
 int16_t RunInGameMenu(int16_t firstMenuOption);
+/* Ours (upgrade_restart_pilots): the new campaign's replay pilots for a
+ * Restart (CampaignMenus.cpp). */
+void ApplyRestartPilotsUpgrade(void);
 uint16_t SaveGame(void);
 uint16_t LoadGame(void);
 void OpenModalTextWindow(uint16_t windowIndex, uint16_t clearAndFrame);

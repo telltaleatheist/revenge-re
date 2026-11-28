@@ -12,7 +12,7 @@
 
 /* Ours (include/revenge/upgrades.h): the switches' state, all off to start. */
 
-static const char *const UpgradeKeys[UPGRADE_COUNT] = { "lance_pursuit" };
+static const char *const UpgradeKeys[UPGRADE_COUNT] = { "lance_pursuit", "restart_pilots", "lance_weapons", "lance_tactics" };
 static int upgradeOn[UPGRADE_COUNT];
 static int testMode;
 static int lineShown = 1;

@@ -18,8 +18,9 @@ is skipped (exit 77 here).
 
 A script with a line `# upgrades: KEY ...` runs with those UPGRADES switches
 on (include/revenge/upgrades.h); every other run has them all off, whatever
-a settings file says. REVENGE_TRACE_UPGRADES, when set, stands for every
-script's line: to see which traces a switch moves, run check.py with it.
+a settings file says. REVENGE_TRACE_UPGRADES, when set, adds its keys to
+every script's own: to see which traces a switch moves, run check.py with
+it.
 The game options menu's UPGRADES line is hidden too, but in a script with a
 line `# upgrades-line: shown`.
 """
@@ -131,7 +132,8 @@ def run(exe, game, script, work, story=None, settings=None, env_extra=None):
         "REVENGE_SAVE_DIRECTORY": os.path.join(os.path.abspath(work), "saves") + os.sep,
         "REVENGE_HARNESS_SCRIPT": os.path.abspath(script),
         "REVENGE_HARNESS_OUT": os.path.abspath(work),
-        "REVENGE_TEST_UPGRADES": os.environ.get("REVENGE_TRACE_UPGRADES", upgrades(script)),
+        "REVENGE_TEST_UPGRADES": " ".join(
+            (upgrades(script) + " " + os.environ.get("REVENGE_TRACE_UPGRADES", "")).replace(",", " ").split()),
         "REVENGE_TEST_UPGRADES_LINE": upgrades_line(script),
     })
     env.pop("REVENGE_SMOKE_INPUT", None)

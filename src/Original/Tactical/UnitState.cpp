@@ -12,6 +12,7 @@
 #include "Data/TacticalMapData.h"
 #include "Data/TacticalUnitData.h"
 #include "Data/CampaignStateData.h"
+#include "Data/TacticalGraphicsData.h"
 #include "revenge/upgrades.h"
 
 /* The switch upgrade_lance_pursuit: how long, in seconds of the battle
@@ -19,6 +20,15 @@
 constexpr int32_t LANCE_PURSUIT_QUIET_SECONDS = 60;
 
 static void ApplyLancePursuitUpgrade(void);
+
+/* The switch upgrade_lance_tactics: each unit's ratings as 2D1B:0005
+ * RecalculateUnitCombatRatings last rated it, its three firepower fields
+ * summed exactly (RecordLanceTacticsRatings), and whether they were taken
+ * with the switch on. The original's own ratings are never changed. */
+static RevengeTacticalCombatRatings LanceTacticsRatings[TACTICAL_UNIT_COUNT];
+static uint8_t LanceTacticsRecorded[TACTICAL_UNIT_COUNT];
+static void RecordLanceTacticsRatings(uint16_t unitSlot, const RevengeTacticalCombatRatings *ratings,
+    uint32_t weaponAvailability, const uint16_t *weaponCounts);
 
 // 2D1B:0005: void RecalculateUnitCombatRatings(Stack RevengeUnitRecord *unitRecord,
 //     Stack word16 unitSlot, Stack word16 rebuildWeaponCounts, Stack word16 advanceRecovery)
@@ -145,6 +155,65 @@ void RecalculateUnitCombatRatings(
         (int16_t) CalculateSelectedWeaponRating(
             weaponAvailability & WEAPON_LONG_FIREPOWER_FULL_RATING_MASK,
             weaponCounts));
+
+    // FIX (upgrade_lance_tactics): ours, after the original's ratings, which
+    // stand as they are: the same ratings with the firepower summed exactly,
+    // kept apart for the player's side to judge by (2D1B:08FA).
+    if (Upgrades_IsOn(UPGRADE_LANCE_TACTICS) && unitSlot < TACTICAL_UNIT_COUNT)
+        RecordLanceTacticsRatings(unitSlot, ratings, weaponAvailability, weaponCounts);
+    else if (unitSlot < TACTICAL_UNIT_COUNT)
+        LanceTacticsRecorded[unitSlot] = FALSE;
+}
+
+// Ours, for the switch upgrade_lance_tactics: 0800:072C
+// CalculateSelectedWeaponRating's sum as it means it, each weapon of the mask
+// counted once and no other (the original's loop ORs the mask's high word
+// into its low word on every pass: DISCOVERIES.md, finding 6).
+static uint32_t SumSelectedWeaponRatingExactly(uint32_t weaponMask, const uint16_t *weaponCounts)
+{
+    uint32_t rating = 0x00000000UL;
+    uint16_t weaponIndex;
+
+    for (weaponIndex = 0x0000; weaponIndex < WEAPON_DEFINITION_COUNT && weaponIndex < 0x20; ++weaponIndex)
+    {
+        if ((weaponMask & ((uint32_t) 0x01 << weaponIndex)) != 0x00)
+            rating += (uint32_t) WeaponCombatRatingByType[weaponIndex] * (uint8_t) weaponCounts[weaponIndex];
+    }
+    return rating;
+}
+
+// Ours, for the switch upgrade_lance_tactics, at the end of 2D1B:0005
+// RecalculateUnitCombatRatings: its ratings with the close, medium and long
+// firepower taken again by the exact sum, from the same masks and halves.
+static void RecordLanceTacticsRatings(uint16_t unitSlot, const RevengeTacticalCombatRatings *ratings,
+    uint32_t weaponAvailability, const uint16_t *weaponCounts)
+{
+    RevengeTacticalCombatRatings *exact = &LanceTacticsRatings[unitSlot];
+
+    *exact = *ratings;
+    exact->closeFirepower = (int16_t) (
+        (int16_t) SumSelectedWeaponRatingExactly(weaponAvailability & WEAPON_CLOSE_FIREPOWER_PRIMARY_MASK, weaponCounts) +
+        (int16_t) SumSelectedWeaponRatingExactly(weaponAvailability & WEAPON_CLOSE_FIREPOWER_SECONDARY_MASK, weaponCounts));
+    exact->mediumFirepower = (int16_t) (
+        (int16_t) ((int32_t) SumSelectedWeaponRatingExactly(
+                       weaponAvailability & WEAPON_MEDIUM_FIREPOWER_HALF_RATING_MASK, weaponCounts) >> 0x01) +
+        (int16_t) SumSelectedWeaponRatingExactly(weaponAvailability & WEAPON_MEDIUM_FIREPOWER_FULL_RATING_MASK, weaponCounts));
+    exact->longFirepower = (int16_t) (
+        (int16_t) ((int32_t) SumSelectedWeaponRatingExactly(
+                       weaponAvailability & WEAPON_LONG_FIREPOWER_HALF_RATING_MASK, weaponCounts) >> 0x01) +
+        (int16_t) SumSelectedWeaponRatingExactly(weaponAvailability & WEAPON_LONG_FIREPOWER_FULL_RATING_MASK, weaponCounts));
+    LanceTacticsRecorded[unitSlot] = TRUE;
+}
+
+// Ours, for the switch upgrade_lance_tactics, called by 2D1B:08FA
+// SelectUnitTacticalTargets: the ratings a unit of the player's side judges
+// a unit by, its exact ones when they were taken with the switch on, else
+// the original's.
+static RevengeTacticalCombatRatings *LanceTacticsRatingsOf(uint16_t unitIndex)
+{
+    if (unitIndex < TACTICAL_UNIT_COUNT && LanceTacticsRecorded[unitIndex] != FALSE)
+        return &LanceTacticsRatings[unitIndex];
+    return TACTICAL_COMBAT_RATINGS(unitIndex);
 }
 
 // 2D1B:0379: void CalculateUnitDurabilityTotals(Stack RevengeUnitRecord *unitRecord)
@@ -592,6 +661,18 @@ void SelectUnitTacticalTargets(void)
                 TACTICAL_COMBAT_RATINGS(unitIndex);
             RevengeTacticalCombatRatings *targetRatings =
                 TACTICAL_COMBAT_RATINGS((uint16_t) selectedTarget);
+            // FIX (upgrade_lance_tactics): ours. A unit of the player's side
+            // (below ENEMY_FORCE_FIRST_UNIT) judges itself, its target and
+            // its allies by firepower summed exactly; an enemy judges by the
+            // original's (docs/ORIGINAL_BUGS.md, Switches).
+            const uint16_t judgesExactly =
+                Upgrades_IsOn(UPGRADE_LANCE_TACTICS) && unitIndex < ENEMY_FORCE_FIRST_UNIT;
+            if (judgesExactly != FALSE)
+            {
+                unitRatings = LanceTacticsRatingsOf(unitIndex);
+                if (selectedTarget < TACTICAL_UNIT_COUNT)
+                    targetRatings = LanceTacticsRatingsOf((uint16_t) selectedTarget);
+            }
             uint16_t comparisonMask = 0x00;
             uint16_t ratingIndex;
             uint16_t ratingBit = 0x02;
@@ -661,7 +742,8 @@ void SelectUnitTacticalTargets(void)
                     }
 
                     RevengeTacticalCombatRatings *allyRatings =
-                        TACTICAL_COMBAT_RATINGS(allyIndex);
+                        judgesExactly != FALSE ? LanceTacticsRatingsOf(allyIndex)
+                                               : TACTICAL_COMBAT_RATINGS(allyIndex);
                     comparisonMask = 0x00;
                     ratingBit = 0x01;
                     for (ratingIndex = 0x01; ratingIndex <= 0x04; ++ratingIndex)

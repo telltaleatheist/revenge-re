@@ -16,6 +16,8 @@
 #include "UI/UI.h"
 #include "Units/Units.h"
 #include "revenge/debug.h"
+#include "revenge/rules.h"
+#include "revenge/upgrades.h"
 
 #include <string.h>
 
@@ -205,6 +207,15 @@ uint16_t RunMainMenuSelection(const char *const menuOptionText[0x03])
     return selection;
 }
 
+// Ours, for the switch upgrade_restart_pilots, called by 0D73:274D
+// RunInGameMenu's Restart (0D73:29AD-29D1) after it copies the campaign's
+// initial state over its replay state: the replay copy's random pilot pool
+// and its count as a new campaign starts them (include/revenge/rules.h).
+void ApplyRestartPilotsUpgrade(void)
+{
+    Rules_StartingReplayPilots(ReplayExtendedCampaignState, &RandomPilotPoolCounts.replay);
+}
+
 // 0D73:274D: int16 RunInGameMenu(int16 firstMenuOption)
 // Called from:
 //      RunCampaignLoop
@@ -337,6 +348,13 @@ int16_t RunInGameMenu(int16_t firstMenuOption)
             ReplayExtendedCampaignState[index] =
                 InitialExtendedCampaignState[index];
         }
+        // FIX (upgrade_restart_pilots): ours. The initial copy's pilot pool
+        // is 15 zeros, so after a Restart every random pilot the lance
+        // editor deals is pilot 0 (DISCOVERIES.md); with the switch on the
+        // replay copy gets the pool and count a new campaign starts with.
+        // Off, the original's copy stands (docs/ORIGINAL_BUGS.md, Switches).
+        if (Upgrades_IsOn(UPGRADE_RESTART_PILOTS))
+            ApplyRestartPilotsUpgrade();
         CampaignStageIndex = 0x00;
         ScenarioVariantIndex = 0x00;
         CampaignPhase = FALSE;

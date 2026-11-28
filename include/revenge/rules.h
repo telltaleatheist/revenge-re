@@ -37,5 +37,11 @@ extern const size_t RulePieceCount;
  * and the key. */
 void Rules_Load(const char *dataDirectory);
 
+/* The replay copy's random pilot pool (15 pilots) and its count as a new
+ * campaign starts them (new_campaign.json), kept as Rules_Load read them:
+ * the UPGRADES switch upgrade_restart_pilots gives them to a Restart
+ * (Campaign/CampaignMenus.cpp). Zeros before the rules are read. */
+void Rules_StartingReplayPilots(uint8_t pool[15], uint8_t *count);
+
 
 #endif

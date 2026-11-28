@@ -6,6 +6,7 @@
 #include "Data/TacticalTables.h"
 #include "Tactical/Tactical.h"
 #include "revenge/debug.h"
+#include "revenge/upgrades.h"
 #include "Data/RosterData.h"
 #include "Data/TacticalControlData.h"
 #include "Data/TacticalMapData.h"
@@ -31,6 +32,30 @@ static uint8_t WeaponAIHeatLimit(uint16_t index)
         index < SCENARIO_LANCES_AT + sizeof(TacticalScenarioLanceEnabled))
         return TacticalScenarioLanceEnabled[index - SCENARIO_LANCES_AT];
     return WeaponAIHeatLimitByExperiencePastEnd[REVENGE_INDEX(WeaponAIHeatLimitByExperiencePastEnd, index - TABLE_COUNT)];
+}
+
+// Ours, for the switch upgrade_lance_weapons, called by 2D1B:14A4
+// ExecuteUnitWeaponAI for a unit of the player's side: the weapon an entry
+// of a priority list fires. An entry fires its weapon when one of the
+// weapons of its ready mask is ready (bit n, weapon index n; the weapon it
+// fires is its index plus one). In list 14 five entries fire the weapon the
+// next entry waits for (DISCOVERIES.md); for an entry whose weapon is not
+// in its own mask and whose mask names one weapon, that weapon is fired.
+// Every other entry, as the original fires it.
+uint16_t LanceWeaponsUpgradeChoice(uint32_t readyMask, uint16_t firedWeaponId)
+{
+    uint16_t weaponIndex;
+
+    if (firedWeaponId == 0x00 || firedWeaponId > 0x20 ||
+        (readyMask & ((uint32_t) 0x01 << (firedWeaponId - 0x01))) != 0x00 ||
+        readyMask == 0x00 || (readyMask & (readyMask - 0x01)) != 0x00)
+    {
+        return firedWeaponId;
+    }
+    for (weaponIndex = 0x00; (readyMask & ((uint32_t) 0x01 << weaponIndex)) == 0x00; ++weaponIndex)
+    {
+    }
+    return (uint16_t) (weaponIndex + 0x01);
 }
 
 // 2D1B:14A4: word16 ExecuteUnitWeaponAI(word16 unitIndex)
@@ -167,6 +192,12 @@ uint16_t ExecuteUnitWeaponAI(uint16_t unitIndex)
         {
             selectedWeaponId =
                 (uint16_t) priorityTable[priorityCount + priorityIndex];
+            // FIX (upgrade_lance_weapons): ours. For a unit of the player's
+            // side (below ENEMY_FORCE_FIRST_UNIT, as 2D1B:08FA tells the
+            // sides), an entry fires the weapon it waits for; an enemy's
+            // choice is the original's (docs/ORIGINAL_BUGS.md, Switches).
+            if (Upgrades_IsOn(UPGRADE_LANCE_WEAPONS) && unitIndex < ENEMY_FORCE_FIRST_UNIT)
+                selectedWeaponId = LanceWeaponsUpgradeChoice(priorityMask, selectedWeaponId);
         }
     }
 

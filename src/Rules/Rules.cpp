@@ -1084,6 +1084,9 @@ Json read_file(const std::filesystem::path &path, const std::string &name)
 
 }  // namespace
 
+std::array<std::uint8_t, 15> g_starting_replay_pilots{};
+std::uint8_t g_starting_replay_pilot_count = 0;
+
 void load(const std::filesystem::path &data_dir)
 {
     const std::filesystem::path rules = data_dir / "rules";
@@ -1107,6 +1110,15 @@ void load(const std::filesystem::path &data_dir)
     read_save_directory(read_file(start / "save_directory.json", "save_directory.json"), tables);
     read_speaker(read_file(data_dir / "sound" / "speaker.json", "speaker.json"), tables);
     check_shared(tables);
+    // The new campaign's replay pilots, kept for a Restart with the switch
+    // upgrade_restart_pilots on (include/revenge/rules.h).
+    {
+        const std::vector<std::uint8_t> &pool = tables.at("new_campaign.replay_pilot_pool");
+        if (pool.size() != g_starting_replay_pilots.size())
+            throw RulesError("new_campaign.replay_pilot_pool: not 15 pilots");
+        std::copy(pool.begin(), pool.end(), g_starting_replay_pilots.begin());
+        g_starting_replay_pilot_count = tables.at("new_campaign.random_pilot_counts").at(2);
+    }
     // Every row of the rule table is filled, each with its own size.
     for (std::size_t index = 0; index < RulePieceCount; ++index)
     {

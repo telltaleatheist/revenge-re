@@ -28,6 +28,9 @@ inline constexpr int ACTION_MASK_EXPERIENCE_COUNT = 0x04;
 void SelectUnitTacticalTargets(void);
 void AdvanceUnitTacticalMovement(uint16_t unitIndex);
 uint16_t ExecuteUnitWeaponAI(uint16_t unitIndex);
+/* Ours (upgrade_lance_weapons): the weapon a priority entry fires for the
+ * player's side (Weapons.cpp). */
+uint16_t LanceWeaponsUpgradeChoice(uint32_t readyMask, uint16_t firedWeaponId);
 void MoveUnitTowardMapCell(
     uint16_t unitIndex, uint16_t destinationX, uint16_t destinationY);
 void UpdateUnitSpriteForFacing(uint16_t unitIndex, uint16_t facing);

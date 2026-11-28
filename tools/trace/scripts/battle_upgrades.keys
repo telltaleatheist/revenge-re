@@ -12,5 +12,5 @@ steps:5 Escape idle:200 @snap:options                # the battle's options menu
 Down Down Down Down Down Down Down idle:100 @snap:line
 Return idle:300 @snap:page
 Return idle:300 @snap:switched
-Down Return idle:300 @snap:back
+Down Down Down Down Return idle:300 @snap:back
 Escape idle:300 steps:5 @snap:battle
