@@ -324,6 +324,7 @@ place ScenarioUnitFacing 3A6A:869A 18 run
 place TacticalStatusBlinkVisible 3A6A:86BD 1 table
 place TerrainLineOfSightBlockingThreshold 3A6A:86BE 2 run
 place SceneUnitRoutes 3A6A:86C1 113 table
+place SavedTacticalRoute 3A6A:87C9 B annotation
 place UnitWasAttackedThisTick 3A6A:87D4 18 run
 place UnitEnemyContactEstablished 3A6A:87ED 18 run
 place UnitEnemyEngagementActive 3A6A:8806 18 run
@@ -595,7 +596,6 @@ unplaced SavedDivideErrorHandler 8 zero at every snap
 unplaced SavedInvalidOpcodeHandler 8 zero at every snap
 unplaced SavedOverflowHandler 8 zero at every snap
 unplaced SavedSaveTransferState 2 zero at every snap
-unplaced SavedTacticalRoute B zero at every snap
 unplaced ScannedByActiveProbeText 4 host pointer
 unplaced ScenarioCompleteHeadingText 4 host pointer
 unplaced ScenarioDestructionCompletionState 1 zero at every snap
@@ -736,3 +736,4 @@ overlap WeaponAIHeatLimitByExperiencePastEnd SensorDamageProximityRangeTable the
 overlap WeaponAIHeatLimitByExperiencePastEnd TacticalScenarioLanceEnabled the heat limit's past-end window reads it as heat limits (an experience past 3, ExecuteUnitWeaponAI)
 overlap WeaponAIHeatLimitByExperiencePastEnd SpriteFacingByDirection the heat limit's past-end window reads it as heat limits (an experience past 3, ExecuteUnitWeaponAI)
 overlap WeaponAIHeatLimitByExperiencePastEnd WeaponDefinitions the heat limit's past-end window reads it as heat limits (an experience past 3, ExecuteUnitWeaponAI)
+overlap SceneUnitRoutes SavedTacticalRoute the saved route is the routes' last record (2208:002D, 1013, 28B4); the port names it by reference

@@ -65,3 +65,24 @@ page on what the original does.
   nearer enemy is down; sent earlier, it leaves the leader alone, the enemy
   destroys it, and the battle is lost. The original does exactly this
   (tools/trace/scripts/stage_07.keys, checked against its capture to 07:55).
+
+- **Stage 8 is won only after a fight.** On the forest path the lance must
+  reach the far side of the map, but the scene checks for that only once one
+  of the pass group or the road group's leader has been attacked; until
+  then a unit can stand on the far edge and nothing happens. Send one unit
+  at the pass group, its fire mode set to fire on any enemy (the mode's
+  second choice), while the leader crosses. The original does exactly this
+  (tools/trace/scripts/stage_08.keys, checked against its capture at every
+  snap).
+
+## Port bugs the comparison found
+
+Not the original's: places where the port's code differed from it, fixed so
+the port plays as the original does. `tools/trace/README.md` has the
+evidence (What the comparison found).
+
+- **Stage 8 started with one Pegasus fewer** (finding 12). The stage's
+  setup left out one of the five Pegasus copies, unit 9.
+- **A Move order blanked the leader's route** (finding 13). The route the
+  game keeps while an order is chosen was copied the wrong way round, so the
+  lance's followers were sent towards the map's corner.

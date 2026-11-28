@@ -19,7 +19,10 @@ extern uint8_t UnitTargetMapX[0x19];
 extern uint8_t UnitTargetMapY[0x19];
 extern uint8_t UnitRouteTargetMapX[0x19];
 extern uint8_t UnitRouteTargetMapY[0x19];
-extern SceneUnitRoute SavedTacticalRoute;
+/* DS:87C9, the routes' last record (SCENE_ROUTE_SAVED): a unit's route kept
+ * while a Move or target is chosen, to give back on Escape and to hand to
+ * the lance's followers. */
+extern SceneUnitRoute &SavedTacticalRoute;
 extern RevengeUnitRecord LiveScenarioUnits[0x18];
 extern uint8_t ScenarioUnitMapX[0x18];
 extern uint8_t ScenarioUnitMapY[0x18];

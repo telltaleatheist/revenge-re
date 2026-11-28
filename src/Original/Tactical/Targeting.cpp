@@ -566,7 +566,7 @@ uint16_t SelectTacticalMoveDestinationInput(
     TacticalSelectedUnitIndex = TACTICAL_UNIT_NONE;
     remainingPoints = unitIndex == 0x18 ? 0x01 : 0x04;
     route = &SceneUnitRoutes[unitIndex];
-    *route = SavedTacticalRoute;
+    SavedTacticalRoute = *route;
     savedUnitMapX = UnitRouteTargetMapX[unitIndex];
     savedUnitMapY = UnitRouteTargetMapY[unitIndex];
     route->waypointIndex = 0x00;

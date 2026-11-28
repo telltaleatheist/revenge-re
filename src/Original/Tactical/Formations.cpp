@@ -517,7 +517,7 @@ uint16_t SelectTacticalMoveDestination(
     uint8_t savedRouteY;
     uint16_t unitType;
 
-    SceneUnitRoutes[0x00] = SavedTacticalRoute;
+    SavedTacticalRoute = SceneUnitRoutes[0x00];
     savedRouteX = UnitRouteTargetMapX[0x00];
     savedRouteY = UnitRouteTargetMapY[0x00];
     unitType = PersistentUnitRoster[unitIndex].unitTypeId;

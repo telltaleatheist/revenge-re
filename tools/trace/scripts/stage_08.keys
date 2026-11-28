@@ -1,0 +1,62 @@
+# The ninth battle (stage 8) won by play, from the original's save after
+# stage 7. The story to the choice of two paths; the second (the forest
+# path) chosen. Hands-off nothing wins it: the lance waits at its start and
+# the road group parks across the road. The scene's win is checked only once
+# a unit of the pass group (12-15) or the road group's leader (20) has been
+# attacked: the lance leader (unit 0) standing on column 143 then wins it.
+# So the leader is sent across the map toward the lake past that column, and
+# the second unit (F2), its fire mode set to fire on any enemy, is sent
+# south at the pass group: its fight arms the check before the leader
+# crosses the column, and the battle is won at 10:36. Every order is given
+# while the battle waits (a unit's commands are up); the keys that land in
+# the running battle wait for a step (steps:1), and a message is answered
+# with no idle after it.
+# Then the menu over the battle: Save & Continue to slot 1: the save is
+# REVENGE_SAVE_STAGE_08.
+# set: campaign
+# start-save: REVENGE_SAVE_STAGE_07
+# Load Game, slot 1; the story to the choice of two paths.
+idle:1000 Return idle:50 Right idle:50 Return idle:300
+Return idle:600 @snap:stage8_story1
+Return idle:600 @snap:stage8_story2
+Return idle:600 @snap:stage8_story3
+Return idle:600 @snap:stage8_story4
+Return idle:600 @snap:stage8_story5
+Return idle:600 @snap:stage8_story6
+Return idle:600 @snap:stage8_story7
+Return idle:600 @snap:stage8_story8
+Return idle:600 @snap:stage8_story9
+Return idle:600 @snap:stage8_story10
+Return idle:600 @snap:stage8_paths
+# The second path, the forest; the battle from 10:31.
+Right idle:100 @snap:stage8_forest
+Return steps:2 @snap:stage8_battle
+# The leader's Commands (F1), Move: the cursor 57 cells down and right, then
+# 101 right (the lake, past column 143); the order given (Done).
+F1 Return idle:300 Return idle:300
+PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 PageDown idle:20 
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 
+idle:100 @snap:stage8_leader_cursor Return idle:300 Return idle:300 @snap:stage8_leader_commands
+Return steps:1 @snap:stage8_leader_ordered
+# The second unit's Commands (F2) at the next step, Move: the cursor 27
+# right, then 35 down (the pass group); the fire mode turned from its first
+# choice (fire only when fired on) to its second (fire on any enemy); Done.
+steps:1 F2 Return idle:300 Return idle:300
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 
+idle:100 @snap:stage8_second_cursor Return idle:300 Return idle:300 Up idle:50 Return idle:300 @snap:stage8_fire_at_will
+Down idle:50 @snap:stage8_second_commands Return steps:1 @snap:stage8_ordered
+# The leader past the road group, and its message (10:33) answered.
+steps:80 @snap:stage8_road
+still:200 @snap:stage8_message1 Return
+# The second unit at the pass group, the leader nearing column 143 (10:36:11);
+# the win's message (10:36:22), answered.
+steps:150 @snap:stage8_column
+still:200 @snap:stage8_won Return
+# The menu over the battle: Save & Continue to slot 1, as stage_07 does.
+still:2000 @snap:stage8_menu
+Down idle:50 Down idle:50 @snap:stage8_save
+Return idle:300 @snap:stage8_slots
+Return idle:300 @snap:stage8_save1 Return idle:300 @snap:stage8_save2
+# Saved; the transmission before the battle's second part.
+Return idle:600 @snap:stage8_saved

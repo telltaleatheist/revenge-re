@@ -455,8 +455,12 @@ int16_t RunCampaignStage08(void)
         LiveScenarioUnits[0x01] = EstimatedUnitRecord;
         LoadUnitTemplateRecord(UNIT_TYPE_PEGASUS);
         EstimatedUnitRecord.deploymentState = TRUE;
+        // 0D73:0F05-0F56: records 9B0C, 9BA2, 9F26, 9FBC and A052, units
+        // 2, 3, 9, 10 and 11 (unit 9 was missing here, and the stage-8
+        // battle went on with one Pegasus fewer).
         LiveScenarioUnits[0x02] = EstimatedUnitRecord;
         LiveScenarioUnits[0x03] = EstimatedUnitRecord;
+        LiveScenarioUnits[0x09] = EstimatedUnitRecord;
         LiveScenarioUnits[0x0A] = EstimatedUnitRecord;
         LiveScenarioUnits[0x0B] = EstimatedUnitRecord;
         LoadUnitTemplateRecord(UNIT_TYPE_APC);

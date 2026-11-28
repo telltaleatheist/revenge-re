@@ -84,6 +84,7 @@ stopped. (Every item also waits 4 polls, well inside one step.)
 | `stage_06_lost` | campaign set; from the original's save after stage 5: the Dragon battle (stage 6) lost, the lance sent at the Dragon at once and its leader lost at 07:27; the defeat, the menu after it, slot 1 loaded again |
 | `stage_06_made` | campaign set; from the original's save after stage 5: the Dragon battle played to 07:33 (the lance sent east after the ally's loss), then the Dragon ended by `destroy:20`; the scene's own win, the transmission, Save & Continue to slot 1. Made, not played: no original trace can match it |
 | `stage_07` | campaign set; from stage_06_made's save: the eighth battle (stage 7), its five stops answered; hands-off it stalls (the leader immobile from 07:40, the last enemy far off), so at 07:41 the second unit is sent at the last enemy and the battle is won at 07:43; the transmission, Save & Continue to slot 1 |
+| `stage_08` | campaign set; from stage_07's save: the ninth battle (stage 8), the forest path chosen; hands-off nothing wins it, so the leader is sent across the map past column 143 and the second unit, its fire mode set to fire on any enemy, at the pass group, whose fight arms the scene's check; won at 10:36; Save & Continue to slot 1 |
 
 ## Trace records (`traces/*.jsonl`)
 
@@ -188,7 +189,8 @@ never the port's) starts the next script. Each link's save is named by its own
 variable: `REVENGE_SAVE_STAGE_04` for the one stages_02_04 ends with, which
 stage_05 starts from, `REVENGE_SAVE_STAGE_05` for stage_05's, which
 stage 6's scripts start from, `REVENGE_SAVE_STAGE_06` for stage_06_made's,
-which stage_07 starts from, `REVENGE_SAVE_STAGE_07` for stage_07's.
+which stage_07 starts from, `REVENGE_SAVE_STAGE_07` for stage_07's, which
+stage_08 starts from, and `REVENGE_SAVE_STAGE_08` for stage_08's.
 
 From stage 7 on, the chain starts from a made save, loaded alike by both
 sides: no script wins stage 6 by play, so stage_06_made ends it with the
@@ -437,3 +439,25 @@ What the comparison found in the port, and how each was fixed:
     (tactical.narration_countdown). A prompt within a pass or two of the
     limit can still fall either way against a capture; such a place is a
     timing edge, and the chain takes the original's path there.
+12. **Stage 8 lost a Pegasus.** Before its battle, stage 8 (0D73:0C2B) fills
+    the lance from unit templates, in one of three sets by the campaign's
+    phase and a restart. In the set a campaign reaches by play
+    (0D73:0EC4-0F77) the original copies the Pegasus to units 2, 3, 9, 10
+    and 11; the port left out unit 9, so the battle ran with one unit
+    fewer, units 10 and 11 in other places, and every step after it
+    different. The copy is back (stage_08's save block from @stage8_story7,
+    where the units are filled). The other stages' template copies, the
+    scenario rosters (30F1:0006-0877, 0B8F-1090) and the scene loader's two
+    switches (1A1F:1F1D, 2465) were checked slot by slot against the
+    original and match.
+13. **Opening a unit's commands threw the leader's route away.** The original
+    keeps a unit's route in the routes' last record (DS:87C9, entry 18h of
+    SceneUnitRoutes) while a Move or a target is chosen: the commands menu
+    and the movement prompt save route 0 there (2208:002D, 28B4), the target
+    choice the unit's own (2208:1013), and Escape and the lance's followers
+    take it back (2208:058A, 135E, 2990). The port kept a separate record,
+    always zero, and copied the three saves the other way, so a Move order
+    blanked the leader's route and gave its followers an empty one, which
+    they walked towards the map's corner: in stage 8 the two Pegasi drove
+    west where the original's hold. `SavedTacticalRoute` is now that last
+    record. No earlier script's state moved, only the two objects' hashes.

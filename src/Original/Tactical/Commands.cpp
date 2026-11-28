@@ -40,7 +40,7 @@ void RunTacticalUnitCommandMenu(uint16_t unitIndex)
 
     TacticalMenuInputState = 0x00;
     TacticalInteractionLocked = 0x01;
-    SceneUnitRoutes[0x00] = SavedTacticalRoute;
+    SavedTacticalRoute = SceneUnitRoutes[0x00];
     savedLanceMapX = UnitRouteTargetMapX[0x00];
     savedLanceMapY = UnitRouteTargetMapY[0x00];
     savedWindowLeft = TacticalMenuFirstRegion;

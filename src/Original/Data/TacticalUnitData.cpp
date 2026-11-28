@@ -17,7 +17,7 @@ uint8_t UnitTargetMapX[0x19];
 uint8_t UnitTargetMapY[0x19];
 uint8_t UnitRouteTargetMapX[0x19];
 uint8_t UnitRouteTargetMapY[0x19];
-SceneUnitRoute SavedTacticalRoute;
+SceneUnitRoute &SavedTacticalRoute = SceneUnitRoutes[SCENE_ROUTE_SAVED];
 RevengeUnitRecord LiveScenarioUnits[0x18];
 uint8_t ScenarioUnitMapX[0x18];
 uint8_t ScenarioUnitMapY[0x18];
