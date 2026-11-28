@@ -9,6 +9,8 @@
   "_hint_fade_in_seconds": "0 to 2, seconds: its fade in",
   "hint_fade_out_seconds": 0.8,
   "_hint_fade_out_seconds": "0 to 3, seconds: its fade out (also after its x)",
+  "update_notice_seconds": 15,
+  "_update_notice_seconds": "3 to 60, seconds: how long UPDATE AVAILABLE stays in the corner when the start-up check finds a new version (the hint's fades)",
   "check_listed": 6,
   "_check_listed": "1 to 50, files: CHECK MY FILES names this many damaged files, then counts the rest",
   "click_volume": 1.0,
