@@ -81,6 +81,22 @@ page on what the original does.
   (tools/trace/scripts/stage_08.keys, checked against its capture at every
   snap).
 
+- **Stage 9 needs the lance taken through one unit at a time.** The leader
+  and the APC must both stand on the gate's four cells (194-195, 98-99),
+  but the enemy column marches down the road ahead of them and parks on
+  those cells. Between the start and the open east half the forest leaves
+  only the strip along the map's top and the road's three-cell corridor up
+  to its crossing at 146,57. A lance order keeps the leader's formation,
+  so the lance jams in the corridor, and the leader alone at the gate is
+  destroyed. Send the APC (F7) along the top strip. Send the leader up the
+  corridor once the column has passed the crossing (about 10:38), then each
+  follower (F2-F4) through the crossing on its own. Meet the enemies when
+  they come out from the gate. The leader, a tank, cannot cross the lake
+  north of the gate, so take it round the lake's west side. The APC stops a
+  cell short of its first order and needs a second. The original does
+  exactly this (tools/trace/scripts/stage_09.keys, checked against its
+  capture at every snap; won at 10:49).
+
 ## Port bugs the comparison found
 
 Not the original's: places where the port's code differed from it, fixed so

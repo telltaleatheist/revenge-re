@@ -88,6 +88,7 @@ stopped. (Every item also waits 4 polls, well inside one step.)
 | `stage_07` | campaign set; from stage_06_made's save: the eighth battle (stage 7), its five stops answered; hands-off it stalls (the leader legless by 07:38, from 07:38:10 no unit with a target, the last enemy far off and stopped), so at 07:41 the second unit is sent at the last enemy and the battle is won at 07:43; the transmission, Save & Continue to slot 1 |
 | `stage_07_pursuit` | campaign set; the UPGRADES switch `upgrade_lance_pursuit` on (its `# upgrades:` line); stage_07's start and stops, then hands-off: a minute into the quiet the lance's acting leader is sent at the last enemy, the third unit follows, and the battle is won at 07:42 with no key; every snap before the quiet matches stage_07's |
 | `stage_08` | campaign set; from stage_07's save: the ninth battle (stage 8), the forest path chosen; hands-off nothing wins it, so the leader is sent across the map past column 143 and the second unit, its fire mode set to fire on any enemy, at the pass group, whose fight arms the scene's check; won at 10:36; Save & Continue to slot 1 |
+| `stage_09` | campaign set; from stage_08's save: the tenth battle (stage 9), the leader and the APC to the gate; the APC's lance along the map's top strip, the leader up the road's corridor once the enemy column has passed and its followers through the crossing one by one, the enemies met as they leave the gate, the leader round the lake (a tank cannot cross it); won at 10:49; Save & Continue to slot 1 |
 | `restart_pilots` | the UPGRADES switch `upgrade_restart_pilots` on: restart.keys's Restart, then on into the lance editor, whose pilot cards are drawn from the pool a new campaign starts with (18 to 32), not pilot 0 again and again. Saves stay interchangeable both ways: with the switch on, the campaign set matches (off to on); the original's own saves through stage 8 already hold that pool (count 15, pilots 18 to 32), and every campaign trace loads one with the switches off (on to off) |
 | `lance_weapons` | campaign set; stage_05 with the UPGRADES switch `upgrade_lance_weapons` on: the hands-off battle, the computer running the whole lance. No choice of the lance's changes there, so it matches stage_05 frame for frame; tests/test_lance_ai.cpp shows the choices it does change, and that enemies' never do |
 | `lance_tactics` | campaign set; stage_05 with the UPGRADES switch `upgrade_lance_tactics` on, as `lance_weapons`: it matches stage_05, and tests/test_lance_ai.cpp shows the judgements it changes, the lance's only |
@@ -208,7 +209,8 @@ variable: `REVENGE_SAVE_STAGE_04` for the one stages_02_04 ends with, which
 stage_05 starts from, `REVENGE_SAVE_STAGE_05` for stage_05's, which
 stage 6's scripts start from, `REVENGE_SAVE_STAGE_06` for stage_06_made's,
 which stage_07 starts from, `REVENGE_SAVE_STAGE_07` for stage_07's, which
-stage_08 starts from, and `REVENGE_SAVE_STAGE_08` for stage_08's.
+stage_08 starts from, `REVENGE_SAVE_STAGE_08` for stage_08's, which
+stage_09 starts from, and `REVENGE_SAVE_STAGE_09` for stage_09's.
 
 From stage 7 on, the chain starts from a made save, loaded alike by both
 sides: no script wins stage 6 by play, so stage_06_made ends it with the

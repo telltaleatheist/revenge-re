@@ -1,0 +1,164 @@
+# The tenth battle (stage 9) won by play, from the original's save after
+# stage 8. The scene wins once the lance leader (unit 0) and the APC (unit 8)
+# both stand on the gate's four cells (columns 194-195, rows 98-99); it is
+# lost at 12:00 or if either of them is out of action. Hands-off nothing wins
+# it: the enemies (12-13 and 16-19) march down the road and park on and by
+# the gate, and the lance waits in the road's corridor at its start.
+# The map (MAP3): the forest between the start and the east half leaves two
+# ways through, the open strip along the top (rows 0-13) and the road's
+# corridor (columns 141-144) up to its crossing at 146,57; south of the
+# crossing the east half is open but for a lake (rows 70-93, columns 177-190)
+# that the leader, a tank, cannot cross. So the APC's lance goes east along
+# the top strip and down the open east half; the leader goes up the corridor
+# to the crossing once the enemy column has passed it (10:38), and its three
+# followers (F2-F4), their fire mode set to fire on any enemy, are each sent
+# through the crossing once they reach the corridor. The lance then meets the
+# enemies coming out from the gate (all destroyed by 10:45); the leader goes
+# round the lake to the west and onto 194,99, and the APC onto 195,98 (its
+# first stop is a cell short). Each unit is ordered on its own: a lance
+# order keeps the leader's formation, and the corridor jams. Every order is
+# given while the battle waits (a unit's commands are up); the keys that
+# land in the running battle wait for a step (steps:1), and a message is
+# answered with no idle after it.
+# Then the menu over the battle: Save & Continue to slot 1: the save is
+# REVENGE_SAVE_STAGE_09.
+# set: campaign
+# start-save: REVENGE_SAVE_STAGE_08
+# Load Game, slot 1; the transmission; the battle (10:36:02).
+idle:1000 Return idle:50 Right idle:50 Return idle:300 @snap:stage9_loaded
+Return idle:600 @snap:stage9_transmission
+Return steps:2 @snap:stage9_battle
+# The APC's lance (F7) up onto the top strip (30,10), then east along it
+# to 139,8.
+steps:1 F7 Return idle:300 Return idle:300
+Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_apc1_ordered
+steps:25 @snap:stage9_a25
+steps:25 @snap:stage9_a50
+steps:1 F7 Return idle:300 Return idle:300
+Up idle:20 Up idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_apc2_ordered
+steps:50 @snap:stage9_b50
+# 10:38: the enemy column is past the crossing; the leader (F1), its fire
+# mode set to fire on any enemy, up the corridor to the crossing (146,57).
+steps:1 F1 Return idle:300 Return idle:300
+Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20
+Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300 Up idle:50 Return idle:300 Down idle:50
+Return steps:1 @snap:stage9_leg1_ordered
+steps:25 @snap:stage9_c25
+steps:25 @snap:stage9_c50
+steps:25 @snap:stage9_c75
+steps:25 @snap:stage9_c100
+# 10:40: the leader on to 165,65; its followers (F2-F4), now in the
+# corridor, through the crossing to 150,58, 152,58 and 154,58.
+steps:1 F1 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_leg2_ordered
+steps:1 F2 Return idle:300 Return idle:300
+Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300 Up idle:50 Return idle:300 Down idle:50
+Return steps:1 @snap:stage9_u1a_ordered
+steps:1 F3 Return idle:300 Return idle:300
+Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300 Up idle:50 Return idle:300 Down idle:50
+Return steps:1 @snap:stage9_u2a_ordered
+steps:1 F4 Return idle:300 Return idle:300
+Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20 Up idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300 Up idle:50 Return idle:300 Down idle:50
+Return steps:1 @snap:stage9_u3a_ordered
+steps:25 @snap:stage9_d25
+steps:25 @snap:stage9_d50
+steps:25 @snap:stage9_d75
+steps:25 @snap:stage9_d100
+# 10:42: the APC's lance down the east half to 160,55; the lance at the
+# enemies by the gate (178,82; 176,82; 180,80; 174,84).
+steps:1 F7 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_apc3_ordered
+steps:1 F1 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_leg3_ordered
+steps:1 F2 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_u1b_ordered
+steps:1 F3 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_u2b_ordered
+steps:1 F4 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_u3b_ordered
+still:200 @snap:stage9_message1 Return
+still:200 @snap:stage9_message2 Return
+still:200 @snap:stage9_message3 Return
+still:200 @snap:stage9_message4 Return
+still:200 @snap:stage9_message5 Return
+still:200 @snap:stage9_message6 Return
+still:200 @snap:stage9_message7 Return
+steps:25 @snap:stage9_e25
+still:200 @snap:stage9_message8 Return
+still:200 @snap:stage9_message9 Return
+still:200 @snap:stage9_message10 Return
+still:200 @snap:stage9_message11 Return
+steps:25 @snap:stage9_e50
+# 10:45: the enemies destroyed; the leader round the lake's west side
+# (174,91, then 183,96) and onto the gate (194,99), the APC after it.
+steps:1 F1 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Left idle:20 Left idle:20 Left idle:20 Left idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_leg4_ordered
+steps:25 @snap:stage9_f25
+steps:1 F1 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_leg5_ordered
+steps:25 @snap:stage9_g25
+steps:1 F1 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_leg6_ordered
+steps:1 F7 Return idle:300 Return idle:300
+Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20 Down idle:20
+Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20 Right idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_apc4_ordered
+steps:25 @snap:stage9_h25
+still:200 @snap:stage9_message12 Return
+steps:25 @snap:stage9_h50
+steps:25 @snap:stage9_h75
+steps:25 @snap:stage9_h100
+# The APC a cell short (196,97): onto 195,98, and the battle is won.
+steps:1 F7 Return idle:300 Return idle:300
+Down idle:20
+Left idle:20
+idle:100 Return idle:300 Return idle:300
+Return steps:1 @snap:stage9_apc5_ordered
+# The menu over the battle: Save & Continue to slot 1; saved, the
+# transmission before the next battle.
+still:200 @snap:stage9_menu
+Down idle:50 Down idle:50 @snap:stage9_save
+Return idle:300 @snap:stage9_slots
+Return idle:300 @snap:stage9_save1 Return idle:300 @snap:stage9_save2
+Return idle:600 @snap:stage9_saved
