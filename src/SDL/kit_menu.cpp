@@ -108,28 +108,18 @@ std::string in_folder(const char *folder, const char *name)
     return folder ? (utf8_path(folder) / name).string() : std::string();
 }
 
-// The UPGRADES entry, with its state where the kit has one (MenuEntry::available, unavailable_note); without it the
-// entry is left out, rather than a pick that does nothing off the battle map.
-template <typename Entry>
-bool add_upgrades_entry(std::vector<Entry> &entries)
+// The UPGRADES entry: picked, the page opens at the battle loop's next key check (BattleRuntime.cpp); elsewhere it is
+// dimmed, with the note that says where the page is.
+rekit::sdl::MenuEntry upgrades_entry()
 {
-    if constexpr (requires(Entry e) {
-                      e.available;
-                      e.unavailable_note;
-                  })
-    {
-        Entry e;
-        e.label = Upgrades_Text(UPGRADES_TEXT_OPTIONS_LINE);
-        e.pick = []
-        { Upgrades_RequestPage(); };
-        e.available = []
-        { return Upgrades_PageAvailable() != 0; };
-        e.unavailable_note = Upgrades_Text(UPGRADES_TEXT_ELSEWHERE);
-        entries.push_back(std::move(e));
-        return true;
-    }
-    else
-        return false;
+    rekit::sdl::MenuEntry e;
+    e.label = Upgrades_Text(UPGRADES_TEXT_OPTIONS_LINE);
+    e.pick = []
+    { Upgrades_RequestPage(); };
+    e.available = []
+    { return Upgrades_PageAvailable() != 0; };
+    e.unavailable_note = Upgrades_Text(UPGRADES_TEXT_ELSEWHERE);
+    return e;
 }
 
 rekit::sdl::MenuHooks hooks(SDL_Window *window)
@@ -205,7 +195,7 @@ rekit::sdl::MenuHooks hooks(SDL_Window *window)
             std::fprintf(stderr, "setup menu: the setup could not be started again\n");
         Platform_RequestQuit();
     };
-    add_upgrades_entry(h.entries);
+    h.entries.push_back(upgrades_entry());
     h.log = [](const std::string &line)
     { std::fprintf(stderr, "setup menu: %s\n", line.c_str()); };
     return h;
