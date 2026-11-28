@@ -43,11 +43,17 @@ An installed copy is started with no arguments (a shortcut, a double-click).
 It plays from `REVENGE_ASSET_DIRECTORY` or a `REVENGE.CFG` beside the program
 when either is set, else from the `game_folder` line of `setup.txt` in the
 player's folder while that folder is still the game, else from the player's
-own copy (`install/` in that folder). With none, re-setup-kit's setup screen
-opens first (`src/SDL/setup_host.cpp`, `src/Setup`). The player picks their
-copy of the game (its `REVENGE.EXE`, any file in its folder, or the archive
-it came in), and it is copied into `install/`, or into a folder of the
-game's own with CHANGE FOLDER. The original is only read. A copy is known by
+own copy (`install/` in that folder). With none, re-setup-kit's setup runs
+first (`src/SDL/setup_host.cpp`, `src/Setup`), in a small window: a copy
+found on the computer is checked and copied into `install/` at once (one
+with files missing, damaged or unknown is shown first, `asks_first`); with
+none found, release 1.00 is downloaded from the launcher's signed catalog at
+once. A failure, a cancel or no download opens the setup window, where the
+player picks their copy (its `REVENGE.EXE`, any file in its folder, or the
+archive it came in), copied into `install/`, or into a folder of the game's
+own with CHANGE FOLDER. Every install leaves the record of its files
+(`rebuild-files.sha256`) for the setup menu's CHECK MY FILES. The original
+is only read. A copy is known by
 `REVENGE.EXE`'s size and SHA-256 (the US DOS release 1.00,
 `docs/SUPPORTED_VERSIONS.md`), its files by `src/Setup/GameFilesTable.cpp`
 (names, sizes and hashes only, written by `tools/setup/make_game_files.py`).
