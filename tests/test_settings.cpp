@@ -4,6 +4,7 @@
 
 #include "revenge/media_settings.h"
 #include "revenge/platform_backend.h"
+#include "revenge/upgrades.h"
 #include "game_paths.h"
 #include "settings.h"
 #include "original_import_for_tests.h"
@@ -39,7 +40,13 @@
  *   bad      a choice it doesn't know is a fault naming the file and line
  *   extra    so is a parameter after one of the new sound words
  *   parse    the game's own parse applies every line, the last (the input
- *            device) too, as 2C7F:055F tests its count before the decrement
+ *            device) too, as 2C7F:055F tests its count before the decrement *   upgrades the UPGRADES switches (include/revenge/upgrades.h): off when
+ *            the file has no line for them, and written off; read on and
+ *            off in any case; a later version's switch passed over;
+ *            saved with the media lines kept
+ *   upgrades_bad  a switch's word other than on or off is a fault
+ *   upgrades_test under the harness the file's switches are not the game's:
+ *            only those REVENGE_TEST_UPGRADES names, and nothing is saved
  */
 /* 2C7F's loader; only its own file declares it. */
 uint16_t LoadMediaConfiguration(void);
@@ -224,6 +231,62 @@ int main(int argc, char **argv)
         InputDeviceType = 0x0000;
         assert(LoadMediaConfiguration() == TRUE);
         assert(InputDeviceType == InputConfigurationRecords[0].value);
+    }
+    else if (strcmp(mode, "upgrades") == 0)
+    {
+        const char *media = "video = vga\nmusic = off\nsound = speaker\ninput = keys\n";
+        char *written;
+
+        assert(SDL_unsetenv_unsafe("REVENGE_HARNESS_SCRIPT") == 0 && SDL_unsetenv_unsafe("RE_KIT_TEST") == 0);
+        WriteText(settingsPath, media);
+        assert(HostSettings_Prepare());
+        assert(!Upgrades_TestMode() && !Upgrades_IsOn(UPGRADE_LANCE_PURSUIT));
+        (void) SDL_RemovePath(settingsPath);
+        assert(HostSettings_Prepare());
+        written = (char *) SDL_LoadFile(settingsPath, NULL);
+        assert(written != NULL && strstr(written, "\nupgrade_lance_pursuit = off\n") != NULL);
+        SDL_free(written);
+        WriteText(settingsPath, "video = vga\nmusic = off\nsound = speaker\ninput = keys\n"
+                                "Upgrade_Lance_Pursuit = ON\nupgrade_from_later = on\n");
+        assert(HostSettings_Prepare());
+        assert(Upgrades_IsOn(UPGRADE_LANCE_PURSUIT));
+        Upgrades_Set(UPGRADE_LANCE_PURSUIT, 0);
+        HostSettings_SaveUpgrades();
+        written = (char *) SDL_LoadFile(settingsPath, NULL);
+        assert(written != NULL && strstr(written, "\nupgrade_lance_pursuit = off\n") != NULL);
+        assert(strstr(written, "\nmusic = off\n") != NULL && strstr(written, "\nsound = speaker\n") != NULL);
+        SDL_free(written);
+        assert(HostSettings_Prepare());
+        assert(!Upgrades_IsOn(UPGRADE_LANCE_PURSUIT));
+    }
+    else if (strcmp(mode, "upgrades_bad") == 0)
+    {
+        WriteText(settingsPath, "video = vga\nmusic = off\nsound = speaker\ninput = keys\nupgrade_lance_pursuit = yes\n");
+        (void) HostSettings_Prepare();
+    }
+    else if (strcmp(mode, "upgrades_test") == 0)
+    {
+        const char *on = "video = vga\nmusic = off\nsound = speaker\ninput = keys\nupgrade_lance_pursuit = on\n";
+        char *written;
+
+        WriteText(settingsPath, on);
+        assert(SDL_setenv_unsafe("REVENGE_HARNESS_SCRIPT", "a.keys", 1) == 0);
+        assert(SDL_unsetenv_unsafe("REVENGE_TEST_UPGRADES") == 0);
+        assert(HostSettings_Prepare());
+        assert(Upgrades_TestMode() && !Upgrades_IsOn(UPGRADE_LANCE_PURSUIT));
+        Upgrades_Set(UPGRADE_LANCE_PURSUIT, 0);
+        HostSettings_SaveUpgrades();
+        written = (char *) SDL_LoadFile(settingsPath, NULL);
+        assert(written != NULL && strcmp(written, on) == 0);
+        SDL_free(written);
+        assert(SDL_setenv_unsafe("REVENGE_TEST_UPGRADES", "lance_pursuit", 1) == 0);
+        assert(HostSettings_Prepare());
+        assert(Upgrades_IsOn(UPGRADE_LANCE_PURSUIT));
+        assert(SDL_unsetenv_unsafe("REVENGE_HARNESS_SCRIPT") == 0);
+        assert(SDL_setenv_unsafe("RE_KIT_TEST", "1", 1) == 0);
+        assert(SDL_unsetenv_unsafe("REVENGE_TEST_UPGRADES") == 0);
+        assert(HostSettings_Prepare());
+        assert(Upgrades_TestMode() && !Upgrades_IsOn(UPGRADE_LANCE_PURSUIT));
     }
     else
     {

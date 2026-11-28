@@ -14,6 +14,11 @@
  */
 int HostSettings_Prepare(void);
 
+/* Writes the UPGRADES switches as they are now (include/revenge/upgrades.h)
+ * to the settings file, its media lines as they were; nothing in test mode
+ * or without a write folder. */
+void HostSettings_SaveUpgrades(void);
+
 /* The file's name, for messages and tests. */
 #define HOST_SETTINGS_FILE_NAME "settings.txt"
 

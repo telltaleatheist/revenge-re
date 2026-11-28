@@ -3,6 +3,7 @@
 #include "game_paths.h"
 #include "revenge/debug.h"
 #include "revenge/media_settings.h"
+#include "revenge/upgrades.h"
 
 #include <SDL3/SDL.h>
 
@@ -83,6 +84,11 @@ static const RevengeMediaChoices DefaultChoices = {
 
 static RevengeMediaChoices choices;
 static int prepared;
+/* The player's switches as the file has them (include/revenge/upgrades.h);
+ * in test mode the game's are the run's instead, and these are kept for the
+ * file. */
+static int fileUpgrades[UPGRADE_COUNT];
+static char settingsPath[SETTINGS_PATH_CAPACITY];
 
 static uint16_t MusicRecord(uint16_t music)
 {
@@ -185,19 +191,54 @@ static char *NextLine(char **cursor)
     return line;
 }
 
+/* "upgrade_<key> = on|off" (include/revenge/upgrades.h): 1 if the line is
+ * one, its switch set in upgrades. A key this version doesn't know is a later
+ * version's switch, passed over, so going back a version still starts. */
+static int ReadUpgradeLine(char **words, int count, const char *path, int lineNumber,
+    int *upgrades, int *seenUpgrades)
+{
+    static const char Prefix[] = "upgrade_";
+    size_t index;
+    int upgrade;
+    int on;
+
+    for (index = 0; index < sizeof(Prefix) - 1; ++index)
+        if (tolower((unsigned char) words[0][index]) != Prefix[index])
+            return 0;
+    upgrade = Upgrades_Index(words[0] + sizeof(Prefix) - 1);
+    if (upgrade < 0)
+        return 1;
+    if (count != 2)
+        RevengeFault("%s:%d: not \"%s = on\" or \"off\"", path, lineNumber, words[0]);
+    if (seenUpgrades[upgrade])
+        RevengeFault("%s:%d: %s is set twice", path, lineNumber, words[0]);
+    seenUpgrades[upgrade] = 1;
+    if (SameWord(words[1], "on"))
+        on = 1;
+    else if (SameWord(words[1], "off"))
+        on = 0;
+    else
+        RevengeFault("%s:%d: %s can't be \"%s\"", path, lineNumber, words[0], words[1]);
+    upgrades[upgrade] = on;
+    return 1;
+}
+
 /* Our file: "option = word"; '#' starts a comment. An old card word for the
- * sound may carry the card's parameter after it, which is passed over. 1 if
- * it held an old word. */
-static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
+ * sound may carry the card's parameter after it, which is passed over. The
+ * switches' lines may follow, or be absent (off). 1 if it held an old word. */
+static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out, int *upgrades)
 {
     int old = 0;
     int seen[MEDIA_OPTION_COUNT] = { 0, 0, 0, 0 };
+    int seenUpgrades[UPGRADE_COUNT] = { 0 };
     char *cursor = text;
     char *line;
     int lineNumber = 0;
     int option;
 
     *out = DefaultChoices;
+    for (option = 0; option < UPGRADE_COUNT; ++option)
+        upgrades[option] = 0;
     while ((line = NextLine(&cursor)) != NULL)
     {
         char *words[3];
@@ -213,6 +254,8 @@ static int ReadOurFile(char *text, const char *path, RevengeMediaChoices *out)
             continue;
         if (count < 2 || count > 3)
             RevengeFault("%s:%d: not \"option = choice\"", path, lineNumber);
+        if (ReadUpgradeLine(words, count, path, lineNumber, upgrades, seenUpgrades))
+            continue;
         option = WordIndex(OptionWords, MEDIA_OPTION_COUNT, words[0]);
         if (option < 0)
             RevengeFault("%s:%d: no option \"%s\"", path, lineNumber, words[0]);
@@ -290,7 +333,7 @@ static void ReadMediaConfiguration(char *text, RevengeMediaChoices *out)
     out->choice[MEDIA_OPTION_SOUND] = SoundRecord(out->sound);
 }
 
-static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
+static void WriteOurFile(const char *path, const RevengeMediaChoices *values, const int *upgrades)
 {
     char text[SETTINGS_TEXT_CAPACITY];
     int length;
@@ -335,6 +378,12 @@ static void WriteOurFile(const char *path, const RevengeMediaChoices *values)
             length += snprintf(text + length, sizeof(text) - (size_t) length, "%s = %s\n",
                 OptionWords[option], ChoiceWords[option][choice]);
     }
+    length += snprintf(text + length, sizeof(text) - (size_t) length,
+        "\n# The UPGRADES page's switches, fixes for the original's own bugs:\n"
+        "# on or off. Off plays as the original did.\n");
+    for (option = 0; option < UPGRADE_COUNT; ++option)
+        length += snprintf(text + length, sizeof(text) - (size_t) length, "upgrade_%s = %s\n",
+            Upgrades_Key(option), upgrades[option] ? "on" : "off");
     if (length <= 0 || (size_t) length >= sizeof(text) || !SDL_SaveFile(path, text, (size_t) length))
         RevengeFault("can't write %s", path);
 }
@@ -352,10 +401,73 @@ static char *LoadText(const char *path)
     return data;
 }
 
+/* Test mode: the trace harness runs, or the kit's RE_KIT_TEST=1. */
+static int InTestMode(void)
+{
+    const char *script = SDL_getenv("REVENGE_HARNESS_SCRIPT");
+    const char *kit = SDL_getenv("RE_KIT_TEST");
+
+    return (script != NULL && script[0] != '\0') || (kit != NULL && strcmp(kit, "1") == 0);
+}
+
+/* The game's switches: the file's, or in test mode only those the run names
+ * in REVENGE_TEST_UPGRADES (keys apart by spaces or commas; a trace script's
+ * "# upgrades:" line, tools/trace/record.py). */
+static void ApplyUpgrades(void)
+{
+    int upgrade;
+
+    Upgrades_SetTestMode(InTestMode());
+    for (upgrade = 0; upgrade < UPGRADE_COUNT; ++upgrade)
+        Upgrades_Set(upgrade, Upgrades_TestMode() ? 0 : fileUpgrades[upgrade]);
+    if (Upgrades_TestMode())
+    {
+        const char *named = SDL_getenv("REVENGE_TEST_UPGRADES");
+        char list[SETTINGS_LINE_CAPACITY];
+        char *cursor = list;
+
+        if (named == NULL || named[0] == '\0')
+            return;
+        if (strlen(named) >= sizeof(list))
+            RevengeFault("REVENGE_TEST_UPGRADES is too long");
+        strcpy(list, named);
+        while (*cursor != '\0')
+        {
+            char *word;
+
+            while (*cursor == ' ' || *cursor == ',')
+                ++cursor;
+            if (*cursor == '\0')
+                break;
+            word = cursor;
+            while (*cursor != '\0' && *cursor != ' ' && *cursor != ',')
+                ++cursor;
+            if (*cursor != '\0')
+                *cursor++ = '\0';
+            upgrade = Upgrades_Index(word);
+            if (upgrade < 0)
+                RevengeFault("REVENGE_TEST_UPGRADES: no switch \"%s\"", word);
+            Upgrades_Set(upgrade, 1);
+        }
+    }
+}
+
+void HostSettings_SaveUpgrades(void)
+{
+    int upgrade;
+
+    if (Upgrades_TestMode())
+        return;
+    for (upgrade = 0; upgrade < UPGRADE_COUNT; ++upgrade)
+        fileUpgrades[upgrade] = Upgrades_IsOn(upgrade);
+    if (prepared && settingsPath[0] != '\0')
+        WriteOurFile(settingsPath, &choices, fileUpgrades);
+}
+
 int HostSettings_Prepare(void)
 {
     const char *folder = GamePaths_WriteDirectory();
-    char path[SETTINGS_PATH_CAPACITY];
+    char *path = settingsPath;
     char install[SETTINGS_PATH_CAPACITY];
     char *text;
     int option;
@@ -369,21 +481,24 @@ int HostSettings_Prepare(void)
     path[0] = '\0';
     if (folder != NULL)
     {
-        snprintf(path, sizeof(path), "%s%s", folder, HOST_SETTINGS_FILE_NAME);
+        snprintf(path, sizeof(settingsPath), "%s%s", folder, HOST_SETTINGS_FILE_NAME);
         text = LoadText(path);
         if (text != NULL)
         {
-            int old = ReadOurFile(text, path, &choices);
+            int old = ReadOurFile(text, path, &choices, fileUpgrades);
 
             SDL_free(text);
             if (old)
-                WriteOurFile(path, &choices);
+                WriteOurFile(path, &choices, fileUpgrades);
             prepared = 1;
+            ApplyUpgrades();
             return 1;
         }
     }
 
     choices = DefaultChoices;
+    for (option = 0; option < UPGRADE_COUNT; ++option)
+        fileUpgrades[option] = 0;
     if (GamePaths_Resolve("MEDIA.CFG", GAME_PATH_READ, install, sizeof(install)) == 0 &&
         (text = LoadText(install)) != NULL)
     {
@@ -391,7 +506,8 @@ int HostSettings_Prepare(void)
         SDL_free(text);
     }
     if (path[0] != '\0')
-        WriteOurFile(path, &choices);
+        WriteOurFile(path, &choices, fileUpgrades);
     prepared = 1;
+    ApplyUpgrades();
     return 1;
 }

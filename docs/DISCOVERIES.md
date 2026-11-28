@@ -58,13 +58,19 @@ page on what the original does.
   heat is 0 (or 2), so once they have fired they wait to cool right down
   before firing again. Kept; `tools/trace/README.md` (finding 9).
 
-- **Stage 7 can wait for ever.** Around 07:40 the lance leader takes an
-  engine hit and can no longer move. The other two hold formation on it, and
-  the last enemy, far across the map, never comes, so the battle never ends.
-  Send one of the other two after it (F2 or F3, then Move), but only once the
-  nearer enemy is down; sent earlier, it leaves the leader alone, the enemy
-  destroys it, and the battle is lost. The original does exactly this
+- **Stage 7 can wait for ever.** Shortly before 07:38 the lance leader, the
+  player's own 'Mech, loses its left leg and can no longer walk (its walking
+  speed 0; an engine hit it took is not what stops it). The next 'Mech leads
+  the lance from then on, but its route ends where it stands, and from
+  07:38:10 no unit on either side has a target: a unit picks only an enemy in
+  sight or close by (2D1B:08FA). The last enemy, far across the map, has its
+  speed set to stop and never moves, so the battle never ends. Send one of
+  the other two after it (F2 or F3, then Move), but only once the nearer
+  enemy is down; sent earlier, it leaves the leader alone, the enemy destroys
+  it, and the battle is lost. The original does exactly this
   (tools/trace/scripts/stage_07.keys, checked against its capture to 07:55).
+  The UPGRADES switch `upgrade_lance_pursuit` does it for the player
+  (ORIGINAL_BUGS.md, Switches).
 
 - **Stage 8 is won only after a fight.** On the forest path the lance must
   reach the far side of the map, but the scene checks for that only once one

@@ -91,6 +91,7 @@ target_sources(chr_original_runtime PRIVATE
 	src/Support/audio_log.cpp
 	src/Support/debug.cpp
 	src/Support/media_settings.cpp
+	src/Support/upgrades.cpp
     src/Support/host_dispatch.cpp
     src/Support/digital_bridge.cpp
     src/Support/heap.cpp
@@ -639,6 +640,17 @@ if(BUILD_TESTING)
     chr_strict(test_narration_countdown)
     add_test(NAME tactical.narration_countdown
         COMMAND test_narration_countdown)
+
+    # The UPGRADES switch upgrade_lance_pursuit: the eighth battle's stall.
+    add_executable(test_lance_pursuit
+        tests/test_lance_pursuit.cpp
+        tests/fake_backend.cpp)
+    target_include_directories(test_lance_pursuit PRIVATE src/SDL tests)
+    target_link_libraries(test_lance_pursuit PRIVATE chr_original_runtime)
+    chr_strict(test_lance_pursuit)
+    foreach(mode off minute walking seen target restart)
+        add_test(NAME tactical.lance_pursuit_${mode} COMMAND test_lance_pursuit ${mode})
+    endforeach()
 
     add_executable(test_tactical_cursor_retreat
         tests/test_tactical_cursor_retreat.cpp
@@ -1238,7 +1250,7 @@ if(CHR_BUILD_SDL)
         set_tests_properties(resources.tracked_file_make PROPERTIES SKIP_RETURN_CODE 77
             PASS_REGULAR_EXPRESSION "fault: can't create ABSENT.DAT|skipped")
 
-        foreach(mode first none own words bad extra parse)
+        foreach(mode first none own words bad extra parse upgrades upgrades_bad upgrades_test)
             add_test(NAME platform.settings_${mode} COMMAND test_settings ${mode})
             set_tests_properties(platform.settings_${mode} PROPERTIES SKIP_RETURN_CODE 77)
         endforeach()
@@ -1246,6 +1258,8 @@ if(CHR_BUILD_SDL)
             "fault: .*settings.txt:3: music can.t be .loud.|skipped")
         set_tests_properties(platform.settings_extra PROPERTIES PASS_REGULAR_EXPRESSION
             "fault: .*settings.txt:3: sound samples takes no parameter|skipped")
+        set_tests_properties(platform.settings_upgrades_bad PROPERTIES PASS_REGULAR_EXPRESSION
+            "fault: .*settings.txt:5: upgrade_lance_pursuit can.t be .yes.|skipped")
 
         # The scene interpreter's plain jump from a battle's starting cursor.
         add_executable(test_scene_jump tests/test_scene_jump.cpp)

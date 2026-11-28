@@ -15,6 +15,11 @@ A script with a line `# start-save: VARIABLE` starts with the SAVEGAME.DAT that
 the environment variable VARIABLE names in its save folder (a save written by
 the original, kept outside the repo). Without the variable it can't run, and
 is skipped (exit 77 here).
+
+A script with a line `# upgrades: KEY ...` runs with those UPGRADES switches
+on (include/revenge/upgrades.h); every other run has them all off, whatever
+a settings file says. REVENGE_TRACE_UPGRADES, when set, stands for every
+script's line: to see which traces a switch moves, run check.py with it.
 """
 import argparse
 import hashlib
@@ -35,6 +40,7 @@ SKIP = 77
 TRACE_SETTINGS = "video = vga\nmusic = speaker\nsound = speaker\ninput = keys\n"
 START_SAVE = re.compile(r"^#\s*start-save:\s*(\w+)\s*$", re.M)
 SET = re.compile(r"^#\s*set:\s*(\w+)\s*$", re.M)
+UPGRADES = re.compile(r"^#\s*upgrades:\s*([\w ,]+?)\s*$", re.M)
 GOLDENS = "goldens"
 
 
@@ -46,6 +52,14 @@ def start_save(script):
         return None
     path = os.environ.get(found.group(1), "")
     return found.group(1), (path if path and os.path.isfile(path) else None)
+
+
+def upgrades(script):
+    """The UPGRADES switches a script runs with on: its `# upgrades:` line's
+    keys, as REVENGE_TEST_UPGRADES takes them, or "" for none."""
+    with open(script, encoding="utf-8") as f:
+        found = UPGRADES.search(f.read())
+    return " ".join(found.group(1).replace(",", " ").split()) if found else ""
 
 
 def script_set(script):
@@ -107,6 +121,7 @@ def run(exe, game, script, work, story=None, settings=None, env_extra=None):
         "REVENGE_SAVE_DIRECTORY": os.path.join(os.path.abspath(work), "saves") + os.sep,
         "REVENGE_HARNESS_SCRIPT": os.path.abspath(script),
         "REVENGE_HARNESS_OUT": os.path.abspath(work),
+        "REVENGE_TEST_UPGRADES": os.environ.get("REVENGE_TRACE_UPGRADES", upgrades(script)),
     })
     env.pop("REVENGE_SMOKE_INPUT", None)
     env.pop("REVENGE_AUDIO_LOG", None)

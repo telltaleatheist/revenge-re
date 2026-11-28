@@ -11,6 +11,14 @@
 #include "Data/TacticalControlData.h"
 #include "Data/TacticalMapData.h"
 #include "Data/TacticalUnitData.h"
+#include "Data/CampaignStateData.h"
+#include "revenge/upgrades.h"
+
+/* FIX (upgrade_lance_pursuit): how long, in seconds of the battle clock, the
+ * quiet lasts before the lance moves (ApplyLancePursuitUpgrade). */
+constexpr int32_t LANCE_PURSUIT_QUIET_SECONDS = 60;
+
+static void ApplyLancePursuitUpgrade(void);
 
 // 2D1B:0005: void RecalculateUnitCombatRatings(Stack RevengeUnitRecord *unitRecord,
 //     Stack word16 unitSlot, Stack word16 rebuildWeaponCounts, Stack word16 advanceRecovery)
@@ -738,6 +746,88 @@ void SelectUnitTacticalTargets(void)
                 TACTICAL_ENGAGEMENT_CLOSE;
         }
     }
+
+    // FIX (upgrade_lance_pursuit): ours, after the original's pass; off, the
+    // original's path runs alone (docs/ORIGINAL_BUGS.md, Switches).
+    if (Upgrades_IsOn(UPGRADE_LANCE_PURSUIT))
+        ApplyLancePursuitUpgrade();
+}
+
+// FIX (upgrade_lance_pursuit), ours, called at the end of 2D1B:08FA
+// SelectUnitTacticalTargets with the UPGRADES switch on. The original's own
+// battle can wait for ever: when the player's 'Mech has lost a leg
+// (walkMovement 0, UnitDamage.cpp), the lance's first walking member leads
+// it (2208:1829 IsCurrentLanceLeader), and once no enemy is in sight nobody
+// has a target (this procedure picks only visible or close enemies), the
+// leader's route ends where it stands and the other follows it. An enemy
+// that never moves (the eighth battle's last, its speed 0) is then never
+// met. After a full minute of that quiet, the acting leader is given what
+// the player's Move order to the nearest enemy's cell gives it (2208:28A9:
+// its own formation state 01h, its route's target there); the original's
+// movement, formation and targeting do the rest. Battle state only: a save
+// holds none of it.
+static void ApplyLancePursuitUpgrade(void)
+{
+    static int32_t quietSince = -1;
+    static uint16_t quietStage;
+    int32_t now = (int32_t) CampaignClockState[0] * 3600 + (int32_t) CampaignClockState[1] * 60 +
+        (int32_t) CampaignClockState[2];
+    uint16_t unitIndex;
+    uint16_t leaderIndex = TACTICAL_UNIT_COUNT;
+    uint16_t nearestEnemy = TACTICAL_UNIT_COUNT;
+    uint16_t nearestDistance = 0xFFFF;
+    RevengeUnitRecord *player = &PersistentUnitRoster[0x00];
+    int quiet = player->deploymentState != 0x00 && player->walkMovement == 0x00;
+
+    for (unitIndex = 0x00; quiet && unitIndex < ENEMY_FORCE_FIRST_UNIT; ++unitIndex)
+        if (PersistentUnitRoster[unitIndex].deploymentState != 0x00 &&
+            UnitTacticalTarget[unitIndex] != TACTICAL_TARGET_NONE)
+            quiet = FALSE;
+    for (unitIndex = ENEMY_FORCE_FIRST_UNIT; quiet && unitIndex < TACTICAL_UNIT_COUNT; ++unitIndex)
+    {
+        if (PersistentUnitRoster[unitIndex].deploymentState == 0x00)
+            continue;
+        if (UnitEnemyVisible[unitIndex] != FALSE ||
+            (UnitEnemyContactEstablished[unitIndex] != FALSE && UnitEnemyInProximityRange[unitIndex] != FALSE))
+            quiet = FALSE;
+        else
+        {
+            uint16_t distance = CalculateApproximateMapDistance(
+                ScenarioUnitMapX[0x00], ScenarioUnitMapY[0x00],
+                ScenarioUnitMapX[unitIndex], ScenarioUnitMapY[unitIndex]);
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearestEnemy = unitIndex;
+            }
+        }
+    }
+    for (unitIndex = 0x01; quiet && unitIndex < LANCE_UNIT_COUNT; ++unitIndex)
+        if (IsCurrentLanceLeader(unitIndex) != FALSE)
+        {
+            leaderIndex = unitIndex;
+            break;
+        }
+    if (!quiet || nearestEnemy == TACTICAL_UNIT_COUNT || leaderIndex == TACTICAL_UNIT_COUNT ||
+        UnitLanceFormationState[leaderIndex] == 0x01)
+    {
+        quietSince = -1;
+        return;
+    }
+    if (quietSince < 0 || now < quietSince || quietStage != CampaignStageIndex)
+    {
+        quietSince = now;
+        quietStage = CampaignStageIndex;
+        return;
+    }
+    if (now - quietSince < LANCE_PURSUIT_QUIET_SECONDS)
+        return;
+    UnitLanceFormationState[leaderIndex] = 0x01;
+    UnitRouteTargetMapX[leaderIndex] = (uint8_t) ScenarioUnitMapX[nearestEnemy];
+    UnitRouteTargetMapY[leaderIndex] = (uint8_t) ScenarioUnitMapY[nearestEnemy];
+    if (UnitMovementHeatExponent[leaderIndex] == 0x00)
+        UnitMovementHeatExponent[leaderIndex] = 0x01;
+    quietSince = -1;
 }
 
 // 2D1B:0F1F: void AdvanceUnitTacticalMovement(word16 unitIndex)

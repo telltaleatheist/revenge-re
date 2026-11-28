@@ -1,11 +1,12 @@
 # The eighth battle (stage 7) won by play, from the made save after stage 6
 # (stage_06_made): both sides load that file alike. Battle messages are
 # answered after still:200 (finding 10). Hands-off, the battle stalls: by
-# 07:40 the lance's leader stands with its engine hit and can't move, the
-# two others hold formation on it, and the last enemy (unit 19) waits across
-# the map at 5,65; nothing moves or fires again. So at a quiet step past
-# 07:41 the second unit (F2) is ordered to unit 19, the third follows it,
-# and the two win at 07:43. The transmission after it, then Save & Continue
+# 07:38 the lance's leader has lost its left leg and can't walk, the next
+# unit leads but stands at its route's end, and the last enemy (unit 19),
+# its speed set to stop, waits across the map at 5,65; from 07:38:10 nothing
+# moves or fires again (with upgrade_lance_pursuit on: stage_07_pursuit). So
+# at a quiet step past 07:41 the second unit (F2) is ordered to unit 19, the
+# third follows it, and the two win at 07:43. The transmission after it, then Save & Continue
 # to slot 1: the save is REVENGE_SAVE_STAGE_07.
 # set: campaign
 # start-save: REVENGE_SAVE_STAGE_06

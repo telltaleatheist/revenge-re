@@ -83,7 +83,8 @@ stopped. (Every item also waits 4 polls, well inside one step.)
 | `stage_05` | campaign set; from the original's save after stage 4: the story, the first of the two plans chosen (through the forest), its battle won hands-off at 07:14; the transmission after it, Save & Continue to slot 1 |
 | `stage_06_lost` | campaign set; from the original's save after stage 5: the Dragon battle (stage 6) lost, the lance sent at the Dragon at once and its leader lost at 07:27; the defeat, the menu after it, slot 1 loaded again |
 | `stage_06_made` | campaign set; from the original's save after stage 5: the Dragon battle played to 07:33 (the lance sent east after the ally's loss), then the Dragon ended by `destroy:20`; the scene's own win, the transmission, Save & Continue to slot 1. Made, not played: no original trace can match it |
-| `stage_07` | campaign set; from stage_06_made's save: the eighth battle (stage 7), its five stops answered; hands-off it stalls (the leader immobile from 07:40, the last enemy far off), so at 07:41 the second unit is sent at the last enemy and the battle is won at 07:43; the transmission, Save & Continue to slot 1 |
+| `stage_07` | campaign set; from stage_06_made's save: the eighth battle (stage 7), its five stops answered; hands-off it stalls (the leader legless by 07:38, from 07:38:10 no unit with a target, the last enemy far off and stopped), so at 07:41 the second unit is sent at the last enemy and the battle is won at 07:43; the transmission, Save & Continue to slot 1 |
+| `stage_07_pursuit` | campaign set; the UPGRADES switch `upgrade_lance_pursuit` on (its `# upgrades:` line); stage_07's start and stops, then hands-off: a minute into the quiet the lance's acting leader is sent at the last enemy, the third unit follows, and the battle is won at 07:42 with no key; every snap before the quiet matches stage_07's |
 | `stage_08` | campaign set; from stage_07's save: the ninth battle (stage 8), the forest path chosen; hands-off nothing wins it, so the leader is sent across the map past column 143 and the second unit, its fire mode set to fire on any enemy, at the pass group, whose fight arms the scene's check; won at 10:36; Save & Continue to slot 1 |
 
 ## Trace records (`traces/*.jsonl`)
@@ -173,6 +174,14 @@ sides), the frame, the palette and the save block. ctest runs it as
 script plays from a folder of links to the game's files, its `.EXE` files left
 out, and must match its golden without importing again. All three read the
 game folder from `REVENGE_GAME` and skip without one.
+
+Every run has the UPGRADES switches off (`include/revenge/upgrades.h`): the
+harness doesn't read them from the player's settings file. A script with a
+line `# upgrades: KEY ...` turns those on for its run, and its golden is the
+switch's own trace (`stage_07_pursuit`). `REVENGE_TRACE_UPGRADES=KEY` stands
+for every script's line, to see which traces a switch moves: with
+`lance_pursuit`, the campaign set moves in `stage_07` alone, from its quiet
+on.
 
 A script with a line `# set: campaign` is one of the long runs through the
 campaign. `trace.goldens` (`check.py --set goldens`) leaves those out, as do

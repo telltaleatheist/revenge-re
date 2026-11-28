@@ -1,0 +1,26 @@
+# The eighth battle (stage 7) with the UPGRADES switch upgrade_lance_pursuit
+# on, played hands-off: stage_07's start and its five stops, then no order.
+# The player's 'Mech has lost its left leg by 07:38, and from 07:38:10 no
+# unit on either side has a target; the last enemy (unit 19) never moves.
+# A minute of that quiet on, the lance's acting leader is sent at unit 19
+# (Tactical/UnitState.cpp, ApplyLancePursuitUpgrade), the third unit follows
+# it, and the battle is won with no key pressed. The original, and the port
+# with the switch off, wait there for ever (stage_07).
+# set: campaign
+# start-save: REVENGE_SAVE_STAGE_06
+# upgrades: lance_pursuit
+# Load Game, slot 1; the battle running.
+idle:1000 Return idle:50 Right idle:50 Return idle:300
+Return steps:2 @snap:stage7_battle
+# The battle's stops, as in stage_07.
+still:200 @snap:stage7_message1 Return idle:300
+still:200 @snap:stage7_message2 Return idle:300
+still:200 @snap:stage7_message3 Return idle:300
+still:200 @snap:stage7_message4 Return idle:300
+still:200 @snap:stage7_message5 Return idle:300
+# 200 steps on (07:41): where stage_07 stands still, the lance is on its way.
+steps:200 @snap:stage7_moving
+# Hands-off to the end: unit 19 destroyed, the battle won.
+still:200 @snap:stage7_won Return idle:300
+# The transmission after it, its first page.
+still:2000 @snap:stage7_after1
