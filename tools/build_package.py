@@ -67,6 +67,9 @@ copied game live in your own folder:
   macOS:   ~/Library/Application Support/BattleTech/Revenge Rebuild
   Linux:   ~/.local/share/BattleTech/Revenge Rebuild
 
+The game options menu has an UPGRADES line: optional fixes for the original's bugs, all
+off to start with, each explained on its page.
+
 While playing, Shift+Alt+F1 (Cmd+Shift+F1 on a Mac) opens the setup menu: your game files,
 updates, reporting a problem (revenge.log, in your folder, is the log to send), checking
 the files, and resetting the settings. The game waits while it is open.

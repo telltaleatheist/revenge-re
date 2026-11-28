@@ -107,6 +107,27 @@ multiple instances and supplies the asset location without copying the game.
 Use `-NoBuild` to run an existing executable and `-Trace` for host-boundary
 diagnostics.
 
+## Playing
+
+The game plays as the original did. On top of it:
+
+- **UPGRADES.** The game options menu (GAME OPTIONS on the title, or the
+  options in a battle) has an UPGRADES line of ours. Its page turns on fixes
+  for the original's bugs, one switch each, all off to start with: lance
+  pursuit (a lance that can't walk goes after the nearest enemy), restart
+  pilots (a Restart deals new pilots as a new campaign does), lance weapons
+  and lance tactics (your lance's computer-run 'Mechs fire and judge as they
+  were meant to; enemies stay as the original had them). Each switch says what
+  it does on the page. They are kept in `settings.txt`;
+  [docs/ORIGINAL_BUGS.md](docs/ORIGINAL_BUGS.md) has the bugs behind them.
+- **The setup menu.** Shift + Alt + F1 (Cmd + Shift + F1 on a Mac), or the
+  UPGRADES page's Setup menu line, opens it over the game, which waits: the
+  game files in use, updates, reporting a problem, checking the files,
+  resetting the settings, and opening your folder.
+- **The log.** Started from the launcher or a package, the game writes
+  `revenge.log` in your folder (the start before's is `revenge.old.log`). It is
+  the file to send with a problem report.
+
 ## Packages and the setup
 
 `tools/build_package.py` builds the packages the BattleTech launcher installs:
